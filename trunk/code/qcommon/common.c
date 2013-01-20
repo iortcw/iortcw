@@ -76,6 +76,7 @@ cvar_t  *com_cl_running;
 cvar_t  *com_logfile;       // 1 = buffer log, 2 = flush after each print
 cvar_t	*com_pipefile;
 cvar_t  *com_showtrace;
+cvar_t  *com_fsgame;
 cvar_t  *com_version;
 cvar_t  *com_blood;
 cvar_t  *com_buildScript;   // for automated data building scripts
@@ -2689,6 +2690,7 @@ Com_Init
 */
 void Com_Init( char *commandLine ) {
 	char    *s;
+	char    *t;
 	int	qport;
 
 	// TTimo gcc warning: variable `safeMode' might be clobbered by `longjmp' or `vfork'
@@ -2760,6 +2762,16 @@ void Com_Init( char *commandLine ) {
 
 	Com_ExecuteCfg();
 
+	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
+	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, __DATE__ );
+	com_fsgame = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
+
+	if ( strcmp(com_fsgame->string,"banimod") == 0 || strcmp(com_fsgame->string,"bani") == 0 ) {
+			com_version = Cvar_Get( "version", t, CVAR_ROM | CVAR_SERVERINFO );
+	} else {
+			com_version = Cvar_Get( "version", s, CVAR_ROM | CVAR_SERVERINFO );
+	}
+
 	// override anything from the config files with command line args
 	Com_StartupVariable( NULL );
 
@@ -2819,9 +2831,6 @@ void Com_Init( char *commandLine ) {
 	com_recommendedSet = Cvar_Get( "com_recommendedSet", "0", CVAR_ARCHIVE );
 
 	com_hunkused = Cvar_Get( "com_hunkused", "0", 0 );
-
-	s = va("%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
-	com_version = Cvar_Get ("version", s, CVAR_ROM | CVAR_SERVERINFO );
 	com_gamename = Cvar_Get("com_gamename", GAMENAME_FOR_MASTER, CVAR_SERVERINFO | CVAR_INIT);
 	com_protocol = Cvar_Get("com_protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO | CVAR_INIT);
 #ifdef LEGACY_PROTOCOL

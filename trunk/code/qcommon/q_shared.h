@@ -56,6 +56,7 @@ If you have questions concerning this license or the applicable additional terms
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
 #else
   #define PRODUCT_NAME			"iortcw"
+  #define OLD_PRODUCT_NAME		"Wolf"
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"iortcw"
   #define CLIENT_WINDOW_MIN_TITLE 	"iortcw"
@@ -73,7 +74,12 @@ If you have questions concerning this license or the applicable additional terms
   #define PRODUCT_VERSION "1.42"
 #endif
 
+#ifndef OLD_PRODUCT_VERSION
+  #define OLD_PRODUCT_VERSION "1.41-MP"
+#endif
+
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
+#define OLDVERSION OLD_PRODUCT_NAME " " OLD_PRODUCT_VERSION
 
 #define MAX_TEAMNAME		32
 #define MAX_MASTER_SERVERS      5	// number of supported master servers
