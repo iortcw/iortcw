@@ -442,6 +442,8 @@ void SV_SetExpectedHunkUsage( char *mapname ) {
 SV_ClearServer
 ================
 */
+static cvar_t *sv_levelTimeReset;
+
 static void SV_ClearServer( void ) {
 	int i;
 
@@ -450,7 +452,14 @@ static void SV_ClearServer( void ) {
 			Z_Free( sv.configstrings[i] );
 		}
 	}
-	Com_Memset( &sv, 0, sizeof( sv ) );
+
+	if ( !sv_levelTimeReset->integer ) {
+		i = sv.time; 
+		Com_Memset( &sv, 0, sizeof( sv ) );
+		sv.time = i;
+	} else {
+		Com_Memset( &sv, 0, sizeof( sv ) );
+	}
 }
 
 /*
@@ -908,6 +917,8 @@ void SV_Init( void ) {
 	sv_lanForceRate = Cvar_Get( "sv_lanForceRate", "1", CVAR_ARCHIVE );
 
 	sv_banFile = Cvar_Get("sv_banFile", "serverbans.dat", CVAR_ARCHIVE);
+
+	sv_levelTimeReset = Cvar_Get( "sv_levelTimeReset", "0", CVAR_ARCHIVE );
 
 	sv_onlyVisibleClients = Cvar_Get( "sv_onlyVisibleClients", "0", 0 );       // DHM - Nerve
 
