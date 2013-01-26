@@ -46,22 +46,15 @@ int r_firstScenePoly;
 int r_numpolyverts;
 
 int skyboxportal;
+
 /*
 ====================
-R_ToggleSmpFrame
+R_InitNextFrame
 
 ====================
 */
-void R_ToggleSmpFrame( void ) {
-	if ( r_smp->integer ) {
-		// use the other buffers next frame, because another CPU
-		// may still be rendering into the current ones
-		tr.smpFrame ^= 1;
-	} else {
-		tr.smpFrame = 0;
-	}
-
-	backEndData[tr.smpFrame]->commands.used = 0;
+void R_InitNextFrame( void ) {
+	backEndData->commands.used = 0;
 
 	r_firstSceneDrawSurf = 0;
 
@@ -149,11 +142,11 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts
 		return;
 	}
 
-	poly = &backEndData[tr.smpFrame]->polys[r_numpolys];
+	poly = &backEndData->polys[r_numpolys];
 	poly->surfaceType = SF_POLY;
 	poly->hShader = hShader;
 	poly->numVerts = numVerts;
-	poly->verts = &backEndData[tr.smpFrame]->polyVerts[r_numpolyverts];
+	poly->verts = &backEndData->polyVerts[r_numpolyverts];
 
 	memcpy( poly->verts, verts, numVerts * sizeof( *verts ) );
 	// Ridah
@@ -225,11 +218,11 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *vert
 			return;
 		}
 
-		poly = &backEndData[tr.smpFrame]->polys[r_numpolys];
+		poly = &backEndData->polys[r_numpolys];
 		poly->surfaceType = SF_POLY;
 		poly->hShader = hShader;
 		poly->numVerts = numVerts;
-		poly->verts = &backEndData[tr.smpFrame]->polyVerts[r_numpolyverts];
+		poly->verts = &backEndData->polyVerts[r_numpolyverts];
 
 		memcpy( poly->verts, &verts[numVerts * j], numVerts * sizeof( *verts ) );
 		// Ridah
@@ -307,8 +300,8 @@ void RE_AddRefEntityToScene( const refEntity_t *ent ) {
 		ri.Error( ERR_DROP, "RE_AddRefEntityToScene: bad reType %i", ent->reType );
 	}
 
-	backEndData[tr.smpFrame]->entities[r_numentities].e = *ent;
-	backEndData[tr.smpFrame]->entities[r_numentities].lightingCalculated = qfalse;
+	backEndData->entities[r_numentities].e = *ent;
+	backEndData->entities[r_numentities].lightingCalculated = qfalse;
 
 	r_numentities++;
 }
@@ -341,7 +334,7 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
 		if ( r_dynamiclight->integer == 0 ) {
 			return;
 		}
-		if ( r_dynamiclight->integer == 2 && !( backEndData[tr.smpFrame]->dlights[r_numdlights].forced ) ) {
+		if ( r_dynamiclight->integer == 2 && !( backEndData->dlights[r_numdlights].forced ) ) {
 			return;
 		}
 	}
@@ -349,7 +342,7 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
 	overdraw &= ~REF_FORCE_DLIGHT;
 	overdraw &= ~REF_JUNIOR_DLIGHT; //----(SA)	added
 
-	dl = &backEndData[tr.smpFrame]->dlights[r_numdlights++];
+	dl = &backEndData->dlights[r_numdlights++];
 	VectorCopy( org, dl->origin );
 	dl->radius = intensity;
 	dl->color[0] = r;
@@ -384,7 +377,7 @@ void RE_AddCoronaToScene( const vec3_t org, float r, float g, float b, float sca
 		return;
 	}
 
-	cor = &backEndData[tr.smpFrame]->coronas[r_numcoronas++];
+	cor = &backEndData->coronas[r_numcoronas++];
 	VectorCopy( org, cor->origin );
 	cor->color[0] = r;
 	cor->color[1] = g;
@@ -471,19 +464,19 @@ void RE_RenderScene( const refdef_t *fd ) {
 	tr.refdef.floatTime = tr.refdef.time * 0.001f;
 
 	tr.refdef.numDrawSurfs = r_firstSceneDrawSurf;
-	tr.refdef.drawSurfs = backEndData[tr.smpFrame]->drawSurfs;
+	tr.refdef.drawSurfs = backEndData->drawSurfs;
 
 	tr.refdef.num_entities = r_numentities - r_firstSceneEntity;
-	tr.refdef.entities = &backEndData[tr.smpFrame]->entities[r_firstSceneEntity];
+	tr.refdef.entities = &backEndData->entities[r_firstSceneEntity];
 
 	tr.refdef.num_dlights = r_numdlights - r_firstSceneDlight;
-	tr.refdef.dlights = &backEndData[tr.smpFrame]->dlights[r_firstSceneDlight];
+	tr.refdef.dlights = &backEndData->dlights[r_firstSceneDlight];
 
 	tr.refdef.num_coronas = r_numcoronas - r_firstSceneCorona;
-	tr.refdef.coronas = &backEndData[tr.smpFrame]->coronas[r_firstSceneCorona];
+	tr.refdef.coronas = &backEndData->coronas[r_firstSceneCorona];
 
 	tr.refdef.numPolys = r_numpolys - r_firstScenePoly;
-	tr.refdef.polys = &backEndData[tr.smpFrame]->polys[r_firstScenePoly];
+	tr.refdef.polys = &backEndData->polys[r_firstScenePoly];
 
 	// turn off dynamic lighting globally by clearing all the
 	// dlights if it needs to be disabled or if vertex lighting is enabled

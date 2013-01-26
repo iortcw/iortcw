@@ -320,7 +320,7 @@ typedef struct {
 	// used CDS.
 	qboolean isFullscreen;
 	qboolean stereoEnabled;
-	qboolean smpActive;                     // dual processor
+	qboolean smpActive;                     // UNUSED, present for compatibility
 
 	qboolean textureFilterAnisotropicAvailable;                 //DAJ
 } glconfig_t;
