@@ -89,7 +89,7 @@ SURFACE SHADERS
 */
 
 shaderCommands_t	tess;
-
+static qboolean setArraysOnce;
 
 /*
 =================
@@ -110,7 +110,11 @@ static void R_BindAnimatedImageToTMU( textureBundle_t *bundle, int tmu ) {
 	}
 
 	if ( bundle->numImageAnimations <= 1 ) {
-		GL_BindToTMU( bundle->image[0], tmu);
+		if ( bundle->isLightmap && ( backEnd.refdef.rdflags & RDF_SNOOPERVIEW ) ) {
+			GL_BindToTMU( tr.whiteImage, 0 );
+		} else {
+			GL_BindToTMU( bundle->image[0], tmu);
+		}
 		return;
 	}
 
@@ -124,7 +128,11 @@ static void R_BindAnimatedImageToTMU( textureBundle_t *bundle, int tmu ) {
 	}
 	index %= bundle->numImageAnimations;
 
-	GL_BindToTMU( bundle->image[ index ], tmu );
+	if ( bundle->isLightmap && ( backEnd.refdef.rdflags & RDF_SNOOPERVIEW ) ) {
+		GL_BindToTMU( tr.whiteImage, 0 );
+	} else {
+		GL_BindToTMU( bundle->image[ index ], tmu );
+	}
 }
 
 
@@ -214,7 +222,74 @@ void RB_BeginSurface( shader_t *shader, int fogNum ) {
 	}
 }
 
+/*
+===================
+DrawMultitextured
 
+output = t0 * t1 or t0 + t1
+
+t0 = most upstream according to spec
+t1 = most downstream according to spec
+===================
+*/
+static void DrawMultitextured( shaderCommands_t *input, int stage ) {
+	shaderStage_t   *pStage;
+
+	pStage = tess.xstages[stage];
+
+	// Ridah
+	if ( tess.shader->noFog && pStage->isFogged ) {
+		R_FogOn();
+	} else if ( tess.shader->noFog && !pStage->isFogged ) {
+		R_FogOff(); // turn it back off
+	} else {    // make sure it's on
+		R_FogOn();
+	}
+	// done.
+
+	GL_State( pStage->stateBits );
+
+	// this is an ugly hack to work around a GeForce driver
+	// bug with multitexture and clip planes
+	if ( backEnd.viewParms.isPortal ) {
+		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	}
+
+	//
+	// base
+	//
+	GL_SelectTexture( 0 );
+	qglTexCoordPointer( 2, GL_FLOAT, 0, input->svars.texcoords[0] );
+	R_BindAnimatedImageToTMU( &pStage->bundle[0], 0 );
+
+	//
+	// lightmap/secondary pass
+	//
+	GL_SelectTexture( 1 );
+	qglEnable( GL_TEXTURE_2D );
+	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+	if ( r_lightmap->integer ) {
+		GL_TexEnv( GL_REPLACE );
+	} else {
+		GL_TexEnv( tess.shader->multitextureEnv );
+	}
+
+	qglTexCoordPointer( 2, GL_FLOAT, 0, input->svars.texcoords[1] );
+
+	R_BindAnimatedImageToTMU( &pStage->bundle[1], 1 );
+
+//	R_DrawElements( input->numIndexes, input->indexes );
+	R_DrawElementsVBO(input->numIndexes, input->firstIndex, input->minIndex, input->maxIndex);
+
+	//
+	// disable texturing on TEXTURE1, then select TEXTURE0
+	//
+	//qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	qglDisable( GL_TEXTURE_2D );
+
+	GL_SelectTexture( 0 );
+}
 
 extern float EvalWaveForm( const waveForm_t *wf );
 extern float EvalWaveFormClamped( const waveForm_t *wf );
@@ -294,6 +369,46 @@ static void ComputeTexMatrix( shaderStage_t *pStage, int bundleNum, float *outma
 	}
 }
 
+extern void R_Fog( glfog_t *curfog );
+
+/*
+==============
+SetIteratorFog
+	set the fog parameters for this pass
+==============
+*/
+void SetIteratorFog( void ) {
+	// changed for problem when you start the game with r_fastsky set to '1'
+//	if(r_fastsky->integer || backEnd.refdef.rdflags & RDF_NOWORLDMODEL ) {
+	if ( backEnd.refdef.rdflags & RDF_NOWORLDMODEL ) {
+		R_FogOff();
+		return;
+	}
+
+	if ( backEnd.refdef.rdflags & RDF_DRAWINGSKY ) {
+		if ( glfogsettings[FOG_SKY].registered ) {
+			R_Fog( &glfogsettings[FOG_SKY] );
+		} else {
+			R_FogOff();
+		}
+
+		return;
+	}
+
+	if ( skyboxportal && backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) {
+		if ( glfogsettings[FOG_PORTALVIEW].registered ) {
+			R_Fog( &glfogsettings[FOG_PORTALVIEW] );
+		} else {
+			R_FogOff();
+		}
+	} else {
+		if ( glfogNum > FOG_NONE ) {
+			R_Fog( &glfogsettings[FOG_CURRENT] );
+		} else {
+			R_FogOff();
+		}
+	}
+}
 
 static void ComputeDeformValues(int *deformGen, vec5_t deformParams)
 {
@@ -622,7 +737,78 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 			vertColor[3] = 0.0f;
 			break;
 		case AGEN_NORMALZFADE:
-			break;
+		{
+			float alpha, range, lowest, highest, dot;
+			int i;
+			vec3_t worldUp;
+			qboolean zombieEffect = qfalse;
+	
+			if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+				VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+			}
+	
+			if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+				VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+			} else {
+				VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+			}
+	
+			lowest = pStage->zFadeBounds[0];
+			if ( lowest == -1000 ) {    // use entity alpha
+				lowest = backEnd.currentEntity->e.shaderTime;
+				zombieEffect = qtrue;
+			}
+			highest = pStage->zFadeBounds[1];
+			if ( highest == -1000 ) {   // use entity alpha
+				highest = backEnd.currentEntity->e.shaderTime;
+				zombieEffect = qtrue;
+			}
+			range = highest - lowest;
+			for ( i = 0; i < tess.numVertexes; i++ ) {
+				dot = DotProduct( tess.normal[i], worldUp );
+	
+				// special handling for Zombie fade effect
+				if ( zombieEffect ) {
+					alpha = (float)backEnd.currentEntity->e.shaderRGBA[3] * ( dot + 1.0 ) / 2.0;
+					alpha += ( 2.0 * (float)backEnd.currentEntity->e.shaderRGBA[3] ) * ( 1.0 - ( dot + 1.0 ) / 2.0 );
+					if ( alpha > 255.0 ) {
+						alpha = 255.0;
+					} else if ( alpha < 0.0 ) {
+						alpha = 0.0;
+					}
+					tess.svars.colors[i][3] = (byte)( alpha );
+					continue;
+				}
+	
+				if ( dot < highest ) {
+					if ( dot > lowest ) {
+						if ( dot < lowest + range / 2 ) {
+							alpha = ( (float)pStage->constantColor[3] * ( ( dot - lowest ) / ( range / 2 ) ) );
+						} else {
+							alpha = ( (float)pStage->constantColor[3] * ( 1.0 - ( ( dot - lowest - range / 2 ) / ( range / 2 ) ) ) );
+						}
+						if ( alpha > 255.0 ) {
+							alpha = 255.0;
+						} else if ( alpha < 0.0 ) {
+							alpha = 0.0;
+						}
+	
+						// finally, scale according to the entity's alpha
+						if ( backEnd.currentEntity->e.hModel ) {
+							alpha *= (float)backEnd.currentEntity->e.shaderRGBA[3] / 255.0;
+						}
+	
+						tess.svars.colors[i][3] = (byte)( alpha );
+					} else {
+						tess.svars.colors[i][3] = 0;
+					}
+				} else {
+					tess.svars.colors[i][3] = 0;
+				}
+			}
+		}
+		break;
+			// done.
 		case AGEN_VERTEX:
 			baseColor[3] = 0.0f;
 			vertColor[3] = 1.0f;
@@ -638,6 +824,26 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 			baseColor[3] = 1.0f;
 			vertColor[3] = 0.0f;
 			break;
+	}
+
+	//
+	// fog adjustment for colors to fade out as fog increases
+	//
+	if ( tess.fogNum ) {
+		switch ( pStage->adjustColorsForFog )
+		{
+		case ACFF_MODULATE_RGB:
+			RB_CalcModulateColorsByFog( ( unsigned char * ) tess.svars.colors );
+			break;
+		case ACFF_MODULATE_ALPHA:
+			RB_CalcModulateAlphasByFog( ( unsigned char * ) tess.svars.colors );
+			break;
+		case ACFF_MODULATE_RGBA:
+			RB_CalcModulateRGBAsByFog( ( unsigned char * ) tess.svars.colors );
+			break;
+		case ACFF_NONE:
+			break;
+		}
 	}
 
 	// FIXME: find some way to implement this.
@@ -1543,6 +1749,8 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		}
 		else if ( pStage->bundle[1].image[0] != 0 )
 		{
+			DrawMultitextured( input, stage );
+/*
 			R_BindAnimatedImageToTMU( &pStage->bundle[0], 0 );
 
 			//
@@ -1555,9 +1763,16 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			}
 
 			R_BindAnimatedImageToTMU( &pStage->bundle[1], 1 );
+*/
 		}
 		else 
 		{
+			int fadeStart, fadeEnd;
+
+			if ( !setArraysOnce ) {
+				qglTexCoordPointer( 2, GL_FLOAT, 0, input->svars.texcoords[0] );
+			}
+
 			//
 			// set state
 			//
@@ -1568,7 +1783,56 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			else 
 				R_BindAnimatedImageToTMU( &pStage->bundle[0], 0 );
 
-			GLSL_SetUniformInt(sp, GENERIC_UNIFORM_TEXTURE1ENV, 0);
+			// Ridah, per stage fogging (detail textures)
+			if ( tess.shader->noFog && pStage->isFogged ) {
+				R_FogOn();
+			} else if ( tess.shader->noFog && !pStage->isFogged ) {
+				R_FogOff(); // turn it back off
+			} else {    // make sure it's on
+				R_FogOn();
+			}
+			// done.
+
+			//----(SA)	fading model stuff
+			fadeStart = backEnd.currentEntity->e.fadeStartTime;
+
+			if ( fadeStart ) {
+				fadeEnd = backEnd.currentEntity->e.fadeEndTime;
+				if ( fadeStart > tr.refdef.time ) {       // has not started to fade yet
+					GL_State( pStage->stateBits );
+				} else
+				{
+					int i;
+					unsigned int tempState;
+					float alphaval;
+
+					if ( fadeEnd < tr.refdef.time ) {     // entity faded out completely
+						continue;
+					}
+
+					alphaval = (float)( fadeEnd - tr.refdef.time ) / (float)( fadeEnd - fadeStart );
+
+					tempState = pStage->stateBits;
+					// remove the current blend, and don't write to Z buffer
+					tempState &= ~( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS | GLS_DEPTHMASK_TRUE );
+					// set the blend to src_alpha, dst_one_minus_src_alpha
+					tempState |= ( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
+					GL_State( tempState );
+					GL_Cull( CT_FRONT_SIDED );
+					// modulate the alpha component of each vertex in the render list
+					for ( i = 0; i < tess.numVertexes; i++ ) {
+						tess.svars.colors[i][0] *= alphaval;
+						tess.svars.colors[i][1] *= alphaval;
+						tess.svars.colors[i][2] *= alphaval;
+						tess.svars.colors[i][3] *= alphaval;
+					}
+				}
+			} else {
+				GL_State( pStage->stateBits );
+			}
+			//----(SA)	end
+
+//			GLSL_SetUniformInt(sp, GENERIC_UNIFORM_TEXTURE1ENV, 0);
 		}
 
 		//
@@ -1692,6 +1956,9 @@ void RB_StageIteratorGeneric( void )
 		// a call to va() every frame!
 		GLimp_LogComment( va("--- RB_StageIteratorGeneric( %s ) ---\n", tess.shader->name) );
 	}
+
+	// set GL fog
+	SetIteratorFog();
 
 	//
 	// set face culling appropriately
