@@ -1241,7 +1241,11 @@ void R_Register( void ) {
 	// done.
 
 	// Rafael - wolf fog
+#ifdef VCMODS_OPENGLES
+	r_wolffog = ri.Cvar_Get( "r_wolffog", "0", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
+#else
 	r_wolffog = ri.Cvar_Get( "r_wolffog", "1", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
+#endif
 	// done
 
 	r_nocurves = ri.Cvar_Get( "r_nocurves", "0", CVAR_CHEAT );
