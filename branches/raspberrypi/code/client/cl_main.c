@@ -4259,6 +4259,7 @@ void CL_Shutdown(char *finalmsg, qboolean disconnect, qboolean quit) {
 	Cmd_RemoveCommand ("clientinfo");
 	Cmd_RemoveCommand( "snd_restart" );
 	Cmd_RemoveCommand( "vid_restart" );
+	Cmd_RemoveCommand( "ui_restart" );
 	Cmd_RemoveCommand( "disconnect" );
 	Cmd_RemoveCommand( "record" );
 	Cmd_RemoveCommand( "demo" );
@@ -4287,6 +4288,13 @@ void CL_Shutdown(char *finalmsg, qboolean disconnect, qboolean quit) {
 
 	Cmd_RemoveCommand( "updatehunkusage" );
 	// done.
+
+	Cmd_RemoveCommand( "updatescreen" );
+	Cmd_RemoveCommand( "SaveTranslations" );     // NERVE - SMF - localization
+	Cmd_RemoveCommand( "SaveNewTranslations" );   // NERVE - SMF - localization
+	Cmd_RemoveCommand( "LoadTranslations" );     // NERVE - SMF - localization
+	Cmd_RemoveCommand( "startSingleplayer" );      // NERVE - SMF
+	Cmd_RemoveCommand( "setRecommended" );
 
 	CL_ShutdownInput();
 	Con_Shutdown();
