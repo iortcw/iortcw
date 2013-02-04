@@ -106,10 +106,12 @@ char *Sys_DefaultHomePath( void )
 			return NULL;
 		}
 
-		if( !SUCCEEDED( qSHGetFolderPath( NULL, CSIDL_APPDATA,
+		// L0 - Changed from CSIDL_APPDATA -> Stores in */my Documents so it's more accessible.
+		//      Additionally homepatch was changed from rtcw to ioRTCW so they know what's all about.
+		if( !SUCCEEDED( qSHGetFolderPath( NULL, CSIDL_PERSONAL,
 						NULL, 0, szPath ) ) )
 		{
-			Com_Printf("Unable to detect CSIDL_APPDATA\n");
+			Com_Printf("Unable to detect CSIDL_PERSONAL\n");
 			FreeLibrary(shfolder);
 			return NULL;
 		}
