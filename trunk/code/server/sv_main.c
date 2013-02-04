@@ -424,7 +424,6 @@ Informs all masters that this server is going down
 void SV_MasterShutdown( void ) {
 	// send a heartbeat right now
 	svs.nextHeartbeatTime = -9999;
-// L0 - Sort heartbeat for rtcw
 #ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
 #else
@@ -433,7 +432,6 @@ void SV_MasterShutdown( void ) {
 
 	// send it again to minimize chance of drops
 	svs.nextHeartbeatTime = -9999;
-// L0 - Sort heartbeat for rtcw
 #ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
 #else
@@ -1446,7 +1444,6 @@ void SV_Frame( int msec ) {
 	SV_SendClientMessages();
 
 	// send a heartbeat to the master if needed
-// L0 - sort heartbeat for rtcw
 #ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
 #else

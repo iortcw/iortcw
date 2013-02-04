@@ -53,21 +53,20 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_WIN		"FooBar"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
-//  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
-  // Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
-  #define HEARTBEAT_FOR_MASTER		"DarkPlaces" // L0 - Moved here
+// #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
+// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
+  #define HEARTBEAT_FOR_MASTER		"DarkPlaces"
 #else
-  #define PRODUCT_NAME				"iortcw"
-  #define OLD_PRODUCT_NAME			"Wolf"
-  #define BASEGAME					"main"
+  #define PRODUCT_NAME			"iortcw"
+  #define OLD_PRODUCT_NAME		"Wolf"
+  #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"iortcw"
   #define CLIENT_WINDOW_MIN_TITLE 	"iortcw"
   #define HOMEPATH_NAME_UNIX		".iortcw"
-  #define HOMEPATH_NAME_WIN			"ioRTCW"	// L0 - Distinguish itself..
+  #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfmp"
   #define LEGACY_PROTOCOL
-  // L0 - Sent what's expected for rtcw  
   #define HEARTBEAT_GAME  "Wolfenstein-1"
   #define HEARTBEAT_DEAD  "WolfFlatline-1"
 #endif
