@@ -206,6 +206,9 @@ typedef struct botlib_import_s
 	void ( *BotClientCommand )( int client, char *command );
 	//memory allocation
 	void        *( *GetMemory )( int size );
+#ifdef _DEBUG // L0 - This fixes windows debug compile
+	void		*( *GetMemoryDebug )( unsigned long size, char *label, char *file, int line );
+#endif
 	void ( *FreeMemory )( void *ptr );
 	void ( *FreeZoneMemory )( void );
 	void        *( *HunkAlloc )( int size );

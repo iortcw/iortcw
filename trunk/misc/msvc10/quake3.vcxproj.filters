@@ -681,6 +681,15 @@
     <ClCompile Include="..\..\code\zlib\zutil.c">
       <Filter>zlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\botlib\be_aas_routetable.c">
+      <Filter>botlib\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderer\tr_cmesh.c">
+      <Filter>renderer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\renderer\tr_bloom.c">
+      <Filter>renderer\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\game\bg_public.h">
@@ -883,6 +892,9 @@
     </ClInclude>
     <ClInclude Include="..\..\code\libspeex\config.h">
       <Filter>speex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\botlib\be_aas_routetable.h">
+      <Filter>botlib\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

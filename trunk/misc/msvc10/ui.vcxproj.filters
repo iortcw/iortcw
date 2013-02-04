@@ -14,18 +14,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\game\bg_lib.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\game\bg_misc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_math.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\code\qcommon\q_shared.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\code\ui\ui_atoms.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -44,34 +32,40 @@
     <ClCompile Include="..\..\code\ui\ui_syscalls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\code\game\bg_misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\qcommon\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuildStep Include="..\..\code\game\bg_public.h">
+    <ClInclude Include="..\..\code\qcommon\q_shared.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\ui\keycodes.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\client\keycodes.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\ui\menudef.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\game\bg_public.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\game\q_shared.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\qcommon\surfaceflags.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\game\surfaceflags.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\renderer\tr_types.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\cgame\tr_types.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\ui\ui_local.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\ui\ui_local.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\ui\ui_public.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\ui\ui_public.h">
+    </ClInclude>
+    <ClInclude Include="..\..\code\ui\ui_shared.h">
       <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\..\code\ui\ui_shared.h">
-      <Filter>Header Files</Filter>
-    </CustomBuildStep>
+    </ClInclude>
   </ItemGroup>
 </Project>
