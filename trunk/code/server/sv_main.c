@@ -231,8 +231,6 @@ but not on every player enter or exit.
 ================
 */
 #define HEARTBEAT_MSEC  300 * 1000
-//#define HEARTBEAT_GAME  "Wolfenstein-1"
-//#define HEARTBEAT_DEAD  "WolfFlatline-1"         // NERVE - SMF
 
 void SV_MasterHeartbeat(const char *message)
 {
@@ -426,11 +424,21 @@ Informs all masters that this server is going down
 void SV_MasterShutdown( void ) {
 	// send a heartbeat right now
 	svs.nextHeartbeatTime = -9999;
+// L0 - Sort heartbeat for rtcw
+#ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
+#else
+	SV_MasterHeartbeat(HEARTBEAT_DEAD);
+#endif
 
 	// send it again to minimize chance of drops
 	svs.nextHeartbeatTime = -9999;
+// L0 - Sort heartbeat for rtcw
+#ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
+#else
+	SV_MasterHeartbeat(HEARTBEAT_DEAD);
+#endif
 
 	// when the master tries to poll the server, it won't respond, so
 	// it will be removed from the list
@@ -1438,7 +1446,12 @@ void SV_Frame( int msec ) {
 	SV_SendClientMessages();
 
 	// send a heartbeat to the master if needed
+// L0 - sort heartbeat for rtcw
+#ifdef STANDALONE
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
+#else
+	SV_MasterHeartbeat(HEARTBEAT_GAME);
+#endif
 }
 
 /*

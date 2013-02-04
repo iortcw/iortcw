@@ -107,7 +107,7 @@ char *Sys_DefaultHomePath( void )
 		}
 
 		// L0 - Changed from CSIDL_APPDATA -> Stores in */my Documents so it's more accessible.
-		//      Additionally homepatch was changed from rtcw to ioRTCW so they know what's all about.
+		//      Additionally homepath was changed from RTCW to ioRTCW so they know what's all about.
 		if( !SUCCEEDED( qSHGetFolderPath( NULL, CSIDL_PERSONAL,
 						NULL, 0, szPath ) ) )
 		{
