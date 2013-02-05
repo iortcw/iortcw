@@ -115,8 +115,8 @@ static int const numTeamArenaGameTypes = ARRAY_LEN( teamArenaGameTypes );
 
 static char* netnames[] = {
 	"???",
-	"UDP",
-	"UDP6"
+	"IP4",
+	"IP6"
 };
 
 //static char quake3worldMessage[] = "Visit www.quake3world.com - News, Community, Events, Files"; // TTimo: unused
