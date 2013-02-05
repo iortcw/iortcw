@@ -284,16 +284,6 @@ void IN_MP_DropWeaponUp( void ) {IN_KeyUp( &kb[KB_WBUTTONS6] );}
 void IN_Wbutton7Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS7] );    }
 void IN_Wbutton7Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS7] );  }
 
-
-
-
-//void IN_ButtonDown( void ) {
-//	IN_KeyDown( &kb[KB_BUTTONS1] );
-//}
-//void IN_ButtonUp( void ) {
-//	IN_KeyUp( &kb[KB_BUTTONS1] );
-//}
-
 void IN_CenterView( void ) {
 	qboolean ok = qtrue;
 	if ( cgvm ) {
@@ -318,10 +308,6 @@ void IN_Help( void ) {
 
 
 //==========================================================================
-
-//cvar_t  *cl_upspeed;
-//cvar_t  *cl_forwardspeed;
-//cvar_t  *cl_sidespeed;
 
 cvar_t  *cl_yawspeed;
 cvar_t  *cl_pitchspeed;
@@ -447,7 +433,7 @@ void CL_MouseEvent( int dx, int dy, int time ) {
 			VM_Call( uivm, UI_MOUSE_EVENT, dx, dy );
 		}
 
-	} else if ( Key_GetCatcher( ) & KEYCATCH_CGAME ) {
+	} else if (Key_GetCatcher( ) & KEYCATCH_CGAME) {
 		VM_Call( cgvm, CG_MOUSE_EVENT, dx, dy );
 	} else {
 		cl.mouseDx[cl.mouseIndex] += dx;
@@ -477,7 +463,7 @@ CL_JoystickMove
 void CL_JoystickMove( usercmd_t *cmd ) {
 	float anglespeed;
 
-	if ( !(kb[KB_SPEED].active ^ cl_run->integer) ) {
+	if ( !( kb[KB_SPEED].active ^ cl_run->integer ) ) {
 		cmd->buttons |= BUTTON_WALKING;
 	}
 
@@ -510,10 +496,9 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 CL_MouseMove
 =================
 */
-void CL_MouseMove( usercmd_t *cmd ) {
+void CL_MouseMove(usercmd_t *cmd)
+{
 	float mx, my;
-	float accelSensitivity;
-	float rate;
 
 	// allow mouse smoothing
 	if ( m_filter->integer ) {
@@ -527,41 +512,66 @@ void CL_MouseMove( usercmd_t *cmd ) {
 	cl.mouseDx[cl.mouseIndex] = 0;
 	cl.mouseDy[cl.mouseIndex] = 0;
 
-	rate = sqrt( mx * mx + my * my ) / (float)frame_msec;
-	accelSensitivity = cl_sensitivity->value + rate * cl_mouseAccel->value;
-
-	// scale by FOV
-	accelSensitivity *= cl.cgameSensitivity;
-
-/*	NERVE - SMF - this has moved to CG_CalcFov to fix zoomed-in/out transition movement bug
-	if ( cl.snap.ps.stats[STAT_ZOOMED_VIEW] ) {
-		if(cl.snap.ps.weapon == WP_SNIPERRIFLE) {
-			accelSensitivity *= 0.1;
-		}
-		else if(cl.snap.ps.weapon == WP_SNOOPERSCOPE) {
-			accelSensitivity *= 0.2;
-		}
-	}
-*/
-	if ( rate && cl_showMouseRate->integer ) {
-		Com_Printf( "%f : %f\n", rate, accelSensitivity );
-	}
-
-// Ridah, experimenting with a slow tracking gun
-
-	// Rafael - mg42
-	if ( cl.snap.ps.persistant[PERS_HWEAPON_USE] ) {
-		mx *= 2.5; //(accelSensitivity * 0.1);
-		my *= 2; //(accelSensitivity * 0.075);
-	} else
-	{
-		mx *= accelSensitivity;
-		my *= accelSensitivity;
-	}
-
-	if ( !mx && !my ) {
+	if (mx == 0.0f && my == 0.0f)
 		return;
+	
+	if (cl_mouseAccel->value != 0.0f)
+	{
+		if(cl_mouseAccelStyle->integer == 0)
+		{
+			float accelSensitivity;
+			float rate;
+			
+			rate = sqrt(mx * mx + my * my) / (float) frame_msec;
+
+			accelSensitivity = cl_sensitivity->value + rate * cl_mouseAccel->value;
+			mx *= accelSensitivity;
+			my *= accelSensitivity;
+			
+			if(cl_showMouseRate->integer)
+				Com_Printf("rate: %f, accelSensitivity: %f\n", rate, accelSensitivity);
+		}
+		else
+		{
+			float rate[2];
+			float power[2];
+
+			// sensitivity remains pretty much unchanged at low speeds
+			// cl_mouseAccel is a power value to how the acceleration is shaped
+			// cl_mouseAccelOffset is the rate for which the acceleration will have doubled the non accelerated amplification
+			// NOTE: decouple the config cvars for independent acceleration setup along X and Y?
+
+			rate[0] = fabs(mx) / (float) frame_msec;
+			rate[1] = fabs(my) / (float) frame_msec;
+			power[0] = powf(rate[0] / cl_mouseAccelOffset->value, cl_mouseAccel->value);
+			power[1] = powf(rate[1] / cl_mouseAccelOffset->value, cl_mouseAccel->value);
+
+			mx = cl_sensitivity->value * (mx + ((mx < 0) ? -power[0] : power[0]) * cl_mouseAccelOffset->value);
+			my = cl_sensitivity->value * (my + ((my < 0) ? -power[1] : power[1]) * cl_mouseAccelOffset->value);
+
+			if(cl_showMouseRate->integer)
+				Com_Printf("ratex: %f, ratey: %f, powx: %f, powy: %f\n", rate[0], rate[1], power[0], power[1]);
+		}
 	}
+	else
+	{
+		// Ridah, experimenting with a slow tracking gun
+
+		// Rafael - mg42
+		if ( cl.snap.ps.persistant[PERS_HWEAPON_USE] ) {
+			mx *= 2.5; //(accelSensitivity * 0.1);
+			my *= 2; //(accelSensitivity * 0.075);
+		} else
+		{
+			mx *= cl_sensitivity->value;
+			my *= cl_sensitivity->value;
+		}
+
+	}
+
+	// ingame FOV
+	mx *= cl.cgameSensitivity;
+	my *= cl.cgameSensitivity;
 
 	// add mouse X/Y movement to cmd
 	if ( kb[KB_STRAFE].active ) {
@@ -968,8 +978,8 @@ void CL_WritePacket( void ) {
 	if ( cl_showSend->integer ) {
 		Com_Printf( "%i ", buf.cursize );
 	}
-	CL_Netchan_Transmit( &clc.netchan, &buf );
 
+	CL_Netchan_Transmit( &clc.netchan, &buf );
 }
 
 /*
@@ -1100,13 +1110,13 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "+mlook", IN_MLookDown );
 	Cmd_AddCommand( "-mlook", IN_MLookUp );
 
-	//Cmd_AddCommand ("notebook",IN_Notebook);
-	Cmd_AddCommand( "help",IN_Help );
-
 #ifdef USE_VOIP
 	Cmd_AddCommand ("+voiprecord", IN_VoipRecordDown);
 	Cmd_AddCommand ("-voiprecord", IN_VoipRecordUp);
 #endif
+
+	//Cmd_AddCommand ("notebook",IN_Notebook);
+	Cmd_AddCommand( "help",IN_Help );
 
 	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );
 	cl_debugMove = Cvar_Get( "cl_debugMove", "0", 0 );
@@ -1182,7 +1192,6 @@ void CL_ShutdownInput(void)
 	Cmd_RemoveCommand("-leanleft");
 	Cmd_RemoveCommand("+leanright");
 	Cmd_RemoveCommand("-leanright");
-
 	Cmd_RemoveCommand("+dropweapon");
 	Cmd_RemoveCommand("-dropweapon");
 	Cmd_RemoveCommand("+wbutton7");
@@ -1191,12 +1200,12 @@ void CL_ShutdownInput(void)
 	Cmd_RemoveCommand("+mlook");
 	Cmd_RemoveCommand("-mlook");
 
-	Cmd_RemoveCommand("help");
-
 #ifdef USE_VOIP
 	Cmd_RemoveCommand("+voiprecord");
 	Cmd_RemoveCommand("-voiprecord");
 #endif
+
+	Cmd_RemoveCommand("help");
 }
 
 /*

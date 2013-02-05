@@ -6053,11 +6053,18 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 					return pingstr;
 				}
 			case SORT_PUNKBUSTER:
-				punkbuster = atoi( Info_ValueForKey( info, "punkbuster" ) );
-				if ( punkbuster ) {
-					return translated_yes;
+				if ( ping <= 0 ) {
+					return Info_ValueForKey( info, "addr" );
 				} else {
-					return translated_no;
+						int nettype = atoi(Info_ValueForKey(info, "nettype"));
+
+							if (nettype < 0 || nettype >= ARRAY_LEN(netnames)) {
+								nettype = 0;
+							}
+
+						Com_sprintf( hostname, sizeof( hostname ), "%s",
+									netnames[nettype] );
+						return hostname;
 				}
 			}
 		}
