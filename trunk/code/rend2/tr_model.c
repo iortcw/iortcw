@@ -1356,6 +1356,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 	md3Frame = (md3Frame_t *) ((byte *) md3Model + md3Model->ofsFrames);
 	for(i = 0; i < md3Model->numFrames; i++, frame++, md3Frame++)
 	{
+		frame->radius = LittleFloat( md3Frame->radius );
 		if ( fixRadius ) {
 			frame->radius = 256;
 			for ( j = 0 ; j < 3 ; j++ ) {
