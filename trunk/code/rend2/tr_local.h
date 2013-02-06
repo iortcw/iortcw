@@ -78,10 +78,8 @@ typedef struct {
 
 	qboolean needDlights;       // true for bmodels that touch a dlight
 	qboolean lightingCalculated;
-#ifdef REACTION
 	// JBravo: Mirrored models
 	qboolean	mirrored;		// mirrored matrix, needs reversed culling
-#endif
 	vec3_t lightDir;            // normalized direction towards light
 	vec3_t ambientLight;        // color normalized to 0-255
 	int ambientLightInt;            // 32 bit rgba packed
@@ -1828,12 +1826,6 @@ typedef struct {
 	trRefEntity_t   *currentEntity;
 	qboolean skyRenderedThisView;       // flag for drawing sun
 
-#ifdef REACTION
-	vec3_t					sunFlarePos;
-	qboolean				viewHasSunFlare;
-	qboolean                frameHasSunFlare;
-#endif
-
 	qboolean projection2D;      // if qtrue, drawstretchpic doesn't need to change modes
 	byte color2D[4];
 	qboolean vertexes2D;        // shader needs to be finished
@@ -1887,7 +1879,7 @@ typedef struct {
 	
 
 	image_t					*renderImage;
-	image_t					*godRaysImage;
+	image_t					*sunRaysImage;
 	image_t					*renderDepthImage;
 	image_t					*pshadowMaps[MAX_DRAWN_PSHADOWS];
 	image_t					*textureScratchImage[2];
@@ -1905,7 +1897,7 @@ typedef struct {
 
 	FBO_t					*renderFbo;
 	FBO_t					*msaaResolveFbo;
-	FBO_t					*godRaysFbo;
+	FBO_t					*sunRaysFbo;
 	FBO_t					*depthFbo;
 	FBO_t					*pshadowFbos[MAX_DRAWN_PSHADOWS];
 	FBO_t					*textureScratchFbo[2];
@@ -1926,7 +1918,8 @@ typedef struct {
 	shader_t                *flareShader;
 	char                    *sunShaderName;
 	shader_t                *sunShader;
-	shader_t                *sunflareShader[6];  //----(SA) for the camera lens flare effect for sun
+	shader_t		*sunFlareShader;
+	shader_t                *sunflareShader_old[6];  //----(SA) for the camera lens flare effect for sun
 
 	int numLightmaps;
 	int						lightmapSize;
@@ -2025,11 +2018,9 @@ typedef struct {
 	int numSkins;
 	skin_t                  *skins[MAX_SKINS];
 
-#ifdef REACTION
 	GLuint					sunFlareQuery[2];
 	int						sunFlareQueryIndex;
 	qboolean				sunFlareQueryActive[2];
-#endif
 
 	float sinTable[FUNCTABLE_SIZE];
 	float squareTable[FUNCTABLE_SIZE];
@@ -2230,6 +2221,7 @@ extern  cvar_t  *r_forceSun;
 extern  cvar_t  *r_forceSunMapLightScale;
 extern  cvar_t  *r_forceSunLightScale;
 extern  cvar_t  *r_forceSunAmbientScale;
+extern  cvar_t  *r_drawSunRays;
 extern  cvar_t  *r_sunShadows;
 extern  cvar_t  *r_shadowFilter;
 extern  cvar_t  *r_shadowMapSize;
@@ -2607,7 +2599,7 @@ SKIES
 void R_BuildCloudData( shaderCommands_t *shader );
 void R_InitSkyTexCoords( float cloudLayerHeight );
 void R_DrawSkyBox( shaderCommands_t *shader );
-void RB_DrawSun( void );
+void RB_DrawSun( float scale, shader_t *shader );
 void RB_ClipSkyPolygons( shaderCommands_t *shader );
 
 /*
