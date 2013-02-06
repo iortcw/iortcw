@@ -5998,7 +5998,7 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 		return UI_SelectedMap( index, &actual );
 	} else if ( feederID == FEEDER_SERVERS ) {
 		if ( index >= 0 && index < uiInfo.serverStatus.numDisplayServers ) {
-			int ping, game, antilag;
+			int ping, game, punkbuster, antilag;
 			if ( lastColumn != column || lastTime > uiInfo.uiDC.realTime + 5000 ) {
 				trap_LAN_GetServerInfo(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
 				lastColumn = column;
@@ -6015,20 +6015,16 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 				if ( ping <= 0 ) {
 					return Info_ValueForKey( info, "addr" );
 				} else {
-					if ( ui_netSource.integer == UIAS_LOCAL ) {
-						int nettype = atoi(Info_ValueForKey(info, "nettype"));
+					int nettype = atoi(Info_ValueForKey(info, "nettype"));
 
-							if (nettype < 0 || nettype >= ARRAY_LEN(netnames)) {
-								nettype = 0;
-							}
+						if (nettype < 0 || nettype >= ARRAY_LEN(netnames)) {
+							nettype = 0;
+						}
 
-						Com_sprintf( hostname, sizeof( hostname ), "%s [%s]",
-									 Info_ValueForKey( info, "hostname" ),
-									netnames[nettype] );
-						return hostname;
-					} else {
-						return Info_ValueForKey( info, "hostname" );
-					}
+					Com_sprintf( hostname, sizeof( hostname ), "%s ^7[^3%s^7]",
+						Info_ValueForKey( info, "hostname" ),
+						netnames[nettype] );
+					return hostname;
 				}
 			case SORT_MAP: return Info_ValueForKey( info, "mapname" );
 			case SORT_CLIENTS:
@@ -6053,18 +6049,11 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 					return pingstr;
 				}
 			case SORT_PUNKBUSTER:
-				if ( ping <= 0 ) {
-					return Info_ValueForKey( info, "addr" );
+				punkbuster = atoi( Info_ValueForKey( info, "punkbuster" ) );
+				if ( punkbuster ) {
+					return translated_yes;
 				} else {
-						int nettype = atoi(Info_ValueForKey(info, "nettype"));
-
-							if (nettype < 0 || nettype >= ARRAY_LEN(netnames)) {
-								nettype = 0;
-							}
-
-						Com_sprintf( hostname, sizeof( hostname ), "%s",
-									netnames[nettype] );
-						return hostname;
+					return translated_no;
 				}
 			}
 		}
@@ -6943,7 +6932,7 @@ void _UI_Init( qboolean inGameLoad ) {
 
 	// init Yes/No once for cl_language -> server browser (punkbuster)
 	Q_strncpyz( translated_yes, DC->translateString( "Yes" ), sizeof( translated_yes ) );
-	Q_strncpyz( translated_no, DC->translateString( "NO" ), sizeof( translated_no ) );
+	Q_strncpyz( translated_no, DC->translateString( "No" ), sizeof( translated_no ) );
 }
 
 
