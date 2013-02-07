@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 // tr_cmesh.c: compressed triangle model functions
 //
 // This is ripped from tr_mesh.c, and converted to use the compressed mesh format
-
+#if 0
 #include "tr_local.h"
 
 static float ProjectRadius( float r, vec3_t location ) {
@@ -453,4 +453,4 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 	}
 
 }
-
+#endif

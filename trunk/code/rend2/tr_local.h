@@ -1615,10 +1615,10 @@ typedef struct model_s {
 
 	int dataSize;                   // just for listing purposes
 	bmodel_t    *bmodel;            // only if type == MOD_BRUSH
-	md3Header_t *md3[MD3_MAX_LODS]; // only if type == MOD_MESH
+	//md3Header_t *md3[MD3_MAX_LODS]; // only if type == MOD_MESH
 	mdvModel_t	*mdv[MD3_MAX_LODS];	// only if type == MOD_MESH
 	mdsHeader_t *mds;               // only if type == MOD_MDS
-	mdcHeader_t *mdc[MD3_MAX_LODS]; // only if type == MOD_MDC
+	//mdcHeader_t *mdc[MD3_MAX_LODS]; // only if type == MOD_MDC
 	void	*modelData;		// only if type == (MOD_MD4 | MOD_MDR | MOD_IQM)
 
 	int numLods;
