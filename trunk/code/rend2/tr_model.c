@@ -33,12 +33,12 @@ If you have questions concerning this license or the applicable additional terms
 #define LL( x ) x = LittleLong( x )
 
 // Ridah
-static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *mod_name );
+static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modName );
 // done.
-static qboolean R_LoadMD3(model_t *mod, int lod, void *buffer, int bufferSize, const char *modName);
-static qboolean R_LoadMDS( model_t *mod, void *buffer, const char *name );
+static qboolean R_LoadMD3( model_t *mod, int lod, void *buffer, const char *modName );
+static qboolean R_LoadMDS( model_t *mod, void *buffer, const char *mod_name );
 #ifdef RAVENMD4
-static qboolean R_LoadMDR(model_t *mod, void *buffer, int filesize, const char *name );
+static qboolean R_LoadMDR( model_t *mod, void *buffer, int filesize, const char *mod_name );
 #endif
 
 extern cvar_t *r_compressModels;
@@ -116,18 +116,7 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 			}
 
 			if (ident == MD3_IDENT) {
-				loaded = R_LoadMD3(mod, lod, buf.u, size, name);
-#if 0
-				if ( r_compressModels->integer && r_exportCompressedModels->integer && mod->mdc[lod] ) {
-					// save it out
-					filename[strlen( filename ) - 1] = 'c';
-					ri.FS_WriteFile( filename, mod->mdc[lod], mod->mdc[lod]->ofsEnd );
-					// if building, open the file so it gets copied
-					if ( r_buildScript->integer ) {
-						ri.FS_ReadFile( filename, NULL );
-					}
-				}
-#endif
+				loaded = R_LoadMD3(mod, lod, buf.u, name);
 			} else if (ident == MDC_IDENT) {
 				loaded = R_LoadMDC( mod, lod, buf.u, name );
 			}
@@ -308,211 +297,6 @@ model_t *R_AllocModel( void ) {
 
 	return mod;
 }
-
-/*
-====================
-RE_RegisterModel
-
-Loads in a model for the given name
-
-Zero will be returned if the model fails to load.
-An entry will be retained for failed models as an
-optimization to prevent disk rescanning if they are
-asked for again.
-====================
-
-qhandle_t RE_RegisterModel( const char *name ) {
-	model_t     *mod;
-	unsigned    *buf;
-	int lod;
-	int ident = 0;         // TTimo: init
-	qboolean loaded;
-	qhandle_t hModel;
-	int numLoaded;
-
-	if ( !name || !name[0] ) {
-		// Ridah, disabled this, we can see models that can't be found because they won't be there
-		//ri.Printf( PRINT_ALL, "RE_RegisterModel: NULL name\n" );
-		return 0;
-	}
-
-	if ( strlen( name ) >= MAX_QPATH ) {
-		Com_Printf( "Model name exceeds MAX_QPATH\n" );
-		return 0;
-	}
-
-	// Ridah, caching
-	if ( r_cacheGathering->integer ) {
-		ri.Cmd_ExecuteText( EXEC_NOW, va( "cache_usedfile model %s\n", name ) );
-	}
-
-	//
-	// search the currently loaded models
-	//
-	for ( hModel = 1 ; hModel < tr.numModels; hModel++ ) {
-		mod = tr.models[hModel];
-		if ( !Q_stricmp( mod->name, name ) ) {
-			if ( mod->type == MOD_BAD ) {
-				return 0;
-			}
-			return hModel;
-		}
-	}
-
-	// allocate a new model_t
-
-	if ( ( mod = R_AllocModel() ) == NULL ) {
-		ri.Printf( PRINT_WARNING, "RE_RegisterModel: R_AllocModel() failed for '%s'\n", name );
-		return 0;
-	}
-
-	// only set the name after the model has been successfully loaded
-	Q_strncpyz( mod->name, name, sizeof( mod->name ) );
-
-
-	// make sure the render thread is stopped
-	R_SyncRenderThread();
-
-	// Ridah, look for it cached
-	if ( R_FindCachedModel( name, mod ) ) {
-		return mod->index;
-	}
-	// done.
-
-	mod->numLods = 0;
-
-	//
-	// load the files
-	//
-	numLoaded = 0;
-
-	if ( strstr( name, ".mds" ) ) {  // try loading skeletal file
-		loaded = qfalse;
-		ri.FS_ReadFile( name, (void **)&buf );
-		if ( buf ) {
-			loadmodel = mod;
-
-			ident = LittleLong( *(unsigned *)buf );
-			if ( ident == MDS_IDENT ) {
-				loaded = R_LoadMDS( mod, buf, name );
-			}
-
-			ri.FS_FreeFile( buf );
-		}
-
-		if ( loaded ) {
-			return mod->index;
-		}
-	}
-
-	for ( lod = MD3_MAX_LODS - 1 ; lod >= 0 ; lod-- ) {
-		char filename[1024];
-
-		strcpy( filename, name );
-
-		if ( lod != 0 ) {
-			char namebuf[80];
-
-			if ( strrchr( filename, '.' ) ) {
-				*strrchr( filename, '.' ) = 0;
-			}
-			sprintf( namebuf, "_%d.md3", lod );
-			strcat( filename, namebuf );
-		}
-
-		if ( r_compressModels->integer ) {
-			filename[strlen( filename ) - 1] = '3';  // try MD3 first
-		} else {
-			filename[strlen( filename ) - 1] = 'c';  // try MDC first
-		}
-		ri.FS_ReadFile( filename, (void **)&buf );
-
-		if ( !buf ) {
-			if ( r_compressModels->integer ) {
-				filename[strlen( filename ) - 1] = 'c';  // try MDC second
-			} else {
-				filename[strlen( filename ) - 1] = '3';  // try MD3 second
-			}
-			ri.FS_ReadFile( filename, (void **)&buf );
-			if ( !buf ) {
-				continue;
-			}
-		}
-
-		loadmodel = mod;
-
-		ident = LittleLong( *(unsigned *)buf );
-		// Ridah, mesh compression
-		if ( ident != MD3_IDENT && ident != MDC_IDENT ) {
-			ri.Printf( PRINT_WARNING,"RE_RegisterModel: unknown fileid for %s\n", name );
-			goto fail;
-		}
-
-		if ( ident == MD3_IDENT ) {
-			loaded = R_LoadMD3( mod, lod, buf, name );
-			if ( r_compressModels->integer && r_exportCompressedModels->integer && mod->mdc[lod] ) {
-				// save it out
-				filename[strlen( filename ) - 1] = 'c';
-				ri.FS_WriteFile( filename, mod->mdc[lod], mod->mdc[lod]->ofsEnd );
-				// if building, open the file so it gets copied
-				if ( r_buildScript->integer ) {
-					ri.FS_ReadFile( filename, NULL );
-				}
-			}
-		} else {
-			loaded = R_LoadMDC( mod, lod, buf, name );
-		}
-		// done.
-
-		ri.FS_FreeFile( buf );
-
-		if ( !loaded ) {
-			if ( lod == 0 ) {
-				goto fail;
-			} else {
-				break;
-			}
-		} else {
-			mod->numLods++;
-			numLoaded++;
-			// if we have a valid model and are biased
-			// so that we won't see any higher detail ones,
-			// stop loading them
-			if ( lod <= r_lodbias->integer ) {
-				break;
-			}
-		}
-	}
-
-
-	if ( numLoaded ) {
-		// duplicate into higher lod spots that weren't
-		// loaded, in case the user changes r_lodbias on the fly
-		for ( lod-- ; lod >= 0 ; lod-- ) {
-			mod->numLods++;
-			// Ridah, mesh compression
-			//	this check for mod->md3[0] could leave mod->md3[0] == 0x0000000 if r_lodbias is set to anything except '0'
-			//	which causes trouble in tr_mesh.c in R_AddMD3Surfaces() and other locations since it checks md3[0]
-			//	for various things.
-			if ( ident == MD3_IDENT ) { //----(SA)	modified
-//			if (mod->md3[0])		//----(SA)	end
-				mod->md3[lod] = mod->md3[lod + 1];
-			} else {
-				mod->mdc[lod] = mod->mdc[lod + 1];
-			}
-			// done.
-		}
-
-		return mod->index;
-	}
-
-fail:
-	// we still keep the model_t around, so if the model name is asked for
-	// again, we won't bother scanning the filesystem
-	mod->type = MOD_BAD;
-	return 0;
-}
-*/
 
 /*
 ====================
@@ -729,13 +513,7 @@ unsigned char R_MDC_GetAnorm( const vec3_t dir ) {
 		if ( this_norm[2] != group_val ) {
 			break; // done checking the group
 		}
-/*
-		if (	(this_norm[0] < 0 && dir[0] > 0)
-			||	(this_norm[0] > 0 && dir[0] < 0)
-			||	(this_norm[1] < 0 && dir[1] > 0)
-			||	(this_norm[1] > 0 && dir[1] < 0))
-			continue;
-*/
+
 		diff = DotProduct( dir, this_norm );
 
 		if ( diff > best_diff ) {
@@ -772,302 +550,6 @@ qboolean R_MDC_EncodeXyzCompressed( const vec3_t vec, const vec3_t normal, mdcXy
 	*out = retval;
 	return qtrue;
 }
-
-/*
-=================
-R_MDC_DecodeXyzCompressed
-=================
-*/
-#if 0   // unoptimized version, used for finding right settings
-void R_MDC_DecodeXyzCompressed( mdcXyzCompressed_t *xyzComp, vec3_t out, vec3_t normal ) {
-	int i;
-
-	for ( i = 0; i < 3; i++ ) {
-		out[i] = ( (float)( ( xyzComp->ofsVec >> ( i * MDC_BITS_PER_AXIS ) ) & ( ( 1 << MDC_BITS_PER_AXIS ) - 1 ) ) - MDC_MAX_OFS ) * MDC_DIST_SCALE;
-	}
-	R_MDC_GetVec( ( unsigned char )( xyzComp->ofsVec >> 24 ), normal );
-}
-#endif
-
-/*
-=================
-R_MDC_GetXyzCompressed
-=================
-*/
-static qboolean R_MDC_GetXyzCompressed( md3Header_t *md3, md3XyzNormal_t *newXyz, vec3_t oldPos, mdcXyzCompressed_t *out, qboolean verify ) {
-	vec3_t newPos, vec;
-	int i;
-	vec3_t pos, dir, norm, outnorm;
-
-	for ( i = 0; i < 3; i++ ) {
-		newPos[i] = (float)newXyz->xyz[i] * MD3_XYZ_SCALE;
-	}
-
-	VectorSubtract( newPos, oldPos, vec );
-	R_LatLongToNormal( norm, newXyz->normal );
-	if ( !R_MDC_EncodeXyzCompressed( vec, norm, out ) ) {
-		return qfalse;
-	}
-
-	// calculate the uncompressed position
-	R_MDC_DecodeXyzCompressed( out->ofsVec, dir, outnorm );
-	VectorAdd( oldPos, dir, pos );
-
-	if ( verify ) {
-		if ( Distance( newPos, pos ) > MDC_MAX_ERROR ) {
-			return qfalse;
-		}
-	}
-
-	return qtrue;
-}
-
-
-/*
-=================
-R_MDC_CompressSurfaceFrame
-=================
-*/
-static qboolean R_MDC_CompressSurfaceFrame( md3Header_t *md3, md3Surface_t *surf, int frame, int lastBaseFrame, mdcXyzCompressed_t *out ) {
-	int i, j;
-	md3XyzNormal_t  *xyz, *baseXyz;
-	vec3_t oldPos;
-
-	xyz = ( md3XyzNormal_t * )( (byte *)surf + surf->ofsXyzNormals );
-	baseXyz = xyz + ( lastBaseFrame * surf->numVerts );
-	xyz += ( frame * surf->numVerts );
-
-	for ( i = 0; i < surf->numVerts; i++ ) {
-		for ( j = 0; j < 3; j++ ) {
-			oldPos[j] = (float)baseXyz[i].xyz[j] * MD3_XYZ_SCALE;
-		}
-		if ( !R_MDC_GetXyzCompressed( md3, &xyz[i], oldPos, &out[i], qtrue ) ) {
-			return qfalse;
-		}
-	}
-
-	return qtrue;
-}
-
-/*
-=================
-R_MDC_CanCompressSurfaceFrame
-=================
-*/
-static qboolean R_MDC_CanCompressSurfaceFrame( md3Header_t *md3, md3Surface_t *surf, int frame, int lastBaseFrame ) {
-	int i, j;
-	md3XyzNormal_t  *xyz, *baseXyz;
-	mdcXyzCompressed_t xyzComp;
-	vec3_t oldPos;
-
-	xyz = ( md3XyzNormal_t * )( (byte *)surf + surf->ofsXyzNormals );
-	baseXyz = xyz + ( lastBaseFrame * surf->numVerts );
-	xyz += ( frame * surf->numVerts );
-
-	for ( i = 0; i < surf->numVerts; i++ ) {
-		for ( j = 0; j < 3; j++ ) {
-			oldPos[j] = (float)baseXyz[i].xyz[j] * MD3_XYZ_SCALE;
-		}
-		if ( !R_MDC_GetXyzCompressed( md3, &xyz[i], oldPos, &xyzComp, qtrue ) ) {
-			return qfalse;
-		}
-	}
-
-	return qtrue;
-}
-
-/*
-=================
-R_MD3toMDC
-
-  Converts a model_t from md3 to mdc format
-=================
-*/
-#if 0
-static qboolean R_MDC_ConvertMD3( model_t *mod, int lod, const char *mod_name ) {
-	int i, j, f, c, k;
-	md3Surface_t        *surf;
-	md3Header_t         *md3;
-	int                 *baseFrames;
-	int numBaseFrames;
-
-	qboolean foundBase;
-
-	mdcHeader_t         *mdc, mdcHeader;
-	mdcSurface_t        *cSurf;
-	short               *frameBaseFrames, *frameCompFrames;
-
-	mdcTag_t            *mdcTag;
-	md3Tag_t            *md3Tag;
-
-	vec3_t axis[3], angles;
-	float ftemp;
-
-	md3 = mod->md3[lod];
-
-	baseFrames = ri.Hunk_AllocateTempMemory( sizeof( *baseFrames ) * md3->numFrames );
-
-	// the first frame is always a base frame
-	numBaseFrames = 0;
-	memset( baseFrames, 0, sizeof( *baseFrames ) * md3->numFrames );
-	baseFrames[numBaseFrames++] = 0;
-
-	// first calculate how many baseframes we need, and which frames they are on
-	// we need to treat the entire model as a single surface, if we compress some surfaces, and not others,
-	// we may get tearing between surfaces
-
-	for ( f = 1; f < md3->numFrames; f++ ) {
-
-		surf = ( md3Surface_t * )( (byte *)md3 + md3->ofsSurfaces );
-		foundBase = qfalse;
-		for ( i = 0 ; i < md3->numSurfaces ; i++ ) {
-
-			// process the verts in this surface, checking to see if the compressed
-			// version will be close enough to the actual vert
-			if ( !foundBase && !R_MDC_CanCompressSurfaceFrame( md3, surf, f, baseFrames[numBaseFrames - 1] ) ) {
-				baseFrames[numBaseFrames++] = f;
-				foundBase = qtrue;
-			}
-
-			// find the next surface
-			surf = ( md3Surface_t * )( (byte *)surf + surf->ofsEnd );
-		}
-
-	}
-
-	// success, so fill in the necessary data to the model_t
-	mdcHeader.ident = MDC_IDENT;
-	mdcHeader.version = MDC_VERSION;
-	Q_strncpyz( mdcHeader.name, md3->name, sizeof( mdcHeader.name ) );
-	mdcHeader.flags = md3->flags;
-	mdcHeader.numFrames = md3->numFrames;
-	mdcHeader.numTags = md3->numTags;
-	mdcHeader.numSurfaces = md3->numSurfaces;
-	mdcHeader.numSkins = md3->numSkins;
-	mdcHeader.ofsFrames = sizeof( mdcHeader_t );
-	mdcHeader.ofsTagNames = mdcHeader.ofsFrames + mdcHeader.numFrames * sizeof( md3Frame_t );
-	mdcHeader.ofsTags = mdcHeader.ofsTagNames + mdcHeader.numTags * sizeof( mdcTagName_t );
-	mdcHeader.ofsSurfaces = mdcHeader.ofsTags + mdcHeader.numTags * mdcHeader.numFrames * sizeof( mdcTag_t );
-	mdcHeader.ofsEnd = mdcHeader.ofsSurfaces;
-
-	surf = ( md3Surface_t * )( (byte *)md3 + md3->ofsSurfaces );
-	for ( f = 0; f < md3->numSurfaces; f++ ) {
-		mdcHeader.ofsEnd += sizeof( mdcSurface_t )
-							+ surf->numShaders * sizeof( md3Shader_t )
-							+ surf->numTriangles * sizeof( md3Triangle_t )
-							+ surf->numVerts * sizeof( md3St_t )
-							+ surf->numVerts * numBaseFrames * sizeof( md3XyzNormal_t )
-							+ surf->numVerts * ( md3->numFrames - numBaseFrames ) * sizeof( mdcXyzCompressed_t )
-							+ sizeof( short ) * md3->numFrames
-							+ sizeof( short ) * md3->numFrames;
-
-		surf = ( md3Surface_t * )( (byte *)surf + surf->ofsEnd );
-	}
-
-	// report the memory differences
-	Com_Printf( "Compressed %s. Old = %i, New = %i\n", mod_name, md3->ofsEnd, mdcHeader.ofsEnd );
-
-	mdc = ri.Hunk_Alloc( mdcHeader.ofsEnd, h_low );
-	mod->mdc[lod] = mdc;
-
-	// we have the memory allocated, so lets fill it in
-
-	// header info
-	*mdc = mdcHeader;
-	// frames
-	memcpy( ( md3Frame_t * )( (byte *)mdc + mdc->ofsFrames ), ( md3Frame_t * )( (byte *)md3 + md3->ofsFrames ), mdcHeader.numFrames * sizeof( md3Frame_t ) );
-	// tag names
-	for ( j = 0; j < md3->numTags; j++ ) {
-		memcpy( ( mdcTagName_t * )( (byte *)mdc + mdc->ofsTagNames ) + j, ( ( md3Tag_t * )( (byte *)md3 + md3->ofsTags ) + j )->name, sizeof( mdcTagName_t ) );
-	}
-	// tags
-	mdcTag = ( ( mdcTag_t * )( (byte *)mdc + mdc->ofsTags ) );
-	md3Tag = ( ( md3Tag_t * )( (byte *)md3 + md3->ofsTags ) );
-	for ( f = 0; f < md3->numFrames; f++ ) {
-		for ( j = 0; j < md3->numTags; j++, mdcTag++, md3Tag++ ) {
-			for ( k = 0; k < 3; k++ ) {
-				// origin
-				ftemp = md3Tag->origin[k] / MD3_XYZ_SCALE;
-				mdcTag->xyz[k] = (short)ftemp;
-				// axis
-				VectorCopy( md3Tag->axis[k], axis[k] );
-			}
-			// convert the axis to angles
-			AxisToAngles( axis, angles );
-			// copy them into the new tag
-			for ( k = 0; k < 3; k++ ) {
-				mdcTag->angles[k] = angles[k] / MDC_TAG_ANGLE_SCALE;
-			}
-		}
-	}
-	// surfaces
-	surf = ( md3Surface_t * )( (byte *)md3 + md3->ofsSurfaces );
-	cSurf = ( mdcSurface_t * )( (byte *)mdc + mdc->ofsSurfaces );
-	for ( j = 0 ; j < md3->numSurfaces ; j++ ) {
-
-		cSurf->ident = SF_MDC;
-		Q_strncpyz( cSurf->name, surf->name, sizeof( cSurf->name ) );
-		cSurf->flags = surf->flags;
-		cSurf->numCompFrames = ( mdc->numFrames - numBaseFrames );
-		cSurf->numBaseFrames = numBaseFrames;
-		cSurf->numShaders = surf->numShaders;
-		cSurf->numVerts = surf->numVerts;
-		cSurf->numTriangles = surf->numTriangles;
-		cSurf->ofsTriangles = sizeof( mdcSurface_t );
-		cSurf->ofsShaders = cSurf->ofsTriangles + cSurf->numTriangles * sizeof( md3Triangle_t );
-		cSurf->ofsSt = cSurf->ofsShaders + cSurf->numShaders * sizeof( md3Shader_t );
-		cSurf->ofsXyzNormals = cSurf->ofsSt + cSurf->numVerts * sizeof( md3St_t );
-		cSurf->ofsXyzCompressed = cSurf->ofsXyzNormals + cSurf->numVerts * numBaseFrames * sizeof( md3XyzNormal_t );
-		cSurf->ofsFrameBaseFrames = cSurf->ofsXyzCompressed + cSurf->numVerts * ( mdc->numFrames - numBaseFrames ) * sizeof( mdcXyzCompressed_t );
-		cSurf->ofsFrameCompFrames = cSurf->ofsFrameBaseFrames + mdc->numFrames * sizeof( short );
-		cSurf->ofsEnd = cSurf->ofsFrameCompFrames + mdc->numFrames * sizeof( short );
-
-		// triangles
-		memcpy( (byte *)cSurf + cSurf->ofsTriangles, (byte *)surf + surf->ofsTriangles, cSurf->numTriangles * sizeof( md3Triangle_t ) );
-		// shaders
-		memcpy( (byte *)cSurf + cSurf->ofsShaders, (byte *)surf + surf->ofsShaders, cSurf->numShaders * sizeof( md3Shader_t ) );
-		// st
-		memcpy( (byte *)cSurf + cSurf->ofsSt, (byte *)surf + surf->ofsSt, cSurf->numVerts * sizeof( md3St_t ) );
-
-		// rest
-		frameBaseFrames = ( short * )( (byte *)cSurf + cSurf->ofsFrameBaseFrames );
-		frameCompFrames = ( short * )( (byte *)cSurf + cSurf->ofsFrameCompFrames );
-		for ( f = 0, i = 0, c = 0; f < md3->numFrames; f++ ) {
-			if ( i < numBaseFrames && f == baseFrames[i] ) {
-				// copy this baseFrame from the md3
-				memcpy( (byte *)cSurf + cSurf->ofsXyzNormals + ( sizeof( md3XyzNormal_t ) * cSurf->numVerts * i ),
-						(byte *)surf + surf->ofsXyzNormals + ( sizeof( md3XyzNormal_t ) * cSurf->numVerts * f ),
-						sizeof( md3XyzNormal_t ) * cSurf->numVerts );
-				i++;
-				frameCompFrames[f] = -1;
-				frameBaseFrames[f] = i - 1;
-			} else {
-				if ( !R_MDC_CompressSurfaceFrame( md3, surf, f, baseFrames[i - 1], ( mdcXyzCompressed_t * )( (byte *)cSurf + cSurf->ofsXyzCompressed + sizeof( mdcXyzCompressed_t ) * cSurf->numVerts * c ) ) ) {
-					ri.Error( ERR_DROP, "R_MDC_ConvertMD3: tried to compress an unsuitable frame\n" );
-				}
-				frameCompFrames[f] = c;
-				frameBaseFrames[f] = i - 1;
-				c++;
-			}
-		}
-
-		// find the next surface
-		surf = ( md3Surface_t * )( (byte *)surf + surf->ofsEnd );
-		cSurf = ( mdcSurface_t * )( (byte *)cSurf + cSurf->ofsEnd );
-	}
-
-	mod->type = MOD_MDC;
-
-	// free allocated memory
-	ri.Hunk_FreeTempMemory( baseFrames );
-
-	// kill the md3 memory
-	ri.Hunk_FreeTempMemory( md3 );
-	mod->md3[lod] = NULL;
-
-	return qtrue;
-}
-#endif
 
 /*
 =================
@@ -1346,10 +828,6 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 				lat *= (FUNCTABLE_SIZE/256);
 				lng *= (FUNCTABLE_SIZE/256);
 
-				// decode X as cos( lat ) * sin( long )
-				// decode Y as sin( lat ) * sin( long )
-				// decode Z as cos( long )
-
 				v->normal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
 				v->normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
 				v->normal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
@@ -1373,55 +851,7 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 					vec3_t ofsVec;
 					R_MDC_DecodeXyzCompressed( mdcxyzComp->ofsVec, ofsVec, v->normal );
 					VectorAdd( v->xyz, ofsVec, v->xyz );
-#if 0
-					// decode MDC position offset
-					v->xyz[0] += ((signed)((mdcxyzComp->ofsVec      ) & 0xff) - 0x7F) * 0.05f;
-					v->xyz[1] += ((signed)((mdcxyzComp->ofsVec >> 8 ) & 0xff) - 0x7F) * 0.05f;
-					v->xyz[2] += ((signed)((mdcxyzComp->ofsVec >> 16) & 0xff) - 0x7F) * 0.05f;
-					
-					{
-						// Decode MDC byte normal
-						float lat, lng;
-						float x, y, z;
-						int flipZ;
-						int iLatRange;
-						int iLat, iLng;
 
-						// Values >= 144 flip the z value, and indicate a longitude of at least 2pi/32.
-						iLat = mdcxyzComp->ofsVec >> 24;
-						flipZ = 1;
-						if (iLat >= 144)
-						{
-							iLat -= 112;
-							flipZ = 0;
-						}
-
-						// Determine the latitude range
-						// Longitude range is always 32
-						//
-						// MDC uses a shrinking range of values for latitude, starting with 32 for
-						// longitude 0, latitude range decreasing linearly by 4 for each increase 
-						// of 2pi/32 of longitude.
-						iLatRange = 32;
-						iLng = 0;
-						while (iLat >= iLatRange)
-						{
-							iLat -= iLatRange;
-							iLatRange -= 4;
-							iLng++;
-						}
-							
-						lat = (float)(iLat) / (float)(iLatRange) * 2.0f * M_PI;
-						lng = (float)(iLng) / 32.0f              * 2.0f * M_PI;
-						
-						x = cos(lat) * cos(lng);
-						y = sin(lat) * cos(lng);
-						z = sin(lng);
-						
-						if (flipZ)
-							z = -z;	
-					}
-#endif
 				}
 			}
 		}
@@ -1620,7 +1050,7 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 R_LoadMD3
 =================
 */
-static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, const char *modName)
+static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, const char *modName)
 {
 	int             f, i, j, k;
  
@@ -1854,9 +1284,7 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 			lat *= (FUNCTABLE_SIZE/256);
 			lng *= (FUNCTABLE_SIZE/256);
 
-			// decode X as cos( lat ) * sin( long )
-			// decode Y as sin( lat ) * sin( long )
-			// decode Z as cos( long )
+
 
 			v->normal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
 			v->normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
@@ -2057,12 +1485,6 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, int bufferSize, 
 			vboSurf->ibo = R_CreateIBO2(va("staticMD3Mesh_IBO %s", surf->name), surf->numTriangles, surf->triangles, VBO_USAGE_STATIC);
 		}
 	}
-
-	// Ridah, convert to compressed format
-	if ( r_compressModels->integer ) {
-		//R_MDC_ConvertMD3( mod, lod, modName );
-	}
-	// done.
 
 	return qtrue;
 }
@@ -2674,45 +2096,10 @@ void R_Modellist_f( void ) {
 	}
 	ri.Printf( PRINT_ALL, "%8i : Total models\n", total );
 
-#if 0       // not working right with new hunk
-	if ( tr.world ) {
-		ri.Printf( PRINT_ALL, "\n%8i : %s\n", tr.world->dataSize, tr.world->name );
-	}
-#endif
 }
 
 
 //=============================================================================
-
-
-/*
-================
-R_GetTag
-================
-
-static mdvTag_t *R_GetTag( mdvModel_t *mod, int frame, const char *_tagName ) {
-	int             i;
-	mdvTag_t       *tag;
-	mdvTagName_t   *tagName;
-
-	if ( frame >= mod->numFrames ) {
-		// it is possible to have a bad frame while changing models, so don't error
-		frame = mod->numFrames - 1;
-	}
-
-	tag = mod->tags + frame * mod->numTags;
-	tagName = mod->tagNames;
-	for(i = 0; i < mod->numTags; i++, tag++, tagName++)
-	{
-		if(!strcmp(tagName->name, _tagName))
-		{
-			return tag;
-		}
-	}
-
-	return NULL;
-}
-*/
 
 /*
 ================
@@ -2752,85 +2139,6 @@ static int R_GetTag(mdvModel_t * model, int frame, const char *_tagName, int sta
 	*outTag = NULL;
 	return -1;
 }
-
-
-/*
-================
-R_GetMDCTag
-================
-*/
-static int R_GetMDCTag( byte *mod, int frame, const char *tagName, int startTagIndex, mdcTag_t **outTag ) {
-	mdcTag_t        *tag;
-	mdcTagName_t    *pTagName;
-	int i;
-	mdcHeader_t     *mdc;
-
-	mdc = (mdcHeader_t *) mod;
-
-	if ( frame >= mdc->numFrames ) {
-		// it is possible to have a bad frame while changing models, so don't error
-		frame = mdc->numFrames - 1;
-	}
-
-	if ( startTagIndex > mdc->numTags ) {
-		*outTag = NULL;
-		return -1;
-	}
-
-	pTagName = ( mdcTagName_t * )( (byte *)mod + mdc->ofsTagNames );
-	for ( i = 0 ; i < mdc->numTags ; i++, pTagName++ ) {
-		if ( ( i >= startTagIndex ) && !strcmp( pTagName->name, tagName ) ) {
-			break;  // found it
-		}
-	}
-
-	if ( i >= mdc->numTags ) {
-		*outTag = NULL;
-		return -1;
-	}
-
-	tag = ( mdcTag_t * )( (byte *)mod + mdc->ofsTags ) + frame * mdc->numTags + i;
-	*outTag = tag;
-	return i;
-}
-
-/*
-================
-R_GetMDSTag
-================
-*/
-/*
-// TTimo: unused
-static int R_GetMDSTag( byte *mod, const char *tagName, int startTagIndex, mdsTag_t **outTag ) {
-	mdsTag_t		*tag;
-	int				i;
-	mdsHeader_t		*mds;
-
-	mds = (mdsHeader_t *) mod;
-
-	if (startTagIndex > mds->numTags) {
-		*outTag = NULL;
-		return -1;
-	}
-
-	tag = (mdsTag_t *)((byte *)mod + mds->ofsTags);
-	for ( i = 0 ; i < mds->numTags ; i++ ) {
-		if ( (i >= startTagIndex) && !strcmp( tag->name, tagName ) ) {
-			break;	// found it
-		}
-
-		tag = (mdsTag_t *) ((byte *)tag + sizeof(mdsTag_t) - sizeof(mdsBoneFrameCompressed_t) + mds->numFrames * sizeof(mdsBoneFrameCompressed_t) );
-	}
-
-	if (i >= mds->numTags) {
-		*outTag = NULL;
-		return -1;
-	}
-
-	*outTag = tag;
-	return i;
-}
-*/
 
 #ifdef RAVENMD4
 void R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, md3Tag_t * dest) 
@@ -2890,11 +2198,9 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 #ifdef RAVENMD4
 	md3Tag_t	start_space, end_space;
 #endif
-	mdvTag_t ustart, uend;
 	int i;
 	float frontLerp, backLerp;
 	model_t     *model;
-	vec3_t sangles, eangles;
 	char tagName[MAX_QPATH];       //, *ch;
 	int retval = 0;
 	qhandle_t handle;
@@ -2907,14 +2213,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 	frac = 1.0 - refent->backlerp;
 
 	Q_strncpyz( tagName, tagNameIn, MAX_QPATH );
-/*
-	// if the tagName has a space in it, then it is passing through the starting tag number
-	if (ch = strrchr(tagName, ' ')) {
-		*ch = 0;
-		ch++;
-		startIndex = atoi(ch);
-	}
-*/
+
 	model = R_GetModelByHandle( handle );
 	if ( !model->mdv[0] /*&& !model->mdc[0]*/ && !model->mds ) {
 #ifdef RAVENMD4
@@ -2958,32 +2257,8 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 		return -1;
 
 	} else {
-#if 0
-		// psuedo-compressed MDC tags
-		mdcTag_t    *cstart, *cend;
-
-		retval = R_GetMDCTag( (byte *)model->mdc[0], startFrame, tagName, startIndex, &cstart );
-		retval = R_GetMDCTag( (byte *)model->mdc[0], endFrame, tagName, startIndex, &cend );
-
-		// uncompress the MDC tags into MD3 style tags
-		if ( cstart && cend ) {
-			for ( i = 0; i < 3; i++ ) {
-				ustart.origin[i] = (float)cstart->xyz[i] * MD3_XYZ_SCALE;
-				uend.origin[i] = (float)cend->xyz[i] * MD3_XYZ_SCALE;
-				sangles[i] = (float)cstart->angles[i] * MDC_TAG_ANGLE_SCALE;
-				eangles[i] = (float)cend->angles[i] * MDC_TAG_ANGLE_SCALE;
-			}
-
-			AnglesToAxis( sangles, ustart.axis );
-			AnglesToAxis( eangles, uend.axis );
-
-			start = &ustart;
-			end = &uend;
-		} else {
-			start = NULL;
-			end = NULL;
-		}
-#endif
+		// failed
+		return -1;
 	}
 
 	if ( !start || !end ) {
@@ -3014,38 +2289,6 @@ R_TagInfo_f
 void R_TagInfo_f( void ) {
 
 	Com_Printf( "command not functional\n" );
-
-/*
-	int handle;
-	orientation_t tag;
-	int frame = -1;
-
-	if (ri.Cmd_Argc() < 3) {
-		Com_Printf("usage: taginfo <model> <tag>\n");
-		return;
-	}
-
-	handle = RE_RegisterModel( ri.Cmd_Argv(1) );
-
-	if (handle) {
-		Com_Printf("found model %s..\n", ri.Cmd_Argv(1));
-	} else {
-		Com_Printf("cannot find model %s\n", ri.Cmd_Argv(1));
-		return;
-	}
-
-	if (ri.Cmd_Argc() < 3) {
-		frame = 0;
-	} else {
-		frame = atoi(ri.Cmd_Argv(3));
-	}
-
-	Com_Printf("using frame %i..\n", frame);
-
-	R_LerpTag( &tag, handle, frame, frame, 0.0, (const char *)ri.Cmd_Argv(2) );
-
-	Com_Printf("%s at position: %.1f %.1f %.1f\n", ri.Cmd_Argv(2), tag.origin[0], tag.origin[1], tag.origin[2] );
-*/
 }
 
 /*
@@ -3077,17 +2320,6 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 		VectorCopy( frame->bounds[1], maxs );
 
 		return;
-#if 0
-	} else if ( model->mdc[0] ) {
-		md3Frame_t  *frame;
-
-		frame = ( md3Frame_t * )( (byte *)model->mdc[0] + model->mdc[0]->ofsFrames );
-
-		VectorCopy( frame->bounds[0], mins );
-		VectorCopy( frame->bounds[1], maxs );
-
-		return;
-#endif
 #ifdef RAVENMD4
 	} else if (model->type == MOD_MDR) {
 		mdrHeader_t	*header;
@@ -3245,7 +2477,6 @@ void R_Hunk_Reset( void ) {
 // TODO: convert the Hunk_Alloc's in the model loading to malloc's, so we don't have
 // to move so much memory around during transitions
 
-static model_t backupModels[MAX_MOD_KNOWN];
 static int numBackupModels = 0;
 
 /*
@@ -3303,127 +2534,6 @@ R_BackupModels
 void R_BackupModels( void ) {
 	return;
 }
-#if 0
-void R_BackupModels( void ) {
-	int i, j;
-	model_t *mod, *modBack;
-
-	if ( !r_cache->integer ) {
-		return;
-	}
-	if ( !r_cacheModels->integer ) {
-		return;
-	}
-	if ( numBackupModels ) {
-		R_PurgeModels( numBackupModels + 1 ); // get rid of them all
-	}
-
-	// copy each model in memory across to the backupModels
-	modBack = backupModels;
-	for ( i = 0; i < tr.numModels; i++ ) {
-		mod = tr.models[i];
-
-		if ( mod->type && mod->type != MOD_BRUSH && mod->type != MOD_MDS ) {
-			memcpy( modBack, mod, sizeof( *mod ) );
-			switch ( mod->type ) {
-			case MOD_MESH:
-				for ( j = MD3_MAX_LODS - 1; j >= 0; j-- ) {
-					if ( j < mod->numLods && mod->mdv[j] ) {
-						if ( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdv[j] != mod->mdv[j + 1] ) ) {
-							modBack->mdv[j] = R_CacheModelAlloc( mod->mdv[j]->ofsEnd );
-							memcpy( modBack->mdv[j], mod->mdv[j], mod->mdv[j]->ofsEnd );
-						} else {
-							modBack->mdv[j] = modBack->mdv[j + 1];
-						}
-					}
-				}
-				break;
-			case MOD_MDC:
-				for ( j = MD3_MAX_LODS - 1; j >= 0; j-- ) {
-					if ( j < mod->numLods && mod->mdc[j] ) {
-						if ( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdc[j] != mod->mdc[j + 1] ) ) {
-							modBack->mdc[j] = R_CacheModelAlloc( mod->mdc[j]->ofsEnd );
-							memcpy( modBack->mdc[j], mod->mdc[j], mod->mdc[j]->ofsEnd );
-						} else {
-							modBack->mdc[j] = modBack->mdc[j + 1];
-						}
-					}
-				}
-				break;
-			default:
-				break; // MOD_BAD MOD_BRUSH MOD_MDS not handled
-			}
-			modBack++;
-			numBackupModels++;
-		}
-	}
-}
-#endif
-
-
-/*
-=================
-R_RegisterMDCShaders
-=================
-*/
-#if 0
-static void R_RegisterMDCShaders( model_t *mod, int lod ) {
-	mdcSurface_t        *surf;
-	md3Shader_t         *shader;
-	int i, j;
-
-	// swap all the surfaces
-	surf = ( mdcSurface_t * )( (byte *)mod->mdc[lod] + mod->mdc[lod]->ofsSurfaces );
-	for ( i = 0 ; i < mod->mdc[lod]->numSurfaces ; i++ ) {
-		// register the shaders
-		shader = ( md3Shader_t * )( (byte *)surf + surf->ofsShaders );
-		for ( j = 0 ; j < surf->numShaders ; j++, shader++ ) {
-			shader_t    *sh;
-
-			sh = R_FindShader( shader->name, LIGHTMAP_NONE, qtrue );
-			if ( sh->defaultShader ) {
-				shader->shaderIndex = 0;
-			} else {
-				shader->shaderIndex = sh->index;
-			}
-		}
-		// find the next surface
-		surf = ( mdcSurface_t * )( (byte *)surf + surf->ofsEnd );
-	}
-}
-#endif
-
-/*
-=================
-R_RegisterMD3Shaders
-=================
-*/
-#if 0
-static void R_RegisterMD3Shaders( model_t *mod, int lod ) {
-	md3Surface_t        *surf;
-	md3Shader_t         *shader;
-	int i, j;
-
-	// swap all the surfaces
-	surf = ( md3Surface_t * )( (byte *)mod->mdv[lod] + mod->mdv[lod]->ofsSurfaces );
-	for ( i = 0 ; i < mod->mdv[lod]->numSurfaces ; i++ ) {
-		// register the shaders
-		shader = ( md3Shader_t * )( (byte *)surf + surf->ofsShaders );
-		for ( j = 0 ; j < surf->numShaders ; j++, shader++ ) {
-			shader_t    *sh;
-
-			sh = R_FindShader( shader->name, LIGHTMAP_NONE, qtrue );
-			if ( sh->defaultShader ) {
-				shader->shaderIndex = 0;
-			} else {
-				shader->shaderIndex = sh->index;
-			}
-		}
-		// find the next surface
-		surf = ( md3Surface_t * )( (byte *)surf + surf->ofsEnd );
-	}
-}
-#endif
 
 /*
 ===============
@@ -3435,73 +2545,6 @@ R_FindCachedModel
 qboolean R_FindCachedModel( const char *name, model_t *newmod ) {
 	return qfalse;
 }
-#if 0
-qboolean R_FindCachedModel( const char *name, model_t *newmod ) {
-	int i,j, index;
-	model_t *mod;
-
-	// NOTE TTimo
-	// would need an r_cache check here too?
-
-	if ( !r_cacheModels->integer ) {
-		return qfalse;
-	}
-
-	if ( !numBackupModels ) {
-		return qfalse;
-	}
-
-	mod = backupModels;
-	for ( i = 0; i < numBackupModels; i++, mod++ ) {
-		if ( !Q_strncmp( mod->name, name, sizeof( mod->name ) ) ) {
-			// copy it to a new slot
-			index = newmod->index;
-			memcpy( newmod, mod, sizeof( model_t ) );
-			newmod->index = index;
-			switch ( mod->type ) {
-			case MOD_MDS:
-				return qfalse;  // not supported yet
-			case MOD_MESH:
-				for ( j = MD3_MAX_LODS - 1; j >= 0; j-- ) {
-					if ( j < mod->numLods && mod->mdv[j] ) {
-						if ( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdv[j] != mod->mdv[j + 1] ) ) {
-							newmod->mdv[j] = ri.Hunk_Alloc( mod->mdv[j]->ofsEnd, h_low );
-							memcpy( newmod->mdv[j], mod->mdv[j], mod->mdv[j]->ofsEnd );
-							R_RegisterMD3Shaders( newmod, j );
-							R_CacheModelFree( mod->mdv[j] );
-						} else {
-							newmod->mdv[j] = mod->mdv[j + 1];
-						}
-					}
-				}
-				break;
-			case MOD_MDC:
-				for ( j = MD3_MAX_LODS - 1; j >= 0; j-- ) {
-					if ( j < mod->numLods && mod->mdc[j] ) {
-						if ( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdc[j] != mod->mdc[j + 1] ) ) {
-							newmod->mdc[j] = ri.Hunk_Alloc( mod->mdc[j]->ofsEnd, h_low );
-							memcpy( newmod->mdc[j], mod->mdc[j], mod->mdc[j]->ofsEnd );
-							R_RegisterMDCShaders( newmod, j );
-							R_CacheModelFree( mod->mdc[j] );
-						} else {
-							newmod->mdc[j] = mod->mdc[j + 1];
-						}
-					}
-				}
-				break;
-			default:
-				break; // MOD_BAD MOD_BRUSH
-			}
-
-			mod->type = MOD_BAD;    // don't try and purge it later
-			mod->name[0] = 0;
-			return qtrue;
-		}
-	}
-
-	return qfalse;
-}
-#endif
 
 /*
 ===============
