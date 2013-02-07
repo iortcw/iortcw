@@ -331,6 +331,9 @@ keyname_t keynames_d[] =    //deutsch
 	{"F10", K_F10},
 	{"F11", K_F11},
 	{"F12", K_F12},
+	{"F13", K_F13},
+	{"F14", K_F14},
+	{"F15", K_F15},
 
 	{"EINFG", K_INS},
 	{"ENTF", K_DEL},
@@ -420,6 +423,119 @@ keyname_t keynames_d[] =    //deutsch
 	{"PAUSE", K_PAUSE},
 
 	{"COMMAND", K_COMMAND},  //mac
+
+	{"SEMIKOLON", ';'},	// because a raw semicolon seperates commands
+
+	{"WORLD_0", K_WORLD_0},
+	{"WORLD_1", K_WORLD_1},
+	{"WORLD_2", K_WORLD_2},
+	{"WORLD_3", K_WORLD_3},
+	{"WORLD_4", K_WORLD_4},
+	{"WORLD_5", K_WORLD_5},
+	{"WORLD_6", K_WORLD_6},
+	{"WORLD_7", K_WORLD_7},
+	{"WORLD_8", K_WORLD_8},
+	{"WORLD_9", K_WORLD_9},
+	{"WORLD_10", K_WORLD_10},
+	{"WORLD_11", K_WORLD_11},
+	{"WORLD_12", K_WORLD_12},
+	{"WORLD_13", K_WORLD_13},
+	{"WORLD_14", K_WORLD_14},
+	{"WORLD_15", K_WORLD_15},
+	{"WORLD_16", K_WORLD_16},
+	{"WORLD_17", K_WORLD_17},
+	{"WORLD_18", K_WORLD_18},
+	{"WORLD_19", K_WORLD_19},
+	{"WORLD_20", K_WORLD_20},
+	{"WORLD_21", K_WORLD_21},
+	{"WORLD_22", K_WORLD_22},
+	{"WORLD_23", K_WORLD_23},
+	{"WORLD_24", K_WORLD_24},
+	{"WORLD_25", K_WORLD_25},
+	{"WORLD_26", K_WORLD_26},
+	{"WORLD_27", K_WORLD_27},
+	{"WORLD_28", K_WORLD_28},
+	{"WORLD_29", K_WORLD_29},
+	{"WORLD_30", K_WORLD_30},
+	{"WORLD_31", K_WORLD_31},
+	{"WORLD_32", K_WORLD_32},
+	{"WORLD_33", K_WORLD_33},
+	{"WORLD_34", K_WORLD_34},
+	{"WORLD_35", K_WORLD_35},
+	{"WORLD_36", K_WORLD_36},
+	{"WORLD_37", K_WORLD_37},
+	{"WORLD_38", K_WORLD_38},
+	{"WORLD_39", K_WORLD_39},
+	{"WORLD_40", K_WORLD_40},
+	{"WORLD_41", K_WORLD_41},
+	{"WORLD_42", K_WORLD_42},
+	{"WORLD_43", K_WORLD_43},
+	{"WORLD_44", K_WORLD_44},
+	{"WORLD_45", K_WORLD_45},
+	{"WORLD_46", K_WORLD_46},
+	{"WORLD_47", K_WORLD_47},
+	{"WORLD_48", K_WORLD_48},
+	{"WORLD_49", K_WORLD_49},
+	{"WORLD_50", K_WORLD_50},
+	{"WORLD_51", K_WORLD_51},
+	{"WORLD_52", K_WORLD_52},
+	{"WORLD_53", K_WORLD_53},
+	{"WORLD_54", K_WORLD_54},
+	{"WORLD_55", K_WORLD_55},
+	{"WORLD_56", K_WORLD_56},
+	{"WORLD_57", K_WORLD_57},
+	{"WORLD_58", K_WORLD_58},
+	{"WORLD_59", K_WORLD_59},
+	{"WORLD_60", K_WORLD_60},
+	{"WORLD_61", K_WORLD_61},
+	{"WORLD_62", K_WORLD_62},
+	{"WORLD_63", K_WORLD_63},
+	{"WORLD_64", K_WORLD_64},
+	{"WORLD_65", K_WORLD_65},
+	{"WORLD_66", K_WORLD_66},
+	{"WORLD_67", K_WORLD_67},
+	{"WORLD_68", K_WORLD_68},
+	{"WORLD_69", K_WORLD_69},
+	{"WORLD_70", K_WORLD_70},
+	{"WORLD_71", K_WORLD_71},
+	{"WORLD_72", K_WORLD_72},
+	{"WORLD_73", K_WORLD_73},
+	{"WORLD_74", K_WORLD_74},
+	{"WORLD_75", K_WORLD_75},
+	{"WORLD_76", K_WORLD_76},
+	{"WORLD_77", K_WORLD_77},
+	{"WORLD_78", K_WORLD_78},
+	{"WORLD_79", K_WORLD_79},
+	{"WORLD_80", K_WORLD_80},
+	{"WORLD_81", K_WORLD_81},
+	{"WORLD_82", K_WORLD_82},
+	{"WORLD_83", K_WORLD_83},
+	{"WORLD_84", K_WORLD_84},
+	{"WORLD_85", K_WORLD_85},
+	{"WORLD_86", K_WORLD_86},
+	{"WORLD_87", K_WORLD_87},
+	{"WORLD_88", K_WORLD_88},
+	{"WORLD_89", K_WORLD_89},
+	{"WORLD_90", K_WORLD_90},
+	{"WORLD_91", K_WORLD_91},
+	{"WORLD_92", K_WORLD_92},
+	{"WORLD_93", K_WORLD_93},
+	{"WORLD_94", K_WORLD_94},
+	{"WORLD_95", K_WORLD_95},
+
+	{"WINDOWS", K_SUPER},
+	{"COMPOSE", K_COMPOSE},
+	{"MODE", K_MODE},
+	{"HELP", K_HELP},
+	{"PRINT", K_PRINT},
+	{"SYSREQ", K_SYSREQ},
+	{"SCROLLOCK", K_SCROLLOCK },
+	{"BREAK", K_BREAK},
+	{"MENU", K_MENU},
+	{"POWER", K_POWER},
+	{"EURO", K_EURO},
+	{"UNDO", K_UNDO},
+
 	{NULL,0}
 };  //end german
 
@@ -453,6 +569,9 @@ keyname_t keynames_f[] =    //french
 	{"F10", K_F10},
 	{"F11", K_F11},
 	{"F12", K_F12},
+	{"F13", K_F13},
+	{"F14", K_F14},
+	{"F15", K_F15},
 
 	{"INSER", K_INS},
 	{"SUPPR", K_DEL},
@@ -543,6 +662,118 @@ keyname_t keynames_f[] =    //french
 
 	{"COMMAND", K_COMMAND},  //mac
 
+	{"PN_VIRGULE", ';'},	// because a raw semicolon seperates commands
+
+	{"WORLD_0", K_WORLD_0},
+	{"WORLD_1", K_WORLD_1},
+	{"WORLD_2", K_WORLD_2},
+	{"WORLD_3", K_WORLD_3},
+	{"WORLD_4", K_WORLD_4},
+	{"WORLD_5", K_WORLD_5},
+	{"WORLD_6", K_WORLD_6},
+	{"WORLD_7", K_WORLD_7},
+	{"WORLD_8", K_WORLD_8},
+	{"WORLD_9", K_WORLD_9},
+	{"WORLD_10", K_WORLD_10},
+	{"WORLD_11", K_WORLD_11},
+	{"WORLD_12", K_WORLD_12},
+	{"WORLD_13", K_WORLD_13},
+	{"WORLD_14", K_WORLD_14},
+	{"WORLD_15", K_WORLD_15},
+	{"WORLD_16", K_WORLD_16},
+	{"WORLD_17", K_WORLD_17},
+	{"WORLD_18", K_WORLD_18},
+	{"WORLD_19", K_WORLD_19},
+	{"WORLD_20", K_WORLD_20},
+	{"WORLD_21", K_WORLD_21},
+	{"WORLD_22", K_WORLD_22},
+	{"WORLD_23", K_WORLD_23},
+	{"WORLD_24", K_WORLD_24},
+	{"WORLD_25", K_WORLD_25},
+	{"WORLD_26", K_WORLD_26},
+	{"WORLD_27", K_WORLD_27},
+	{"WORLD_28", K_WORLD_28},
+	{"WORLD_29", K_WORLD_29},
+	{"WORLD_30", K_WORLD_30},
+	{"WORLD_31", K_WORLD_31},
+	{"WORLD_32", K_WORLD_32},
+	{"WORLD_33", K_WORLD_33},
+	{"WORLD_34", K_WORLD_34},
+	{"WORLD_35", K_WORLD_35},
+	{"WORLD_36", K_WORLD_36},
+	{"WORLD_37", K_WORLD_37},
+	{"WORLD_38", K_WORLD_38},
+	{"WORLD_39", K_WORLD_39},
+	{"WORLD_40", K_WORLD_40},
+	{"WORLD_41", K_WORLD_41},
+	{"WORLD_42", K_WORLD_42},
+	{"WORLD_43", K_WORLD_43},
+	{"WORLD_44", K_WORLD_44},
+	{"WORLD_45", K_WORLD_45},
+	{"WORLD_46", K_WORLD_46},
+	{"WORLD_47", K_WORLD_47},
+	{"WORLD_48", K_WORLD_48},
+	{"WORLD_49", K_WORLD_49},
+	{"WORLD_50", K_WORLD_50},
+	{"WORLD_51", K_WORLD_51},
+	{"WORLD_52", K_WORLD_52},
+	{"WORLD_53", K_WORLD_53},
+	{"WORLD_54", K_WORLD_54},
+	{"WORLD_55", K_WORLD_55},
+	{"WORLD_56", K_WORLD_56},
+	{"WORLD_57", K_WORLD_57},
+	{"WORLD_58", K_WORLD_58},
+	{"WORLD_59", K_WORLD_59},
+	{"WORLD_60", K_WORLD_60},
+	{"WORLD_61", K_WORLD_61},
+	{"WORLD_62", K_WORLD_62},
+	{"WORLD_63", K_WORLD_63},
+	{"WORLD_64", K_WORLD_64},
+	{"WORLD_65", K_WORLD_65},
+	{"WORLD_66", K_WORLD_66},
+	{"WORLD_67", K_WORLD_67},
+	{"WORLD_68", K_WORLD_68},
+	{"WORLD_69", K_WORLD_69},
+	{"WORLD_70", K_WORLD_70},
+	{"WORLD_71", K_WORLD_71},
+	{"WORLD_72", K_WORLD_72},
+	{"WORLD_73", K_WORLD_73},
+	{"WORLD_74", K_WORLD_74},
+	{"WORLD_75", K_WORLD_75},
+	{"WORLD_76", K_WORLD_76},
+	{"WORLD_77", K_WORLD_77},
+	{"WORLD_78", K_WORLD_78},
+	{"WORLD_79", K_WORLD_79},
+	{"WORLD_80", K_WORLD_80},
+	{"WORLD_81", K_WORLD_81},
+	{"WORLD_82", K_WORLD_82},
+	{"WORLD_83", K_WORLD_83},
+	{"WORLD_84", K_WORLD_84},
+	{"WORLD_85", K_WORLD_85},
+	{"WORLD_86", K_WORLD_86},
+	{"WORLD_87", K_WORLD_87},
+	{"WORLD_88", K_WORLD_88},
+	{"WORLD_89", K_WORLD_89},
+	{"WORLD_90", K_WORLD_90},
+	{"WORLD_91", K_WORLD_91},
+	{"WORLD_92", K_WORLD_92},
+	{"WORLD_93", K_WORLD_93},
+	{"WORLD_94", K_WORLD_94},
+	{"WORLD_95", K_WORLD_95},
+
+	{"WINDOWS", K_SUPER},
+	{"COMPOSE", K_COMPOSE},
+	{"MODE", K_MODE},
+	{"HELP", K_HELP},
+	{"PRINT", K_PRINT},
+	{"SYSREQ", K_SYSREQ},
+	{"SCROLLOCK", K_SCROLLOCK },
+	{"BREAK", K_BREAK},
+	{"MENU", K_MENU},
+	{"POWER", K_POWER},
+	{"EURO", K_EURO},
+	{"UNDO", K_UNDO},
+
 	{NULL,0}
 };  //end french
 
@@ -576,6 +807,9 @@ keyname_t keynames_s[] =  //Spanish
 	{"F10", K_F10},
 	{"F11", K_F11},
 	{"F12", K_F12},
+	{"F13", K_F13},
+	{"F14", K_F14},
+	{"F15", K_F15},
 
 	{"INSERT", K_INS},
 	{"SUPR", K_DEL},
@@ -668,6 +902,116 @@ keyname_t keynames_s[] =  //Spanish
 
 	{"COMANDO", K_COMMAND},  //mac
 
+	{"WORLD_0", K_WORLD_0},
+	{"WORLD_1", K_WORLD_1},
+	{"WORLD_2", K_WORLD_2},
+	{"WORLD_3", K_WORLD_3},
+	{"WORLD_4", K_WORLD_4},
+	{"WORLD_5", K_WORLD_5},
+	{"WORLD_6", K_WORLD_6},
+	{"WORLD_7", K_WORLD_7},
+	{"WORLD_8", K_WORLD_8},
+	{"WORLD_9", K_WORLD_9},
+	{"WORLD_10", K_WORLD_10},
+	{"WORLD_11", K_WORLD_11},
+	{"WORLD_12", K_WORLD_12},
+	{"WORLD_13", K_WORLD_13},
+	{"WORLD_14", K_WORLD_14},
+	{"WORLD_15", K_WORLD_15},
+	{"WORLD_16", K_WORLD_16},
+	{"WORLD_17", K_WORLD_17},
+	{"WORLD_18", K_WORLD_18},
+	{"WORLD_19", K_WORLD_19},
+	{"WORLD_20", K_WORLD_20},
+	{"WORLD_21", K_WORLD_21},
+	{"WORLD_22", K_WORLD_22},
+	{"WORLD_23", K_WORLD_23},
+	{"WORLD_24", K_WORLD_24},
+	{"WORLD_25", K_WORLD_25},
+	{"WORLD_26", K_WORLD_26},
+	{"WORLD_27", K_WORLD_27},
+	{"WORLD_28", K_WORLD_28},
+	{"WORLD_29", K_WORLD_29},
+	{"WORLD_30", K_WORLD_30},
+	{"WORLD_31", K_WORLD_31},
+	{"WORLD_32", K_WORLD_32},
+	{"WORLD_33", K_WORLD_33},
+	{"WORLD_34", K_WORLD_34},
+	{"WORLD_35", K_WORLD_35},
+	{"WORLD_36", K_WORLD_36},
+	{"WORLD_37", K_WORLD_37},
+	{"WORLD_38", K_WORLD_38},
+	{"WORLD_39", K_WORLD_39},
+	{"WORLD_40", K_WORLD_40},
+	{"WORLD_41", K_WORLD_41},
+	{"WORLD_42", K_WORLD_42},
+	{"WORLD_43", K_WORLD_43},
+	{"WORLD_44", K_WORLD_44},
+	{"WORLD_45", K_WORLD_45},
+	{"WORLD_46", K_WORLD_46},
+	{"WORLD_47", K_WORLD_47},
+	{"WORLD_48", K_WORLD_48},
+	{"WORLD_49", K_WORLD_49},
+	{"WORLD_50", K_WORLD_50},
+	{"WORLD_51", K_WORLD_51},
+	{"WORLD_52", K_WORLD_52},
+	{"WORLD_53", K_WORLD_53},
+	{"WORLD_54", K_WORLD_54},
+	{"WORLD_55", K_WORLD_55},
+	{"WORLD_56", K_WORLD_56},
+	{"WORLD_57", K_WORLD_57},
+	{"WORLD_58", K_WORLD_58},
+	{"WORLD_59", K_WORLD_59},
+	{"WORLD_60", K_WORLD_60},
+	{"WORLD_61", K_WORLD_61},
+	{"WORLD_62", K_WORLD_62},
+	{"WORLD_63", K_WORLD_63},
+	{"WORLD_64", K_WORLD_64},
+	{"WORLD_65", K_WORLD_65},
+	{"WORLD_66", K_WORLD_66},
+	{"WORLD_67", K_WORLD_67},
+	{"WORLD_68", K_WORLD_68},
+	{"WORLD_69", K_WORLD_69},
+	{"WORLD_70", K_WORLD_70},
+	{"WORLD_71", K_WORLD_71},
+	{"WORLD_72", K_WORLD_72},
+	{"WORLD_73", K_WORLD_73},
+	{"WORLD_74", K_WORLD_74},
+	{"WORLD_75", K_WORLD_75},
+	{"WORLD_76", K_WORLD_76},
+	{"WORLD_77", K_WORLD_77},
+	{"WORLD_78", K_WORLD_78},
+	{"WORLD_79", K_WORLD_79},
+	{"WORLD_80", K_WORLD_80},
+	{"WORLD_81", K_WORLD_81},
+	{"WORLD_82", K_WORLD_82},
+	{"WORLD_83", K_WORLD_83},
+	{"WORLD_84", K_WORLD_84},
+	{"WORLD_85", K_WORLD_85},
+	{"WORLD_86", K_WORLD_86},
+	{"WORLD_87", K_WORLD_87},
+	{"WORLD_88", K_WORLD_88},
+	{"WORLD_89", K_WORLD_89},
+	{"WORLD_90", K_WORLD_90},
+	{"WORLD_91", K_WORLD_91},
+	{"WORLD_92", K_WORLD_92},
+	{"WORLD_93", K_WORLD_93},
+	{"WORLD_94", K_WORLD_94},
+	{"WORLD_95", K_WORLD_95},
+
+	{"WINDOWS", K_SUPER},
+	{"COMPOSE", K_COMPOSE},
+	{"MODE", K_MODE},
+	{"HELP", K_HELP},
+	{"PRINT", K_PRINT},
+	{"SYSREQ", K_SYSREQ},
+	{"SCROLLOCK", K_SCROLLOCK },
+	{"BREAK", K_BREAK},
+	{"MENU", K_MENU},
+	{"POWER", K_POWER},
+	{"EURO", K_EURO},
+	{"UNDO", K_UNDO},
+
 	{NULL,0}
 };
 
@@ -701,6 +1045,9 @@ keyname_t keynames_i[] =  //Italian
 	{"F10", K_F10},
 	{"F11", K_F11},
 	{"F12", K_F12},
+	{"F13", K_F13},
+	{"F14", K_F14},
+	{"F15", K_F15},
 
 	{"INS", K_INS},
 	{"CANC", K_DEL},
@@ -793,6 +1140,116 @@ keyname_t keynames_i[] =  //Italian
 
 	{"COMMAND", K_COMMAND},  //mac
 
+	{"WORLD_0", K_WORLD_0},
+	{"WORLD_1", K_WORLD_1},
+	{"WORLD_2", K_WORLD_2},
+	{"WORLD_3", K_WORLD_3},
+	{"WORLD_4", K_WORLD_4},
+	{"WORLD_5", K_WORLD_5},
+	{"WORLD_6", K_WORLD_6},
+	{"WORLD_7", K_WORLD_7},
+	{"WORLD_8", K_WORLD_8},
+	{"WORLD_9", K_WORLD_9},
+	{"WORLD_10", K_WORLD_10},
+	{"WORLD_11", K_WORLD_11},
+	{"WORLD_12", K_WORLD_12},
+	{"WORLD_13", K_WORLD_13},
+	{"WORLD_14", K_WORLD_14},
+	{"WORLD_15", K_WORLD_15},
+	{"WORLD_16", K_WORLD_16},
+	{"WORLD_17", K_WORLD_17},
+	{"WORLD_18", K_WORLD_18},
+	{"WORLD_19", K_WORLD_19},
+	{"WORLD_20", K_WORLD_20},
+	{"WORLD_21", K_WORLD_21},
+	{"WORLD_22", K_WORLD_22},
+	{"WORLD_23", K_WORLD_23},
+	{"WORLD_24", K_WORLD_24},
+	{"WORLD_25", K_WORLD_25},
+	{"WORLD_26", K_WORLD_26},
+	{"WORLD_27", K_WORLD_27},
+	{"WORLD_28", K_WORLD_28},
+	{"WORLD_29", K_WORLD_29},
+	{"WORLD_30", K_WORLD_30},
+	{"WORLD_31", K_WORLD_31},
+	{"WORLD_32", K_WORLD_32},
+	{"WORLD_33", K_WORLD_33},
+	{"WORLD_34", K_WORLD_34},
+	{"WORLD_35", K_WORLD_35},
+	{"WORLD_36", K_WORLD_36},
+	{"WORLD_37", K_WORLD_37},
+	{"WORLD_38", K_WORLD_38},
+	{"WORLD_39", K_WORLD_39},
+	{"WORLD_40", K_WORLD_40},
+	{"WORLD_41", K_WORLD_41},
+	{"WORLD_42", K_WORLD_42},
+	{"WORLD_43", K_WORLD_43},
+	{"WORLD_44", K_WORLD_44},
+	{"WORLD_45", K_WORLD_45},
+	{"WORLD_46", K_WORLD_46},
+	{"WORLD_47", K_WORLD_47},
+	{"WORLD_48", K_WORLD_48},
+	{"WORLD_49", K_WORLD_49},
+	{"WORLD_50", K_WORLD_50},
+	{"WORLD_51", K_WORLD_51},
+	{"WORLD_52", K_WORLD_52},
+	{"WORLD_53", K_WORLD_53},
+	{"WORLD_54", K_WORLD_54},
+	{"WORLD_55", K_WORLD_55},
+	{"WORLD_56", K_WORLD_56},
+	{"WORLD_57", K_WORLD_57},
+	{"WORLD_58", K_WORLD_58},
+	{"WORLD_59", K_WORLD_59},
+	{"WORLD_60", K_WORLD_60},
+	{"WORLD_61", K_WORLD_61},
+	{"WORLD_62", K_WORLD_62},
+	{"WORLD_63", K_WORLD_63},
+	{"WORLD_64", K_WORLD_64},
+	{"WORLD_65", K_WORLD_65},
+	{"WORLD_66", K_WORLD_66},
+	{"WORLD_67", K_WORLD_67},
+	{"WORLD_68", K_WORLD_68},
+	{"WORLD_69", K_WORLD_69},
+	{"WORLD_70", K_WORLD_70},
+	{"WORLD_71", K_WORLD_71},
+	{"WORLD_72", K_WORLD_72},
+	{"WORLD_73", K_WORLD_73},
+	{"WORLD_74", K_WORLD_74},
+	{"WORLD_75", K_WORLD_75},
+	{"WORLD_76", K_WORLD_76},
+	{"WORLD_77", K_WORLD_77},
+	{"WORLD_78", K_WORLD_78},
+	{"WORLD_79", K_WORLD_79},
+	{"WORLD_80", K_WORLD_80},
+	{"WORLD_81", K_WORLD_81},
+	{"WORLD_82", K_WORLD_82},
+	{"WORLD_83", K_WORLD_83},
+	{"WORLD_84", K_WORLD_84},
+	{"WORLD_85", K_WORLD_85},
+	{"WORLD_86", K_WORLD_86},
+	{"WORLD_87", K_WORLD_87},
+	{"WORLD_88", K_WORLD_88},
+	{"WORLD_89", K_WORLD_89},
+	{"WORLD_90", K_WORLD_90},
+	{"WORLD_91", K_WORLD_91},
+	{"WORLD_92", K_WORLD_92},
+	{"WORLD_93", K_WORLD_93},
+	{"WORLD_94", K_WORLD_94},
+	{"WORLD_95", K_WORLD_95},
+
+	{"WINDOWS", K_SUPER},
+	{"COMPOSE", K_COMPOSE},
+	{"MODE", K_MODE},
+	{"HELP", K_HELP},
+	{"PRINT", K_PRINT},
+	{"SYSREQ", K_SYSREQ},
+	{"SCROLLOCK", K_SCROLLOCK },
+	{"BREAK", K_BREAK},
+	{"MENU", K_MENU},
+	{"POWER", K_POWER},
+	{"EURO", K_EURO},
+	{"UNDO", K_UNDO},
+
 	{NULL,0}
 };
 
@@ -836,7 +1293,6 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 			}
 		}
 		prestep = edit->scroll;
-
 	}
 
 	if ( prestep + drawLen > len ) {
@@ -873,7 +1329,7 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 		} else {
 			cursorChar = 10;
 		}
-		
+
 		i = drawLen - strlen( str );
 
 		if ( size == SMALLCHAR_WIDTH ) {
@@ -887,13 +1343,16 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 	}
 }
 
-void Field_Draw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape ) {
+void Field_Draw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape )
+{
 	Field_VariableSizeDraw( edit, x, y, width, SMALLCHAR_WIDTH, showCursor, noColorEscape );
 }
 
-void Field_BigDraw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape ) {
+void Field_BigDraw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape )
+{
 	Field_VariableSizeDraw( edit, x, y, width, BIGCHAR_WIDTH, showCursor, noColorEscape );
 }
+
 
 /*
 ================
@@ -930,7 +1389,7 @@ Key events are used for non-printable characters, others are gotten from char ev
 =================
 */
 void Field_KeyDownEvent( field_t *edit, int key ) {
-	int		len;
+	int len;
 
 	// shift-insert is paste
 	if ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && keys[K_SHIFT].down ) {
@@ -1038,9 +1497,8 @@ void Field_CharEvent( field_t *edit, int ch ) {
 
 	if ( key_overstrikeMode ) {
 		// - 2 to leave room for the leading slash and trailing \0
-		if ( edit->cursor == MAX_EDIT_LINE - 2 ) {
+		if ( edit->cursor == MAX_EDIT_LINE - 2 )
 			return;
-		}
 		edit->buffer[edit->cursor] = ch;
 		edit->cursor++;
 	} else {    // insert mode
@@ -1070,145 +1528,6 @@ void Field_CharEvent( field_t *edit, int ch ) {
 CONSOLE LINE EDITING
 
 ==============================================================================
-*/
-
-//static const char *completionString;
-//static char shortestMatch[MAX_TOKEN_CHARS];
-//static int matchCount;
-
-/*
-===============
-FindMatches
-
-===============
-
-static void FindMatches( const char *s ) {
-	int i;
-
-	if ( Q_stricmpn( s, completionString, strlen( completionString ) ) ) {
-		return;
-	}
-	matchCount++;
-	if ( matchCount == 1 ) {
-		Q_strncpyz( shortestMatch, s, sizeof( shortestMatch ) );
-		return;
-	}
-
-	// cut shortestMatch to the amount common with s
-	for ( i = 0 ; s[i] ; i++ ) {
-		if ( tolower( shortestMatch[i] ) != tolower( s[i] ) ) {
-			shortestMatch[i] = 0;
-		}
-	}
-}
-*/
-
-/*
-===============
-PrintMatches
-
-===============
-
-static void PrintMatches( const char *s ) {
-	if ( !Q_stricmpn( s, shortestMatch, strlen( shortestMatch ) ) ) {
-		Com_Printf( "    %s\n", s );
-	}
-}
-
-static void keyConcatArgs( void ) {
-	int i;
-	char    *arg;
-
-	for ( i = 1 ; i < Cmd_Argc() ; i++ ) {
-		Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ), " " );
-		arg = Cmd_Argv( i );
-		while ( *arg ) {
-			if ( *arg == ' ' ) {
-				Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ),  "\"" );
-				break;
-			}
-			arg++;
-		}
-		Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ),  Cmd_Argv( i ) );
-		if ( *arg == ' ' ) {
-			Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ),  "\"" );
-		}
-	}
-}
-
-static void ConcatRemaining( const char *src, const char *start ) {
-	char *str;
-
-	str = strstr( src, start );
-	if ( !str ) {
-		keyConcatArgs();
-		return;
-	}
-
-	str += strlen( start );
-	Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ), str );
-}
-*/
-
-/*
-===============
-CompleteCommand
-
-Tab expansion
-===============
-
-static void CompleteCommand( void ) {
-	field_t *edit;
-	field_t temp;
-
-	edit = &g_consoleField;
-
-	// only look at the first token for completion purposes
-	Cmd_TokenizeString( edit->buffer );
-
-	completionString = Cmd_Argv( 0 );
-	if ( completionString[0] == '\\' || completionString[0] == '/' ) {
-		completionString++;
-	}
-
-	matchCount = 0;
-	shortestMatch[0] = 0;
-
-	if ( strlen( completionString ) == 0 ) {
-		return;
-	}
-
-	Cmd_CommandCompletion( FindMatches );
-	Cvar_CommandCompletion( FindMatches );
-
-	if ( matchCount == 0 ) {
-		return; // no matches
-	}
-
-	Com_Memcpy( &temp, edit, sizeof( field_t ) );
-
-	if ( matchCount == 1 ) {
-		Com_sprintf( edit->buffer, sizeof( edit->buffer ), "\\%s", shortestMatch );
-		if ( Cmd_Argc() == 1 ) {
-			Q_strcat( g_consoleField.buffer, sizeof( g_consoleField.buffer ), " " );
-		} else {
-			ConcatRemaining( temp.buffer, completionString );
-		}
-		edit->cursor = strlen( edit->buffer );
-		return;
-	}
-
-	// multiple matches, complete to shortest
-	Com_sprintf( edit->buffer, sizeof( edit->buffer ), "\\%s", shortestMatch );
-	edit->cursor = strlen( edit->buffer );
-	ConcatRemaining( temp.buffer, completionString );
-
-	Com_Printf( "]%s\n", edit->buffer );
-
-	// run through again, printing matches
-	Cmd_CommandCompletion( PrintMatches );
-	Cvar_CommandCompletion( PrintMatches );
-}
 */
 
 /*
@@ -1787,235 +2106,6 @@ void CL_InitKeyCommands( void ) {
 
 /*
 ===================
-CL_KeyEvent
-
-Called by the system for both key up and key down events
-===================
-
-//static consoleCount = 0;
-void CL_KeyEvent( int key, qboolean down, unsigned time ) {
-	char    *kb;
-	char cmd[1024];
-	qboolean bypassMenu = qfalse;       // NERVE - SMF
-
-	// update auto-repeat status and BUTTON_ANY status
-	keys[key].down = down;
-
-	if ( down ) {
-		keys[key].repeats++;
-		if ( keys[key].repeats == 1 ) {
-			anykeydown++;
-		}
-	} else {
-		keys[key].repeats = 0;
-		anykeydown--;
-		if ( anykeydown < 0 ) {
-			anykeydown = 0;
-		}
-	}
-
-#ifdef __linux__
-	if ( key == K_ENTER ) {
-		if ( down ) {
-			if ( keys[K_ALT].down ) {
-				Key_ClearStates();
-				if ( Cvar_VariableValue( "r_fullscreen" ) == 0 ) {
-					Com_Printf( "Switching to fullscreen rendering\n" );
-					Cvar_Set( "r_fullscreen", "1" );
-				} else
-				{
-					Com_Printf( "Switching to windowed rendering\n" );
-					Cvar_Set( "r_fullscreen", "0" );
-				}
-				Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
-				return;
-			}
-		}
-	}
-#endif
-
-	// are we waiting to clear stats and move to briefing screen
-	if ( down && cl_waitForFire && cl_waitForFire->integer ) {    //DAJ BUG in dedicated cl_waitForFire don't exist
-		if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {   // get rid of the consol
-			Con_ToggleConsole_f();
-		}
-		// clear all input controls
-		CL_ClearKeys();
-		// allow only attack command input
-		kb = keys[key].binding;
-		if ( !Q_stricmp( kb, "+attack" ) ) {
-			// clear the stats out, ignore the keypress
-			Cvar_Set( "g_missionStats", "xx" );       // just remove the stats, but still wait until we're done loading, and player has hit fire to begin playing
-			Cvar_Set( "cl_waitForFire", "0" );
-		}
-		return;     // no buttons while waiting
-	}
-
-	// are we waiting to begin the level
-	if ( down && cl_missionStats && cl_missionStats->string[0] && cl_missionStats->string[1] ) {  //DAJ BUG in dedicated cl_missionStats don't exist
-		if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {   // get rid of the consol
-			Con_ToggleConsole_f();
-		}
-		// clear all input controls
-		CL_ClearKeys();
-		// allow only attack command input
-		kb = keys[key].binding;
-		if ( !Q_stricmp( kb, "+attack" ) ) {
-			// clear the stats out, ignore the keypress
-			Cvar_Set( "com_expectedhunkusage", "-1" );
-			Cvar_Set( "g_missionStats", "0" );
-		}
-		return;     // no buttons while waiting
-	}
-
-	// console key is hardcoded, so the user can never unbind it
-	if ( key == '`' || key == '~' ) {
-		if ( !down ) {
-			return;
-
-		}
-		Con_ToggleConsole_f();
-		return;
-	}
-
-	// most keys during demo playback will bring up the menu, but non-ascii
-
-	// keys can still be used for bound actions
-	if ( down && ( key < 128 || key == K_MOUSE1 )
-		 && ( clc.demoplaying || cls.state == CA_CINEMATIC ) && !cls.keyCatchers ) {
-
-		Cvar_Set( "nextdemo","" );
-		key = K_ESCAPE;
-	}
-
-	// escape is always handled special
-	if ( key == K_ESCAPE && down ) {
-		if ( cls.keyCatchers & KEYCATCH_MESSAGE ) {
-			// clear message mode
-			Message_Key( key );
-			return;
-		}
-
-		// escape always gets out of CGAME stuff
-		if ( cls.keyCatchers & KEYCATCH_CGAME ) {
-			cls.keyCatchers &= ~KEYCATCH_CGAME;
-			VM_Call( cgvm, CG_EVENT_HANDLING, CGAME_EVENT_NONE );
-			return;
-		}
-
-		if ( !( cls.keyCatchers & KEYCATCH_UI ) ) {
-			if ( cls.state == CA_ACTIVE && !clc.demoplaying ) {
-				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
-			} else {
-				CL_Disconnect_f();
-				S_StopAllSounds();
-				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
-			}
-			return;
-		}
-
-		VM_Call( uivm, UI_KEY_EVENT, key, down );
-		return;
-	}
-
-	//
-	// key up events only perform actions if the game key binding is
-	// a button command (leading + sign).  These will be processed even in
-	// console mode and menu mode, to keep the character from continuing
-	// an action started before a mode switch.
-	//
-	if ( !down ) {
-		kb = keys[key].binding;
-		if ( kb && kb[0] == '+' ) {
-			// button commands add keynum and time as parms so that multiple
-			// sources can be discriminated and subframe corrected
-			Com_sprintf( cmd, sizeof( cmd ), "-%s %i %i\n", kb + 1, key, time );
-			Cbuf_AddText( cmd );
-		}
-
-		if ( cls.keyCatchers & KEYCATCH_UI && uivm ) {
-			VM_Call( uivm, UI_KEY_EVENT, key, down );
-		} else if ( cls.keyCatchers & KEYCATCH_CGAME && cgvm ) {
-			VM_Call( cgvm, CG_KEY_EVENT, key, down );
-		}
-
-		return;
-	}
-
-	// NERVE - SMF - if we just want to pass it along to game
-	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer ) {    //DAJ BUG in dedicated cl_missionStats don't exist
-		if ( ( key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3 ) ) {
-			if ( cl_bypassMouseInput->integer == 1 ) {
-				bypassMenu = qtrue;
-			}
-		} else if ( !UI_checkKeyExec( key ) ) {
-			bypassMenu = qtrue;
-		}
-	}
-
-	// distribute the key down event to the apropriate handler
-	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
-		Console_Key( key );
-	} else if ( cls.keyCatchers & KEYCATCH_UI && !bypassMenu ) {
-		kb = keys[key].binding;
-
-		if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_CLIPBOARD ) {
-			// any key gets out of clipboard
-			key = K_ESCAPE;
-		} else {
-
-			// when in the notebook, check for the key bound to "notebook" and allow that as an escape key
-
-			if ( kb ) {
-				if ( !Q_stricmp( "notebook", kb ) ) {
-					if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_NOTEBOOK ) {
-						key = K_ESCAPE;
-					}
-				}
-
-				if ( !Q_stricmp( "help", kb ) ) {
-					if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_HELP ) {
-						key = K_ESCAPE;
-					}
-				}
-			}
-		}
-
-		VM_Call( uivm, UI_KEY_EVENT, key, down );
-	} else if ( cls.keyCatchers & KEYCATCH_CGAME ) {
-		if ( cgvm ) {
-			VM_Call( cgvm, CG_KEY_EVENT, key, down );
-		}
-	} else if ( cls.keyCatchers & KEYCATCH_MESSAGE ) {
-		Message_Key( key );
-	} else if ( cls.state == CA_DISCONNECTED ) {
-
-		Console_Key( key );
-
-	} else {
-		// send the bound action
-		kb = keys[key].binding;
-		if ( !kb ) {
-			if ( key >= 200 ) {
-				Com_Printf( "%s is unbound, use controls menu to set.\n"
-							, Key_KeynumToString( key, qfalse ) );
-			}
-		} else if ( kb[0] == '+' ) {
-			// button commands add keynum and time as parms so that multiple
-			// sources can be discriminated and subframe corrected
-			Com_sprintf( cmd, sizeof( cmd ), "%s %i %i\n", kb, key, time );
-			Cbuf_AddText( cmd );
-		} else {
-			// down-only command
-			Cbuf_AddText( kb );
-			Cbuf_AddText( "\n" );
-		}
-	}
-}
-*/
-
-/*
-===================
 CL_BindUICommand
 
 Returns qtrue if bind command should be executed while user interface is shown
@@ -2099,6 +2189,8 @@ Called by CL_KeyEvent to handle a keypress
 */
 void CL_KeyDownEvent( int key, unsigned time )
 {
+	char    *kb;
+	qboolean bypassMenu = qfalse;       // NERVE - SMF
 	keys[key].down = qtrue;
 	keys[key].repeats++;
 	if( keys[key].repeats == 1 && key != K_SCROLLOCK && key != K_KP_NUMLOCK && key != K_CAPSLOCK )
@@ -2109,6 +2201,40 @@ void CL_KeyDownEvent( int key, unsigned time )
 		Cvar_SetValue( "r_fullscreen",
 			!Cvar_VariableIntegerValue( "r_fullscreen" ) );
 		return;
+	}
+
+	// are we waiting to clear stats and move to briefing screen
+	if ( qtrue && cl_waitForFire && cl_waitForFire->integer ) {    //DAJ BUG in dedicated cl_waitForFire don't exist
+		if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {   // get rid of the console
+			Con_ToggleConsole_f();
+		}
+		// clear all input controls
+		CL_ClearKeys();
+		// allow only attack command input
+		kb = keys[key].binding;
+		if ( !Q_stricmp( kb, "+attack" ) ) {
+			// clear the stats out, ignore the keypress
+			Cvar_Set( "g_missionStats", "xx" );       // just remove the stats, but still wait until we're done loading, and player has hit fire to begin playing
+			Cvar_Set( "cl_waitForFire", "0" );
+		}
+		return;     // no buttons while waiting
+	}
+
+	// are we waiting to begin the level
+	if ( qtrue && cl_missionStats && cl_missionStats->string[0] && cl_missionStats->string[1] ) {  //DAJ BUG in dedicated cl_missionStats don't exist
+		if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {   // get rid of the console
+			Con_ToggleConsole_f();
+		}
+		// clear all input controls
+		CL_ClearKeys();
+		// allow only attack command input
+		kb = keys[key].binding;
+		if ( !Q_stricmp( kb, "+attack" ) ) {
+			// clear the stats out, ignore the keypress
+			Cvar_Set( "com_expectedhunkusage", "-1" );
+			Cvar_Set( "g_missionStats", "0" );
+		}
+		return;     // no buttons while waiting
 	}
 
 	// console key is hardcoded, so the user can never unbind it
@@ -2161,13 +2287,46 @@ void CL_KeyDownEvent( int key, unsigned time )
 		return;
 	}
 
+	// NERVE - SMF - if we just want to pass it along to game
+	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer ) {    //DAJ BUG in dedicated cl_missionStats don't exist
+		if ( ( key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3 ) ) {
+			if ( cl_bypassMouseInput->integer == 1 ) {
+				bypassMenu = qtrue;
+			}
+		} else if ( !UI_checkKeyExec( key ) ) {
+			bypassMenu = qtrue;
+		}
+	}
+
 	// distribute the key down event to the apropriate handler
 	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {
 		Console_Key( key );
-	} else if ( Key_GetCatcher( ) & KEYCATCH_UI ) {
-		if ( uivm ) {
-			VM_Call( uivm, UI_KEY_EVENT, key, qtrue );
-		} 
+	} else if ( Key_GetCatcher( ) & KEYCATCH_UI && !bypassMenu ) {
+		kb = keys[key].binding;
+
+		if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_CLIPBOARD ) {
+			// any key gets out of clipboard
+			key = K_ESCAPE;
+		} else {
+
+			// when in the notebook, check for the key bound to "notebook" and allow that as an escape key
+
+			if ( kb ) {
+				if ( !Q_stricmp( "notebook", kb ) ) {
+					if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_NOTEBOOK ) {
+						key = K_ESCAPE;
+					}
+				}
+
+				if ( !Q_stricmp( "help", kb ) ) {
+					if ( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_HELP ) {
+						key = K_ESCAPE;
+					}
+				}
+			}
+		}
+
+		VM_Call( uivm, UI_KEY_EVENT, key, qtrue );
 	} else if ( Key_GetCatcher( ) & KEYCATCH_CGAME ) {
 		if ( cgvm ) {
 			VM_Call( cgvm, CG_KEY_EVENT, key, qtrue );
@@ -2439,3 +2598,4 @@ void CL_SaveConsoleHistory( void )
 
 	FS_FCloseFile( f );
 }
+
