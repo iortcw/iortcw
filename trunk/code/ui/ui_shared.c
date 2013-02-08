@@ -5690,6 +5690,28 @@ void Item_SetupKeywordHash( void ) {
 
 /*
 ===============
+UI_ApplyItemHacks
+
+Hacks to fix issues with menu scripts
+===============
+*/
+static void Item_ApplyHacks( itemDef_t *item ) {
+
+       // Fix length of favorite address in createfavorite.menu
+       if ( item->type == ITEM_TYPE_EDITFIELD && item->cvar && !Q_stricmp( item->cvar, "ui_favoriteAddress" ) ) {
+               editFieldDef_t *editField = (editFieldDef_t *)item->typeData;
+
+               // enough to hold an IPv6 address plus null
+               if ( editField->maxChars < 48 ) {
+                       Com_Printf( "Extended create favorite address edit field length to hold an IPv6 address\n" );
+                       editField->maxChars = 48;
+               }
+       }
+
+}
+
+/*
+===============
 Item_Parse
 ===============
 */
@@ -5711,6 +5733,7 @@ qboolean Item_Parse( int handle, itemDef_t *item ) {
 		}
 
 		if ( *token.string == '}' ) {
+			Item_ApplyHacks( item );
 			return qtrue;
 		}
 
