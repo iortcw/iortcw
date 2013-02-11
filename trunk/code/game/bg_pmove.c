@@ -3832,9 +3832,7 @@ void PmoveSingle( pmove_t *pmove ) {
 	}
 
 
-	if ( !( pm->ps->pm_flags & PMF_RESPAWNED ) &&
-		 ( pm->ps->pm_type != PM_INTERMISSION ) ) {
-
+	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP ) {
 		// check for ammo
 		if ( PM_WeaponAmmoAvailable( pm->ps->weapon ) ) {
 			// check if zooming
