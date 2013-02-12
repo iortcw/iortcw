@@ -2263,7 +2263,8 @@ void        trap_SendConsoleCommand( const char *text );
 
 // register a command name so the console can perform command completion.
 // FIXME: replace this with a normal console command "defineCommand"?
-void        trap_AddCommand( const char *cmdName );
+void	trap_AddCommand( const char *cmdName );
+void	trap_RemoveCommand( const char *cmdName );
 
 // send a string to the server over the network
 void        trap_SendClientCommand( const char *s );
@@ -2351,6 +2352,7 @@ void        trap_R_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVe
 void        trap_R_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts, int numPolys );
 // done.
 void        trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
+void	    trap_R_AddAdditiveLightToScene( const vec3_t org, float intensity, float r, float g, float b );
 void        trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, qboolean visible );
 void        trap_R_RenderScene( const refdef_t *fd );
 void        trap_R_SetColor( const float *rgba );   // NULL = 1,1,1,1
@@ -2364,6 +2366,7 @@ void        trap_R_DrawStretchPicGradient( float x, float y, float w, float h,
 void        trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
 int         trap_R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagName, int startIndex );
 void        trap_R_RemapShader( const char *oldShader, const char *newShader, const char *timeOffset );
+qboolean    trap_R_inPVS( const vec3_t p1, const vec3_t p2 );
 
 //----(SA)
 void    trap_R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density );
@@ -2445,6 +2448,7 @@ e_status trap_CIN_RunCinematic( int handle );
 void trap_CIN_DrawCinematic( int handle );
 void trap_CIN_SetExtents( int handle, int x, int y, int w, int h );
 
+int trap_RealTime(qtime_t *qtime);
 void trap_SnapVector( float *v );
 
 qboolean    trap_GetEntityToken( char *buffer, int bufferSize );
