@@ -363,7 +363,7 @@ static void ComputeTexMatrix( shaderStage_t *pStage, int bundleNum, float *outma
 			break;
 
 		default:
-			ri.Error( ERR_DROP, "ERROR: unknown texmod '%d' in shader '%s'\n", bundle->texMods[tm].type, tess.shader->name );
+			ri.Error( ERR_DROP, "ERROR: unknown texmod '%d' in shader '%s'", bundle->texMods[tm].type, tess.shader->name );
 			break;
 		}
 	}

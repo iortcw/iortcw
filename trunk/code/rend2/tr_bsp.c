@@ -3753,7 +3753,7 @@ void RE_LoadWorldMap( const char *name ) {
 	skyboxportal = 0;
 
 	if ( tr.worldMapLoaded ) {
-		ri.Error( ERR_DROP, "ERROR: attempted to redundantly load world map\n" );
+		ri.Error( ERR_DROP, "ERROR: attempted to redundantly load world map" );
 	}
 
 	// set default map light scale
