@@ -81,7 +81,7 @@ static void GLSL_PrintInfoLog(GLhandleARB object, qboolean developerOnly)
 	}
 	else
 	{
-		msg = ri.Malloc(maxLength);
+		msg = ri.Z_Malloc(maxLength);
 
 		qglGetInfoLogARB(object, maxLength, &maxLength, msg);
 
@@ -105,7 +105,7 @@ static void GLSL_PrintShaderSource(GLhandleARB object)
 
 	qglGetObjectParameterivARB(object, GL_OBJECT_SHADER_SOURCE_LENGTH_ARB, &maxLength);
 
-	msg = ri.Malloc(maxLength);
+	msg = ri.Z_Malloc(maxLength);
 
 	qglGetShaderSourceARB(object, maxLength, &maxLength, msg);
 
@@ -475,18 +475,18 @@ static int GLSL_InitGPUShader2(shaderProgram_t * program, const char *name, int 
 		int i, size;
 
 		size = sizeof(*program->uniforms) * numUniforms;
-		program->uniforms = ri.Malloc(size);
+		program->uniforms = ri.Z_Malloc(size);
 		for (i = 0; i < numUniforms; i++)
 		{
 			program->uniforms[i] = -1;
 		}
 
 		size = sizeof(*program->uniformTypes) * numUniforms;
-		program->uniformTypes = ri.Malloc(size);
+		program->uniformTypes = ri.Z_Malloc(size);
 		memset(program->uniformTypes, 0, size);
 
 		size = sizeof(*program->uniformBufferOffsets) * numUniforms;
-		program->uniformBufferOffsets = ri.Malloc(size);
+		program->uniformBufferOffsets = ri.Z_Malloc(size);
 		memset(program->uniformBufferOffsets, 0, size);
 	}
 
@@ -596,7 +596,7 @@ void GLSL_EndUniforms(shaderProgram_t *program)
 			}
 		}
 
-		program->uniformBuffer = ri.Malloc(size);
+		program->uniformBuffer = ri.Z_Malloc(size);
 
 	}
 }
