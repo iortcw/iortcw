@@ -303,7 +303,7 @@ itemconfig_t *LoadItemConfig( char *filename ) {
 			memset( ii, 0, sizeof( iteminfo_t ) );
 			if ( !PC_ExpectTokenType( source, TT_STRING, 0, &token ) ) {
 				FreeMemory( ic );
-				FreeMemory( source );
+				FreeSource( source );
 				return NULL;
 			} //end if
 			StripDoubleQuotes( token.string );
