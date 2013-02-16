@@ -63,8 +63,6 @@ typedef struct {
 	vec4_t color;
 } console_t;
 
-extern console_t con;
-
 console_t con;
 
 cvar_t      *con_debug;
