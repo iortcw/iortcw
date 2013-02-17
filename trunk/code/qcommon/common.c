@@ -1553,7 +1553,7 @@ void Hunk_SmallLog( void ) {
 
 /*
 =================
-Com_InitZoneMemory
+Com_InitHunkMemory
 =================
 */
 void Com_InitHunkMemory( void ) {
@@ -2690,7 +2690,7 @@ Com_Init
 */
 void Com_Init( char *commandLine ) {
 	char    *s;
-	char    *t;
+	char	*t;
 	int	qport;
 
 	// TTimo gcc warning: variable `safeMode' might be clobbered by `longjmp' or `vfork'
@@ -2727,7 +2727,7 @@ void Com_Init( char *commandLine ) {
 	Com_StartupVariable( NULL );
 
 	Com_InitZoneMemory();
-	Cmd_Init();
+	Cmd_Init ();
 
 	// get the developer cvar set as early as possible
 	com_developer = Cvar_Get("developer", "0", CVAR_TEMP);
@@ -2746,6 +2746,8 @@ void Com_Init( char *commandLine ) {
 
 	Com_InitJournaling();
 
+	// DHM - Nerve
+#ifndef UPDATE_SERVER
 	// Add some commands here already so users can use them from config files
 	Cmd_AddCommand ("setenv", Com_Setenv_f);
 	if (com_developer && com_developer->integer)
@@ -2759,18 +2761,9 @@ void Com_Init( char *commandLine ) {
 	Cmd_AddCommand ("writeconfig", Com_WriteConfig_f );
 	Cmd_SetCommandCompletionFunc( "writeconfig", Cmd_CompleteCfgName );
 	Cmd_AddCommand("game_restart", Com_GameRestart_f);
+#endif
 
 	Com_ExecuteCfg();
-
-	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
-	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, __DATE__ );
-	com_fsgame = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
-
-	if ( strcmp(com_fsgame->string,"banimod") == 0 || strcmp(com_fsgame->string,"bani") == 0 ) {
-			com_version = Cvar_Get( "version", t, CVAR_ROM | CVAR_SERVERINFO );
-	} else {
-			com_version = Cvar_Get( "version", s, CVAR_ROM | CVAR_SERVERINFO );
-	}
 
 	// override anything from the config files with command line args
 	Com_StartupVariable( NULL );
@@ -2781,7 +2774,7 @@ void Com_Init( char *commandLine ) {
 	Cvar_CheckRange( com_dedicated, 1, 2, qtrue );
 #elif DEDICATED
 	// TTimo: default to internet dedicated, not LAN dedicated
-	com_dedicated = Cvar_Get( "dedicated", "2", CVAR_INIT );
+	com_dedicated = Cvar_Get( "dedicated", "2", CVAR_ROM );
 	Cvar_CheckRange( com_dedicated, 2, 2, qtrue );
 #else
 	com_dedicated = Cvar_Get( "dedicated", "0", CVAR_LATCH );
@@ -2798,7 +2791,7 @@ void Com_Init( char *commandLine ) {
 	// init commands and vars
 	//
 	com_altivec = Cvar_Get ("com_altivec", "1", CVAR_ARCHIVE);
-	com_maxfps = Cvar_Get( "com_maxfps", "76", CVAR_ARCHIVE | CVAR_LATCH );
+	com_maxfps = Cvar_Get( "com_maxfps", "85", CVAR_ARCHIVE | CVAR_LATCH );
 	com_blood = Cvar_Get( "com_blood", "1", CVAR_ARCHIVE );
 
 	com_logfile = Cvar_Get( "logfile", "0", CVAR_TEMP );
@@ -2830,7 +2823,15 @@ void Com_Init( char *commandLine ) {
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE );
 	com_recommendedSet = Cvar_Get( "com_recommendedSet", "0", CVAR_ARCHIVE );
 
-	com_hunkused = Cvar_Get( "com_hunkused", "0", 0 );
+	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
+	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, __DATE__ );
+	com_fsgame = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
+
+	if ( strcmp(com_fsgame->string,"banimod") == 0 || strcmp(com_fsgame->string,"bani") == 0 ) {
+			com_version = Cvar_Get( "version", t, CVAR_ROM | CVAR_SERVERINFO );
+	} else {
+			com_version = Cvar_Get( "version", s, CVAR_ROM | CVAR_SERVERINFO );
+	}
 	com_gamename = Cvar_Get("com_gamename", GAMENAME_FOR_MASTER, CVAR_SERVERINFO | CVAR_INIT);
 	com_protocol = Cvar_Get("com_protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO | CVAR_INIT);
 #ifdef LEGACY_PROTOCOL
@@ -2842,6 +2843,8 @@ void Com_Init( char *commandLine ) {
 	else
 #endif
 		Cvar_Get("protocol", com_protocol->string, CVAR_ROM);
+
+	com_hunkused = Cvar_Get( "com_hunkused", "0", 0 );
 
 	Sys_Init();
 
@@ -2865,6 +2868,7 @@ void Com_Init( char *commandLine ) {
 	SV_Init();
 
 	com_dedicated->modified = qfalse;
+
 #ifndef DEDICATED
 	CL_Init();
 #endif
@@ -2877,13 +2881,6 @@ void Com_Init( char *commandLine ) {
 	// add + commands from command line
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
-		if ( !com_dedicated->integer ) {
-			Cbuf_AddText( "cinematic gmlogo.RoQ\n" );
-			if ( !com_introPlayed->integer ) {
-				Cvar_Set( com_introPlayed->name, "1" );
-				Cvar_Set( "nextmap", "cinematic wolfintro.RoQ" );
-			}
-		}
 	}
 
 	// start in full screen ui mode
@@ -2891,17 +2888,20 @@ void Com_Init( char *commandLine ) {
 
 	CL_StartHunkUsers( qfalse );
 
-	// delay this so potential wicked3d dll can find a wolf window
-//	if ( !com_dedicated->integer ) {
-//		Sys_ShowConsole( com_viewlog->integer, qfalse );
-//	}
-
 	// NERVE - SMF - force recommendedSet and don't do vid_restart if in safe mode
 	if ( !com_recommendedSet->integer && !safeMode ) {
 		Com_SetRecommended();
 		Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 	}
 	Cvar_Set( "com_recommendedSet", "1" );
+
+	if ( !com_dedicated->integer ) {
+		Cbuf_AddText( "cinematic gmlogo.RoQ\n" );
+		if ( !com_introPlayed->integer ) {
+			Cvar_Set( com_introPlayed->name, "1" );
+			Cvar_Set( "nextmap", "cinematic wolfintro.RoQ" );
+		}
+	}
 
 	com_fullyInitialized = qtrue;
 
