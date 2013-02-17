@@ -2774,7 +2774,7 @@ void Com_Init( char *commandLine ) {
 	Cvar_CheckRange( com_dedicated, 1, 2, qtrue );
 #elif DEDICATED
 	// TTimo: default to internet dedicated, not LAN dedicated
-	com_dedicated = Cvar_Get( "dedicated", "2", CVAR_ROM );
+	com_dedicated = Cvar_Get( "dedicated", "2", CVAR_INIT );
 	Cvar_CheckRange( com_dedicated, 2, 2, qtrue );
 #else
 	com_dedicated = Cvar_Get( "dedicated", "0", CVAR_LATCH );
@@ -2791,7 +2791,7 @@ void Com_Init( char *commandLine ) {
 	// init commands and vars
 	//
 	com_altivec = Cvar_Get ("com_altivec", "1", CVAR_ARCHIVE);
-	com_maxfps = Cvar_Get( "com_maxfps", "85", CVAR_ARCHIVE | CVAR_LATCH );
+	com_maxfps = Cvar_Get( "com_maxfps", "76", CVAR_ARCHIVE | CVAR_LATCH );
 	com_blood = Cvar_Get( "com_blood", "1", CVAR_ARCHIVE );
 
 	com_logfile = Cvar_Get( "logfile", "0", CVAR_TEMP );
