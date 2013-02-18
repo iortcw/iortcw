@@ -194,7 +194,7 @@ void main()
 	vec3 worldLight = u_LightOrigin.xyz - (position.xyz * u_LightOrigin.w);
   #endif
   #if !defined(USE_FAST_LIGHT)
-	var_WorldLight = worldLight;
+	var_WorldLight = worldLight + normal * 0.00001;
   #endif
 #endif
 	
