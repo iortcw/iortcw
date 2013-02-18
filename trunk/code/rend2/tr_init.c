@@ -1360,7 +1360,7 @@ void R_Register( void ) {
 	r_swapInterval = ri.Cvar_Get( "r_swapInterval", "0",
 					CVAR_ARCHIVE | CVAR_LATCH );
 
-	r_gamma = ri.Cvar_Get( "r_gamma", "1.3", CVAR_ARCHIVE );
+	r_gamma = ri.Cvar_Get( "r_gamma", "1", CVAR_ARCHIVE ); // Varies by system and platform, so just default to 1
 	r_facePlaneCull = ri.Cvar_Get( "r_facePlaneCull", "1", CVAR_ARCHIVE );
 
 	r_railWidth = ri.Cvar_Get( "r_railWidth", "16", CVAR_ARCHIVE );
