@@ -78,7 +78,6 @@ typedef struct {
 
 	qboolean needDlights;       // true for bmodels that touch a dlight
 	qboolean lightingCalculated;
-	// JBravo: Mirrored models
 	qboolean	mirrored;		// mirrored matrix, needs reversed culling
 	vec3_t lightDir;            // normalized direction towards light
 	vec3_t ambientLight;        // color normalized to 0-255
@@ -794,7 +793,7 @@ enum
 	GLSL_MAT16
 };
 
-// Tr3B - shaderProgram_t represents a pair of one
+// shaderProgram_t represents a pair of one
 // GLSL vertex and one GLSL fragment shader
 typedef struct shaderProgram_s
 {
@@ -942,7 +941,7 @@ enum
 };
 
 //
-// Tr3B: these are fire wall functions to avoid expensive redundant glUniform* calls
+// These are fire wall functions to avoid expensive redundant glUniform* calls
 //#define USE_UNIFORM_FIREWALL 1
 //#define LOG_GLSL_UNIFORMS 1
 
