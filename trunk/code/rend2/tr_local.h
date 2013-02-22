@@ -2959,8 +2959,8 @@ typedef struct {
 	dlight_t dlights[MAX_DLIGHTS];
 	corona_t coronas[MAX_CORONAS];          //----(SA)
 	trRefEntity_t entities[MAX_REFENTITIES];
-	srfPoly_t polys[MAX_POLYS];
-	polyVert_t polyVerts[MAX_POLYVERTS];
+	srfPoly_t *polys;//[MAX_POLYS];
+	polyVert_t *polyVerts;//[MAX_POLYVERTS];
 	pshadow_t pshadows[MAX_CALC_PSHADOWS];
 	renderCommandList_t commands;
 } backEndData_t;
