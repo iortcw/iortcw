@@ -648,6 +648,7 @@ issues.
 // #define FS_QAGAME_REF   0x08
 // number of id paks that will never be autodownloaded from main
 #define NUM_ID_PAKS     10
+#define NUM_MP_PAKS	6
 
 #define MAX_FILE_HANDLES    64
 

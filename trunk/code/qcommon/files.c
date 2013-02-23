@@ -191,7 +191,10 @@ or configs will never get loaded from disk!
 #define DEMO_PAK0_CHECKSUM   2031778175u
 
 static const unsigned int pak_checksums[] = {
-	1886207346u,
+	1886207346u
+};
+
+static const unsigned int mppak_checksums[] = {
 	764840216u,
 	-1023558518u,
 	125907563u,
@@ -3541,7 +3544,7 @@ static void FS_CheckPak0( void )
 	}
 
 
-	if(!com_standalone->integer && (foundPak & 0x1ff) != 0x1ff)
+	if(!com_standalone->integer && (foundPak & 0x01) != 0x01)
 	{
 		char errorText[MAX_STRING_CHARS] = "";
 
@@ -3552,7 +3555,107 @@ static void FS_CheckPak0( void )
 				"from your legitimate RTCW CDROM. ");
 		}
 
-		if((foundPak & 0x1fe) != 0x1fe)
+		Com_Error(ERR_FATAL, "%s", errorText);
+	}
+	
+}
+
+/*
+===================
+FS_CheckMPPaks
+
+Check whether any of the original id pak files is present,
+and start up in standalone mode, if there are none and a
+different com_basegame was set.
+Note: If you're building a game that doesn't depend on the
+RTCW media mp_pak0.pk3, you'll want to remove this by defining
+STANDALONE in q_shared.h
+===================
+*/
+static void FS_CheckMPPaks( void )
+{
+	searchpath_t	*path;
+	pack_t		*curpack;
+	unsigned int foundPak = 0;
+
+	for( path = fs_searchpaths; path; path = path->next )
+	{
+		const char* pakBasename = path->pack->pakBasename;
+
+		if(!path->pack)
+			continue;
+		
+		curpack = path->pack;
+
+		if(!Q_stricmpn( curpack->pakGamename, BASEGAME, MAX_OSPATH )
+			&& strlen(pakBasename) == 7 && !Q_stricmpn( pakBasename, "mp_pak", 6 )
+			&& pakBasename[6] >= '0' && pakBasename[6] <= '0' + NUM_MP_PAKS - 1)
+		{
+			if( curpack->checksum != mppak_checksums[pakBasename[6]-'0'] )
+			{
+				if(pakBasename[6] == '0')
+				{
+					Com_Printf("\n\n"
+						"**************************************************\n"
+						"WARNING: " BASEGAME "/mp_pak0.pk3 is present but its checksum (%u)\n"
+						"is not correct. Please re-copy pak0.pk3 from your\n"
+						"legitimate RTCW CDROM.\n"
+						"**************************************************\n\n\n",
+						curpack->checksum );
+				}
+				else
+				{
+					Com_Printf("\n\n"
+						"**************************************************\n"
+						"WARNING: " BASEGAME "/mp_pak%d.pk3 is present but its checksum (%u)\n"
+						"is not correct. Please re-install the point release\n"
+						"**************************************************\n\n\n",
+						pakBasename[6]-'0', curpack->checksum );
+				}
+			}
+
+			foundPak |= 1<<(pakBasename[6]-'0');
+		}
+		else
+		{
+			int index;
+			
+			// Finally check whether this pak's checksum is listed because the user tried
+			// to trick us by renaming the file, and set foundPak's highest bit to indicate this case.
+			
+			for(index = 0; index < ARRAY_LEN(mppak_checksums); index++)
+			{
+				if(curpack->checksum == mppak_checksums[index])
+				{
+					Com_Printf("\n\n"
+						"**************************************************\n"
+						"WARNING: %s is renamed pak file %s%cmp_pak%d.pk3\n"
+						"Running in standalone mode won't work\n"
+						"Please rename, or remove this file\n"
+						"**************************************************\n\n\n",
+						curpack->pakFilename, BASEGAME, PATH_SEP, index);
+
+
+					foundPak |= 0x80000000;
+				}
+			}
+
+		}
+	}
+
+	if(!foundPak && Q_stricmp(com_basegame->string, BASEGAME))
+	{
+		Cvar_Set("com_standalone", "1");
+	}
+	else
+		Cvar_Set("com_standalone", "0");
+
+
+	if(!com_standalone->integer && (foundPak & 0x3f) != 0x3f)
+	{
+		char errorText[MAX_STRING_CHARS] = "";
+
+		if((foundPak & 0x3f) != 0x3f)
 		{
 			Q_strcat(errorText, sizeof(errorText),
 				"Point Release files are missing. Please "
@@ -4231,7 +4334,8 @@ void FS_InitFilesystem( void ) {
 	FS_Startup(com_basegame->string);
 
 #ifndef STANDALONE
-//	FS_CheckPak0( );
+	FS_CheckPak0( );
+	FS_CheckMPPaks( );
 #endif
 
 #ifndef UPDATE_SERVER
@@ -4269,7 +4373,8 @@ void FS_Restart( int checksumFeed ) {
 	FS_Startup(com_basegame->string);
 
 #ifndef STANDALONE
-//	FS_CheckPak0( );
+	FS_CheckPak0( );
+	FS_CheckMPPaks( );
 #endif
 
 	// if we can't find default.cfg, assume that the paths are
