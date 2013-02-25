@@ -1569,6 +1569,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	level.voteTime = level.time;
 	level.voteYes = 1;
 	level.voteNo = 0;
+	ent->client->pers.voteCount++;
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		level.clients[i].ps.eFlags &= ~EF_VOTED;
