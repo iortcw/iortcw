@@ -82,7 +82,12 @@ vec3 DeformPosition(const vec3 pos, const vec3 normal, const vec2 st)
 
 float CalcFog(vec4 position)
 {
-	float s = dot(position, u_FogDistance) * 8.0;
+	float s = dot(position, u_FogDistance);
+#if defined(USE_WOLF_FOG_LINEAR)
+	return 1.0 - (u_FogDepth.y - s) / (u_FogDepth.y - u_FogDepth.x);
+#elif defined(USE_WOLF_FOG_EXPONENTIAL)
+	return 1.0 - exp(-u_FogDepth.z * s);
+#else // defined(USE_QUAKE3_FOG)
 	float t = dot(position, u_FogDepth);
 
 	if (t < 1.0)
@@ -94,7 +99,8 @@ float CalcFog(vec4 position)
 		t /= t - min(u_FogEyeT, 0.0);
 	}
 	
-	return s * t;
+	return s * 8.0 * t;
+#endif
 }
 
 void main()

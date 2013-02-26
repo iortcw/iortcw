@@ -97,34 +97,34 @@ void R_Fog( glfog_t *curfog ) {
 	// only send changes if necessary
 
 //	if(curfog->mode != setfog.mode || !setfog.registered) {
-	qglFogi( GL_FOG_MODE, curfog->mode );
+	//qglFogi( GL_FOG_MODE, curfog->mode );
 //		setfog.mode = curfog->mode;
 //	}
 //	if(curfog->color[0] != setfog.color[0] || curfog->color[1] != setfog.color[1] || curfog->color[2] != setfog.color[2] || !setfog.registered) {
-	qglFogfv( GL_FOG_COLOR, curfog->color );
+	//qglFogfv( GL_FOG_COLOR, curfog->color );
 //		VectorCopy(setfog.color, curfog->color);
 //	}
 //	if(curfog->density != setfog.density || !setfog.registered) {
-	qglFogf( GL_FOG_DENSITY, curfog->density );
+	//qglFogf( GL_FOG_DENSITY, curfog->density );
 //		setfog.density = curfog->density;
 //	}
 //	if(curfog->hint != setfog.hint || !setfog.registered) {
-	qglHint( GL_FOG_HINT, curfog->hint );
+	//qglHint( GL_FOG_HINT, curfog->hint );
 //		setfog.hint = curfog->hint;
 //	}
 //	if(curfog->start != setfog.start || !setfog.registered) {
-	qglFogf( GL_FOG_START, curfog->start );
+	//qglFogf( GL_FOG_START, curfog->start );
 //		setfog.start = curfog->start;
 //	}
 
 	if ( r_zfar->value ) {             // (SA) allow override for helping level designers test fog distances
 //		if(setfog.end != r_zfar->value || !setfog.registered) {
-		qglFogf( GL_FOG_END, r_zfar->value );
+		//qglFogf( GL_FOG_END, r_zfar->value );
 //			setfog.end = r_zfar->value;
 //		}
 	} else {
 //		if(curfog->end != setfog.end || !setfog.registered) {
-		qglFogf( GL_FOG_END, curfog->end );
+		//qglFogf( GL_FOG_END, curfog->end );
 //			setfog.end = curfog->end;
 //		}
 	}
@@ -132,13 +132,13 @@ void R_Fog( glfog_t *curfog ) {
 // TTimo - from SP NV fog code
 	// NV fog mode
 	if ( glConfig.NVFogAvailable ) {
-		qglFogi( GL_FOG_DISTANCE_MODE_NV, glConfig.NVFogMode );
+		//qglFogi( GL_FOG_DISTANCE_MODE_NV, glConfig.NVFogMode );
 	}
 // end
 
 	setfog.registered = qtrue;
 
-	qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
+	//qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
 
 
 }
@@ -148,7 +148,7 @@ void R_FogOff( void ) {
 	if ( !fogIsOn ) {
 		return;
 	}
-	qglDisable( GL_FOG );
+	//qglDisable( GL_FOG );
 	fogIsOn = qfalse;
 }
 
@@ -179,7 +179,7 @@ void R_FogOn( void ) {
 		return;
 	}
 
-	qglEnable( GL_FOG );
+	//qglEnable( GL_FOG );
 	fogIsOn = qtrue;
 }
 // done.

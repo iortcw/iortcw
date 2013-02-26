@@ -863,11 +863,27 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 }
 
 
-static void ComputeFogValues(vec4_t fogDistanceVector, vec4_t fogDepthVector, float *eyeT)
+static void ComputeFogValues(vec4_t fogDistanceVector, vec4_t fogDepthVector, float *eyeT, glfog_t *glFog)
 {
 	// from RB_CalcFogTexCoords()
 	fog_t  *fog;
 	vec3_t  local;
+
+	if (glFog)
+	{
+		VectorSubtract( backEnd.or.origin, backEnd.viewParms.or.origin, local );
+		fogDistanceVector[0] = -backEnd.or.modelMatrix[2];
+		fogDistanceVector[1] = -backEnd.or.modelMatrix[6];
+		fogDistanceVector[2] = -backEnd.or.modelMatrix[10];
+		fogDistanceVector[3] = DotProduct( local, backEnd.viewParms.or.axis[0] );
+		
+		fogDepthVector[0] = glFog->start;
+		fogDepthVector[1] = glFog->end;
+		fogDepthVector[2] = glFog->density;
+		fogDepthVector[3] = 1.0;
+	
+		return;
+	}
 
 	if (!tess.fogNum)
 		return;
@@ -953,7 +969,7 @@ static void ForwardDlight( void ) {
 	
 	ComputeDeformValues(&deformGen, deformParams);
 
-	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT);
+	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, NULL);
 
 	for ( l = 0 ; l < backEnd.refdef.num_dlights ; l++ ) {
 		dlight_t	*dl;
@@ -1108,7 +1124,7 @@ static void ForwardSunlight( void ) {
 	
 	ComputeDeformValues(&deformGen, deformParams);
 
-	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT);
+	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, NULL);
 
 	// deal with vertex alpha blended surfaces
 	if (input->xstages[0] && input->xstages[1] && 
@@ -1367,7 +1383,7 @@ static void ProjectPshadowVBOGLSL( void ) {
 	}
 }
 
-
+extern qboolean fogIsOn;
 
 /*
 ===================
@@ -1376,18 +1392,45 @@ RB_FogPass
 Blends a fog texture on top of everything else
 ===================
 */
-static void RB_FogPass( void ) {
+static void RB_FogPass( int wolfFog ) {
 	fog_t		*fog;
 	vec4_t  color;
 	vec4_t	fogDistanceVector, fogDepthVector = {0, 0, 0, 0};
 	float	eyeT = 0;
 	shaderProgram_t *sp;
+	glfog_t *glFog = NULL;
 
 	int deformGen;
 	vec5_t deformParams;
 
 	if ( tr.refdef.rdflags & RDF_SNOOPERVIEW ) { // no fog pass in snooper
 		return;
+	}
+
+	if (!fogIsOn)
+		return;
+ 
+	if (wolfFog)
+	{
+		// from R_Fog(), altered slightly
+		if ( backEnd.refdef.rdflags & RDF_DRAWINGSKY ) {
+			if ( glfogsettings[FOG_SKY].registered ) {
+				glFog = &glfogsettings[FOG_SKY];
+			}
+		}
+
+		if ( skyboxportal && backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) {
+			if ( glfogsettings[FOG_PORTALVIEW].registered ) {
+				glFog = &glfogsettings[FOG_PORTALVIEW];
+			}
+		} else {
+			if ( glfogNum > FOG_NONE ) {
+				glFog = &glfogsettings[FOG_CURRENT];
+			}
+		}
+		
+		if (!glFog)
+			return;
 	}
 
 	ComputeDeformValues(&deformGen, deformParams);
@@ -1400,6 +1443,14 @@ static void RB_FogPass( void ) {
 
 		if (glState.vertexAttribsInterpolation)
 			index |= FOGDEF_USE_VERTEX_ANIMATION;
+
+		if (wolfFog)
+		{
+			if (glFog->mode == GL_LINEAR)
+				index |= FOGDEF_USE_WOLF_FOG_LINEAR;
+			else // if (glFog->mode == GL_EXP)
+				index |= FOGDEF_USE_WOLF_FOG_EXPONENTIAL;
+		}
 		
 		sp = &tr.fogShader[index];
 	}
@@ -1408,7 +1459,8 @@ static void RB_FogPass( void ) {
 
 	GLSL_BindProgram(sp);
 
-	fog = tr.world->fogs + tess.fogNum;
+	if (!wolfFog)
+		fog = tr.world->fogs + tess.fogNum;
 
 	GLSL_SetUniformMatrix16(sp, FOGPASS_UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 
@@ -1421,13 +1473,24 @@ static void RB_FogPass( void ) {
 		GLSL_SetUniformFloat(sp, FOGPASS_UNIFORM_TIME, tess.shaderTime);
 	}
 
-	color[0] = ((unsigned char *)(&fog->colorInt))[0] / 255.0f;
-	color[1] = ((unsigned char *)(&fog->colorInt))[1] / 255.0f;
-	color[2] = ((unsigned char *)(&fog->colorInt))[2] / 255.0f;
-	color[3] = ((unsigned char *)(&fog->colorInt))[3] / 255.0f;
+	if (wolfFog)
+	{
+		color[0] = glFog->color[0];
+		color[1] = glFog->color[1];
+		color[2] = glFog->color[2];
+		color[3] = glFog->color[3];
+	}
+	else
+	{
+		color[0] = ((unsigned char *)(&fog->colorInt))[0] / 255.0f;
+		color[1] = ((unsigned char *)(&fog->colorInt))[1] / 255.0f;
+		color[2] = ((unsigned char *)(&fog->colorInt))[2] / 255.0f;
+		color[3] = ((unsigned char *)(&fog->colorInt))[3] / 255.0f;
+	}
+
 	GLSL_SetUniformVec4(sp, FOGPASS_UNIFORM_COLOR, color);
 
-	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT);
+	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, glFog);
 
 	GLSL_SetUniformVec4(sp, FOGPASS_UNIFORM_FOGDISTANCE, fogDistanceVector);
 	GLSL_SetUniformVec4(sp, FOGPASS_UNIFORM_FOGDEPTH, fogDepthVector);
@@ -1484,7 +1547,7 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 
 	ComputeDeformValues(&deformGen, deformParams);
 
-	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT);
+	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, NULL);
 
 	for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
 	{
@@ -2069,7 +2132,46 @@ void RB_StageIteratorGeneric( void )
 	// now do fog
 	//
 	if ( tess.fogNum && tess.shader->fogPass ) {
-		RB_FogPass();
+		RB_FogPass(0);
+	}
+
+	//
+	// RTCW fog
+	// may not match original RTCW fog, since that's done per stage
+	//
+	if ( r_wolffog->integer && tess.shader->fogPass && tess.shader->sort <= SS_OPAQUE )
+	{
+		int stage, stageFog = 0;
+		
+		// make sure at least one stage has fog
+		for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
+		{
+			shaderStage_t *pStage = tess.xstages[stage];
+ 
+			if ( !pStage )
+			{
+				break;
+			}
+
+			if (pStage->isFogged)
+			{
+				stageFog = 1;
+				break;
+			}
+		}
+		
+		// FIXME: this logic sucks
+		if (tess.shader->noFog && stageFog)
+		{
+			RB_FogPass(1);
+		}
+		else if (tess.shader->noFog && !stageFog)
+		{
+		}
+		else
+		{
+			RB_FogPass(1);
+		}
 	}
 
 	//
