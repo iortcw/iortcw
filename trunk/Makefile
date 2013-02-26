@@ -1438,7 +1438,6 @@ Q3R2OBJ = \
   $(B)/rend2/tr_backend.o \
   $(B)/rend2/tr_bsp.o \
   $(B)/rend2/tr_cmds.o \
-  $(B)/rend2/tr_cmesh.o \
   $(B)/rend2/tr_curve.o \
   $(B)/rend2/tr_extramath.o \
   $(B)/rend2/tr_extensions.o \

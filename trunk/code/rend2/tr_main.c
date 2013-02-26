@@ -2311,13 +2311,6 @@ static void R_AddEntitySurface (int entityNum)
 			case MOD_MESH:
 				R_AddMD3Surfaces( ent );
 				break;
-#if 0
-				// Ridah
-			case MOD_MDC:
-				R_AddMDCSurfaces( ent );
-				break;
-				// done.
-#endif
 			case MOD_MDS:
 				R_AddAnimSurfaces( ent );
 				break;
