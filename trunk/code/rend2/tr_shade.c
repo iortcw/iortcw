@@ -1201,7 +1201,7 @@ Blends a fog texture on top of everything else
 ===================
 */
 static void RB_FogPass( int wolfFog ) {
-	fog_t		*fog;
+	fog_t	*fog = NULL;
 	vec4_t  color;
 	vec4_t	fogDistanceVector, fogDepthVector = {0, 0, 0, 0};
 	float	eyeT = 0;
