@@ -2748,7 +2748,7 @@ void R_LoadCacheImages( void ) {
 
 	buf = (byte *)ri.Hunk_AllocateTempMemory( len );
 	ri.FS_ReadFile( "image.cache", (void **)&buf );
-	pString = buf;
+	pString = (char *)buf;
 
 	while ( ( token = COM_ParseExt( &pString, qtrue ) ) && token[0] ) {
 		Q_strncpyz( name, token, sizeof( name ) );

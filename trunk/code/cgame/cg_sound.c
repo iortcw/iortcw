@@ -402,7 +402,7 @@ static void CG_SoundLoadSoundFiles( void ) {
 		if ( !token[0] ) {
 			break;
 		}
-		Com_sprintf( soundFiles[numSounds++], MAX_QPATH, token );
+		Com_sprintf( soundFiles[numSounds++], MAX_QPATH, "%s", token );
 	}
 
 	if ( !numSounds ) {

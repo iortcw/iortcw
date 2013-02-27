@@ -1897,7 +1897,7 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params ) {
 	}
 
 	// build the mission stats string
-	newstr = va( params );
+	newstr = va( "%s", params );
 	pch = strstr( newstr, " nostats" );
 	if ( !pch ) {
 		int kills[2];
@@ -1961,7 +1961,7 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params ) {
 	}
 
 	// save persistant data if required
-	newstr = va( params );
+	newstr = va( "%s", params );
 	pch = strstr( newstr, " persistant" );
 	if ( pch ) {
 		pch = strstr( newstr, " " );
