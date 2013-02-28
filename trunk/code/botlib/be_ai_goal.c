@@ -549,9 +549,10 @@ void BotInitLevelItems( void ) {
 		return;
 	}
 
-	//validate the modelindexes of the item info
+	//update the modelindexes of the item info
 	for ( i = 0; i < ic->numiteminfo; i++ )
 	{
+		//ic->iteminfo[i].modelindex = AAS_IndexFromModel(ic->iteminfo[i].model);
 		if ( !ic->iteminfo[i].modelindex ) {
 			Log_Write( "item %s has modelindex 0", ic->iteminfo[i].classname );
 		} //end if
