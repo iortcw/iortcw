@@ -51,13 +51,6 @@ If you have questions concerning this license or the applicable additional terms
 	#define MAX_PATH                MAX_QPATH
 #endif
 
-//string index (for model, sound and image index)
-typedef struct aas_stringindex_s
-{
-	int numindexes;
-	char **index;
-} aas_stringindex_t;
-
 //structure to link entities to areas and areas to entities
 typedef struct aas_link_s
 {
@@ -231,9 +224,6 @@ typedef struct aas_s
 	int maxentities;
 	int maxclients;
 	aas_entity_t *entities;
-	//string indexes
-	char *configstrings[MAX_CONFIGSTRINGS];
-	int indexessetup;
 	//index to retrieve travel flag for a travel type
 	int travelflagfortype[MAX_TRAVELTYPES];
 	//routing update
