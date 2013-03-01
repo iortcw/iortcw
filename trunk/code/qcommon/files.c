@@ -553,6 +553,57 @@ qboolean FS_CreatePath( char *OSPath ) {
 
 /*
 =================
+FS_CopyFile
+
+Copy a fully specified file from one place to another
+=================
+*/
+void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
+	FILE    *f;
+	int len;
+	byte    *buf;
+
+	Com_Printf( "copy %s to %s\n", fromOSPath, toOSPath );
+
+	if ( strstr( fromOSPath, "journal.dat" ) || strstr( fromOSPath, "journaldata.dat" ) ) {
+		Com_Printf( "Ignoring journal files\n" );
+		return;
+	}
+
+	f = Sys_FOpen( fromOSPath, "rb" );
+	if ( !f ) {
+		return;
+	}
+	fseek( f, 0, SEEK_END );
+	len = ftell( f );
+	fseek( f, 0, SEEK_SET );
+
+	// we are using direct malloc instead of Z_Malloc here, so it
+	// probably won't work on a mac... Its only for developers anyway...
+	buf = malloc( len );
+	if ( fread( buf, 1, len, f ) != len ) {
+		Com_Error( ERR_FATAL, "Short read in FS_Copyfiles()\n" );
+	}
+	fclose( f );
+
+	if ( FS_CreatePath( toOSPath ) ) {
+		return;
+	}
+
+	f = Sys_FOpen( toOSPath, "wb" );
+	if ( !f ) {
+		free( buf );    //DAJ free as well
+		return;
+	}
+	if ( fwrite( buf, 1, len, f ) != len ) {
+		Com_Error( ERR_FATAL, "Short write in FS_Copyfiles()\n" );
+	}
+	fclose( f );
+	free( buf );
+}
+
+/*
+=================
 FS_CheckFilenameIsNotExecutable
 
 ERR_FATAL if trying to maniuplate a file with the platform library extension
@@ -1169,7 +1220,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 		{
 			hash = FS_HashFileName(filename, search->pack->hashSize);
                         
-                        if(search->pack->hashTable[hash])
+                        if(search->pack->hashTable[hash] && !(fs_filter_flag & FS_EXCLUDE_PK3))
                         {
 				// look through all the pak file elements
 				pak = search->pack;
@@ -1196,7 +1247,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 				} while(pakFile != NULL);
 			}
 		}
-		else if(search->dir)
+		else if(search->dir && !(fs_filter_flag & FS_EXCLUDE_DIR))
 		{
 			dir = search->dir;
 		
@@ -1226,7 +1277,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 	{
 		hash = FS_HashFileName(filename, search->pack->hashSize);
 
-		if(search->pack->hashTable[hash])
+		if(search->pack->hashTable[hash] && !(fs_filter_flag & FS_EXCLUDE_PK3))
 		{
 			// disregard if it doesn't match one of the allowed pure pak files
 			if(!unpure && !FS_PakIsPure(search->pack))
@@ -1272,6 +1323,16 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 					if(strstr(filename, SYS_DLLNAME_UI))
 						pak->referenced |= FS_UI_REF;
 
+#if !defined( PRE_RELEASE_DEMO ) && !defined( DO_LIGHT_DEDICATED )
+					// DHM -- Nerve :: Don't allow maps to be loaded from pak0 (singleplayer)
+					if(!FS_IsExt(filename, ".bsp", len) == 0 &&
+						Q_stricmp( pak->pakBasename, "pak0" ) == 0 ) {
+
+						*file = 0;
+						return -1;
+					}
+#endif
+
 					if(uniqueFILE)
 					{
 						// open a new file on the pakfile
@@ -1306,7 +1367,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 			} while(pakFile != NULL);
 		}
 	}
-	else if(search->dir)
+	else if(search->dir && !(fs_filter_flag & FS_EXCLUDE_DIR))
 	{
 		// check a file in the directory tree
 
