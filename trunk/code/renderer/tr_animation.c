@@ -1641,6 +1641,8 @@ R_MDRAddAnimSurfaces
 ==============
 */
 
+int R_ComputeLOD( trRefEntity_t *ent );  // Moved here to not conflict with tr_cmesh
+
 // much stuff in there is just copied from R_AddMd3Surfaces in tr_mesh.c
 
 void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
