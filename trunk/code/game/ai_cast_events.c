@@ -476,13 +476,10 @@ AICast_ProcessActivate
 */
 void AICast_ProcessActivate( int entNum, int activatorNum ) {
 	cast_state_t *cs;
-	gentity_t *newent, *ent, *activator;
-	gclient_t *client;
+	gentity_t *newent, *ent;
 
 	cs = AICast_GetCastState( entNum );
-	client = &level.clients[entNum];
 	ent = &g_entities[entNum];
-	activator = &g_entities[activatorNum];
 
 	if ( !AICast_SameTeam( cs, activatorNum ) ) {
 

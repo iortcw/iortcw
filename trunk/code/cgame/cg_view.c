@@ -192,7 +192,7 @@ Sets the coordinates of the rendered window
 
 static void CG_CalcVrect( void ) {
 	int xsize, ysize;
-	float lbheight, lbdiff;
+	float lbheight;//, lbdiff;
 
 	// NERVE - SMF
 	if ( cg.limboMenu ) {
@@ -234,7 +234,7 @@ static void CG_CalcVrect( void ) {
 // letterbox is yy:yy  (85% of 'normal' height)
 
 	lbheight = ysize * 0.85;
-	lbdiff = ysize - lbheight;
+//	lbdiff = ysize - lbheight;
 
 	if ( cg_letterbox.integer ) {
 		ysize = lbheight;

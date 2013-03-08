@@ -152,9 +152,6 @@ void AICast_InputToUserCommand( cast_state_t *cs, bot_input_t *bi, usercmd_t *uc
 	short temp;
 	int j;
 	signed char movechar;
-	gentity_t *ent;
-
-	ent = &g_entities[cs->entityNum];
 
 	//clear the whole structure
 	memset( ucmd, 0, sizeof( usercmd_t ) );
@@ -847,7 +844,7 @@ AICast_StartServerFrame
 ============
 */
 void AICast_StartServerFrame( int time ) {
-	int i, elapsed, count, clCount;
+	int i, elapsed, clCount;
 	cast_state_t    *cs;
 	int castcount;
 	static int lasttime;
@@ -917,7 +914,6 @@ void AICast_StartServerFrame( int time ) {
 	//
 	AICast_SightUpdate( (int)( (float)SIGHT_PER_SEC * ( (float)elapsed / 1000 ) ) );
 	//
-	count = 0;
 	castcount = 0;
 	clCount = 0;
 	ent = g_entities;
@@ -1111,7 +1107,7 @@ AICast_GetAvoid
 ============
 */
 qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qboolean reverse, int blockEnt ) {
-	float yaw, oldyaw, distmoved, bestmoved, bestyaw;
+	float yaw, oldyaw, distmoved, bestmoved;
 	vec3_t bestpos;
 	aicast_predictmove_t castmove;
 	usercmd_t ucmd;
@@ -1119,11 +1115,11 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	float angleDiff;
 	// TTimo might be used uninitialized
 	int starttraveltime = 0;
-	int besttraveltime, traveltime;
+	int traveltime;
 	int invert;
 	float inc;
 	qboolean averting = qfalse;
-	float maxYaw, simTime;
+	float maxYaw;
 	static int lastTime;
 
 	VectorCopy( vec3_origin, bestpos );
@@ -1150,8 +1146,6 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	//
 	// look for a good direction to move out of the way
 	bestmoved = 0;
-	bestyaw = 360;
-	besttraveltime = 9999999;
 	if ( goal ) {
 		starttraveltime = trap_AAS_AreaTravelTimeToGoalArea( cs->bs->areanum, cs->bs->origin, goal->areanum, cs->travelflags );
 	}
@@ -1166,7 +1160,6 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	}
 	//
 	maxYaw = 0;
-	simTime = 1.2;
 	//
 	if ( averting ) {
 		// avoiding danger, go anywhere!
@@ -1184,7 +1177,6 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	}
 	if ( blockEnt > aicast_maxclients ) {
 		maxYaw = angleDiff;
-		simTime = 0.5;
 	}
 	//
 	for ( yaw = -angleDiff * invert; yaw*invert <= maxYaw; yaw += inc * invert ) {
@@ -1212,9 +1204,7 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 			// they all passed, check any other stuff
 			if ( !enemyVisible || AICast_CheckAttackAtPos( cs->entityNum, cs->bs->enemy, castmove.endpos, qfalse, qfalse ) ) {
 				if ( !goal || ( traveltime = trap_AAS_AreaTravelTimeToGoalArea( BotPointAreaNum( castmove.endpos ), castmove.endpos, goal->areanum, cs->travelflags ) ) < ( starttraveltime + 200 ) ) {
-					bestyaw = yaw;
 					bestmoved = distmoved;
-					besttraveltime = traveltime;
 					VectorCopy( castmove.endpos, bestpos );
 				}
 			}

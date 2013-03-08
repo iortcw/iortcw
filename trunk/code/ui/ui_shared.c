@@ -4835,16 +4835,13 @@ qboolean ItemParse_group( itemDef_t *item, int handle ) {
 // asset_model <string>
 qboolean ItemParse_asset_model( itemDef_t *item, int handle ) {
 	const char *temp;
-	modelDef_t *modelPtr;
 	Item_ValidateTypeData( item );
-	modelPtr = (modelDef_t*)item->typeData;
 
 	if ( !PC_String_Parse( handle, &temp ) ) {
 		return qfalse;
 	}
 	if ( !( item->asset ) ) {
 		item->asset = DC->registerModel( temp );
-//		modelPtr->angle = rand() % 360;
 	}
 	return qtrue;
 }

@@ -780,21 +780,6 @@ qboolean R_MDC_EncodeXyzCompressed( const vec3_t vec, const vec3_t normal, mdcXy
 	return qtrue;
 }
 
-/*
-=================
-R_MDC_DecodeXyzCompressed
-=================
-*/
-#if 0   // unoptimized version, used for finding right settings
-void R_MDC_DecodeXyzCompressed( mdcXyzCompressed_t *xyzComp, vec3_t out, vec3_t normal ) {
-	int i;
-
-	for ( i = 0; i < 3; i++ ) {
-		out[i] = ( (float)( ( xyzComp->ofsVec >> ( i * MDC_BITS_PER_AXIS ) ) & ( ( 1 << MDC_BITS_PER_AXIS ) - 1 ) ) - MDC_MAX_OFS ) * MDC_DIST_SCALE;
-	}
-	R_MDC_GetVec( ( unsigned char )( xyzComp->ofsVec >> 24 ), normal );
-}
-#endif
 
 /*
 =================
@@ -804,7 +789,7 @@ R_MDC_GetXyzCompressed
 static qboolean R_MDC_GetXyzCompressed( md3Header_t *md3, md3XyzNormal_t *newXyz, vec3_t oldPos, mdcXyzCompressed_t *out, qboolean verify ) {
 	vec3_t newPos, vec;
 	int i;
-	vec3_t pos, dir, norm, outnorm;
+	vec3_t pos, dir = { 0 }, norm;
 
 	for ( i = 0; i < 3; i++ ) {
 		newPos[i] = (float)newXyz->xyz[i] * MD3_XYZ_SCALE;
@@ -817,7 +802,6 @@ static qboolean R_MDC_GetXyzCompressed( md3Header_t *md3, md3XyzNormal_t *newXyz
 	}
 
 	// calculate the uncompressed position
-	R_MDC_DecodeXyzCompressed( out->ofsVec, dir, outnorm );
 	VectorAdd( oldPos, dir, pos );
 
 	if ( verify ) {
@@ -2660,13 +2644,11 @@ R_PurgeModels
 ===============
 */
 void R_PurgeModels( int count ) {
-	static int lastPurged = 0;
 
 	if ( !numBackupModels ) {
 		return;
 	}
 
-	lastPurged = 0;
 	numBackupModels = 0;
 
 	// note: we can only do this since we only use the virtual memory for the model caching!

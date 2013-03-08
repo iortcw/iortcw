@@ -224,7 +224,6 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace, int impactDamage ) {
 	gentity_t       *other;
 	qboolean hitClient = qfalse;
 	vec3_t velocity;
-	int etype;
 
 	other = &g_entities[trace->entityNum];
 
@@ -312,7 +311,6 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace, int impactDamage ) {
 	ent->freeAfterEvent = qtrue;
 
 	// change over to a normal entity right at the point of impact
-	etype = ent->s.eType;
 	ent->s.eType = ET_GENERAL;
 
 	SnapVectorTowards( trace->endpos, ent->s.pos.trBase );  // save net bandwidth

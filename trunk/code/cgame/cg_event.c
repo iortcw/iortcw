@@ -90,7 +90,6 @@ CG_Obituary
 static void CG_Obituary( entityState_t *ent ) {
 	int mod;
 	int target, attacker;
-	int killtype = 0;               // DHM - Nerve :: 0==Axis; 1==Allied; 2==your kill
 	char        *message;
 	char        *message2;
 	const char  *targetInfo;
@@ -129,15 +128,6 @@ static void CG_Obituary( entityState_t *ent ) {
 	strcat( targetName, S_COLOR_WHITE );
 
 	message2 = "";
-
-	// DHM - Nerve :: Set killtype
-	if ( attacker == cg.snap->ps.clientNum ) {
-		killtype = 2;
-	} else if ( ci->team == TEAM_BLUE ) {
-		killtype = 1;
-	} else {
-		killtype = 0;
-	}
 
 	// check for single client messages
 
@@ -804,7 +794,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 	int i;
 	localEntity_t   *le;
 	refEntity_t     *re;
-	int howmany, total;
+	int howmany;
 	int pieces[6];              // how many of each piece
 	qhandle_t modelshader = 0;
 	float materialmul = 1;              // multiplier for different types
@@ -839,8 +829,6 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 			pieces[2] = 10;
 		}
 	}
-
-	total = pieces[5] + pieces[4] + pieces[3] + pieces[2] + pieces[1] + pieces[0];
 
 	if ( sound ) {
 		trap_S_StartSound( origin, ENTITYNUM_WORLD, CHAN_AUTO, cgs.gameSounds[sound] );
@@ -1087,23 +1075,13 @@ CG_Effect
 void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	localEntity_t   *le;
 	refEntity_t     *re;
-//	int				howmany;
-	int mass;
-//	int				large, small;
 
 	VectorSet( dir, 0, 0, 1 );    // straight up.
-
-	mass = cent->currentState.density;
-
-//		1 large per 100, 1 small per 24
-//	large	= (int)(mass / 100);
-//	small	= (int)(mass / 24) + 1;
 
 	if ( cent->currentState.eventParm & 1 ) {  // fire
 	}
 
 	// (SA) right now force smoke on any explosions
-//	if(cent->currentState.eventParm & 4)	// smoke
 	if ( cent->currentState.eventParm & 6 ) {
 		int i, j;
 		vec3_t sprVel, sprOrg;
@@ -1113,7 +1091,6 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 			for ( j = 0; j < 3; j++ )
 				sprOrg[j] = origin[j] + 64 * dir[j] + 24 * crandom();
 			sprVel[2] += rand() % 50;
-//			CG_ParticleExplosion( 2, sprOrg, sprVel, 1000+rand()%250, 20, 40+rand()%60 );
 			CG_ParticleExplosion( "blacksmokeanim", sprOrg, sprVel, 3500 + rand() % 250, 10, 250 + rand() % 60 ); // JPW NERVE was smokeanimb
 		}
 	}
@@ -1127,18 +1104,8 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		VectorMA( origin, 16, dir, sprOrg );
 		VectorScale( dir, 100, sprVel );
 		CG_ParticleExplosion( "explode1", sprOrg, sprVel, 500, 20, 160 );
-		//CG_ParticleExplosion( "blueexp", sprOrg, sprVel, 1200, 9, 300 );
-
-		// (SA) this is done only if the level designer has it marked in the entity.
-		//		(see "cent->currentState.eventParm & 64" below)
 
 		// RF, throw some debris
-//		CG_AddDebris( origin, dir,
-//						280,	// speed
-//						1400,	// duration
-//						// 15 + rand()%5 );	// count
-//						7 + rand()%2 );	// count
-
 		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, 0xffffffff );
 	}
 
@@ -1162,7 +1129,6 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		cent->currentState.eFlags &= ~EF_INHERITSHADER; // don't try to inherit shader
 		cent->currentState.dl_intensity = 0;        // no sound
 		CG_Explode( cent, origin, newdir, sh );
-//void CG_Explodef(vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader);
 	}
 
 
@@ -1180,12 +1146,10 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 
 		VectorCopy( origin, re->origin );
 		AxisCopy( axisDefault, re->axis );
-		//	re->hModel = hModel;
 		re->hModel = cgs.media.gibIntestine;
 		le->pos.trType = TR_GRAVITY;
 		VectorCopy( origin, le->pos.trBase );
 
-		//	VectorCopy( velocity, le->pos.trDelta );
 		VectorNormalize( dir );
 		VectorMA( dir, 200, dir, le->pos.trDelta );
 
@@ -1347,9 +1311,6 @@ void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 void CG_ShardJunk( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	localEntity_t   *le;
 	refEntity_t     *re;
-	int type;
-
-	type = cent->currentState.density;
 
 	le = CG_AllocLocalEntity();
 	re = &le->refEntity;

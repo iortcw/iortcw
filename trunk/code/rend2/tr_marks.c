@@ -508,9 +508,6 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	vec3_t v1, v2;
 	float radius;
 	vec3_t center;          // center of original mark
-	//vec3_t			bestCenter;	// center point projected onto the closest surface
-	float texCoordScale;
-	//float			dot;
 	int numPoints = 4;              // Ridah, we were only ever passing in 4, so I made this local and used the parameter for the orientation
 	qboolean oldMapping = qfalse;
 
@@ -574,8 +571,6 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	R_BoxSurfaces_r( tr.world->nodes, mins, maxs, surfaces, 4096, &numsurfaces, projectionDir );
 	//assert(numsurfaces <= 64);
 	//assert(numsurfaces != 64);
-
-	texCoordScale = 0.5 * 1.0 / radius;
 
 	returnedPoints = 0;
 	returnedFragments = 0;

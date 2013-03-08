@@ -56,7 +56,6 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 		unsigned *u;
 		void *v;
 	} buf;
-	int         size;
 	int			lod;
 	int			ident = 0;
 	qboolean	loaded = qfalse;
@@ -91,7 +90,7 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 			filename[strlen( filename ) - 1] = 'c';  // try MDC first
 		}
 
-		size = ri.FS_ReadFile( namebuf, &buf.v );
+		ri.FS_ReadFile( namebuf, &buf.v );
 		if ( !buf.u ) {
 			if ( r_compressModels->integer ) {
 				filename[strlen( filename ) - 1] = 'c';  // try MDC second
@@ -2510,13 +2509,11 @@ R_PurgeModels
 ===============
 */
 void R_PurgeModels( int count ) {
-	static int lastPurged = 0;
 
 	if ( !numBackupModels ) {
 		return;
 	}
 
-	lastPurged = 0;
 	numBackupModels = 0;
 
 	// note: we can only do this since we only use the virtual memory for the model caching!

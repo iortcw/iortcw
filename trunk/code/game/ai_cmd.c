@@ -1269,7 +1269,7 @@ BotMatch_WhereAreYou
 */
 void BotMatch_WhereAreYou( bot_state_t *bs, bot_match_t *match ) {
 	float dist, bestdist;
-	int i, bestitem, redflagtt, blueflagtt, redtobluett;
+	int i, bestitem, redflagtt, blueflagtt;
 	bot_goal_t goal;
 	char *nearbyitems[] = {
 		"Shotgun",
@@ -1313,7 +1313,6 @@ void BotMatch_WhereAreYou( bot_state_t *bs, bot_match_t *match ) {
 		if ( gametype == GT_CTF ) {
 			redflagtt = trap_AAS_AreaTravelTimeToGoalArea( bs->areanum, bs->origin, ctf_redflag.areanum, TFL_DEFAULT );
 			blueflagtt = trap_AAS_AreaTravelTimeToGoalArea( bs->areanum, bs->origin, ctf_blueflag.areanum, TFL_DEFAULT );
-			redtobluett = trap_AAS_AreaTravelTimeToGoalArea( ctf_redflag.areanum, ctf_redflag.origin, ctf_blueflag.areanum, TFL_DEFAULT );
 			if ( redflagtt < ( redflagtt + blueflagtt ) * 0.4 ) {
 				BotAI_BotInitialChat( bs, "ctflocation", nearbyitems[bestitem], "red", NULL );
 			} else if ( blueflagtt < ( redflagtt + blueflagtt ) * 0.4 )       {

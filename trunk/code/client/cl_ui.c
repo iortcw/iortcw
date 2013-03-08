@@ -1017,10 +1017,12 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_MEMSET:
-		return (int)memset( VMA( 1 ), args[2], args[3] );
+		Com_Memset( VMA(1), args[2], args[3] );
+		return 0;
 
 	case UI_MEMCPY:
-		return (int)memcpy( VMA( 1 ), VMA( 2 ), args[3] );
+		Com_Memcpy( VMA(1), VMA(2), args[3] );
+		return 0;
 
 	case UI_STRNCPY:
 		strncpy( VMA(1), VMA(2), args[3] );

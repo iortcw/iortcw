@@ -1321,7 +1321,7 @@ AICast_ScriptAction_SaveGame
 =================
 */
 qboolean AICast_ScriptAction_SaveGame( cast_state_t *cs, char *params ) {
-	char *pString, *saveName;
+	char *pString;
 	pString = params;
 
 	if ( cs->bs ) {
@@ -1329,7 +1329,7 @@ qboolean AICast_ScriptAction_SaveGame( cast_state_t *cs, char *params ) {
 	}
 
 //----(SA)	check for parameter
-	saveName = COM_ParseExt( &pString, qfalse );
+	COM_ParseExt( &pString, qfalse );
 //	if (!saveName[0])
 //		G_SaveGame( NULL );	// save the default "current" savegame
 //	else

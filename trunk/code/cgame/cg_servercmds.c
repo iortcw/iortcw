@@ -838,12 +838,6 @@ int CG_ParseVoiceChats( const char *filename, voiceChatList_t *voiceChatList, in
 	char **p, *ptr;
 	char *token;
 	voiceChat_t *voiceChats;
-	qboolean compress;
-
-	compress = qtrue;
-	if ( cg_buildScript.integer ) {
-		compress = qfalse;
-	}
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
@@ -906,7 +900,7 @@ int CG_ParseVoiceChats( const char *filename, voiceChatList_t *voiceChatList, in
 			if ( !Q_stricmp( token, "}" ) ) {
 				break;
 			}
-			voiceChats[voiceChatList->numVoiceChats].sounds[current] = trap_S_RegisterSound( token /*, compress */ );
+			voiceChats[voiceChatList->numVoiceChats].sounds[current] = trap_S_RegisterSound( token );
 			token = COM_ParseExt( p, qtrue );
 			if ( !token || token[0] == 0 ) {
 				return qtrue;

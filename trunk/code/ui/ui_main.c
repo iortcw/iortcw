@@ -2016,7 +2016,6 @@ static void UI_DrawOpponent( rectDef_t *rect ) {
 	static playerInfo_t info2;
 	char model[MAX_QPATH];
 	char headmodel[MAX_QPATH];
-	char team[256];
 	vec3_t viewangles;
 	vec3_t moveangles;
 
@@ -2024,7 +2023,6 @@ static void UI_DrawOpponent( rectDef_t *rect ) {
 
 		strcpy( model, UI_Cvar_VariableString( "ui_opponentModel" ) );
 		strcpy( headmodel, UI_Cvar_VariableString( "ui_opponentModel" ) );
-		team[0] = '\0';
 
 		memset( &info2, 0, sizeof( playerInfo_t ) );
 		viewangles[YAW]   = 180 - 10;
@@ -2036,12 +2034,11 @@ static void UI_DrawOpponent( rectDef_t *rect ) {
 #else
 		UI_PlayerInfo_SetModel( &info2, model );
 #endif  // #ifdef MISSIONPACK
+
 		UI_PlayerInfo_SetInfo( &info2, LEGS_IDLE, TORSO_STAND, viewangles, vec3_origin, WP_MP40, qfalse );
-#ifdef MISSIONPACK
-		UI_RegisterClientModelname( &info2, model, headmodel, team );
-#else
+
 		UI_RegisterClientModelname( &info2, model );
-#endif  // #ifdef MISSIONPACK
+
 		updateOpponentModel = qfalse;
 	}
 
@@ -3772,7 +3769,7 @@ void WM_setVisibility( char *name, qboolean show ) {
 void WM_setWeaponPics( void ) {
 	itemDef_t *knifeDef, *pistolDef, *weaponDef, *grenadeDef, *item1Def, *item2Def;
 	menuDef_t *menu = Menu_GetFocused();
-	int playerType, team, weapon, pistol, item1, i;
+	int playerType, team, weapon, i;
 	const char *gunShader, *grenadeShader;
 
 	knifeDef = Menu_FindItemByName( menu, "window_knife_pic" );
@@ -3789,9 +3786,6 @@ void WM_setWeaponPics( void ) {
 	team = trap_Cvar_VariableValue( "mp_team" );
 	playerType = trap_Cvar_VariableValue( "mp_playerType" );
 	weapon = trap_Cvar_VariableValue( "mp_weapon" );
-	pistol = trap_Cvar_VariableValue( "mp_pistol" );
-	item1 = trap_Cvar_VariableValue( "mp_item1" );
-
 
 	knifeDef->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_knife.tga" );
 
@@ -4496,7 +4490,6 @@ static void UI_RunMenuScript( char **args ) {
 	if ( String_Parse( args, &name ) ) {
 
 		if ( Q_stricmp( name, "StartServer" ) == 0 ) {
-			float skill;
 			int pb_sv, pb_cl;
 
 			// DHM - Nerve
@@ -4518,8 +4511,6 @@ static void UI_RunMenuScript( char **args ) {
 			trap_Cvar_SetValue( "g_gametype", Com_Clamp( 0, 8, uiInfo.gameTypes[ui_netGameType.integer].gtEnum ) );
 
 			trap_Cmd_ExecuteText( EXEC_APPEND, va( "wait ; wait ; map %s\n", uiInfo.mapList[ui_currentNetMap.integer].mapLoadName ) );
-
-			skill = trap_Cvar_VariableValue( "g_spSkill" );
 
 			// NERVE - SMF - set user cvars here
 			// set timelimit
@@ -7279,7 +7270,6 @@ to prevent it from blinking away too rapidly on local or lan games.
 void UI_DrawConnectScreen( qboolean overlay ) {
 	char            *s;
 	uiClientState_t cstate;
-	char info[MAX_INFO_VALUE];
 	char text[256];
 	float centerPoint, yStart, scale;
 	vec4_t color = { 0.3f, 0.3f, 0.3f, 0.8f };
@@ -7303,8 +7293,6 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 
 	// see what information we should display
 	trap_GetClientState( &cstate );
-
-	info[0] = '\0';
 
 	if ( !Q_stricmp( cstate.servername,"localhost" ) ) {
 		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite, "Starting up...", ITEM_TEXTSTYLE_SHADOWEDMORE);

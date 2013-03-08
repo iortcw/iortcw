@@ -3493,7 +3493,7 @@ RE_GetShaderFromModel
 ==============
 */
 qhandle_t RE_GetShaderFromModel( qhandle_t modelid, int surfnum, int withlightmap ) {
-	model_t     *model;
+//	model_t     *model;
 //	bmodel_t    *bmodel;
 //	msurface_t  *surf;
 //	shader_t    *shd;
@@ -3502,7 +3502,7 @@ qhandle_t RE_GetShaderFromModel( qhandle_t modelid, int surfnum, int withlightma
 		surfnum = 0;
 	}
 
-	model = R_GetModelByHandle( modelid );  // (SA) should be correct now
+//	model = R_GetModelByHandle( modelid );  // (SA) should be correct now
 /* FIXME - Rend2
 	if ( model ) {
 		bmodel  = model->bmodel;
@@ -4350,7 +4350,6 @@ R_TouchImage
 qboolean R_TouchImage( image_t *inImage ) {
 	image_t *bImage, *bImagePrev;
 	int hash;
-	char *name;
 
 	if ( inImage == tr.dlightImage ||
 		 inImage == tr.whiteImage ||
@@ -4360,7 +4359,6 @@ qboolean R_TouchImage( image_t *inImage ) {
 	}
 
 	hash = inImage->hash;
-	name = inImage->imgName;
 
 	bImage = backupHashTable[hash];
 	bImagePrev = NULL;
@@ -4504,7 +4502,7 @@ R_FindCachedImage
 =============
 */
 image_t *R_FindCachedImage( const char *name, int hash ) {
-	image_t *bImage, *bImagePrev;
+	image_t *bImage;
 
 	if ( !r_cacheShaders->integer ) {
 		return NULL;
@@ -4515,7 +4513,6 @@ image_t *R_FindCachedImage( const char *name, int hash ) {
 	}
 
 	bImage = backupHashTable[hash];
-	bImagePrev = NULL;
 	while ( bImage ) {
 
 		if ( !Q_stricmp( name, bImage->imgName ) ) {
@@ -4528,7 +4525,6 @@ image_t *R_FindCachedImage( const char *name, int hash ) {
 			return bImage;
 		}
 
-		bImagePrev = bImage;
 		bImage = bImage->next;
 	}
 

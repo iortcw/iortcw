@@ -522,6 +522,7 @@ void CL_SystemInfoChanged( void ) {
 	t = Info_ValueForKey( systemInfo, "sv_referencedPakNames" );
 	FS_PureServerSetReferencedPaks( s, t );
 
+	gameSet = qfalse;
 	// scan through all the variables in the systeminfo and locally set cvars to match
 	s = systemInfo;
 	while ( s ) {
@@ -563,6 +564,10 @@ void CL_SystemInfoChanged( void ) {
 
 			Cvar_SetSafe(key, value);
 		}
+	}
+	// if game folder should not be set and it is set at the client side
+	if ( !gameSet && *Cvar_VariableString("fs_game") ) {
+		Cvar_Set( "fs_game", "" );
 	}
 	cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
 }
@@ -996,9 +1001,6 @@ CL_ParseServerMessage
 */
 void CL_ParseServerMessage( msg_t *msg ) {
 	int cmd;
-	msg_t msgback;
-
-	msgback = *msg;
 
 	if ( cl_shownet->integer == 1 ) {
 		Com_Printf( "%i ",msg->cursize );

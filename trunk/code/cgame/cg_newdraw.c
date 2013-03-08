@@ -631,7 +631,7 @@ CG_DrawPlayerAmmoValue
 int CG_DrawFieldWidth( int x, int y, int width, int value, int charWidth, int charHeight );
 
 static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int type ) {
-	int ammovalue, ammovalue2 = 0, clipvalue, clipvalue2 = 0;
+	int ammovalue, clipvalue;
 	centity_t   *cent;
 	playerState_t   *ps;
 	int weap, startx;
@@ -680,12 +680,10 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, 
 
 	// ammo
 	ammovalue = cg.snap->ps.ammo[BG_FindAmmoForWeapon( weap )];
-	ammovalue2 = ps->ammoclip[BG_FindClipForWeapon( weap )];
 
 	// clip
 	clipvalue = ps->ammoclip[BG_FindClipForWeapon( weap )];
 	if ( special ) {
-		clipvalue2 = clipvalue;
 		if ( weapAlts[weap] ) {
 			clipvalue = ps->ammoclip[weapAlts[weap]];
 		}
@@ -2225,13 +2223,8 @@ CG_DrawFatigue
 */
 
 static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
-	//	vec4_t	color = {0, 1, 0, 1}, color2 = {1, 0, 0, 1};
 	vec4_t colorBonus = {1, 1, 0, 0.45f};   // yellow (a little more solid for the 'bonus' stamina)
-	float barFrac;  //, omBarFrac;
 	int flags = 0;
-
-	barFrac = (float)cg.snap->ps.sprintTime / SPRINTTIME;
-//	omBarFrac = 1.0f-barFrac;
 
 	if ( align != HUD_HORIZONTAL ) {
 		flags |= 4;   // BAR_VERT
@@ -2249,7 +2242,6 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 	colorBonus[2] = 1.0f;
 	colorBonus[3] = cg_hudAlpha.value;
 	trap_R_SetColor( colorBonus ); // JPW NERVE
-//	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cgs.media.hudSprintBar );
 }
 
 // DHM - Nerve

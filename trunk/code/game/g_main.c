@@ -437,7 +437,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 	//gentity_t *traceEnt2 = 0; // JPW NERVE // TTimo unused
 	playerState_t *ps;
 	int hintType, hintDist, hintVal;
-	qboolean zooming, indirectHit;      // indirectHit means the checkent was not the ent hit by the trace (checkEnt!=traceEnt)
+	qboolean zooming;
 	int trace_contents;                 // DHM - Nerve
 
 	// FIXME:	no need at all to do this trace/string comparison every frame.
@@ -455,8 +455,6 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 	if ( ps->aiChar != AICHAR_NONE ) {
 		return;
 	}
-
-	indirectHit = qfalse;
 
 	zooming = (qboolean)( ps->eFlags & EF_ZOOMING );
 
@@ -579,8 +577,6 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 			}
 
 			if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) ) {
-				indirectHit = qtrue;
-
 				// DHM - Nerve :: Put this back in only in multiplayer
 				if ( g_gametype.integer >= GT_WOLF && traceEnt->s.dmgFlags ) { // hint icon specified in entity
 					hintType = traceEnt->s.dmgFlags;

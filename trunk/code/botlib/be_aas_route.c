@@ -827,7 +827,7 @@ void AAS_InitRoutingUpdate( void ) {
 //===========================================================================
 
 void AAS_CreateAllRoutingCache( void ) {
-	int i, j, k, t, tfl, numroutingareas;
+	int i, j, k, tfl, numroutingareas;
 	aas_areasettings_t *areasettings;
 	aas_reachability_t *reach;
 
@@ -868,7 +868,7 @@ void AAS_CreateAllRoutingCache( void ) {
 			if ( !( ( *aasworld ).areasettings[j].areaflags & AREA_USEFORROUTING ) ) {
 				continue;
 			}
-			t = AAS_AreaTravelTimeToGoalArea( j, ( *aasworld ).areawaypoints[j], i, tfl );
+			AAS_AreaTravelTimeToGoalArea( j, ( *aasworld ).areawaypoints[j], i, tfl );
 			//if (t) break;
 			//Log_Write("traveltime from %d to %d is %d", i, j, t);
 		} //end for
@@ -1978,7 +1978,7 @@ void AAS_DecompressVis( byte *in, int numareas, byte *decompressed ) {
 
 	//row = (numareas+7)>>3;
 	out = decompressed;
-	end = ( byte * )( (int)decompressed + numareas );
+	end = ( byte * )( decompressed + numareas );
 
 	do
 	{
@@ -2119,7 +2119,7 @@ float VectorDistance( vec3_t v1, vec3_t v2 );
 extern void ProjectPointOntoVector( vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vProj ) ;
 int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, vec3_t enemyorigin, int enemyareanum, int travelflags ) {
 	int i, j, nextareanum, badtravelflags, numreach, bestarea;
-	unsigned short int t, besttraveltime, enemytraveltime;
+	unsigned short int t, besttraveltime;
 	aas_routingupdate_t *updateliststart, *updatelistend, *curupdate, *nextupdate;
 	aas_reachability_t *reach;
 	float dist1, dist2;
@@ -2151,7 +2151,7 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 	besttraveltime = 0;
 	bestarea = 0;
 	if ( enemyareanum ) {
-		enemytraveltime = AAS_AreaTravelTimeToGoalArea( areanum, origin, enemyareanum, travelflags );
+		AAS_AreaTravelTimeToGoalArea( areanum, origin, enemyareanum, travelflags );
 	}
 	VectorSubtract( enemyorigin, origin, enemyVec );
 	enemytraveldist = VectorNormalize( enemyVec );
@@ -2329,7 +2329,7 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 //===========================================================================
 int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float *outpos ) {
 	int i, nextareanum, badtravelflags, numreach, bestarea;
-	unsigned short int t, besttraveltime, enemytraveltime;
+	unsigned short int t, besttraveltime;
 	aas_routingupdate_t *updateliststart, *updatelistend, *curupdate, *nextupdate;
 	aas_reachability_t *reach;
 	vec3_t srcorg, rangeorg, enemyorg;
@@ -2367,7 +2367,7 @@ int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float
 	//
 	besttraveltime = 0;
 	bestarea = 0;
-	enemytraveltime = AAS_AreaTravelTimeToGoalArea( srcarea, srcorg, enemyarea, travelflags );
+	AAS_AreaTravelTimeToGoalArea( srcarea, srcorg, enemyarea, travelflags );
 	//
 	badtravelflags = ~travelflags;
 	//

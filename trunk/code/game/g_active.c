@@ -777,7 +777,6 @@ void ClientThink_real( gentity_t *ent ) {
 	int oldEventSequence;
 	int msec;
 	usercmd_t   *ucmd;
-	int monsterslick = 0;
 // JPW NERVE
 	int i;
 	vec3_t muzzlebounce;
@@ -1055,52 +1054,7 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.medicChargeTime = g_medicChargeTime.integer;
 	// -NERVE - SMF
 
-	monsterslick = Pmove( &pm );
-
-	if ( monsterslick && !( ent->flags & FL_NO_MONSTERSLICK ) ) {
-		//vec3_t	dir;
-		//vec3_t	kvel;
-		//vec3_t	forward;
-		// TTimo gcc: might be used unitialized in this function
-		float angle = 0.0f;
-		qboolean bogus = qfalse;
-
-		// NE
-		if ( ( monsterslick & SURF_MONSLICK_N ) && ( monsterslick & SURF_MONSLICK_E ) ) {
-			angle = 45;
-		}
-		// NW
-		else if ( ( monsterslick & SURF_MONSLICK_N ) && ( monsterslick & SURF_MONSLICK_W ) ) {
-			angle = 135;
-		}
-		// N
-		else if ( monsterslick & SURF_MONSLICK_N ) {
-			angle = 90;
-		}
-		// SE
-		else if ( ( monsterslick & SURF_MONSLICK_S ) && ( monsterslick & SURF_MONSLICK_E ) ) {
-			angle = 315;
-		}
-		// SW
-		else if ( ( monsterslick & SURF_MONSLICK_S ) && ( monsterslick & SURF_MONSLICK_W ) ) {
-			angle = 225;
-		}
-		// S
-		else if ( monsterslick & SURF_MONSLICK_S ) {
-			angle = 270;
-		}
-		// E
-		else if ( monsterslick & SURF_MONSLICK_E ) {
-			angle = 0;
-		}
-		// W
-		else if ( monsterslick & SURF_MONSLICK_W ) {
-			angle = 180;
-		} else
-		{
-			bogus = qtrue;
-		}
-	}
+	Pmove( &pm );
 
 	// server cursor hints
 	if ( ent->lastHintCheckTime < level.time ) {

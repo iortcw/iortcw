@@ -1303,19 +1303,9 @@ UI_ParseAnimationFile
 ======================
 */
 static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) {
-	char        *text_p, *prev;
 	int len;
-	int i;
-	char        *token;
-	float fps;
-	int skip;
 	char text[20000];
 	fileHandle_t f;
-
-	token = NULL;
-	i = 0;
-	fps = 0;
-	prev = 0;
 
 	memset( pi->animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
 
@@ -1333,101 +1323,9 @@ static qboolean UI_ParseAnimationFile( const char *filename, playerInfo_t *pi ) 
 	text[len] = 0;
 	trap_FS_FCloseFile( f );
 
-	// parse the text
-	text_p = text;
-	skip = 0;   // quite the compiler warning
-
 	// NERVE - SMF - new!!!!
 	AnimParseAnimConfig( pi, filename, text );
 	return qtrue;
-
-	// -NERVE - SMF - This does not work with wolf's new animation system
-/*
-	// read optional parameters
-	while ( 1 ) {
-		prev = text_p;	// so we can unget
-		token = COM_Parse( &text_p );
-		if ( !token ) {
-			break;
-		}
-		if ( !Q_stricmp( token, "footsteps" ) ) {
-			token = COM_Parse( &text_p );
-			if ( !token ) {
-				break;
-			}
-			continue;
-		} else if ( !Q_stricmp( token, "headoffset" ) ) {
-			for ( i = 0 ; i < 3 ; i++ ) {
-				token = COM_Parse( &text_p );
-				if ( !token ) {
-					break;
-				}
-			}
-			continue;
-		} else if ( !Q_stricmp( token, "sex" ) ) {
-			token = COM_Parse( &text_p );
-			if ( !token ) {
-				break;
-			}
-			continue;
-		}
-
-		// if it is a number, start parsing animations
-		if ( token[0] >= '0' && token[0] <= '9' ) {
-			text_p = prev;	// unget the token
-			break;
-		}
-
-		Com_Printf( "unknown token '%s' is %s\n", token, filename );
-	}
-
-	// read information for each frame
-	for ( i = 0 ; i < MAX_ANIMATIONS ; i++ ) {
-
-		token = COM_Parse( &text_p );
-		if ( !token ) {
-			break;
-		}
-		animations[i].firstFrame = atoi( token );
-		// leg only frames are adjusted to not count the upper body only frames
-		if ( i == LEGS_WALKCR ) {
-			skip = animations[LEGS_WALKCR].firstFrame - animations[TORSO_GESTURE].firstFrame;
-		}
-		if ( i >= LEGS_WALKCR ) {
-			animations[i].firstFrame -= skip;
-		}
-
-		token = COM_Parse( &text_p );
-		if ( !token ) {
-			break;
-		}
-		animations[i].numFrames = atoi( token );
-
-		token = COM_Parse( &text_p );
-		if ( !token ) {
-			break;
-		}
-		animations[i].loopFrames = atoi( token );
-
-		token = COM_Parse( &text_p );
-		if ( !token ) {
-			break;
-		}
-		fps = atof( token );
-		if ( fps == 0 ) {
-			fps = 1;
-		}
-		animations[i].frameLerp = 1000 / fps;
-		animations[i].initialLerp = 1000 / fps;
-	}
-
-	if ( i != MAX_ANIMATIONS ) {
-		Com_Printf( "Error parsing animation file: %s", filename );
-		return qfalse;
-	}
-
-	return qtrue;
-*/
 }
 
 

@@ -773,9 +773,6 @@ static void SV_SendClientGameState( client_t *client ) {
 	// write the checksum feed
 	MSG_WriteLong( &msg, sv.checksumFeed );
 
-	// NERVE - SMF - debug info
-	Com_DPrintf( "Sending %i bytes in gamestate to client: %i\n", msg.cursize, client - svs.clients );
-
 	// deliver this to the client
 	SV_SendMessageToClient( &msg, client );
 }
@@ -948,8 +945,6 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 	char testname[MAX_QPATH];
 #endif
 
-	qboolean bTellRate = qfalse; // verbosity
-
 	if ( !*cl->downloadName ) {
 		return 0;
 	}
@@ -1078,8 +1073,6 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 		cl->downloadCurrentBlock = cl->downloadClientBlock = cl->downloadXmitBlock = 0;
 		cl->downloadCount = 0;
 		cl->downloadEOF = qfalse;
-
-		bTellRate = qtrue;
 	}
 
 	// Perform any reads that we need to

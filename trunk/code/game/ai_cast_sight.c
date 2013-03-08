@@ -221,10 +221,9 @@ AICast_CheckVisibility
 */
 qboolean AICast_CheckVisibility( gentity_t *srcent, gentity_t *destent ) {
 	vec3_t dir, entangles, middle, eye, viewangles;
-	cast_state_t        *cs, *ocs;
+	cast_state_t        *cs;
 	float fov, dist;
 	int viewer, ent;
-	cast_visibility_t   *vis;
 	orientation_t       or;
 
 	if ( destent->flags & FL_NOTARGET ) {
@@ -235,20 +234,8 @@ qboolean AICast_CheckVisibility( gentity_t *srcent, gentity_t *destent ) {
 	ent = destent->s.number;
 	//
 	cs = AICast_GetCastState( viewer );
-	ocs = AICast_GetCastState( ent );
-	//
-	vis = &cs->vislist[ent];
-	//
-	// if we heard them
-	/*
-	if (	(vis->lastcheck_timestamp) &&
-			(ocs->lastWeaponFired) &&
-			(ocs->lastWeaponFired >= vis->lastcheck_timestamp) &&
-			(AICast_GetWeaponSoundRange( ocs->lastWeaponFiredWeaponNum ) > Distance( srcent->r.currentOrigin, ocs->lastWeaponFiredPos ))) {
-		return qtrue;
-	}
-	*/
-	//
+	AICast_GetCastState( ent );
+
 	// set the FOV
 	fov = cs->attributes[FOV] * aiStateFovScales[cs->aiState];
 	if ( !fov ) { // assume it's a player, give them a generic fov

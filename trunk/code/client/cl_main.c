@@ -5291,15 +5291,11 @@ CL_AddToLimboChat
 =======================
 */
 void CL_AddToLimboChat( const char *str ) {
-	int len;
-	char *p, *ls;
-	int lastcolor;
-	int chatHeight;
+	int len = 0;
+	char *p;
 	int i;
 
-	chatHeight = LIMBOCHAT_HEIGHT;
 	cl.limboChatPos = LIMBOCHAT_HEIGHT - 1;
-	len = 0;
 
 	// copy old strings
 	for ( i = cl.limboChatPos; i > 0; i-- ) {
@@ -5310,9 +5306,6 @@ void CL_AddToLimboChat( const char *str ) {
 	p = cl.limboChatMsgs[0];
 	*p = 0;
 
-	lastcolor = '7';
-
-	ls = NULL;
 	while ( *str ) {
 		if ( len > LIMBOCHAT_WIDTH - 1 ) {
 			break;
@@ -5320,12 +5313,8 @@ void CL_AddToLimboChat( const char *str ) {
 
 		if ( Q_IsColorString( str ) ) {
 			*p++ = *str++;
-			lastcolor = *str;
 			*p++ = *str++;
 			continue;
-		}
-		if ( *str == ' ' ) {
-			ls = p;
 		}
 		*p++ = *str++;
 		len++;

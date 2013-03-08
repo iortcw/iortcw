@@ -523,8 +523,7 @@ reinforce
 // -- called when time expires for a team deployment cycle and there is at least one guy ready to go
 */
 void reinforce( gentity_t *ent ) {
-	int p, team; // numDeployable=0, finished=0; // TTimo unused
-	char *classname;
+	int p; // numDeployable=0, finished=0; // TTimo unused
 	gclient_t *rclient;
 
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
@@ -534,18 +533,6 @@ void reinforce( gentity_t *ent ) {
 	if ( !( ent->client->ps.pm_flags & PMF_LIMBO ) ) {
 		G_Printf( "player already deployed, skipping\n" );
 		return;
-	}
-	// get team to deploy from passed entity
-
-	team = ent->client->sess.sessionTeam;
-
-	// find number active team spawnpoints
-	if ( team == TEAM_RED ) {
-		classname = "team_CTF_redspawn";
-	} else if ( team == TEAM_BLUE ) {
-		classname = "team_CTF_bluespawn";
-	} else {
-		assert( 0 );
 	}
 
 	// DHM - Nerve :: restore persistant data now that we're out of Limbo

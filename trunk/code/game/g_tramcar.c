@@ -209,7 +209,6 @@ void Calc_Roll( gentity_t *ent ) {
 	vec3_t vec;
 	vec3_t forward;
 	vec3_t right;
-	float dot;
 	float dot2;
 	vec3_t tang;
 
@@ -222,7 +221,6 @@ void Calc_Roll( gentity_t *ent ) {
 	VectorSubtract( target->nextTrain->nextTrain->s.origin, ent->r.currentOrigin, vec );
 	VectorNormalize( vec );
 
-	dot = DotProduct( vec, forward );
 	dot2 = DotProduct( vec, right );
 
 	ent->angle = (int) ent->angle;

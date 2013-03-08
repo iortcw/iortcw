@@ -759,9 +759,11 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 
 
 	case CG_MEMSET:
-		return (int)memset( VMA( 1 ), args[2], args[3] );
+		Com_Memset( VMA(1), args[2], args[3] );
+		return 0;
 	case CG_MEMCPY:
-		return (int)memcpy( VMA( 1 ), VMA( 2 ), args[3] );
+		Com_Memcpy( VMA(1), VMA(2), args[3] );
+		return 0;
 	case CG_STRNCPY:
 		strncpy( VMA(1), VMA(2), args[3] );
 		return args[1];

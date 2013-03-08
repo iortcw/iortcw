@@ -193,7 +193,7 @@ void CG_CalcMoveSpeeds( clientInfo_t *ci ) {
 	int i, j, k;
 	float totalSpeed;
 	int numSpeed;
-	int lastLow, low;
+	int low;
 	orientation_t o[2];
 
 	refent.hModel = ci->legsModel;
@@ -205,7 +205,6 @@ void CG_CalcMoveSpeeds( clientInfo_t *ci ) {
 		}
 
 		totalSpeed = 0;
-		lastLow = -1;
 		numSpeed = 0;
 
 		// for each frame
@@ -244,7 +243,6 @@ void CG_CalcMoveSpeeds( clientInfo_t *ci ) {
 			for ( k = 0; k < 2; k++ ) {
 				VectorCopy( o[k].origin, oldPos[k] );
 			}
-			lastLow = low;
 		}
 
 		// record the speed
@@ -1250,14 +1248,13 @@ may include ANIM_TOGGLEBIT
 */
 void CG_SetLerpFrameAnimationRate( centity_t *cent, clientInfo_t *ci, lerpFrame_t *lf, int newAnimation ) {
 	animation_t *anim, *oldanim;
-	int transitionMin = -1, oldAnimTime, oldAnimNum;
+	int transitionMin = -1, oldAnimNum;
 	qboolean firstAnim = qfalse;
 
 	if ( !ci->modelInfo ) {
 		return;
 	}
 
-	oldAnimTime = lf->animationTime;
 	oldanim = lf->animation;
 	oldAnimNum = lf->animationNumber;
 
@@ -1768,7 +1765,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	vec3_t velocity;
 	float speed;
 	float clampTolerance;
-	int legsSet, torsoSet;
+	int legsSet;
 	clientInfo_t *ci;
 	ci = &cgs.clientinfo[ cent->currentState.number ];
 
@@ -1783,7 +1780,6 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	}
 
 	legsSet = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
-	torsoSet = cent->currentState.torsoAnim & ~ANIM_TOGGLEBIT;
 
 	VectorCopy( cent->lerpAngles, headAngles );
 	headAngles[YAW] = AngleMod( headAngles[YAW] );
@@ -1912,16 +1908,10 @@ CG_HasteTrail
 static void CG_HasteTrail( centity_t *cent ) {
 	localEntity_t   *smoke;
 	vec3_t origin;
-	int anim;
 
 	if ( cent->trailTime > cg.time ) {
 		return;
 	}
-	anim = cent->pe.legs.animationNumber & ~ANIM_TOGGLEBIT;
-// RF, this is all broken by scripting system
-//	if ( anim != LEGS_RUN && anim != LEGS_BACK ) {
-//		return;
-//	}
 
 	cent->trailTime += 100;
 	if ( cent->trailTime < cg.time ) {
