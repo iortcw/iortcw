@@ -1002,7 +1002,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	float dist;
 	vec3_t origin, vec1, vec2;
 	vec3_t    temp;
-	vec4_t color;
+//	vec4_t color;
 
 	if ( !tr.sunShader ) {
 		return;
@@ -1040,9 +1040,9 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 
 	RB_BeginSurface( shader, 0 );
 
-	color[0] = color[1] = color[2] = color[3] = 1;
+//	color[0] = color[1] = color[2] = color[3] = 1;
 
-	RB_AddQuadStamp(origin, vec1, vec2, color);
+	RB_AddQuadStamp(origin, vec1, vec2, colorWhite);
 
 	RB_EndSurface();
 
@@ -1072,7 +1072,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 
 		// draw the flare
 		RB_BeginSurface( tr.sunflareShader_old[0], tess.fogNum );
-		RB_AddQuadStamp( origin, vec1, vec2, color );
+		RB_AddQuadStamp( origin, vec1, vec2, colorWhite );
 		RB_EndSurface();
 	}
 
