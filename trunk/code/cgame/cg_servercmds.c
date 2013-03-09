@@ -780,6 +780,9 @@ CG_RequestMoveSpeed
 void CG_RequestMoveSpeed( const char *modelname ) {
 	animModelInfo_t *modelInfo;
 
+	// fretn, leftover from sp, not needed
+	return;
+
 	modelInfo = BG_ModelInfoForModelname( (char *)modelname );
 
 	if ( !modelInfo ) {

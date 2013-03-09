@@ -249,9 +249,10 @@ void CG_CalcMoveSpeeds( clientInfo_t *ci ) {
 		anim->moveSpeed = (int)( ( totalSpeed / numSpeed ) * 1000.0 / anim->frameLerp );
 	}
 
-	if ( cgs.localServer ) {
-		CG_SendMoveSpeed( ci->modelInfo->animations, ci->modelInfo->numAnimations, ci->modelInfo->modelname );
-	}
+	// fretn - sp leftover, not needed
+	//if ( cgs.localServer ) {
+	//	CG_SendMoveSpeed( ci->modelInfo->animations, ci->modelInfo->numAnimations, ci->modelInfo->modelname );
+	//}
 }
 
 /*

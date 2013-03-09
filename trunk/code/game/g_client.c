@@ -1285,9 +1285,10 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 	BG_AnimParseAnimScript( cl->modelInfo, &level.animScriptData, cl->ps.clientNum, filename, text );
 
 	// ask the client to send us the movespeeds if available
-	if ( g_gametype.integer == GT_SINGLE_PLAYER && g_entities[0].client && g_entities[0].client->pers.connected == CON_CONNECTED ) {
-		trap_SendServerCommand( 0, va( "mvspd %s", modelname ) );
-	}
+	// fretn - leftover from sp, not needed
+	//if ( g_gametype.integer == GT_SINGLE_PLAYER && g_entities[0].client && g_entities[0].client->pers.connected == CON_CONNECTED ) {
+	//	trap_SendServerCommand( 0, va( "mvspd %s", modelname ) );
+	//}
 
 	return qtrue;
 }
@@ -2163,6 +2164,9 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
 	char *text_p, *token;
 	animation_t *anim;
 	animModelInfo_t *modelInfo;
+
+	// fretn - leftover from sp, not needed
+	return;
 
 	text_p = text;
 
