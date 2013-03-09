@@ -985,6 +985,18 @@ qboolean SV_GameCommand( void ) {
 
 /*
 ====================
+SV_SendMoveSpeedsToGame
+====================
+*/
+void SV_SendMoveSpeedsToGame( int entnum, char *text ) {
+	if ( !gvm ) {
+		return;
+	}
+	VM_Call( gvm, GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT, entnum, text );
+}
+
+/*
+====================
 SV_GetTag
 
   return qfalse if unable to retrieve tag information for this client

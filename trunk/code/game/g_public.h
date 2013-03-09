@@ -465,5 +465,7 @@ typedef enum {
 	,AICAST_CHECKATTACKATPOS
 	// done.
 
+	,GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT
+
 } gameExport_t;
 

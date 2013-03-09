@@ -605,6 +605,59 @@ void CG_AddToNotify( const char *str ) {
 
 /*
 ===============
+CG_SendMoveSpeed
+===============
+*/
+void CG_SendMoveSpeed( animation_t *animList, int numAnims, char *modelName ) {
+	animation_t *anim;
+	int i;
+	char text[10000];
+
+	if ( !cgs.localServer ) {
+		return;
+	}
+
+	text[0] = 0;
+	Q_strcat( text, sizeof( text ), modelName );
+
+	for ( i = 0, anim = animList; i < numAnims; i++, anim++ ) {
+		if ( anim->moveSpeed <= 0 ) {
+			continue;
+		}
+
+		// add this to the list
+		Q_strcat( text, sizeof( text ), va( " %s %i", anim->name, anim->moveSpeed ) );
+	}
+
+	// send the movespeeds to the server
+	trap_SendMoveSpeedsToGame( 0, text );
+}
+
+/*
+===============
+CG_SendMoveSpeeds
+
+  send moveSpeeds for all unique models
+===============
+*/
+void CG_SendMoveSpeeds( void ) {
+	int i;
+	animModelInfo_t *modelInfo;
+
+	for ( i = 0, modelInfo = cgs.animScriptData.modelInfo; i < MAX_ANIMSCRIPT_MODELS; i++, modelInfo++ ) {
+		if ( !modelInfo->modelname[0] ) {
+			continue;
+		}
+
+		// send this model
+		CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, modelInfo->modelname );
+	}
+
+}
+
+
+/*
+===============
 CG_MapRestart
 
 The server has issued a map_restart, so the next snapshot
@@ -698,6 +751,11 @@ static void CG_MapRestart( void ) {
 	cg.v_noFireTime = 0;
 	cg.v_fireTime = 0;
 
+	// inform LOCAL server of animationSpeeds for AI use (ONLY)
+	//if (cgs.localServer) {
+	//CG_SendMoveSpeeds();
+	//}
+
 	// play the "fight" sound if this is a restart without warmup
 	if ( cg.warmup == 0 && cgs.gametype == GT_TOURNAMENT ) {
 		trap_S_StartLocalSound( cgs.media.countFightSound, CHAN_ANNOUNCER );
@@ -712,6 +770,25 @@ static void CG_MapRestart( void ) {
 	}
 #endif
 	trap_Cvar_Set( "cg_thirdPerson", "0" );
+}
+
+/*
+=================
+CG_RequestMoveSpeed
+=================
+*/
+void CG_RequestMoveSpeed( const char *modelname ) {
+	animModelInfo_t *modelInfo;
+
+	modelInfo = BG_ModelInfoForModelname( (char *)modelname );
+
+	if ( !modelInfo ) {
+		// ignore it
+		return;
+	}
+
+	// send it
+	CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, (char *)modelname );
 }
 
 // NERVE - SMF
@@ -1507,6 +1584,11 @@ static void CG_ServerCommand( void ) {
 //		CG_StartCamera( CG_Argv(1), atoi(CG_Argv(2)) );
 //		return;
 //	}
+
+	if ( !strcmp( cmd, "mvspd" ) ) {
+		CG_RequestMoveSpeed( CG_Argv( 1 ) );
+		return;
+	}
 
 	if ( Q_stricmp (cmd, "remapShader") == 0 )
 	{

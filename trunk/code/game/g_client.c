@@ -1284,6 +1284,11 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
 	// parse the text
 	BG_AnimParseAnimScript( cl->modelInfo, &level.animScriptData, cl->ps.clientNum, filename, text );
 
+	// ask the client to send us the movespeeds if available
+	if ( g_gametype.integer == GT_SINGLE_PLAYER && g_entities[0].client && g_entities[0].client->pers.connected == CON_CONNECTED ) {
+		trap_SendServerCommand( 0, va( "mvspd %s", modelname ) );
+	}
+
 	return qtrue;
 }
 
@@ -2145,5 +2150,52 @@ void ClientDisconnect( int clientNum ) {
 
 	if ( ent->r.svFlags & SVF_BOT ) {
 		BotAIShutdownClient( clientNum );
+	}
+}
+
+
+/*
+==================
+G_RetrieveMoveSpeedsFromClient
+==================
+*/
+void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
+	char *text_p, *token;
+	animation_t *anim;
+	animModelInfo_t *modelInfo;
+
+	text_p = text;
+
+	// get the model name
+	token = COM_Parse( &text_p );
+	if ( !token || !token[0] ) {
+		G_Error( "G_RetrieveMoveSpeedsFromClient: internal error" );
+	}
+
+	modelInfo = BG_ModelInfoForModelname( token );
+
+	if ( !modelInfo ) {
+		// ignore it
+		return;
+	}
+
+	while ( 1 ) {
+		token = COM_Parse( &text_p );
+		if ( !token || !token[0] ) {
+			break;
+		}
+
+		// this is a name
+		anim = BG_AnimationForString( token, modelInfo );
+		if ( anim->moveSpeed == 0 ) {
+			G_Error( "G_RetrieveMoveSpeedsFromClient: trying to set movespeed for non-moving animation" );
+		}
+
+		// get the movespeed
+		token = COM_Parse( &text_p );
+		if ( !token || !token[0] ) {
+			G_Error( "G_RetrieveMoveSpeedsFromClient: missing movespeed" );
+		}
+		anim->moveSpeed = atoi( token );
 	}
 }

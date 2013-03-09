@@ -347,7 +347,6 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	int	index;
 
 	if ( !var_name || !var_value ) {
-		Com_Printf( "invalid cvar name string: %s\n", var_value );
 		Com_Error( ERR_FATAL, "Cvar_Get: NULL parameter" );
 	}
 

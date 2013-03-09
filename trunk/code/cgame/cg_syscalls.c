@@ -459,6 +459,10 @@ void trap_SnapVector( float *v ) {
 	syscall( CG_SNAPVECTOR, v );
 }
 
+void trap_SendMoveSpeedsToGame( int entnum, char *movespeeds ) {
+	syscall( CG_SENDMOVESPEEDSTOGAME, entnum, movespeeds );
+}
+
 // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to qfalse (do not alter gamestate)
 int trap_CIN_PlayCinematic( const char *arg0, int xpos, int ypos, int width, int height, int bits ) {
 	return syscall( CG_CIN_PLAYCINEMATIC, arg0, xpos, ypos, width, height, bits );
