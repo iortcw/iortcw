@@ -128,12 +128,6 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 		{
 			mod->numLods++;
 			numLoaded++;
-			// if we have a valid model and are biased
-			// so that we won't see any higher detail ones,
-			// stop loading them
-			if ( lod <= r_lodbias->integer ) {
-				break;
-			}
 		}
 		else
 			break;
