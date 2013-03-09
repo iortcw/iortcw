@@ -311,8 +311,6 @@ qboolean AICast_CheckAttackAtPos( int entnum, int enemy, vec3_t pos, qboolean du
 void AICast_Init( void );
 // done.
 
-void G_RetrieveMoveSpeedsFromClient( int entnum, char *text );
-
 /*
 ================
 vmMain
@@ -359,10 +357,6 @@ Q_EXPORT intptr_t vmMain( int command, int arg0, int arg1, int arg2, int arg3, i
 	case AICAST_CHECKATTACKATPOS:
 		return AICast_CheckAttackAtPos( arg0, arg1, (float *)arg2, arg3, arg4 );
 		// done.
-
-	case GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT:
-		G_RetrieveMoveSpeedsFromClient( arg0, (char *)arg1 );
-		return 0;
 	}
 
 	return -1;
