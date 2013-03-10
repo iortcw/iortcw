@@ -88,6 +88,13 @@ cvar_t	*sv_banFile;
 serverBan_t serverBans[SERVER_MAXBANS];
 int serverBansCount = 0;
 
+#if defined ANTICHEAT
+cvar_t *wh_active;
+cvar_t *wh_bbox_horz;
+cvar_t *wh_bbox_vert;
+cvar_t *wh_check_fov;
+#endif
+
 void SVC_GameCompleteStatus( netadr_t from );       // NERVE - SMF
 
 /*

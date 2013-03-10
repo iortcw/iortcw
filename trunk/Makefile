@@ -206,6 +206,10 @@ ifndef USE_OLD_VM64
 USE_OLD_VM64=0
 endif
 
+ifndef USE_ANTICHEAT
+USE_ANTICHEAT=0
+endif
+
 #############################################################################
 
 BD=$(BUILD_DIR)/debug-$(PLATFORM)-$(ARCH)
@@ -984,6 +988,10 @@ ifeq ($(NO_STRIP),1)
   STRIP_FLAG =
 else
   STRIP_FLAG = -s
+endif
+
+ifeq ($(USE_ANTICHEAT),1)
+  SERVER_CFLAGS += -DANTICHEAT
 endif
 
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
@@ -2024,6 +2032,10 @@ Q3DOBJ = \
   $(B)/ded/con_log.o \
   $(B)/ded/sys_main.o
 
+ifeq ($(USE_ANTICHEAT),1)
+  Q3DOBJ += \
+      $(B)/ded/sv_wallhack.o
+endif
 ifeq ($(ARCH),i386)
   Q3DOBJ += \
       $(B)/ded/matha.o \
