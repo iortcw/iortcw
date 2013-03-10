@@ -1035,5 +1035,5 @@ char* Sys_GetDLLName( const char *name ) {
 
 int Sys_GetHighQualityCPU() {
 	// TODO TTimo see win_shared.c IsP3 || IsAthlon
-	return 0;
+	return 1;
 }

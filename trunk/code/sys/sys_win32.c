@@ -869,6 +869,6 @@ char* Sys_GetDLLName( const char *name ) {
 }
 
 int Sys_GetHighQualityCPU() {
-	return 0;
+	return 1;
 }
 
