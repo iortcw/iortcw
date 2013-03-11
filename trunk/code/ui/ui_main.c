@@ -4833,7 +4833,7 @@ static void UI_RunMenuScript( char **args ) {
 		} else if ( Q_stricmp( name, "deleteFavorite" ) == 0 ) {
 			if ( ui_netSource.integer == UIAS_FAVORITES ) {
 				char addr[MAX_ADDRESSLENGTH];
-				trap_LAN_GetServerInfo( ui_netSource.integer, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, MAX_STRING_CHARS );
+				trap_LAN_GetServerInfo( AS_FAVORITES, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, MAX_STRING_CHARS );
 				addr[0] = '\0';
 				Q_strncpyz( addr,    Info_ValueForKey( buff, "addr" ), sizeof ( addr ) );
 				if ( strlen( addr ) > 0 ) {
