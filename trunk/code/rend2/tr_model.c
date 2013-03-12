@@ -63,6 +63,11 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 	char filename[MAX_QPATH], namebuf[MAX_QPATH+20];
 	char *fext, defex[] = "md3";
 
+	// Ridah, caching
+	if ( r_cacheGathering->integer ) {
+		ri.Cmd_ExecuteText( EXEC_NOW, va( "cache_usedfile model %s\n", name ) );
+	}
+
 	numLoaded = 0;
 
 	strcpy(filename, name);
