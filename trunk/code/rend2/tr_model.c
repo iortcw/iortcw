@@ -63,11 +63,6 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 	char filename[MAX_QPATH], namebuf[MAX_QPATH+20];
 	char *fext, defex[] = "md3";
 
-	// Ridah, caching
-	if ( r_cacheGathering->integer ) {
-		ri.Cmd_ExecuteText( EXEC_NOW, va( "cache_usedfile model %s\n", name ) );
-	}
-
 	numLoaded = 0;
 
 	strcpy(filename, name);
@@ -329,11 +324,6 @@ qhandle_t RE_RegisterModel( const char *name ) {
 		return 0;
 	}
 
-	// Ridah, caching
-	if ( r_cacheGathering->integer ) {
-		ri.Cmd_ExecuteText( EXEC_NOW, va( "cache_usedfile model %s\n", name ) );
-	}
-
 	//
 	// search the currently loaded models
 	//
@@ -359,12 +349,6 @@ qhandle_t RE_RegisterModel( const char *name ) {
 
 
 	R_IssuePendingRenderCommands();
-
-	// Ridah, look for it cached
-	if ( R_FindCachedModel( name, mod ) ) {
-		return mod->index;
-	}
-	// done.
 
 	mod->type = MOD_BAD;
 	mod->numLods = 0;
@@ -2061,10 +2045,6 @@ void R_ModelInit( void ) {
 
 	mod = R_AllocModel();
 	mod->type = MOD_BAD;
-
-	// Ridah, load in the cacheModels
-	R_LoadCacheModels();
-	// done.
 }
 
 
@@ -2526,55 +2506,6 @@ R_BackupModels
 */
 void R_BackupModels( void ) {
 	return;
-}
-
-/*
-===============
-R_FindCachedModel
-
-  look for the given model in the list of backupModels
-===============
-*/
-qboolean R_FindCachedModel( const char *name, model_t *newmod ) {
-	return qfalse;
-}
-
-/*
-===============
-R_LoadCacheModels
-===============
-*/
-void R_LoadCacheModels( void ) {
-	int len;
-	byte *buf;
-	char    *token, *pString;
-	char name[MAX_QPATH];
-
-	if ( !r_cacheModels->integer ) {
-		return;
-	}
-
-	// don't load the cache list in between level loads, only on startup, or after a vid_restart
-	if ( numBackupModels > 0 ) {
-		return;
-	}
-
-	len = ri.FS_ReadFile( "model.cache", NULL );
-
-	if ( len <= 0 ) {
-		return;
-	}
-
-	buf = (byte *)ri.Hunk_AllocateTempMemory( len );
-	ri.FS_ReadFile( "model.cache", (void **)&buf );
-	pString = (char *)buf;
-
-	while ( ( token = COM_ParseExt( &pString, qtrue ) ) && token[0] ) {
-		Q_strncpyz( name, token, sizeof( name ) );
-		RE_RegisterModel( name );
-	}
-
-	ri.Hunk_FreeTempMemory( buf );
 }
 // done.
 //========================================================================

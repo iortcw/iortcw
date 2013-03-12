@@ -1108,11 +1108,6 @@ image_t *R_FindImageFile( const char *name, qboolean mipmap, qboolean allowPicmi
 
 	hash = generateHashValue( name );
 
-	// Ridah, caching
-	if ( r_cacheGathering->integer ) {
-		ri.Cmd_ExecuteText( EXEC_NOW, va( "cache_usedfile image %s %i %i %i\n", name, mipmap, allowPicmip, glWrapClampMode ) );
-	}
-
 	//
 	// see if the image is already loaded
 	//
@@ -1133,13 +1128,6 @@ image_t *R_FindImageFile( const char *name, qboolean mipmap, qboolean allowPicmi
 			return image;
 		}
 	}
-
-	// Ridah, check the cache
-	// TTimo: assignment used as truth value
-	if ( ( image = R_FindCachedImage( name, hash ) ) ) {
-		return image;
-	}
-	// done.
 
 	//
 	// load the pic from disk
@@ -1458,10 +1446,6 @@ void    R_InitImages( void ) {
 
 	// create default texture and white texture
 	R_CreateBuiltinImages();
-
-	// Ridah, load the cache media, if they were loaded previously, they'll be restored from the backupImages
-	R_LoadCacheImages();
-	// done.
 }
 
 /*
@@ -2639,40 +2623,6 @@ void R_BackupImages( void ) {
 	}
 }
 
-/*
-=============
-R_FindCachedImage
-=============
-*/
-image_t *R_FindCachedImage( const char *name, int hash ) {
-	image_t *bImage;
-
-	if ( !r_cacheShaders->integer ) {
-		return NULL;
-	}
-
-	if ( !numBackupImages ) {
-		return NULL;
-	}
-
-	bImage = backupHashTable[hash];
-	while ( bImage ) {
-
-		if ( !Q_stricmp( name, bImage->imgName ) ) {
-			// add it to the current images
-			if ( tr.numImages == MAX_DRAWIMAGES ) {
-				ri.Error( ERR_DROP, "R_CreateImage: MAX_DRAWIMAGES hit\n" );
-			}
-
-			R_TouchImage( bImage );
-			return bImage;
-		}
-
-		bImage = bImage->next;
-	}
-
-	return NULL;
-}
 
 /*
 ===============
@@ -2718,44 +2668,6 @@ void R_FindFreeTexnum( image_t *inImage ) {
 	} else {
 		ri.Error( ERR_DROP, "R_FindFreeTexnum: MAX_DRAWIMAGES hit\n" );
 	}
-}
-
-/*
-===============
-R_LoadCacheImages
-===============
-*/
-void R_LoadCacheImages( void ) {
-	int len;
-	byte *buf;
-	char    *token, *pString;
-	char name[MAX_QPATH];
-	int parms[3], i;
-
-	if ( numBackupImages ) {
-		return;
-	}
-
-	len = ri.FS_ReadFile( "image.cache", NULL );
-
-	if ( len <= 0 ) {
-		return;
-	}
-
-	buf = (byte *)ri.Hunk_AllocateTempMemory( len );
-	ri.FS_ReadFile( "image.cache", (void **)&buf );
-	pString = (char *)buf;
-
-	while ( ( token = COM_ParseExt( &pString, qtrue ) ) && token[0] ) {
-		Q_strncpyz( name, token, sizeof( name ) );
-		for ( i = 0; i < 3; i++ ) {
-			token = COM_ParseExt( &pString, qfalse );
-			parms[i] = atoi( token );
-		}
-		R_FindImageFile( name, parms[0], parms[1], parms[2] );
-	}
-
-	ri.Hunk_FreeTempMemory( buf );
 }
 // done.
 //==========================================================================================
