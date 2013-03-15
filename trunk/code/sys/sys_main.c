@@ -666,6 +666,15 @@ int main( int argc, char **argv )
 
 	while( 1 )
 	{
+#ifndef DEDICATED
+#ifndef VCMODS_NOSDL
+		int appState = SDL_GetAppState( );
+
+		Cvar_SetValue( "com_unfocused",	!( appState & SDL_APPINPUTFOCUS ) );
+		Cvar_SetValue( "com_minimized", !( appState & SDL_APPACTIVE ) );
+#endif
+#endif
+
 		IN_Frame( );
 		Com_Frame( );
 	}
