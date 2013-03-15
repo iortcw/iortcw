@@ -206,6 +206,15 @@ ifndef USE_ANTICHEAT
 USE_ANTICHEAT=0
 endif
 
+ifndef USE_BLOOM
+USE_BLOOM=1
+endif
+
+ifndef USE_OPENGLES
+USE_OPENGLES=0
+endif
+
+
 #############################################################################
 
 BD=$(BUILD_DIR)/debug-$(PLATFORM)-$(ARCH)
@@ -216,6 +225,7 @@ RDIR=$(MOUNT_DIR)/renderer
 R2DIR=$(MOUNT_DIR)/rend2
 CMDIR=$(MOUNT_DIR)/qcommon
 SDLDIR=$(MOUNT_DIR)/sdl
+ESDIR=$(MOUNT_DIR)/es
 ASMDIR=$(MOUNT_DIR)/asm
 SYSDIR=$(MOUNT_DIR)/sys
 GDIR=$(MOUNT_DIR)/game
@@ -358,8 +368,15 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   THREAD_LIBS=-lpthread
   LIBS=-ldl -lm
 
-  CLIENT_LIBS=$(SDL_LIBS)
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
+  ifeq ($(USE_OPENGLES),1)
+    CLIENT_LIBS=-lSDL
+    RENDERER_LIBS =-lSDL -lvchostif -lvcfiled_check -lbcm_host -lkhrn_static -lvchiq_arm -lopenmaxil -lEGL -lGLESv2 -lvcos
+    SERVER_LIBS=-lbcm_host -lvchiq_arm -lvcos
+  else
+    CLIENT_LIBS=$(SDL_LIBS)
+    RENDERER_LIBS = $(SDL_LIBS) -lGL
+    SERVER_LIBS=
+  endif
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
@@ -990,6 +1007,12 @@ ifeq ($(USE_ANTICHEAT),1)
   SERVER_CFLAGS += -DANTICHEAT
 endif
 
+ifeq ($(USE_BLOOM),1)
+  CLIENT_CFLAGS += -DUSE_BLOOM
+endif
+
+
+
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
 BASE_CFLAGS += -Wformat=2 -Wno-format-zero-length -Wformat-security -Wno-format-nonliteral
 BASE_CFLAGS += -Wstrict-aliasing=2 -Wmissing-format-attribute
@@ -1510,7 +1533,6 @@ Q3R2STRINGOBJ = \
 Q3ROBJ = \
   $(B)/renderer/tr_animation.o \
   $(B)/renderer/tr_backend.o \
-  $(B)/renderer/tr_bloom.o \
   $(B)/renderer/tr_bsp.o \
   $(B)/renderer/tr_cmds.o \
   $(B)/renderer/tr_cmesh.o \
@@ -1539,9 +1561,19 @@ Q3ROBJ = \
   $(B)/renderer/tr_sky.o \
   $(B)/renderer/tr_surface.o \
   $(B)/renderer/tr_world.o \
-  \
-  $(B)/renderer/sdl_gamma.o \
-  $(B)/renderer/sdl_glimp.o
+
+ifeq ($(USE_BLOOM),1)
+  Q3ROBJ += $(B)/renderer/tr_bloom.o 
+endif
+
+ifeq ($(USE_OPENGLES),1)
+  Q3ROBJ += $(B)/renderer/es_gamma.o 
+  Q3ROBJ += $(B)/renderer/es_glimp.o
+  Q3ROBJ += $(B)/renderer/etc1encode.o
+else
+  Q3ROBJ += $(B)/renderer/sdl_gamma.o
+  Q3ROBJ += $(B)/renderer/sdl_glimp.o
+endif
 
 ifneq ($(USE_RENDERER_DLOPEN), 0)
   Q3ROBJ += \
@@ -2343,6 +2375,9 @@ $(B)/renderer/%.o: $(JPDIR)/%.c
 
 $(B)/renderer/%.o: $(RDIR)/%.c
 	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(ESDIR)/%.c
+	$(DO_CC)
 
 $(B)/rend2/glsl/%.c: $(R2DIR)/glsl/%.glsl
 	$(DO_REF_STR)

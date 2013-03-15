@@ -47,6 +47,7 @@ R_ArrayElementDiscrete
 This is just for OpenGL conformance testing, it should never be the fastest
 ================
 */
+#ifndef VCMODS_OPENGLES
 static void APIENTRY R_ArrayElementDiscrete( GLint index ) {
 	qglColor4ubv( tess.svars.colors[ index ] );
 	if ( glState.currenttmu ) {
@@ -57,6 +58,7 @@ static void APIENTRY R_ArrayElementDiscrete( GLint index ) {
 	}
 	qglVertex3fv( tess.xyz[ index ] );
 }
+#endif
 
 /*
 ===================
@@ -66,6 +68,7 @@ R_DrawStripElements
 */
 static int c_vertexes;          // for seeing how long our average strips are
 static int c_begins;
+#ifndef VCMODS_OPENGLES
 static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void ( APIENTRY *element )( GLint ) ) {
 	int i;
 	int last[3] = { -1, -1, -1 };
@@ -154,6 +157,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void 
 
 	qglEnd();
 }
+#endif
 
 
 
@@ -171,6 +175,7 @@ static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
 
 	primitives = r_primitives->integer;
 
+#ifndef VCMODS_OPENGLES
 	// default is to use triangles if compiled vertex arrays are present
 	if ( primitives == 0 ) {
 		if ( qglLockArraysEXT ) {
@@ -182,10 +187,12 @@ static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
 
 
 	if ( primitives == 2 ) {
+#endif
 		qglDrawElements( GL_TRIANGLES,
 						 numIndexes,
 						 GL_INDEX_TYPE,
 						 indexes );
+#ifndef VCMODS_OPENGLES
 		return;
 	}
 
@@ -200,6 +207,7 @@ static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
 	}
 
 	// anything else will cause no drawing
+#endif
 }
 
 
@@ -264,7 +272,11 @@ Draws triangle outlines for debugging
 */
 static void DrawTris( shaderCommands_t *input ) {
 	GL_Bind( tr.whiteImage );
+#ifdef VCMODS_OPENGLES
+	qglColor4f (1.0f,1.0f,1.0f,1.0f);
+#else
 	qglColor3f( 1,1,1 );
+#endif
 
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE );
 	qglDepthRange( 0, 0 );
@@ -299,12 +311,32 @@ Draws vertex normals for debugging
 static void DrawNormals( shaderCommands_t *input ) {
 	int i;
 	vec3_t temp;
+#ifdef VCMODS_OPENGLES
+	vec3_t	verts[2*SHADER_MAX_VERTEXES];
+	glIndex_t indicies[2*SHADER_MAX_VERTEXES];
+
+	for (i = 0 ; i < input->numVertexes ; i++) {
+		VectorCopy(input->xyz[i], verts[i*2]);
+		VectorMA (input->xyz[i], 2, input->normal[i], temp);
+		VectorCopy(temp, verts[(i*2)+1]);
+		indicies[(i*2)] = i*2;
+		indicies[(i*2)+1] = (i*2)+1;
+	}
+#endif
 
 	GL_Bind( tr.whiteImage );
+#ifdef VCMODS_OPENGLES
+	qglColor4f (1.0f,1.0f,1.0f,1.0f);
+#else
 	qglColor3f( 1,1,1 );
+#endif
 	qglDepthRange( 0, 0 );  // never occluded
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE );
 
+#ifdef VCMODS_OPENGLES
+	qglVertexPointer(3, GL_FLOAT, 0, verts);
+	qglDrawElements( GL_LINES, i, GL_INDEX_TYPE, indicies );
+#else
 	qglBegin( GL_LINES );
 	for ( i = 0 ; i < input->numVertexes ; i++ ) {
 		qglVertex3fv( input->xyz[i] );
@@ -312,6 +344,7 @@ static void DrawNormals( shaderCommands_t *input ) {
 		qglVertex3fv( temp );
 	}
 	qglEnd();
+#endif
 
 	qglDepthRange( 0, 1 );
 }
@@ -374,9 +407,11 @@ static void DrawMultitextured( shaderCommands_t *input, int stage ) {
 
 	// this is an ugly hack to work around a GeForce driver
 	// bug with multitexture and clip planes
+#ifndef VCMODS_OPENGLES
 	if ( backEnd.viewParms.isPortal ) {
 		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
+#endif
 
 	//
 	// base
@@ -439,7 +474,11 @@ static void ProjectDlightTexture_altivec( void ) {
 	byte	clipBits[SHADER_MAX_VERTEXES];
 	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	byte	colorArray[SHADER_MAX_VERTEXES][4];
+#ifdef VCMODS_OPENGLES
+	glInext_t	hitIndexes[SHADER_MAX_INDEXES];
+#else
 	unsigned	hitIndexes[SHADER_MAX_INDEXES];
+#endif
 	int		numIndexes;
 	float	scale;
 	float	radius;
@@ -639,7 +678,11 @@ static void ProjectDlightTexture_scalar( void ) {
 	byte	clipBits[SHADER_MAX_VERTEXES];
 	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	byte	colorArray[SHADER_MAX_VERTEXES][4];
+#ifdef VCMODS_OPENGLES
+	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
+#else
 	unsigned	hitIndexes[SHADER_MAX_INDEXES];
+#endif
 	int		numIndexes;
 	float	scale;
 	float	radius;
@@ -1411,6 +1454,12 @@ void RB_StageIteratorGeneric( void ) {
 
 	input = &tess;
 	shader = input->shader;
+
+#ifdef VCMODS_OPENGLES
+	// if ignoreglerrors is off, qglLockArraysEXT generates a GL error when you
+	// pass it 0 verts
+	if (input->numVertexes == 0 ) return;
+#endif
 
 	RB_DeformTessGeometry();
 

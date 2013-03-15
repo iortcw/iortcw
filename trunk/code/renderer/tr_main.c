@@ -94,7 +94,9 @@ void R_Fog( glfog_t *curfog ) {
 
 	// only send changes if necessary
 
+#ifndef VCMODS_OPENGLES
 	qglFogi( GL_FOG_MODE, curfog->mode );
+#endif
 	qglFogfv( GL_FOG_COLOR, curfog->color );
 	qglFogf( GL_FOG_DENSITY, curfog->density );
 	qglHint( GL_FOG_HINT, curfog->hint );
@@ -106,12 +108,14 @@ void R_Fog( glfog_t *curfog ) {
 		qglFogf( GL_FOG_END, curfog->end );
 	}
 
+#ifndef VCMODS_OPENGLES
 // TTimo - from SP NV fog code
 	// NV fog mode
 	if ( glConfig.NVFogAvailable ) {
 		qglFogi( GL_FOG_DISTANCE_MODE_NV, glConfig.NVFogMode );
 	}
 // end
+#endif
 
 	qglClearColor( curfog->color[0], curfog->color[1], curfog->color[2], curfog->color[3] );
 
@@ -1600,6 +1604,7 @@ R_DebugPolygon
 ================
 */
 void R_DebugPolygon( int color, int numPoints, float *points ) {
+#ifndef VCMODS_OPENGLES
 	int i;
 
 	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
@@ -1623,6 +1628,7 @@ void R_DebugPolygon( int color, int numPoints, float *points ) {
 	}
 	qglEnd();
 	qglDepthRange( 0, 1 );
+#endif
 }
 
 /*

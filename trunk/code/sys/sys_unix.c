@@ -1024,6 +1024,8 @@ char* Sys_GetDLLName( const char *name ) {
 	return va( "%s.mp.sparc.so", name );
 #elif defined __sparc64__
 	return va( "%s.mp.sparc64.so", name );
+#elif defined __arm__
+	return va( "%s.mp.arm.so", name );
 #elif defined __axp__
 	return va( "%s.mp.axp.so", name );
 #elif defined __mips__
