@@ -441,17 +441,12 @@ void AxisCopy( vec3_t in[3], vec3_t out[3] ) {
 	VectorCopy( in[2], out[2] );
 }
 
-void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal )
-{
+void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal ) {
 	float d;
 	vec3_t n;
 	float inv_denom;
 
-	inv_denom =  DotProduct( normal, normal );
-#ifndef Q3_VM
-	assert( Q_fabs(inv_denom) != 0.0f ); // zero vectors get here
-#endif
-	inv_denom = 1.0f / inv_denom;
+	inv_denom = 1.0F / DotProduct( normal, normal );
 
 	d = DotProduct( normal, p ) * inv_denom;
 
