@@ -1622,9 +1622,7 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * ) = {
 	( void( * ) ( void* ) )RB_SurfaceMesh,         // SF_MD3,
 	( void( * ) ( void* ) )RB_SurfaceCMesh,        // SF_MDC,
 	( void( * ) ( void* ) )RB_SurfaceAnim,         // SF_MDS,
-#ifdef RAVENMD4
 	( void( * ) ( void* ) )RB_MDRSurfaceAnim,	// SF_MDR,
-#endif
 	( void( * ) ( void* ) )RB_IQMSurfaceAnim,	// SF_IQM,
 	( void( * ) ( void* ) )RB_SurfaceFlare,        // SF_FLARE,
 	( void( * ) ( void* ) )RB_SurfaceEntity,       // SF_ENTITY

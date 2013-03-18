@@ -170,10 +170,8 @@ static int R_ComputeLOD( trRefEntity_t *ent ) {
 	float flod, lodscale;
 	float projectedRadius;
 	md3Frame_t *frame;
-#ifdef RAVENMD4
 	mdrHeader_t *mdr;
 	mdrFrame_t *mdrframe;
-#endif
 	int lod;
 
 	if ( tr.currentModel->numLods < 2 ) {
@@ -184,7 +182,6 @@ static int R_ComputeLOD( trRefEntity_t *ent ) {
 		// multiple LODs exist, so compute projected bounding sphere
 		// and use that as a criteria for selecting LOD
 
-#ifdef RAVENMD4
 		if(tr.currentModel->type == MOD_MDR)
 		{
 			int frameSize;
@@ -196,7 +193,6 @@ static int R_ComputeLOD( trRefEntity_t *ent ) {
 			radius = RadiusFromBounds(mdrframe->bounds[0], mdrframe->bounds[1]);
 		}
 		else
-#endif
 		{
 		// RF, checked for a forced lowest LOD
 		if ( ent->e.reFlags & REFLAG_FORCE_LOD ) {

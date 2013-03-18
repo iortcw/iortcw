@@ -37,9 +37,7 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *mod_
 // done.
 static qboolean R_LoadMD3( model_t *mod, int lod, void *buffer, const char *name );
 static qboolean R_LoadMDS( model_t *mod, void *buffer, const char *name );
-#ifdef RAVENMD4
 static qboolean R_LoadMDR(model_t *mod, void *buffer, int filesize, const char *name );
-#endif
 
 extern cvar_t *r_compressModels;
 extern cvar_t *r_exportCompressedModels;
@@ -176,7 +174,6 @@ fail:
 	return 0;
 }
 
-#ifdef RAVENMD4
 /*
 ====================
 R_RegisterMDR
@@ -214,7 +211,6 @@ qhandle_t R_RegisterMDR(const char *name, model_t *mod)
 	
 	return mod->index;
 }
-#endif
 
 /*
 ====================
@@ -263,9 +259,7 @@ typedef struct
 static modelExtToLoaderMap_t modelLoaders[ ] =
 {
 	{ "iqm", R_RegisterIQM },
-#ifdef RAVENMD4
 	{ "mdr", R_RegisterMDR },
-#endif
 	{ "mds", R_RegisterMD3 },
 	{ "md3", R_RegisterMD3 },
 	{ "mdc", R_RegisterMD3 }
@@ -1239,7 +1233,6 @@ static qboolean R_LoadMD3( model_t *mod, int lod, void *buffer, const char *mod_
 	return qtrue;
 }
 
-#ifdef RAVENMD4
 
 /*
 =================
@@ -1578,7 +1571,6 @@ static qboolean R_LoadMDR( model_t *mod, void *buffer, int filesize, const char 
 	
 	return qtrue;
 }
-#endif
 
 /*
 =================
@@ -1976,7 +1968,6 @@ static int R_GetMDSTag( byte *mod, const char *tagName, int startTagIndex, mdsTa
 }
 */
 
-#ifdef RAVENMD4
 void R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, md3Tag_t * dest) 
 {
 	int				i, j, k;
@@ -2020,7 +2011,6 @@ void R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, md3Tag_t
 	VectorClear( dest->origin );
 	strcpy(dest->name,"");
 }
-#endif
 
 /*
 ================
@@ -2031,9 +2021,7 @@ R_LerpTag
 */
 int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNameIn, int startIndex ) {
 	md3Tag_t    *start, *end;
-#ifdef RAVENMD4
 	md3Tag_t	start_space, end_space;
-#endif
 	md3Tag_t ustart, uend;
 	int i;
 	float frontLerp, backLerp;
@@ -2061,7 +2049,6 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 */
 	model = R_GetModelByHandle( handle );
 	if ( !model->md3[0] && !model->mdc[0] && !model->mds ) {
-#ifdef RAVENMD4
 		if(model->type == MOD_MDR)
 		{
 			start = &start_space;
@@ -2069,9 +2056,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 			R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, start);
 			R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, end);
 		}
-		else
-#endif
-		if( model->type == MOD_IQM ) {
+		else if ( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
 					startFrame, endFrame,
 					frac, tagName );
@@ -2224,7 +2209,6 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 		VectorCopy( frame->bounds[0], mins );
 		VectorCopy( frame->bounds[1], maxs );
 		return;
-#ifdef RAVENMD4
 	} else if (model->type == MOD_MDR) {
 		mdrHeader_t	*header;
 		mdrFrame_t	*frame;
@@ -2236,7 +2220,6 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 		VectorCopy( frame->bounds[1], maxs );
 		
 		return;
-#endif
 	} else if(model->type == MOD_IQM) {
 		iqmData_t *iqmData;
 		
