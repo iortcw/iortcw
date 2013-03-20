@@ -1148,7 +1148,7 @@ CL_InitUI
 void CL_InitUI( void ) {
 	int v;
 
-	uivm = VM_Create( UI_PREFIX, CL_UISystemCalls, VMI_NATIVE );
+	uivm = VM_Create( "ui", CL_UISystemCalls, VMI_NATIVE );
 	if ( !uivm ) {
 		Com_Error( ERR_FATAL, "VM_Create on UI failed" );
 	}

@@ -1180,6 +1180,8 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 	char		*netpath;
 	FILE		*filep;
 	int			len;
+	char	*cgameName;
+	char	*uiName;
 
 	if(filename == NULL)
 		Com_Error(ERR_FATAL, "FS_FOpenFileRead: NULL 'filename' parameter passed");
@@ -1318,9 +1320,14 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 						}
 					}
 
-					if(strstr(filename, SYS_DLLNAME_CGAME))
+					cgameName = Sys_GetDLLName( "cgame" );
+
+					if(strstr(filename, cgameName))
 						pak->referenced |= FS_CGAME_REF;
-					if(strstr(filename, SYS_DLLNAME_UI))
+
+					uiName = Sys_GetDLLName( "ui" );
+
+					if(strstr(filename, uiName))
 						pak->referenced |= FS_UI_REF;
 
 #if !defined( PRE_RELEASE_DEMO ) && !defined( DO_LIGHT_DEDICATED )
@@ -1511,7 +1518,11 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
 		Com_Error(ERR_FATAL, "Filesystem call made without initialization");
 
 	if(enableDll)
-		Com_sprintf(dllName, sizeof(dllName), "%s" ARCH_STRING DLL_EXT, name);
+#if defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__WIN64__)
+		Com_sprintf(dllName, sizeof(dllName), "%s_mp_" ARCH_STRING DLL_EXT, name);
+#else
+		Com_sprintf(dllName, sizeof(dllName), "%s.mp." ARCH_STRING DLL_EXT, name);
+#endif
 		
 	Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.qvm", name);
 

@@ -1014,25 +1014,7 @@ void Sys_OpenURL( const char *url, qboolean doexit ) {
 
 // TTimo - Wolf MP specific, adding .mp. to shared objects
 char* Sys_GetDLLName( const char *name ) {
-#if defined __i386__
-	return va( "%s.mp.i386.so", name );
-#elif defined __x86_64__
-	return va( "%s.mp.x86_64.so", name );
-#elif defined __powerpc__ || defined __ppc__
-	return va( "%s.mp.ppc.so", name );
-#elif defined __sparc__
-	return va( "%s.mp.sparc.so", name );
-#elif defined __sparc64__
-	return va( "%s.mp.sparc64.so", name );
-#elif defined __arm__
-	return va( "%s.mp.arm.so", name );
-#elif defined __axp__
-	return va( "%s.mp.axp.so", name );
-#elif defined __mips__
-	return va( "%s.mp.mips.so", name );
-#else
-#error Unknown arch
-#endif
+	return va("%s.mp." ARCH_STRING DLL_EXT, name);
 }
 
 int Sys_GetHighQualityCPU() {

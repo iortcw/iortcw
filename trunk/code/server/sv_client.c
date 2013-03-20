@@ -1254,6 +1254,8 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 	int nServerChkSum[1024];
 	const char *pPaks, *pArg;
 	qboolean bGood = qtrue;
+	char *cgameName;
+	char *uiName;
 
 	// if we are pure, we "expect" the client to load certain things from
 	// certain pk3 files, namely we want the client to have loaded the
@@ -1262,9 +1264,12 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 
 		nChkSum1 = nChkSum2 = 0;
 
-		bGood = ( FS_FileIsInPAK( SYS_DLLNAME_CGAME , &nChkSum1 ) == 1) ;
+		cgameName = Sys_GetDLLName( "cgame" );
+		uiName = Sys_GetDLLName( "ui" );
+
+		bGood = ( FS_FileIsInPAK( cgameName , &nChkSum1 ) == 1) ;
 		if ( bGood ) {
-			bGood = ( FS_FileIsInPAK( SYS_DLLNAME_UI , &nChkSum2 ) == 1) ;
+			bGood = ( FS_FileIsInPAK( uiName , &nChkSum2 ) == 1) ;
 		}
 
 		nClientPaks = Cmd_Argc();

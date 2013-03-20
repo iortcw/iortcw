@@ -865,7 +865,7 @@ qboolean Sys_PIDIsRunning( int pid )
 }
 
 char* Sys_GetDLLName( const char *name ) {
-	return va( "%s_mp_x86.dll", name );
+	return va("%s_mp_" ARCH_STRING DLL_EXT, name);
 }
 
 int Sys_GetHighQualityCPU() {
