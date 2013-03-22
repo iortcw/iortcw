@@ -260,6 +260,7 @@ static int fs_loadCount;                    // total files read
 static int fs_loadStack;                    // total files in memory
 static int fs_packFiles = 0;                    // total number of files in packs
 
+static int fs_fakeChkSum;
 static int fs_checksumFeed;
 
 typedef union qfile_gus {
@@ -1235,14 +1236,14 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 					{
 						// found it!
 						if(pakFile->len)
-        						return pakFile->len;
-                                                else
-                                                {
-                                                        // It's not nice, but legacy code depends
-                                                        // on positive value if file exists no matter
-                                                        // what size
-                                                        return 1;
-                                                }
+						    return pakFile->len;
+                        else
+                        {
+                            // It's not nice, but legacy code depends
+                            // on positive value if file exists no matter
+                            // what size
+                            return 1;
+                         }
 					}
 
 					pakFile = pakFile->next;
@@ -1258,13 +1259,13 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 
 			if(filep)
 			{
-			        len = FS_fplength(filep);
+                len = FS_fplength(filep);
 				fclose(filep);
 				
 				if(len)
-        				return len;
-                                else
-                                        return 1;
+				    return len;
+                else
+                    return 1;
 			}
 		}
 		
@@ -1393,6 +1394,8 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 			   !FS_IsExt(filename, ".game", len) &&		// menu files
 			   !FS_IsExt(filename, ".dat", len) &&		// for journal files
 			   !FS_IsDemoExt(filename, len))			// demos
+				if(!(fs_fakeChkSum = random()))
+					fs_fakeChkSum = 0xdeadbeef;
 			{
 				*file = 0;
 				return -1;
@@ -3935,6 +3938,11 @@ const char *FS_ReferencedPakPureChecksums( void ) {
 				numPaks++;
 			}
 		}
+
+		if ( fs_fakeChkSum != 0 ) {
+			// only added if a non-pure file is referenced
+			Q_strcat( info, sizeof( info ), va( "%i ", fs_fakeChkSum ) ); 	
+		}
 	}
 	// last checksum is the encoded number of referenced pk3s
 	checksum ^= numPaks;
@@ -4437,6 +4445,9 @@ void FS_Restart( int checksumFeed ) {
 
 	// set the checksum feed
 	fs_checksumFeed = checksumFeed;
+
+	// Clear fake checksums
+	fs_fakeChkSum = 0;
 
 	// clear pak references
 	FS_ClearPakReferences( 0 );
