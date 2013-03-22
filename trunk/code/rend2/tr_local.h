@@ -795,7 +795,7 @@ enum
 	GLSL_MAT16
 };
 
-enum
+typedef enum
 {
 	UNIFORM_DIFFUSEMAP = 0,
 	UNIFORM_LIGHTMAP,

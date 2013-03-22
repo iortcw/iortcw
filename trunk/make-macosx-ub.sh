@@ -10,31 +10,31 @@ BASEDIR=main
 
 BIN_OBJ="
 	build/release-darwin-x86_64/iortcw.x86_64
-	build/release-darwin-i386/iortcw.i386
+	build/release-darwin-x86/iortcw.i386
 	build/release-darwin-ppc/iortcw.ppc
 "
 BIN_DEDOBJ="
 	build/release-darwin-x86_64/iortcwded.x86_64
-	build/release-darwin-i386/iortcwded.i386
+	build/release-darwin-x86/iortcwded.i386
 	build/release-darwin-ppc/iortcwded.ppc
 "
 BASE_OBJ="
 	build/release-darwin-x86_64/$BASEDIR/cgame.mp.x86_64.dylib
-	build/release-darwin-i386/$BASEDIR/cgame.mp.i386.dylib
+	build/release-darwin-x86/$BASEDIR/cgame.mp.i386.dylib
 	build/release-darwin-ppc/$BASEDIR/cgame.mp.ppc.dylib
 	build/release-darwin-x86_64/$BASEDIR/ui.mp.x86_64.dylib
-	build/release-darwin-i386/$BASEDIR/ui.mp.i386.dylib
+	build/release-darwin-x86/$BASEDIR/ui.mp.i386.dylib
 	build/release-darwin-ppc/$BASEDIR/ui.mp.ppc.dylib
 	build/release-darwin-x86_64/$BASEDIR/qagame.mp.x86_64.dylib
-	build/release-darwin-i386/$BASEDIR/qagame.mp.i386.dylib
+	build/release-darwin-x86/$BASEDIR/qagame.mp.i386.dylib
 	build/release-darwin-ppc/$BASEDIR/qagame.mp.ppc.dylib
 "
 RENDER_OBJ="
 	build/release-darwin-x86_64/renderer_opengl1_x86_64.dylib
-	build/release-darwin-i386/renderer_opengl1_i386.dylib
+	build/release-darwin-x86/renderer_opengl1_i386.dylib
 	build/release-darwin-ppc/renderer_opengl1_ppc.dylib
 	build/release-darwin-x86_64/renderer_rend2_x86_64.dylib
-	build/release-darwin-i386/renderer_rend2_i386.dylib
+	build/release-darwin-x86/renderer_rend2_i386.dylib
 	build/release-darwin-ppc/renderer_rend2_ppc.dylib
 "
 
@@ -121,11 +121,11 @@ fi
 
 echo;echo
 
-# i386 client and server
-if [ -d build/release-darwin-i386 ]; then
-	rm -r build/release-darwin-i386
+# x86 client and server
+if [ -d build/release-darwin-x86 ]; then
+	rm -r build/release-darwin-x86
 fi
-(ARCH=i386 CC=gcc-4.0 CFLAGS=$X86_CFLAGS LDFLAGS=$X86_LDFLAGS make -j$NCPU) || exit 1;
+(ARCH=x86 CC=gcc-4.0 CFLAGS=$X86_CFLAGS LDFLAGS=$X86_LDFLAGS make -j$NCPU) || exit 1;
 
 echo;echo
 
@@ -184,7 +184,7 @@ echo "
 	" > $DESTDIR/$APPBUNDLE/Contents/Info.plist
 
 
-# Make UB's from previous builds of i386, x86_64 and ppc binaries
+# Make UB's from previous builds of x86, x86_64 and ppc binaries
 lipo -create -o $DESTDIR/$APPBUNDLE/Contents/MacOS/$BINARY $BIN_OBJ
 lipo -create -o $DESTDIR/$APPBUNDLE/Contents/MacOS/$DEDBIN $BIN_DEDOBJ
 
