@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "tr_local.h"
 
+#ifdef USE_BLOOM
+
 
 static cvar_t *r_bloom;
 static cvar_t *r_bloom_sample_size;
@@ -444,3 +446,4 @@ void R_BloomInit( void ) {
 	r_bloom_fast_sample = ri.Cvar_Get( "r_bloom_fast_sample", "0", CVAR_ARCHIVE|CVAR_LATCH );
 }
 
+#endif // USE_BLOOM end
