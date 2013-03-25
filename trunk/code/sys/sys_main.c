@@ -485,80 +485,26 @@ void *Sys_LoadDll(const char *name, qboolean useSystemLib)
 
 /*
 =================
-Sys_TryLibraryLoad
-=================
-*/
-static void* Sys_TryLibraryLoad(const char* base, const char* gamedir, const char* fname )
-{
-	void* libHandle;
-	char* fn;
-
-	fn = FS_BuildOSPath( base, gamedir, fname );
-	Com_DPrintf( "Sys_TryLibraryLoad path set: %s\n", fn );
-
-	// TTimo - this is only relevant for full client
-	// if a full client runs a dedicated server, it's not affected by this
-#if !defined( DEDICATED )
-	// NERVE - SMF - extract dlls from pak file for security
-	// we have to handle the game dll a little differently
-	// TTimo - passing the exact path to check against
-	//   (compatibility with other OSes loading procedure)
-	if ( cl_connectedToPureServer && Q_strncmp( fname, "qagame", 6 ) ) {
-		if ( !FS_CL_ExtractFromPakFile( fn, gamedir, fname, NULL ) ) {
-			Com_Error( ERR_DROP, "Game code(%s) failed Pure Server check", fname );
-		}    
-	}
-#endif
-
-	Com_DPrintf( "Sys_TryLibraryLoad(%s)... \n", fn );
-
-	libHandle = Sys_LoadLibrary(fn);
-
-	if(!libHandle) {
-		Com_Printf( "Sys_TryLibraryLoad(%s) failed\n", fn );
-		Com_DPrintf( "Sys_TryLibraryLoad(%s) failed:\n\"%s\"\n", fn, Sys_LibraryError() );
-		return NULL;
-	}
-
-	Com_DPrintf ( "Sys_TryLibraryLoad(%s): succeeded ...\n", fn );
-
-	return libHandle;
-}
-
-/*
-=================
 Sys_LoadGameDll
 
 Used to load a development dll instead of a virtual machine
 =================
 */
-void *Sys_LoadGameDll( const char *name,
+void *Sys_LoadGameDll(const char *name,
 	intptr_t (QDECL **entryPoint)(int, ...),
 	intptr_t (*systemcalls)(intptr_t, ...))
 {
-	void  *libHandle;
-	void  (*dllEntry)(intptr_t (*syscallptr)(intptr_t, ...));
-	char  fname[MAX_OSPATH];
-	char  *basepath;
-	char  *homepath;
-	char  *gamedir;
+	void *libHandle;
+	void (*dllEntry)(intptr_t (*syscallptr)(intptr_t, ...));
 
-	assert( name );
-	
-	Q_strncpyz( fname, Sys_GetDLLName( name ), sizeof( fname ) );
+	assert(name);
 
-	// TODO: use fs_searchpaths from files.c
-	basepath = Cvar_VariableString( "fs_basepath" );
-	homepath = Cvar_VariableString( "fs_homepath" );
-	gamedir = Cvar_VariableString( "fs_game" );
+	Com_Printf( "Loading DLL file: %s\n", name);
+	libHandle = Sys_LoadLibrary(name);
 
-	libHandle = Sys_TryLibraryLoad(homepath, gamedir, fname);
-
-	if(!libHandle && basepath)
-		libHandle = Sys_TryLibraryLoad(basepath, gamedir, fname);
-
-	if(!libHandle) {
-		Com_Printf ( "Sys_LoadGameDll(%s) failed to load library\n", name );
+	if(!libHandle)
+	{
+		Com_Printf("Sys_LoadGameDll(%s) failed:\n\"%s\"\n", name, Sys_LibraryError());
 		return NULL;
 	}
 
