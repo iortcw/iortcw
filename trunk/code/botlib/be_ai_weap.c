@@ -449,20 +449,6 @@ int BotChooseBestFightWeapon( int weaponstate, int *inventory ) {
 // Changes Globals:		-
 //===========================================================================
 void BotResetWeaponState( int weaponstate ) {
-	struct weightconfig_s *weaponweightconfig;
-	int *weaponweightindex;
-	bot_weaponstate_t *ws;
-
-	ws = BotWeaponStateFromHandle( weaponstate );
-	if ( !ws ) {
-		return;
-	}
-	weaponweightconfig = ws->weaponweightconfig;
-	weaponweightindex = ws->weaponweightindex;
-
-	//memset(ws, 0, sizeof(bot_weaponstate_t));
-	ws->weaponweightconfig = weaponweightconfig;
-	ws->weaponweightindex = weaponweightindex;
 } //end of the function BotResetWeaponState
 //========================================================================
 //

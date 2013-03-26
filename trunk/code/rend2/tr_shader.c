@@ -1841,7 +1841,7 @@ static qboolean ParseShader( char **text ) {
 		// done.
 		// light <value> determines flaring in q3map, not needed here
 		else if ( !Q_stricmp( token, "light" ) ) {
-			token = COM_ParseExt( text, qfalse );
+			COM_ParseExt( text, qfalse );
 			continue;
 		}
 		// cull <face>
@@ -2980,7 +2980,6 @@ static shader_t *FinishShader( void ) {
 	// NERVE - SMF - temp fix, terrain is having problems with lighting collapse
 	if ( 0 && ( stage > 1 && ( ( r_vertexLight->integer && !r_uiFullScreen->integer ) || glConfig.hardwareType == GLHW_PERMEDIA2 ) ) ) {
 		VertexLightingCollapse();
-		stage = 1;
 		hasLightmapStage = qfalse;
 	}
 

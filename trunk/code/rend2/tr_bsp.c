@@ -2353,8 +2353,6 @@ static void R_CreateWorldVBO(void)
 	}
 
 
-	startTime = ri.Milliseconds();
-
 	ri.Free(surfacesSorted);
 
 	ri.Hunk_FreeTempMemory(triangles);
@@ -2381,7 +2379,6 @@ static void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
 	numTriSurfs = 0;
 	numFlares = 0;
 
-	in = ( void * )( fileBase + surfs->fileofs );
 	if ( surfs->filelen % sizeof( *in ) ) {
 		ri.Error( ERR_DROP, "LoadMap: funny lump size in %s",s_worldData.name );
 	}
@@ -2509,7 +2506,6 @@ static void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
 	numTriSurfs = 0;
 	numFlares = 0;
 
-	in = ( void * )( fileBase + surfs->fileofs );
 	if ( surfs->filelen % sizeof( *in ) ) {
 		ri.Error( ERR_DROP, "LoadMap: funny lump size in %s",s_worldData.name );
 	}
