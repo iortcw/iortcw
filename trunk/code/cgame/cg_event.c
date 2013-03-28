@@ -1937,7 +1937,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		gdist = VectorNormalize( norm );
 		if ( gdist > 512 && gdist < 4096 ) {
 			VectorMA( cg.refdef.vieworg, 64, norm, gorg );
-			trap_S_StartSoundEx( gorg, cent->currentState.number, CHAN_WEAPON, hWeaponEchoSnd, SND_NOCUT );
+			trap_S_StartSound( gorg, cent->currentState.number, CHAN_WEAPON, hWeaponEchoSnd );
 		}
 // jpw
 		DEBUGNAME( "EV_FIRE_WEAPON" );
@@ -2291,7 +2291,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_STOPSTREAMINGSOUND:
 		DEBUGNAME( "EV_STOPLOOPINGSOUND" );
 //		trap_S_StopStreamingSound( es->number );
-		trap_S_StartSoundEx( NULL, es->number, CHAN_WEAPON, 0, SND_CUTOFF_ALL );  // kill weapon sound (could be reloading)
+		trap_S_StartSound( NULL, es->number, CHAN_WEAPON, 0 );  // kill weapon sound (could be reloading)
 		break;
 // jpw
 

@@ -60,15 +60,6 @@ typedef struct {
 static s_pushStack pushPop[MAX_PUSHSTACK];
 static int tart = 0;
 
-typedef struct {
-	char intro[256];
-	char loop[256];
-	qboolean music;
-	int entnum;
-	int channel;
-	int attenuation;
-} s_streamStack;
-
 
 // =======================================================================
 // Internal sound data & structures
@@ -619,11 +610,11 @@ Entchannel 0 will never override a playing sound
 static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags ) {
 	channel_t	*ch;
 	sfx_t		*sfx;
-  int i, oldest, chosen, time;
-  int	inplay, allowed;
+	int		i, oldest, chosen, time;
+	int		inplay, allowed;
 	qboolean	fullVolume;
 
-	if ( !s_soundStarted || s_soundMuted ) {
+	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
 		return;
 	}
 
@@ -1489,7 +1480,7 @@ void S_GetSoundtime(void)
 
 void S_Update_(void) {
 	unsigned        endtime;
-	int				samps;
+	int				samps, i;
 	static			float	lastTime = 0.0f;
 	float			ma, op;
 	float			thisTime, sane;
@@ -1498,6 +1489,16 @@ void S_Update_(void) {
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
 	}
+
+	for ( i = 0; i < tart; i++ ) {
+		if ( pushPop[i].fixedOrigin ) {
+			S_Base_StartSoundEx( pushPop[i].origin, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
+		} else {
+			S_Base_StartSoundEx( NULL, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
+		}
+	}
+
+	tart = 0;
 
 	thisTime = Com_Milliseconds();
 

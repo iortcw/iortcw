@@ -2002,7 +2002,7 @@ static float CG_VenomSpinAngle( centity_t *cent ) {
 		// just switching between not spinning and spinning, play the appropriate weapon sound
 		if ( cent->pe.barrelSpinning ) {
 			if ( cg_weapons[WP_VENOM].spinupSound ) {
-				trap_S_StartSoundEx( NULL, cent->currentState.number, CHAN_WEAPON, cg_weapons[WP_VENOM].spinupSound, SND_OKTOCUT );
+				trap_S_StartSound( NULL, cent->currentState.number, CHAN_WEAPON, cg_weapons[WP_VENOM].spinupSound );
 			}
 		} else {
 			if ( cg_weapons[WP_VENOM].spindownSound ) {
@@ -4590,7 +4590,7 @@ void CG_FireWeapon( centity_t *cent ) {
 					if ( gdist > 512 && gdist < 4096 ) {   // temp dist.  TODO: use numbers that are weapon specific
 						// use gorg as the new sound origin
 						VectorMA( cg.refdef.vieworg, 64, norm, gorg );    // sound-on-a-stick
-						trap_S_StartSoundEx( gorg, ent->number, CHAN_WEAPON, fireEchosound[c], SND_NOCUT );
+						trap_S_StartSound( gorg, ent->number, CHAN_WEAPON, fireEchosound[c] );
 					}
 				}
 			}
@@ -5512,7 +5512,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 				VectorMA( cg.refdef.vieworg, sfx2range, norm, gorg ); // JPW NERVE non-distance falloff makes more sense; sfx2range was gdist*0.2
 																	  // sfx2range is variable to give us minimum volume control different explosion sizes (see mortar, panzerfaust, and grenade)
 //				CG_Printf("d=%f\n",(gdist-1200)*3);
-				trap_S_StartSoundEx( gorg, ENTITYNUM_WORLD, CHAN_WEAPON, sfx2, SND_NOCUT );
+				trap_S_StartSound( gorg, ENTITYNUM_WORLD, CHAN_WEAPON, sfx2 );
 			}
 		}
 	}
