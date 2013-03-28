@@ -37,10 +37,10 @@ DESTDIR=build/release-darwin-${BUILDARCH}
 BASEDIR=main
 
 BIN_OBJ="
-	build/release-darwin-${BUILDARCH}/iortcw.${ARCH}
+	build/release-darwin-${BUILDARCH}/iortcw.${BUILDARCH}
 "
 BIN_DEDOBJ="
-	build/release-darwin-${BUILDARCH}/iortcwded.${ARCH}
+	build/release-darwin-${BUILDARCH}/iortcwded.${BUILDARCH}
 "
 BASE_OBJ="
 	build/release-darwin-${BUILDARCH}/$BASEDIR/cgame.mp.${ARCH}.dylib

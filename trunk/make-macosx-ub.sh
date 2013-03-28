@@ -10,12 +10,12 @@ BASEDIR=main
 
 BIN_OBJ="
 	build/release-darwin-x86_64/iortcw.x86_64
-	build/release-darwin-x86/iortcw.i386
+	build/release-darwin-x86/iortcw.x86
 	build/release-darwin-ppc/iortcw.ppc
 "
 BIN_DEDOBJ="
 	build/release-darwin-x86_64/iortcwded.x86_64
-	build/release-darwin-x86/iortcwded.i386
+	build/release-darwin-x86/iortcwded.x86
 	build/release-darwin-ppc/iortcwded.ppc
 "
 BASE_OBJ="
