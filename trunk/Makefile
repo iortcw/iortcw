@@ -2477,7 +2477,7 @@ TOOLSOBJ = $(LBURGOBJ) $(Q3CPPOBJ) $(Q3RCCOBJ) $(Q3LCCOBJ) $(Q3ASMOBJ)
 STRINGOBJ = $(Q3R2STRINGOBJ)
 
 copyfiles: release
-	@if [ ! -d $(COPYDIR)/$(BASEGAME) ]; then echo "You need to set COPYDIR to where your Quake3 data is!"; fi
+	@if [ ! -d $(COPYDIR)/$(BASEGAME) ]; then echo "You need to set COPYDIR to where your RTCW data is!"; fi
 ifneq ($(BUILD_GAME_SO),0)
   ifneq ($(BUILD_BASEGAME),0)
 	-$(MKDIR) -p -m 0755 $(COPYDIR)/$(BASEGAME)
