@@ -723,7 +723,7 @@ fileHandle_t FS_SV_FOpenFileWrite( const char *filename ) {
 		Com_Printf( "FS_SV_FOpenFileWrite: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+//	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
 
 	if( FS_CreatePath( ospath ) ) {
 		return 0;
@@ -922,7 +922,7 @@ fileHandle_t FS_FOpenFileWrite( const char *filename ) {
 		Com_Printf( "FS_FOpenFileWrite: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+//	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
 
 	if ( FS_CreatePath( ospath ) ) {
 		return 0;
@@ -4018,7 +4018,7 @@ randomize the order of the 5 checksums we rely on
 5 random swaps of the table
 =====================
 */
-void FS_InitRandomFeed() {
+void FS_InitRandomFeed( void ) {
 	int i, swap, aux;
 	for ( i = 0; i < 5; i++ )
 	{
@@ -4035,7 +4035,7 @@ Return a random checksum feed among our list
 we keep the seed and use it when requested for the pure checksum
 =====================
 */
-int FS_RandChecksumFeed() {
+int FS_RandChecksumFeed( void ) {
 	/*
 	// use this to dump shifted versions of the pure checksum strings
 	int i;

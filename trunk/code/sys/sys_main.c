@@ -485,26 +485,82 @@ void *Sys_LoadDll(const char *name, qboolean useSystemLib)
 
 /*
 =================
+Sys_TryLibraryLoad
+=================
+*/
+static void *Sys_TryLibraryLoad(const char* base, const char* gamedir, const char* fname )
+{
+	void	*libHandle;
+	char	*fn;
+
+	fn = FS_BuildOSPath( base, gamedir, fname );
+	Com_DPrintf( "Sys_TryLibraryLoad path set: %s\n", fn );
+	Com_DPrintf( "Sys_TryLibraryLoad(%s)... \n", fn );
+
+	libHandle = Sys_LoadLibrary(fn);
+
+	if(!libHandle) {
+		Com_Printf( "Sys_LoadGameDll(%s) failed\n", fn );
+		Com_DPrintf( "Sys_TryLibraryLoad(%s) failed:\n\"%s\"\n", fn, Sys_LibraryError() );
+		return NULL;
+	}
+
+	Com_Printf( "Sys_LoadGameDll(%s): succeeded \n", fn );
+	Com_DPrintf ( "Sys_TryLibraryLoad(%s): succeeded ...\n", fn );
+
+	return libHandle;
+}
+
+/*
+=================
 Sys_LoadGameDll
 
 Used to load a development dll instead of a virtual machine
 =================
 */
-void *Sys_LoadGameDll(const char *name,
+void *Sys_LoadGameDll( const char *name,
 	intptr_t (QDECL **entryPoint)(int, ...),
 	intptr_t (*systemcalls)(intptr_t, ...))
 {
-	void *libHandle;
-	void (*dllEntry)(intptr_t (*syscallptr)(intptr_t, ...));
+	void	*libHandle;
+	void	(*dllEntry)(intptr_t (*syscallptr)(intptr_t, ...));
+	char	fname[MAX_OSPATH];
+	char	*basepath;
+	char	*homepath;
+	char	*gamedir;
 
-	assert(name);
+	assert( name );
+	
+	Q_strncpyz( fname, Sys_GetDLLName( name ), sizeof( fname ) );
 
-	Com_Printf( "Loading DLL file: %s\n", name);
-	libHandle = Sys_LoadLibrary(name);
+	// TODO: use fs_searchpaths from files.c
+	basepath = Cvar_VariableString( "fs_basepath" );
+	homepath = Cvar_VariableString( "fs_homepath" );
+	gamedir = Cvar_VariableString( "fs_game" );
 
-	if(!libHandle)
+#ifndef DEDICATED
+	// if the server is pure, extract the dlls from the mp_bin.pk3 so
+	// that they can be referenced
+	if (Cvar_VariableValue("sv_pure") && Q_stricmp(name, "qagame"))
 	{
-		Com_Printf("Sys_LoadGameDll(%s) failed:\n\"%s\"\n", name, Sys_LibraryError());
+		FS_CL_ExtractFromPakFile(homepath, gamedir, fname, NULL);
+	}
+#endif
+
+	libHandle = Sys_TryLibraryLoad(homepath, gamedir, fname);
+
+	if(!libHandle && basepath)
+		libHandle = Sys_TryLibraryLoad(basepath, gamedir, fname);
+
+	// HACK: sometimes a library is loaded from the mod dir when it shouldn't. Why?
+	if (!libHandle && strcmp(gamedir, BASEGAME))
+	{
+		Com_Printf("Sys_LoadGameDll: failed to load the mod library. Trying to revert to the default one.\n");
+		libHandle = Sys_TryLibraryLoad(basepath, BASEGAME, fname);
+	}
+
+	if(!libHandle) {
+		Com_Printf ( "Sys_LoadGameDll(%s) failed to load library\n", name );
 		return NULL;
 	}
 
