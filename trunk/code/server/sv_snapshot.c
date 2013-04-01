@@ -499,7 +499,8 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 
 			client = SV_GentityNum(frame->ps.clientNum);
 
-			if (wh_active->integer && ! portal && ! (client->r.svFlags & SVF_BOT))
+			if (wh_active->integer && ! portal && ! (client->r.svFlags & SVF_BOT) && 
+			   (frame->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR) )
 			{
 				if (! SV_CanSee(frame->ps.clientNum, e))
 				{
