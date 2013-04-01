@@ -6010,9 +6010,9 @@ static const char *UI_FeederItemText( float feederID, int index, int column, qha
 							nettype = 0;
 						}
 
-					Com_sprintf( hostname, sizeof( hostname ), "%s ^7[^3%s^7]",
-						Info_ValueForKey( info, "hostname" ),
-						netnames[nettype] );
+					Com_sprintf( hostname, sizeof( hostname ), "^7|^2%s^7|  %s",
+						netnames[nettype],
+						Info_ValueForKey( info, "hostname" ));
 					return hostname;
 				}
 			case SORT_MAP: return Info_ValueForKey( info, "mapname" );
