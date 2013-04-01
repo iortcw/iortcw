@@ -541,7 +541,7 @@ void *Sys_LoadGameDll( const char *name,
 #ifndef DEDICATED
 	// if the server is pure, extract the dlls from the mp_bin.pk3 so
 	// that they can be referenced
-	if (Cvar_VariableValue("sv_pure") && Q_stricmp(name, "qagame"))
+	if (cl_connectedToPureServer && Q_strncmp( name, "qagame", 6))
 	{
 		FS_CL_ExtractFromPakFile(homepath, gamedir, fname, NULL);
 	}
@@ -552,7 +552,7 @@ void *Sys_LoadGameDll( const char *name,
 	if(!libHandle && basepath)
 		libHandle = Sys_TryLibraryLoad(basepath, gamedir, fname);
 
-	// HACK: sometimes a library is loaded from the mod dir when it shouldn't. Why?
+	// If mod is not present, use dll from BASEGAME
 	if (!libHandle && strcmp(gamedir, BASEGAME))
 	{
 		Com_Printf("Sys_LoadGameDll: failed to load the mod library. Trying to revert to the default one.\n");
