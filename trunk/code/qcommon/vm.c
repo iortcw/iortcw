@@ -70,11 +70,7 @@ VM_Init
 ==============
 */
 void VM_Init( void ) {
-	Cvar_Get( "vm_cgame", "0", CVAR_ARCHIVE );	// !@# SHIP WITH SET TO 0
-	Cvar_Get( "vm_game", "0", CVAR_ARCHIVE );	// !@# SHIP WITH SET TO 0
-	Cvar_Get( "vm_ui", "0", CVAR_ARCHIVE );		// !@# SHIP WITH SET TO 0
-
-	Cmd_AddCommand ("vmprofile", VM_VmProfile_f );
+	Cmd_AddCommand("vmprofile", VM_VmProfile_f); // FIXME: doesn't print anything with +set developer 1
 	Cmd_AddCommand ("vminfo", VM_VmInfo_f );
 
 	Com_Memset( vmTable, 0, sizeof( vmTable ) );
@@ -89,10 +85,9 @@ Assumes a program counter value
 ===============
 */
 const char *VM_ValueToSymbol( vm_t *vm, int value ) {
-	vmSymbol_t	*sym;
+	vmSymbol_t	*sym = vm->symbols;
 	static char		text[MAX_TOKEN_CHARS];
-
-	sym = vm->symbols;
+	
 	if ( !sym ) {
 		return "NO SYMBOLS";
 	}
@@ -119,10 +114,9 @@ For profiling, find the symbol behind this value
 ===============
 */
 vmSymbol_t *VM_ValueToFunctionSymbol( vm_t *vm, int value ) {
-	vmSymbol_t	*sym;
+	vmSymbol_t	*sym = vm->symbols;
 	static vmSymbol_t	nullSym;
 
-	sym = vm->symbols;
 	if ( !sym ) {
 		return &nullSym;
 	}
@@ -189,10 +183,9 @@ ParseHex
 ===============
 */
 int	ParseHex( const char *text ) {
-	int		value;
+	int		value = 0;
 	int		c;
 
-	value = 0;
 	while ( ( c = *text++ ) != 0 ) {
 		if ( c >= '0' && c <= '9' ) {
 			value = value * 16 + c - '0';
@@ -780,7 +773,7 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
 		va_list ap;
 		va_start(ap, callnum);
 		for (i = 0; i < ARRAY_LEN(args); i++) {
-			args[i] = va_arg(ap, int);
+			args[i] = va_arg(ap, intptr_t);
 		}
 		va_end(ap);
 
@@ -853,6 +846,7 @@ void VM_VmProfile_f( void ) {
 	vm = lastVM;
 
 	if ( !vm->numSymbols ) {
+		Com_Printf("VM symbols not available\n");
 		return;
 	}
 
