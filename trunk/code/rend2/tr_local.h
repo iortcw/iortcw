@@ -404,12 +404,12 @@ enum
 	TB_DIFFUSEMAP  = 0,
 	TB_LIGHTMAP    = 1,
 	TB_LEVELSMAP   = 1,
-	TB_SHADOWMAP   = 1,
+	TB_SHADOWMAP3   = 1,
 	TB_NORMALMAP   = 2,
 	TB_DELUXEMAP   = 3,
 	TB_SHADOWMAP2  = 3,
 	TB_SPECULARMAP = 4,
-	TB_SHADOWMAP3  = 5,
+	TB_SHADOWMAP  = 5,
 	NUM_TEXTURE_BUNDLES = 6
 };
 
@@ -866,6 +866,11 @@ typedef enum
 	UNIFORM_INVTEXRES,
 	UNIFORM_AUTOEXPOSUREMINMAX,
 	UNIFORM_TONEMINAVGMAXLINEAR,
+
+	UNIFORM_PRIMARYLIGHTORIGIN,
+	UNIFORM_PRIMARYLIGHTCOLOR,
+	UNIFORM_PRIMARYLIGHTAMBIENT,
+	UNIFORM_PRIMARYLIGHTRADIUS,
 
 	UNIFORM_COUNT
 } uniform_t;
@@ -2158,6 +2163,7 @@ extern  cvar_t  *r_forceSun;
 extern  cvar_t  *r_forceSunMapLightScale;
 extern  cvar_t  *r_forceSunLightScale;
 extern  cvar_t  *r_forceSunAmbientScale;
+extern  cvar_t  *r_sunlightMode;
 extern  cvar_t  *r_drawSunRays;
 extern  cvar_t  *r_sunShadows;
 extern  cvar_t  *r_shadowFilter;

@@ -1415,6 +1415,11 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 				index |= LIGHTDEF_ENTITY;
 			}
 
+			if (r_sunlightMode->integer && (backEnd.viewParms.flags & VPF_USESUNLIGHT) && (index & LIGHTDEF_LIGHTTYPE_MASK))
+			{
+				index |= LIGHTDEF_USE_SHADOWMAP;
+			}
+
 			if (r_lightmap->integer && index & LIGHTDEF_USE_LIGHTMAP)
 			{
 				index = LIGHTDEF_USE_LIGHTMAP;
@@ -1577,6 +1582,14 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		else if ( pStage->glslShaderGroup )
 		{
 			int i;
+
+			if ((backEnd.viewParms.flags & VPF_USESUNLIGHT) && (pStage->glslShaderIndex & LIGHTDEF_LIGHTTYPE_MASK))
+			{
+				GL_BindToTMU(tr.screenShadowImage, TB_SHADOWMAP);
+				GLSL_SetUniformVec3(sp, UNIFORM_PRIMARYLIGHTAMBIENT, backEnd.refdef.sunAmbCol);
+				GLSL_SetUniformVec3(sp, UNIFORM_PRIMARYLIGHTCOLOR,   backEnd.refdef.sunCol);
+				GLSL_SetUniformVec4(sp, UNIFORM_PRIMARYLIGHTORIGIN,  backEnd.refdef.sunDir);
+			}
 
 			if ((r_lightmap->integer == 1 || r_lightmap->integer == 2) && pStage->bundle[TB_LIGHTMAP].image[0])
 			{
