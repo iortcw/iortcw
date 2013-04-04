@@ -1180,8 +1180,6 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 	char		*netpath;
 	FILE		*filep;
 	int			len;
-	char	*cgameName;
-	char	*uiName;
 
 	if(filename == NULL)
 		Com_Error(ERR_FATAL, "FS_FOpenFileRead: NULL 'filename' parameter passed");
@@ -1299,10 +1297,9 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 				{
 					// found it!
 
-					// mark the pak as having been referenced and mark specifics on cgame and ui
-					// shaders, txt, arena files  by themselves do not count as a reference as 
+					// Mark the pak as having been referenced and mark specifics on cgame and ui.
+					// Shaders, txt, and arena files by themselves do not count as a reference as 
 					// these are loaded from all pk3s 
-					// from every pk3 file.. 
 					len = strlen(filename);
 
 					if (!(pak->referenced & FS_GENERAL_REF))
@@ -1320,14 +1317,10 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 						}
 					}
 
-					cgameName = Sys_GetDLLName( "cgame" );
-
-					if(strstr(filename, cgameName))
+					if(strstr(filename, Sys_GetDLLName( "cgame" )))
 						pak->referenced |= FS_CGAME_REF;
 
-					uiName = Sys_GetDLLName( "ui" );
-
-					if(strstr(filename, uiName))
+					if(strstr(filename, Sys_GetDLLName( "ui" )))
 						pak->referenced |= FS_UI_REF;
 
 #if !defined( PRE_RELEASE_DEMO ) && !defined( DO_LIGHT_DEDICATED )
@@ -4518,60 +4511,53 @@ Handle based file calls for virtual machines
 ========================================================================================
 */
 
-int     FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
+int	FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) {
 	int r;
 	qboolean sync;
 
 	sync = qfalse;
 
-	switch ( mode ) {
-	case FS_READ:
-		r = FS_FOpenFileRead( qpath, f, qtrue );
-		break;
-	case FS_WRITE:
-		*f = FS_FOpenFileWrite( qpath );
-		r = 0;
-		if ( *f == 0 ) {
-			r = -1;
-		}
-		break;
-	case FS_APPEND_SYNC:
-		sync = qtrue;
-	case FS_APPEND:
-		*f = FS_FOpenFileAppend( qpath );
-		r = 0;
-		if ( *f == 0 ) {
-			r = -1;
-		}
-		break;
-	default:
-		Com_Error( ERR_FATAL, "FS_FOpenFileByMode: bad mode" );
-		return -1;
+	switch( mode ) {
+		case FS_READ:
+			r = FS_FOpenFileRead( qpath, f, qtrue );
+			break;
+		case FS_WRITE:
+			*f = FS_FOpenFileWrite( qpath );
+			r = 0;
+			if (*f == 0) {
+				r = -1;
+			}
+			break;
+		case FS_APPEND_SYNC:
+			sync = qtrue;
+		case FS_APPEND:
+			*f = FS_FOpenFileAppend( qpath );
+			r = 0;
+			if (*f == 0) {
+				r = -1;
+			}
+			break;
+		default:
+			Com_Error( ERR_FATAL, "FS_FOpenFileByMode: bad mode" );
+			return -1;
 	}
 
-	if ( !f ) {
+	if (!f) {
 		return r;
 	}
 
 	if ( *f ) {
-		if ( fsh[*f].zipFile == qtrue ) {
-			fsh[*f].baseOffset = unztell( fsh[*f].handleFiles.file.z );
+		if (fsh[*f].zipFile == qtrue) {
+			fsh[*f].baseOffset = unztell(fsh[*f].handleFiles.file.z);
 		} else {
-			fsh[*f].baseOffset = ftell( fsh[*f].handleFiles.file.o );
+			fsh[*f].baseOffset = ftell(fsh[*f].handleFiles.file.o);
 		}
 		fsh[*f].fileSize = r;
 		fsh[*f].streamed = qfalse;
 
-		// uncommenting this makes fs_reads
-		// use the background threads --
-		// MAY be faster for loading levels depending on the use of file io
-		// q3a not faster
-		// wolf not faster
-
-//		if (mode == FS_READ) {
-//			Sys_BeginStreamedFile( *f, 0x4000 );
-//			fsh[*f].streamed = qtrue;
-//		}
+		if (mode == FS_READ) {
+			fsh[*f].streamed = qtrue;
+		}
 	}
 	fsh[*f].handleSync = sync;
 
