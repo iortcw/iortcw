@@ -525,6 +525,7 @@ void *Sys_LoadGameDll( const char *name,
 	void	*libHandle;
 	void	(*dllEntry)(intptr_t (*syscallptr)(intptr_t, ...));
 	char	fname[MAX_OSPATH];
+	char	*apppath;
 	char	*basepath;
 	char	*homepath;
 	char	*gamedir;
@@ -534,6 +535,7 @@ void *Sys_LoadGameDll( const char *name,
 	Q_strncpyz( fname, Sys_GetDLLName( name ), sizeof( fname ) );
 
 	// TODO: use fs_searchpaths from files.c
+	apppath = Cvar_VariableString( "fs_apppath" );
 	basepath = Cvar_VariableString( "fs_basepath" );
 	homepath = Cvar_VariableString( "fs_homepath" );
 	gamedir = Cvar_VariableString( "fs_game" );
@@ -547,7 +549,11 @@ void *Sys_LoadGameDll( const char *name,
 	}
 #endif
 
+#ifdef MACOS_X
+	libHandle = Sys_TryLibraryLoad(apppath, gamedir, fname);
+#else
 	libHandle = Sys_TryLibraryLoad(homepath, gamedir, fname);
+#endif
 
 	if(!libHandle && basepath)
 		libHandle = Sys_TryLibraryLoad(basepath, gamedir, fname);
