@@ -2565,11 +2565,13 @@ void R_RenderPshadowMaps(const refdef_t *fd)
 					radius = frame->radius * scale;
 				}
 				break;
-
 				case MOD_MDS:
 				{
-					// FIXME: actually calculate the radius and bounds, this is a horrible hack
-					radius = r_pshadowDist->value / 2.0f;
+					mdsHeader_t *header = model->modelData;
+					int frameSize = (size_t)( &((mdsFrame_t *)0)->bones[ header->numBones ] );
+					mdsFrame_t *frame = ( mdsFrame_t * ) ( ( byte * ) header + header->ofsFrames + frameSize * ent->e.frame);
+
+					radius = frame->radius;
 				}
 				break;
 				case MOD_MDR:

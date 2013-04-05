@@ -3869,15 +3869,11 @@ void RE_LoadWorldMap( const char *name ) {
 		for (i = 0; i < lightGridSize; i++, data += 8)
 		{
 			int lat, lng;
-			vec3_t gridLightDir, gridLightCol;
+			vec3_t gridLightDir;
 
 			// skip samples in wall
 			if (!(data[0]+data[1]+data[2]+data[3]+data[4]+data[5]) )
 				continue;
-
-			gridLightCol[0] = ByteToFloat(data[3]);
-			gridLightCol[1] = ByteToFloat(data[4]);
-			gridLightCol[2] = ByteToFloat(data[5]);
 
 			lat = data[7];
 			lng = data[6];
