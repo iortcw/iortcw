@@ -609,8 +609,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// we request a fake randomized feed, files.c knows the answer
 	sv.checksumFeed = FS_RandChecksumFeed();
 #endif
-//	FS_Restart( sv.checksumFeed );
-	FS_Restart( 0 );	// Workaround for pure mp_bin not being in fs_homepath
+	FS_Restart( sv.checksumFeed );
 
 	CM_LoadMap( va( "maps/%s.bsp", server ), qfalse, &checksum );
 
