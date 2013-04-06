@@ -597,7 +597,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 #if !defined( DO_LIGHT_DEDICATED )
 	// get a new checksum feed and restart the file system
-	sv.checksumFeed = ( ( (int) rand() << 16 ) ^ rand() ) ^ Sys_Milliseconds();
+	sv.checksumFeed = ( ((int) rand() << 16) ^ rand() ) ^ Com_Milliseconds();
 
 	// DO_LIGHT_DEDICATED
 	// only comment out when you need a new pure checksum string and it's associated random feed
@@ -609,7 +609,8 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// we request a fake randomized feed, files.c knows the answer
 	sv.checksumFeed = FS_RandChecksumFeed();
 #endif
-	FS_Restart( sv.checksumFeed );
+//	FS_Restart( sv.checksumFeed );
+	FS_Restart( 0 );	// Workaround for pure mp_bin not being in fs_homepath
 
 	CM_LoadMap( va( "maps/%s.bsp", server ), qfalse, &checksum );
 
