@@ -1048,17 +1048,8 @@ image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
 		ri.Error( ERR_DROP, "R_CreateImage: MAX_DRAWIMAGES hit" );
 	}
 
-	// Ridah
-	image = tr.images[tr.numImages] = R_CacheImageAlloc( sizeof( image_t ) );
-
+	image = tr.images[tr.numImages] = ri.Hunk_Alloc( sizeof( image_t ), h_low );
 	image->texnum = 1024 + tr.numImages;
-
-	// Ridah
-	if ( r_cacheShaders->integer ) {
-		R_FindFreeTexnum( image );
-	}
-	// done.
-
 	tr.numImages++;
 
 	image->type = type;
@@ -1565,10 +1556,6 @@ R_InitImages
 void    R_InitImages( void ) {
 	memset( hashTable, 0, sizeof( hashTable ) );
 
-	// Ridah, caching system
-	R_InitTexnumImages( qfalse );
-	// done.
-
 	// build brightness translation tables
 	R_SetColorMappings();
 
@@ -1588,9 +1575,6 @@ void R_DeleteTextures( void ) {
 		qglDeleteTextures( 1, &tr.images[i]->texnum );
 	}
 	memset( tr.images, 0, sizeof( tr.images ) );
-	// Ridah
-	R_InitTexnumImages( qtrue );
-	// done.
 
 	memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
 	if ( qglActiveTextureARB ) {
@@ -2569,34 +2553,6 @@ static image_t  *texnumImages[MAX_DRAWIMAGES * 2];
 
 /*
 ===============
-R_CacheImageAlloc
-
-  this will only get called to allocate the image_t structures, not that actual image pixels
-===============
-*/
-void *R_CacheImageAlloc( int size ) {
-	if ( r_cache->integer && r_cacheShaders->integer ) {
-		return malloc( size );
-//DAJ TEST		return ri.Z_Malloc( size );	//DAJ was CO
-	} else {
-		return ri.Hunk_Alloc( size, h_low );
-	}
-}
-
-/*
-===============
-R_CacheImageFree
-===============
-*/
-void R_CacheImageFree( void *ptr ) {
-	if ( r_cache->integer && r_cacheShaders->integer ) {
-		free( ptr );
-//DAJ TEST		ri.Free( ptr );	//DAJ was CO
-	}
-}
-
-/*
-===============
 R_TouchImage
 
   remove this image from the backupHashTable and make sure it doesn't get overwritten
@@ -2662,8 +2618,6 @@ void R_PurgeImage( image_t *image ) {
 
 	qglDeleteTextures( 1, &image->texnum );
 
-	R_CacheImageFree( image );
-
 	memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
 	if ( qglActiveTextureARB ) {
 		GL_SelectTexture( 1 );
@@ -2718,39 +2672,6 @@ void R_PurgeBackupImages( int purgeCount ) {
 	numBackupImages = 0;
 	lastPurged = 0;
 }
-
-/*
-===============
-R_BackupImages
-===============
-*/
-void R_BackupImages( void ) {
-
-	if ( !r_cache->integer ) {
-		return;
-	}
-	if ( !r_cacheShaders->integer ) {
-		return;
-	}
-
-	// backup the hashTable
-	memcpy( backupHashTable, hashTable, sizeof( backupHashTable ) );
-
-	// pretend we have cleared the list
-	numBackupImages = tr.numImages;
-	tr.numImages = 0;
-
-	memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
-	if ( qglActiveTextureARB ) {
-		GL_SelectTexture( 1 );
-		qglBindTexture( GL_TEXTURE_2D, 0 );
-		GL_SelectTexture( 0 );
-		qglBindTexture( GL_TEXTURE_2D, 0 );
-	} else {
-		qglBindTexture( GL_TEXTURE_2D, 0 );
-	}
-}
-
 
 /*
 ===============

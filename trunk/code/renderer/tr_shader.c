@@ -2070,8 +2070,7 @@ static shader_t *GeneratePermanentShader( void ) {
 		return tr.defaultShader;
 	}
 
-	// Ridah, caching system
-	newShader = R_CacheShaderAlloc( sizeof( shader_t ) );
+	newShader = ri.Hunk_Alloc( sizeof( shader_t ), h_low );
 
 	*newShader = shader;
 
@@ -2094,9 +2093,7 @@ static shader_t *GeneratePermanentShader( void ) {
 			newShader->stages[i] = NULL;    // Ridah, make sure it's null
 			break;
 		}
-		// Ridah, caching system
-		newShader->stages[i] = R_CacheShaderAlloc( sizeof( stages[i] ) );
-
+		newShader->stages[i] = ri.Hunk_Alloc( sizeof( stages[i] ), h_low );
 		*newShader->stages[i] = stages[i];
 
 		for ( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ ) {
@@ -2106,10 +2103,8 @@ static shader_t *GeneratePermanentShader( void ) {
 				continue;
 			}
 			size = newShader->stages[i]->bundle[b].numTexMods * sizeof( texModInfo_t );
-			// Ridah, caching system
-			newShader->stages[i]->bundle[b].texMods = R_CacheShaderAlloc( size );
-
-			memcpy( newShader->stages[i]->bundle[b].texMods, stages[i].bundle[b].texMods, size );
+			newShader->stages[i]->bundle[b].texMods = ri.Hunk_Alloc( size, h_low );
+			Com_Memcpy( newShader->stages[i]->bundle[b].texMods, stages[i].bundle[b].texMods, size );
 		}
 	}
 
@@ -2427,34 +2422,6 @@ static char *FindShaderInShaderText( const char *shadername ) {
 		return NULL;
 	}
 
-	// Ridah, optimized shader loading
-	if ( r_cacheShaders->integer ) {
-		/*if (strstr( shadername, "/" ) && !strstr( shadername, "." ))*/ {
-			unsigned short int checksum;
-			shaderStringPointer_t *pShaderString;
-
-			checksum = generateHashValue( shadername );
-
-			// if it's known, skip straight to it's position
-			pShaderString = &shaderChecksumLookup[checksum];
-			while ( pShaderString && pShaderString->pStr ) {
-				p = pShaderString->pStr;
-
-				token = COM_ParseExt( &p, qtrue );
-
-				if ( ( token[0] != 0 ) && !Q_stricmp( token, shadername ) ) {
-					return p;
-				}
-
-				pShaderString = pShaderString->next;
-			}
-
-			// it's not even in our list, so it mustn't exist
-			return NULL;
-		}
-	}
-	// done.
-
 	// look for label
 	// note that this could get confused if a shader name is used inside
 	// another shader definition
@@ -2574,25 +2541,6 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 	//
 	// see if the shader is already loaded
 	//
-#if 1
-	for ( sh = hashTable[hash]; sh; sh = sh->next ) {
-		// index by name
-
-		// Ridah, modified this so we don't keep trying to load an invalid lightmap shader
-/*
-		if ( sh->lightmapIndex == lightmapIndex &&
-			!Q_stricmp(sh->name, strippedName)) {
-			// match found
-			return sh;
-		}
-*/
-		if ( ( ( sh->lightmapIndex == lightmapIndex ) || ( sh->lightmapIndex < 0 && lightmapIndex >= 0 ) ) &&
-			 !Q_stricmp( sh->name, strippedName ) ) {
-			// match found
-			return sh;
-		}
-	}
-#else
 	for ( sh = hashTable[hash]; sh; sh = sh->next ) {
 		// NOTE: if there was no shader or image available with the name strippedName
 		// then a default shader is created with lightmapIndex == LIGHTMAP_NONE, so we
@@ -2604,14 +2552,6 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 			return sh;
 		}
 	}
-#endif
-
-	// Ridah, check the cache
-	// assignment used as truth value
-	if ( ( sh = R_FindCachedShader( strippedName, lightmapIndex, hash ) ) ) {
-		return sh;
-	}
-	// done.
 
 	// clear the global shader
 	memset( &shader, 0, sizeof( shader ) );
@@ -3015,69 +2955,6 @@ void    R_ShaderList_f( void ) {
 	ri.Printf( PRINT_ALL, "------------------\n" );
 }
 
-// Ridah, optimized shader loading
-
-#define MAX_SHADER_STRING_POINTERS  100000
-shaderStringPointer_t shaderStringPointerList[MAX_SHADER_STRING_POINTERS];
-
-/*
-====================
-BuildShaderChecksumLookup
-====================
-*/
-static void BuildShaderChecksumLookup( void ) {
-	char *p = s_shaderText, *pOld;
-	char *token;
-	unsigned short int checksum;
-	int numShaderStringPointers = 0;
-
-	// initialize the checksums
-	memset( shaderChecksumLookup, 0, sizeof( shaderChecksumLookup ) );
-
-	if ( !p ) {
-		return;
-	}
-
-	// loop for all labels
-	while ( 1 ) {
-
-		pOld = p;
-
-		token = COM_ParseExt( &p, qtrue );
-		if ( token[0] == 0 ) {
-			break;
-		}
-
-		if ( !Q_stricmp( token, "{" ) ) {
-			// skip braced section
-//			SkipBracedSection_Depth( &p, 1 );
-			SkipBracedSection( &p );
-			continue;
-		}
-
-		// get it's checksum
-		checksum = generateHashValue( token );
-
-		// if it's not currently used
-		if ( !shaderChecksumLookup[checksum].pStr ) {
-			shaderChecksumLookup[checksum].pStr = pOld;
-		} else {
-			// create a new list item
-			shaderStringPointer_t *newStrPtr;
-
-			if ( numShaderStringPointers >= MAX_SHADER_STRING_POINTERS ) {
-				ri.Error( ERR_DROP, "MAX_SHADER_STRING_POINTERS exceeded, too many shaders" );
-			}
-
-			newStrPtr = &shaderStringPointerList[numShaderStringPointers++]; //ri.Hunk_Alloc( sizeof( shaderStringPointer_t ), h_low );
-			newStrPtr->pStr = pOld;
-			newStrPtr->next = shaderChecksumLookup[checksum].next;
-			shaderChecksumLookup[checksum].next = newStrPtr;
-		}
-	}
-}
-// done.
-
 
 /*
 ====================
@@ -3171,12 +3048,6 @@ static void ScanAndLoadShaderFiles( void ) {
 
 	// free up memory
 	ri.FS_FreeFileList( shaderFiles );
-
-	// Ridah, optimized shader loading (18ms on a P3-500 for sfm1.bsp)
-	if ( r_cacheShaders->integer ) {
-		BuildShaderChecksumLookup();
-	}
-	// done.
 }
 
 
@@ -3229,237 +3100,6 @@ static void CreateExternalShaders( void ) {
 }
 
 //=============================================================================
-// Ridah, shader caching
-static int numBackupShaders = 0;
-static shader_t *backupShaders[MAX_SHADERS];
-static shader_t *backupHashTable[FILE_HASH_SIZE];
-
-/*
-===============
-R_CacheShaderAlloc
-===============
-*/
-void *R_CacheShaderAlloc( int size ) {
-	if ( r_cache->integer && r_cacheShaders->integer ) {
-		//return malloc( size );
-		return ri.Z_Malloc( size );
-	} else {
-		return ri.Hunk_Alloc( size, h_low );
-	}
-}
-
-/*
-===============
-R_CacheShaderFree
-===============
-*/
-void R_CacheShaderFree( void *ptr ) {
-	if ( r_cache->integer && r_cacheShaders->integer ) {
-		//free( ptr );
-		ri.Free( ptr );
-	}
-}
-
-/*
-===============
-R_PurgeShaders
-===============
-*/
-void R_PurgeShaders( int count ) {
-	int i, j, c, b;
-	shader_t **sh;
-	static int lastPurged = 0;
-
-	if ( !numBackupShaders ) {
-		lastPurged = 0;
-		return;
-	}
-
-	// find the first shader still in memory
-	c = 0;
-	sh = (shader_t **)&backupShaders;
-	for ( i = lastPurged; i < numBackupShaders; i++, sh++ ) {
-		if ( *sh ) {
-			// free all memory associated with this shader
-			for ( j = 0 ; j < ( *sh )->numUnfoggedPasses ; j++ ) {
-				if ( !( *sh )->stages[j] ) {
-					break;
-				}
-				for ( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ ) {
-					if ( ( *sh )->stages[j]->bundle[b].texMods ) {
-						R_CacheShaderFree( ( *sh )->stages[j]->bundle[b].texMods );
-					}
-				}
-				R_CacheShaderFree( ( *sh )->stages[j] );
-			}
-			R_CacheShaderFree( *sh );
-			*sh = NULL;
-
-			if ( ++c >= count ) {
-				lastPurged = i;
-				return;
-			}
-		}
-	}
-	lastPurged = 0;
-	numBackupShaders = 0;
-}
-
-/*
-===============
-R_BackupShaders
-===============
-*/
-void R_BackupShaders( void ) {
-
-	if ( !r_cache->integer ) {
-		return;
-	}
-	if ( !r_cacheShaders->integer ) {
-		return;
-	}
-
-	// copy each model in memory across to the backupModels
-	memcpy( backupShaders, tr.shaders, sizeof( backupShaders ) );
-	// now backup the hashTable
-	memcpy( backupHashTable, hashTable, sizeof( hashTable ) );
-
-	numBackupShaders = tr.numShaders;
-}
-
-/*
-=================
-R_RegisterShaderImages
-
-  Make sure all images that belong to this shader remain valid
-=================
-*/
-static qboolean R_RegisterShaderImages( shader_t *sh ) {
-	int i,j,b;
-
-	if ( sh->isSky ) {
-		return qfalse;
-	}
-
-	for ( i = 0; i < sh->numUnfoggedPasses; i++ ) {
-		if ( sh->stages[i] && sh->stages[i]->active ) {
-			for ( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ ) {
-				for ( j = 0; sh->stages[i]->bundle[b].image[j] && j < MAX_IMAGE_ANIMATIONS; j++ ) {
-					if ( !R_TouchImage( sh->stages[i]->bundle[b].image[j] ) ) {
-						return qfalse;
-					}
-				}
-			}
-		}
-	}
-	return qtrue;
-}
-
-/*
-===============
-R_FindCachedShader
-
-  look for the given shader in the list of backupShaders
-===============
-*/
-shader_t *R_FindCachedShader( const char *name, int lightmapIndex, int hash ) {
-	shader_t *sh, *shPrev;
-
-	if ( !r_cacheShaders->integer ) {
-		return NULL;
-	}
-
-	if ( !numBackupShaders ) {
-		return NULL;
-	}
-
-	if ( !name ) {
-		return NULL;
-	}
-
-	sh = backupHashTable[hash];
-	shPrev = NULL;
-	while ( sh ) {
-		if ( sh->lightmapIndex == lightmapIndex && !Q_stricmp( sh->name, name ) ) {
-
-			// make sure the images stay valid
-			if ( !R_RegisterShaderImages( sh ) ) {
-				return NULL;
-			}
-
-			// this is the one, so move this shader into the current list
-
-			if ( !shPrev ) {
-				backupHashTable[hash] = sh->next;
-			} else {
-				shPrev->next = sh->next;
-			}
-
-			sh->next = hashTable[hash];
-			hashTable[hash] = sh;
-
-			backupShaders[sh->index] = NULL;    // make sure we don't try and free it
-
-			// set the index up, and add it to the current list
-			tr.shaders[ tr.numShaders ] = sh;
-			sh->index = tr.numShaders;
-
-			tr.sortedShaders[ tr.numShaders ] = sh;
-			sh->sortedIndex = tr.numShaders;
-
-			tr.numShaders++;
-
-			SortNewShader();    // make sure it renders in the right order
-
-			return sh;
-		}
-
-		shPrev = sh;
-		sh = sh->next;
-	}
-
-	return NULL;
-}
-
-/*
-===============
-R_LoadCacheShaders
-===============
-*/
-void R_LoadCacheShaders( void ) {
-	int len;
-	byte *buf;
-	char    *token, *pString;
-	char name[MAX_QPATH];
-
-	if ( !r_cacheShaders->integer ) {
-		return;
-	}
-
-	// don't load the cache list in between level loads, only on startup, or after a vid_restart
-	if ( numBackupShaders > 0 ) {
-		return;
-	}
-
-	len = ri.FS_ReadFile( "shader.cache", NULL );
-
-	if ( len <= 0 ) {
-		return;
-	}
-
-	buf = (byte *)ri.Hunk_AllocateTempMemory( len );
-	ri.FS_ReadFile( "shader.cache", (void **)&buf );
-	pString = (char *)buf;
-
-	while ( ( token = COM_ParseExt( &pString, qtrue ) ) && token[0] ) {
-		Q_strncpyz( name, token, sizeof( name ) );
-		RE_RegisterModel( name );
-	}
-
-	ri.Hunk_FreeTempMemory( buf );
-}
-// done.
-//=============================================================================
 
 /*
 ==================
@@ -3479,7 +3119,5 @@ void R_InitShaders( void ) {
 	ScanAndLoadShaderFiles();
 
 	CreateExternalShaders();
-
-	// Ridah
-	R_LoadCacheShaders();
 }
+

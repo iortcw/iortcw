@@ -1663,21 +1663,6 @@ void R_RenderView( viewParms_t *parms ) {
 		return;
 	}
 
-	// Ridah, purge media that were left over from the last level
-	if ( r_cache->integer ) {
-		extern void R_PurgeBackupImages( int purgeCount );
-		static int lastTime;
-
-		if ( ( lastTime > tr.refdef.time ) || ( lastTime < ( tr.refdef.time - 200 ) ) ) {
-			R_FreeImageBuffer();    // clear all image buffers
-			R_PurgeShaders( 10 );
-			R_PurgeBackupImages( 1 );
-			R_PurgeModels( 1 );
-			lastTime = tr.refdef.time;
-		}
-	}
-	// done.
-
 	tr.viewCount++;
 
 	tr.viewParms = *parms;

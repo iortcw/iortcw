@@ -1261,13 +1261,6 @@ extern cvar_t  *r_saveFontData;
 
 extern cvar_t	*r_marksOnTriangleMeshes;
 
-// Ridah
-extern cvar_t  *r_cache;
-extern cvar_t  *r_cacheShaders;
-extern cvar_t  *r_cacheModels;
-
-extern cvar_t  *r_cacheGathering;
-
 extern cvar_t  *r_bonesDebug;
 // done.
 
@@ -1896,34 +1889,6 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font );
 void R_BloomInit( void );
 void R_BloomScreen( void );
 #endif
-
-// Ridah, caching system
-// NOTE: to disable this for development, set "r_cache 0" in autoexec.cfg
-void R_InitTexnumImages( qboolean force );
-
-void *R_CacheModelAlloc( int size );
-void R_CacheModelFree( void *ptr );
-void R_PurgeModels( int count );
-void R_BackupModels( void );
-qboolean R_FindCachedModel( const char *name, model_t *newmod );
-void R_LoadCacheModels( void );
-
-void *R_CacheImageAlloc( int size );
-void R_CacheImageFree( void *ptr );
-qboolean R_TouchImage( image_t *inImage );
-image_t *R_FindCachedImage( const char *name, int hash );
-void R_FindFreeTexnum( image_t *image );
-void R_LoadCacheImages( void );
-void R_PurgeBackupImages( int purgeCount );
-void R_BackupImages( void );
-
-void *R_CacheShaderAlloc( int size );
-void R_CacheShaderFree( void *ptr );
-shader_t *R_FindCachedShader( const char *name, int lightmapIndex, int hash );
-void R_BackupShaders( void );
-void R_PurgeShaders( int count );
-void R_LoadCacheShaders( void );
-// done.
 
 //------------------------------------------------------------------------------
 // Ridah, mesh compression

@@ -185,13 +185,8 @@ cvar_t	*r_aviMotionJpegQuality;
 cvar_t	*r_screenshotJpegQuality;
 
 // Ridah
-cvar_t  *r_cache;
-cvar_t  *r_cacheShaders;
-cvar_t  *r_cacheModels;
 cvar_t  *r_compressModels;
 cvar_t  *r_exportCompressedModels;
-
-cvar_t  *r_cacheGathering;
 
 cvar_t  *r_buildScript;
 
@@ -1237,16 +1232,9 @@ void R_Register( void ) {
 	r_saveFontData = ri.Cvar_Get( "r_saveFontData", "0", 0 );
 
 	// Ridah
-	// TTimo show_bug.cgi?id=440
-	//   with r_cache enabled, non-win32 OSes were leaking 24Mb per R_Init..
-	r_cache = ri.Cvar_Get( "r_cache", "1", CVAR_LATCH );  // leaving it as this for backwards compability. but it caches models and shaders also
 	// TTimo show_bug.cgi?id=570
-	r_cacheShaders = ri.Cvar_Get( "r_cacheShaders", "1", CVAR_LATCH );
-
-	r_cacheModels = ri.Cvar_Get( "r_cacheModels", "1", CVAR_LATCH );
 	r_compressModels = ri.Cvar_Get( "r_compressModels", "0", 0 );     // converts MD3 -> MDC at run-time
 	r_exportCompressedModels = ri.Cvar_Get( "r_exportCompressedModels", "0", 0 ); // saves compressed models
-	r_cacheGathering = ri.Cvar_Get( "cl_cacheGathering", "0", 0 );
 	r_buildScript = ri.Cvar_Get( "com_buildscript", "0", 0 );
 	r_bonesDebug = ri.Cvar_Get( "r_bonesDebug", "0", CVAR_CHEAT );
 	// done.
@@ -1451,25 +1439,7 @@ void RE_Shutdown( qboolean destroyWindow ) {
 	ri.Cmd_RemoveCommand( "cropimages" );
 	// done.
 
-	// Ridah, keep a backup of the current images if possible
-	// clean out any remaining unused media from the last backup
-	R_PurgeShaders( 9999999 );
-	R_PurgeBackupImages( 9999999 );
-	R_PurgeModels( 9999999 );
-
-	if ( r_cache->integer ) {
-		if ( tr.registered ) {
-			if ( destroyWindow ) {
-				R_IssuePendingRenderCommands();
-				R_DeleteTextures();
-			} else {
-				// backup the current media
-				R_BackupModels();
-				R_BackupShaders();
-				R_BackupImages();
-			}
-		}
-	} else if ( tr.registered ) {
+	if ( tr.registered ) {
 		R_IssuePendingRenderCommands();
 		R_DeleteTextures();
 	}
