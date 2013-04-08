@@ -567,13 +567,11 @@ it will attempt to load as a system dll
 vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *), 
 				vmInterpret_t interpret ) {
 	vm_t		*vm;
-	int			i, remaining;	
+	int			i;	
 
 	if ( !module || !module[0] || !systemCalls ) {
 		Com_Error( ERR_FATAL, "VM_Create: bad parms" );
 	}
-
-	remaining = Hunk_MemoryRemaining();
 
 	// see if we already have the VM
 	for ( i = 0 ; i < MAX_VM ; i++ ) {

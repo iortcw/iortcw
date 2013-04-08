@@ -531,6 +531,7 @@ void *Sys_LoadGameDll( const char *name,
 	char	*basepath;
 	char	*homepath;
 	char	*gamedir;
+	char	*pwdpath;
 
 	assert( name );
 	
@@ -543,6 +544,7 @@ void *Sys_LoadGameDll( const char *name,
 	basepath = Cvar_VariableString( "fs_basepath" );
 	homepath = Cvar_VariableString( "fs_homepath" );
 	gamedir = Cvar_VariableString( "fs_game" );
+	pwdpath = Sys_Cwd();
 
 #ifndef DEDICATED
 	// if the server is pure, extract the dlls from the mp_bin.pk3 so
@@ -556,8 +558,11 @@ void *Sys_LoadGameDll( const char *name,
 #ifdef MACOS_X
 	libHandle = Sys_TryLibraryLoad(apppath, gamedir, fname);
 #else
-	libHandle = Sys_TryLibraryLoad(homepath, gamedir, fname);
+	libHandle = Sys_TryLibraryLoad(pwdpath, gamedir, fname);
 #endif
+
+	if(!libHandle && homepath)
+		libHandle = Sys_TryLibraryLoad(homepath, gamedir, fname);
 
 	if(!libHandle && basepath)
 		libHandle = Sys_TryLibraryLoad(basepath, gamedir, fname);
