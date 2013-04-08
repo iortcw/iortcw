@@ -3099,7 +3099,6 @@ static void CreateExternalShaders( void ) {
 	tr.dlightShader = R_FindShader( "dlightshader", LIGHTMAP_NONE, qtrue );
 }
 
-//=============================================================================
 
 /*
 ==================
