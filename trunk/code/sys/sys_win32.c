@@ -90,14 +90,14 @@ char *Sys_DefaultHomePath( void )
 	FARPROC qSHGetFolderPath;
 	HMODULE shfolder = LoadLibrary("shfolder.dll");
 	
+	if(shfolder == NULL)
+	{
+		Com_Printf("Unable to load SHFolder.dll\n");
+		return NULL;
+	}
+
 	if(!*homePath && com_homepath)
 	{
-		if(shfolder == NULL)
-		{
-			Com_Printf("Unable to load SHFolder.dll\n");
-			return NULL;
-		}
-
 		qSHGetFolderPath = GetProcAddress(shfolder, "SHGetFolderPathA");
 		if(qSHGetFolderPath == NULL)
 		{
@@ -106,7 +106,7 @@ char *Sys_DefaultHomePath( void )
 			return NULL;
 		}
 
-		// L0 - Changed from CSIDL_APPDATA -> Stores in My Documents so it's more accessible
+		// Changed from CSIDL_APPDATA -> Stores in My Documents so it's more accessible
 		if( !SUCCEEDED( qSHGetFolderPath( NULL, CSIDL_PERSONAL,
 						NULL, 0, szPath ) ) )
 		{
@@ -121,10 +121,9 @@ char *Sys_DefaultHomePath( void )
 			Q_strcat(homePath, sizeof(homePath), com_homepath->string);
 		else
 			Q_strcat(homePath, sizeof(homePath), HOMEPATH_NAME_WIN);
-
-		FreeLibrary(shfolder);
 	}
 
+	FreeLibrary(shfolder);
 	return homePath;
 }
 
