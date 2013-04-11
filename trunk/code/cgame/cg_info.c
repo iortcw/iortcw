@@ -30,43 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
-#define MAX_LOADING_PLAYER_ICONS    16
 #define MAX_LOADING_ITEM_ICONS      26
 
-static int loadingPlayerIconCount;
 static int loadingItemIconCount;
-static qhandle_t loadingPlayerIcons[MAX_LOADING_PLAYER_ICONS];
 static qhandle_t loadingItemIcons[MAX_LOADING_ITEM_ICONS];
-
-
-/*
-===================
-CG_DrawLoadingIcons
-===================
-*/
-static void CG_DrawLoadingIcons( void ) {
-	int n;
-	int x, y;
-
-	// JOSEPH 5-2-00 Per MAXX
-	return;
-
-	for ( n = 0; n < loadingPlayerIconCount; n++ ) {
-		x = 16 + n * 78;
-		y = 324;
-		CG_DrawPic( x, y, 64, 64, loadingPlayerIcons[n] );
-	}
-
-	for ( n = 0; n < loadingItemIconCount; n++ ) {
-		y = 400;
-		if ( n >= 13 ) {
-			y += 40;
-		}
-		x = 16 + n % 13 * 48;
-		CG_DrawPic( x, y, 32, 32, loadingItemIcons[n] );
-	}
-}
-
 
 /*
 ======================
@@ -265,23 +232,14 @@ Draw all the status / pacifier stuff during level loading
 void CG_DrawInformation( void ) {
 	const char  *s;
 	const char  *info;
-	const char  *sysInfo;
-	int y;
-	int value;
 	qhandle_t levelshot = 0; // TTimo: init
-//	qhandle_t	detail;
-	char buf[1024];
-	static int lastDraw = 0;  // Ridah, so we don't draw the screen more often than we need to
-	int ms;
 	static int callCount = 0;
 	float percentDone;
 
 	int expectedHunk;
 	char hunkBuf[MAX_QPATH];
 
-	vec4_t color;
-
-	if ( cg.snap && ( strlen( cg_missionStats.string ) <= 1 ) ) {
+	if ( cg.snap ) {
 		return;     // we are in the world, no need to draw information
 	}
 
@@ -289,233 +247,36 @@ void CG_DrawInformation( void ) {
 		return;
 	}
 
-	ms = trap_Milliseconds();
-	if ( ( lastDraw <= ms ) && ( lastDraw > ms - 100 ) ) {
-		return;
-	}
-	lastDraw = ms;
-
 	callCount++;
 
 	info = CG_ConfigString( CS_SERVERINFO );
-	sysInfo = CG_ConfigString( CS_SYSTEMINFO );
 
 	trap_Cvar_VariableStringBuffer( "com_expectedhunkusage", hunkBuf, MAX_QPATH );
 	expectedHunk = atoi( hunkBuf );
 
 
 	s = Info_ValueForKey( info, "mapname" );
-	if ( s && s[0] != 0 ) {  // there is often no 's'
-		if ( strlen( cg_missionStats.string ) > 1 && cg_missionStats.string[0] == 's' ) {
-			levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/pre_%s_stats.tga", s ) );
-		} else {    // show briefing screen
-			if ( s && s[0] != 0 ) {  // there is often no 's'
-				levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", s ) );
-			}
-		}
-	}
+	levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", s ) );
 	if ( !levelshot ) {
-		levelshot = trap_R_RegisterShaderNoMip( "menu/art/unknownmap" );
+		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
 	}
 	trap_R_SetColor( NULL );
 	CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, levelshot );
 
-	// blend a detail texture over it
-	//detail = trap_R_RegisterShader( "levelShotDetail" );
-	//trap_R_DrawStretchPic( 0, 0, cgs.glconfig.vidWidth, cgs.glconfig.vidHeight, 0, 0, 2.5, 2, detail );
+	vec2_t xy = { 200, 468 };
+	vec2_t wh = { 240, 10 };
 
+	// show the server motd
+	CG_DrawMotd();
 
-// (SA) commented out for Drew
-//	UI_DrawProportionalString( 320, 16, va( "Loading %s", Info_ValueForKey( info, "mapname" ) ), UI_SMALLFONT|UI_CENTER|UI_DROPSHADOW, colorWhite );
-
-	// show the loading progress
-	VectorSet( color, 0.8, 0.8, 0.8 );
-	color[3] = 0.8;
-
-	if ( strlen( cg_missionStats.string ) > 1 && cg_missionStats.string[0] == 's' ) {
-		vec2_t xy = { 190, 470 };
-		vec2_t wh = { 260, 10 };
-
-		// draw the mission stats while loading
-		if ( !Q_strncmp( cg_missionStats.string, "s=", 2 ) ) {
-			CG_DrawStats( cg_missionStats.string + 2 );
+	// show the percent complete bar
+	if ( expectedHunk >= 0 ) {
+		percentDone = (float)( cg_hunkUsed.integer + cg_soundAdjust.integer ) / (float)( expectedHunk );
+		if ( percentDone > 0.97 ) { // never actually show 100%, since we are not in the game yet
+			percentDone = 0.97;
 		}
+		CG_HorizontalPercentBar( xy[0], xy[1], wh[0], wh[1], percentDone );
 
-		if ( cg_waitForFire.integer == 1 ) {
-			// waiting for server to finish loading the map
-			UI_DrawProportionalString( 320, xy[1] + wh[1] - 10, "press fire to continue",
-									   UI_CENTER | UI_EXSMALLFONT | UI_DROPSHADOW, color );
-		} else if ( expectedHunk > 0 ) {
-			percentDone = (float)( cg_hunkUsed.integer + cg_soundAdjust.integer ) / (float)( expectedHunk );
-			if ( percentDone > 0.97 ) { // never actually show 100%, since we are not in the game yet
-				percentDone = 0.97;
-			}
-			CG_HorizontalPercentBar( xy[0] + 10, xy[1] + wh[1] - 10, wh[0] - 20, 10, percentDone );
-		} else if ( expectedHunk == -2 ) {
-			// we're ready, press a key to start playing
-			if ( ( ms % 1000 ) < 700 ) {  // flashing to get our attention
-				UI_DrawProportionalString( 320, xy[1] + wh[1] - 10, "press fire to begin",
-										   UI_CENTER | UI_EXSMALLFONT | UI_DROPSHADOW, color );
-			}
-		} else {
-			UI_DrawProportionalString( 320, xy[1] + wh[1] - 10, "please wait",
-									   UI_CENTER | UI_EXSMALLFONT | UI_DROPSHADOW, color );
-		}
-
-		trap_UpdateScreen();
-		callCount--;
-		return;
-	}
-
-	// Ridah, in single player, cheats disabled, don't show unnecessary information
-	// DHM - Nerve :: maybe temp, but we want to display the same as single player right now
-	if ( cgs.gametype == GT_SINGLE_PLAYER || cgs.gametype >= GT_WOLF ) {
-		vec2_t xy = { 200, 468 };
-		vec2_t wh = { 240, 10 };
-
-		// show the server motd
-		CG_DrawMotd();
-
-		// show the percent complete bar
-		if ( expectedHunk > 0 ) {
-			percentDone = (float)( cg_hunkUsed.integer + cg_soundAdjust.integer ) / (float)( expectedHunk );
-			if ( percentDone > 0.97 ) {
-				percentDone = 0.97;
-			}
-			CG_HorizontalPercentBar( xy[0], xy[1], wh[0], wh[1], percentDone );
-		} else if ( expectedHunk == -2 ) {
-			// we're ready, press a key to start playing
-			if ( ( ms % 1000 ) < 700 ) {  // flashing to get our attention
-				UI_DrawProportionalString( 320, xy[1] - 2, "press fire to begin",
-										   UI_CENTER | UI_EXSMALLFONT | UI_DROPSHADOW, color );
-			}
-		}
-
-		trap_UpdateScreen();
-		callCount--;
-		return;
-	}
-	// done.
-
-	// draw the icons of thiings as they are loaded
-	CG_DrawLoadingIcons();
-
-	// the first 150 rows are reserved for the client connection
-	// screen to write into
-	if ( cg.infoScreenText[0] ) {
-		UI_DrawProportionalString( 320, 128, va( "Loading... %s", cg.infoScreenText ),
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-	} else {
-		UI_DrawProportionalString( 320, 128, "Awaiting snapshot...",
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-	}
-
-	// draw info string information
-	y = 180;
-
-	// don't print server lines if playing a local game
-	trap_Cvar_VariableStringBuffer( "sv_running", buf, sizeof( buf ) );
-	if ( !atoi( buf ) ) {
-		// server hostname
-		s = Info_ValueForKey( info, "sv_hostname" );
-		UI_DrawProportionalString( 320, y, s,
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-		y += PROP_HEIGHT;
-
-		// server-specific message of the day
-		s = CG_ConfigString( CS_MOTD );
-		if ( s[0] ) {
-			UI_DrawProportionalString( 320, y, s,
-									   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-			y += PROP_HEIGHT;
-		}
-
-		// some extra space after hostname and motd
-		y += 10;
-	}
-
-	// map-specific message (long map name)
-	s = CG_ConfigString( CS_MESSAGE );
-	if ( s[0] ) {
-		UI_DrawProportionalString( 320, y, s,
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-		y += PROP_HEIGHT;
-	}
-
-	// cheats warning
-	s = Info_ValueForKey( sysInfo, "sv_cheats" );
-	if ( s[0] == '1' ) {
-		UI_DrawProportionalString( 320, y, "CHEATS ARE ENABLED",
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-		y += PROP_HEIGHT;
-	}
-
-	// game type
-	switch ( cgs.gametype ) {
-	case GT_FFA:
-		s = "Free For All";
-		break;
-	case GT_SINGLE_PLAYER:
-		s = "Single Player";
-		break;
-	case GT_TOURNAMENT:
-		s = "Tournament";
-		break;
-	case GT_TEAM:
-		s = "Team Deathmatch";
-		break;
-	case GT_CTF:
-		s = "Capture The Flag";
-		break;
-		// JPW NERVE
-	case GT_WOLF:
-		s = "Wolfenstein Multiplayer";
-		break;
-		// jpw
-		// NERVE - SMF
-	case GT_WOLF_STOPWATCH:
-		s = "WolfMP Stopwatch";
-		break;
-	case GT_WOLF_CP:
-		s = "WolfMP Checkpoint";
-		break;
-		// -NERVE - SMF
-		// JPW NERVE
-	case GT_WOLF_CPH:
-		s = "WolfMP Capture & Hold";
-		break;
-		// jpw
-	default:
-		s = "Unknown Gametype";
-		break;
-	}
-	UI_DrawProportionalString( 320, y, s,
-							   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-	y += PROP_HEIGHT;
-
-	value = atoi( Info_ValueForKey( info, "timelimit" ) );
-	if ( value ) {
-		UI_DrawProportionalString( 320, y, va( "timelimit %i", value ),
-								   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-		y += PROP_HEIGHT;
-	}
-
-	if ( cgs.gametype != GT_CTF && cgs.gametype != GT_SINGLE_PLAYER ) {
-		value = atoi( Info_ValueForKey( info, "fraglimit" ) );
-		if ( value ) {
-			UI_DrawProportionalString( 320, y, va( "fraglimit %i", value ),
-									   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-			y += PROP_HEIGHT;
-		}
-	}
-
-	if ( cgs.gametype == GT_CTF ) {
-		value = atoi( Info_ValueForKey( info, "capturelimit" ) );
-		if ( value ) {
-			UI_DrawProportionalString( 320, y, va( "capturelimit %i", value ),
-									   UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, colorWhite );
-			y += PROP_HEIGHT;
-		}
 	}
 
 	callCount--;
