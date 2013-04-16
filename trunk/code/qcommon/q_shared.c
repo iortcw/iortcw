@@ -230,39 +230,6 @@ void COM_BitClear( int array[], int bitNum ) {
 ============================================================================
 */
 
-/*
-// can't just use function pointers, or dll linkage can
-// mess up when qcommon is included in multiple places
-static short ( *_BigShort )( short l );
-static short ( *_LittleShort )( short l );
-static int ( *_BigLong )( int l );
-static int ( *_LittleLong )( int l );
-static qint64 ( *_BigLong64 )( qint64 l );
-static qint64 ( *_LittleLong64 )( qint64 l );
-static float ( *_BigFloat )( float l );
-static float ( *_LittleFloat )( float l );
-
-#if __MACOS__
-short   BigShort( short l ) {return l;}
-short   LittleShort( short l ) {return __lhbrx( &l, 0 );}
-int     BigLong( int l ) {return l;}
-int     LittleLong( int l ) {return __lwbrx( &l, 0 );}
-qint64  BigLong64( qint64 l ) {return _BigLong64( l );}
-qint64  LittleLong64( qint64 l ) {return _LittleLong64( l );}
-float   BigFloat( float l ) {return l;}
-float   LittleFloat( float l ) {return _LittleFloat( l );}
-#else
-short   BigShort( short l ) {return _BigShort( l );}
-short   LittleShort( short l ) {return _LittleShort( l );}
-int     BigLong( int l ) {return _BigLong( l );}
-int     LittleLong( int l ) {return _LittleLong( l );}
-qint64  BigLong64( qint64 l ) {return _BigLong64( l );}
-qint64  LittleLong64( qint64 l ) {return _LittleLong64( l );}
-float   BigFloat( float l ) {return _BigFloat( l );}
-float   LittleFloat( float l ) {return _LittleFloat( l );}
-#endif
-*/
-
 void CopyShortSwap(void *dest, void *src)
 {
 	byte *to = dest, *from = src;
@@ -340,39 +307,6 @@ float FloatSwap (const float *f) {
 float FloatNoSwap( float f ) {
 	return f;
 }
-
-/*
-================
-Swap_Init
-================
-
-void Swap_Init( void ) {
-	byte swaptest[2] = {1,0};
-
-// set the byte swapping variables in a portable manner
-	if ( *(short *)swaptest == 1 ) {
-		_BigShort = ShortSwap;
-		_LittleShort = ShortNoSwap;
-		_BigLong = LongSwap;
-		_LittleLong = LongNoSwap;
-		_BigLong64 = Long64Swap;
-		_LittleLong64 = Long64NoSwap;
-		_BigFloat = FloatSwap;
-		_LittleFloat = FloatNoSwap;
-	} else
-	{
-		_BigShort = ShortNoSwap;
-		_LittleShort = ShortSwap;
-		_BigLong = LongNoSwap;
-		_LittleLong = LongSwap;
-		_BigLong64 = Long64NoSwap;
-		_LittleLong64 = Long64Swap;
-		_BigFloat = FloatNoSwap;
-		_LittleFloat = FloatSwap;
-	}
-
-}
-*/
 
 /*
 ============================================================================
@@ -1120,48 +1054,6 @@ int Q_strcasecmp( char *s1, char *s2 ) {
 	return Q_strncasecmp( s1, s2, 99999 );
 }
 // done.
-
-/*
-============
-va
-
-does a varargs printf into a temp buffer, so I don't need to have
-varargs versions of all text functions.
-
-Ridah, modified this into a circular list, to further prevent stepping on
-previous strings
-============
-
-char    * QDECL va( char *format, ... ) {
-	va_list argptr;
-	#define MAX_VA_STRING   32000
-	static char temp_buffer[MAX_VA_STRING];
-	static char string[MAX_VA_STRING];      // in case va is called by nested functions
-	static int index = 0;
-	char    *buf;
-	int len;
-
-
-	va_start( argptr, format );
-	vsprintf( temp_buffer, format,argptr );
-	va_end( argptr );
-
-	if ( ( len = strlen( temp_buffer ) ) >= MAX_VA_STRING ) {
-		Com_Error( ERR_DROP, "Attempted to overrun string in call to va()\n" );
-	}
-
-	if ( len + index >= MAX_VA_STRING - 1 ) {
-		index = 0;
-	}
-
-	buf = &string[index];
-	memcpy( buf, temp_buffer, len + 1 );
-
-	index += len + 1;
-
-	return buf;
-}
-*/
 
 /*
 ============
