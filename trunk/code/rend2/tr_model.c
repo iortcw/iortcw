@@ -26,7 +26,7 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-// tr_models.c -- model loading and caching
+// tr_models.c -- model loading
 
 #include "tr_local.h"
 
@@ -102,23 +102,18 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 		}
 		
 		ident = LittleLong(* (unsigned *) buf.u);
-		if (ident == MDS_IDENT)
-			loaded = R_LoadMDS(mod, buf.u, name);
-		else
-		{
-			// Ridah, mesh compression
-			if ( ident != MD3_IDENT && ident != MDC_IDENT ) {
-				ri.Printf( PRINT_WARNING,"RE_RegisterModel: unknown fileid for %s\n", name );
-				goto fail;
-			}
-
-			if (ident == MD3_IDENT) {
-				loaded = R_LoadMD3(mod, lod, buf.u, name);
-			} else if (ident == MDC_IDENT) {
-				loaded = R_LoadMDC( mod, lod, buf.u, name );
-			}
-			// done.
+		// Ridah, mesh compression
+		if ( ident != MD3_IDENT && ident != MDC_IDENT ) {
+			ri.Printf( PRINT_WARNING,"RE_RegisterModel: unknown fileid for %s\n", name );
+			goto fail;
 		}
+
+		if (ident == MD3_IDENT) {
+			loaded = R_LoadMD3(mod, lod, buf.u, name);
+		} else if (ident == MDC_IDENT) {
+			loaded = R_LoadMDC( mod, lod, buf.u, name );
+		}
+		// done.
 		
 		ri.FS_FreeFile(buf.v);
 
@@ -153,6 +148,44 @@ fail:
 	// again, we won't bother scanning the filesystem
 	mod->type = MOD_BAD;
 	return 0;
+}
+
+/*
+====================
+R_RegisterMDS
+====================
+*/
+qhandle_t R_RegisterMDS(const char *name, model_t *mod)
+{
+	union {
+		unsigned *u;
+		void *v;
+	} buf;
+	int	ident;
+	qboolean loaded = qfalse;
+	int filesize;
+
+	filesize = ri.FS_ReadFile(name, (void **) &buf.v);
+	if(!buf.u)
+	{
+		mod->type = MOD_BAD;
+		return 0;
+	}
+	
+	ident = LittleLong(*(unsigned *)buf.u);
+	if(ident == MDS_IDENT)
+		loaded = R_LoadMDS(mod, buf.u, name);
+
+	ri.FS_FreeFile (buf.v);
+	
+	if(!loaded)
+	{
+		ri.Printf(PRINT_WARNING,"R_RegisterMDS: couldn't load mds file %s\n", name);
+		mod->type = MOD_BAD;
+		return 0;
+	}
+	
+	return mod->index;
 }
 
 /*
@@ -241,7 +274,7 @@ static modelExtToLoaderMap_t modelLoaders[ ] =
 {
 	{ "iqm", R_RegisterIQM },
 	{ "mdr", R_RegisterMDR },
-	{ "mds", R_RegisterMD3 },
+	{ "mds", R_RegisterMDS },
 	{ "md3", R_RegisterMD3 },
 	{ "mdc", R_RegisterMD3 }
 };
