@@ -83,19 +83,19 @@ qhandle_t R_RegisterMD3(const char *name, model_t *mod)
 
 
 		if ( r_compressModels->integer ) {
-			filename[strlen( filename ) - 1] = '3';  // try MD3 first
+			namebuf[strlen( namebuf ) - 1] = '3';  // try MD3 first
 		} else {
-			filename[strlen( filename ) - 1] = 'c';  // try MDC first
+			namebuf[strlen( namebuf ) - 1] = 'c';  // try MDC first
 		}
 
 		ri.FS_ReadFile( namebuf, &buf.v );
 		if ( !buf.u ) {
 			if ( r_compressModels->integer ) {
-				filename[strlen( filename ) - 1] = 'c';  // try MDC second
+				namebuf[strlen( namebuf ) - 1] = 'c';  // try MDC second
 			} else {
-				filename[strlen( filename ) - 1] = '3';  // try MD3 second
+				namebuf[strlen( namebuf ) - 1] = '3';  // try MD3 second
 			}
-			ri.FS_ReadFile( filename, (void **)&buf );
+			ri.FS_ReadFile( namebuf, (void **)&buf );
 			if ( !buf.u ) {
 				continue;
 			}
