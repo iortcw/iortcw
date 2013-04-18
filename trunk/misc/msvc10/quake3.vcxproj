@@ -36,7 +36,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{81CB51C4-B434-4E12-B69B-BAEE102F2852}</ProjectGuid>
-    <ProjectName>iortcw</ProjectName>
+    <ProjectName>ioWolfMP</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'" Label="Configuration">
@@ -127,20 +127,20 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug TA|x64'">true</LinkIncremental>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iortcw.$(PlatformShortName)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">iortcw.$(Platform)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ioWolfMP.$(PlatformShortName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ioWolfMP.$(Platform)</TargetName>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release TA|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">$(ProjectDir)\..\..\code\libs\win32;$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug TA|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\..\..\code\libs\win64;$(DXSDK_DIR)\Lib\x64;$(LibraryPath)</LibraryPath>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug TA|x64'">iortcw.$(Platform)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release TA|x64'">iortcw.$(Platform)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">iortcw.$(Platform)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">iortcw.$(PlatformShortName)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">iortcw.$(PlatformShortName)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">iortcw.$(PlatformShortName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug TA|x64'">ioWolfMP.$(Platform)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release TA|x64'">ioWolfMP.$(Platform)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ioWolfMP.$(Platform)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug TA|Win32'">ioWolfMP.$(PlatformShortName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">ioWolfMP.$(PlatformShortName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ioWolfMP.$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release TA|Win32'">
     <Midl>

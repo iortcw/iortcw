@@ -1,22 +1,22 @@
 #!/bin/sh
 CC=gcc-4.0
-APPBUNDLE=iortcw.app
-BINARY=iortcw.ub
-DEDBIN=iortcwded.ub
-PKGINFO=APPLIORTCW
+APPBUNDLE=iowolfmp.app
+BINARY=iowolfmp.ub
+DEDBIN=iowolfded.ub
+PKGINFO=APPLIOWOLFMP
 ICNS=misc/iortcw.icns
 DESTDIR=build/release-darwin-ub
 BASEDIR=main
 
 BIN_OBJ="
-	build/release-darwin-x86_64/iortcw.x86_64
-	build/release-darwin-x86/iortcw.x86
-	build/release-darwin-ppc/iortcw.ppc
+	build/release-darwin-x86_64/iowolfmp.x86_64
+	build/release-darwin-x86/iowolfmp.x86
+	build/release-darwin-ppc/iowolfmp.ppc
 "
 BIN_DEDOBJ="
-	build/release-darwin-x86_64/iortcwded.x86_64
-	build/release-darwin-x86/iortcwded.x86
-	build/release-darwin-ppc/iortcwded.ppc
+	build/release-darwin-x86_64/iowolfded.x86_64
+	build/release-darwin-x86/iowolfded.x86
+	build/release-darwin-ppc/iowolfded.ppc
 "
 BASE_OBJ="
 	build/release-darwin-x86_64/$BASEDIR/cgame.mp.x86_64.dylib
@@ -40,7 +40,7 @@ RENDER_OBJ="
 
 cd `dirname $0`
 if [ ! -f Makefile ]; then
-	echo "This script must be run from the iortcw build directory"
+	echo "This script must be run from the iowolfmp build directory"
 	exit 1
 fi
 
@@ -53,8 +53,8 @@ TIGERHOST=`uname -r |perl -w -p -e 's/\A(\d+)\..*\Z/$1/; $_ = (($_ >= 8) ? "1" :
 # we want to use the oldest available SDK for max compatiblity. However 10.4 and older
 # can not build 64bit binaries, making 10.5 the minimum version.   This has been tested 
 # with xcode 3.1 (xcode31_2199_developerdvd.dmg).  It contains the 10.5 SDK and a decent
-# enough gcc to actually compile iortcw
-# For PPC macs, G4's or better are required to run iortcw.
+# enough gcc to actually compile iowolfmp
+# For PPC macs, G4's or better are required to run iowolfmp.
 
 unset X86_64_SDK
 unset X86_64_CFLAGS
@@ -158,7 +158,7 @@ echo "
 		<key>CFBundleExecutable</key>
 		<string>$BINARY</string>
 		<key>CFBundleGetInfoString</key>
-		<string>iortcw $Q3_VERSION</string>
+		<string>iowolfmp $Q3_VERSION</string>
 		<key>CFBundleIconFile</key>
 		<string>iortcw.icns</string>
 		<key>CFBundleIdentifier</key>
@@ -166,7 +166,7 @@ echo "
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>iortcw</string>
+		<string>iowolfmp</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>

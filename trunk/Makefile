@@ -1,5 +1,5 @@
 #
-# iortcw Makefile
+# iowolfmp Makefile
 #
 # GNU Make required
 #
@@ -117,11 +117,19 @@ VERSION=1.42
 endif
 
 ifndef CLIENTBIN
-CLIENTBIN=iortcw
+  ifeq ($(PLATFORM),mingw32)
+    CLIENTBIN=ioWolfMP
+  else
+    CLIENTBIN=iowolfmp
+  endif
 endif
 
 ifndef SERVERBIN
-SERVERBIN=iortcwded
+  ifeq ($(PLATFORM),mingw32)
+    SERVERBIN=ioWolfDED
+  else
+    SERVERBIN=iowolfded
+  endif
 endif
 
 ifndef BASEGAME
