@@ -992,7 +992,15 @@ void SV_SendMoveSpeedsToGame( int entnum, char *text ) {
 	if ( !gvm ) {
 		return;
 	}
-	VM_Call( gvm, GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT, entnum, text );
+
+	if ( VM_IsNative( gvm ) ) {
+		VM_Call( gvm, GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT, entnum, text );
+	} else {
+		// Hacking around passing pointers to QVM isn't pretty
+		// and this was mainly a left over from SP. It's usage is
+		// disabled in official RTCW MP code. So this is probably fine.
+		Com_Error( ERR_DROP, "Sending move speeds to game QVM isn't supported, use a game DLL" );
+	}
 }
 
 /*

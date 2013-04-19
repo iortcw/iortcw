@@ -774,6 +774,10 @@ void *VM_ExplicitArgPtr( vm_t *vm, intptr_t intValue ) {
 	}
 }
 
+qboolean VM_IsNative( vm_t *vm ) {
+	return ( vm && vm->dllHandle );
+}
+
 
 /*
 ==============
