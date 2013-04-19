@@ -47,19 +47,6 @@ streamingSound_t streamingSounds[MAX_RAW_STREAMS];
 int numStreamingSounds = 0;
 static vec3_t entityPositions[MAX_GENTITIES];
 
-typedef struct {
-	vec3_t origin;
-	qboolean fixedOrigin;
-	int entityNum;
-	int entityChannel;
-	sfxHandle_t sfx;
-	int flags;
-} s_pushStack;
-
-#define MAX_PUSHSTACK 64
-static s_pushStack pushPop[MAX_PUSHSTACK];
-static int tart = 0;
-
 
 // =======================================================================
 // Internal sound data & structures
@@ -106,8 +93,11 @@ cvar_t      *s_wavonly;
 static loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
 
-int						s_rawend[MAX_RAW_STREAMS];
+int s_rawend[MAX_RAW_STREAMS];
+int s_rawpainted[MAX_RAW_STREAMS];
 portable_samplepair_t s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
+// RF, store the volumes, since now they get adjusted at time of painting, so we can extract talking data first
+portable_samplepair_t s_rawVolume[MAX_RAW_STREAMS];
 
 
 // ====================================================================
@@ -212,6 +202,10 @@ void S_ChannelFree(channel_t *v) {
 channel_t*	S_ChannelMalloc( void ) {
 	channel_t *v;
 	if (freelist == NULL) {
+		return NULL;
+	}
+	// RF, be careful not to lose our freelist
+	if ( *(channel_t **)freelist == NULL ) {
 		return NULL;
 	}
 	v = freelist;
@@ -571,11 +565,21 @@ Entchannel 0 will never override a playing sound
 	SND_CUTOFF_ALL		0x008	- cut off all sounds on this channel
 ====================
 */
+static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags );
 
 void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags ) {
 	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
 		return;
 	}
+
+	// RF, we have lots of NULL sounds using up valuable channels, so just ignore them
+	if ( !sfxHandle && entchannel != CHAN_WEAPON ) {  // let null weapon sounds try to play.  they kill any weapon sounds playing when a guy dies
+		return;
+	}
+
+	// RF, make the call now, or else we could override following streaming sounds in the same frame, due to the delay
+	S_Base_StartSoundEx( origin, entityNum, entchannel, sfxHandle, qfalse, flags );
+/*
 	if ( tart < MAX_PUSHSTACK ) {
 		sfx_t       *sfx;
 		if ( origin ) {
@@ -596,6 +600,7 @@ void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t s
 
 		tart++;
 	}
+*/
 }
 
 /*
@@ -703,6 +708,12 @@ static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, s
 			}
 
 			if ( s_channels[i].flags & SND_NOCUT ) {
+				continue;
+			}
+
+			// RF, let client voice sounds be overwritten
+			if ( entityNum < MAX_CLIENTS && s_channels[i].entchannel != CHAN_AUTO && s_channels[i].entchannel != CHAN_WEAPON ) {
+				S_ChannelFree( &s_channels[i] );
 				continue;
 			}
 
@@ -879,8 +890,17 @@ S_StopAllSounds
 ==================
 */
 void S_Base_StopAllSounds(void) {
+	int i;
+
 	if ( !s_soundStarted ) {
 		return;
+	}
+
+	//DAJ numStreamingSounds can get bigger than the MAX array size
+	for ( i = 0; i < MAX_RAW_STREAMS; i++ ) {
+		if ( i == 0 )
+			continue;   // ignore music
+		streamingSounds[i].kill = qtrue;
 	}
 
 	// stop the background music
@@ -1480,7 +1500,7 @@ void S_GetSoundtime(void)
 
 void S_Update_(void) {
 	unsigned        endtime;
-	int				samps, i;
+	int				samps;
 	static			float	lastTime = 0.0f;
 	float			ma, op;
 	float			thisTime, sane;
@@ -1490,6 +1510,10 @@ void S_Update_(void) {
 		return;
 	}
 
+	// RF, this isn't used anymore, since it was causing timing problems with streaming sounds, since the
+	// starting of the sound is delayed, it could cause streaming sounds to be cutoff, when the steaming sound was issued after
+	// this sound
+/*
 	for ( i = 0; i < tart; i++ ) {
 		if ( pushPop[i].fixedOrigin ) {
 			S_Base_StartSoundEx( pushPop[i].origin, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
@@ -1499,6 +1523,7 @@ void S_Update_(void) {
 	}
 
 	tart = 0;
+*/
 
 	thisTime = Com_Milliseconds();
 
@@ -1537,7 +1562,6 @@ void S_Update_(void) {
 	samps = dma.samples >> (dma.channels-1);
 	if (endtime - s_soundtime > samps)
 		endtime = s_soundtime + samps;
-
 
 
 	SNDDMA_BeginPainting ();
