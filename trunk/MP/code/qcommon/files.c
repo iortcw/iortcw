@@ -1323,6 +1323,12 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 					if(strstr(filename, Sys_GetDLLName( "ui" )))
 						pak->referenced |= FS_UI_REF;
 
+					if(strstr(filename, "cgame.mp.qvm"))
+						pak->referenced |= FS_CGAME_REF;
+
+					if(strstr(filename, "ui.mp.qvm"))
+						pak->referenced |= FS_UI_REF;
+
 #if !defined( PRE_RELEASE_DEMO ) && !defined( DO_LIGHT_DEDICATED )
 					// DHM -- Nerve :: Don't allow maps to be loaded from pak0 (singleplayer)
 					if(!FS_IsExt(filename, ".bsp", len) == 0 &&
