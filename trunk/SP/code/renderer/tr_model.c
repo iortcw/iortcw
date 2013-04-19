@@ -182,9 +182,8 @@ qhandle_t R_RegisterMDS(const char *name, model_t *mod)
 	} buf;
 	int	ident;
 	qboolean loaded = qfalse;
-	int filesize;
 
-	filesize = ri.FS_ReadFile(name, (void **) &buf.v);
+	ri.FS_ReadFile(name, (void **) &buf.v);
 	if(!buf.u)
 	{
 		mod->type = MOD_BAD;
