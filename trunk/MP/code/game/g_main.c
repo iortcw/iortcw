@@ -2187,7 +2187,7 @@ void CheckExitRules( void ) {
 						num = 1;
 					}
 					if ( num != -1 ) {
-						sprintf( txt,"%d",num );
+						Com_sprintf( txt, sizeof(txt), "%d", num );
 						G_ScriptAction_SetWinner( NULL, txt );
 					}
 				}

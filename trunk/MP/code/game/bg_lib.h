@@ -85,6 +85,7 @@ int		rand( void );
 // String functions
 size_t strlen( const char *string );
 char *strcat( char *strDestination, const char *strSource );
+char *strncat( char *strDestination, const char *strSource, size_t num );
 char *strcpy( char *strDestination, const char *strSource );
 int strcmp( const char *string1, const char *string2 );
 char *strchr( const char *string, int c );
@@ -121,5 +122,9 @@ double tan( double x );
 int abs( int n );
 double fabs( double x );
 double acos( double x );
+
+// pow that only supports integer exponents
+double powN( double base, int exp );
+#define pow(_base, _exp) powN(_base, _exp)
 
 #endif // BG_LIB_H

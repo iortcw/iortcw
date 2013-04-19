@@ -2452,7 +2452,7 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, int powerups, int team, enti
 		trap_R_AddRefEntityToScene( ent );
 
 		if ( ent->hModel == cent->pe.legsRefEnt.hModel ) {
-			trap_S_AddLoopingSound( es->number, ent->origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
+			CG_S_AddLoopingSound( es->number, ent->origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
 		}
 	}
 

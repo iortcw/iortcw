@@ -279,14 +279,14 @@ G_Script_ScriptParse
   Parses the script for the given entity
 ==============
 */
+#define MAX_SCRIPT_EVENTS   64
+g_script_event_t g_temp_events[MAX_SCRIPT_EVENTS];
 void G_Script_ScriptParse( gentity_t *ent ) {
-	#define MAX_SCRIPT_EVENTS   64
 	char        *pScript;
 	char        *token;
 	qboolean wantName;
 	qboolean inScript;
 	int eventNum;
-	g_script_event_t events[MAX_SCRIPT_EVENTS];
 	int numEventItems;
 	g_script_event_t *curEvent;
 	// DHM - Nerve :: Some of our multiplayer script commands have longer parameters
@@ -311,7 +311,7 @@ void G_Script_ScriptParse( gentity_t *ent ) {
 	bracketLevel = 0;
 	numEventItems = 0;
 
-	memset( events, 0, sizeof( events ) );
+	memset( g_temp_events, 0, sizeof( g_temp_events ) );
 
 	while ( 1 )
 	{
@@ -357,7 +357,7 @@ void G_Script_ScriptParse( gentity_t *ent ) {
 				G_Error( "G_Script_ScriptParse(), Error (line %d): MAX_SCRIPT_EVENTS reached (%d)\n", COM_GetCurrentParseLine(), MAX_SCRIPT_EVENTS );
 			}
 
-			curEvent = &events[numEventItems];
+			curEvent = &g_temp_events[numEventItems];
 			curEvent->eventNum = eventNum;
 			memset( params, 0, sizeof( params ) );
 
@@ -453,7 +453,7 @@ void G_Script_ScriptParse( gentity_t *ent ) {
 	// alloc and copy the events into the gentity_t for this cast
 	if ( numEventItems > 0 ) {
 		ent->scriptEvents = G_Alloc( sizeof( g_script_event_t ) * numEventItems );
-		memcpy( ent->scriptEvents, events, sizeof( g_script_event_t ) * numEventItems );
+		memcpy( ent->scriptEvents, g_temp_events, sizeof( g_script_event_t ) * numEventItems );
 		ent->numScriptEvents = numEventItems;
 	}
 }

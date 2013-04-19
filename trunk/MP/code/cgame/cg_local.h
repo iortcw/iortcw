@@ -2311,9 +2311,8 @@ void        trap_S_StopLoopingSound( int entnum );
 // a local sound is always played full volume
 void        trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum );
 void        trap_S_ClearLoopingSounds( qboolean killall );
-void        trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume );
-void        trap_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range );
-void        trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
+void        trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
+void        trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
 void        trap_S_UpdateEntityPosition( int entityNum, const vec3_t origin );
 
 // Ridah, talking animations
@@ -2420,6 +2419,10 @@ int         trap_Key_GetCatcher( void );
 void        trap_Key_SetCatcher( int catcher );
 int         trap_Key_GetKey( const char *binding );
 
+void CG_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume );
+void CG_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range );
+void CG_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
+
 // RF
 void trap_SendMoveSpeedsToGame( int entnum, char *movespeeds );
 
@@ -2440,7 +2443,7 @@ void trap_Key_SetBinding( int keynum, const char *binding );
 void trap_Key_KeynumToStringBuf( int keynum, char *buf, int buflen );
 // -NERVE - SMF
 
-char* trap_TranslateString( const char *string );       // NERVE - SMF - localization
+void trap_TranslateString( const char *string, char *buf );       // NERVE - SMF - localization
 
 int trap_CIN_PlayCinematic( const char *arg0, int xpos, int ypos, int width, int height, int bits );
 e_status trap_CIN_StopCinematic( int handle );

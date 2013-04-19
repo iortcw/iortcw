@@ -2453,12 +2453,12 @@ static qboolean CG_DrawFollow( void ) {
 		color[1] = 0.0;
 		color[2] = 0.0;
 		if ( cg.snap->ps.persistant[PERS_RESPAWNS_LEFT] == 0 ) {
-			sprintf( "%s", deploytime, CG_TranslateString( "No more deployments this round" ) );
+			Q_strncpyz( deploytime, CG_TranslateString( "No more deployments this round" ), sizeof(deploytime) );
 		} else if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_RED ) {
-			sprintf( deploytime, CG_TranslateString( "Deploying in %d seconds" ),
+			Com_sprintf( deploytime, sizeof(deploytime), CG_TranslateString( "Deploying in %d seconds" ),
 					 (int)( 1 + (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
 		} else {
-			sprintf( deploytime, CG_TranslateString( "Deploying in %d seconds" ),
+			Com_sprintf( deploytime, sizeof(deploytime), CG_TranslateString( "Deploying in %d seconds" ),
 					 (int)( 1 + (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
 		}
 
@@ -2466,7 +2466,7 @@ static qboolean CG_DrawFollow( void ) {
 
 		// DHM - Nerve :: Don't display if you're following yourself
 		if ( cg.snap->ps.clientNum != cg.clientNum ) {
-			sprintf( deploytime,"(%s %s)", CG_TranslateString( "Following" ), cgs.clientinfo[ cg.snap->ps.clientNum ].name );
+			Com_sprintf( deploytime, sizeof(deploytime), "(%s %s)", CG_TranslateString( "Following" ), cgs.clientinfo[ cg.snap->ps.clientNum ].name );
 			CG_DrawStringExt( INFOTEXT_STARTX, 86, deploytime, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 80 );
 		}
 	} else {
@@ -2779,8 +2779,8 @@ static void CG_DrawFlashFire( void ) {
 		CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		trap_R_SetColor( NULL );
 
-		trap_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameSound, (int)( 255.0 * alpha ) );
-		trap_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
+		CG_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameSound, (int)( 255.0 * alpha ) );
+		CG_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
 	} else {
 		cg.v_noFireTime = cg.time;
 	}

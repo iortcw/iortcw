@@ -263,14 +263,14 @@ void CG_DrawInformation( void ) {
 	trap_R_SetColor( NULL );
 	CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, levelshot );
 
-	vec2_t xy = { 200, 468 };
-	vec2_t wh = { 240, 10 };
-
 	// show the server motd
 	CG_DrawMotd();
 
 	// show the percent complete bar
 	if ( expectedHunk >= 0 ) {
+		vec2_t xy = { 200, 468 };
+		vec2_t wh = { 240, 10 };
+
 		percentDone = (float)( cg_hunkUsed.integer + cg_soundAdjust.integer ) / (float)( expectedHunk );
 		if ( percentDone > 0.97 ) { // never actually show 100%, since we are not in the game yet
 			percentDone = 0.97;

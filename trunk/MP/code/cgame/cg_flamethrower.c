@@ -669,8 +669,9 @@ void CG_MoveFlameChunk( flameChunk_t *f ) {
 CG_AddFlameSpriteToScene
 ===============
 */
-static vec3_t vright, vup;
-static vec3_t rright, rup;
+struct {
+	vec3_t vright, vup;
+} flameOrientation;
 
 #ifdef _DEBUG   // just in case we forget about it, but it should be disabled at all times (only enabled to generate updated shaders)
 #ifdef ALLOW_GEN_SHADERS    // secondary security measure
@@ -706,6 +707,7 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 	vec2_t fovRadius;
 	vec2_t rdist, rST;
 	int rollAngleClamped;
+	vec3_t rright, rup;
 
 	// DHM - Nerve :: No client side damage
 	//CG_FlameDamage( f->ownerCent, f->org, f->size );
@@ -758,8 +760,8 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 			rotate_ang[ROLL] += ( rollAngleClamped = ( (int)( f->rollAngle ) / 90 ) * 90 );
 			AngleVectors( rotate_ang, NULL, rright, rup );
 		} else {
-			VectorCopy( vright, rright );
-			VectorCopy( vup, rup );
+			VectorCopy( flameOrientation.vright, rright );
+			VectorCopy( flameOrientation.vup, rup );
 		}
 
 		VectorSubtract( sProj, f->org, projVec );
@@ -859,8 +861,8 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 			rotate_ang[ROLL] += f->rollAngle;
 			AngleVectors( rotate_ang, NULL, rright, rup );
 		} else {
-			VectorCopy( vright, rright );
-			VectorCopy( vup, rup );
+			VectorCopy( flameOrientation.vright, rright );
+			VectorCopy( flameOrientation.vup, rup );
 		}
 
 		VectorMA( f->org, -rST[1], rup, point );
@@ -1310,9 +1312,9 @@ CG_AddFlameChunks
 void CG_AddFlameChunks( void ) {
 	flameChunk_t *f, *fNext;
 
-	//AngleVectors( cg.refdef.viewangles, NULL, vright, vup );
-	VectorCopy( cg.refdef.viewaxis[1], vright );
-	VectorCopy( cg.refdef.viewaxis[2], vup );
+	//AngleVectors( cg.refdef.viewangles, NULL, flameOrientation.vright, flameOrientation.vup );
+	VectorCopy( cg.refdef.viewaxis[1], flameOrientation.vright );
+	VectorCopy( cg.refdef.viewaxis[2], flameOrientation.vup );
 
 	// clear out the volumes so we can rebuild them
 	memset( centFlameStatus, 0, sizeof( centFlameStatus ) );
@@ -1368,16 +1370,16 @@ void CG_UpdateFlamethrowerSounds( void ) {
 		if ( centFlameInfo[f->ownerCent].lastSoundUpdate != cg.time ) {
 			// blow/ignition sound
 			if ( centFlameStatus[f->ownerCent].blowVolume * 255.0 > MIN_BLOW_VOLUME ) {
-				trap_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * centFlameStatus[f->ownerCent].blowVolume ) ); // JPW NERVE
+				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * centFlameStatus[f->ownerCent].blowVolume ) ); // JPW NERVE
 			} else {
-				trap_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, MIN_BLOW_VOLUME ); // JPW NERVE
+				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, MIN_BLOW_VOLUME ); // JPW NERVE
 			}
 
 			if ( centFlameStatus[f->ownerCent].streamVolume ) {
 				if ( cg_entities[f->ownerCent].currentState.aiChar != AICHAR_ZOMBIE ) {
-					trap_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameStreamSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
+					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameStreamSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
 				} else {
-					trap_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
+					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
 				}
 			}
 
@@ -1388,7 +1390,7 @@ void CG_UpdateFlamethrowerSounds( void ) {
 		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
 			// update the sound volume
 			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
-				trap_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
+				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
 			}
 		}
 

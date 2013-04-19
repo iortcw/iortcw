@@ -1535,10 +1535,7 @@ void SP_Bubbles( gentity_t *ent ) {
 	ent->spawnflags |= 2;
 }
 
-static vec3_t forward, right, up;
-static vec3_t muzzle;
-
-void flakPuff( vec3_t origin, qboolean sky ) {
+void flakPuff( vec3_t origin, qboolean sky, vec3_t forward ) {
 	gentity_t *tent;
 	vec3_t point;
 
@@ -1564,7 +1561,7 @@ Fire_Lead
 ==============
 */
 //----(SA)	added 'activator' so the bits that used to expect 'ent' to be the gun still work
-void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage ) {
+void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage, vec3_t muzzle, vec3_t angles ) {
 	trace_t tr;
 	vec3_t end;
 	float r;
@@ -1573,12 +1570,15 @@ void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage )
 	gentity_t       *traceEnt;
 	//qboolean	isflak = qfalse;
 	int seed = rand() & 255;
+	vec3_t forward, right, up;
 
 	r = Q_crandom( &seed ) * spread;
 	u = Q_crandom( &seed ) * spread;
 
 	ent->s.eFlags |= EF_MG42_ACTIVE;
 	activator->s.eFlags |= EF_MG42_ACTIVE;
+
+	AngleVectors( angles, forward, right, up );
 
 	VectorMA( muzzle, 8192, forward, end );
 	VectorMA( end, r, right, end );
@@ -1738,11 +1738,14 @@ void mg42_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 
 void mg42_fire( gentity_t *other ) {
 	gentity_t *self;
+	vec3_t muzzle, angles;
+	vec3_t forward, up;
 
 	self = &g_entities[other->client->ps.viewlocked_entNum];
 
-	//AngleVectors (self->s.apos.trBase, forward, right, up);
-	AngleVectors( other->client->ps.viewangles, forward, right, up );
+	//VectorCopy( self->s.apos.trBase, angles );
+	VectorCopy( other->client->ps.viewangles, angles );
+	AngleVectors( angles, forward, NULL, up );
 	VectorCopy( self->s.pos.trBase, muzzle );
 
 	// VectorMA (muzzle, 16, forward, muzzle); // JPW NERVE unnecessary and makes it so close-range enemies get missed
@@ -1754,7 +1757,7 @@ void mg42_fire( gentity_t *other ) {
 	// snap to integer coordinates for more efficient network bandwidth usage
 	SnapVector( muzzle );
 
-	Fire_Lead( self, other, MG42_SPREAD_MP, MG42_DAMAGE_MP );
+	Fire_Lead( self, other, MG42_SPREAD_MP, MG42_DAMAGE_MP, muzzle, angles );
 }
 
 void mg42_track( gentity_t *self, gentity_t *other ) {
@@ -2326,6 +2329,8 @@ void miscGunnerThink( gentity_t *ent ) {
 	float yawspeed, diff;
 	vec3_t dang;
 	int i;
+	vec3_t muzzle;
+	vec3_t forward, up;
 
 	// find the entities
 	gun = &g_entities[ent->mg42BaseEnt];
@@ -2428,7 +2433,7 @@ void miscGunnerThink( gentity_t *ent ) {
 
 		// if we are facing them, fire
 		if ( fabs( AngleNormalize180( gun->r.currentAngles[YAW] - gun->TargetAngles[YAW] ) ) < 10 ) {
-			AngleVectors( gun->r.currentAngles, forward, right, up );
+			AngleVectors( gun->r.currentAngles, forward, NULL, up );
 			VectorCopy( gspot, muzzle );
 
 			VectorMA( muzzle, 16, forward, muzzle );
@@ -2438,9 +2443,9 @@ void miscGunnerThink( gentity_t *ent ) {
 			SnapVector( muzzle );
 
 			if ( gun->damage ) {
-				Fire_Lead( gun, gun, MG42_SPREAD / gun->accuracy, gun->damage );
+				Fire_Lead( gun, gun, MG42_SPREAD / gun->accuracy, gun->damage, muzzle, gun->r.currentAngles );
 			} else {
-				Fire_Lead( gun, gun, MG42_SPREAD / gun->accuracy, MG42_DAMAGE_AI );
+				Fire_Lead( gun, gun, MG42_SPREAD / gun->accuracy, MG42_DAMAGE_AI, muzzle, gun->r.currentAngles );
 			}
 		}
 	}

@@ -160,6 +160,10 @@ void trap_R_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *v
 	syscall( UI_R_ADDPOLYTOSCENE, hShader, numVerts, verts );
 }
 
+void trap_R_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts, int num ) {
+	syscall( UI_R_ADDPOLYSTOSCENE, hShader, numVerts, verts, num );
+}
+
 void trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw ) {
 	syscall( UI_R_ADDLIGHTTOSCENE, org, PASSFLOAT( intensity ), PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), overdraw );
 }
@@ -440,18 +444,8 @@ qboolean trap_GetLimboString( int index, char *buf ) {
 	return syscall( UI_CL_GETLIMBOSTRING, index, buf );
 }
 
-#define MAX_VA_STRING       32000
-
-char* trap_TranslateString( const char *string ) {
-	static char staticbuf[2][MAX_VA_STRING];
-	static int bufcount = 0;
-	char *buf;
-
-	buf = staticbuf[bufcount++ % 2];
-
+void trap_TranslateString( const char *string, char *buf ) {
 	syscall( UI_CL_TRANSLATE_STRING, string, buf );
-
-	return buf;
 }
 // -NERVE - SMF
 

@@ -257,12 +257,12 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 		if ( cent->currentState.eType == ET_SPEAKER ) {
 			/*if(cent->currentState.density == 1) {	// NO_PVS
-				trap_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ] );
+				CG_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ] );
 			}
 			else*/if ( cent->currentState.dmgFlags ) { // range is set
-				trap_S_AddRangedLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], cent->currentState.dmgFlags );
+				CG_S_AddRangedLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], cent->currentState.dmgFlags );
 			} else {
-				trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
+				CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 			}
 		} else if ( cent->currentState.solid == SOLID_BMODEL )   {
 			vec3_t origin;
@@ -270,9 +270,9 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 			v = cgs.inlineModelMidpoints[ cent->currentState.modelindex ];
 			VectorAdd( cent->lerpOrigin, v, origin );
-			trap_S_AddLoopingSound( cent->currentState.number, origin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
+			CG_S_AddLoopingSound( cent->currentState.number, origin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 		} else {
-			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
+			CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 		}
 	} /*else {
 		// stop NO_PVS speakers if they've been turned off
@@ -306,9 +306,9 @@ static void CG_EntityEffects( centity_t *cent ) {
 	// Ridah, flaming sounds
 	if ( CG_EntOnFire( cent ) ) {
 		// play a flame blow sound when moving
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * ( 1.0 - fabs( cent->fireRiseDir[2] ) ) ) );
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * ( 1.0 - fabs( cent->fireRiseDir[2] ) ) ) );
 		// play a burning sound when not moving
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, (int)( 0.3 * 255.0 * ( pow( cent->fireRiseDir[2],2 ) ) ) );
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, (int)( 0.3 * 255.0 * ( pow( cent->fireRiseDir[2],2 ) ) ) );
 	}
 
 
@@ -1050,7 +1050,7 @@ static void CG_Missile( centity_t *cent ) {
 		vec3_t velocity;
 
 		BG_EvaluateTrajectoryDelta( &cent->currentState.pos, cg.time, velocity );
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound, 255 );
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound, 255 );
 	}
 
 	// DHM - Nerve :: Don't tick until armed
@@ -1059,7 +1059,7 @@ static void CG_Missile( centity_t *cent ) {
 			vec3_t velocity;
 
 			BG_EvaluateTrajectoryDelta( &cent->currentState.pos, cg.time, velocity );
-			trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->spindownSound, 255 );
+			CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, velocity, weapon->spindownSound, 255 );
 		}
 	}
 
@@ -1119,7 +1119,7 @@ CG_Bat
 */
 static void CG_Bat( centity_t *cent ) {
 	CG_ParticleBat( cent );
-	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.batsFlyingLoopSound, 5 );
+	CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.batsFlyingLoopSound, 5 );
 }
 
 //----(SA)	animation_t struct changed, so changes are to keep this working

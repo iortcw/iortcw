@@ -1074,7 +1074,7 @@ void            trap_GetAutoUpdate( void );                             // DHM -
 
 void            trap_openURL( const char *url ); // TTimo
 
-char*           trap_TranslateString( const char *string );             // NERVE - SMF - localization
+void            trap_TranslateString( const char *string, char *buf );             // NERVE - SMF - localization
 //
 // ui_addbots.c
 //

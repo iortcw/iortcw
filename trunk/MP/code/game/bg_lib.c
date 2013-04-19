@@ -205,6 +205,21 @@ char *strcat( char *strDestination, const char *strSource ) {
 	return strDestination;
 }
 
+char *strncat( char *strDestination, const char *strSource, size_t num ) {
+	char	*s;
+	int		i;
+
+	s = strDestination;
+	while ( *s ) {
+		s++;
+	}
+	for ( i = 0; *strSource && i < num; i++ ) {
+		*s++ = *strSource++;
+	}
+	*s = 0;
+	return strDestination;
+}
+
 char *strcpy( char *strDestination, const char *strSource ) {
 	char *s;
 
@@ -775,7 +790,7 @@ powN
 Raise a double to a integer power
 ===============
 */
-static double powN( double base, int exp )
+double powN( double base, int exp )
 {
 	if( exp >= 0 )
 	{

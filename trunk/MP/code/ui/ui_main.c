@@ -319,6 +319,18 @@ Q_EXPORT intptr_t vmMain( intptr_t command, intptr_t arg0, intptr_t arg1, intptr
 	return -1;
 }
 
+#define MAX_VA_STRING       32000
+char* UI_TranslateString( const char *string ) {
+	static char staticbuf[2][MAX_VA_STRING];
+	static int bufcount = 0;
+	char *buf;
+
+	buf = staticbuf[bufcount++ % 2];
+
+	trap_TranslateString( string, buf );
+
+	return buf;
+}
 
 
 void AssetCache( void ) {
@@ -1517,7 +1529,7 @@ static void UI_DrawJoinGameType( rectDef_t *rect, float scale, vec4_t color, int
 	if ( ui_joinGameType.integer < 0 || ui_joinGameType.integer > uiInfo.numJoinGameTypes ) {
 		trap_Cvar_Set( "ui_joinGameType", "0" );
 	}
-	Text_Paint( rect->x, rect->y, scale, color, trap_TranslateString( uiInfo.joinGameTypes[ui_joinGameType.integer].gameType ), 0, 0, textStyle );
+	Text_Paint( rect->x, rect->y, scale, color, UI_TranslateString( uiInfo.joinGameTypes[ui_joinGameType.integer].gameType ), 0, 0, textStyle );
 }
 
 
@@ -1840,7 +1852,7 @@ static void UI_DrawNetSource( rectDef_t *rect, float scale, vec4_t color, int te
 	if ( ui_netSource.integer < 0 || ui_netSource.integer > numNetSources /*uiInfo.numGameTypes*/ ) {        // NERVE - SMF - possible bug
 		ui_netSource.integer = 0;
 	}
-	Text_Paint( rect->x, rect->y, scale, color, trap_TranslateString( va( "Source: %s", netSources[ui_netSource.integer] ) ), 0, 0, textStyle );
+	Text_Paint( rect->x, rect->y, scale, color, UI_TranslateString( va( "Source: %s", netSources[ui_netSource.integer] ) ), 0, 0, textStyle );
 }
 
 static void UI_DrawNetMapPreview( rectDef_t *rect, float scale, vec4_t color ) {
@@ -2269,9 +2281,9 @@ static int UI_OwnerDrawWidth( int ownerDraw, float scale ) {
 		break;
 	case UI_KEYBINDSTATUS:
 		if ( Display_KeyBindPending() ) {
-			s = trap_TranslateString( "Waiting for new key... Press ESCAPE to cancel" );
+			s = UI_TranslateString( "Waiting for new key... Press ESCAPE to cancel" );
 		} else {
-			s = trap_TranslateString( "Press ENTER or CLICK to change, Press BACKSPACE to clear" );
+			s = UI_TranslateString( "Press ENTER or CLICK to change, Press BACKSPACE to clear" );
 		}
 		break;
 	case UI_SERVERREFRESHDATE:
@@ -2401,14 +2413,14 @@ static void UI_DrawServerRefreshDate( rectDef_t *rect, float scale, vec4_t color
 		// NERVE - SMF
 		serverCount = trap_LAN_GetServerCount( UI_SourceForLAN() );
 		if ( serverCount >= 0 ) {
-			Text_Paint( rect->x, rect->y, scale, newColor, va( trap_TranslateString( "Getting info for %d servers (ESC to cancel)" ), serverCount ), 0, 0, textStyle );
+			Text_Paint( rect->x, rect->y, scale, newColor, va( UI_TranslateString( "Getting info for %d servers (ESC to cancel)" ), serverCount ), 0, 0, textStyle );
 		} else {
-			Text_Paint( rect->x, rect->y, scale, newColor, trap_TranslateString( "Waiting for response from Master Server" ), 0, 0, textStyle );
+			Text_Paint( rect->x, rect->y, scale, newColor, UI_TranslateString( "Waiting for response from Master Server" ), 0, 0, textStyle );
 		}
 	} else {
 		char buff[64];
 		Q_strncpyz( buff, UI_Cvar_VariableString( va( "ui_lastServerRefresh_%i", ui_netSource.integer ) ), 64 );
-		Text_Paint( rect->x, rect->y, scale, color, va( trap_TranslateString( "Refresh Time: %s" ), buff ), 0, 0, textStyle );
+		Text_Paint( rect->x, rect->y, scale, color, va( UI_TranslateString( "Refresh Time: %s" ), buff ), 0, 0, textStyle );
 	}
 //#endif	// #ifdef MISSIONPACK
 }
@@ -2477,9 +2489,9 @@ static void UI_DrawServerMOTD( rectDef_t *rect, float scale, vec4_t color ) {
 static void UI_DrawKeyBindStatus( rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
 	//int ofs = 0; // TTimo: unused
 	if ( Display_KeyBindPending() ) {
-		Text_Paint( rect->x, rect->y, scale, color, trap_TranslateString( "Waiting for new key... Press ESCAPE to cancel" ), 0, 0, textStyle );
+		Text_Paint( rect->x, rect->y, scale, color, UI_TranslateString( "Waiting for new key... Press ESCAPE to cancel" ), 0, 0, textStyle );
 	} else {
-		Text_Paint( rect->x, rect->y, scale, color, trap_TranslateString( "Press ENTER or CLICK to change, Press BACKSPACE to clear" ), 0, 0, textStyle );
+		Text_Paint( rect->x, rect->y, scale, color, UI_TranslateString( "Press ENTER or CLICK to change, Press BACKSPACE to clear" ), 0, 0, textStyle );
 	}
 }
 
@@ -4000,7 +4012,7 @@ void WM_GetSpawnPoints( void ) {
 	}
 
 	// first index is for autopicking
-	Q_strncpyz( uiInfo.spawnPoints[0], trap_TranslateString( "Auto Pick" ), MAX_SPAWNDESC );
+	Q_strncpyz( uiInfo.spawnPoints[0], UI_TranslateString( "Auto Pick" ), MAX_SPAWNDESC );
 
 	uiInfo.spawnCount = atoi( s ) + 1;
 
@@ -4012,7 +4024,7 @@ void WM_GetSpawnPoints( void ) {
 			return;
 		}
 
-		Q_strncpyz( uiInfo.spawnPoints[i], trap_TranslateString( s ), MAX_SPAWNDESC );
+		Q_strncpyz( uiInfo.spawnPoints[i], UI_TranslateString( s ), MAX_SPAWNDESC );
 	}
 }
 
@@ -4086,7 +4098,7 @@ void WM_SetObjective( int objectiveIndex ) {
 	// we want overview info
 	if ( objectiveIndex == -1 ) {
 		trap_GetConfigString( CS_MULTI_MAPDESC, cs, sizeof( cs ) );
-		trap_Cvar_Set( "ui_objective", trap_TranslateString( cs ) );
+		trap_Cvar_Set( "ui_objective", UI_TranslateString( cs ) );
 
 		def_pic->window.flags |= WINDOW_VISIBLE;
 
@@ -4111,7 +4123,7 @@ void WM_SetObjective( int objectiveIndex ) {
 	s = Info_ValueForKey( cs, teamStr );
 
 	if ( s && strlen( s ) ) {
-		s = trap_TranslateString( s );
+		s = UI_TranslateString( s );
 
 		// NERVE - SMF - get around config strings not having \n by using '*'
 		for ( i = 0; s[i] != '\0'; i++ ) {
@@ -4178,7 +4190,7 @@ void WM_SetDefaultWeapon( void ) {
 	}
 
 	trap_Cvar_Set( weaponTypes[index].cvar, va( "%i", weaponTypes[index].value ) );
-	trap_Cvar_Set( "ui_weapon", trap_TranslateString( weaponTypes[index].desc ) );
+	trap_Cvar_Set( "ui_weapon", UI_TranslateString( weaponTypes[index].desc ) );
 
 	WM_setWeaponPics();
 }
@@ -4246,7 +4258,7 @@ void WM_PickItem( int selectionType, int itemIndex ) {
 		if ( itemIndex == WM_START_SELECT ) {
 		} else {
 			trap_Cvar_Set( weaponTypes[itemIndex].cvar, va( "%i", weaponTypes[itemIndex].value ) );
-			trap_Cvar_Set( "ui_weapon", trap_TranslateString( weaponTypes[itemIndex].desc ) );
+			trap_Cvar_Set( "ui_weapon", UI_TranslateString( weaponTypes[itemIndex].desc ) );
 		}
 	}
 
@@ -4584,10 +4596,10 @@ static void UI_RunMenuScript( char **args ) {
 			Q_strcat( buff, 1024, UI_Cvar_VariableString( "cdkey4" ) );
 			trap_Cvar_Set( "cdkey", buff );
 			if ( trap_VerifyCDKey( buff, UI_Cvar_VariableString( "cdkeychecksum" ) ) ) {
-				trap_Cvar_Set( "ui_cdkeyvalid", trap_TranslateString( "CD key appears to be valid." ) );
+				trap_Cvar_Set( "ui_cdkeyvalid", UI_TranslateString( "CD key appears to be valid." ) );
 				trap_SetCDKey( buff );
 			} else {
-				trap_Cvar_Set( "ui_cdkeyvalid", trap_TranslateString( "CD key does not appear to be valid." ) );
+				trap_Cvar_Set( "ui_cdkeyvalid", UI_TranslateString( "CD key does not appear to be valid." ) );
 			}
 		} else if ( Q_stricmp( name, "loadArenas" ) == 0 ) {
 			UI_LoadArenas();
@@ -4820,13 +4832,13 @@ static void UI_RunMenuScript( char **args ) {
 					res = trap_LAN_AddServer( AS_FAVORITES, name, addr );
 					if ( res == 0 ) {
 						// server already in the list
-						Com_Printf( "%s", trap_TranslateString( "Favorite already in list\n" ) );
+						Com_Printf( "%s", UI_TranslateString( "Favorite already in list\n" ) );
 					} else if ( res == -1 )     {
 						// list full
-						Com_Printf( "%s", trap_TranslateString( "Favorite list full\n" ) );
+						Com_Printf( "%s", UI_TranslateString( "Favorite list full\n" ) );
 					} else {
 						// successfully added
-						Com_Printf( trap_TranslateString( "Added favorite server %s\n" ), addr );
+						Com_Printf( UI_TranslateString( "Added favorite server %s\n" ), addr );
 					}
 				}
 			}
@@ -4852,13 +4864,13 @@ static void UI_RunMenuScript( char **args ) {
 				res = trap_LAN_AddServer( AS_FAVORITES, name, addr );
 				if ( res == 0 ) {
 					// server already in the list
-					Com_Printf( "%s", trap_TranslateString( "Favorite already in list\n" ) );
+					Com_Printf( "%s", UI_TranslateString( "Favorite already in list\n" ) );
 				} else if ( res == -1 )     {
 					// list full
-					Com_Printf( "%s", trap_TranslateString( "Favorite list full\n" ) );
+					Com_Printf( "%s", UI_TranslateString( "Favorite list full\n" ) );
 				} else {
 					// successfully added
-					Com_Printf( trap_TranslateString( "Added favorite server %s\n" ), addr );
+					Com_Printf( UI_TranslateString( "Added favorite server %s\n" ), addr );
 				}
 			}
 		} else if ( Q_stricmp( name, "orders" ) == 0 ) {
@@ -6251,7 +6263,7 @@ static void UI_FeederSelection( float feederID, int index ) {
 			}
 			if ( count == index + 1 ) {
 				trap_Cvar_Set( weaponTypes[i].cvar, va( "%i", weaponTypes[i].value ) );
-				trap_Cvar_Set( "ui_weapon", trap_TranslateString( weaponTypes[i].desc ) );
+				trap_Cvar_Set( "ui_weapon", UI_TranslateString( weaponTypes[i].desc ) );
 				WM_setWeaponPics();
 
 				break;
@@ -6265,7 +6277,7 @@ static void UI_FeederSelection( float feederID, int index ) {
 			}
 			if ( count == index + 1 ) {
 				trap_Cvar_Set( weaponTypes[i].cvar, va( "%i", weaponTypes[i].value ) );
-				trap_Cvar_Set( "ui_weapon", trap_TranslateString( weaponTypes[i].desc ) );
+				trap_Cvar_Set( "ui_weapon", UI_TranslateString( weaponTypes[i].desc ) );
 				WM_setWeaponPics();
 				break;
 			}
@@ -6873,7 +6885,7 @@ void _UI_Init( qboolean inGameLoad ) {
 	uiInfo.uiDC.stopCinematic = &UI_StopCinematic;
 	uiInfo.uiDC.drawCinematic = &UI_DrawCinematic;
 	uiInfo.uiDC.runCinematicFrame = &UI_RunCinematicFrame;
-	uiInfo.uiDC.translateString = &trap_TranslateString;            // NERVE - SMF
+	uiInfo.uiDC.translateString = &UI_TranslateString;            // NERVE - SMF
 	uiInfo.uiDC.checkAutoUpdate = &trap_CheckAutoUpdate;            // DHM - Nerve
 	uiInfo.uiDC.getAutoUpdate = &trap_GetAutoUpdate;                // DHM - Nerve
 
@@ -7047,7 +7059,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			// show_bug.cgi?id=507
 			// TTimo - improved and tweaked that area a whole bunch
 			if ( ( strlen( buf ) ) && ( Q_stricmp( buf,";" ) ) ) {
-				trap_Cvar_Set( "com_errorMessage", trap_TranslateString( buf ) );        // NERVE - SMF
+				trap_Cvar_Set( "com_errorMessage", UI_TranslateString( buf ) );        // NERVE - SMF
 				// hacky, wanted to have the printout of missing files
 				// text printing limitations force us to keep it all in a single message
 				// NOTE: this works thanks to flip flop in UI_Cvar_VariableString
@@ -7057,7 +7069,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 						trap_Cvar_Set( "com_errorMessage",
 									   va( "%s\n\n%s\n%s",
 										   UI_Cvar_VariableString( "com_errorMessage" ),
-										   trap_TranslateString( MISSING_FILES_MSG ),
+										   UI_TranslateString( MISSING_FILES_MSG ),
 										   missing_files ) );
 					}
 				}
@@ -7297,7 +7309,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 	if ( !Q_stricmp( cstate.servername,"localhost" ) ) {
 		Text_PaintCenter(centerPoint, yStart + 48, scale, colorWhite, "Starting up...", ITEM_TEXTSTYLE_SHADOWEDMORE);
 	} else {
-		strcpy( text, va( trap_TranslateString( "Connecting to %s" ), cstate.servername ) );
+		strcpy( text, va( UI_TranslateString( "Connecting to %s" ), cstate.servername ) );
 		Text_PaintCenter( centerPoint, yStart + 48, scale, colorWhite,text, ITEM_TEXTSTYLE_SHADOWEDMORE );
 	}
 
@@ -7317,7 +7329,7 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 		int i, len, index = 0, yPrint = yStart + 210;
 		qboolean neednewline = qfalse;
 
-		s = trap_TranslateString( cstate.messageString );
+		s = UI_TranslateString( cstate.messageString );
 		len = strlen( s );
 
 		for ( i = 0; i < len; i++, index++ ) {
@@ -7351,17 +7363,17 @@ void UI_DrawConnectScreen( qboolean overlay ) {
 
 	switch ( cstate.connState ) {
 	case CA_CONNECTING:
-		s = va( trap_TranslateString( "Awaiting connection...%i" ), cstate.connectPacketCount );
+		s = va( UI_TranslateString( "Awaiting connection...%i" ), cstate.connectPacketCount );
 		break;
 	case CA_CHALLENGING:
-		s = va( trap_TranslateString( "Awaiting challenge...%i" ), cstate.connectPacketCount );
+		s = va( UI_TranslateString( "Awaiting challenge...%i" ), cstate.connectPacketCount );
 		break;
 	case CA_CONNECTED:
 		if ( *downloadName ) {
 			UI_DisplayDownloadInfo( downloadName, centerPoint, yStart, scale );
 			return;
 		}
-		s = trap_TranslateString( "Awaiting gamestate..." );
+		s = UI_TranslateString( "Awaiting gamestate..." );
 		break;
 	case CA_LOADING:
 		return;
