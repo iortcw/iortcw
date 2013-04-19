@@ -808,8 +808,7 @@ qboolean FS_Which(const char *filename, void *searchPath);
 char *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
 
 #if !defined( DEDICATED )
-extern int cl_connectedToPureServer;
-qboolean FS_CL_ExtractFromPakFile( const char *path, const char *gamedir, const char *filename, const char *cvar_lastVersion );
+qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const char *filename, const char *cvar_lastVersion );
 #endif
 
 #if defined( DO_LIGHT_DEDICATED )

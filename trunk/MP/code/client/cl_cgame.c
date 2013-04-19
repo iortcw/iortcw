@@ -1037,8 +1037,8 @@ void CL_InitCGame( void ) {
 	mapname = Info_ValueForKey( info, "mapname" );
 	Com_sprintf( cl.mapname, sizeof( cl.mapname ), "maps/%s.bsp", mapname );
 
-	// load the dll
-	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, VMI_NATIVE );
+	// load the dll or bytecode
+	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, Cvar_VariableValue("vm_cgame") );
 	if ( !cgvm ) {
 		Com_Error( ERR_DROP, "VM_Create on cgame failed" );
 	}

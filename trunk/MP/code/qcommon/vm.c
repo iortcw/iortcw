@@ -70,6 +70,10 @@ VM_Init
 ==============
 */
 void VM_Init( void ) {
+	Cvar_Get( "vm_cgame", "2", CVAR_ARCHIVE );	// !@# SHIP WITH SET TO 2
+	Cvar_Get( "vm_game", "2", CVAR_ARCHIVE );	// !@# SHIP WITH SET TO 2
+	Cvar_Get( "vm_ui", "2", CVAR_ARCHIVE );		// !@# SHIP WITH SET TO 2
+
 	Cmd_AddCommand("vmprofile", VM_VmProfile_f); // FIXME: doesn't print anything with +set developer 1
 	Cmd_AddCommand ("vminfo", VM_VmInfo_f );
 
@@ -367,7 +371,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
 	} header;
 
 	// load the image
-	Com_sprintf( filename, sizeof(filename), "vm/%s.qvm", vm->name );
+	Com_sprintf( filename, sizeof(filename), "vm/%s.mp.qvm", vm->name );
 	Com_Printf( "Loading vm file %s...\n", filename );
 
 	FS_ReadFileDir(filename, vm->searchPath, unpure, &header.v);
@@ -567,11 +571,16 @@ it will attempt to load as a system dll
 vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *), 
 				vmInterpret_t interpret ) {
 	vm_t		*vm;
-	int			i;	
+	vmHeader_t	*header;
+	int			i, remaining, retval;
+	char filename[MAX_OSPATH];
+	void *startSearch = NULL;
 
 	if ( !module || !module[0] || !systemCalls ) {
 		Com_Error( ERR_FATAL, "VM_Create: bad parms" );
 	}
+
+	remaining = Hunk_MemoryRemaining();
 
 	// see if we already have the VM
 	for ( i = 0 ; i < MAX_VM ; i++ ) {
@@ -596,26 +605,80 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 
 	Q_strncpyz(vm->name, module, sizeof(vm->name));
 
-	if ( interpret == VMI_NATIVE ) {
+	do
+	{
+		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, (interpret != VMI_NATIVE));
+		
+		if(retval == VMI_NATIVE)
+		{
+			Com_Printf("Try loading dll file %s\n", filename);
 
-		Com_Printf("Try loading dll file %s\n", module);
-
-		// try to load as a system dll		
-		vm->dllHandle = Sys_LoadGameDll( module, &vm->entryPoint, VM_DllSyscall );
-
-		if ( vm->dllHandle ) {
-			vm->systemCall = systemCalls;
-			return vm;
+			vm->dllHandle = Sys_LoadGameDll(filename, &vm->entryPoint, VM_DllSyscall);
+			
+			if(vm->dllHandle)
+			{
+				vm->systemCall = systemCalls;
+				return vm;
+			}
+			
+			Com_Printf("Failed loading dll, trying next\n");
 		}
+		else if(retval == VMI_COMPILED)
+		{
+			vm->searchPath = startSearch;
+			if((header = VM_LoadQVM(vm, qtrue, qfalse)))
+				break;
 
-		Com_Printf( "Failed to load dll.\n" );
-			return NULL;
-
-	} else {
+			// VM_Free overwrites the name on failed load
+			Q_strncpyz(vm->name, module, sizeof(vm->name));
+		}
+	} while(retval >= 0);
+	
+	if(retval < 0)
 		return NULL;
+
+	vm->systemCall = systemCalls;
+
+	// allocate space for the jump targets, which will be filled in by the compile/prep functions
+	vm->instructionCount = header->instructionCount;
+	vm->instructionPointers = Hunk_Alloc(vm->instructionCount * sizeof(*vm->instructionPointers), h_high);
+
+	// copy or compile the instructions
+	vm->codeLength = header->codeLength;
+
+	vm->compiled = qfalse;
+
+#ifdef NO_VM_COMPILED
+	if(interpret >= VMI_COMPILED) {
+		Com_Printf("Architecture doesn't have a bytecode compiler, using interpreter\n");
+		interpret = VMI_BYTECODE;
+	}
+#else
+	if(interpret != VMI_BYTECODE)
+	{
+		vm->compiled = qtrue;
+		VM_Compile( vm, header );
+	}
+#endif
+	// VM_Compile may have reset vm->compiled if compilation failed
+	if (!vm->compiled)
+	{
+		VM_PrepareInterpreter( vm, header );
 	}
 
-return NULL;
+	// free the original file
+	FS_FreeFile( header );
+
+	// load the map file
+	VM_LoadSymbols( vm );
+
+	// the stack is implicitly at the end of the image
+	vm->programStack = vm->dataMask + 1;
+	vm->stackBottom = vm->programStack - PROGRAM_STACK_SIZE;
+
+	Com_Printf("%s loaded in %d bytes on the hunk\n", module, remaining - Hunk_MemoryRemaining());
+
+	return vm;
 }
 
 /*
@@ -664,14 +727,9 @@ void VM_Free( vm_t *vm ) {
 
 void VM_Clear(void) {
 	int i;
-	for ( i = 0; i < MAX_VM; i++ ) {
-		if ( vmTable[i].dllHandle ) {
-			Sys_UnloadDll( vmTable[i].dllHandle );
-		}
-		Com_Memset( &vmTable[i], 0, sizeof( vm_t ) );
+	for (i=0;i<MAX_VM; i++) {
+		VM_Free(&vmTable[i]);
 	}
-	currentVM = NULL;
-	lastVM = NULL;
 }
 
 void VM_Forced_Unload_Start(void) {
@@ -771,7 +829,7 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
 		va_list ap;
 		va_start(ap, callnum);
 		for (i = 0; i < ARRAY_LEN(args); i++) {
-			args[i] = va_arg(ap, intptr_t);
+			args[i] = va_arg(ap, int);
 		}
 		va_end(ap);
 
@@ -779,11 +837,12 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
                             args[4],  args[5],  args[6], args[7],
                             args[8],  args[9], args[10], args[11]);
 	} else {
-// calling convention doesn't need conversion in some cases
-#if ( id386 || idsparc ) && !defined __clang__ 
+#if ( id386 || idsparc ) && !defined __clang__ // calling convention doesn't need conversion in some cases
+#ifndef NO_VM_COMPILED
 		if ( vm->compiled )
 			r = VM_CallCompiled( vm, (int*)&callnum );
 		else
+#endif
 			r = VM_CallInterpreted( vm, (int*)&callnum );
 #else
 		struct {
@@ -798,7 +857,12 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
 			a.args[i] = va_arg(ap, int);
 		}
 		va_end(ap);
-		r = VM_CallInterpreted( vm, &a.callnum );
+#ifndef NO_VM_COMPILED
+		if ( vm->compiled )
+			r = VM_CallCompiled( vm, &a.callnum );
+		else
+#endif
+			r = VM_CallInterpreted( vm, &a.callnum );
 #endif
 	}
 	--vm->callLevel;

@@ -1148,7 +1148,8 @@ CL_InitUI
 void CL_InitUI( void ) {
 	int v;
 
-	uivm = VM_Create( "ui", CL_UISystemCalls, VMI_NATIVE );
+	// load the dll or bytecode
+	uivm = VM_Create( "ui", CL_UISystemCalls, Cvar_VariableValue("vm_ui") );
 	if ( !uivm ) {
 		Com_Error( ERR_FATAL, "VM_Create on UI failed" );
 	}

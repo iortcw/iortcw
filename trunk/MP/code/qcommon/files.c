@@ -1489,17 +1489,15 @@ FS_FindVM
 Find a suitable VM file in search path order.
 
 In each searchpath try:
- - open DLL file if DLL loading enabled
- - open QVM file
-
-Enable search for DLL by setting enableDll to FSVM_ENABLEDLL
+ - open DLL file
+ - open QVM file if QVM loading enabled
 
 write found DLL or QVM to "found" and return VMI_NATIVE if DLL, VMI_COMPILED if QVM
 Return the searchpath in "startSearch".
 =================
 */
 
-vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll)
+vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableQvm)
 {
 	searchpath_t *search, *lastSearch;
 	directory_t *dir;
@@ -1510,14 +1508,9 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
 	if(!fs_searchpaths)
 		Com_Error(ERR_FATAL, "Filesystem call made without initialization");
 
-	if(enableDll)
-#if defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__WIN64__)
-		Com_sprintf(dllName, sizeof(dllName), "%s_mp_" ARCH_STRING DLL_EXT, name);
-#else
-		Com_sprintf(dllName, sizeof(dllName), "%s.mp." ARCH_STRING DLL_EXT, name);
-#endif
-		
-	Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.qvm", name);
+	Q_strncpyz(dllName, Sys_GetDLLName(name), sizeof(dllName));
+	if(enableQvm)
+		Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.mp.qvm", name);
 
 	lastSearch = *startSearch;
 	if(*startSearch == NULL)
@@ -1527,24 +1520,21 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
         
 	while(search)
 	{
-		if(search->dir && !fs_numServerPaks)
+		if(search->dir && (!fs_numServerPaks || !Q_stricmp(name, "qagame")))
 		{
 			dir = search->dir;
 
-			if(enableDll)
-			{
-				netpath = FS_BuildOSPath(dir->path, dir->gamedir, dllName);
+			netpath = FS_BuildOSPath(dir->path, dir->gamedir, dllName);
 
-				if(FS_FileInPathExists(netpath))
-				{
-					Q_strncpyz(found, netpath, foundlen);
-					*startSearch = search;
-					
-					return VMI_NATIVE;
-				}
+			if(FS_FileInPathExists(netpath))
+			{
+				Q_strncpyz(found, netpath, foundlen);
+				*startSearch = search;
+				
+				return VMI_NATIVE;
 			}
 
-			if(FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
 			{
 				*startSearch = search;
 				return VMI_COMPILED;
@@ -1566,7 +1556,25 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
                                 }
 		        }
 
-			if(FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
+#ifndef DEDICATED
+			// if the server is pure, extract the dlls from the mp_bin.pk3 so
+			// that they can be referenced
+			if (fs_numServerPaks && Q_stricmp(name, "qagame"))
+			{
+				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
+
+				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, qfalse) > 0
+						&& FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL))
+				{
+					Q_strncpyz(found, netpath, foundlen);
+					*startSearch = search;
+
+					return VMI_NATIVE;
+				}
+			}
+#endif
+
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
 			{
 				*startSearch = search;
 
@@ -1606,7 +1614,7 @@ NOTE TTimo:
 
 ==================
 */
-qboolean FS_CL_ExtractFromPakFile( const char *fullpath, const char *gamedir, const char *filename, const char *cvar_lastVersion ) {
+qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const char *filename, const char *cvar_lastVersion ) {
 	int srcLength;
 	int destLength;
 	unsigned char   *srcData;
@@ -1617,7 +1625,7 @@ qboolean FS_CL_ExtractFromPakFile( const char *fullpath, const char *gamedir, co
 	needToCopy = qtrue;
 
 	// read in compressed file
-	srcLength = FS_ReadFile( filename, (void **)&srcData );
+	srcLength = FS_ReadFileDir(filename, searchpath, qfalse, (void **)&srcData);
 
 	// if its not in the pak, we bail
 	if ( srcLength == -1 ) {
@@ -3055,7 +3063,7 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	int i;
 	searchpath_t    *search;
 	pack_t          *pak;
-	char            *pakfile;
+	char            curpath[MAX_OSPATH + 1], *pakfile;
 	int numfiles;
 	char            **pakfiles;
 	char            *sorted[MAX_PAKFILES];
@@ -3064,6 +3072,10 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 
 	sprintf( mpsppakfilestring,"msp" );
 // jpw
+
+	// find all pak files in this directory
+	Q_strncpyz(curpath, FS_BuildOSPath(path, dir, ""), sizeof(curpath));
+	curpath[strlen(curpath) - 1] = '\0';	// strip the trailing slash
 
 	// this fixes the case where fs_basepath is the same as fs_cdpath
 	// which happens on full installs
@@ -3074,17 +3086,6 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	}
 
 	Q_strncpyz( fs_gamedir, dir, sizeof( fs_gamedir ) );
-
-	//
-	// add the directory to the search path
-	//
-	search = Z_Malloc( sizeof( searchpath_t ) );
-	search->dir = Z_Malloc( sizeof( *search->dir ) );
-
-	Q_strncpyz( search->dir->path, path, sizeof( search->dir->path ) );
-	Q_strncpyz( search->dir->gamedir, dir, sizeof( search->dir->gamedir ) );
-	search->next = fs_searchpaths;
-	fs_searchpaths = search;
 
 	// find all pak files in this directory
 	pakfile = FS_BuildOSPath( path, dir, "" );
@@ -3123,6 +3124,7 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 			if ( ( pak = FS_LoadZipFile( pakfile, sorted[i] ) ) == 0 ) {
 				continue;
 			}
+			Q_strncpyz(pak->pakPathname, curpath, sizeof(pak->pakPathname));
 			// store the game name for downloading
 			strcpy( pak->pakGamename, dir );
 
@@ -3135,6 +3137,19 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 
 	// done
 	Sys_FreeFileList( pakfiles );
+
+	//
+	// add the directory to the search path
+	//
+	search = Z_Malloc (sizeof(searchpath_t));
+	search->dir = Z_Malloc( sizeof( *search->dir ) );
+
+	Q_strncpyz(search->dir->path, path, sizeof(search->dir->path));
+	Q_strncpyz(search->dir->fullpath, curpath, sizeof(search->dir->fullpath));
+	Q_strncpyz(search->dir->gamedir, dir, sizeof(search->dir->gamedir));
+
+	search->next = fs_searchpaths;
+	fs_searchpaths = search;
 }
 
 /*
