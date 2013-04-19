@@ -418,7 +418,7 @@ void	VM_Forced_Unload_Start(void);
 void	VM_Forced_Unload_Done(void);
 vm_t	*VM_Restart(vm_t *vm, qboolean unpure);
 
-intptr_t		QDECL VM_Call( vm_t *vm, int callNum, ... );
+intptr_t		QDECL VM_Call( vm_t *vm, intptr_t callNum, ... );
 
 void    VM_Debug( int level );
 
@@ -1179,7 +1179,7 @@ void Sys_LeaveCriticalSection( void *ptr );
 
 // FIXME: wants win32 implementation
 char* Sys_GetDLLName( const char *name );
-void	* QDECL Sys_LoadGameDll( const char *name, intptr_t (QDECL **entryPoint)(int, ...),
+void	* QDECL Sys_LoadGameDll( const char *name, intptr_t (QDECL **entryPoint)(intptr_t, ...),
 				  intptr_t (QDECL *systemcalls)(intptr_t, ...) );
 void    Sys_UnloadDll( void *dllHandle );
 

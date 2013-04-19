@@ -803,7 +803,7 @@ locals from sp
 ==============
 */
 
-intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
+intptr_t QDECL VM_Call( vm_t *vm, intptr_t callnum, ... )
 {
 	vm_t	*oldVM;
 	intptr_t r;
@@ -822,18 +822,18 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
 	lastVM = vm;
 
 	if ( vm_debugLevel ) {
-	  Com_Printf( "VM_Call( %d )\n", callnum );
+	  Com_Printf( "VM_Call( %d )\n", (int)callnum );
 	}
 
 	++vm->callLevel;
 	// if we have a dll loaded, call it directly
 	if ( vm->entryPoint ) {
 		//rcg010207 -  see dissertation at top of VM_DllSyscall() in this file.
-		int args[MAX_VMMAIN_ARGS-1];
+		intptr_t args[MAX_VMMAIN_ARGS-1];
 		va_list ap;
 		va_start(ap, callnum);
 		for (i = 0; i < ARRAY_LEN(args); i++) {
-			args[i] = va_arg(ap, int);
+			args[i] = va_arg(ap, intptr_t);
 		}
 		va_end(ap);
 
@@ -858,7 +858,7 @@ intptr_t QDECL VM_Call( vm_t *vm, int callnum, ... )
 		a.callnum = callnum;
 		va_start(ap, callnum);
 		for (i = 0; i < ARRAY_LEN(a.args); i++) {
-			a.args[i] = va_arg(ap, int);
+			a.args[i] = va_arg(ap, intptr_t);
 		}
 		va_end(ap);
 #ifndef NO_VM_COMPILED
