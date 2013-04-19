@@ -572,21 +572,10 @@ Entchannel 0 will never override a playing sound
 ====================
 */
 
-static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags );
-
 void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags ) {
 	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
 		return;
 	}
-
-	// RF, we have lots of NULL sounds using up valuable channels, so just ignore them
-	if ( !sfxHandle && entchannel != CHAN_WEAPON ) {  // let null weapon sounds try to play.  they kill any weapon sounds playing when a guy dies
-		return;
-	}
-
-	// RF, make the call now, or else we could override following streaming sounds in the same frame, due to the delay
-	S_Base_StartSoundEx( origin, entityNum, entchannel, sfxHandle, qfalse, 0 );
-#if 0
 	if ( tart < MAX_PUSHSTACK ) {
 		sfx_t       *sfx;
 		if ( origin ) {
@@ -607,7 +596,6 @@ void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t s
 
 		tart++;
 	}
-#endif
 }
 
 /*
@@ -621,9 +609,9 @@ Entchannel 0 will never override a playing sound
 */
 static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags ) {
 	channel_t	*ch;
-	sfx_t	*sfx;
-	int	i, oldest, chosen, time;
-	int	inplay, allowed;
+	sfx_t		*sfx;
+	int		i, oldest, chosen, time;
+	int		inplay, allowed;
 	qboolean	fullVolume;
 
 	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
@@ -1491,12 +1479,12 @@ void S_GetSoundtime(void)
 
 
 void S_Update_(void) {
-	unsigned	endtime;
-	int		samps, i;
-	static float	lastTime = 0.0f;
-	float		ma, op;
-	float		thisTime, sane;
-	static int	ot = -1;
+	unsigned        endtime;
+	int				samps, i;
+	static			float	lastTime = 0.0f;
+	float			ma, op;
+	float			thisTime, sane;
+	static			int ot = -1;
 
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
