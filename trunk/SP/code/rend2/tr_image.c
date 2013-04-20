@@ -1,25 +1,25 @@
 /*
 ===========================================================================
 
-Return to Castle Wolfenstein multiplayer GPL Source Code
+Return to Castle Wolfenstein single player GPL Source Code
 Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein single player GPL Source Code (RTCW SP Source Code).  
 
-RTCW MP Source Code is free software: you can redistribute it and/or modify
+RTCW SP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-RTCW MP Source Code is distributed in the hope that it will be useful,
+RTCW SP Source Code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with RTCW MP Source Code.  If not, see <http://www.gnu.org/licenses/>.
+along with RTCW SP Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the RTCW MP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW MP Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the RTCW SP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,7 +34,6 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #include "tr_local.h"
-
 
 static byte s_intensitytable[256];
 static unsigned char s_gammatable[256];
@@ -65,16 +64,13 @@ void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
 	if ( imageBufferSize[bufferType] < R_IMAGE_BUFFER_SIZE && size <= imageBufferSize[bufferType] ) {
 		imageBufferSize[bufferType] = R_IMAGE_BUFFER_SIZE;
 		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-//DAJ TEST		imageBufferPtr[bufferType] = Z_Malloc( imageBufferSize[bufferType] );
 	}
 	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
 		if ( imageBufferPtr[bufferType] ) {
 			free( imageBufferPtr[bufferType] );
 		}
-//DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = size;
 		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-//DAJ TEST		imageBufferPtr[bufferType] = Z_Malloc( imageBufferSize[bufferType] );
 	}
 
 	return imageBufferPtr[bufferType];
@@ -87,7 +83,6 @@ void R_FreeImageBuffer( void ) {
 			return;
 		}
 		free( imageBufferPtr[bufferType] );
-//DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
 		imageBufferPtr[bufferType] = NULL;
 	}
@@ -194,11 +189,11 @@ R_SumOfUsedImages
 */
 int R_SumOfUsedImages( void ) {
 	int total;
-	int i, fc = ( tr.frameCount - 1 );
+	int i;
 
 	total = 0;
 	for ( i = 0; i < tr.numImages; i++ ) {
-		if ( tr.images[i]->frameUsed == fc ) {
+		if ( tr.images[i]->frameUsed == tr.frameCount ) {
 			total += tr.images[i]->uploadWidth * tr.images[i]->uploadHeight;
 		}
 	}
@@ -389,8 +384,8 @@ void R_ImageList_f( void ) {
 			ri.Printf( PRINT_ALL, "S3TC4" );
 			break;
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
- 			ri.Printf( PRINT_ALL, "DXT1 " );
- 			break;
+			ri.Printf( PRINT_ALL, "DXT1 " );
+			break;
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 			ri.Printf( PRINT_ALL, "DXT5 " );
 			break;
@@ -474,10 +469,6 @@ static void ResampleTexture( byte *in, int inwidth, int inheight, byte *out,
 	int		frac, fracstep;
 	int		p1[2048], p2[2048];
 	byte	*pix1, *pix2, *pix3, *pix4;
-
-	if ( outwidth > 2048 ) {
-		ri.Error( ERR_DROP, "ResampleTexture: max width" );
-	}
 
 	fracstep = inwidth * 0x10000 / outwidth;
 
@@ -1389,14 +1380,13 @@ Scale up the pixel values in a texture to increase the
 lighting range
 ================
 */
-void R_LightScaleTexture (byte *in, int inwidth, int inheight, qboolean only_gamma )
-{
+void R_LightScaleTexture( byte *in, int inwidth, int inheight, qboolean only_gamma ) {
 	if ( only_gamma ) {
 		if ( !glConfig.deviceSupportsGamma ) {
 			int i, c;
 			byte    *p;
 
-			p = in;
+			p = (byte *)in;
 
 			c = inwidth * inheight;
 			for ( i = 0 ; i < c ; i++, p += 4 )
@@ -1411,7 +1401,7 @@ void R_LightScaleTexture (byte *in, int inwidth, int inheight, qboolean only_gam
 		int i, c;
 		byte    *p;
 
-		p = in;
+		p = (byte *)in;
 
 		c = inwidth * inheight;
 
@@ -1443,7 +1433,7 @@ Operates in place, quartering the size of the texture
 Proper linear filter
 ================
 */
-static void R_MipMap2( byte *in, int inWidth, int inHeight ) {
+static void R_MipMap2( unsigned *in, int inWidth, int inHeight ) {
 	int i, j, k;
 	byte        *outpix;
 	int inWidthMask, inHeightMask;
@@ -1463,25 +1453,25 @@ static void R_MipMap2( byte *in, int inWidth, int inHeight ) {
 			outpix = ( byte * )( temp + i * outWidth + j );
 			for ( k = 0 ; k < 4 ; k++ ) {
 				total =
-					1 * (&in[ 4*(((i*2-1)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2-1)&inHeightMask)*inWidth + ((j*2  )&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2-1)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask)) ])[k] +
-					1 * (&in[ 4*(((i*2-1)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask)) ])[k] +
+					1 * ( &in[ ( ( i * 2 - 1 ) & inHeightMask ) * inWidth + ( ( j * 2 - 1 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 - 1 ) & inHeightMask ) * inWidth + ( ( j * 2 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 - 1 ) & inHeightMask ) * inWidth + ( ( j * 2 + 1 ) & inWidthMask ) ] )[k] +
+					1 * ( &in[ ( ( i * 2 - 1 ) & inHeightMask ) * inWidth + ( ( j * 2 + 2 ) & inWidthMask ) ] )[k] +
 
-					2 * (&in[ 4*(((i*2  )&inHeightMask)*inWidth + ((j*2-1)&inWidthMask)) ])[k] +
-					4 * (&in[ 4*(((i*2  )&inHeightMask)*inWidth + ((j*2  )&inWidthMask)) ])[k] +
-					4 * (&in[ 4*(((i*2  )&inHeightMask)*inWidth + ((j*2+1)&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2  )&inHeightMask)*inWidth + ((j*2+2)&inWidthMask)) ])[k] +
+					2 * ( &in[ ( ( i * 2 ) & inHeightMask ) * inWidth + ( ( j * 2 - 1 ) & inWidthMask ) ] )[k] +
+					4 * ( &in[ ( ( i * 2 ) & inHeightMask ) * inWidth + ( ( j * 2 ) & inWidthMask ) ] )[k] +
+					4 * ( &in[ ( ( i * 2 ) & inHeightMask ) * inWidth + ( ( j * 2 + 1 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 ) & inHeightMask ) * inWidth + ( ( j * 2 + 2 ) & inWidthMask ) ] )[k] +
 
-					2 * (&in[ 4*(((i*2+1)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask)) ])[k] +
-					4 * (&in[ 4*(((i*2+1)&inHeightMask)*inWidth + ((j*2  )&inWidthMask)) ])[k] +
-					4 * (&in[ 4*(((i*2+1)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2+1)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask)) ])[k] +
+					2 * ( &in[ ( ( i * 2 + 1 ) & inHeightMask ) * inWidth + ( ( j * 2 - 1 ) & inWidthMask ) ] )[k] +
+					4 * ( &in[ ( ( i * 2 + 1 ) & inHeightMask ) * inWidth + ( ( j * 2 ) & inWidthMask ) ] )[k] +
+					4 * ( &in[ ( ( i * 2 + 1 ) & inHeightMask ) * inWidth + ( ( j * 2 + 1 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 + 1 ) & inHeightMask ) * inWidth + ( ( j * 2 + 2 ) & inWidthMask ) ] )[k] +
 
-					1 * (&in[ 4*(((i*2+2)&inHeightMask)*inWidth + ((j*2-1)&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2+2)&inHeightMask)*inWidth + ((j*2  )&inWidthMask)) ])[k] +
-					2 * (&in[ 4*(((i*2+2)&inHeightMask)*inWidth + ((j*2+1)&inWidthMask)) ])[k] +
-					1 * (&in[ 4*(((i*2+2)&inHeightMask)*inWidth + ((j*2+2)&inWidthMask)) ])[k];
+					1 * ( &in[ ( ( i * 2 + 2 ) & inHeightMask ) * inWidth + ( ( j * 2 - 1 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 + 2 ) & inHeightMask ) * inWidth + ( ( j * 2 ) & inWidthMask ) ] )[k] +
+					2 * ( &in[ ( ( i * 2 + 2 ) & inHeightMask ) * inWidth + ( ( j * 2 + 1 ) & inWidthMask ) ] )[k] +
+					1 * ( &in[ ( ( i * 2 + 2 ) & inHeightMask ) * inWidth + ( ( j * 2 + 2 ) & inWidthMask ) ] )[k];
 				outpix[k] = total / 36;
 			}
 		}
@@ -1545,7 +1535,7 @@ static void R_MipMap( byte *in, int width, int height ) {
 	int row;
 
 	if ( !r_simpleMipMaps->integer ) {
-		R_MipMap2( in, width, height );
+		R_MipMap2( (unsigned *)in, width, height );
 		return;
 	}
 
@@ -1708,7 +1698,6 @@ static float R_RMSE( byte *in, int width, int height ) {
 	rmse = sqrt( rmse / ( height * width * 4 ) );
 	return rmse;
 }
-
 
 /*
 ==================
@@ -2432,6 +2421,9 @@ static void EmptyTexture( int width, int height, imgType_t type, imgFlags_t flag
 	GL_CheckErrors();
 }
 
+
+//----(SA)	modified
+
 /*
 ================
 R_CreateImage
@@ -2439,11 +2431,12 @@ R_CreateImage
 This is the only way any image_t are created
 ================
 */
-image_t *R_CreateImage( const char *name, byte *pic, int width, int height, imgType_t type, imgFlags_t flags, int internalFormat ) {
+image_t *R_CreateImageExt( const char *name, byte *pic, int width, int height, imgType_t type, imgFlags_t flags, int internalFormat, qboolean characterMip )
+{
 	image_t     *image;
 	qboolean isLightmap = qfalse;
-	long hash;
 	int         glWrapClampMode;
+	long hash;
 	qboolean noCompress = qfalse;
 
 	if ( strlen( name ) >= MAX_QPATH ) {
@@ -2558,6 +2551,13 @@ image_t *R_CreateImage( const char *name, byte *pic, int width, int height, imgT
 
 	return image;
 }
+
+image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
+		imgType_t type, imgFlags_t flags, int internalFormat ) {
+	return R_CreateImageExt( name, pic, width, height, type, flags, 0, qfalse );
+}
+
+//----(SA)	end
 
 void R_UpdateSubImage( image_t *image, byte *pic, int x, int y, int width, int height )
 {
@@ -2677,7 +2677,7 @@ static imageExtToLoaderMap_t imageLoaders[ ] =
 	{ "pcx",  R_LoadPCX },
 	{ "bmp",  R_LoadBMP }
 };
-
+ 
 static int numImageLoaders = ARRAY_LEN( imageLoaders );
 
 
@@ -2763,6 +2763,8 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height )
 	}
 }
 
+
+//----(SA)	modified
 /*
 ===============
 R_FindImageFile
@@ -2771,8 +2773,9 @@ Finds or loads the given image.
 Returns NULL if it fails, not a default image.
 ==============
 */
-image_t	*R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags )
-{
+
+
+image_t *R_FindImageFileExt( const char *name, imgType_t type, imgFlags_t flags, qboolean characterMIP ) {
 	image_t *image;
 	int width, height;
 	byte    *pic;
@@ -2788,11 +2791,14 @@ image_t	*R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags )
 	// see if the image is already loaded
 	//
 	for ( image = hashTable[hash]; image; image = image->next ) {
-		if ( !strcmp( name, image->imgName ) ) {
+		if ( !Q_stricmp( name, image->imgName ) ) {
 			// the white image can be used with any set of parms, but other mismatches are errors
 			if ( strcmp( name, "*white" ) ) {
 				if ( image->flags != flags ) {
 					ri.Printf( PRINT_DEVELOPER, "WARNING: reused image %s with mixed flags (%i vs %i)\n", name, image->flags, flags );
+				}
+				if ( image->characterMIP != characterMIP ) {
+					ri.Printf( PRINT_DEVELOPER, "WARNING: reused image %s with mixed characterMIP parm\n", name );
 				}
 			}
 			return image;
@@ -2854,11 +2860,17 @@ image_t	*R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags )
 		}
 	}
 
-	image = R_CreateImage( ( char * ) name, pic, width, height, type, flags, 0 );
+	image = R_CreateImageExt( ( char * ) name, pic, width, height, type, flags, 0, characterMIP );
 	ri.Free( pic );
 	return image;
 }
 
+
+image_t *R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags ) {
+	return R_FindImageFileExt( name, type, flags, qfalse );
+}
+
+//----(SA)	end
 
 /*
 ================
@@ -2890,7 +2902,7 @@ static void R_CreateDlightImage( void ) {
 			data[y][x][3] = 255;
 		}
 	}
-	tr.dlightImage = R_CreateImage("*dlight", (byte *)data, DLIGHT_SIZE, DLIGHT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
+	tr.dlightImage = R_CreateImage( "*dlight", (byte *)data, DLIGHT_SIZE, DLIGHT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
 }
 
 
@@ -2977,7 +2989,7 @@ static void R_CreateFogImage( void ) {
 	// standard openGL clamping doesn't really do what we want -- it includes
 	// the border color at the edges.  OpenGL 1.2 has clamp-to-edge, which does
 	// what we want.
-	tr.fogImage = R_CreateImage("*fog", (byte *)data, FOG_S, FOG_T, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
+	tr.fogImage = R_CreateImage( "*fog", (byte *)data, FOG_S, FOG_T, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
 	ri.Hunk_FreeTempMemory( data );
 
 	borderColor[0] = 1.0;
@@ -3021,7 +3033,7 @@ static void R_CreateDefaultImage( void ) {
 				data[x][DEFAULT_SIZE - 1][2] = 0; //----(SA) to make the default grid noticable but not blinding
 		data[x][DEFAULT_SIZE - 1][3] = 255;
 	}
-	tr.defaultImage = R_CreateImage("*default", (byte *)data, DEFAULT_SIZE, DEFAULT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_MIPMAP, 0);
+	tr.defaultImage = R_CreateImage( "*default", (byte *)data, DEFAULT_SIZE, DEFAULT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_MIPMAP, 0 );
 }
 
 /*
@@ -3037,7 +3049,7 @@ void R_CreateBuiltinImages( void ) {
 
 	// we use a solid white image instead of disabling texturing
 	memset( data, 255, sizeof( data ) );
-	tr.whiteImage = R_CreateImage("*white", (byte *)data, 8, 8, IMGTYPE_COLORALPHA, IMGFLAG_NONE, 0);
+	tr.whiteImage = R_CreateImage( "*white", (byte *)data, 8, 8, IMGTYPE_COLORALPHA, IMGFLAG_NONE, 0 );
 
 	if (r_dlightMode->integer >= 2)
 	{
@@ -3058,12 +3070,12 @@ void R_CreateBuiltinImages( void ) {
 		}
 	}
 
-	tr.identityLightImage = R_CreateImage("*identityLight", (byte *)data, 8, 8, IMGTYPE_COLORALPHA, IMGFLAG_NONE, 0);
+	tr.identityLightImage = R_CreateImage( "*identityLight", (byte *)data, 8, 8, IMGTYPE_COLORALPHA, IMGFLAG_NONE, 0 );
 
 
 	for ( x = 0; x < 32; x++ ) {
 		// scratchimage is usually used for cinematic drawing
-		tr.scratchImage[x] = R_CreateImage("*scratch", (byte *)data, DEFAULT_SIZE, DEFAULT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_PICMIP | IMGFLAG_CLAMPTOEDGE, 0);
+		tr.scratchImage[x] = R_CreateImage( "*scratch", (byte *)data, DEFAULT_SIZE, DEFAULT_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_PICMIP | IMGFLAG_CLAMPTOEDGE, 0 );
 	}
 
 	R_CreateDlightImage();
@@ -3246,7 +3258,7 @@ void R_SetColorMappings( void ) {
 		if ( g == 1 ) {
 			inf = i2;
 		} else {
-			inf = 255 * pow ( i2/255.0f, 1.0f / g ) + 0.5f;
+			inf = 255 * pow( i2 / 255.0f, 1.0f / g ) + 0.5f;
 		}
 		inf <<= shift;
 		if ( inf < 0 ) {
@@ -4102,7 +4114,7 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 #endif  // RESIZE
 #endif  // FUNNEL_HACK
 
-	temppic = ri.Z_Malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
+	temppic = malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
 	outpixel = temppic;
 
 	for ( row = mins[1]; row < maxs[1]; row++ )
@@ -4215,10 +4227,10 @@ void    R_CropAndNumberImagesInDirectory( char *dir, char *ext, int maxWidth, in
 #else
 		newWidth = maxWidth;
 		newHeight = maxHeight;
-		temppic = ri.Z_Malloc( sizeof( unsigned int ) * newWidth * newHeight );
+		temppic = malloc( sizeof( unsigned int ) * newWidth * newHeight );
 		ResampleTexture( pic, width, height, temppic, newWidth, newHeight );
 		memcpy( pic, temppic, sizeof( unsigned int ) * newWidth * newHeight );
-		ri.Free( temppic );
+		free( temppic );
 		width = newWidth;
 		height = newHeight;
 #endif

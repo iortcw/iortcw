@@ -36,7 +36,7 @@ ifndef BUILD_BASEGAME
   BUILD_BASEGAME =
 endif
 ifndef BUILD_RENDERER_REND2
-  BUILD_RENDERER_REND2 = 0
+  BUILD_RENDERER_REND2 = 
 endif
 
 #############################################################################

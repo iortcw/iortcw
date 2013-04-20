@@ -53,7 +53,7 @@ If you have questions concerning this license or the applicable additional terms
 // Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
   #define HEARTBEAT_FOR_MASTER		"DarkPlaces"
 #else
-  #define PRODUCT_NAME			"ioWolf"
+  #define PRODUCT_NAME			"iortcw"
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"Return To Castle Wolfenstein"
   #define CLIENT_WINDOW_MIN_TITLE 	"iowolfsp"

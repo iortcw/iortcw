@@ -1,25 +1,25 @@
 /*
 ===========================================================================
 
-Return to Castle Wolfenstein multiplayer GPL Source Code
+Return to Castle Wolfenstein single player GPL Source Code
 Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein single player GPL Source Code (RTCW SP Source Code).  
 
-RTCW MP Source Code is free software: you can redistribute it and/or modify
+RTCW SP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-RTCW MP Source Code is distributed in the hope that it will be useful,
+RTCW SP Source Code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with RTCW MP Source Code.  If not, see <http://www.gnu.org/licenses/>.
+along with RTCW SP Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the RTCW MP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW MP Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the RTCW SP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -76,7 +76,9 @@ typedef struct flare_s {
 
 	int fadeTime;
 
-	qboolean cgvisible;             // for coronas, the client determines current visibility, but it's still inserted so it will fade out properly
+	int flags;
+	// for coronas, the client determines current visibility, but it's still inserted so it will fade out properly
+
 	qboolean visible;               // state of last test
 	float drawIntensity;            // may be non 0 even if !visible due to fading
 
@@ -123,9 +125,9 @@ RB_AddFlare
 This is called at surface tesselation time
 ==================
 */
-void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float scale, vec3_t normal, int id, qboolean cgvisible ) { //----(SA)	added scale. added id.  added visible
+void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float scale, vec3_t normal, int id, int flags ) {  //----(SA)	added scale. added id.  added visible
 	int i;
-	flare_t			*f;
+	flare_t         *f;
 	vec3_t local;
 	float d = 1;
 	vec4_t eye, clip, normalized, window;
@@ -195,7 +197,7 @@ void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float s
 		f->id = id;
 	}
 
-	f->cgvisible = cgvisible;
+	f->flags = flags;
 
 	if ( f->addedFrame != backEnd.viewParms.frameCount - 1 ) {
 		f->visible = qfalse;
@@ -307,7 +309,7 @@ void RB_AddCoronaFlares( void ) {
 		if ( j == tr.world->numfogs ) {
 			j = 0;
 		}
-		RB_AddFlare( (void *)cor, j, cor->origin, cor->color, cor->scale, NULL, cor->id, cor->visible );
+		RB_AddFlare( (void *)cor, j, cor->origin, cor->color, cor->scale, NULL, cor->id, cor->flags );
 	}
 }
 
@@ -330,7 +332,7 @@ void RB_TestFlare( flare_t *f ) {
 
 	backEnd.pc.c_flareTests++;
 
-	visible = f->cgvisible;
+	visible = (qboolean)( f->flags & 1 );
 
 	if ( visible ) {
 		if ( !f->visible ) {
@@ -399,7 +401,7 @@ void RB_RenderFlare( flare_t *f ) {
  * intensity = flareCoeff * size^2 / (distance + size*sqrt(flareCoeff))^2
  * As you can see, the intensity will have a max. of 1 when the distance is 0.
  * The coefficient flareCoeff will determine the falloff speed with increasing distance.
- */
+*/
 
 	factor = distance + size * sqrt(flareCoeff);
 	
@@ -425,7 +427,11 @@ void RB_RenderFlare( flare_t *f ) {
 	iColor[1] = color[1] * fogFactors[1];
 	iColor[2] = color[2] * fogFactors[2];
 
-	RB_BeginSurface( tr.flareShader, f->fogNum );
+	if ( f->flags & 2 ) {  // spotlight flare
+		RB_BeginSurface( tr.spotFlareShader, f->fogNum );
+	} else {
+		RB_BeginSurface( tr.flareShader, f->fogNum );
+	}
 
 	// FIXME: use quadstamp?
 	tess.xyz[tess.numVertexes][0] = f->windowX - size;
