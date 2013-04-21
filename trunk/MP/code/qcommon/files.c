@@ -1503,7 +1503,7 @@ Return the searchpath in "startSearch".
 =================
 */
 
-vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableQvm)
+vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, qboolean unpure, int enableQvm)
 {
 	searchpath_t *search, *lastSearch;
 	directory_t *dir;
@@ -1526,7 +1526,7 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
         
 	while(search)
 	{
-		if(search->dir && (!fs_numServerPaks || !Q_stricmp(name, "qagame")))
+		if(search->dir && (unpure || !Q_stricmp(name, "qagame")))
 		{
 			dir = search->dir;
 
@@ -1540,7 +1540,7 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
 				return VMI_NATIVE;
 			}
 
-			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
 			{
 				*startSearch = search;
 				return VMI_COMPILED;
@@ -1565,11 +1565,11 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
 #ifndef DEDICATED
 			// if the server is pure, extract the dlls from the mp_bin.pk3 so
 			// that they can be referenced
-			if (fs_numServerPaks && Q_stricmp(name, "qagame"))
+			if (cl_connectedToPureServer && Q_stricmp(name, "qagame"))
 			{
 				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
 
-				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, qfalse) > 0
+				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, unpure) > 0
 						&& FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL))
 				{
 					Q_strncpyz(found, netpath, foundlen);
@@ -1580,7 +1580,7 @@ vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const cha
 			}
 #endif
 
-			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, qfalse) > 0)
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
 			{
 				*startSearch = search;
 

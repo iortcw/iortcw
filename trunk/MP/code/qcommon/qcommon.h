@@ -682,7 +682,7 @@ qboolean FS_FileExists( const char *file );
 
 qboolean FS_CreatePath (char *OSPath);
 
-vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll);
+vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, qboolean unpure, int enableDll);
 
 char   *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
 qboolean FS_CompareZipChecksum(const char *zipfile);
@@ -810,6 +810,7 @@ qboolean FS_Which(const char *filename, void *searchPath);
 char *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
 
 #if !defined( DEDICATED )
+extern int cl_connectedToPureServer;
 qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const char *filename, const char *cvar_lastVersion );
 #endif
 

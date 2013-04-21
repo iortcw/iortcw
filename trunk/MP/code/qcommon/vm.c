@@ -560,6 +560,10 @@ vm_t *VM_Restart(vm_t *vm, qboolean unpure)
 	return vm;
 }
 
+#ifndef DEDICATED
+extern int cl_connectedToPureServer;
+#endif
+
 /*
 ================
 VM_Create
@@ -575,6 +579,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 	int			i, remaining, retval;
 	char filename[MAX_OSPATH];
 	void *startSearch = NULL;
+	qboolean pureServer, pureVM;
 
 	if ( !module || !module[0] || !systemCalls ) {
 		Com_Error( ERR_FATAL, "VM_Create: bad parms" );
@@ -605,9 +610,17 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 
 	Q_strncpyz(vm->name, module, sizeof(vm->name));
 
+#ifdef DEDICATED
+	pureServer = qfalse;
+#else
+	pureServer = cl_connectedToPureServer;
+#endif
+
+	pureVM = pureServer;
+
 	do
 	{
-		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, (interpret != VMI_NATIVE));
+		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, !pureVM, (interpret != VMI_NATIVE));
 		
 		if(retval == VMI_NATIVE)
 		{
@@ -631,6 +644,13 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 
 			// VM_Free overwrites the name on failed load
 			Q_strncpyz(vm->name, module, sizeof(vm->name));
+		}
+		else if ( pureServer && pureVM )
+		{
+			Com_Printf( "Failed to find pure %s VM, trying unpure\n", module );
+			startSearch = NULL;
+			pureVM = qfalse;
+			retval = 1; // don't exit loop
 		}
 	} while(retval >= 0);
 	
