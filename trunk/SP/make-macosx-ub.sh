@@ -2,7 +2,6 @@
 CC=gcc-4.0
 APPBUNDLE=iowolfsp.app
 BINARY=iowolfsp.ub
-DEDBIN=iowolfspded.ub
 PKGINFO=APPLIORTCW
 ICNS=misc/iortcw.icns
 DESTDIR=build/release-darwin-ub
@@ -12,11 +11,6 @@ BIN_OBJ="
 	build/release-darwin-x86_64/iowolfsp.x86_64
 	build/release-darwin-x86/iowolfsp.x86
 	build/release-darwin-ppc/iowolfsp.ppc
-"
-BIN_DEDOBJ="
-	build/release-darwin-x86_64/iowolfspded.x86_64
-	build/release-darwin-x86/iowolfspded.x86
-	build/release-darwin-ppc/iowolfspded.ppc
 "
 BASE_OBJ="
 	build/release-darwin-x86_64/$BASEDIR/cgamex86_64.dylib
@@ -186,7 +180,6 @@ echo "
 
 # Make UB's from previous builds of x86, x86_64 and ppc binaries
 lipo -create -o $DESTDIR/$APPBUNDLE/Contents/MacOS/$BINARY $BIN_OBJ
-lipo -create -o $DESTDIR/$APPBUNDLE/Contents/MacOS/$DEDBIN $BIN_DEDOBJ
 
 cp $RENDER_OBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/
 cp $BASE_OBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/$BASEDIR/

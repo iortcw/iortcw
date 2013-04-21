@@ -30,7 +30,6 @@ fi
 CC=gcc-4.0
 APPBUNDLE=iowolfsp.app
 BINARY=iowolfsp.${ARCH}
-DEDBIN=iowolfspded.${ARCH}
 PKGINFO=APPLIOTCW
 ICNS=misc/iortcw.icns
 DESTDIR=build/release-darwin-${BUILDARCH}
@@ -38,9 +37,6 @@ BASEDIR=main
 
 BIN_OBJ="
 	build/release-darwin-${BUILDARCH}/iowolfsp.${BUILDARCH}
-"
-BIN_DEDOBJ="
-	build/release-darwin-${BUILDARCH}/iowolfspded.${BUILDARCH}
 "
 BASE_OBJ="
 	build/release-darwin-${BUILDARCH}/$BASEDIR/cgame${ARCH}.dylib
@@ -147,7 +143,6 @@ echo "
 
 
 cp $BIN_OBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/$BINARY
-cp $BIN_DEDOBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/$DEDBIN
 cp $RENDER_OBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/
 cp $BASE_OBJ $DESTDIR/$APPBUNDLE/Contents/MacOS/$BASEDIR/
 cp code/libs/macosx/*.dylib $DESTDIR/$APPBUNDLE/Contents/MacOS/
