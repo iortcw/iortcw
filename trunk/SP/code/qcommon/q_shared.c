@@ -1103,7 +1103,7 @@ int QDECL Com_sprintf(char *dest, int size, const char *fmt, ...)
 	va_end( argptr );
 
 	if(len >= size)
-		Com_Printf("Com_sprintf: Output length %d too short, require %d bytes.\n", size, len + 1);
+		Com_Printf("Com_sprintf: Output length %d too short, requires %d bytes.\n", size, len + 1);
 	
 	return len;
 }
