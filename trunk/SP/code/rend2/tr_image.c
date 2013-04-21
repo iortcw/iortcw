@@ -2695,7 +2695,7 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height )
 	int i;
 	char localName[ MAX_QPATH ];
 	const char *ext;
-	char altName[ MAX_QPATH ];
+	char *altName;
 
 	*pic = NULL;
 	*width = 0;
@@ -2744,7 +2744,7 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height )
 		if (i == orgLoader)
 			continue;
 
-		Com_sprintf( altName, sizeof( altName ), "%s.%s", localName, imageLoaders[ i ].ext );
+		altName = va( "%s.%s", localName, imageLoaders[ i ].ext );
 
 		// Load
 		imageLoaders[ i ].ImageLoader( altName, pic, width, height );
