@@ -613,7 +613,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 #ifdef DEDICATED
 	pureServer = qfalse;
 #else
-	pureServer = cl_connectedToPureServer;
+	pureServer = (cl_connectedToPureServer) ? qtrue : qfalse;
 #endif
 
 	pureVM = pureServer;
