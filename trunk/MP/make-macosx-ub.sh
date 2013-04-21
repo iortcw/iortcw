@@ -30,12 +30,12 @@ BASE_OBJ="
 	build/release-darwin-ppc/$BASEDIR/qagame.mp.ppc.dylib
 "
 RENDER_OBJ="
-	build/release-darwin-x86_64/renderer_opengl1_x86_64.dylib
-	build/release-darwin-x86/renderer_opengl1_i386.dylib
-	build/release-darwin-ppc/renderer_opengl1_ppc.dylib
-	build/release-darwin-x86_64/renderer_rend2_x86_64.dylib
-	build/release-darwin-x86/renderer_rend2_i386.dylib
-	build/release-darwin-ppc/renderer_rend2_ppc.dylib
+	build/release-darwin-x86_64/renderer_mp_opengl1_x86_64.dylib
+	build/release-darwin-x86/renderer_mp_opengl1_i386.dylib
+	build/release-darwin-ppc/renderer_mp_opengl1_ppc.dylib
+	build/release-darwin-x86_64/renderer_mp_rend2_x86_64.dylib
+	build/release-darwin-x86/renderer_mp_rend2_i386.dylib
+	build/release-darwin-ppc/renderer_mp_rend2_ppc.dylib
 "
 
 cd `dirname $0`

@@ -48,8 +48,8 @@ BASE_OBJ="
 	build/release-darwin-${BUILDARCH}/$BASEDIR/qagame.mp.${ARCH}.dylib
 "
 RENDER_OBJ="
-	build/release-darwin-${BUILDARCH}/renderer_opengl1_${ARCH}.dylib
-	build/release-darwin-${BUILDARCH}/renderer_rend2_${ARCH}.dylib
+	build/release-darwin-${BUILDARCH}/renderer_mp_opengl1_${ARCH}.dylib
+	build/release-darwin-${BUILDARCH}/renderer_mp_rend2_${ARCH}.dylib
 "
 
 cd `dirname $0`

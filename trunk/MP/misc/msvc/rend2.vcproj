@@ -77,7 +77,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="user32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib SDL.lib OpenGL32.lib msvcrt.lib psapi.lib"
-				OutputFile="$(OutDir)\renderer_rend2_x86.dll"
+				OutputFile="$(OutDir)\renderer_mp_rend2_x86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\code\libs\win32"
@@ -179,7 +179,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="user32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib SDL.lib OpenGL32.lib msvcrt.lib psapi.lib"
-				OutputFile="$(OutDir)\renderer_rend2_x86.dll"
+				OutputFile="$(OutDir)\renderer_mp_rend2_x86.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\code\libs\win32"
@@ -281,7 +281,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="user32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib SDL.lib OpenGL32.lib msvcrt.lib psapi.lib"
-				OutputFile="$(OutDir)\renderer_rend2_x86.dll"
+				OutputFile="$(OutDir)\renderer_mp_rend2_x86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\code\libs\win32"
@@ -381,7 +381,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="user32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib SDL.lib OpenGL32.lib msvcrt.lib psapi.lib"
-				OutputFile="$(OutDir)\renderer_rend2_x86.dll"
+				OutputFile="$(OutDir)\renderer_mp_rend2_x86.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\code\libs\win32"
