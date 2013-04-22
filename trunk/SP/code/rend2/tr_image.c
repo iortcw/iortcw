@@ -2553,7 +2553,7 @@ image_t *R_CreateImageExt( const char *name, byte *pic, int width, int height, i
 
 image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
 		imgType_t type, imgFlags_t flags, int internalFormat ) {
-	return R_CreateImageExt( name, pic, width, height, type, flags, 0, qfalse );
+	return R_CreateImageExt( name, pic, width, height, type, flags, internalFormat, qfalse );
 }
 
 //----(SA)	end
