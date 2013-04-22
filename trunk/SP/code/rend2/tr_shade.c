@@ -1611,13 +1611,6 @@ void RB_StageIteratorGeneric( void )
 		qglPolygonOffset( r_offsetFactor->value, r_offsetUnits->value );
 	}
 
-	// RF, send normals only if required
-	// This must be done first, since we can't change the arrays once they have been
-	// locked
-	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
-		qglNormalPointer( GL_FLOAT, 16, input->normal );
-	}
-
 	//
 	// Set vertex attribs and pointers
 	//
@@ -1784,6 +1777,23 @@ void RB_EndSurface( void ) {
 		return;
 	}
 
+	if ( skyboxportal ) {
+		// world
+		if ( !( backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) ) {
+			if ( tess.currentStageIteratorFunc == RB_StageIteratorSky ) {  // don't process these tris at all
+				return;
+			}
+		}
+		// portal sky
+		else {
+			if ( !drawskyboxportal ) {
+				if ( !( tess.currentStageIteratorFunc == RB_StageIteratorSky ) ) {  // /only/ process sky tris
+					return;
+				}
+			}
+		}
+	}
+
 	//
 	// update performance counters
 	//
@@ -1807,6 +1817,7 @@ void RB_EndSurface( void ) {
 		DrawNormals (input);
 	}
 	// clear shader so we can tell we don't have any unclosed surfaces
+	tess.ATI_tess = qfalse;     //----(SA)	added
 	tess.numIndexes = 0;
 	tess.numVertexes = 0;
 	tess.firstIndex = 0;
