@@ -260,6 +260,7 @@ OGGDIR=$(MOUNT_DIR)/libogg-1.3.0
 OPUSDIR=$(MOUNT_DIR)/opus-1.0.2
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.2
 ZDIR=$(MOUNT_DIR)/zlib
+SPLDIR=$(MOUNT_DIR)/splines
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
 Q3CPPDIR=$(MOUNT_DIR)/tools/lcc/cpp
@@ -383,7 +384,7 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LIBS=-lpthread
-  LIBS=-ldl -lm
+  LIBS=-ldl -lm -lsupc++
 
   CLIENT_LIBS=$(SDL_LIBS)
   RENDERER_LIBS = $(SDL_LIBS) -lGL
@@ -424,7 +425,7 @@ else # ifeq Linux
 
 ifeq ($(PLATFORM),darwin)
   HAVE_VM_COMPILED=true
-  LIBS = -framework Cocoa
+  LIBS = -framework Cocoa -lsupc++
   CLIENT_LIBS=
   RENDERER_LIBS=
   OPTIMIZEVM=
@@ -597,7 +598,7 @@ ifeq ($(PLATFORM),mingw32)
   LIBS= -lws2_32 -lwinmm -lpsapi
   CLIENT_LDFLAGS += -mwindows
   CLIENT_LIBS = -lgdi32 -lole32
-  RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
+  RENDERER_LIBS = -lgdi32 -lole32 -lopengl32 -lstdc++
   
   ifeq ($(USE_FREETYPE),1)
     BASE_CFLAGS += -Ifreetype2
@@ -1141,6 +1142,11 @@ $(echo_cmd) "WINDRES $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
 
+define DO_SPLINE_CXX
+$(echo_cmd) "SPLINE_CXX $<"
+$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+endef
+
 #############################################################################
 # MAIN TARGETS
 #############################################################################
@@ -1227,6 +1233,7 @@ makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
 	@if [ ! -d $(B) ];then $(MKDIR) $(B);fi
 	@if [ ! -d $(B)/client ];then $(MKDIR) $(B)/client;fi
+	@if [ ! -d $(B)/splines ];then $(MKDIR) $(B)/splines;fi
 	@if [ ! -d $(B)/client/opus ];then $(MKDIR) $(B)/client/opus;fi
 	@if [ ! -d $(B)/renderer ];then $(MKDIR) $(B)/renderer;fi
 	@if [ ! -d $(B)/rend2 ];then $(MKDIR) $(B)/rend2;fi
@@ -1495,6 +1502,14 @@ Q3OBJ = \
   $(B)/client/l_precomp.o \
   $(B)/client/l_script.o \
   $(B)/client/l_struct.o \
+  \
+  $(B)/splines/math_angles.o \
+  $(B)/splines/math_matrix.o \
+  $(B)/splines/math_quaternion.o \
+  $(B)/splines/math_vector.o \
+  $(B)/splines/q_parse.o \
+  $(B)/splines/splines.o \
+  $(B)/splines/util_str.o \
   \
   $(B)/client/sdl_input.o \
   $(B)/client/sdl_snd.o \
@@ -2308,6 +2323,9 @@ $(B)/client/%.o: $(SYSDIR)/%.m
 
 $(B)/client/%.o: $(SYSDIR)/%.rc
 	$(DO_WINDRES)
+
+$(B)/splines/%.o: $(SPLDIR)/%.cpp
+	$(DO_SPLINE_CXX)
 
 $(B)/renderer/%.o: $(CMDIR)/%.c
 	$(DO_REF_CC)
