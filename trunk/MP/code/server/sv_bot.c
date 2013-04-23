@@ -516,6 +516,8 @@ int SV_BotLibSetup( void ) {
 		return -1;
 	}
 
+	botlib_export->BotLibVarSet( "basegame", com_basegame->string );
+
 	return botlib_export->BotLibSetup();
 }
 

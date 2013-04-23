@@ -471,9 +471,10 @@ botlib_export_t *GetBotLibAPI( int apiVersion, botlib_import_t *import );
 
 name:						default:			module(s):			description:
 
-"basedir"					""					l_utils.c			Quake2 base directory
-"gamedir"					""					l_utils.c			Quake2 game directory
-"cddir"						""					l_utils.c			Quake2 CD directory
+"basedir"					""					-			base directory
+"homedir"					""					be_interface.c			game directory
+"gamedir"					""					be_interface.c			game directory
+"basegame"					""					be_interface.c			game directory
 
 "autolaunchbspc"			"0"					be_aas_load.c		automatically launch (Win)BSPC
 "log"						"0"					l_log.c				enable/disable creating a log file
