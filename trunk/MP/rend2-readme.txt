@@ -1,7 +1,7 @@
-Rend2
+OpenGL2
 <insert ascii art here>
 
-Rend2 is an alternate renderer for ioquake3.  It aims to implement modern
+OpenGL2 is an alternate renderer for ioquake3.  It aims to implement modern
 features and technologies into the id tech 3 engine, but without sacrificing
 compatibility with existing Quake 3 mods.
 
@@ -24,25 +24,6 @@ compatibility with existing Quake 3 mods.
 
 
 -------------------------------------------------------------------------------
-  COMPILATION
--------------------------------------------------------------------------------
-
-For *nix/MinGW:
-
-1. Download an appropriate version of the ioq3 source code.  For version 32 of
-   Rend2, r2328 should do, though the latest may work as well.  For 
-   details on how to do this, see http://ioquake3.org/get-it/source-codes/ .
-   
-2. Copy the patch file (for v32, vbos-glsl-31a.diff) into the directory you put
-   the ioq3 source code.  There should be a README in that directory.
-   
-3. Run 'patch -p0 <vbos-glsl-31a.diff' then 'make'.
-
-Compiling on different platforms and with different compilers hasn't been
-tested.  The MSVC project file should work, but it hasn't been tested.
-
-
--------------------------------------------------------------------------------
   INSTALLATION
 -------------------------------------------------------------------------------
 
@@ -60,7 +41,7 @@ For Win32:
      
      ioquake3.x86.exe
      renderer_opengl1_x86.dll
-     renderer_rend2_x86.dll
+     renderer_opengl2_x86.dll
      
    These can be found in build/release-mingw32-x86 after compiling, or bug
    someone to release binaries.
@@ -72,7 +53,7 @@ For Win32:
 
 1. Start ioquake3. (ioquake3.x86.exe on Win32)
  
-2. Open the console (default key ~) and type '/cl_renderer rend2; vid_restart'
+2. Open the console (default key ~) and type '/cl_renderer opengl2; vid_restart'
 
 3. Enjoy.
 
@@ -92,12 +73,18 @@ Cvars for simple rendering features:
                                      0    - None. (default)
                                      1-16 - Some.
                                      17+  - Too much!
-									 
+
   r_ssao                         - Enable screen-space ambient occlusion.
                                    Currently eats framerate and has some
-								   visible artifacts.
-								     0 - No. (default)
-									 1 - Yes.
+                                   visible artifacts.
+                                     0 - No. (default)
+                                     1 - Yes.
+
+  r_softOverbright               - Enable software overbrighting.  This enables
+                                   overbrighting even in a window.  Is disabled
+                                   when r_toneMap 1 and r_hdr 1.
+                                     0 - No.
+                                     1 - Yes. (default)
 
 Cvars for HDR and tonemapping:
   r_hdr                          - Do scene rendering in a framebuffer with
@@ -123,63 +110,63 @@ Cvars for HDR and tonemapping:
 
   r_forceToneMap                 - Cheat.  Override built-in and map tonemap
                                    settings and use cvars r_forceToneMapAvg,
-								   r_forceToneMapMin, and r_forceToneMapMax.
-								     0 - No. (default)
-									 1 - Yes.
+                                   r_forceToneMapMin, and r_forceToneMapMax.
+                                     0 - No. (default)
+                                     1 - Yes.
 
   r_forceToneMapAvg              - Cheat.  Map average scene luminance to this
                                    value, in powers of two.  Requires 
-								   r_forceToneMap.
-								    -2.0 - Dark.
-								    -1.0 - Kinda dark. (default).
-									 2.0 - Too bright.
+                                   r_forceToneMap.
+                                    -2.0 - Dark.
+                                    -1.0 - Kinda dark. (default).
+                                     2.0 - Too bright.
 
   r_forceToneMapMin              - Cheat.  After mapping average, luminance
                                    below this level is mapped to black.
-								   Requires r_forceToneMap.
-								    -5    - Not noticeable.
-									-3.25 - Normal. (default)
-									 0.0  - Too dark.
+                                   Requires r_forceToneMap.
+                                    -5    - Not noticeable.
+                                    -3.25 - Normal. (default)
+                                     0.0  - Too dark.
 
   r_forceToneMapMin              - Cheat.  After mapping average, luminance
                                    above this level is mapped to white.
-								   Requires r_forceToneMap.
-								    0.0 - Too bright.
-									1.0 - Normal. (default).
-									2.0 - Washed out.
+                                   Requires r_forceToneMap.
+                                    0.0 - Too bright.
+                                    1.0 - Normal. (default).
+                                    2.0 - Washed out.
 
   r_autoExposure                 - Do automatic exposure based on scene
                                    brightness.  Hardcoded to -2 to 2 on maps
-								   that don't specify otherwise.  Requires
+                                   that don't specify otherwise.  Requires
                                    r_hdr, r_postprocess, and r_toneMap.
                                      0 - No.
                                      1 - Yes. (default)
-									 
+                                     
   r_forceAutoExposure            - Cheat.  Override built-in and map auto
                                    exposure settings and use cvars
-								   r_forceAutoExposureMin and 
-								   r_forceAutoExposureMax.
-								     0 - No. (default)
-									 1 - Yes.
+                                   r_forceAutoExposureMin and 
+                                   r_forceAutoExposureMax.
+                                     0 - No. (default)
+                                     1 - Yes.
 
   r_forceAutoExposureMin         - Cheat.  Set minimum exposure to this value,
                                    in powers of two.  Requires
-								   r_forceAutoExpsure.
-								    -3.0 - Dimmer.
-									-2.0 - Normal. (default)
-									-1.0 - Brighter.
+                                   r_forceAutoExpsure.
+                                    -3.0 - Dimmer.
+                                    -2.0 - Normal. (default)
+                                    -1.0 - Brighter.
 
   r_forceAutoExposureMax         - Cheat.  Set maximum exposure to this value,
                                    in powers of two.  Requires
-								   r_forceAutoExpsure.
-								     1.0 - Dimmer.
-									 2.0 - Normal. (default)
-									 3.0 - Brighter.
+                                   r_forceAutoExpsure.
+                                     1.0 - Dimmer.
+                                     2.0 - Normal. (default)
+                                     3.0 - Brighter.
 
   r_srgb                         - Treat all input textures as sRGB, and do
                                    final rendering in a sRGB framebuffer.  Only
-								   required if assets were created with it in
-								   mind.
+                                   required if assets were created with it in
+                                   mind.
                                      0 - No. (default)
                                      1 - Yes.
 
@@ -191,8 +178,8 @@ Cvars for advanced material usage:
                                      1 - Yes. (default)
                                      2 - Yes, and use Oren-Nayar reflectance
                                          model.
-								     3 - Yes, and use tri-Ace's Oren-Nayar
-									     reflectance model.
+                                     3 - Yes, and use tri-Ace's Oren-Nayar
+                                         reflectance model.
 
   r_specularMapping              - Enable specular mapping for materials that
                                    support it, and also specify advanced
@@ -253,20 +240,30 @@ Cvars for the sunlight and cascaded shadow maps:
 
   r_forceSunMapLightScale        - Cheat. Scale map brightness by this factor
                                    when r_forceSun 1.
-                                     0.5 - Default
+                                     1.0 - Default
                                      
   r_forceSunLightScale           - Cheat. Scale sun brightness by this factor
                                    when r_forceSun 1.
-                                     0.5 - Default
+                                     1.0 - Default
                                      
   r_forceSunAmbientScale         - Cheat. Scale sun ambient brightness by this 
                                    factor when r_forceSun 1.
-                                     0.2 - Default
+                                     0.5 - Default
 
   r_sunShadows                   - Enable sunlight and cascaded shadow maps for
                                    it on maps that support it.
                                      0 - No.
                                      1 - Yes. (default)
+
+  r_sunlightMode                 - Specify the method used to add sunlight to
+                                   the scene.
+                                     0 - No.
+                                     1 - Multiply lit areas by light scale, and
+                                         shadowed areas by ambient scale.
+                                         (default)
+                                     2 - Add light.  Looks better, but is slower
+                                         and doesn't integrate well with existing
+                                         maps.
 
   r_shadowFilter                 - Enable filtering shadows for a smoother
                                    look.
@@ -348,7 +345,7 @@ Cvars that have broken bits:
   MATERIALS
 -------------------------------------------------------------------------------
 
-Rend2 supports .mtr files, which are basically the same as .shader files, and
+OpenGL2 supports .mtr files, which are basically the same as .shader files, and
 are located in the same place, but override existing .shader files if they 
 exist.  This is to allow maps and mods to use the new material features without
 breaking the map when using the old renderer.
@@ -383,7 +380,7 @@ shader files.  The next thing to notice are the new keywords.  Here is what
 they mean:
 
   stage <type>        
-    - State how this imagemap will be used by Rend2:
+    - State how this imagemap will be used by OpenGL2:
         diffuseMap        - Standard, same as no stage entry
         normalMap         - Image will be used as a normal map
         normalParallaxMap - Image will be used as a normal map with 
@@ -481,8 +478,8 @@ and is the equivalent for 'exactVertex'.
 
 This adds a new keyword to sky materials, q3gl2_sun.  The syntax is:
 
-  q3gl2_sun <red> <green> <blue> <intensity> <degrees> <mapLightScale> 
-  <ambientLightScale>
+  q3gl2_sun <red> <green> <blue> <intensity> <degrees> <elevation> 
+  <mapLightScale> <ambientLightScale>
   
 Note the first six parameters are the same as in q3map_sun or q3map_sunExt,
 and the last two indicate scaling factors for the map brightness and an ambient
@@ -490,8 +487,9 @@ light of the same color as the sun.
 
 There are currently two ways to use this in your own (and other people's) maps.
 
-  1. Create your map as normal and add a 'q3gl2_sun' line after your 
-     'q3map_sun' line in your sky material, like so:
+  1. Create your map as normal, set r_sunlightMode to 1, and add a 
+     'q3gl2_sun' line after your 'q3map_sun' line in your sky material, like
+     so:
      
     textures/skies/bluesky
     {
@@ -502,7 +500,7 @@ There are currently two ways to use this in your own (and other people's) maps.
         surfaceparm nolightmap
         surfaceparm sky
         q3map_sunExt 240 238 200 100 195 35 3 16
-        q3gl2_sun 240 238 200 50 195 35 3 0.5 0.2
+        q3gl2_sun 240 238 200 50 195 35 3 1.0 0.2
         q3map_skylight 50 16
         q3map_lightimage $whiteimage
 
@@ -514,7 +512,8 @@ There are currently two ways to use this in your own (and other people's) maps.
      can be used with existing maps without recompilation.  The downside is
      artifacts like doubled shadows and uneven shadow edges.
      
-  2. Use 'q3gl2_sun' instead of 'q3map_sun' or 'q3map_sunExt', like so:
+  2. Set r_sunlightMode to 2 and use 'q3gl2_sun' instead of 'q3map_sun' or
+     'q3map_sunExt', like so:
   
     textures/skies/bluesky
     {
@@ -563,7 +562,7 @@ contributed thoughts, ideas, and whole swaths of code to this project.
 
   - Zachary 'Zakk' Slater, Thilo Schulz, Tim Angus, and the rest of the
     ioquake3 team and contributors, for improving massively upon the raw Quake
-	3 source, and accepting my and gimhael's modular renderer patch.
+    3 source, and accepting my and gimhael's modular renderer patch.
 
   - Robert 'Tr3B' Beckebans and the other contributors to XReaL, for letting me
     liberally copy code from you. :)
@@ -574,7 +573,7 @@ contributed thoughts, ideas, and whole swaths of code to this project.
     
   - Yoshiharu Gotanda, Tatsuya Shoji, and the rest of tri-Ace's R&D Department,
     for creating the tri-Ace shading equations and posting their derivations in
-	simple English.
+    simple English.
     
   - Matthias 'gimhael' Bentrup, for random ideas and bits of code.
   

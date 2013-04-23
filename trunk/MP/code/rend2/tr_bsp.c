@@ -3754,6 +3754,7 @@ void RE_LoadWorldMap( const char *name ) {
 
 	// set default map light scale
 	tr.mapLightScale = 1.0f;
+	tr.sunShadowScale = 0.5f;
 
 	// set default sun direction to be used if it isn't
 	// overridden by a shader

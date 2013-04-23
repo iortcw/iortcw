@@ -1596,8 +1596,6 @@ static qboolean ParseShader( char **text ) {
 			a = atof( token );
 			VectorScale( tr.sunLight, a, tr.sunLight );
 
-			VectorSet( tr.sunAmbient, 0.0f, 0.0f, 0.0f);
-
 			token = COM_ParseExt( text, qfalse );
 			a = atof( token );
 			a = a / 180 * M_PI;
@@ -1616,7 +1614,7 @@ static qboolean ParseShader( char **text ) {
 				tr.mapLightScale = atof(token);
 
 				token = COM_ParseExt( text, qfalse );
-				VectorScale( tr.sunLight, atof(token), tr.sunAmbient );
+				tr.sunShadowScale = atof(token);
 			}
 
 			SkipRestOfLine( text );
