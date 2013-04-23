@@ -2314,9 +2314,6 @@ void    GL_Cull( int cullType );
 #define GLS_DEPTHFUNC_GREATER                   0x00040000
 #define GLS_DEPTHFUNC_BITS                      0x00060000
 
-//#define GLS_FOG_DISABLE                         0x00020000  //----(SA)	added
-#define GLS_FOG_DISABLE                         0x00080000  //----(SA)	added
-
 #define GLS_ATEST_GT_0                          0x10000000
 #define GLS_ATEST_LT_80                         0x20000000
 #define GLS_ATEST_GE_80                         0x40000000

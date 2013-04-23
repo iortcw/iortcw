@@ -1358,8 +1358,6 @@ void    GL_Cull( int cullType );
 #define GLS_DEPTHTEST_DISABLE                   0x00010000
 #define GLS_DEPTHFUNC_EQUAL                     0x00020000
 
-#define GLS_FOG_DISABLE                         0x00020000  //----(SA)	added
-
 #define GLS_ATEST_GT_0                          0x10000000
 #define GLS_ATEST_LT_80                         0x20000000
 #define GLS_ATEST_GE_80                         0x40000000
