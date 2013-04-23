@@ -29,6 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 //need to rewrite this
 
 #include "util_str.h"
+#include "q_splineshared.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -438,7 +439,8 @@ void idStr::snprintf
 	va_list argptr;
 
 	va_start( argptr,fmt );
-	len = vsprintf( buffer,fmt,argptr );
+//	len = vsprintf( buffer,fmt,argptr );
+	len = Com_sprintf( buffer, sizeof( buffer ), fmt, argptr );
 	va_end( argptr );
 
 	assert( len < size );

@@ -107,7 +107,8 @@ void Com_ScriptError( const char *msg, ... ) {
 	char string[32000];
 
 	va_start( argptr, msg );
-	vsprintf( string, msg,argptr );
+//	vsprintf( string, msg,argptr );
+	Q_vsnprintf (string, sizeof( string ), msg, argptr);
 	va_end( argptr );
 
 	Com_Error( ERR_DROP, "File %s, line %i: %s", pi->parseFile, pi->lines, string );
@@ -118,7 +119,8 @@ void Com_ScriptWarning( const char *msg, ... ) {
 	char string[32000];
 
 	va_start( argptr, msg );
-	vsprintf( string, msg,argptr );
+//	vsprintf( string, msg,argptr );
+	Q_vsnprintf (string, sizeof( string ), msg, argptr);
 	va_end( argptr );
 
 	Com_Printf( "File %s, line %i: %s", pi->parseFile, pi->lines, string );

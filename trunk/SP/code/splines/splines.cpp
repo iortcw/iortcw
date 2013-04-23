@@ -480,15 +480,15 @@ void idSplineList::parse( const char *( *text )  ) {
 }
 
 void idSplineList::write( fileHandle_t file, const char *p ) {
-	idStr s = va( "\t\t%s {\n", p );
+	idStr s = va( (char *)"\t\t%s {\n", p );
 	FS_Write( s.c_str(), s.length(), file );
 	//s = va("\t\tname %s\n", name.c_str());
 	//FS_Write(s.c_str(), s.length(), file);
-	s = va( "\t\t\tgranularity %f\n", granularity );
+	s = va( (char *)"\t\t\tgranularity %f\n", granularity );
 	FS_Write( s.c_str(), s.length(), file );
 	int count = controlPoints.Num();
 	for ( int i = 0; i < count; i++ ) {
-		s = va( "\t\t\t( %f %f %f )\n", controlPoints[i]->x, controlPoints[i]->y, controlPoints[i]->z );
+		s = va( (char *)"\t\t\t( %f %f %f )\n", controlPoints[i]->x, controlPoints[i]->y, controlPoints[i]->z );
 		FS_Write( s.c_str(), s.length(), file );
 	}
 	s = "\t\t}\n";
@@ -561,11 +561,11 @@ bool idCameraDef::getCameraInfo( long time, idVec3 &origin, idVec3 &direction, f
 				//*fv = fov = atof(events[i]->getParam());
 			} else if ( events[i]->getType() == idCameraEvent::EVENT_FADEIN ) {
 				float time = atof( events[i]->getParam() );
-				Cbuf_AddText( va( "fade 0 0 0 0 %f", time ) );
+				Cbuf_AddText( va( (char *)"fade 0 0 0 0 %f", time ) );
 				Cbuf_Execute();
 			} else if ( events[i]->getType() == idCameraEvent::EVENT_FADEOUT ) {
 				float time = atof( events[i]->getParam() );
-				Cbuf_AddText( va( "fade 0 0 0 255 %f", time ) );
+				Cbuf_AddText( va( (char *)"fade 0 0 0 255 %f", time ) );
 				Cbuf_Execute();
 			} else if ( events[i]->getType() == idCameraEvent::EVENT_CAMERA ) {
 				memset( buff, 0, sizeof( buff ) );
@@ -574,10 +574,10 @@ bool idCameraDef::getCameraInfo( long time, idVec3 &origin, idVec3 &direction, f
 				const char *param2 = strtok( NULL, " \t,\0" );
 
 				if ( param2 ) {
-					loadCamera( atoi( param1 ), va( "cameras/%s.camera", param2 ) );
+					loadCamera( atoi( param1 ), va( (char *)"cameras/%s.camera", param2 ) );
 					startCamera( time );
 				} else {
-					loadCamera( 0, va( "cameras/%s.camera", events[i]->getParam() ) );
+					loadCamera( 0, va( (char *)"cameras/%s.camera", events[i]->getParam() ) );
 					startCamera( time );
 				}
 				return true;
@@ -589,7 +589,7 @@ bool idCameraDef::getCameraInfo( long time, idVec3 &origin, idVec3 &direction, f
 
 	origin = *cameraPosition->getPosition( time );
 
-	CHECK_NAN_VEC( origin );
+//	CHECK_NAN_VEC( origin );
 
 	*fv = fov.getFOV( time );
 
@@ -862,13 +862,13 @@ void idCameraDef::save( const char *filename ) {
 		int i;
 		idStr s = "cameraPathDef { \n";
 		FS_Write( s.c_str(), s.length(), file );
-		s = va( "\ttime %f\n", baseTime );
+		s = va( (char *)"\ttime %f\n", baseTime );
 		FS_Write( s.c_str(), s.length(), file );
 
-		cameraPosition->write( file, va( "camera_%s",cameraPosition->typeStr() ) );
+		cameraPosition->write( file, va( (char *)"camera_%s",cameraPosition->typeStr() ) );
 
 		for ( i = 0; i < numTargets(); i++ ) {
-			targetPositions[i]->write( file, va( "target_%s", targetPositions[i]->typeStr() ) );
+			targetPositions[i]->write( file, va( (char *)"target_%s", targetPositions[i]->typeStr() ) );
 		}
 
 		for ( i = 0; i < events.Num(); i++ ) {
@@ -969,13 +969,13 @@ void idCameraEvent::parse( const char *( *text )  ) {
 }
 
 void idCameraEvent::write( fileHandle_t file, const char *name ) {
-	idStr s = va( "\t%s {\n", name );
+	idStr s = va( (char *)"\t%s {\n", name );
 	FS_Write( s.c_str(), s.length(), file );
-	s = va( "\t\ttype %d\n", static_cast<int>( type ) );
+	s = va( (char *)"\t\ttype %d\n", static_cast<int>( type ) );
 	FS_Write( s.c_str(), s.length(), file );
-	s = va( "\t\tparam \"%s\"\n", paramStr.c_str() );
+	s = va( (char *)"\t\tparam \"%s\"\n", paramStr.c_str() );
 	FS_Write( s.c_str(), s.length(), file );
-	s = va( "\t\ttime %d\n", time );
+	s = va( (char *)"\t\ttime %ld\n", time );
 	FS_Write( s.c_str(), s.length(), file );
 	s = "\t}\n";
 	FS_Write( s.c_str(), s.length(), file );
@@ -1253,19 +1253,19 @@ void idSplinePosition::parse( const char *( *text )  ) {
 
 
 void idCameraFOV::write( fileHandle_t file, const char *p ) {
-	idStr s = va( "\t%s {\n", p );
+	idStr s = va( (char *)"\t%s {\n", p );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\tfov %f\n", fov );
+	s = va( (char *)"\t\tfov %f\n", fov );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\tstartFOV %f\n", startFOV );
+	s = va( (char *)"\t\tstartFOV %f\n", startFOV );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\tendFOV %f\n", endFOV );
+	s = va( (char *)"\t\tendFOV %f\n", endFOV );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\ttime %i\n", time );
+	s = va( (char *)"\t\ttime %i\n", time );
 	FS_Write( s.c_str(), s.length(), file );
 
 	s = "\t}\n";
@@ -1275,49 +1275,49 @@ void idCameraFOV::write( fileHandle_t file, const char *p ) {
 
 void idCameraPosition::write( fileHandle_t file, const char *p ) {
 
-	idStr s = va( "\t\ttime %i\n", time );
+	idStr s = va( (char *)"\t\ttime %li\n", time );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\ttype %i\n", static_cast<int>( type ) );
+	s = va( (char *)"\t\ttype %i\n", static_cast<int>( type ) );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\tname %s\n", name.c_str() );
+	s = va( (char *)"\t\tname %s\n", name.c_str() );
 	FS_Write( s.c_str(), s.length(), file );
 
-	s = va( "\t\tbaseVelocity %f\n", baseVelocity );
+	s = va( (char *)"\t\tbaseVelocity %f\n", baseVelocity );
 	FS_Write( s.c_str(), s.length(), file );
 
 	for ( int i = 0; i < velocities.Num(); i++ ) {
-		s = va( "\t\tvelocity %i %i %f\n", velocities[i]->startTime, velocities[i]->time, velocities[i]->speed );
+		s = va( (char *)"\t\tvelocity %li %li %f\n", velocities[i]->startTime, velocities[i]->time, velocities[i]->speed );
 		FS_Write( s.c_str(), s.length(), file );
 	}
 
 }
 
 void idFixedPosition::write( fileHandle_t file, const char *p ) {
-	idStr s = va( "\t%s {\n", p );
+	idStr s = va( (char *)"\t%s {\n", p );
 	FS_Write( s.c_str(), s.length(), file );
 	idCameraPosition::write( file, p );
-	s = va( "\t\tpos ( %f %f %f )\n", pos.x, pos.y, pos.z );
+	s = va( (char *)"\t\tpos ( %f %f %f )\n", pos.x, pos.y, pos.z );
 	FS_Write( s.c_str(), s.length(), file );
 	s = "\t}\n";
 	FS_Write( s.c_str(), s.length(), file );
 }
 
 void idInterpolatedPosition::write( fileHandle_t file, const char *p ) {
-	idStr s = va( "\t%s {\n", p );
+	idStr s = va( (char *)"\t%s {\n", p );
 	FS_Write( s.c_str(), s.length(), file );
 	idCameraPosition::write( file, p );
-	s = va( "\t\tstartPos ( %f %f %f )\n", startPos.x, startPos.y, startPos.z );
+	s = va( (char *)"\t\tstartPos ( %f %f %f )\n", startPos.x, startPos.y, startPos.z );
 	FS_Write( s.c_str(), s.length(), file );
-	s = va( "\t\tendPos ( %f %f %f )\n", endPos.x, endPos.y, endPos.z );
+	s = va( (char *)"\t\tendPos ( %f %f %f )\n", endPos.x, endPos.y, endPos.z );
 	FS_Write( s.c_str(), s.length(), file );
 	s = "\t}\n";
 	FS_Write( s.c_str(), s.length(), file );
 }
 
 void idSplinePosition::write( fileHandle_t file, const char *p ) {
-	idStr s = va( "\t%s {\n", p );
+	idStr s = va( (char *)"\t%s {\n", p );
 	FS_Write( s.c_str(), s.length(), file );
 	idCameraPosition::write( file, p );
 	target.write( file, "target" );
