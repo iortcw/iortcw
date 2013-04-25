@@ -599,19 +599,21 @@ void FS_CopyFileOS( char *from, char *to ) {
 
 /*
 =================
-FS_CheckFilenameIsNotExecutable
+FS_CheckFilenameIsMutable
 
-ERR_FATAL if trying to maniuplate a file with the platform library extension
+ERR_FATAL if trying to maniuplate a file with the platform library, QVM, or pk3 extension
 =================
  */
-static void FS_CheckFilenameIsNotExecutable( const char *filename,
+static void FS_CheckFilenameIsMutable( const char *filename,
 		const char *function )
 {
-	// Check if the filename ends with the library extension
-	if(COM_CompareExtension(filename, DLL_EXT))
+	// Check if the filename ends with the library, QVM, or pk3 extension
+	if(COM_CompareExtension( filename, DLL_EXT )
+		|| COM_CompareExtension( filename, ".qvm" )
+		|| COM_CompareExtension( filename, ".pk3" ) )
 	{
 		Com_Error( ERR_FATAL, "%s: Not allowed to manipulate '%s' due "
-			"to %s extension", function, filename, DLL_EXT );
+			"to %s extension", function, filename, COM_GetExtension( filename ) );
 	}
 }
 
@@ -622,7 +624,7 @@ FS_Remove
 ===========
 */
 void FS_Remove( const char *osPath ) {
-	FS_CheckFilenameIsNotExecutable( osPath, __func__ );
+	FS_CheckFilenameIsMutable( osPath, __func__ );
 
 	remove( osPath );
 }
@@ -634,7 +636,7 @@ FS_HomeRemove
 ===========
 */
 void FS_HomeRemove( const char *homePath ) {
-	FS_CheckFilenameIsNotExecutable( homePath, __func__ );
+	FS_CheckFilenameIsMutable( homePath, __func__ );
 
 	remove( FS_BuildOSPath( fs_homepath->string,
 			fs_gamedir, homePath ) );
@@ -718,7 +720,7 @@ fileHandle_t FS_SV_FOpenFileWrite( const char *filename ) {
 		Com_Printf( "FS_SV_FOpenFileWrite: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+	FS_CheckFilenameIsMutable( ospath, __func__ );
 
 	if( FS_CreatePath( ospath ) ) {
 		return 0;
@@ -810,7 +812,7 @@ FS_SV_Rename
 
 ===========
 */
-void FS_SV_Rename( const char *from, const char *to ) {
+void FS_SV_Rename( const char *from, const char *to, qboolean safe ) {
 	char            *from_ospath, *to_ospath;
 
 	if ( !fs_searchpaths ) {
@@ -829,7 +831,9 @@ void FS_SV_Rename( const char *from, const char *to ) {
 		Com_Printf( "FS_SV_Rename: %s --> %s\n", from_ospath, to_ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( to_ospath, __func__ );
+	if ( safe ) {
+		FS_CheckFilenameIsMutable( to_ospath, __func__ );
+	}
 
 	rename(from_ospath, to_ospath);
 }
@@ -857,7 +861,7 @@ void FS_Rename( const char *from, const char *to ) {
 		Com_Printf( "FS_Rename: %s --> %s\n", from_ospath, to_ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( to_ospath, __func__ );
+	FS_CheckFilenameIsMutable( to_ospath, __func__ );
 
 	FS_CreatePath( to_ospath );
 	rename(from_ospath, to_ospath);
@@ -917,7 +921,7 @@ fileHandle_t FS_FOpenFileWrite( const char *filename ) {
 		Com_Printf( "FS_FOpenFileWrite: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+	FS_CheckFilenameIsMutable( ospath, __func__ );
 
 	if ( FS_CreatePath( ospath ) ) {
 		return 0;
@@ -965,7 +969,7 @@ fileHandle_t FS_FOpenFileAppend( const char *filename ) {
 		Com_Printf( "FS_FOpenFileAppend: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+	FS_CheckFilenameIsMutable( ospath, __func__ );
 
 	if ( FS_CreatePath( ospath ) ) {
 		return 0;
@@ -1008,7 +1012,7 @@ fileHandle_t FS_FCreateOpenPipeFile( const char *filename ) {
 		Com_Printf( "FS_FCreateOpenPipeFile: %s\n", ospath );
 	}
 
-	FS_CheckFilenameIsNotExecutable( ospath, __func__ );
+	FS_CheckFilenameIsMutable( ospath, __func__ );
 
 	fifo = Sys_Mkfifo( ospath );
 	if( fifo ) {
