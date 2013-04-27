@@ -502,8 +502,8 @@ void CL_MouseMove(usercmd_t *cmd)
 
 	// allow mouse smoothing
 	if ( m_filter->integer ) {
-		mx = ( cl.mouseDx[0] + cl.mouseDx[1] ) * 0.5;
-		my = ( cl.mouseDy[0] + cl.mouseDy[1] ) * 0.5;
+		mx = ( cl.mouseDx[0] + cl.mouseDx[1] ) * 0.5f;
+		my = ( cl.mouseDy[0] + cl.mouseDy[1] ) * 0.5f;
 	} else {
 		mx = cl.mouseDx[cl.mouseIndex];
 		my = cl.mouseDy[cl.mouseIndex];

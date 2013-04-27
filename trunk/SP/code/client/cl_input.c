@@ -53,11 +53,11 @@ at the same time.
 ===============================================================================
 */
 
+static kbutton_t kb[NUM_BUTTONS];
+
 #ifdef USE_VOIP
 kbutton_t	in_voiprecord;
 #endif
-
-static kbutton_t kb[NUM_BUTTONS];
 
 void IN_MLookDown( void ) {
 	kb[KB_MLOOK].active = qtrue;
@@ -289,12 +289,6 @@ void IN_Notebook( void ) {
 	if ( clc.state == CA_ACTIVE && !clc.demoplaying ) {
 		Cvar_Set( "cg_youGotMail", "0" ); // clear icon	//----(SA)	added
 		VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_NOTEBOOK );    // startup notebook
-	}
-}
-
-void IN_Help( void ) {
-	if ( clc.state == CA_ACTIVE && !clc.demoplaying ) {
-		VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP );        // startup help system
 	}
 }
 
@@ -770,8 +764,8 @@ qboolean CL_ReadyToSendPacket( void ) {
 	}
 
 	// check for exceeding cl_maxpackets
-	if ( cl_maxpackets->integer < 15 ) {
-		Cvar_Set( "cl_maxpackets", "15" );
+	if ( cl_maxpackets->integer < 25 ) {
+		Cvar_Set( "cl_maxpackets", "25" );
 	} else if ( cl_maxpackets->integer > 125 ) {
 		Cvar_Set( "cl_maxpackets", "125" );
 	}
@@ -1027,8 +1021,6 @@ void CL_InitInput( void ) {
 
 	Cmd_AddCommand( "+attack", IN_Button0Down );   // ---- id   (primary firing)
 	Cmd_AddCommand( "-attack", IN_Button0Up );
-//	Cmd_AddCommand ("+button0", IN_Button0Down);
-//	Cmd_AddCommand ("-button0", IN_Button0Up);
 
 	Cmd_AddCommand( "+button1", IN_Button1Down );
 	Cmd_AddCommand( "-button1", IN_Button1Up );
@@ -1038,16 +1030,9 @@ void CL_InitInput( void ) {
 
 	Cmd_AddCommand( "+salute",   IN_Button3Down ); //----(SA) salute
 	Cmd_AddCommand( "-salute",   IN_Button3Up );
-//	Cmd_AddCommand ("+button3", IN_Button3Down);
-//	Cmd_AddCommand ("-button3", IN_Button3Up);
 
 	Cmd_AddCommand( "+button4", IN_Button4Down );
 	Cmd_AddCommand( "-button4", IN_Button4Up );
-	//Cmd_AddCommand ("+button5", IN_Button5Down);
-	//Cmd_AddCommand ("-button5", IN_Button5Up);
-
-	//Cmd_AddCommand ("+button6", IN_Button6Down);
-	//Cmd_AddCommand ("-button6", IN_Button6Up);
 
 	// Rafael Activate
 	Cmd_AddCommand( "+activate", IN_ActivateDown );
@@ -1091,7 +1076,6 @@ void CL_InitInput( void ) {
 #endif
 
 	Cmd_AddCommand( "notebook",IN_Notebook );
-//	Cmd_AddCommand ("help",IN_Help);
 
 	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );
 	cl_debugMove = Cvar_Get( "cl_debugMove", "0", 0 );
@@ -1133,8 +1117,6 @@ void CL_ShutdownInput(void)
 
 	Cmd_RemoveCommand("+attack");
 	Cmd_RemoveCommand("-attack");
-//	Cmd_RemoveCommand("+button0");
-//	Cmd_RemoveCommand("-button0");
 
 	Cmd_RemoveCommand("+button1");
 	Cmd_RemoveCommand("-button1");
@@ -1144,16 +1126,9 @@ void CL_ShutdownInput(void)
 
 	Cmd_RemoveCommand("+salute");
 	Cmd_RemoveCommand("-salute");
-//	Cmd_RemoveCommand("+button3");
-//	Cmd_RemoveCommand("-button3");
 
 	Cmd_RemoveCommand("+button4");
 	Cmd_RemoveCommand("-button4");
-//	Cmd_RemoveCommand("+button5");
-//	Cmd_RemoveCommand("-button5");
-
-//	Cmd_RemoveCommand("+button6");
-//	Cmd_RemoveCommand("-button6");
 
 	Cmd_RemoveCommand("+activate");
 	Cmd_RemoveCommand("-activate");

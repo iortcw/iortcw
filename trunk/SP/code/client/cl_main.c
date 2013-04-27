@@ -3679,7 +3679,7 @@ void CL_Init( void ) {
 	cl_pitchspeed = Cvar_Get( "cl_pitchspeed", "140", CVAR_ARCHIVE );
 	cl_anglespeedkey = Cvar_Get( "cl_anglespeedkey", "1.5", 0 );
 
-	cl_maxpackets = Cvar_Get( "cl_maxpackets", "30", CVAR_ARCHIVE );
+	cl_maxpackets = Cvar_Get( "cl_maxpackets", "38", CVAR_ARCHIVE );
 	cl_packetdup = Cvar_Get( "cl_packetdup", "1", CVAR_ARCHIVE );
 
 	cl_run = Cvar_Get( "cl_run", "1", CVAR_ARCHIVE );
