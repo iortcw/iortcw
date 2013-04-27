@@ -2078,6 +2078,7 @@ const void *RB_ClearDepth(const void *data)
 	return (const void *)(cmd + 1);
 }
 
+
 /*
 =============
 RB_SwapBuffers
@@ -2201,7 +2202,6 @@ const void *RB_CapShadowMap(const void *data)
 }
 
 
-
 /*
 =============
 RB_PostProcess
@@ -2212,6 +2212,7 @@ const void *RB_PostProcess(const void *data)
 {
 	const postProcessCommand_t *cmd = data;
 	FBO_t *srcFbo;
+	vec4i_t srcBox, dstBox;
 	qboolean autoExposure;
 
 	// finish any 2D drawing if needed
@@ -2224,29 +2225,51 @@ const void *RB_PostProcess(const void *data)
 		return (const void *)(cmd + 1);
 	}
 
+	if (cmd)
+	{
+		backEnd.refdef = cmd->refdef;
+		backEnd.viewParms = cmd->viewParms;
+	}
+
 	srcFbo = tr.renderFbo;
 	if (tr.msaaResolveFbo)
 	{
 		// Resolve the MSAA before anything else
+		// Can't resolve just part of the MSAA FBO, so multiple views will suffer a performance hit here
 		FBO_FastBlit(tr.renderFbo, NULL, tr.msaaResolveFbo, NULL, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		srcFbo = tr.msaaResolveFbo;
 	}
 
+	dstBox[0] = backEnd.viewParms.viewportX;
+	dstBox[1] = backEnd.viewParms.viewportY;
+	dstBox[2] = backEnd.viewParms.viewportWidth;
+	dstBox[3] = backEnd.viewParms.viewportHeight;
+
 	if (r_ssao->integer)
 	{
-		FBO_BlitFromTexture(tr.screenSsaoImage, NULL, NULL, srcFbo, NULL, NULL, NULL, GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO);
+		srcBox[0] = backEnd.viewParms.viewportX      * tr.screenSsaoImage->width  / (float)glConfig.vidWidth;
+		srcBox[1] = backEnd.viewParms.viewportY      * tr.screenSsaoImage->height / (float)glConfig.vidHeight;
+		srcBox[2] = backEnd.viewParms.viewportWidth  * tr.screenSsaoImage->width  / (float)glConfig.vidWidth;
+		srcBox[3] = backEnd.viewParms.viewportHeight * tr.screenSsaoImage->height / (float)glConfig.vidHeight;
+
+		FBO_BlitFromTexture(tr.screenSsaoImage, srcBox, NULL, srcFbo, dstBox, NULL, NULL, GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO);
 	}
+
+	srcBox[0] = backEnd.viewParms.viewportX;
+	srcBox[1] = backEnd.viewParms.viewportY;
+	srcBox[2] = backEnd.viewParms.viewportWidth;
+	srcBox[3] = backEnd.viewParms.viewportHeight;
 
 	if (srcFbo)
 	{
 		if (r_hdr->integer && (r_toneMap->integer || r_forceToneMap->integer))
 		{
 			autoExposure = r_autoExposure->integer || r_forceAutoExposure->integer;
-			RB_ToneMap(srcFbo, autoExposure);
+			RB_ToneMap(srcFbo, srcBox, tr.screenScratchFbo, dstBox, autoExposure);
 		}
 		else if (r_cameraExposure->value == 0.0f)
 		{
-			FBO_FastBlit(srcFbo, NULL, tr.screenScratchFbo, NULL, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			FBO_FastBlit(srcFbo, srcBox, tr.screenScratchFbo, dstBox, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		}
 		else
 		{
@@ -2257,15 +2280,15 @@ const void *RB_PostProcess(const void *data)
 			color[2] = pow(2, r_cameraExposure->value); //exp2(r_cameraExposure->value);
 			color[3] = 1.0f;
 
-			FBO_Blit(srcFbo, NULL, NULL, tr.screenScratchFbo, NULL, NULL, color, 0);
+			FBO_Blit(srcFbo, NULL, NULL, tr.screenScratchFbo, dstBox, NULL, color, 0);
 		}
 	}
 
 	if (r_drawSunRays->integer)
-		RB_SunRays();
+		RB_SunRays(tr.screenScratchFbo, srcBox, tr.screenScratchFbo, dstBox);
 
 	if (1)
-		RB_BokehBlur(backEnd.refdef.blurFactor);
+		RB_BokehBlur(tr.screenScratchFbo, srcBox, tr.screenScratchFbo, dstBox, backEnd.refdef.blurFactor);
 	else
 		RB_GaussianBlur(backEnd.refdef.blurFactor);
 
@@ -2300,6 +2323,7 @@ const void *RB_PostProcess(const void *data)
 
 	return (const void *)(cmd + 1);
 }
+
 
 /*
 ====================
