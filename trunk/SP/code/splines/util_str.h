@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <string.h>
 #include <stdio.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(disable : 4710) // function 'blah' not inlined
 #endif
 

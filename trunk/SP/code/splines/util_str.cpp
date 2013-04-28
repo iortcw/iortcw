@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(disable : 4244) // 'conversion' conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable : 4710) // function 'blah' not inlined
 #endif
@@ -451,7 +451,7 @@ void idStr::snprintf
 	strncpy( dst, buffer, size - 1 );
 }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(disable : 4189) // local variable is initialized but not referenced
 #endif
 
@@ -528,7 +528,7 @@ void TestStringClass
 	a[1] = '1';                 // a.data = "t1st", b.data = "test"
 }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(default : 4189) // local variable is initialized but not referenced
 #pragma warning(disable : 4514) // unreferenced inline function has been removed
 #endif
