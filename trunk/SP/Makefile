@@ -528,6 +528,9 @@ ifeq ($(PLATFORM),mingw32)
     ifneq ($(findstring $(strip $(CC)),cc gcc),)
       CC=
     endif
+    ifneq ($(findstring $(strip $(CXX)),g++),)
+      CXX=
+    endif
 
     # We need to figure out the correct gcc and windres
     ifeq ($(ARCH),x86_64)
@@ -542,6 +545,11 @@ ifeq ($(PLATFORM),mingw32)
          $(call bin_path, $(MINGW_PREFIX)-gcc)))
     endif
 
+    ifndef CXX
+      CXX=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-g++)))
+    endif
+
     ifndef WINDRES
       WINDRES=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
          $(call bin_path, $(MINGW_PREFIX)-windres)))
@@ -551,6 +559,10 @@ ifeq ($(PLATFORM),mingw32)
     # so check that CC points to a real binary and use gcc if it doesn't
     ifeq ($(call bin_path, $(CC)),)
       CC=gcc
+    endif
+
+    ifndef CXX
+      CC=g++
     endif
 
     ifndef WINDRES
@@ -1194,6 +1206,7 @@ targets: makedirs
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
 	@echo "  CC: $(CC)"
+	@echo "  CXX: $(CXX)"
 	@echo ""
 	@echo "  CFLAGS:"
 	$(call print_wrapped, $(CFLAGS) $(OPTIMIZE))

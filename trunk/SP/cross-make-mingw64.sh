@@ -14,6 +14,16 @@ if [ "X$CC" = "X" ]; then
     done
 fi
 
+if [ "X$CXX" = "X" ]; then
+    for check in $CMD_PREFIX; do
+        full_check="${check}-g++"
+        which "$full_check" > /dev/null 2>&1
+        if [ "$?" = "0" ]; then
+            export CXX="$full_check"
+        fi
+    done
+fi
+
 if [ "X$WINDRES" = "X" ]; then
     for check in $CMD_PREFIX; do
         full_check="${check}-windres"
@@ -24,8 +34,8 @@ if [ "X$WINDRES" = "X" ]; then
     done
 fi
 
-if [ "X$WINDRES" = "X" -o "X$CC" = "X" ]; then
-    echo "Error: Must define or find WINDRES and CC"
+if [ "X$WINDRES" = "X" -o "X$CC" = "X" -o "X$CXX" = "X" ]; then
+    echo "Error: Must define or find WINDRES, CC, and CXX"
     exit 1
 fi
 
