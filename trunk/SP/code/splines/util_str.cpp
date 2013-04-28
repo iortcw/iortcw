@@ -445,6 +445,9 @@ void idStr::snprintf
 
 	assert( len < size );
 
+	if(len >= size)
+		Com_Printf("Com_sprintf: Output length %d too short, require %d bytes.\n", size, len + 1);
+
 	strncpy( dst, buffer, size - 1 );
 }
 
@@ -467,23 +470,12 @@ void TestStringClass
 (
 	void
 ) {
-	char ch;                            // ch == ?
 	idStr   *t;                         // t == ?
 	idStr a;                                // a.len == 0, a.data == "\0"
 	idStr b;                                // b.len == 0, b.data == "\0"
 	idStr c( "test" );              // c.len == 4, c.data == "test\0"
 	idStr d( c );                       // d.len == 4, d.data == "test\0"
 	idStr e( reinterpret_cast<const char *>( NULL ) );
-	// e.len == 0, e.data == "\0"					ASSERT!
-	int i;                              // i == ?
-
-	i = a.length();                 // i == 0
-	i = c.length();                 // i == 4
-
-	const char *s1 = a.c_str(); // s1 == "\0"
-	s1 = NULL;
-	const char *s2 = c.c_str(); // s2 == "test\0"
-	s2 = NULL;
 
 	t = new idStr();                        // t->len == 0, t->data == "\0"
 	delete t;                           // t == ?
@@ -508,15 +500,6 @@ void TestStringClass
 	// a.len == 11, a.data == "testtestwow\0"	ASSERT!
 
 	a = "test";                          // a.len == 4, a.data == "test\0"
-	ch = a[ 0 ];                        // ch == 't'
-	ch = a[ -1 ];                       // ch == 0											ASSERT!
-	ch = a[ 1000 ];                 // ch == 0											ASSERT!
-	ch = a[ 0 ];                        // ch == 't'
-	ch = a[ 1 ];                        // ch == 'e'
-	ch = a[ 2 ];                        // ch == 's'
-	ch = a[ 3 ];                        // ch == 't'
-	ch = a[ 4 ];                        // ch == '\0'										ASSERT!
-	ch = a[ 5 ];                        // ch == '\0'										ASSERT!
 
 	a[ 1 ] = 'b';                        // a.len == 4, a.data == "tbst\0"
 	a[ -1 ] = 'b';                       // a.len == 4, a.data == "tbst\0"			ASSERT!
@@ -530,28 +513,6 @@ void TestStringClass
 
 	a = "test";                          // a.len == 4, a.data == "test\0"
 	b = "no";                            // b.len == 2, b.data == "no\0"
-
-	i = ( a == b );                 // i == 0
-	i = ( a == c );                 // i == 1
-
-	i = ( a == "blow" );             // i == 0
-	i = ( a == "test" );             // i == 1
-	i = ( a == NULL );              // i == 0											ASSERT!
-
-	i = ( "test" == b );             // i == 0
-	i = ( "test" == a );             // i == 1
-	i = ( NULL == a );              // i == 0											ASSERT!
-
-	i = ( a != b );                 // i == 1
-	i = ( a != c );                 // i == 0
-
-	i = ( a != "blow" );             // i == 1
-	i = ( a != "test" );             // i == 0
-	i = ( a != NULL );              // i == 1											ASSERT!
-
-	i = ( "test" != b );             // i == 1
-	i = ( "test" != a );             // i == 0
-	i = ( NULL != a );              // i == 1											ASSERT!
 
 	a = "test";                 // a.data == "test"
 	b = a;                       // b.data == "test"
