@@ -29,6 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SPLINES_H
 #define __SPLINES_H
 
+#if 0
 extern "C" {
 #ifdef Q3RADIANT
   #include "../qgl.h"
@@ -36,6 +37,7 @@ extern "C" {
   #include "../renderer/qgl.h"
 #endif
 }
+#endif
 #include "util_list.h"
 #include "util_str.h"
 #include "math_vector.h"
@@ -613,12 +615,14 @@ virtual void addPoint( const idVec3 &v ) {
 }
 
 virtual void draw( bool editMode ) {
+#if 0
 	glLabeledPoint( blue, startPos, ( editMode ) ? 5 : 3, "Start interpolated" );
 	glLabeledPoint( blue, endPos, ( editMode ) ? 5 : 3, "End interpolated" );
 	qglBegin( GL_LINES );
 	qglVertex3fv( startPos );
 	qglVertex3fv( endPos );
 	qglEnd();
+#endif
 }
 
 virtual void start( long t ) {
