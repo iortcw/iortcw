@@ -870,6 +870,7 @@ void AAS_CreateAllRoutingCache( void ) {
 			if ( !( ( *aasworld ).areasettings[j].areaflags & AREA_USEFORROUTING ) ) {
 				continue;
 			}
+			AAS_AreaTravelTimeToGoalArea( j, ( *aasworld ).areawaypoints[j], i, tfl );
 			( *aasworld ).frameroutingupdates = 0;
 		} //end for
 	} //end for
@@ -2214,6 +2215,9 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 	} //end else
 	besttraveltime = 0;
 	bestarea = 0;
+	if ( enemyareanum ) {
+		AAS_AreaTravelTimeToGoalArea( areanum, origin, enemyareanum, travelflags );
+	}
 	VectorSubtract( enemyorigin, origin, enemyVec );
 	enemytraveldist = VectorNormalize( enemyVec );
 	startVisible = botimport.AICast_VisibleFromPos( enemyorigin, enemynum, origin, srcnum, qfalse );
@@ -2437,6 +2441,7 @@ int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float
 	//
 	besttraveltime = 0;
 	bestarea = 0;
+	AAS_AreaTravelTimeToGoalArea( srcarea, srcorg, enemyarea, travelflags );
 	//
 	badtravelflags = ~travelflags;
 	//

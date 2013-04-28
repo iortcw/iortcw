@@ -1178,6 +1178,12 @@ int PC_Directive_define( source_t *source ) {
 		if ( !PC_Directive_undef( source ) ) {
 			return qfalse;
 		}
+		//if the define was not removed (define->flags & DEFINE_FIXED)
+#if DEFINEHASHING
+		define = PC_FindHashedDefine( source->definehash, token.string );
+#else
+		define = PC_FindDefine( source->defines, token.string );
+#endif //DEFINEHASHING
 	} //end if
 	  //allocate define
 	define = (define_t *) GetMemory(sizeof(define_t));

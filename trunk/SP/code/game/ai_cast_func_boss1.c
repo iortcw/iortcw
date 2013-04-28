@@ -500,6 +500,8 @@ char *AIFunc_Heinrich_SwordKnockback( cast_state_t *cs ) {
 		return AIFunc_DefaultStart( cs );
 	}
 
+	AICast_GetCastState( cs->enemyNum );
+
 	if ( ent->client->ps.torsoTimer < 500 ) {
 		if ( !ent->client->ps.legsTimer ) {
 			trap_EA_MoveForward( cs->entityNum );

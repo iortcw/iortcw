@@ -1357,7 +1357,7 @@ AICast_CombatMove
 bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 	bot_state_t *bs;
 	float dist;
-	vec3_t forward;
+	vec3_t forward, backward;
 	bot_moveresult_t moveresult;
 	bot_goal_t goal;
 
@@ -1371,6 +1371,7 @@ bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 	VectorSubtract( cs->vislist[cs->enemyNum].visible_pos, bs->origin, forward );
 	//the distance towards the enemy
 	dist = VectorNormalize( forward );
+	VectorNegate( forward, backward );
 	//
 	// do we have somewhere we are trying to get to?
 	if ( cs->combatGoalTime > level.time ) {

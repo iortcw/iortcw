@@ -863,7 +863,10 @@ void FS_Rename( const char *from, const char *to ) {
 
 	FS_CheckFilenameIsMutable( to_ospath, __func__ );
 
-	FS_CreatePath( to_ospath );
+	if( FS_CreatePath( to_ospath ) ) {
+		return;
+	}
+
 	rename(from_ospath, to_ospath);
 }
 
