@@ -962,9 +962,9 @@ ifneq ($(BUILD_GAME_SO),0)
 	$(B)/$(BASEGAME)/ui_mp_$(SHLIBNAME)
    else
    TARGETS += \
-    $(B)/$(BASEGAME)/cgame.mp.$(SHLIBNAME) \
-    $(B)/$(BASEGAME)/qagame.mp.$(SHLIBNAME) \
-    $(B)/$(BASEGAME)/ui.mp.$(SHLIBNAME)
+        $(B)/$(BASEGAME)/cgame.mp.$(SHLIBNAME) \
+        $(B)/$(BASEGAME)/qagame.mp.$(SHLIBNAME) \
+        $(B)/$(BASEGAME)/ui.mp.$(SHLIBNAME)
    endif
   endif
 endif
