@@ -727,15 +727,17 @@ char *AIFunc_BlackGuardAttack1Start( cast_state_t *cs ) {
 
 	cs->weaponFireTimes[cs->bs->weaponnum] = level.time;
 
+#if 1
 	// TODO!
 	G_Printf( "TODO: black guard kick attack\n" );
 	return NULL;
-
+#else
 	// face them
 	AICast_AimAtEnemy( cs );
 	//
 	cs->aifunc = AIFunc_BlackGuardAttack1;
 	return "AIFunc_BlackGuardAttack1";
+#endif
 }
 
 
@@ -904,10 +906,10 @@ AIFunc_WarriorZombieSightStart
 ================
 */
 char *AIFunc_WarriorZombieSightStart( cast_state_t *cs ) {
-	gentity_t *ent;
-
-// RF, disabled
+#if 1 // RF, disabled
 	return NULL;
+#else
+	gentity_t *ent;
 
 	ent = &g_entities[cs->entityNum];
 	cs->bs->ideal_viewangles[YAW] = cs->bs->viewangles[YAW];
@@ -922,6 +924,7 @@ char *AIFunc_WarriorZombieSightStart( cast_state_t *cs ) {
 
 	cs->aifunc = AIFunc_WarriorZombieSight;
 	return "AIFunc_WarriorZombieSight";
+#endif
 }
 
 /*

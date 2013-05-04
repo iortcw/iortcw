@@ -1106,7 +1106,7 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		CG_ParticleExplosion( "explode1", sprOrg, sprVel, 500, 20, 160 );
 
 		// RF, throw some debris
-		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, 0xffffffff );
+		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, INT_MAX );
 	}
 
 

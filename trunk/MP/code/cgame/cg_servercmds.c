@@ -778,10 +778,8 @@ CG_RequestMoveSpeed
 =================
 */
 void CG_RequestMoveSpeed( const char *modelname ) {
+#if 0 // fretn, leftover from sp, not needed
 	animModelInfo_t *modelInfo;
-
-	// fretn, leftover from sp, not needed
-	return;
 
 	modelInfo = BG_ModelInfoForModelname( (char *)modelname );
 
@@ -792,6 +790,7 @@ void CG_RequestMoveSpeed( const char *modelname ) {
 
 	// send it
 	CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, (char *)modelname );
+#endif
 }
 
 // NERVE - SMF

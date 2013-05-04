@@ -185,10 +185,9 @@ Player teleporting in or out
 ==================
 */
 void CG_SpawnEffect( vec3_t org ) {
+#if 0 // (SA) don't play spawn in effect right now
 	localEntity_t   *le;
 	refEntity_t     *re;
-
-	return;         // (SA) don't play spawn in effect right now
 
 	le = CG_AllocLocalEntity();
 	le->leFlags = 0;
@@ -210,6 +209,7 @@ void CG_SpawnEffect( vec3_t org ) {
 
 	VectorCopy( org, re->origin );
 	re->origin[2] -= 24;
+#endif
 }
 
 qhandle_t getTestShader( void ) {

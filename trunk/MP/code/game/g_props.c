@@ -285,11 +285,8 @@ void PGUNsparks_use( gentity_t *ent, gentity_t *self, gentity_t *activator ) {
 }
 
 void Psparks_think( gentity_t *ent ) {
+#if 0 //(SA) MOVE TO CLIENT!
 	gentity_t   *tent;
-
-//(SA) MOVE TO CLIENT!
-	return;
-
 
 	if ( ent->spawnflags & 1 ) {
 		tent = G_TempEntity( ent->r.currentOrigin, EV_SPARKS_ELECTRIC );
@@ -305,6 +302,7 @@ void Psparks_think( gentity_t *ent ) {
 	tent->s.angles2[2] = ent->speed;
 
 	ent->nextthink = level.time + FRAMETIME + ent->delay + ( rand() % 600 );
+#endif
 }
 
 void sparks_angles_think( gentity_t *ent ) {
@@ -1895,11 +1893,11 @@ this will ensure that the oil sprite will show up where you want it
 the default is in the middle of the barrel on the floor
 */
 void Props_Barrel_Touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
-	return; // barrels cant move
-
+#if 0 // barrels cant move
 	if ( !( self->spawnflags & 4 ) ) {
 		Props_Chair_Touch( self, other, trace );
 	}
+#endif
 }
 
 void Props_Barrel_Animate( gentity_t *ent ) {
@@ -2040,14 +2038,13 @@ qboolean validOilSlickSpawnPoint( vec3_t point, gentity_t *ent ) {
 }
 
 void SP_OilParticles( gentity_t *ent ) {
+// Note to self quick fix
+// need to move this to client
+#if 0
 	gentity_t *OilLeak;
 	vec3_t point;
 	vec3_t vec;
 	vec3_t forward;
-
-// Note to self quick fix
-// need to move this to client
-	return;
 
 	OilLeak = G_Spawn();
 
@@ -2073,7 +2070,7 @@ void SP_OilParticles( gentity_t *ent ) {
 	OilLeak->count2 = level.time;
 
 	trap_LinkEntity( OilLeak );
-
+#endif
 }
 
 
@@ -2562,8 +2559,7 @@ void flippy_table_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) 
 }
 
 void flippy_table_animate( gentity_t *ent ) {
-	return;
-
+#if 0
 	if ( ent->s.frame == 9 ) {
 		G_UseTargets( ent, NULL );
 		ent->think = G_FreeEntity;
@@ -2573,6 +2569,7 @@ void flippy_table_animate( gentity_t *ent ) {
 		ent->s.frame++;
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
 	}
+#endif
 }
 
 void props_flippy_table_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {

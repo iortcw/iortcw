@@ -30,10 +30,12 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
+#if 0
 #define MAX_LOADING_ITEM_ICONS      26
 
 static int loadingItemIconCount;
 static qhandle_t loadingItemIcons[MAX_LOADING_ITEM_ICONS];
+#endif
 
 /*
 ======================
@@ -57,6 +59,7 @@ CG_LoadingItem
 ===================
 */
 void CG_LoadingItem( int itemNum ) {
+#if 0 //----(SA)	Max Kaufman request that we don't show any pacifier stuff for items
 	gitem_t     *item;
 
 	item = &bg_itemlist[itemNum];
@@ -65,16 +68,12 @@ void CG_LoadingItem( int itemNum ) {
 		return;
 	}
 
-//----(SA)	Max Kaufman request that we don't show any pacifier stuff for items
-	return;
-//----(SA)	end
-
-
 	if ( item->icon && loadingItemIconCount < MAX_LOADING_ITEM_ICONS ) {
 		loadingItemIcons[loadingItemIconCount++] = trap_R_RegisterShaderNoMip( item->icon );
 	}
 
 	CG_LoadingString( item->pickup_name );
+#endif //----(SA)	end
 }
 
 /*

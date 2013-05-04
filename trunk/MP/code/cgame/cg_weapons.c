@@ -5009,10 +5009,12 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 // jpw
 			break;  // (SA) testing
 
+#if 0
 			// play a water splash
 			mod = cgs.media.waterSplashModel;
 			shader = cgs.media.waterSplashShader;
 			duration = 250;
+#endif
 		}
 
 		// Ridah, optimization, only spawn the bullet hole if we are close
@@ -5625,7 +5627,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	//
 	alphaFade = ( mark == cgs.media.energyMarkShader );   // plasma fades alpha, all others fade color
 	// CG_ImpactMark( mark, origin, dir, random()*360, 1,1,1,1, alphaFade, radius, qfalse, 60000 );
-	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, 0xffffffff );
+	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, INT_MAX );
 
 
 }

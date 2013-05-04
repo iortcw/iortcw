@@ -2161,12 +2161,10 @@ G_RetrieveMoveSpeedsFromClient
 ==================
 */
 void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
+#if 0 // fretn - leftover from sp, not needed
 	char *text_p, *token;
 	animation_t *anim;
 	animModelInfo_t *modelInfo;
-
-	// fretn - leftover from sp, not needed
-	return;
 
 	text_p = text;
 
@@ -2202,4 +2200,5 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
 		}
 		anim->moveSpeed = atoi( token );
 	}
+#endif
 }
