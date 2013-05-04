@@ -71,8 +71,6 @@ static char sccsid[] = "@(#)qsort.c	8.1 (Berkeley) 6/4/93";
 static const char rcsid[] =
 #endif /* LIBC_SCCS and not lint */
 
-#include <stdlib.h>
-
 static char *med3( char *, char *, char *, cmp_t * );
 static void  swapfunc( char *, char *, int, int );
 
@@ -233,6 +231,21 @@ char *strcat( char *strDestination, const char *strSource ) {
 		s++;
 	}
 	while ( *strSource ) {
+		*s++ = *strSource++;
+	}
+	*s = 0;
+	return strDestination;
+}
+
+char *strncat( char *strDestination, const char *strSource, size_t num ) {
+	char *s;
+	int i;
+
+	s = strDestination;
+	while ( *s ) {
+		s++;
+	}
+	for ( i = 0; *strSource && i < num; i++ ) {
 		*s++ = *strSource++;
 	}
 	*s = 0;
@@ -648,7 +661,7 @@ powN
 Raise a double to a integer power
 ===============
 */
-static double powN( double base, int exp )
+double powN( double base, int exp )
 {
 	if( exp >= 0 )
 	{

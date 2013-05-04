@@ -1280,17 +1280,3 @@ void UI_DrawProportionalString( int x, int y, const char* str, int style, vec4_t
 	UI_DrawProportionalString2( x, y, str, color, sizeScale, cgs.media.charsetProp );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-

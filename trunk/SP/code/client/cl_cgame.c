@@ -1352,5 +1352,11 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 		return qfalse;
 	}
 
-	return VM_Call( cgvm, CG_GET_TAG, clientNum, tagname, or );
+	if ( VM_IsNative( cgvm ) ) {
+		return VM_Call( cgvm, CG_GET_TAG, clientNum, tagname, or );
+	} else {
+		// Hacking around passing pointers to QVM isn't pretty
+		// needs fallback code, so QVM should be fine.
+		return qfalse;
+	}
 }

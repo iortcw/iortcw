@@ -30,7 +30,7 @@ ifndef BUILD_GAME_SO
   BUILD_GAME_SO    =
 endif
 ifndef BUILD_GAME_QVM
-  BUILD_GAME_QVM   =
+  BUILD_GAME_QVM   =0
 endif
 ifndef BUILD_BASEGAME
   BUILD_BASEGAME =
@@ -429,7 +429,7 @@ ifeq ($(PLATFORM),darwin)
   CLIENT_LIBS=
   RENDERER_LIBS=
   OPTIMIZEVM=
-  
+
   BASE_CFLAGS = -Wall -fno-strict-overflow
 
   ifeq ($(ARCH),ppc)
@@ -584,7 +584,7 @@ ifeq ($(PLATFORM),mingw32)
       CLIENT_LDFLAGS += $(OPENAL_LDFLAGS)
     endif
   endif
-  
+
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3 -fno-omit-frame-pointer \
       -falign-loops=2 -funroll-loops -falign-jumps=2 -falign-functions=2 \
@@ -607,11 +607,15 @@ ifeq ($(PLATFORM),mingw32)
 
   BINEXT=.exe
 
+  ifeq ($(CROSS_COMPILING),0)
+    TOOLS_BINEXT=.exe
+  endif
+
   LIBS= -lws2_32 -lwinmm -lpsapi
   CLIENT_LDFLAGS += -mwindows -static-libgcc -static-libstdc++
   CLIENT_LIBS = -lgdi32 -lole32
   RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
-  
+
   ifeq ($(USE_FREETYPE),1)
     BASE_CFLAGS += -Ifreetype2
   endif
@@ -642,7 +646,7 @@ ifeq ($(PLATFORM),mingw32)
   # libmingw32 must be linked before libSDLmain
   CLIENT_LIBS += -lmingw32
   RENDERER_LIBS += -lmingw32
-  
+
   ifeq ($(USE_LOCAL_HEADERS),1)
     CLIENT_CFLAGS += -I$(SDLHDIR)/include
     ifeq ($(ARCH),x86)
@@ -762,12 +766,11 @@ ifeq ($(PLATFORM),openbsd)
     endif
   endif
 
-  ifeq ($(USE_CURL),1) 
+  ifeq ($(USE_CURL),1)
     ifneq ($(USE_CURL_DLOPEN),1)
       CLIENT_LIBS += -lcurl
     endif
   endif
-
 else # ifeq openbsd
 
 #############################################################################
@@ -810,7 +813,7 @@ ifeq ($(PLATFORM),irix64)
     -I. -I$(ROOT)/usr/include
   CLIENT_CFLAGS += $(SDL_CFLAGS)
   OPTIMIZE = -O3
-  
+
   SHLIBEXT=so
   SHLIBCFLAGS=
   SHLIBLDFLAGS=-shared
@@ -862,7 +865,7 @@ ifeq ($(PLATFORM),sunos)
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
   endif
   endif
-  
+
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   SHLIBEXT=so
@@ -906,7 +909,7 @@ ifndef RANLIB
   RANLIB=ranlib
 endif
 
-ifneq ($(HAVE_VM_COMPILED),false)
+ifneq ($(HAVE_VM_COMPILED),true)
   BASE_CFLAGS += -DNO_VM_COMPILED
   BUILD_GAME_QVM=0
 endif
@@ -953,13 +956,11 @@ ifneq ($(BUILD_GAME_SO),0)
 endif
 
 ifneq ($(BUILD_GAME_QVM),0)
-  ifneq ($(CROSS_COMPILING),1)
-    ifneq ($(BUILD_BASEGAME),0)
-      TARGETS += \
-      $(B)/$(BASEGAME)/vm/cgame.qvm \
-      $(B)/$(BASEGAME)/vm/qagame.qvm \
-      $(B)/$(BASEGAME)/vm/ui.qvm
-    endif
+  ifneq ($(BUILD_BASEGAME),0)
+    TARGETS += \
+    $(B)/$(BASEGAME)/vm/cgame.qvm \
+    $(B)/$(BASEGAME)/vm/qagame.qvm \
+    $(B)/$(BASEGAME)/vm/ui.qvm
   endif
 endif
 
@@ -1207,6 +1208,9 @@ targets: makedirs
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
 	@echo "  CC: $(CC)"
 	@echo "  CXX: $(CXX)"
+ifeq ($(PLATFORM),mingw32)
+	@echo "  WINDRES: $(WINDRES)"
+endif
 	@echo ""
 	@echo "  CFLAGS:"
 	$(call print_wrapped, $(CFLAGS) $(OPTIMIZE))
@@ -1268,6 +1272,11 @@ makedirs:
 # QVM BUILD TOOLS
 #############################################################################
 
+ifndef TOOLS_CC
+  # A compiler which probably produces native binaries
+  TOOLS_CC = gcc
+endif
+
 TOOLS_OPTIMIZE = -g -Wall -fno-strict-aliasing
 TOOLS_CFLAGS += $(TOOLS_OPTIMIZE) \
                 -DTEMPDIR=\"$(TEMPDIR)\" -DSYSTEM=\"\" \
@@ -1277,36 +1286,36 @@ TOOLS_LIBS =
 TOOLS_LDFLAGS =
 
 ifeq ($(GENERATE_DEPENDENCIES),1)
-	TOOLS_CFLAGS += -MMD
+  TOOLS_CFLAGS += -MMD
 endif
 
 define DO_TOOLS_CC
 $(echo_cmd) "TOOLS_CC $<"
-$(Q)$(CC) $(TOOLS_CFLAGS) -o $@ -c $<
+$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) -o $@ -c $<
 endef
 
 define DO_TOOLS_CC_DAGCHECK
 $(echo_cmd) "TOOLS_CC_DAGCHECK $<"
-$(Q)$(CC) $(TOOLS_CFLAGS) -Wno-unused -o $@ -c $<
+$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) -Wno-unused -o $@ -c $<
 endef
 
-LBURG       = $(B)/tools/lburg/lburg$(BINEXT)
+LBURG       = $(B)/tools/lburg/lburg$(TOOLS_BINEXT)
 DAGCHECK_C  = $(B)/tools/rcc/dagcheck.c
-Q3RCC       = $(B)/tools/q3rcc$(BINEXT)
-Q3CPP       = $(B)/tools/q3cpp$(BINEXT)
-Q3LCC       = $(B)/tools/q3lcc$(BINEXT)
-Q3ASM       = $(B)/tools/q3asm$(BINEXT)
+Q3RCC       = $(B)/tools/q3rcc$(TOOLS_BINEXT)
+Q3CPP       = $(B)/tools/q3cpp$(TOOLS_BINEXT)
+Q3LCC       = $(B)/tools/q3lcc$(TOOLS_BINEXT)
+Q3ASM       = $(B)/tools/q3asm$(TOOLS_BINEXT)
 
 LBURGOBJ= \
-	$(B)/tools/lburg/lburg.o \
-	$(B)/tools/lburg/gram.o
+  $(B)/tools/lburg/lburg.o \
+  $(B)/tools/lburg/gram.o
 
 $(B)/tools/lburg/%.o: $(LBURGDIR)/%.c
 	$(DO_TOOLS_CC)
 
 $(LBURG): $(LBURGOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
 
 Q3RCCOBJ = \
   $(B)/tools/rcc/alloc.o \
@@ -1351,26 +1360,26 @@ $(B)/tools/rcc/%.o: $(Q3LCCSRCDIR)/%.c
 
 $(Q3RCC): $(Q3RCCOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
 
 Q3CPPOBJ = \
-	$(B)/tools/cpp/cpp.o \
-	$(B)/tools/cpp/lex.o \
-	$(B)/tools/cpp/nlist.o \
-	$(B)/tools/cpp/tokens.o \
-	$(B)/tools/cpp/macro.o \
-	$(B)/tools/cpp/eval.o \
-	$(B)/tools/cpp/include.o \
-	$(B)/tools/cpp/hideset.o \
-	$(B)/tools/cpp/getopt.o \
-	$(B)/tools/cpp/unix.o
+  $(B)/tools/cpp/cpp.o \
+  $(B)/tools/cpp/lex.o \
+  $(B)/tools/cpp/nlist.o \
+  $(B)/tools/cpp/tokens.o \
+  $(B)/tools/cpp/macro.o \
+  $(B)/tools/cpp/eval.o \
+  $(B)/tools/cpp/include.o \
+  $(B)/tools/cpp/hideset.o \
+  $(B)/tools/cpp/getopt.o \
+  $(B)/tools/cpp/unix.o
 
 $(B)/tools/cpp/%.o: $(Q3CPPDIR)/%.c
 	$(DO_TOOLS_CC)
 
 $(Q3CPP): $(Q3CPPOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
 
 Q3LCCOBJ = \
 	$(B)/tools/etc/lcc.o \
@@ -1381,7 +1390,7 @@ $(B)/tools/etc/%.o: $(Q3LCCETCDIR)/%.c
 
 $(Q3LCC): $(Q3LCCOBJ) $(Q3RCC) $(Q3CPP)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $(Q3LCCOBJ) $(TOOLS_LIBS)
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $(Q3LCCOBJ) $(TOOLS_LIBS)
 
 define DO_Q3LCC
 $(echo_cmd) "Q3LCC $<"
@@ -1390,12 +1399,12 @@ endef
 
 define DO_CGAME_Q3LCC
 $(echo_cmd) "CGAME_Q3LCC $<"
-$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DCGAME -o $@ $<
+$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DCGAMEDLL -DCGAME -o $@ $<
 endef
 
 define DO_GAME_Q3LCC
 $(echo_cmd) "GAME_Q3LCC $<"
-$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DQAGAME -o $@ $<
+$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DGAMEDLL -DQAGAME -o $@ $<
 endef
 
 define DO_UI_Q3LCC
@@ -1412,7 +1421,7 @@ $(B)/tools/asm/%.o: $(Q3ASMDIR)/%.c
 
 $(Q3ASM): $(Q3ASMOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
+	$(Q)$(TOOLS_CC) $(TOOLS_CFLAGS) $(TOOLS_LDFLAGS) -o $@ $^ $(TOOLS_LIBS)
 
 
 #############################################################################
@@ -1531,10 +1540,10 @@ Q3OBJ = \
 
 ifeq ($(PLATFORM),mingw32)
   Q3OBJ += \
-	$(B)/client/con_passive.o
+    $(B)/client/con_passive.o
 else
   Q3OBJ += \
-	$(B)/client/con_tty.o
+    $(B)/client/con_tty.o
 endif
 
 Q3R2OBJ = \
@@ -2078,12 +2087,12 @@ ifeq ($(ARCH),x86)
   Q3DOBJ += \
       $(B)/ded/matha.o \
       $(B)/ded/snapvector.o \
-      $(B)/ded/ftola.o 
+      $(B)/ded/ftola.o
 endif
 ifeq ($(ARCH),x86_64)
   Q3DOBJ += \
       $(B)/ded/snapvector.o \
-      $(B)/ded/ftola.o 
+      $(B)/ded/ftola.o
 endif
 
 ifeq ($(USE_INTERNAL_ZLIB),1)

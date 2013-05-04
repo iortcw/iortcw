@@ -26,9 +26,6 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-
-#include <limits.h>
-
 #include "g_local.h"
 
 typedef struct teamgame_s
@@ -956,7 +953,7 @@ void SP_team_WOLF_objective( gentity_t *ent ) {
 	// set current # spawntargets
 	level.numspawntargets = numobjectives;
 	trap_GetConfigstring( CS_MULTI_INFO, cs, sizeof( cs ) );
-	sprintf( numspawntargets,"%d",numobjectives );
+	Com_sprintf( numspawntargets, sizeof(numspawntargets), "%d", numobjectives );
 	Info_SetValueForKey( cs, "numspawntargets", numspawntargets );
 	trap_SetConfigstring( CS_MULTI_INFO, cs );
 

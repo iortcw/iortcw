@@ -1413,12 +1413,12 @@ endef
 
 define DO_CGAME_Q3LCC
 $(echo_cmd) "CGAME_Q3LCC $<"
-$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DCGAME -o $@ $<
+$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DCGAMEDLL -DCGAME -o $@ $<
 endef
 
 define DO_GAME_Q3LCC
 $(echo_cmd) "GAME_Q3LCC $<"
-$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DQAGAME -o $@ $<
+$(Q)$(Q3LCC) $(BASEGAME_CFLAGS) -DGAMEDLL -DQAGAME -o $@ $<
 endef
 
 define DO_UI_Q3LCC

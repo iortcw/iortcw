@@ -2751,7 +2751,7 @@ static void CG_PlayerPowerups( centity_t *cent ) {
 
 	// flight plays a looped sound
 //	if ( powerups & ( 1 << PW_FLIGHT ) ) {
-//		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound, 255 );
+//		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound, 255 );
 //	}
 
 	// redflag
@@ -3378,7 +3378,7 @@ void CG_AddZombieSpiritEffect( centity_t *cent ) {
 		}
 		//
 		// add the sound
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.zombieSpiritLoopSound, fadeRatio );
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.zombieSpiritLoopSound, fadeRatio );
 		//
 		// if this spirit is in a good position to be released and head to the enemy, then release it
 		if ( fadeRatio == 1.0 && ( lastSpiritRelease > cg.time || ( lastSpiritRelease < cg.time - 2000 ) ) ) {
@@ -3568,7 +3568,7 @@ void CG_AddZombieFlameEffect( centity_t *cent ) {
 		CG_GetOriginForTag( cent, &cent->pe.headRefEnt, "tag_mouth", 0, morg, maxis );
 		AxisToAngles( maxis, mang );
 		CG_FireFlameChunks( cent, morg, mang, ZOMBIE_FLAME_SCALE, qtrue, 0 );
-		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, 50 );
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, 50 );
 	}
 }
 
@@ -3607,7 +3607,7 @@ void CG_AddZombieFlameShort( centity_t *cent ) {
 	}
 
 	CG_FireFlameChunks( cent, morg, cent->lerpAngles, 0.4, 2, 0 );
-	trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, 50 );
+	CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flameSound, 50 );
 }
 
 //==========================================================================
@@ -4115,7 +4115,7 @@ void CG_AddHelgaSpiritEffect( centity_t *cent ) {
 						}
 */                                                                                                                                                                                                                           //
 		// add the sound
-		trap_S_AddLoopingSound( -1, cent->lerpOrigin, vec3_origin, cgs.media.helgaSpiritLoopSound, fadeRatio );
+		CG_S_AddLoopingSound( -1, cent->lerpOrigin, vec3_origin, cgs.media.helgaSpiritLoopSound, fadeRatio );
 		//
 		// if this spirit is in a good position to be released and head to the enemy, then release it
 		if ( fadeRatio == 1.0 && ( lastSpiritRelease > cg.time || ( lastSpiritRelease < cg.time - 1000 ) ) ) {
@@ -4442,7 +4442,7 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, int powerups, int team, enti
 		trap_R_AddRefEntityToScene( ent );
 
 		if ( ent->hModel == cent->pe.legsRefEnt.hModel ) {
-			trap_S_AddLoopingSound( es->number, ent->origin, vec3_origin, cgs.media.flameCrackSound, (int)( 40.0 * alpha ) );
+			CG_S_AddLoopingSound( es->number, ent->origin, vec3_origin, cgs.media.flameCrackSound, (int)( 40.0 * alpha ) );
 		}
 	}
 

@@ -805,7 +805,7 @@ static void CG_LoadTranslationStrings( void ) {
 		if ( !token[0] ) {
 			break;
 		}
-		translateStrings[i].localname = malloc( strlen( token ) + 1 );
+		translateStrings[i].localname = (char *)malloc( strlen( token ) + 1 );
 		strcpy( translateStrings[i].localname, token );
 	}
 }
@@ -1777,7 +1777,7 @@ qboolean CG_Asset_Parse( int handle ) {
 			continue;
 		}
 	}
-	//return qfalse;
+	return qfalse;
 }
 
 void CG_ParseMenu( const char *menuFile ) {
@@ -2411,4 +2411,15 @@ void CG_Shutdown( void ) {
 	// like closing files or archiving session data
 }
 
+void CG_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume ) {
+	trap_S_AddLoopingSound( entityNum, origin, velocity, 1250, sfx, volume ); // volume was previously removed from CG_S_ADDLOOPINGSOUND. I added 'range'
+}
+
+void CG_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range ) {
+	trap_S_AddLoopingSound( entityNum, origin, velocity, range, sfx, 255 ); // RF, assume full volume, since thats how it worked before
+}
+
+void CG_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
+	trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 ); //----(SA) modified
+}
 

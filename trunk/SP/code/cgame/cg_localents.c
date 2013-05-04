@@ -443,7 +443,7 @@ void CG_AddFragment( localEntity_t *le ) {
 		if ( flameAlpha > 1.0 ) {
 			flameAlpha = 1.0;
 		}
-		trap_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 5.0 * flameAlpha ) );
+		CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 5.0 * flameAlpha ) );
 	}
 
 //----(SA)	added
@@ -538,11 +538,11 @@ void CG_AddFragment( localEntity_t *le ) {
 		if ( VectorLength( flameDir ) == 0 ) {
 			flameDir[2] = 1;
 			// play a burning sound when not moving
-			trap_S_AddLoopingSound( 0, newOrigin, vec3_origin, cgs.media.flameSound, (int)( 0.3 * 255.0 * flameAlpha ) );
+			CG_S_AddLoopingSound( 0, newOrigin, vec3_origin, cgs.media.flameSound, (int)( 0.3 * 255.0 * flameAlpha ) );
 		} else {
 			VectorNormalize( flameDir );
 			// play a flame blow sound when moving
-			trap_S_AddLoopingSound( 0, newOrigin, vec3_origin, cgs.media.flameBlowSound, (int)( 0.3 * 255.0 * flameAlpha ) );
+			CG_S_AddLoopingSound( 0, newOrigin, vec3_origin, cgs.media.flameBlowSound, (int)( 0.3 * 255.0 * flameAlpha ) );
 		}
 	}
 
@@ -1204,9 +1204,9 @@ void CG_AddClientCritter( localEntity_t *le ) {
 	// add the sound
 	if ( le->loopingSound ) {
 		if ( cg.time > le->refEntity.fadeStartTime ) {
-			trap_S_AddLoopingSound( 0, le->refEntity.origin, vec3_origin, le->loopingSound, 255 - (int)( 255.0 * (float)( cg.time - le->refEntity.fadeStartTime ) / (float)( le->refEntity.fadeEndTime - le->refEntity.fadeStartTime ) ) );
+			CG_S_AddLoopingSound( 0, le->refEntity.origin, vec3_origin, le->loopingSound, 255 - (int)( 255.0 * (float)( cg.time - le->refEntity.fadeStartTime ) / (float)( le->refEntity.fadeEndTime - le->refEntity.fadeStartTime ) ) );
 		} else {
-			trap_S_AddLoopingSound( 0, le->refEntity.origin, vec3_origin, le->loopingSound, 255 - (int)( 255.0 * ( 1.0 - alpha ) ) );
+			CG_S_AddLoopingSound( 0, le->refEntity.origin, vec3_origin, le->loopingSound, 255 - (int)( 255.0 * ( 1.0 - alpha ) ) );
 		}
 	}
 /*

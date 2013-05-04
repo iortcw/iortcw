@@ -198,19 +198,13 @@ void    trap_S_ClearLoopingSounds( qboolean killall ) {
 	syscall( CG_S_CLEARLOOPINGSOUNDS, killall );
 }
 
-void    trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume ) {
-	syscall( CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, 1250, sfx, volume );     // volume was previously removed from CG_S_ADDLOOPINGSOUND.  I added 'range'
+void    trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume ) {
+	syscall( CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, range, sfx, volume );     // volume was previously removed from CG_S_ADDLOOPINGSOUND.  I added 'range'
 }
 
-//----(SA)	added
-void    trap_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range ) {
-	syscall( CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, range, sfx, 255 );   // RF, assume full volume, since thats how it worked before
-}
-//----(SA)	end
-
-void    trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
+void    trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume ) {
 // not in use
-//	syscall( CG_S_ADDREALLOOPINGSOUND, entityNum, origin, velocity, 1250, sfx, 255 );	//----(SA)	modified
+//	syscall( CG_S_ADDREALLOOPINGSOUND, entityNum, origin, velocity, range, sfx, volume );	//----(SA)	modified
 }
 
 void    trap_S_StopLoopingSound( int entityNum ) {
@@ -518,7 +512,7 @@ qboolean trap_GetEntityToken( char *buffer, int bufferSize ) {
 
 //----(SA)	added
 // bring up a popup menu
-extern void Menus_OpenByName( const char *p );
+//extern void Menus_OpenByName( const char *p );
 
 void trap_UI_Popup( const char *arg0 ) {
 	syscall( CG_INGAME_POPUP, arg0 );

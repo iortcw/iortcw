@@ -2719,14 +2719,14 @@ static qboolean CG_DrawFollow( void ) {
 		color[1] = 0;
 		color[2] = 0;
 		if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_RED ) {
-			sprintf( deploytime,"Deploying in %d seconds", (int)( (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
+			Com_sprintf( deploytime, sizeof(deploytime), "Deploying in %d seconds", (int)( (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
 		} else {
-			sprintf( deploytime,"Deploying in %d seconds", (int)( (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
+			Com_sprintf( deploytime, sizeof(deploytime), "Deploying in %d seconds", (int)( (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
 		}
 
 		x = 0.5 * ( 640 - BIGCHAR_WIDTH * strlen( deploytime ) ); //CG_DrawStrlen( deploytime ) );
 		CG_DrawStringExt( x, 24, deploytime, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
-		sprintf( deploytime,"(Following %s)",cgs.clientinfo[ cg.snap->ps.clientNum ].name );
+		Com_sprintf( deploytime, sizeof(deploytime), "(Following %s)",cgs.clientinfo[ cg.snap->ps.clientNum ].name );
 		x = 0.5 * ( 640 - BIGCHAR_WIDTH * strlen( deploytime ) ); //CG_DrawStrlen( deploytime ) );
 		CG_DrawStringExt( x, 48, deploytime, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0 );
 
@@ -3050,8 +3050,8 @@ static void CG_DrawFlashFire( void ) {
 		CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		trap_R_SetColor( NULL );
 
-		trap_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameSound, (int)( 255.0 * alpha ) );
-		trap_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
+		CG_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameSound, (int)( 255.0 * alpha ) );
+		CG_S_AddLoopingSound( cg.snap->ps.clientNum, cg.snap->ps.origin, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * alpha ) );
 	} else {
 		cg.v_noFireTime = cg.time;
 	}

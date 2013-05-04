@@ -392,16 +392,15 @@ AICast_ScriptParse
   Parses the script for the given character
 ==============
 */
-
+#define MAX_SCRIPT_EVENTS   64
+cast_script_event_t cast_temp_events[MAX_SCRIPT_EVENTS];
 void AICast_ScriptParse( cast_state_t *cs ) {
-	#define MAX_SCRIPT_EVENTS   64
 	gentity_t   *ent;
 	char        *pScript;
 	char        *token;
 	qboolean wantName;
 	qboolean inScript;
 	int eventNum;
-	cast_script_event_t events[MAX_SCRIPT_EVENTS];
 	int numEventItems;
 	cast_script_event_t *curEvent;
 	char params[MAX_QPATH];
@@ -429,7 +428,7 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 	bracketLevel = 0;
 	numEventItems = 0;
 
-	memset( events, 0, sizeof( events ) );
+	memset( cast_temp_events, 0, sizeof( cast_temp_events ) );
 
 	while ( 1 )
 	{
@@ -480,7 +479,7 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 				cs->aiFlags &= ~AIFL_CORPSESIGHTING;
 			}
 
-			curEvent = &events[numEventItems];
+			curEvent = &cast_temp_events[numEventItems];
 			curEvent->eventNum = eventNum;
 			memset( params, 0, sizeof( params ) );
 
@@ -606,7 +605,7 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 	// alloc and copy the events into the cast_state_t for this cast
 	if ( numEventItems > 0 ) {
 		cs->castScriptEvents = G_Alloc( sizeof( cast_script_event_t ) * numEventItems );
-		memcpy( cs->castScriptEvents, events, sizeof( cast_script_event_t ) * numEventItems );
+		memcpy( cs->castScriptEvents, cast_temp_events, sizeof( cast_script_event_t ) * numEventItems );
 		cs->numCastScriptEvents = numEventItems;
 
 		cs->castScriptStatus.castScriptEventIndex = -1;
