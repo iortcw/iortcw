@@ -644,7 +644,7 @@ qboolean PC_Script_Parse( int handle, const char **out ) {
 		}
 		Q_strcat( script, 1024, " " );
 	}
-	//return qfalse;
+	return qfalse;
 }
 
 // display, window, menu, item code
@@ -5399,8 +5399,7 @@ qboolean ItemParse_cvarStrList( itemDef_t *item, int handle ) {
 		}
 
 	}
-
-	//return qfalse;
+	return qfalse;
 }
 
 qboolean ItemParse_cvarFloatList( itemDef_t *item, int handle ) {
@@ -5447,8 +5446,7 @@ qboolean ItemParse_cvarFloatList( itemDef_t *item, int handle ) {
 		}
 
 	}
-
-	//return qfalse;
+	return qfalse;
 }
 
 
@@ -5686,6 +5684,7 @@ qboolean Item_Parse( int handle, itemDef_t *item ) {
 			return qfalse;
 		}
 	}
+	return qfalse;
 }
 
 
@@ -6142,6 +6141,7 @@ qboolean Menu_Parse( int handle, menuDef_t *menu ) {
 			return qfalse;
 		}
 	}
+	return qfalse;
 }
 
 /*

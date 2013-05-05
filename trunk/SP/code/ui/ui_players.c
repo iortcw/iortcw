@@ -1010,7 +1010,7 @@ AnimParseAnimConfig
 static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *filename, const char *input ) {
 	char    *text_p, *token;
 	animation_t *animations;
-	headAnimation_t *headAnims;
+//	headAnimation_t *headAnims;
 	int i, fps, skip = -1;
 
 //	if (!weaponStringsInited) {
@@ -1212,8 +1212,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 		return qfalse;
 	}
 
-	return qtrue;           // NERVE - SMF - blah
-
+#if 0
 	// check for head anims
 	token = COM_Parse( &text_p );
 	if ( token && token[0] ) {
@@ -1262,6 +1261,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 
 		}
 	}
+#endif
 
 	return qtrue;
 }

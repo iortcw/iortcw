@@ -699,14 +699,14 @@ vec_t VectorLength( const vec3_t v );
 vec_t VectorLengthSquared( const vec3_t v );
 vec_t Distance( const vec3_t p1, const vec3_t p2 );
 vec_t DistanceSquared( const vec3_t p1, const vec3_t p2 );
+void VectorNormalizeFast( vec3_t v );     // does NOT return vector length, uses rsqrt approximation
+void VectorInverse( vec3_t v );
 void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross );
 
 #endif
 
 vec_t VectorNormalize( vec3_t v );       // returns vector length
-void VectorNormalizeFast( vec3_t v );     // does NOT return vector length, uses rsqrt approximation
 vec_t VectorNormalize2( const vec3_t v, vec3_t out );
-void VectorInverse( vec3_t v );
 void Vector4Scale( const vec4_t in, vec_t scale, vec4_t out );
 void VectorRotate( vec3_t in, vec3_t matrix[3], vec3_t out );
 int Q_log2( int val );

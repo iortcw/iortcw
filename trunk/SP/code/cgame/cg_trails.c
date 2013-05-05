@@ -426,11 +426,11 @@ CG_AddTrailToScene
 struct {
 	vec3_t vforward, vright, vup;
 } trailOrientation;
+#define MAX_TRAIL_VERTS     2048
+static polyVert_t verts[MAX_TRAIL_VERTS];
+static polyVert_t outVerts[MAX_TRAIL_VERTS * 3];
 
 void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs ) {
-	#define MAX_TRAIL_VERTS     2048
-	polyVert_t verts[MAX_TRAIL_VERTS];
-	polyVert_t outVerts[MAX_TRAIL_VERTS * 3];
 	int k, i, n, l, numOutVerts;
 	polyVert_t mid;
 	float mod[4];

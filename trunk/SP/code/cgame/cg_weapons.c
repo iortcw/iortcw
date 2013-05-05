@@ -1917,7 +1917,7 @@ CG_TeslaSpinAngle
 static float CG_TeslaSpinAngle( centity_t *cent ) {
 	int delta;
 	float angle;
-	float speed;
+//	float speed;
 
 	delta = cg.time - cent->pe.barrelTime;
 
@@ -1943,7 +1943,7 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 //		cent->pe.barrelAngle += delta * TESLA_SPINSPEED;
 //	else
 //		cent->pe.barrelAngle += delta * TESLA_IDLESPEED;
-
+#if 0
 	return AngleMod( cent->pe.barrelAngle );
 
 
@@ -1971,6 +1971,7 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 	}
 
 	return angle;
+#endif
 }
 
 
@@ -2408,9 +2409,8 @@ CG_AddProtoWeapons
 ==============
 */
 void CG_AddProtoWeapons( refEntity_t *parent, playerState_t *ps, centity_t *cent ) {
+#if 0
 	refEntity_t gun;
-
-	return;
 
 	if ( !( cent->currentState.aiChar == AICHAR_PROTOSOLDIER ) ) {
 		return;
@@ -2422,6 +2422,7 @@ void CG_AddProtoWeapons( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	gun.renderfx    = parent->renderfx;
 	CG_PositionEntityOnTag( &gun, parent, "tag_armright", 0, NULL );
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups, ps, cent );
+#endif
 }
 //----(SA)	end
 
@@ -3684,9 +3685,8 @@ CG_WeaponSuggest
 ==============
 */
 void CG_WeaponSuggest( int weap ) {
+#if 0 // not currently supported
 	int bank, cycle;
-
-	return; // not currently supported
 
 	if ( !cg_useSuggestedWeapons.integer ) {
 		return;
@@ -3697,7 +3697,7 @@ void CG_WeaponSuggest( int weap ) {
 	CG_WeaponIndex( weap, &bank, &cycle );    // get location of this weap
 
 	cg.lastWeapSelInBank[bank] = weap;      // make this weap first priority in that bank
-
+#endif
 }
 
 
@@ -5220,11 +5220,12 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 
 			break;  // (SA) testing
 
+#if 0
 			// play a water splash
 			mod = cgs.media.waterSplashModel;
 			shader = cgs.media.waterSplashShader;
 			duration = 250;
-
+#endif
 		}
 
 		// Ridah, optimization, only spawn the bullet hole if we are close
@@ -5690,7 +5691,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	//
 	alphaFade = ( mark == cgs.media.energyMarkShader );   // plasma fades alpha, all others fade color
 	// CG_ImpactMark( mark, origin, dir, random()*360, 1,1,1,1, alphaFade, radius, qfalse, 60000 );
-	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, 0xffffffff );
+	CG_ImpactMark( mark, origin, dir, random() * 360, 1,1,1,1, alphaFade, radius, qfalse, INT_MAX );
 
 	CG_StartShakeCamera( 0.05, 300, origin, 300 );
 }

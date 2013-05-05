@@ -31,6 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_local.h"
 #include "../ui/ui_shared.h"
 
+#if 0
 #define MAX_LOADING_PLAYER_ICONS    16
 #define MAX_LOADING_ITEM_ICONS      26
 
@@ -38,7 +39,7 @@ static int loadingPlayerIconCount;
 static int loadingItemIconCount;
 static qhandle_t loadingPlayerIcons[MAX_LOADING_PLAYER_ICONS];
 static qhandle_t loadingItemIcons[MAX_LOADING_ITEM_ICONS];
-
+#endif
 
 /*
 ===================
@@ -46,11 +47,9 @@ CG_DrawLoadingIcons
 ===================
 */
 static void CG_DrawLoadingIcons( void ) {
+#if 0 // JOSEPH 5-2-00 Per MAXX
 	int n;
 	int x, y;
-
-	// JOSEPH 5-2-00 Per MAXX
-	return;
 
 	for ( n = 0; n < loadingPlayerIconCount; n++ ) {
 		x = 16 + n * 78;
@@ -66,6 +65,7 @@ static void CG_DrawLoadingIcons( void ) {
 		x = 16 + n % 13 * 48;
 		CG_DrawPic( x, y, 32, 32, loadingItemIcons[n] );
 	}
+#endif
 }
 
 
@@ -91,6 +91,7 @@ CG_LoadingItem
 ===================
 */
 void CG_LoadingItem( int itemNum ) {
+#if 0 //----(SA)	Max Kaufman request that we don't show any pacifier stuff for items
 	gitem_t     *item;
 
 	item = &bg_itemlist[itemNum];
@@ -99,16 +100,12 @@ void CG_LoadingItem( int itemNum ) {
 		return;
 	}
 
-//----(SA)	Max Kaufman request that we don't show any pacifier stuff for items
-	return;
-//----(SA)	end
-
-
 	if ( item->icon && loadingItemIconCount < MAX_LOADING_ITEM_ICONS ) {
 		loadingItemIcons[loadingItemIconCount++] = trap_R_RegisterShaderNoMip( item->icon );
 	}
 
 	CG_LoadingString( cgs.itemPrintNames[item - bg_itemlist] );
+#endif //----(SA)	end
 }
 
 /*

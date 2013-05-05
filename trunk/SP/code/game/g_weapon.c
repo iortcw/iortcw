@@ -757,15 +757,9 @@ void Tesla_Fire( gentity_t *ent ) {
 
 
 void RubbleFlagCheck( gentity_t *ent, trace_t tr ) {
+#if 0 // (SA) moving client-side
 	qboolean is_valid = qfalse;
 	int type = 0;
-
-	// (SA) moving client-side
-
-	return;
-
-
-
 
 	if ( tr.surfaceFlags & SURF_RUBBLE || tr.surfaceFlags & SURF_GRAVEL ) {
 		is_valid = qtrue;
@@ -809,7 +803,7 @@ void RubbleFlagCheck( gentity_t *ent, trace_t tr ) {
 
 		}
 	}
-
+#endif
 }
 
 /*

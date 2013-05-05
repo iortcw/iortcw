@@ -665,7 +665,7 @@ qboolean AICast_ScriptAction_FollowCast( cast_state_t *cs, char *params ) {
 	AIFunc_ChaseGoalStart( cs, ent->s.number, 64, qtrue );
 
 	return qtrue;
-};
+}
 
 /*
 ================
@@ -984,7 +984,7 @@ qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params ) {
 		}
 		return qfalse;
 	}
-};
+}
 
 /*
 =================
@@ -1073,7 +1073,7 @@ qboolean AICast_ScriptAction_SetAmmo( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 /*
 =================
@@ -1136,7 +1136,7 @@ qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 
 
@@ -1229,7 +1229,7 @@ qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 
 
@@ -1363,7 +1363,7 @@ qboolean AICast_ScriptAction_GiveWeapon( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 /*
 =================
@@ -1448,7 +1448,7 @@ qboolean AICast_ScriptAction_TakeWeapon( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 
 
@@ -1485,7 +1485,7 @@ qboolean AICast_ScriptAction_GiveInventory( cast_state_t *cs, char *params ) {
 	}
 
 	return qtrue;
-};
+}
 
 
 //----(SA)	end
@@ -1525,6 +1525,8 @@ qboolean AICast_ScriptAction_Movetype( cast_state_t *cs, char *params ) {
 
 	return qtrue;
 }
+
+
 /*
 =================
 AICast_ScriptAction_AlertEntity

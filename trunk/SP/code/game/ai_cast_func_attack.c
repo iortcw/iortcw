@@ -1063,10 +1063,10 @@ AIFunc_WarriorZombieSightStart
 ================
 */
 char *AIFunc_WarriorZombieSightStart( cast_state_t *cs ) {
-	gentity_t *ent;
-
-// RF, disabled
+#if 1 // RF, disabled
 	return NULL;
+#else
+	gentity_t *ent;
 
 	ent = &g_entities[cs->entityNum];
 	cs->ideal_viewangles[YAW] = cs->viewangles[YAW];
@@ -1081,6 +1081,7 @@ char *AIFunc_WarriorZombieSightStart( cast_state_t *cs ) {
 
 	cs->aifunc = AIFunc_WarriorZombieSight;
 	return "AIFunc_WarriorZombieSight";
+#endif
 }
 
 /*

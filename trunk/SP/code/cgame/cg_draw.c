@@ -2751,13 +2751,11 @@ CG_DrawAmmoWarning
 =================
 */
 static void CG_DrawAmmoWarning( void ) {
-	const char  *s;
-	int w;
-
 //----(SA)	forcing return for now
 //			if we have messages to show here, comment back in
-	return;
-
+#if 0
+	const char  *s;
+	int w;
 
 	if ( cg_drawAmmoWarning.integer == 0 ) {
 		return;
@@ -2774,6 +2772,7 @@ static void CG_DrawAmmoWarning( void ) {
 	}
 	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 	CG_DrawBigString( 320 - w / 2, 64, s, 1.0F );
+#endif
 }
 
 /*
@@ -3294,7 +3293,7 @@ void CG_Fade( int r, int g, int b, int a, int time, int duration ) {
 
 	return;
 
-
+#if 0 // This is the MP code (Which is correct?)
 	if ( time <= 0 ) {  // do instantly
 		cg.fadeRate = 1;
 		cg.fadeTime = cg.time - 1;  // set cg.fadeTime behind cg.time so it will start out 'done'
@@ -3307,6 +3306,7 @@ void CG_Fade( int r, int g, int b, int a, int time, int duration ) {
 	cg.fadeColor2[ 1 ] = ( float )g / 255.0f;
 	cg.fadeColor2[ 2 ] = ( float )b / 255.0f;
 	cg.fadeColor2[ 3 ] = ( float )a / 255.0f;
+#endif
 }
 
 

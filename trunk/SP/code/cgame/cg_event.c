@@ -1182,7 +1182,7 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		VectorMA( origin, 16, dir, sprOrg );
 		VectorScale( dir, 100, sprVel );
 		CG_ParticleExplosion( "expblue", sprOrg, sprVel, 500, 20, 160 );
-		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, 0xffffffff );
+		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, INT_MAX );
 	}
 
 

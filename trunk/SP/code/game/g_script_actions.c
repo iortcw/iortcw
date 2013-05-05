@@ -575,7 +575,7 @@ qboolean G_ScriptAction_PlayAnim( gentity_t *ent, char *params ) {
 	} else {
 		return qfalse;
 	}
-};
+}
 
 /*
 =================

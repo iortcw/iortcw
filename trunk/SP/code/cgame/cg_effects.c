@@ -40,12 +40,11 @@ Bullets shot underwater
 ==================
 */
 void CG_BubbleTrail( vec3_t start, vec3_t end, float size, float spacing ) {
+#if 0
 	vec3_t move;
 	vec3_t vec;
 	float len;
 	int i;
-
-	return;
 
 	VectorCopy( start, move );
 	VectorSubtract( end, start, vec );
@@ -93,6 +92,7 @@ void CG_BubbleTrail( vec3_t start, vec3_t end, float size, float spacing ) {
 
 		VectorAdd( move, vec, move );
 	}
+#endif
 }
 
 /*
@@ -181,10 +181,9 @@ Player teleporting in or out
 ==================
 */
 void CG_SpawnEffect( vec3_t org ) {
+#if 0 // (SA) don't play spawn in effect right now
 	localEntity_t   *le;
 	refEntity_t     *re;
-
-	return;         // (SA) don't play spawn in effect right now
 
 	le = CG_AllocLocalEntity();
 	le->leFlags = 0;
@@ -206,6 +205,7 @@ void CG_SpawnEffect( vec3_t org ) {
 
 	VectorCopy( org, re->origin );
 	re->origin[2] -= 24;
+#endif
 }
 
 
@@ -1333,7 +1333,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	vec4_t colorNorm;       // normalized color vector
 	refEntity_t ent;
 	vec3_t angles;
-	float deadFrac = 0;
+//	float deadFrac = 0;
 
 	VectorCopy( realstart, start );
 
@@ -1445,6 +1445,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 
 
 	if ( cent->currentState.frame == 1 ) {    // dead
+#if 0
 		deadFrac = (float)( cg.time - cent->currentState.time2 ) / 5000.0f;
 
 		// no fade out, just off
@@ -1453,6 +1454,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 
 		startAlpha *= ( 1.0f - deadFrac );
 		endAlpha *= ( 1.0f - deadFrac );
+#endif
 	}
 
 
