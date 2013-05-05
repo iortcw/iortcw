@@ -699,7 +699,7 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 	vec3_t hitPos, hitDir, v, testDir;
 	float bestHitDist, thisDist;
 	qboolean foundHit;
-	int i, j, bestHit;
+	int i, j, bestHit = 0;
 	unsigned short *hitTrav;
 	byte hitCounts[ZOMBIEFX_MAX_VERTS];     // so we can quickly tell if a particular vert has been hit enough times already
 
