@@ -134,9 +134,9 @@ char *Sys_ConsoleInput(void)
 }
 
 #ifdef DEDICATED
-#	define PID_FILENAME PRODUCT_NAME "_server.pid"
+#	define PID_FILENAME "iowolfmp_server.pid"
 #else
-#	define PID_FILENAME PRODUCT_NAME ".pid"
+#	define PID_FILENAME "iowolfmp.pid"
 #endif
 
 /*
