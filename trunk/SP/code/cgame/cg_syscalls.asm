@@ -127,5 +127,3 @@ equ trap_UI_ClosePopup			-124
 equ trap_UI_LimboChat			-125
 equ trap_GetModelInfo			-126
 
-equ malloc -999 ; BOOM
-
