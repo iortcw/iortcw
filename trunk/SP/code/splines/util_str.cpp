@@ -445,7 +445,7 @@ void idStr::snprintf
 	assert( len < size );
 
 	if(len >= size)
-		Com_Printf("Com_sprintf: Output length %d too short, require %d bytes.\n", size, len + 1);
+		Com_Printf("Com_sprintf: Output length %d too short, requires %d bytes.\n", size, len + 1);
 
 	strncpy( dst, buffer, size - 1 );
 }

@@ -146,7 +146,7 @@ static int      icmp( const char *s1, const char *s2 );
 static int      cmpn( const char *s1, const char *s2, int n );
 static int      cmp( const char *s1, const char *s2 );
 
-static void     snprintf( char *dst, int size, const char *fmt, ... );
+static void     snprintf( char *dst, int size, const char *fmt, ... )  __attribute__ ((format (printf, 3, 4)));
 
 static bool      isNumeric( const char *str );
 bool    isNumeric( void ) const;
