@@ -27,9 +27,9 @@ equ	trap_CM_PointContents				-24
 equ	trap_CM_TransformedPointContents	-25
 equ	trap_CM_BoxTrace					-26
 equ	trap_CM_TransformedBoxTrace			-27
-equ trap_CM_TempCapsuleModel			-28
-equ trap_CM_CapsuleTrace				-29
-equ trap_CM_TransformedCapsuleTrace		-30
+equ trap_CM_CapsuleTrace				-28
+equ trap_CM_TransformedCapsuleTrace		-29
+equ trap_CM_TempCapsuleModel			-30
 equ	trap_CM_MarkFragments				-31
 equ	trap_S_StartSound					-32
 equ trap_S_StartSoundEx					-33
