@@ -3256,7 +3256,7 @@ static __attribute__ ((format (printf, 2, 3))) void QDECL CL_RefPrintf( int prin
 	char msg[MAXPRINTMSG];
 
 	va_start( argptr,fmt );
-	vsprintf( msg,fmt,argptr );
+	Q_vsnprintf( msg, sizeof ( msg ), fmt, argptr );
 	va_end( argptr );
 
 	if ( print_level == PRINT_ALL ) {

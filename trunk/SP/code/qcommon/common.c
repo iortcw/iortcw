@@ -178,7 +178,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	static qboolean opening_qconsole = qfalse;
 
 	va_start( argptr,fmt );
-	vsprintf( msg,fmt,argptr );
+	Q_vsnprintf( msg, sizeof (msg), fmt, argptr );
 	va_end( argptr );
 
 	if ( rd_buffer ) {
@@ -257,7 +257,7 @@ void QDECL Com_DPrintf( const char *fmt, ... ) {
 	}
 
 	va_start( argptr,fmt );
-	vsprintf( msg,fmt,argptr );
+	Q_vsnprintf( msg, sizeof ( msg ), fmt, argptr );
 	va_end( argptr );
 
 	Com_Printf( "%s", msg );
