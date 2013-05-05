@@ -597,9 +597,6 @@ void RB_ZombieFXInit( void ) {
 void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir ) {
 	int part = 0;
 
-// disabled for E3, are we still going to use this?
-	return;
-
 	if ( entityNum == -1 ) {
 		// hack, reset data
 		RB_ZombieFXInit();
@@ -637,9 +634,6 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 	int i, j, bestHit;
 	unsigned short *hitTrav;
 	byte hitCounts[ZOMBIEFX_MAX_VERTS];     // so we can quickly tell if a particular vert has been hit enough times already
-
-// disabled for E3, are we still going to use this?
-	return;
 
 	// first build the hitCount list
 	memset( hitCounts, 0, sizeof( hitCounts ) );
@@ -737,9 +731,6 @@ void RB_ZombieFXShowFleshHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNu
 	unsigned short *vertHits;
 	int i;
 
-// disabled for E3, are we still going to use this?
-	return;
-
 	vertColors = tess.vertexColors[oldNumVerts];
 	vertHits = fleshHitVerts->vertHits;
 
@@ -758,9 +749,6 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
 	float   *xyz, *norm;
 	int i;
 	float alpha;
-
-// disabled for E3, are we still going to use this?
-	return;
 
 	vertColors = tess.vertexColors[oldNumVerts];
 	xyz = tess.xyz[oldNumVerts];
@@ -800,9 +788,6 @@ void RB_ZombieFX( int part, drawSurf_t *drawSurf, int oldNumVerts, int oldNumInd
 	trZombieFleshHitverts_t *fleshHitVerts;
 
 	// Central point for Zombie post-tess processing. Various effects can be added from this point
-
-// disabled for E3, are we still going to use this?
-	return;
 
 	if ( *drawSurf->surface == SF_MD3 ) {
 		surfName = ( (md3Surface_t *)drawSurf->surface )->name;
