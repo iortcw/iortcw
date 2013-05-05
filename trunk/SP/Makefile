@@ -724,10 +724,6 @@ ifeq ($(PLATFORM),freebsd)
       BASE_CFLAGS += -m64
     endif
   endif
-
-  ifeq ($(ARCH),x86_64)
-    FILE_ARCH=amd64
-  endif
 else # ifeq freebsd
 
 #############################################################################
@@ -737,8 +733,46 @@ else # ifeq freebsd
 ifeq ($(PLATFORM),openbsd)
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow \
-    -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
+    -pipe -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
+
+  OPTIMIZEVM = -O3 -funroll-loops -fomit-frame-pointer
+  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+
+  ifeq ($(ARCH),x86_64)
+    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
+      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
+      -fstrength-reduce
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    HAVE_VM_COMPILED = true
+  else
+  ifeq ($(ARCH),x86)
+    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
+      -funroll-loops -falign-loops=2 -falign-jumps=2 \
+      -falign-functions=2 -fstrength-reduce
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    HAVE_VM_COMPILED=true
+  else
+  ifeq ($(ARCH),ppc)
+    BASE_CFLAGS += -maltivec
+    HAVE_VM_COMPILED=true
+  endif
+  ifeq ($(ARCH),ppc64)
+    BASE_CFLAGS += -maltivec
+    HAVE_VM_COMPILED=true
+  endif
+  ifeq ($(ARCH),sparc64)
+    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
+    HAVE_VM_COMPILED=true
+  endif
+  ifeq ($(ARCH),alpha)
+    # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
+    # -ffast-math will cause the client to die with SIGFPE on Alpha
+    OPTIMIZE = $(OPTIMIZEVM)
+  endif
+  endif
+  endif
 
   ifeq ($(USE_CURL),1)
     CLIENT_CFLAGS += $(CURL_CFLAGS)
@@ -752,7 +786,7 @@ ifeq ($(PLATFORM),openbsd)
   SHLIBCFLAGS=-fPIC
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
-  THREAD_LIBS=-pthread
+  THREAD_LIBS=-lpthread
   LIBS=-lm
 
   CLIENT_LIBS =
@@ -762,7 +796,7 @@ ifeq ($(PLATFORM),openbsd)
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
-      CLIENT_LIBS += $(THREAD_LIBS) -lossaudio -lopenal
+      CLIENT_LIBS += $(THREAD_LIBS) -lopenal
     endif
   endif
 
@@ -792,10 +826,6 @@ ifeq ($(PLATFORM),netbsd)
   endif
 
   BUILD_CLIENT = 0
-
-  ifeq ($(ARCH),x86_64)
-    FILE_ARCH=amd64
-  endif
 else # ifeq netbsd
 
 #############################################################################
