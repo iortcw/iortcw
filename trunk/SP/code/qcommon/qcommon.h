@@ -1187,7 +1187,7 @@ dialogResult_t Sys_Dialog( dialogType_t type, const char *message, const char *t
 
 qboolean Sys_WritePIDFile( void );
 
-void Sys_StartProcess( char *exeName, qboolean doexit );            // NERVE - SMF
+void Sys_StartProcess( char *cmdline, qboolean doexit );            // NERVE - SMF
 // TTimo
 // show_bug.cgi?id=447
 //int Sys_ShellExecute(char *op, char *file, qboolean doexit, char *params, char *dir);	//----(SA) added

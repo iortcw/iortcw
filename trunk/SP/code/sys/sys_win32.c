@@ -840,7 +840,9 @@ void Sys_StartProcess( char *exeName, qboolean doexit ) {           // NERVE - S
 	si.cb = sizeof( si );
 
 	GetCurrentDirectory( _MAX_PATH, szPathOrig );
-	if ( !CreateProcess( NULL, va( "%s\\%s", szPathOrig, exeName ), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) ) {
+	Cbuf_ExecuteText( EXEC_NOW, "net_stop" );
+	if ( !CreateProcess( NULL, va( "%s\\%s", szPathOrig, exeName ), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) )
+	{
 		// couldn't start it, popup error box
 		Com_Error( ERR_DROP, "Could not start process: '%s\\%s' ", szPathOrig, exeName  );
 		return;

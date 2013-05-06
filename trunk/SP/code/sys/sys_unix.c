@@ -944,9 +944,9 @@ void Sys_StartProcess( char *cmdline, qboolean doexit ) {
 		Com_DPrintf( "Sys_StartProcess %s (delaying to final exit)\n", cmdline );
 		Q_strncpyz( exit_cmdline, cmdline, MAX_CMD );
 		Cbuf_ExecuteText( EXEC_APPEND, "quit" );
-		return;
 	}
 
+	Cbuf_ExecuteText( EXEC_NOW, "net_stop" );
 	Com_DPrintf( "Sys_StartProcess %s\n", cmdline );
 	Sys_DoStartProcess( cmdline );
 }
