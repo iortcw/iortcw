@@ -226,6 +226,8 @@ static __attribute__ ((noreturn)) void Sys_Exit( int exitCode )
 			remove( pidFile );
 	}
 
+	NET_Shutdown( );
+
 	Sys_PlatformExit( );
 
 	exit( exitCode );

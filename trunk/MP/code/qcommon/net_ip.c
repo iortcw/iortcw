@@ -1587,6 +1587,7 @@ void NET_Init( void ) {
 	NET_Config( qtrue );
 	
 	Cmd_AddCommand ("net_restart", NET_Restart_f);
+	Cmd_AddCommand ("net_stop", NET_Shutdown);
 }
 
 

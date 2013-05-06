@@ -250,6 +250,7 @@ void Sys_StartProcess( char *exeName, qboolean doexit ) {
 	GetCurrentDirectory( _MAX_PATH, szPathOrig );
 
 	// JPW NERVE swiped from Sherman's SP code
+	Cbuf_ExecuteText( EXEC_NOW, "net_stop" );
 	if ( !CreateProcess( NULL, va( "%s\\%s", szPathOrig, exeName ), NULL, NULL,FALSE, 0, NULL, NULL, &si, &pi ) ) {
 		// couldn't start it, popup error box
 		Com_Error( ERR_DROP, "Could not start process: '%s\\%s' ", szPathOrig, exeName  );
@@ -259,7 +260,7 @@ void Sys_StartProcess( char *exeName, qboolean doexit ) {
 
 	// TTimo: similar way of exiting as used in Sys_OpenURL below
 	if ( doexit ) {
-		Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
+		Cbuf_ExecuteText( EXEC_APPEND, "quit" );
 	}
 }
 
@@ -286,7 +287,7 @@ void Sys_OpenURL( const char *url, qboolean doexit ) {
 	}
 
 	if ( doexit ) {
-		Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
+		Cbuf_ExecuteText( EXEC_APPEND, "quit" );
 	}
 }
 
