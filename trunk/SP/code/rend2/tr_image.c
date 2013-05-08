@@ -3438,6 +3438,10 @@ qboolean RE_GetSkinModel( qhandle_t skinid, const char *type, char *name ) {
 	int i;
 	skin_t      *bar;
 
+	if ( skinid < 1 || skinid >= tr.numSkins ) {
+		return qfalse;
+	}
+
 	bar = tr.skins[skinid];
 
 	if ( !Q_stricmp( type, "playerscale" ) ) {    // client is requesting scale from the skin rather than a model
