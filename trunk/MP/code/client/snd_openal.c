@@ -1002,7 +1002,7 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 	qboolean weakest_isplaying = qtrue;
 	int weakest_numloops = 0;
 	src_t *curSource;
-	qboolean cutDuplicateSound;
+	qboolean cutDuplicateSound = qfalse;
 
 	for(i = 0; i < srcCount; i++)
 	{
@@ -1056,6 +1056,11 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 		// shut off other sounds on this channel if necessary
 		if((curSource->entity == entnum) && curSource->sfx > 0 && (curSource->channel == channel))
 		{
+			// currently apply only to non-looping sounds
+			if ( curSource->isLooping ) {
+				continue;
+			}
+
 			// cutoff all on channel
 			if ( flags & SND_CUTOFF_ALL ) {
 				S_AL_SrcKill(i);
