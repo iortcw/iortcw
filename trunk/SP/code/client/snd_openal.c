@@ -544,6 +544,8 @@ typedef struct src_s
 	vec3_t		loopSpeakerPos;		// Origin of the loop speaker
 	
 	qboolean	local;			// Is this local (relative to the cam)
+
+	int			flags;			// flags from StartSoundEx
 } src_t;
 
 #ifdef MACOS_X
@@ -755,7 +757,7 @@ S_AL_SrcSetup
 =================
 */
 static void S_AL_SrcSetup(srcHandle_t src, sfxHandle_t sfx, alSrcPriority_t priority,
-		int entity, int channel, qboolean local)
+		int entity, int channel, int flags, qboolean local)
 {
 	src_t *curSource;
 
@@ -775,6 +777,7 @@ static void S_AL_SrcSetup(srcHandle_t src, sfxHandle_t sfx, alSrcPriority_t prio
 	curSource->curGain = s_alGain->value * s_volume->value;
 	curSource->scaleGain = curSource->curGain;
 	curSource->local = local;
+	curSource->flags = flags;
 
 	// Set up OpenAL source
 	if(sfx >= 0)
@@ -988,7 +991,7 @@ S_AL_SrcAlloc
 =================
 */
 static
-srcHandle_t S_AL_SrcAlloc( alSrcPriority_t priority, int entnum, int channel )
+srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum, int channel, int flags )
 {
 	int i;
 	int empty = -1;
@@ -999,6 +1002,7 @@ srcHandle_t S_AL_SrcAlloc( alSrcPriority_t priority, int entnum, int channel )
 	qboolean weakest_isplaying = qtrue;
 	int weakest_numloops = 0;
 	src_t *curSource;
+	qboolean cutDuplicateSound;
 
 	for(i = 0; i < srcCount; i++)
 	{
@@ -1011,7 +1015,8 @@ srcHandle_t S_AL_SrcAlloc( alSrcPriority_t priority, int entnum, int channel )
 		// Is it empty or not?
 		if(!curSource->isActive)
 		{
-			empty = i;
+			if (empty == -1)
+				empty = i;
 			break;
 		}
 
@@ -1048,17 +1053,56 @@ srcHandle_t S_AL_SrcAlloc( alSrcPriority_t priority, int entnum, int channel )
 			}
 		}
 
-		// The channel system is not actually adhered to by baseq3, and not
-		// implemented in snd_dma.c, so while the following is strictly correct, it
-		// causes incorrect behaviour versus defacto baseq3
-#if 0
-		// Is it an exact match, and not on channel 0?
-		if((curSource->entity == entnum) && (curSource->channel == channel) && (channel != 0))
+		// shut off other sounds on this channel if necessary
+		if((curSource->entity == entnum) && curSource->sfx > 0 && (curSource->channel == channel))
 		{
-			S_AL_SrcKill(i);
-			return i;
+			// cutoff all on channel
+			if ( flags & SND_CUTOFF_ALL ) {
+				S_AL_SrcKill(i);
+				if (empty == -1)
+					empty = i;
+				continue;
+			}
+
+			if ( curSource->flags & SND_NOCUT ) {
+				continue;
+			}
+
+			// re-use channel if applicable
+			if ( curSource->sfx == sfx && !cutDuplicateSound ) {
+				cutDuplicateSound = qtrue;
+				S_AL_SrcKill(i);
+				if (empty == -1)
+					empty = i;
+				continue;
+			}
+
+			// RF, let client voice sounds be overwritten
+			if ( entnum < MAX_CLIENTS && curSource->channel != -1 && curSource->channel != CHAN_AUTO && curSource->channel != CHAN_WEAPON ) {
+				S_AL_SrcKill(i);
+				if (empty == -1)
+					empty = i;
+				continue;
+			}
+
+			// cutoff sounds that expect to be overwritten
+			if ( curSource->flags & SND_OKTOCUT ) {
+				S_AL_SrcKill(i);
+				if (empty == -1)
+					empty = i;
+				continue;
+			}
+
+			// cutoff 'weak' sounds on channel
+			if ( flags & SND_CUTOFF ) {
+				if ( curSource->flags & SND_REQUESTCUT ) {
+					S_AL_SrcKill(i);
+					if (empty == -1)
+						empty = i;
+					continue;
+				}
+			}
 		}
-#endif
 	}
 
 	if(empty == -1)
@@ -1178,13 +1222,13 @@ void S_AL_StartLocalSound(sfxHandle_t sfx, int channel)
 		return;
 
 	// Try to grab a source
-	src = S_AL_SrcAlloc(SRCPRI_LOCAL, -1, channel);
+	src = S_AL_SrcAlloc(sfx, SRCPRI_LOCAL, -1, channel, 0);
 	
 	if(src == -1)
 		return;
 
 	// Set up the effect
-	S_AL_SrcSetup(src, sfx, SRCPRI_LOCAL, -1, channel, qtrue);
+	S_AL_SrcSetup(src, sfx, SRCPRI_LOCAL, -1, channel, 0, qtrue);
 
 	// Start it playing
 	srcList[src].isPlaying = qtrue;
@@ -1193,12 +1237,12 @@ void S_AL_StartLocalSound(sfxHandle_t sfx, int channel)
 
 /*
 =================
-S_AL_StartSound
+S_AL_MainStartSound
 
 Play a one-shot sound effect
 =================
 */
-static void S_AL_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx )
+static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags )
 {
 	vec3_t sorigin;
 	srcHandle_t src;
@@ -1236,11 +1280,11 @@ static void S_AL_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandl
 	}
 
 	// Try to grab a source
-	src = S_AL_SrcAlloc(SRCPRI_ONESHOT, entnum, entchannel);
+	src = S_AL_SrcAlloc(sfx, SRCPRI_ONESHOT, entnum, entchannel, flags);
 	if(src == -1)
 		return;
 
-	S_AL_SrcSetup(src, sfx, SRCPRI_ONESHOT, entnum, entchannel, qfalse);
+	S_AL_SrcSetup(src, sfx, SRCPRI_ONESHOT, entnum, entchannel, flags, qfalse);
 	
 	curSource = &srcList[src];
 
@@ -1257,12 +1301,28 @@ static void S_AL_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandl
 
 /*
 =================
+S_AL_StartSound
+=================
+*/
+static void S_AL_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx )
+{
+	S_AL_MainStartSound( origin, entnum, entchannel, sfx, 0 );
+}
+
+/*
+=================
 S_AL_StartSoundEx
 =================
 */
 static void S_AL_StartSoundEx( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags )
 {
-	// FIXME: Stub
+	// RF, we have lots of NULL sounds using up valuable channels, so just ignore them
+	if ( !sfx && entchannel != CHAN_WEAPON ) {  // let null weapon sounds try to play.  they kill any weapon sounds playing when a guy dies
+		return;
+	}
+
+	// RF, make the call now, or else we could override following streaming sounds in the same frame, due to the delay
+	S_AL_MainStartSound( origin, entnum, entchannel, sfx, flags );
 }
 
 /*
@@ -1304,7 +1364,7 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 	if( !sent->srcAllocated )
 	{
 		// Try to get a channel
-		src = S_AL_SrcAlloc( priority, entityNum, -1 );
+		src = S_AL_SrcAlloc( sfx, priority, entityNum, -1, 0 );
 		if( src == -1 )
 		{
 			Com_DPrintf( S_COLOR_YELLOW "WARNING: Failed to allocate source "
@@ -1467,7 +1527,7 @@ void S_AL_SrcUpdate( void )
 				if(sent->startLoopingSound)
 				{
 					S_AL_SrcSetup(i, sent->loopSfx, sent->loopPriority,
-							entityNum, -1, curSource->local);
+							entityNum, -1, 0, curSource->local);
 					curSource->isLooping = qtrue;
 					
 					knownSfx[curSource->sfx].loopCnt++;
@@ -1657,11 +1717,11 @@ static void S_AL_AllocateStreamChannel(int stream, int entityNum)
         {
                 // This is a stream that tracks an entity
         	// Allocate a streamSource at normal priority
-        	cursrc = S_AL_SrcAlloc(SRCPRI_ENTITY, entityNum, 0);
+        	cursrc = S_AL_SrcAlloc(-1, SRCPRI_ENTITY, entityNum, 0, 0);
         	if(cursrc < 0)
 	        	return;
 
-        	S_AL_SrcSetup(cursrc, -1, SRCPRI_ENTITY, entityNum, 0, qfalse);
+        	S_AL_SrcSetup(cursrc, -1, SRCPRI_ENTITY, entityNum, 0, 0, qfalse);
         	alsrc = S_AL_SrcGet(cursrc);
         	srcList[cursrc].isTracking = qtrue;
         	srcList[cursrc].isStream = qtrue;
@@ -1671,7 +1731,7 @@ static void S_AL_AllocateStreamChannel(int stream, int entityNum)
                 // Unspatialized stream source
 
         	// Allocate a streamSource at high priority
-        	cursrc = S_AL_SrcAlloc(SRCPRI_STREAM, -2, 0);
+        	cursrc = S_AL_SrcAlloc(-1, SRCPRI_STREAM, -2, 0, 0);
         	if(cursrc < 0)
 	        	return;
 
@@ -1861,7 +1921,7 @@ S_AL_MusicSourceGet
 static void S_AL_MusicSourceGet( void )
 {
 	// Allocate a musicSource at high priority
-	musicSourceHandle = S_AL_SrcAlloc(SRCPRI_STREAM, -2, 0);
+	musicSourceHandle = S_AL_SrcAlloc(-1, SRCPRI_STREAM, -2, 0, 0);
 	if(musicSourceHandle == -1)
 		return;
 
