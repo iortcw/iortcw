@@ -1284,6 +1284,9 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 	src_t		*curSource;
 	vec3_t		sorigin, svelocity;
 
+	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
+		return;
+
 	if(S_AL_CheckInput(entityNum, sfx))
 		return;
 

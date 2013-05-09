@@ -946,6 +946,9 @@ void S_Base_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t ve
 		return;
 	}
 
+	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
+		return;
+
 	sfx = &s_knownSfx[ sfxHandle ];
 
 	if (sfx->inMemory == qfalse) {
@@ -1024,6 +1027,9 @@ void S_Base_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_
 		Com_Printf( S_COLOR_YELLOW "S_AddRealLoopingSound: handle %i out of range\n", sfxHandle );
 		return;
 	}
+
+	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
+		return;
 
 	sfx = &s_knownSfx[ sfxHandle ];
 
