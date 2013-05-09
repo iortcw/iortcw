@@ -565,9 +565,9 @@ Entchannel 0 will never override a playing sound
 	SND_CUTOFF_ALL		0x008	- cut off all sounds on this channel
 ====================
 */
-static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags );
+static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags );
 
-void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags ) {
+void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags ) {
 	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
 		return;
 	}
@@ -578,7 +578,7 @@ void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t s
 	}
 
 	// RF, make the call now, or else we could override following streaming sounds in the same frame, due to the delay
-	S_Base_StartSoundEx( origin, entityNum, entchannel, sfxHandle, qfalse, flags );
+	S_Base_MainStartSound( origin, entityNum, entchannel, sfxHandle, qfalse, flags );
 /*
 	if ( tart < MAX_PUSHSTACK ) {
 		sfx_t       *sfx;
@@ -605,14 +605,14 @@ void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t s
 
 /*
 ====================
-S_Base_StartSoundEx
+S_Base_MainStartSound
 
 Validates the parms and ques the sound up
 if origin is NULL, the sound will be dynamically sourced from the entity
 Entchannel 0 will never override a playing sound
 ====================
 */
-static void S_Base_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags ) {
+static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, qboolean localSound, int flags ) {
 	channel_t	*ch;
 	sfx_t		*sfx;
 	int		i, oldest, chosen, time;
@@ -828,7 +828,7 @@ if origin is NULL, the sound will be dynamically sourced from the entity
 ====================
 */
 void S_Base_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle ) {
-	S_Base_StartSoundEx( origin, entityNum, entchannel, sfxHandle, qfalse, 0 );
+	S_Base_MainStartSound( origin, entityNum, entchannel, sfxHandle, qfalse, 0 );
 }
 
 /*
@@ -846,7 +846,7 @@ void S_Base_StartLocalSound( sfxHandle_t sfxHandle, int channelNum ) {
 		return;
 	}
 
-	S_Base_StartSoundEx( NULL, listener_number, channelNum, sfxHandle, qtrue, 0 );
+	S_Base_MainStartSound( NULL, listener_number, channelNum, sfxHandle, qtrue, 0 );
 }
 
 
@@ -1522,9 +1522,9 @@ void S_Update_(void) {
 /*
 	for ( i = 0; i < tart; i++ ) {
 		if ( pushPop[i].fixedOrigin ) {
-			S_Base_StartSoundEx( pushPop[i].origin, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
+			S_Base_MainStartSound( pushPop[i].origin, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
 		} else {
-			S_Base_StartSoundEx( NULL, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
+			S_Base_MainStartSound( NULL, pushPop[i].entityNum, pushPop[i].entityChannel, pushPop[i].sfx, qtrue, pushPop[i].flags );
 		}
 	}
 
@@ -1724,6 +1724,52 @@ void S_UpdateBackgroundTrack( void ) {
 	}
 }
 
+/*
+======================
+S_FadeStreamingSound
+======================
+*/
+void S_Base_FadeStreamingSound( float targetvol, int time, int ssNum ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_FadeAllSounds
+======================
+*/
+void S_Base_FadeAllSounds( float targetvol, int time ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_StartStreamingSound
+======================
+*/
+void S_Base_StartStreamingSound( const char *intro, const char *loop, int entnum, int channel, int attenuation ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_StopEntStreamingSound
+======================
+*/
+void S_Base_StopEntStreamingSound( int entnum ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_GetVoiceAmplitude
+======================
+*/
+int S_Base_GetVoiceAmplitude( int entityNum ) {
+	// FIXME: Stub
+	return 0;
+}
+
 
 /*
 ======================
@@ -1815,9 +1861,15 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 
 	si->Shutdown = S_Base_Shutdown;
 	si->StartSound = S_Base_StartSound;
+	si->StartSoundEx = S_Base_StartSoundEx;
 	si->StartLocalSound = S_Base_StartLocalSound;
 	si->StartBackgroundTrack = S_Base_StartBackgroundTrack;
 	si->StopBackgroundTrack = S_Base_StopBackgroundTrack;
+	si->FadeStreamingSound = S_Base_FadeStreamingSound;
+	si->FadeAllSounds = S_Base_FadeAllSounds;
+	si->StartStreamingSound = S_Base_StartStreamingSound;
+	si->StopEntStreamingSound = S_Base_StopEntStreamingSound;
+	si->GetVoiceAmplitude = S_Base_GetVoiceAmplitude;
 	si->RawSamples = S_Base_RawSamples;
 	si->StopAllSounds = S_Base_StopAllSounds;
 	si->ClearLoopingSounds = S_Base_ClearLoopingSounds;

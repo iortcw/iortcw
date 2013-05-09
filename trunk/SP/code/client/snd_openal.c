@@ -1257,6 +1257,16 @@ static void S_AL_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandl
 
 /*
 =================
+S_AL_StartSoundEx
+=================
+*/
+static void S_AL_StartSoundEx( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags )
+{
+	// FIXME: Stub
+}
+
+/*
+=================
 S_AL_ClearLoopingSounds
 =================
 */
@@ -2112,6 +2122,56 @@ void S_AL_MusicUpdate( void )
 	S_AL_Gain(musicSource, s_alGain->value * s_musicVolume->value);
 }
 
+/*
+======================
+S_FadeStreamingSound
+======================
+*/
+static
+void S_AL_FadeStreamingSound( float targetvol, int time, int ssNum ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_FadeAllSounds
+======================
+*/
+static
+void S_AL_FadeAllSounds( float targetvol, int time ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_StartStreamingSound
+======================
+*/
+static
+void S_AL_StartStreamingSound( const char *intro, const char *loop, int entnum, int channel, int attenuation ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_StopEntStreamingSound
+======================
+*/
+static
+void S_AL_StopEntStreamingSound( int entnum ) {
+	// FIXME: Stub
+}
+
+/*
+======================
+S_GetVoiceAmplitude
+======================
+*/
+static
+int S_AL_GetVoiceAmplitude( int entityNum ) {
+	// FIXME: Stub
+	return 0;
+}
 
 //===========================================================================
 
@@ -2612,9 +2672,15 @@ qboolean S_AL_Init( soundInterface_t *si )
 
 	si->Shutdown = S_AL_Shutdown;
 	si->StartSound = S_AL_StartSound;
+	si->StartSoundEx = S_AL_StartSoundEx;
 	si->StartLocalSound = S_AL_StartLocalSound;
 	si->StartBackgroundTrack = S_AL_StartBackgroundTrack;
 	si->StopBackgroundTrack = S_AL_StopBackgroundTrack;
+	si->FadeStreamingSound = S_AL_FadeStreamingSound;
+	si->FadeAllSounds = S_AL_FadeAllSounds;
+	si->StartStreamingSound = S_AL_StartStreamingSound;
+	si->StopEntStreamingSound = S_AL_StopEntStreamingSound;
+	si->GetVoiceAmplitude = S_AL_GetVoiceAmplitude;
 	si->RawSamples = S_AL_RawSamples;
 	si->StopAllSounds = S_AL_StopAllSounds;
 	si->ClearLoopingSounds = S_AL_ClearLoopingSounds;

@@ -889,11 +889,11 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 
 //----(SA)	added
 	case UI_S_FADESTREAMINGSOUND:
-//		S_FadeStreamingSound( VMF( 1 ), args[2], args[3] );
+		S_FadeStreamingSound( VMF( 1 ), args[2], args[3] );
 		return 0;
 
 	case UI_S_FADEALLSOUNDS:
-//		S_FadeAllSounds( VMF( 1 ), args[2] );
+		S_FadeAllSounds( VMF( 1 ), args[2] );
 		return 0;
 //----(SA)	end
 
