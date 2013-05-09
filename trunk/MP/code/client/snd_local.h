@@ -130,9 +130,12 @@ typedef struct
 {
 	void (*Shutdown)(void);
 	void (*StartSound)( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx );
+	void (*StartSoundEx)( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags );
 	void (*StartLocalSound)( sfxHandle_t sfx, int channelNum );
 	void (*StartBackgroundTrack)( const char *intro, const char *loop );
 	void (*StopBackgroundTrack)( void );
+	void (*StartStreamingSound)( const char *intro, const char *loop, int entnum, int channel, int attenuation );
+	int (*GetVoiceAmplitude)( int entityNum );
 	void (*RawSamples)(int stream, int samples, int rate, int width, int channels, const byte *data, float volume, int entityNum);
 	void (*StopAllSounds)( void );
 	void (*ClearLoopingSounds)( qboolean killall );

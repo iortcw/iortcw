@@ -636,8 +636,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return 0;
 // Ridah, talking animations
 	case CG_S_GETVOICEAMPLITUDE:
-//		return S_GetVoiceAmplitude( args[1] );
-		return 0;
+		return S_GetVoiceAmplitude( args[1] );
 // done.
 	case CG_S_RESPATIALIZE:
 		S_Respatialize( args[1], VMA( 2 ), VMA( 3 ), args[4] );
@@ -648,7 +647,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		S_StartBackgroundTrack( VMA( 1 ), VMA( 2 ) );
 		return 0;
 	case CG_S_STARTSTREAMINGSOUND:
-//		S_StartStreamingSound( VMA( 1 ), VMA( 2 ), args[3], args[4], args[5] );
+		S_StartStreamingSound( VMA( 1 ), VMA( 2 ), args[3], args[4], args[5] );
 		return 0;
 	case CG_R_LOADWORLDMAP:
 		re.LoadWorld( VMA( 1 ) );

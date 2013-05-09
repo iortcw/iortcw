@@ -45,9 +45,12 @@ static qboolean S_ValidSoundInterface( soundInterface_t *si )
 {
 	if( !si->Shutdown ) return qfalse;
 	if( !si->StartSound ) return qfalse;
+	if( !si->StartSoundEx ) return qfalse;
 	if( !si->StartLocalSound ) return qfalse;
 	if( !si->StartBackgroundTrack ) return qfalse;
 	if( !si->StopBackgroundTrack ) return qfalse;
+	if( !si->StartStreamingSound ) return qfalse;
+	if( !si->GetVoiceAmplitude ) return qfalse;
 	if( !si->RawSamples ) return qfalse;
 	if( !si->StopAllSounds ) return qfalse;
 	if( !si->ClearLoopingSounds ) return qfalse;
@@ -89,6 +92,18 @@ void S_StartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx )
 
 /*
 =================
+S_StartSoundEx
+=================
+*/
+void S_StartSoundEx( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags )
+{
+	if( si.StartSoundEx ) {
+		si.StartSoundEx( origin, entnum, entchannel, sfx, flags );
+	}
+}
+
+/*
+=================
 S_StartLocalSound
 =================
 */
@@ -121,6 +136,31 @@ void S_StopBackgroundTrack( void )
 	if( si.StopBackgroundTrack ) {
 		si.StopBackgroundTrack( );
 	}
+}
+
+/*
+=================
+S_StartStreamingSound
+=================
+*/
+void S_StartStreamingSound( const char *intro, const char *loop, int entityNum, int channel, int attenuation )
+{
+	if( si.StartStreamingSound ) {
+		si.StartStreamingSound( intro, loop, entityNum, channel, attenuation );
+	}
+}
+
+/*
+=================
+S_GetVoiceAmplitude
+=================
+*/
+int S_GetVoiceAmplitude( int entityNum )
+{
+	if( si.GetVoiceAmplitude ) {
+		return si.GetVoiceAmplitude( entityNum );
+	}
+	return 0;
 }
 
 /*
