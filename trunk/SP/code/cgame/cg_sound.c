@@ -139,17 +139,13 @@ void CG_SoundPickOldestRandomSound( soundScript_t *sound, vec3_t org, int entnum
 
 	if ( oldestSound ) {
 		// play this sound
-		if ( !sound->streaming ) {
-			if ( !oldestSound->sfxHandle ) {
-				oldestSound->sfxHandle = trap_S_RegisterSound( oldestSound->filename );
-			}
-			if ( sound->attenuation ) {
-				trap_S_StartSound( org, entnum, sound->channel, oldestSound->sfxHandle );
-			} else {
-				trap_S_StartLocalSound( oldestSound->sfxHandle, sound->channel );
-			}
+		if ( !oldestSound->sfxHandle ) {
+			oldestSound->sfxHandle = trap_S_RegisterSound( oldestSound->filename );
+		}
+		if ( sound->attenuation ) {
+			trap_S_StartSound( org, entnum, sound->channel, oldestSound->sfxHandle );
 		} else {
-			trap_S_StartStreamingSound( oldestSound->filename, sound->looping ? oldestSound->filename : NULL, entnum, sound->channel, sound->attenuation );
+			trap_S_StartLocalSound( oldestSound->sfxHandle, sound->channel );
 		}
 		oldestSound->lastPlayed = cg.time;
 		//
