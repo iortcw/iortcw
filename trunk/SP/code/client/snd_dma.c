@@ -1431,6 +1431,11 @@ void S_Base_Update( void ) {
 		return;
 	}
 
+#ifdef TALKANIM
+	// default to ZERO amplitude, overwrite if sound is playing
+	memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
+#endif
+
 	//
 	// debugging output
 	//
@@ -1760,16 +1765,21 @@ void S_Base_StopEntStreamingSound( int entnum ) {
 	// FIXME: Stub
 }
 
+#ifdef TALKANIM
 /*
 ======================
 S_GetVoiceAmplitude
 ======================
 */
 int S_Base_GetVoiceAmplitude( int entityNum ) {
-	// FIXME: Stub
-	return 0;
-}
+	if ( entityNum >= MAX_CLIENTS ) {
+		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
+		return 0;
+	}
 
+	return (int)s_entityTalkAmplitude[entityNum];
+}
+#endif
 
 /*
 ======================
