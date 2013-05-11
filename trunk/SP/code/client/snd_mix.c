@@ -879,6 +879,7 @@ void S_PaintChannels( int endtime ) {
 
 		// clear the paint buffer and mix any raw samples...
 		Com_Memset(paintbuffer, 0, sizeof (paintbuffer));
+		ch = s_channels;
 		for (stream = 0; stream < MAX_RAW_STREAMS; stream++) {
 			if ( s_rawend[stream] >= s_paintedtime ) {
 				// copy from the streaming sound source
