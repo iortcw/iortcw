@@ -861,7 +861,6 @@ void S_PaintChannels( int endtime ) {
 	sfx_t	*sc;
 	int		ltime, count;
 	int		sampleOffset;
-	streamingSound_t *ss;
 	qboolean firstPass = qtrue;
 
 	if(s_muted->integer)
@@ -891,8 +890,8 @@ void S_PaintChannels( int endtime ) {
 					paintbuffer[i-s_paintedtime].right += rawsamples[s].right;
 				}
 #ifdef TALKANIM
-				if ( firstPass && ss->channel == CHAN_VOICE && ss->entnum < MAX_CLIENTS ) {
-					int talkcnt, talktime;
+				if ( firstPass && ch->entchannel == CHAN_VOICE && ch->entnum < MAX_CLIENTS ) {
+					int talktime;
 					int sfx_count, vstop;
 					int data;
 					int s;
@@ -901,7 +900,6 @@ void S_PaintChannels( int endtime ) {
 					// animation creates lag in the time it takes to display the current facial frame
 					talktime = s_paintedtime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
 					vstop = ( talktime + 100 < s_rawend[stream] ) ? talktime + 100 : s_rawend[stream];
-					talkcnt = 1;
 					sfx_count = 0;
 
 					for ( i = talktime ; i < vstop ; i++ ) {
@@ -920,7 +918,7 @@ void S_PaintChannels( int endtime ) {
 					}
 
 					// update the amplitude for this entity
-					s_entityTalkAmplitude[ss->entnum] = (unsigned char)sfx_count;
+					s_entityTalkAmplitude[ch->entnum] = (unsigned char)sfx_count;
 
 				}
 #endif
@@ -930,12 +928,17 @@ void S_PaintChannels( int endtime ) {
 		// paint in the channels.
 		ch = s_channels;
 		for ( i = 0; i < MAX_CHANNELS ; i++, ch++ ) {		
-			if ( !ch->thesfx || (ch->leftvol<0.25 && ch->rightvol<0.25 )) {
+			if ( ch->startSample == START_SAMPLE_IMMEDIATE || !ch->thesfx || (ch->leftvol<0.25 && ch->rightvol<0.25 )) {
 				continue;
 			}
 
 			ltime = s_paintedtime;
 			sc = ch->thesfx;
+
+			// (SA) hmm, why was this commented out?
+			if ( !sc->inMemory ) {
+				S_memoryLoad( sc );
+			}
 
 			sampleOffset = ltime - ch->startSample;
 			count = end - ltime;
@@ -1044,5 +1047,6 @@ void S_PaintChannels( int endtime ) {
 		// transfer out according to DMA format
 		S_TransferPaintBuffer( end );
 		s_paintedtime = end;
+		firstPass = qfalse;
 	}
 }

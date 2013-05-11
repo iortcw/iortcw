@@ -2234,8 +2234,12 @@ S_GetVoiceAmplitude
 */
 static
 int S_AL_GetVoiceAmplitude( int entityNum ) {
-	// FIXME: Stub
-	return 0;
+	if ( entityNum >= MAX_CLIENTS ) {
+		Com_Printf( "Error: S_AL_GetVoiceAmplitude() called for a non-client\n" );
+		return 0;
+	}
+
+	return (int)s_entityTalkAmplitude[entityNum];
 }
 
 //===========================================================================
