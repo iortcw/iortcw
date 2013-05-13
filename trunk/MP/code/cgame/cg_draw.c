@@ -1723,17 +1723,17 @@ static void CG_DrawCrosshair( void ) {
 	// -NERVE - SMF
 }
 
+
 /*
 =================
 CG_DrawCrosshair3D
 =================
 */
-static void CG_DrawCrosshair3D(void)
-{
-	float		w;
-	qhandle_t	hShader;
-	float		f;
-	int			ca;
+static void CG_DrawCrosshair3D( void ) {
+	float w;
+	qhandle_t hShader;
+	float f;
+	int weapnum;                // DHM - Nerve
 
 	trace_t trace;
 	vec3_t endpos;
@@ -1741,32 +1741,76 @@ static void CG_DrawCrosshair3D(void)
 	char rendererinfos[128];
 	refEntity_t ent;
 
-	if ( !cg_drawCrosshair.integer ) {
-		return;
-	}
-
-	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
-		return;
-	}
-
 	if ( cg.renderingThirdPerson ) {
+		return;
+	}
+
+	// DHM - Nerve :: show reticle in limbo and spectator
+	if ( cgs.gametype >= GT_WOLF && ( ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg.demoPlayback ) ) {
+		weapnum = cg.snap->ps.weapon;
+	} else {
+		weapnum = cg.weaponSelect;
+	}
+
+	switch ( weapnum ) {
+
+		// weapons that get no reticle
+	case WP_NONE:       // no weapon, no crosshair
+		if ( cg.zoomedBinoc ) {
+			CG_DrawBinocReticle();
+		}
+
+		if ( cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
+			return;
+		}
+		break;
+
+		// special reticle for weapon
+	case WP_SNIPERRIFLE:
+		if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
+
+			// JPW NERVE -- don't let players run with rifles -- speed 80 == crouch, 128 == walk, 256 == run
+			if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
+				if ( VectorLength( cg.snap->ps.velocity ) > 127.0f ) {
+					if ( cg.snap->ps.weapon == WP_SNIPERRIFLE ) {
+						CG_FinishWeaponChange( WP_SNIPERRIFLE, WP_MAUSER );
+					}
+					if ( cg.snap->ps.weapon == WP_SNOOPERSCOPE ) {
+						CG_FinishWeaponChange( WP_SNOOPERSCOPE, WP_GARAND );
+					}
+				}
+			}
+			// jpw
+
+			CG_DrawWeapReticle();
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	// using binoculars
+	if ( cg.zoomedBinoc ) {
+		CG_DrawBinocReticle();
+		return;
+	}
+
+	if ( cg_drawCrosshair.integer < 0 ) { //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+		return;
+	}
+
+	if ( cg.snap->ps.leanf ) { // no crosshair while leaning
 		return;
 	}
 
 	w = cg_crosshairSize.value;
 
-	// pulse the size of the crosshair when picking up items
-	f = cg.time - cg.itemPickupBlendTime;
-	if ( f > 0 && f < ITEM_BLOB_TIME ) {
-		f /= ITEM_BLOB_TIME;
-		w *= ( 1 + f );
-	}
+	// RF, crosshair size represents aim spread
+	f = (float)cg.snap->ps.aimSpreadScale / 255.0;
+	w *= ( 1 + f * 2.0 );
 
-	ca = cg_drawCrosshair.integer;
-	if (ca < 0) {
-		ca = 0;
-	}
-	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+	hShader = cgs.media.crosshairShader[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ];
 
 	// Use a different method rendering the crosshair so players don't see two of them when
 	// focusing their eyes at distant objects with high stereo separation
@@ -1797,6 +1841,7 @@ static void CG_DrawCrosshair3D(void)
 
 	trap_R_AddRefEntityToScene(&ent);
 }
+
 
 /*
 =================

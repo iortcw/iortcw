@@ -2166,10 +2166,6 @@ static void CG_DrawCrosshair( void ) {
 		return;
 	}
 
-	if ( cg_crosshairHealth.integer ) {
-		CG_ColorForHealth( hcolor );
-	}
-
 	hcolor[3] = cg_crosshairAlpha.value;    //----(SA)	added
 
 
@@ -2192,7 +2188,7 @@ static void CG_DrawCrosshair( void ) {
 	friendInSights = (qboolean)( cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND );  //----(SA)	added
 
 	// DHM - Nerve :: show reticle in limbo and spectator
-	if ( cgs.gametype == GT_WOLF && cg.snap->ps.pm_flags & PMF_FOLLOW ) {
+	if ( cgs.gametype >= GT_WOLF && ( ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg.demoPlayback ) ) {
 		weapnum = cg.snap->ps.weapon;
 	} else {
 		weapnum = cg.weaponSelect;
@@ -2233,23 +2229,25 @@ static void CG_DrawCrosshair( void ) {
 	case WP_SNIPERRIFLE:
 	case WP_SNOOPERSCOPE:
 	case WP_FG42SCOPE:
+		if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 
-// JPW NERVE -- don't let players run with rifles -- speed 80 == crouch, 128 == walk, 256 == run
-		if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
-			if ( VectorLength( cg.snap->ps.velocity ) > 127.0f ) {
-				if ( cg.snap->ps.weapon == WP_SNIPERRIFLE ) {
-					CG_FinishWeaponChange( WP_SNIPERRIFLE, WP_MAUSER );
-				}
-				if ( cg.snap->ps.weapon == WP_SNOOPERSCOPE ) {
-					CG_FinishWeaponChange( WP_SNOOPERSCOPE, WP_GARAND );
+			// JPW NERVE -- don't let players run with rifles -- speed 80 == crouch, 128 == walk, 256 == run
+			if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
+				if ( VectorLength( cg.snap->ps.velocity ) > 127.0f ) {
+					if ( cg.snap->ps.weapon == WP_SNIPERRIFLE ) {
+						CG_FinishWeaponChange( WP_SNIPERRIFLE, WP_MAUSER );
+					}
+					if ( cg.snap->ps.weapon == WP_SNOOPERSCOPE ) {
+						CG_FinishWeaponChange( WP_SNOOPERSCOPE, WP_GARAND );
+					}
 				}
 			}
+			// jpw
+
+			CG_DrawWeapReticle();
+			return;
 		}
-// jpw
-
-		CG_DrawWeapReticle();
-		return;
-
+		break;
 	default:
 		break;
 	}
@@ -2290,21 +2288,14 @@ static void CG_DrawCrosshair( void ) {
 
 	// set color based on health
 	if ( cg_crosshairHealth.integer ) {
+		CG_ColorForHealth( hcolor );
 		trap_R_SetColor( hcolor );
 	} else {
 		trap_R_SetColor( NULL );
 	}
 
 	w = h = cg_crosshairSize.value;
-/*
-	// pulse the size of the crosshair when picking up items
-	f = cg.time - cg.itemPickupBlendTime;
-	if ( f > 0 && f < ITEM_BLOB_TIME ) {
-		f /= ITEM_BLOB_TIME;
-		w *= ( 1 + f );
-		h *= ( 1 + f );
-	}
-*/
+
 	// RF, crosshair size represents aim spread
 	f = (float)cg.snap->ps.aimSpreadScale / 255.0;
 	w *= ( 1 + f * 2.0 );
@@ -2334,12 +2325,13 @@ static void CG_DrawCrosshair( void ) {
 CG_DrawCrosshair3D
 =================
 */
-static void CG_DrawCrosshair3D(void)
-{
-	float		w;
-	qhandle_t	hShader;
-	float		f;
-	int			ca;
+static void CG_DrawCrosshair3D( void ) {
+	float w;
+	qhandle_t hShader;
+	float f;
+	int weapnum;                // DHM - Nerve
+	vec4_t hcolor = {1, 1, 1, 0};
+	qboolean friendInSights = qfalse;
 
 	trace_t trace;
 	vec3_t endpos;
@@ -2347,32 +2339,143 @@ static void CG_DrawCrosshair3D(void)
 	char rendererinfos[128];
 	refEntity_t ent;
 
-	if ( !cg_drawCrosshair.integer ) {
-		return;
-	}
-
-	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
-		return;
-	}
-
 	if ( cg.renderingThirdPerson ) {
+		return;
+	}
+
+	hcolor[3] = cg_crosshairAlpha.value;    //----(SA)	added
+
+
+	// on mg42
+	if ( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) {
+		hcolor[0] = hcolor[1] = hcolor[2] = 0.0f;
+		hcolor[3] = 0.6f;
+		// option 1
+//		CG_FillRect (300, 240, 40, 2, hcolor);	// horizontal
+//		CG_FillRect (319, 242, 2, 16, hcolor);	// vertical
+
+		// option 2
+		CG_FillRect( 305, 240, 30, 2, hcolor );  // horizontal
+		CG_FillRect( 314, 256, 12, 2, hcolor );  // horizontal2
+		CG_FillRect( 319, 242, 2, 32, hcolor );  // vertical
+
+		return;
+	}
+
+	friendInSights = (qboolean)( cg.snap->ps.serverCursorHint == HINT_PLYR_FRIEND );  //----(SA)	added
+
+	// DHM - Nerve :: show reticle in limbo and spectator
+	if ( cgs.gametype >= GT_WOLF && ( ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg.demoPlayback ) ) {
+		weapnum = cg.snap->ps.weapon;
+	} else {
+		weapnum = cg.weaponSelect;
+	}
+
+	switch ( weapnum ) {
+
+		// weapons that get no reticle
+	case WP_NONE:       // no weapon, no crosshair
+	case WP_GARAND:
+		if ( cg.zoomedBinoc ) {
+			CG_DrawBinocReticle();
+		}
+		return;
+		break;
+
+		// special reticle for weapon
+	case WP_KNIFE:
+		if ( cg.zoomedBinoc ) {
+			CG_DrawBinocReticle();
+			return;
+		}
+
+		// no crosshair when looking at exits
+		if ( cg.snap->ps.serverCursorHint >= HINT_EXIT && cg.snap->ps.serverCursorHint <= HINT_NOEXIT_FAR ) {
+			return;
+		}
+
+		if ( !friendInSights ) {
+			if ( !cg.snap->ps.leanf ) {     // no crosshair while leaning
+				CG_FillRect( 319, 239, 2, 2, hcolor );      // dot
+			}
+			return;
+		}
+
+		break;
+
+	case WP_SNIPERRIFLE:
+	case WP_SNOOPERSCOPE:
+	case WP_FG42SCOPE:
+		if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
+
+			// JPW NERVE -- don't let players run with rifles -- speed 80 == crouch, 128 == walk, 256 == run
+			if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
+				if ( VectorLength( cg.snap->ps.velocity ) > 127.0f ) {
+					if ( cg.snap->ps.weapon == WP_SNIPERRIFLE ) {
+						CG_FinishWeaponChange( WP_SNIPERRIFLE, WP_MAUSER );
+					}
+					if ( cg.snap->ps.weapon == WP_SNOOPERSCOPE ) {
+						CG_FinishWeaponChange( WP_SNOOPERSCOPE, WP_GARAND );
+					}
+				}
+			}
+			// jpw
+
+			CG_DrawWeapReticle();
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	// using binoculars
+	if ( cg.zoomedBinoc ) {
+		CG_DrawBinocReticle();
+		return;
+	}
+
+
+	// mauser only gets crosshair if you don't have the scope (I don't like this, but it's a test)
+	if ( cg.weaponSelect == WP_MAUSER ) {
+		if ( COM_BitCheck( cg.predictedPlayerState.weapons, WP_SNIPERRIFLE ) ) {
+			return;
+		}
+	}
+
+
+	if ( !cg_drawCrosshair.integer ) {  //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+		return;
+	}
+
+	// no crosshair while leaning
+	if ( cg.snap->ps.leanf ) {
+		return;
+	}
+
+	// no crosshair when looking at exits
+	if ( cg.snap->ps.serverCursorHint >= HINT_EXIT && cg.snap->ps.serverCursorHint <= HINT_NOEXIT_FAR ) {
+		return;
+	}
+
+	if ( cg_paused.integer ) {
+		// no draw if any menu's are up	 (or otherwise paused)
 		return;
 	}
 
 	w = cg_crosshairSize.value;
 
-	// pulse the size of the crosshair when picking up items
-	f = cg.time - cg.itemPickupBlendTime;
-	if ( f > 0 && f < ITEM_BLOB_TIME ) {
-		f /= ITEM_BLOB_TIME;
-		w *= ( 1 + f );
-	}
+	// RF, crosshair size represents aim spread
+	f = (float)cg.snap->ps.aimSpreadScale / 255.0;
+	w *= ( 1 + f * 2.0 );
 
-	ca = cg_drawCrosshair.integer;
-	if (ca < 0) {
-		ca = 0;
+//----(SA)	modified
+	if ( friendInSights ) {
+		hShader = cgs.media.crosshairFriendly;
+	} else {
+		hShader = cgs.media.crosshairShader[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ];
 	}
-	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+//----(SA)	end
 
 	// Use a different method rendering the crosshair so players don't see two of them when
 	// focusing their eyes at distant objects with high stereo separation
@@ -2403,6 +2506,7 @@ static void CG_DrawCrosshair3D(void)
 
 	trap_R_AddRefEntityToScene(&ent);
 }
+
 
 /*
 =================
