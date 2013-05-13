@@ -986,7 +986,7 @@ static void CG_ServerCommand( void ) {
 
 		fadeTime = atoi( text );
 
-		trap_S_StartBackgroundTrack( CG_Argv( 1 ), "onetimeonly", fadeTime );
+		trap_S_StartBackgroundTrack( CG_Argv( 1 ), "", fadeTime );
 		return;
 	}
 

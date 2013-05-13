@@ -1613,6 +1613,9 @@ S_StartBackgroundTrack
 ======================
 */
 void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
+	if ( !s_soundStarted ) {
+		return;
+	}
 	if ( !intro ) {
 		intro = "";
 	}
@@ -1632,6 +1635,8 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 	} else {
 		Q_strncpyz( s_backgroundLoop, loop, sizeof( s_backgroundLoop ) );
 	}
+
+	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
 
 	// close the background track, but DON'T reset s_rawend
 	// if restarting the same back ground track
