@@ -180,7 +180,7 @@ cast_script_stack_action_t scriptActions[] =
 	{"notarget",     AICast_ScriptAction_NoTarget},
 	{"cvar",         AICast_ScriptAction_Cvar},
 
-	{NULL,              NULL}
+	{NULL,              0}
 };
 
 qboolean AICast_EventMatch_StringEqual( cast_script_event_t *event, char *eventParm );
@@ -190,30 +190,30 @@ qboolean AICast_EventMatch_IntInRange( cast_script_event_t *event, char *eventPa
 // NOTE!!: only append to this list, DO NOT INSERT!!
 cast_script_event_define_t scriptEvents[] =
 {
-	{"spawn",            NULL},          // called as each character is spawned into the game
+	{"spawn",            0},          // called as each character is spawned into the game
 	{"enemysight",       AICast_EventMatch_StringEqual}, // enemy has been sighted for the first time (once only)
 	{"sight",            AICast_EventMatch_StringEqual}, // non-enemy has been sighted for the first time (once only)
 	{"enemydead",        AICast_EventMatch_StringEqual}, // our enemy is now dead
 	{"trigger",          AICast_EventMatch_StringEqual}, // something has triggered us (always followed by an identifier)
 	{"pain",         AICast_EventMatch_IntInRange},  // we've been hurt
-	{"death",            NULL},          // RIP
+	{"death",            0},          // RIP
 	{"activate",     AICast_EventMatch_StringEqual}, // "param" has just activated us
 	{"enemysightcorpse",AICast_EventMatch_StringEqual},  // sighted the given enemy as a corpse, for the first time
-	{"friendlysightcorpse", NULL},                       // sighted a friendly as a corpse for the first time
+	{"friendlysightcorpse", 0},                       // sighted a friendly as a corpse for the first time
 	{"avoiddanger",      AICast_EventMatch_StringEqual}, // we are avoiding something dangerous
 	{"blocked",          AICast_EventMatch_StringEqual}, // blocked by someone else
 	{"statechange",      AICast_EventMatch_StringEqual}, // changing aistates
-	{"bulletimpact", NULL},
+	{"bulletimpact", 0},
 	{"inspectbodystart", AICast_EventMatch_StringEqual}, // starting to travel to body for inspection
 	{"inspectbodyend",   AICast_EventMatch_StringEqual}, // reached body for inspection
 	{"inspectsoundstart",    AICast_EventMatch_StringEqual}, // reached sound for inspection
 	{"inspectsoundend",  AICast_EventMatch_StringEqual}, // reached sound for inspection
 	{"attacksound",      AICast_EventMatch_StringEqual}, // play a custom attack sound, and/or deny playing the default sound
-	{"fakedeath",        NULL},
-	{"bulletimpactsound",    NULL},
-	{"inspectfriendlycombatstart", NULL},
+	{"fakedeath",        0},
+	{"bulletimpactsound",    0},
+	{"inspectfriendlycombatstart", 0},
 
-	{NULL,              NULL}
+	{NULL,              0}
 };
 
 int numSecrets;

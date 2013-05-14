@@ -329,7 +329,7 @@ void SP_trigger_push( gentity_t *self ) {
 
 	if ( self->spawnflags & 1 ) { // toggle
 		self->use = trigger_push_use;
-		self->touch = NULL;
+		self->touch = 0;
 		trap_UnlinkEntity( self );
 	} else {
 		trap_LinkEntity( self );
@@ -490,7 +490,7 @@ void hurt_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	G_Damage( other, self, self, NULL, NULL, self->damage, dflags, MOD_TRIGGER_HURT );
 
 	if ( self->spawnflags & 32 ) {
-		self->touch = NULL;
+		self->touch = 0;
 	}
 }
 
@@ -505,7 +505,7 @@ void hurt_think( gentity_t *ent ) {
 
 void hurt_use( gentity_t *self, gentity_t *other, gentity_t *activator ) {
 	if ( self->touch ) {
-		self->touch = NULL;
+		self->touch = 0;
 	} else {
 		self->touch = hurt_touch;
 	}
@@ -745,7 +745,7 @@ void gas_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 	}
 
 	if ( ent->s.density == 5 ) {
-		ent->touch = NULL;
+		ent->touch = 0;
 		damage = 5;
 	}
 
@@ -858,7 +858,7 @@ void Touch_flagonly( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		G_Script_ScriptEvent( ent, "death", "" );
 
 		// Removes itself
-		ent->touch = NULL;
+		ent->touch = 0;
 		ent->nextthink = level.time + FRAMETIME;
 		ent->think = G_FreeEntity;
 	} else if ( ent->spawnflags & BLUE_FLAG && other->client->ps.powerups[ PW_BLUEFLAG ] )   {
@@ -868,7 +868,7 @@ void Touch_flagonly( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 		G_Script_ScriptEvent( ent, "death", "" );
 
 		// Removes itself
-		ent->touch = NULL;
+		ent->touch = 0;
 		ent->nextthink = level.time + FRAMETIME;
 		ent->think = G_FreeEntity;
 	}

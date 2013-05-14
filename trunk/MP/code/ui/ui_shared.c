@@ -4577,7 +4577,7 @@ void Menu_HandleMouseMove( menuDef_t *menu, float x, float y ) {
 			if ( !Rect_ContainsPoint( &itemCapture->window.rect, x, y ) ) {
 				Item_StopCapture( itemCapture );
 				itemCapture = NULL;
-				captureFunc = NULL;
+				captureFunc = 0;
 				captureData = NULL;
 			}
 

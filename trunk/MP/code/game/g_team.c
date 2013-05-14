@@ -1399,7 +1399,7 @@ void checkpoint_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	G_AddEvent( self, EV_GENERAL_SOUND, self->soundPos1 );
 
 	// Don't allow touch again until animation is finished
-	self->touch = NULL;
+	self->touch = 0;
 
 	self->think = checkpoint_think;
 	self->nextthink = level.time + 1000;
@@ -1478,7 +1478,7 @@ void checkpoint_spawntouch( gentity_t *self, gentity_t *other, trace_t *trace ) 
 	}
 
 	// Don't allow touch again until animation is finished
-	self->touch = NULL;
+	self->touch = 0;
 
 	self->think = checkpoint_think;
 	self->nextthink = level.time + 1000;

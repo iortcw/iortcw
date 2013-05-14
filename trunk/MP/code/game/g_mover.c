@@ -1638,7 +1638,7 @@ void InitMover( gentity_t *ent ) {
 		ent->reached = Reached_TrinaryMover;
 	} else if ( !Q_stricmp( ent->classname, "func_rotating" ) )       {
 		ent->use = Use_Func_Rotate;
-		ent->reached = NULL; // rotating can never reach
+		ent->reached = 0; // rotating can never reach
 	} else
 	{
 		ent->use = Use_BinaryMover;
@@ -3043,7 +3043,7 @@ void Func_train_particles_reached( gentity_t *self ) {
 void SP_func_train_particles( gentity_t *self ) {
 	SP_func_train( self );
 	self->reached = Func_train_particles_reached;
-	self->blocked = NULL;
+	self->blocked = 0;
 
 	self->damage = 0;
 
@@ -3065,7 +3065,7 @@ speed = speed to travel to next waypoint (default=300)
 void FuncBatsReached( gentity_t *self ) {
 	if ( self->active == 2 ) {
 		self->nextthink = -1;
-		self->think = NULL;
+		self->think = 0;
 		return;
 	}
 
@@ -3159,7 +3159,7 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 			bat->r.contents = CONTENTS_CORPSE;
 			bat->takedamage = qtrue;
 			bat->health = 1;
-			bat->pain = NULL;
+			bat->pain = 0;
 			bat->die = BatDie;
 			VectorSet( bat->r.mins, -18, -18, -18 );
 			VectorSet( bat->r.maxs,  18,  18,  18 );
@@ -3176,7 +3176,7 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 		InitMover( self );  // start moving
 		FuncBatsReached( self );
 		self->reached = FuncBatsReached;
-		self->blocked = NULL;
+		self->blocked = 0;
 
 		// disable this to debug path
 		self->r.svFlags |= SVF_NOCLIENT;
@@ -4059,10 +4059,10 @@ BecomeExplosion
 ==============
 */
 void BecomeExplosion( gentity_t *self ) {
-	self->die   = NULL;
-	self->pain  = NULL;
-	self->touch = NULL;
-	self->use   = NULL;
+	self->die   = 0;
+	self->pain  = 0;
+	self->touch = 0;
+	self->use   = 0;
 	self->nextthink = level.time + FRAMETIME;
 	self->think = G_FreeEntity;
 
@@ -4282,7 +4282,7 @@ void SP_func_explosive( gentity_t *ent ) {
 	if ( ent->spawnflags & 2 ) {  // touchable
 		ent->touch = func_explosive_touch;
 	} else {
-		ent->touch = NULL;
+		ent->touch = 0;
 	}
 
 	if ( ( ent->spawnflags & 4 ) && ent->model && strlen( ent->model ) ) {   // use shader

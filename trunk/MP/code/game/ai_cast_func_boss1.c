@@ -53,7 +53,7 @@ If you have questions concerning this license or the applicable additional terms
 //=================================================================================
 
 void AICast_FZombie_StartLightning( gentity_t *ent ) {
-	ent->AIScript_AlertEntity = NULL;
+	ent->AIScript_AlertEntity = 0;
 	AIFunc_FZombie_LightningAttackStart( AICast_GetCastState( ent->s.number ) );
 }
 

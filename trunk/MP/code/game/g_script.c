@@ -127,7 +127,7 @@ g_script_stack_action_t gScriptActions[] =
 	{"remove",                       G_ScriptAction_RemoveEntity},
 	// dhm
 
-	{NULL,              NULL}
+	{NULL,              0}
 };
 
 qboolean G_Script_EventMatch_StringEqual( g_script_event_t *event, char *eventParm );
@@ -136,14 +136,14 @@ qboolean G_Script_EventMatch_IntInRange( g_script_event_t *event, char *eventPar
 // the list of events that can start an action sequence
 g_script_event_define_t gScriptEvents[] =
 {
-	{"spawn",            NULL},          // called as each character is spawned into the game
+	{"spawn",            0},          // called as each character is spawned into the game
 	{"trigger",          G_Script_EventMatch_StringEqual},   // something has triggered us (always followed by an identifier)
 	{"pain",         G_Script_EventMatch_IntInRange},    // we've been hurt
-	{"death",            NULL},          // RIP
+	{"death",            0},          // RIP
 	{"activate",     G_Script_EventMatch_StringEqual},   // something has triggered us (always followed by an identifier)
-	{"stopcam",          NULL},
+	{"stopcam",          0},
 
-	{NULL,              NULL}
+	{NULL,              0}
 };
 
 extern int numSecrets;
@@ -632,7 +632,7 @@ void script_mover_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacke
 	}
 
 	G_Script_ScriptEvent( self, "death", "" );
-	self->die = NULL;
+	self->die = 0;
 
 	trap_UnlinkEntity( self );
 	G_FreeEntity( self );
@@ -717,7 +717,7 @@ void SP_script_mover( gentity_t *ent ) {
 	trap_SetBrushModel( ent, ent->model );
 
 	InitMover( ent );
-	ent->reached = NULL;
+	ent->reached = 0;
 
 	if ( ent->spawnflags & 1 ) {
 		ent->use = script_mover_use;
