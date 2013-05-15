@@ -323,22 +323,20 @@ void QDECL Com_Error( int code, const char *fmt, ... ) {
 		FS_PureServerSetLoadedPaks("", "");
 		com_errorEntered = qfalse;
 		longjmp( abortframe, -1 );
-#ifndef DEDICATED
 	} else if ( code == ERR_ENDGAME ) {  //----(SA)	added
+		VM_Forced_Unload_Start();
 		SV_Shutdown( "endgame" );
 		if ( com_cl_running && com_cl_running->integer ) {
-			VM_Forced_Unload_Start();
-			SV_Shutdown( "Game ended" );
 			CL_Disconnect( qtrue );
 			CL_FlushMemory();
 			VM_Forced_Unload_Done();
-			// make sure we can get at our local stuff
-			FS_PureServerSetLoadedPaks("", "");
-			com_errorEntered = qfalse;
 			CL_EndgameMenu();
 		}
+
+		FS_PureServerSetLoadedPaks("", "");
+
+		com_errorEntered = qfalse;
 		longjmp( abortframe, -1 );
-#endif
 	} else if (code == ERR_DROP) {
 		Com_Printf( "********************\nERROR: %s\n********************\n", com_errorMessage );
 		VM_Forced_Unload_Start();
