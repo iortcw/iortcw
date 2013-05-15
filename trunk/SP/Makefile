@@ -236,6 +236,10 @@ ifndef DEBUG_CFLAGS
 DEBUG_CFLAGS=-g -O0
 endif
 
+ifndef USE_BLOOM
+USE_BLOOM=1
+endif
+
 
 #############################################################################
 
@@ -1100,9 +1104,10 @@ else
   STRIP_FLAG = -s
 endif
 
-ifeq ($(USE_ANTICHEAT),1)
-  SERVER_CFLAGS += -DANTICHEAT
+ifeq ($(USE_BLOOM),1)
+  CLIENT_CFLAGS += -DUSE_BLOOM
 endif
+
 
 
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
@@ -1677,6 +1682,10 @@ Q3ROBJ = \
   $(B)/renderer/tr_sky.o \
   $(B)/renderer/tr_surface.o \
   $(B)/renderer/tr_world.o \
+
+ifeq ($(USE_BLOOM),1)
+  Q3ROBJ += $(B)/renderer/tr_bloom.o 
+endif
 
   Q3ROBJ += $(B)/renderer/sdl_gamma.o
   Q3ROBJ += $(B)/renderer/sdl_glimp.o

@@ -1382,6 +1382,10 @@ void R_Init( void ) {
 
 	R_Register();
 
+#ifdef USE_BLOOM
+	R_BloomInit();
+#endif
+
 	// Ridah, init the virtual memory
 	R_Hunk_Begin();
 

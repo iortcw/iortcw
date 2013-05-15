@@ -669,7 +669,9 @@ static void Upload32(   unsigned *data,
 	GLenum internalFormat = GL_RGB;
 	float rMax = 0, gMax = 0, bMax = 0;
 	static int rmse_saved = 0;
+#ifndef USE_BLOOM
 	float rmse;
+#endif
 
 	// do the root mean square error stuff first
 	if ( r_rmse->value ) {
@@ -682,7 +684,10 @@ static void Upload32(   unsigned *data,
 			height = height >> 1;
 			ri.Printf( PRINT_ALL, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
 		}
-	} else {
+	}
+#ifndef USE_BLOOM
+	else
+	{
 		// just do the RMSE of 1 (reduce perfect)
 		while ( R_RMSE( (byte *)data, width, height ) < 1.0 ) {
 			rmse_saved += ( height * width * 4 ) - ( ( width >> 1 ) * ( height >> 1 ) * 4 );
@@ -694,6 +699,7 @@ static void Upload32(   unsigned *data,
 			ri.Printf( PRINT_ALL, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
 		}
 	}
+#endif
 	//
 	// convert to exact power of 2 sizes
 	//
@@ -741,6 +747,7 @@ static void Upload32(   unsigned *data,
 		scaled_height >>= 1;
 	}
 
+#ifndef USE_BLOOM
 	rmse = R_RMSE( (byte *)data, width, height );
 
 	if ( r_lowMemTextureSize->integer && ( scaled_width > r_lowMemTextureSize->integer || scaled_height > r_lowMemTextureSize->integer ) && rmse < r_lowMemTextureThreshold->value ) {
@@ -764,7 +771,7 @@ static void Upload32(   unsigned *data,
 		height = scaled_height;
 
 	}
-
+#endif
 
 	//
 	// clamp to minimum size
@@ -904,7 +911,8 @@ static void Upload32(   unsigned *data,
 			goto done;
 		}
 		memcpy( scaledBuffer, data, width * height * 4 );
-	} else
+	}
+	else
 	{
 		// use the normal mip-mapping function to go down from here
 		while ( width > scaled_width || height > scaled_height ) {

@@ -1503,6 +1503,10 @@ const void  *RB_DrawSurfs( const void *data ) {
 	backEnd.refdef = cmd->refdef;
 	backEnd.viewParms = cmd->viewParms;
 
+#ifdef USE_BLOOM
+	//TODO Maybe check for rdf_noworld stuff but q3mme has full 3d ui
+	backEnd.doneSurfaces = qtrue;
+#endif
 	RB_RenderDrawSurfList( cmd->drawSurfs, cmd->numDrawSurfs );
 
 	return (const void *)( cmd + 1 );
@@ -1680,6 +1684,11 @@ const void  *RB_SwapBuffers( const void *data ) {
 
 	backEnd.projection2D = qfalse;
 
+#ifdef USE_BLOOM
+	backEnd.doneBloom = qfalse;
+	backEnd.doneSurfaces = qfalse;
+#endif
+
 	return (const void *)( cmd + 1 );
 }
 
@@ -1701,6 +1710,10 @@ void RB_ExecuteRenderCommands( const void *data ) {
 			data = RB_SetColor( data );
 			break;
 		case RC_STRETCH_PIC:
+#ifdef USE_BLOOM
+			//Check if it's time for BLOOM!
+			R_BloomScreen();
+#endif
 			data = RB_StretchPic( data );
 			break;
 		case RC_ROTATED_PIC:
@@ -1716,6 +1729,10 @@ void RB_ExecuteRenderCommands( const void *data ) {
 			data = RB_DrawBuffer( data );
 			break;
 		case RC_SWAP_BUFFERS:
+#ifdef USE_BLOOM
+			//Check if it's time for BLOOM!
+			R_BloomScreen();
+#endif
 			data = RB_SwapBuffers( data );
 			break;
 		case RC_SCREENSHOT:
