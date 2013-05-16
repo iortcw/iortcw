@@ -561,7 +561,6 @@ int Q_isnan(float x);
 #endif
 
 #if idppc
-
 static ID_INLINE float Q_rsqrt( float number ) {
 		float x = 0.5f * number;
                 float y;
@@ -571,21 +570,8 @@ static ID_INLINE float Q_rsqrt( float number ) {
 		y = __frsqrte( number );
 #endif
 		return y * (1.5f - (x * y * y));
-	}
-
-#ifdef __GNUC__            
-static ID_INLINE float Q_fabs(float x) {
-    float abs_x;
-    
-    asm("fabs %0,%1" : "=f" (abs_x) : "f" (x));
-    return abs_x;
 }
 #else
-#define Q_fabs __fabsf
-#endif
-
-#else
-float Q_fabs( float f );
 float Q_rsqrt( float f );       // reciprocal square root
 #endif
 
