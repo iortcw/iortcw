@@ -979,14 +979,9 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 	// plays once then back to whatever the loop was \/
-	if ( !strcmp( cmd, "mu_play" ) ) {   // has optional parameter for fade-up time
-		int fadeTime = 0;   // default to instant start
+	if ( !strcmp( cmd, "mu_play" ) ) {
 
-		Q_strncpyz( text, CG_Argv( 2 ), MAX_SAY_TEXT );
-
-		fadeTime = atoi( text );
-
-		trap_S_StartBackgroundTrack( CG_Argv( 1 ), "", fadeTime );
+		trap_S_StartLocalSound( trap_S_RegisterSound( CG_Argv( 1 ) ), CHAN_AUTO );
 		return;
 	}
 
