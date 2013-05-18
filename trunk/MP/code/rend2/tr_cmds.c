@@ -28,8 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
-volatile renderCommandList_t    *renderCommandList;
-
 /*
 =====================
 R_PerformanceCounters
