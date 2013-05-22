@@ -1431,10 +1431,8 @@ void S_Base_Update( void ) {
 		return;
 	}
 
-#ifdef TALKANIM
 	// default to ZERO amplitude, overwrite if sound is playing
 	memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
-#endif
 
 	//
 	// debugging output
@@ -1613,9 +1611,6 @@ S_StartBackgroundTrack
 ======================
 */
 void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
-	if ( !s_soundStarted ) {
-		return;
-	}
 	if ( !intro ) {
 		intro = "";
 	}
@@ -1770,22 +1765,6 @@ void S_Base_StopEntStreamingSound( int entnum ) {
 	// FIXME: Stub
 }
 
-#ifdef TALKANIM
-/*
-======================
-S_GetVoiceAmplitude
-======================
-*/
-int S_Base_GetVoiceAmplitude( int entityNum ) {
-	if ( entityNum >= MAX_CLIENTS ) {
-		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
-		return 0;
-	}
-
-	return (int)s_entityTalkAmplitude[entityNum];
-}
-#endif
-
 /*
 ======================
 S_FreeOldestSound
@@ -1884,7 +1863,6 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	si->FadeAllSounds = S_Base_FadeAllSounds;
 	si->StartStreamingSound = S_Base_StartStreamingSound;
 	si->StopEntStreamingSound = S_Base_StopEntStreamingSound;
-	si->GetVoiceAmplitude = S_Base_GetVoiceAmplitude;
 	si->RawSamples = S_Base_RawSamples;
 	si->StopAllSounds = S_Base_StopAllSounds;
 	si->ClearLoopingSounds = S_Base_ClearLoopingSounds;

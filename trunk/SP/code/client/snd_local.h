@@ -32,8 +32,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define SND_CHUNK_SIZE_FLOAT	(SND_CHUNK_SIZE/2)		// floats
 #define SND_CHUNK_SIZE_BYTE		(SND_CHUNK_SIZE*2)		// floats
 
-#define TALKANIM
-
 typedef struct {
 	int			left;	// the final values will be clamped to +/- 0x00ffff00 and shifted down
 	int			right;
@@ -72,15 +70,7 @@ typedef struct {
 	byte		*buffer;
 } dma_t;
 
-#ifdef TALKANIM
 extern unsigned char s_entityTalkAmplitude[MAX_CLIENTS];
-#endif
-
-//----(SA)	some flags for queued music tracks
-#define QUEUED_PLAY_ONCE    -1
-#define QUEUED_PLAY_LOOPED  -2
-#define QUEUED_PLAY_ONCE_SILENT -3  // when done it goes quiet
-//----(SA)	end
 
 #define START_SAMPLE_IMMEDIATE	0x7fffffff
 
@@ -148,7 +138,6 @@ typedef struct
 	void (*StopBackgroundTrack)( void );
 	void (*StartStreamingSound)( const char *intro, const char *loop, int entnum, int channel, int attenuation );
 	void (*StopEntStreamingSound)( int entNum );
-	int (*GetVoiceAmplitude)( int entityNum );
 	void (*FadeStreamingSound)( float targetVol, int time, int ssNum );
 	void (*FadeAllSounds)( float targetVol, int time );
 	void (*RawSamples)(int stream, int samples, int rate, int width, int channels, const byte *data, float volume, int entityNum);

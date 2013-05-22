@@ -226,8 +226,6 @@ LIP SYNCING
 ===============================================================================
 */
 
-#ifdef TALKANIM
-
 unsigned char s_entityTalkAmplitude[MAX_CLIENTS];
 
 /*
@@ -440,7 +438,19 @@ void S_SetVoiceAmplitudeFromMuLaw( const sfx_t *sc, int sampleOffset, int count,
 	s_entityTalkAmplitude[entnum] = (unsigned char)sfx_count;
 }
 
-#endif
+/*
+======================
+S_GetVoiceAmplitude
+======================
+*/
+int S_GetVoiceAmplitude( int entityNum ) {
+	if ( entityNum >= MAX_CLIENTS ) {
+		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
+		return 0;
+	}
+
+	return (int)s_entityTalkAmplitude[entityNum];
+}
 
 /*
 ===============================================================================
@@ -890,7 +900,6 @@ void S_PaintChannels( int endtime ) {
 					paintbuffer[i-s_paintedtime].left += rawsamples[s].left;
 					paintbuffer[i-s_paintedtime].right += rawsamples[s].right;
 				}
-#ifdef TALKANIM
 				if ( firstPass && ch->entchannel == CHAN_VOICE && ch->entnum < MAX_CLIENTS ) {
 					int talktime;
 					int sfx_count, vstop;
@@ -899,7 +908,7 @@ void S_PaintChannels( int endtime ) {
 
 					// we need to go into the future, since the interpolated behaviour of the facial
 					// animation creates lag in the time it takes to display the current facial frame
-					talktime = s_paintedtime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
+					talktime = s_paintedtime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
 					vstop = ( talktime + 100 < s_rawend[stream] ) ? talktime + 100 : s_rawend[stream];
 					sfx_count = 0;
 
@@ -922,7 +931,6 @@ void S_PaintChannels( int endtime ) {
 					s_entityTalkAmplitude[ch->entnum] = (unsigned char)sfx_count;
 
 				}
-#endif
 			}
 		}
 
@@ -948,14 +956,13 @@ void S_PaintChannels( int endtime ) {
 			}
 
 			if ( count > 0 ) {
-#ifdef TALKANIM
 				// Ridah, talking animations
 				// TODO: check that this entity has talking animations enabled!
 				if ( firstPass && ch->entchannel == CHAN_VOICE && ch->entnum < MAX_CLIENTS ) {
 					int talkofs, talkcnt, talktime;
 					// we need to go into the future, since the interpolated behaviour of the facial
 					// animation creates lag in the time it takes to display the current facial frame
-					talktime = ltime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
+					talktime = ltime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
 					talkofs = talktime - ch->startSample;
 					talkcnt = 100;
 					if ( talkofs + talkcnt < sc->soundLength ) {
@@ -970,7 +977,6 @@ void S_PaintChannels( int endtime ) {
 						}
 					}
 				}
-#endif
 				if( sc->soundCompressionMethod == 1) {
 					S_PaintChannelFromADPCM		(ch, sc, count, sampleOffset, ltime - s_paintedtime);
 				} else if( sc->soundCompressionMethod == 2) {
@@ -1008,14 +1014,13 @@ void S_PaintChannels( int endtime ) {
 				}
 
 				if ( count > 0 ) {
-#ifdef TALKANIM
 					// Ridah, talking animations
 					// TODO: check that this entity has talking animations enabled!
 					if ( firstPass && ch->entchannel == CHAN_VOICE && ch->entnum < MAX_CLIENTS ) {
 						int talkofs, talkcnt, talktime;
 						// we need to go into the future, since the interpolated behaviour of the facial
 						// animation creates lag in the time it takes to display the current facial frame
-						talktime = ltime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
+						talktime = ltime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
 						talkofs = talktime % sc->soundLength;
 						talkcnt = 100;
 						if ( talkofs + talkcnt < sc->soundLength ) {
@@ -1030,7 +1035,6 @@ void S_PaintChannels( int endtime ) {
 							}
 						}
 					}
-#endif
 					if( sc->soundCompressionMethod == 1) {
 						S_PaintChannelFromADPCM		(ch, sc, count, sampleOffset, ltime - s_paintedtime);
 					} else if( sc->soundCompressionMethod == 2) {
