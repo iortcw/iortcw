@@ -1018,6 +1018,10 @@ static void RB_FogPass( int wolfFog ) {
 	if (wolfFog)
 	{
 		// from R_Fog(), altered slightly
+		if ( backEnd.projection2D ) {
+			return;
+		}
+
 		if ( backEnd.refdef.rdflags & RDF_DRAWINGSKY ) {
 			if ( glfogsettings[FOG_SKY].registered ) {
 				glFog = &glfogsettings[FOG_SKY];
