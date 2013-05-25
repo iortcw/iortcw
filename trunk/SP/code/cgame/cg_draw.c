@@ -2504,6 +2504,20 @@ static void CG_DrawCrosshair3D( void ) {
 	ent.radius = w / 640 * xmax * trace.fraction * maxdist / zProj;
 	ent.customShader = hShader;
 
+	// set color based on health
+	if ( cg_crosshairHealth.integer ) {
+		CG_ColorForHealth( hcolor );
+		ent.shaderRGBA[0]=(byte)(hcolor[0]*255.f);
+		ent.shaderRGBA[1]=(byte)(hcolor[1]*255.f);
+		ent.shaderRGBA[2]=(byte)(hcolor[2]*255.f);
+		ent.shaderRGBA[3]=(byte)(hcolor[3]*255.f);
+	} else {
+		ent.shaderRGBA[0]=255;
+		ent.shaderRGBA[1]=255;
+		ent.shaderRGBA[2]=255;
+		ent.shaderRGBA[3]=255;
+	}
+
 	trap_R_AddRefEntityToScene(&ent);
 }
 
