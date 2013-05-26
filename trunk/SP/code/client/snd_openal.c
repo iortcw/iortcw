@@ -2094,6 +2094,8 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop )
 	if((!intro || !*intro) && (!loop || !*loop))
 		return;
 
+	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
+
 	// Allocate a musicSource
 	S_AL_MusicSourceGet();
 	if(musicSourceHandle == -1)
@@ -2120,6 +2122,8 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop )
 	}
 	else
 		intro_stream = NULL;
+
+	Cvar_Set( "s_currentMusic", s_backgroundLoop ); //----(SA)	so the savegame will have the right musi
 
 	mus_stream = S_CodecOpenStream(s_backgroundLoop);
 	if(!mus_stream)

@@ -1617,6 +1617,9 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 	if ( !loop || !loop[0] ) {
 		loop = intro;
 	}
+
+	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
+
 	Com_DPrintf( "S_StartBackgroundTrack( %s, %s )\n", intro, loop );
 
 	if(!*intro)
@@ -1631,8 +1634,6 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 		Q_strncpyz( s_backgroundLoop, loop, sizeof( s_backgroundLoop ) );
 	}
 
-	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
-
 	// close the background track, but DON'T reset s_rawend
 	// if restarting the same back ground track
 	if(s_backgroundStream)
@@ -1640,6 +1641,8 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 		S_CodecCloseStream(s_backgroundStream);
 		s_backgroundStream = NULL;
 	}
+
+	Cvar_Set( "s_currentMusic", s_backgroundLoop ); //----(SA)	so the savegame will have the right musi
 
 	// Open stream
 	s_backgroundStream = S_CodecOpenStream(intro);
