@@ -1073,9 +1073,9 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		qglDepthRange( 0, 1 );
 	}
 
-	// (SA) draw sun
-	RB_DrawSun();
-
+	if (r_drawSun->integer) {
+		RB_DrawSun(0.2, tr.sunShader);
+	}
 
 	// darken down any stencil shadows
 	RB_ShadowFinish();
