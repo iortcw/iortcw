@@ -1004,7 +1004,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	vec3_t    temp;
 //	vec4_t color;
 
-	if ( !tr.sunShader ) {
+	if ( !shader ) {
 		return;
 	}
 
@@ -1071,7 +1071,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 		// (SA) FIXME: todo: flare effect should render last (on top of everything else) and only when sun is in view (sun moving out of camera past degree n should start to cause flare dimming until view angle to sun is off by angle n + x.
 
 		// draw the flare
-		RB_BeginSurface( tr.sunflareShader_old[0], tess.fogNum );
+		RB_BeginSurface( tr.sunflareShader_old[0], 0 );
 		RB_AddQuadStamp( origin, vec1, vec2, colorWhite );
 		RB_EndSurface();
 	}

@@ -813,13 +813,14 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	vec3_t temp;
 	byte    sunColor[4] = { 255, 255, 255, 255 };
 
-	if ( !tr.sunShader ) {
+	if ( !shader ) {
 		return;
 	}
 
 	if ( !backEnd.skyRenderedThisView ) {
 		return;
 	}
+
 	qglLoadMatrixf( backEnd.viewParms.world.modelMatrix );
 	qglTranslatef( backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2] );
 
@@ -839,7 +840,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	qglDepthRange( 1.0, 1.0 );
 
 	// (SA) simpler sun drawing
-	RB_BeginSurface( shader, tess.fogNum );
+	RB_BeginSurface( shader, 0 );
 
 	RB_AddQuadStamp( origin, vec1, vec2, sunColor );
 
@@ -869,7 +870,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 		// (SA) FIXME: todo: flare effect should render last (on top of everything else) and only when sun is in view (sun moving out of camera past degree n should start to cause flare dimming until view angle to sun is off by angle n + x.
 
 		// draw the flare
-		RB_BeginSurface( tr.sunflareShader[0], tess.fogNum );
+		RB_BeginSurface( tr.sunflareShader[0], 0 );
 		RB_AddQuadStamp( origin, vec1, vec2, sunColor );
 		RB_EndSurface();
 	}
