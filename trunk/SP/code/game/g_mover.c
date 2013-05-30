@@ -1638,7 +1638,7 @@ void InitMover( gentity_t *ent ) {
 		ent->reached = Reached_TrinaryMover;
 	} else if ( !Q_stricmp( ent->classname, "func_rotating" ) )       {
 		ent->use = Use_Func_Rotate;
-		ent->reached = NULL; // rotating can never reach
+		ent->reached = 0; // rotating can never reach
 	} else
 	{
 		ent->use = Use_BinaryMover;
@@ -3056,7 +3056,7 @@ void Func_train_particles_reached( gentity_t *self ) {
 void SP_func_train_particles( gentity_t *self ) {
 	SP_func_train( self );
 	self->reached = Func_train_particles_reached;
-	self->blocked = NULL;
+	self->blocked = 0;
 
 	self->damage = 0;
 
@@ -3082,7 +3082,7 @@ delay = (end map) wait in seconds this long after player steps outside, before s
 void FuncBatsReached( gentity_t *self ) {
 	if ( self->active == 2 ) {
 		self->nextthink = -1;
-		self->think = NULL;
+		self->think = 0;
 		return;
 	}
 
@@ -3186,8 +3186,8 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 			bat->r.contents = 0; //CONTENTS_CORPSE;
 			bat->takedamage = qfalse;
 			bat->health = 1;
-			bat->pain = NULL;
-			bat->die = NULL; //BatDie;
+			bat->pain = 0;
+			bat->die = 0; //BatDie;
 			//VectorSet( bat->r.mins, -18, -18, -18 );
 			//VectorSet( bat->r.maxs,  18,  18,  18 );
 
@@ -3203,7 +3203,7 @@ void FuncBatsActivate( gentity_t *self, gentity_t * other, gentity_t * activator
 		InitMover( self );  // start moving
 		FuncBatsReached( self );
 		self->reached = FuncBatsReached;
-		self->blocked = NULL;
+		self->blocked = 0;
 
 		// disable this to debug path
 		self->r.svFlags |= SVF_NOCLIENT;
@@ -3303,7 +3303,7 @@ void SP_func_bats( gentity_t *self ) {
 		self->s.eType = ET_SPIRIT_SPAWNER;
 		self->s.otherEntityNum2 = 0;    // HACK: point to the player
 		self->s.time = (int)( self->delay * 1000 );
-		self->use = NULL;
+		self->use = 0;
 		self->botDelayBegin = qfalse;
 		//
 		self->think = FuncEndSpiritsThink;

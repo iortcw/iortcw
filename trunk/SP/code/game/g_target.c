@@ -1053,7 +1053,7 @@ void target_rumble_use( gentity_t *ent, gentity_t *other, gentity_t *activator )
 		// RF, don't broadcast this entity
 		ent->r.svFlags &= ~SVF_BROADCAST;
 		ent->spawnflags |= 1;
-		ent->think = NULL;
+		ent->think = 0;
 		ent->count = 0;
 	}
 }

@@ -191,8 +191,8 @@ void ai_trigger_activate( gentity_t *self ) {
 		return;
 	}
 
-	self->use = NULL;
-	self->AIScript_AlertEntity = NULL;
+	self->use = 0;
+	self->AIScript_AlertEntity = 0;
 
 	self->touch = AICast_Touch_Trigger;
 

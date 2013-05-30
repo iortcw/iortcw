@@ -1232,10 +1232,9 @@ Zombie spit
 =====================
 */
 void weapon_zombiespit( gentity_t *ent ) {
-	gentity_t *m;
-
-//RF, HARD disable
 	return;
+#if 0 //RF, HARD disable
+	gentity_t *m;
 
 	m = fire_zombiespit( ent, muzzleTrace, forward );
 	m->damage *= s_quadFactor;
@@ -1244,8 +1243,7 @@ void weapon_zombiespit( gentity_t *ent ) {
 	if ( m ) {
 		G_AddEvent( ent, EV_GENERAL_SOUND, G_SoundIndex( "sound/Loogie/spit.wav" ) );
 	}
-
-
+#endif
 }
 
 /*

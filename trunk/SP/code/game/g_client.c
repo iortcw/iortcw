@@ -1183,13 +1183,14 @@ qboolean G_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **model
 	return qtrue;
 }
 
+static char text[100000];                   // <- was causing callstacks >64k
+
 /*
 =============
 G_ParseAnimationFiles
 =============
 */
 qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl ) {
-	char text[100000];
 	char filename[MAX_QPATH];
 	fileHandle_t f;
 	int len;

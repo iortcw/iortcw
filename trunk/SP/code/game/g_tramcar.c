@@ -587,7 +587,7 @@ void Tramcar_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, in
 		trap_LinkEntity( slave );
 	}
 
-	self->use = NULL;
+	self->use = 0;
 
 	self->is_dead = qtrue;
 
@@ -1245,7 +1245,7 @@ void truck_cam_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	}
 
 	if ( !self->nextTrain ) {
-		self->touch = NULL;
+		self->touch = 0;
 		return;
 	}
 
@@ -1452,7 +1452,7 @@ void camera_cam_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 	} else
 	{
 		ent->spawnflags &= ~1;
-		ent->think = NULL;
+		ent->think = 0;
 		{
 			player->client->ps.persistant[PERS_HWEAPON_USE] = 0;
 			player->client->ps.viewlocked = 0;

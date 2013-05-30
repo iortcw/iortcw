@@ -709,7 +709,7 @@ void props_radio_dieSEVEN( gentity_t *ent, gentity_t *inflictor, gentity_t *atta
 	Prop_Break_Sound( ent );
 
 	ent->takedamage = qfalse;
-	ent->die = NULL;
+	ent->die = 0;
 
 	trap_LinkEntity( ent );
 
@@ -955,7 +955,7 @@ void Just_Got_Thrown( gentity_t *self ) {
 					self->nextthink = level.time + 50;
 
 					self->think = Props_Chair_Think;
-					self->touch = NULL;
+					self->touch = 0;
 					self->die = Props_Chair_Die;
 					self->s.eType = ET_MOVER;
 
@@ -1037,7 +1037,7 @@ void Props_Activated( gentity_t *self ) {
 		velocity[2] += 100 + crandom() * 25;
 		VectorCopy( velocity, self->s.pos.trDelta );
 
-		self->think = NULL;
+		self->think = 0;
 		self->nextthink = 0;
 
 		prop = G_Spawn();
@@ -1325,7 +1325,7 @@ void Props_Chair_Touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 
 void Props_Chair_Animate( gentity_t *ent ) {
 
-	ent->touch = NULL;
+	ent->touch = 0;
 
 	if ( !Q_stricmp( ent->classname, "props_chair" ) ) {
 		if ( ent->s.frame >= 27 ) {
@@ -2105,7 +2105,7 @@ void Props_Barrel_Die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker
 		fire_flamebarrel( ent, ent->r.currentOrigin, dir );
 	}
 
-	ent->touch = NULL;
+	ent->touch = 0;
 
 	ent->think = Props_Barrel_Animate;
 	ent->nextthink = level.time + FRAMETIME;
@@ -2320,7 +2320,7 @@ void crate_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int d
 	ent->takedamage = qfalse;
 	ent->think = crate_animate;
 	ent->nextthink = level.time + FRAMETIME;
-	ent->touch = NULL;
+	ent->touch = 0;
 
 	trap_UnlinkEntity( ent );
 
@@ -2475,7 +2475,7 @@ void flippy_table_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) 
 		return;
 	}
 
-	ent->use = NULL;
+	ent->use = 0;
 
 	is_infront = infront( ent, other );
 
@@ -2758,7 +2758,7 @@ void props_castlebed_animate( gentity_t *ent ) {
 void props_castlebed_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
 	ent->think = props_castlebed_animate;
 	ent->nextthink = level.time + FRAMETIME;
-	ent->touch = NULL;
+	ent->touch = 0;
 	ent->takedamage = qfalse;
 
 	ent->count = shard_wood;
@@ -4081,7 +4081,7 @@ void props_flamethrower_use( gentity_t *ent, gentity_t *other, gentity_t *activa
 	if ( ent->spawnflags & 2 ) {
 		ent->s.eFlags &= ~EF_FIRING;
 		ent->spawnflags &= ~2;
-		ent->think = NULL;      // (SA) wasn't working
+		ent->think = 0;      // (SA) wasn't working
 		ent->nextthink = 0;
 		return;
 	} else

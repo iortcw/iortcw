@@ -95,7 +95,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MP40,WP_GRENADE_LAUNCHER},      // starting weapons
 		BBOX_SMALL, {32,48},                // bbox, crouch/stand height
 		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2, // flags
-		NULL, NULL, NULL,                   // special attack routine
+		0, 0, 0,                   // special attack routine
 		NULL,                               // looping sound
 		AISTATE_RELAXED
 	},
@@ -143,7 +143,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_THOMPSON,WP_GRENADE_PINEAPPLE},
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -242,7 +242,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MONSTER_ATTACK1,WP_MONSTER_ATTACK2,WP_MONSTER_ATTACK3},
 		BBOX_SMALL, {10,48},    // very low defense position
 		AIFL_NO_RELOAD,
-		AIFunc_WarriorZombieMeleeStart, /*AIFunc_WarriorZombieSightStart*/ NULL, AIFunc_WarriorZombieDefenseStart,
+		AIFunc_WarriorZombieMeleeStart, /*AIFunc_WarriorZombieSightStart*/ 0, AIFunc_WarriorZombieDefenseStart,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -290,7 +290,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_FLAMETHROWER},
 		BBOX_SMALL, {32,48},
 		AIFL_NO_FLAME_DAMAGE | AIFL_WALKFORWARD | AIFL_NO_RELOAD,   // |AIFL_NO_HEADSHOT_DMG,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -339,7 +339,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{ /*WP_MONSTER_ATTACK1,*/ WP_MONSTER_ATTACK2,WP_MONSTER_ATTACK3},
 		BBOX_LARGE, {32,32},        // large is for wide characters
 		AIFL_NO_RELOAD,
-		NULL /*AIFunc_LoperAttack1Start*/, AIFunc_LoperAttack2Start, AIFunc_LoperAttack3Start,
+		0 /*AIFunc_LoperAttack1Start*/, AIFunc_LoperAttack2Start, AIFunc_LoperAttack3Start,
 		"sound/world/electloop.wav",
 		AISTATE_ALERT
 	},
@@ -387,7 +387,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_SILENCER},      //----(SA)	TODO: replace w/ "silenced luger"
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -435,7 +435,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MONSTER_ATTACK2},   // TODO: dual machinegun attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
-		NULL, AIFunc_StimSoldierAttack2Start, NULL,
+		0, AIFunc_StimSoldierAttack2Start, 0,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -483,7 +483,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MP40, WP_MONSTER_ATTACK1},  // attack1 is leaping rocket attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
-		AIFunc_StimSoldierAttack1Start, NULL, NULL,
+		AIFunc_StimSoldierAttack1Start, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -531,7 +531,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MP40, WP_TESLA},    // no monster_attack1, since that's only used for the jumping rocket attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
-		AIFunc_StimSoldierAttack1Start, NULL, NULL,
+		AIFunc_StimSoldierAttack1Start, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -579,7 +579,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_VENOM},
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD | AIFL_NO_FLAME_DAMAGE | AIFL_NO_TESLA_DAMAGE,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -628,7 +628,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_FG42, WP_FG42SCOPE, WP_GRENADE_LAUNCHER, WP_MONSTER_ATTACK1},   // attack1 is melee kick
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_FLIP_ANIM | AIFL_STAND_IDLE2,
-		AIFunc_BlackGuardAttack1Start, NULL, NULL,
+		AIFunc_BlackGuardAttack1Start, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -676,7 +676,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_VENOM},
 		BBOX_LARGE, {48,64},
 		AIFL_NO_TESLA_DAMAGE | AIFL_NO_FLAME_DAMAGE | AIFL_WALKFORWARD | AIFL_NO_RELOAD,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
@@ -724,7 +724,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{0},
 		BBOX_SMALL, {32,48},    // bbox, crouch/stand height
 		0,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -772,7 +772,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_MONSTER_ATTACK1,WP_MONSTER_ATTACK2 /*,WP_MONSTER_ATTACK3*/}, // starting weapons
 		BBOX_LARGE, {90,90},                // bbox, crouch/stand height
 		AIFL_WALKFORWARD | AIFL_NO_RELOAD,
-		AIFunc_Helga_MeleeStart, AIFunc_Helga_SpiritAttack_Start, NULL,                     // special attack routine
+		AIFunc_Helga_MeleeStart, AIFunc_Helga_SpiritAttack_Start, 0,                     // special attack routine
 		NULL,
 		AISTATE_ALERT
 	},
@@ -868,7 +868,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{WP_THOMPSON},
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -916,7 +916,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		{0},
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2,
-		NULL, NULL, NULL,
+		0, 0, 0,
 		NULL,
 		AISTATE_RELAXED
 	},
@@ -1427,7 +1427,7 @@ void AIChar_spawn( gentity_t *ent ) {
 	if ( ent->aiTeam == AITEAM_ALLIES || ent->aiTeam == AITEAM_NEUTRAL ) { // friendly
 		cs->activate = AICast_ProcessActivate;
 	} else {
-		cs->activate = NULL;
+		cs->activate = 0;
 	}
 	cs->aifuncAttack1 = aiCharDefaults->aifuncAttack1;
 	cs->aifuncAttack2 = aiCharDefaults->aifuncAttack2;

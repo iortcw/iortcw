@@ -156,7 +156,7 @@ qboolean G_ScriptAction_GotoMarker( gentity_t *ent, char *params ) {
 				ent->s.pos.trDuration = 1000.0 * dist / ( speed / 2.0 );
 				ent->s.pos.trType = trType;
 			}
-			ent->reached = NULL;
+			ent->reached = 0;
 
 			if ( turntotarget ) {
 				duration = ent->s.pos.trDuration;
