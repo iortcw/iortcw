@@ -1412,8 +1412,6 @@ void Com_InitSmallZoneMemory( void ) {
 		Com_Error( ERR_FATAL, "Small zone data failed to allocate %1.1f megs", (float)s_smallZoneTotal / ( 1024 * 1024 ) );
 	}
 	Z_ClearZone( smallzone, s_smallZoneTotal );
-
-	return;
 }
 
 /*
@@ -2271,7 +2269,7 @@ Just throw a fatal error to
 test error shutdown procedures
 =============
 */
-static void Com_Error_f( void ) {
+static void __attribute__((__noreturn__)) Com_Error_f (void) {
 	if ( Cmd_Argc() > 1 ) {
 		Com_Error( ERR_DROP, "Testing drop error" );
 	} else {
@@ -2566,8 +2564,9 @@ static void Com_WriteCDKey( const char *filename, const char *ikey ) {
 out:
 #ifndef _WIN32
 	umask(savedumask);
+#else
+	;
 #endif
-	return;
 }
 #endif
 

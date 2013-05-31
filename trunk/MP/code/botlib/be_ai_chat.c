@@ -1056,7 +1056,6 @@ bot_randomlist_t *BotLoadRandomStrings( char *filename ) {
 			} //end if
 			while ( !PC_CheckTokenString( source, "}" ) )
 			{
-				size_t len;
 				if ( !BotLoadChatMessage( source, chatmessagestring ) ) {
 					FreeSource( source );
 					return NULL;
@@ -1518,7 +1517,6 @@ void BotMatchVariable( bot_match_t *match, int variable, char *buf, int size ) {
 	{
 		strcpy( buf, "" );
 	} //end else
-	return;
 } //end of the function BotMatchVariable
 //===========================================================================
 //

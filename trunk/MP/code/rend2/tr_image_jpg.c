@@ -46,7 +46,7 @@ extern	refimport_t		ri;
 #  endif
 #endif
 
-static void R_JPGErrorExit(j_common_ptr cinfo)
+static void __attribute__((__noreturn__)) R_JPGErrorExit(j_common_ptr cinfo)
 {
   char buffer[JMSG_LENGTH_MAX];
   

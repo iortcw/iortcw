@@ -2308,8 +2308,6 @@ void CL_KeyDownEvent( int key, unsigned time )
 		// send the bound action
 		CL_ParseBinding( key, qtrue, time );
 	}
-
-	return;
 }
 
 /*

@@ -3549,9 +3549,6 @@ void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, i
 			result->flags |= MOVERESULT_FUTUREVIEW;
 		}
 	}
-
-	//return the movement result
-	return;
 } //end of the function BotMoveToGoal
 //===========================================================================
 //

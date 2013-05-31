@@ -354,7 +354,7 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 				}
 
 				if (!size)
-					ri.Error(ERR_DROP, "Bad header for %s!\n", filename);
+					ri.Error(ERR_DROP, "Bad header for %s!", filename);
 
 				size -= 2;
 				p += 2;
@@ -372,10 +372,10 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 
 #if 0 // HDRFILE_RGBE
 				if (size != tr.lightmapSize * tr.lightmapSize * 4)
-					ri.Error(ERR_DROP, "Bad size for %s (%i)!\n", filename, size);
+					ri.Error(ERR_DROP, "Bad size for %s (%i)!", filename, size);
 #else // HDRFILE_FLOAT
 				if (size != tr.lightmapSize * tr.lightmapSize * 12)
-					ri.Error(ERR_DROP, "Bad size for %s (%i)!\n", filename, size);
+					ri.Error(ERR_DROP, "Bad size for %s (%i)!", filename, size);
 #endif
 			}
 			else
@@ -2363,133 +2363,6 @@ static void R_CreateWorldVBO(void)
 ===============
 R_LoadSurfaces
 ===============
-
-static void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
-	dsurface_t  *in;
-	msurface_t  *out;
-	drawVert_t  *dv;
-	int         *indexes;
-	int count;
-	int numFaces, numMeshes, numTriSurfs, numFlares;
-	int i;
-	float *hdrVertColors = NULL;
-
-	numFaces = 0;
-	numMeshes = 0;
-	numTriSurfs = 0;
-	numFlares = 0;
-
-	if ( surfs->filelen % sizeof( *in ) ) {
-		ri.Error( ERR_DROP, "LoadMap: funny lump size in %s",s_worldData.name );
-	}
-	count = surfs->filelen / sizeof( *in );
-
-	dv = ( void * )( fileBase + verts->fileofs );
-	if ( verts->filelen % sizeof( *dv ) ) {
-		ri.Error( ERR_DROP, "LoadMap: funny lump size in %s",s_worldData.name );
-	}
-
-	indexes = ( void * )( fileBase + indexLump->fileofs );
-	if ( indexLump->filelen % sizeof( *indexes ) ) {
-		ri.Error( ERR_DROP, "LoadMap: funny lump size in %s",s_worldData.name );
-	}
-
-	out = ri.Hunk_Alloc( count * sizeof( *out ), h_low );
-
-	s_worldData.surfaces = out;
-	s_worldData.numsurfaces = count;
-	s_worldData.surfacesViewCount = ri.Hunk_Alloc ( count * sizeof(*s_worldData.surfacesViewCount), h_low );
-	s_worldData.surfacesDlightBits = ri.Hunk_Alloc ( count * sizeof(*s_worldData.surfacesDlightBits), h_low );
-	s_worldData.surfacesPshadowBits = ri.Hunk_Alloc ( count * sizeof(*s_worldData.surfacesPshadowBits), h_low );
-
-	// load hdr vertex colors
-	if (r_hdr->integer)
-	{
-		char filename[MAX_QPATH];
-		int size;
-
-		Com_sprintf( filename, sizeof( filename ), "maps/%s/vertlight.raw", s_worldData.baseName);
-		//ri.Printf(PRINT_ALL, "looking for %s\n", filename);
-
-		size = ri.FS_ReadFile(filename, (void **)&hdrVertColors);
-
-		if (hdrVertColors)
-		{
-			//ri.Printf(PRINT_ALL, "Found!\n");
-			if (size != sizeof(float) * 3 * (verts->filelen / sizeof(*dv)))
-				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!\n", filename, size, (int)((sizeof(float)) * 3 * (verts->filelen / sizeof(*dv))));
-		}
-	}
-
-	// Ridah, init the surface memory. This is optimization, so we don't have to
-	// look for memory for each surface, we allocate a big block and just chew it up
-	// as we go
-//	R_InitSurfMemory();
-
-	// Two passes, allocate surfaces first, then load them full of data
-	// This ensures surfaces are close together to reduce L2 cache misses when using VBOs,
-	// which don't actually use the verts and tris
-	in = (void *)(fileBase + surfs->fileofs);
-	out = s_worldData.surfaces;
-	for ( i = 0 ; i < count ; i++, in++, out++ ) {
-		switch ( LittleLong( in->surfaceType ) ) {
-		case MST_PATCH:
-			ParseMesh ( in, dv, hdrVertColors, out );
-			{
-				srfGridMesh_t *surface = (srfGridMesh_t *)out->data;
-
-				out->cullinfo.type = CULLINFO_BOX | CULLINFO_SPHERE;
-				VectorCopy(surface->meshBounds[0], out->cullinfo.bounds[0]);
-				VectorCopy(surface->meshBounds[1], out->cullinfo.bounds[1]);
-				VectorCopy(surface->localOrigin, out->cullinfo.localOrigin);
-				out->cullinfo.radius = surface->meshRadius;
-			}
-			numMeshes++;
-			break;
-		case MST_TRIANGLE_SOUP:
-			ParseTriSurf( in, dv, hdrVertColors, out, indexes );
-			numTriSurfs++;
-			break;
-		case MST_PLANAR:
-			ParseFace( in, dv, hdrVertColors, out, indexes );
-			numFaces++;
-			break;
-		case MST_FLARE:
-			ParseFlare( in, dv, out, indexes );
-			{
-				out->cullinfo.type = CULLINFO_NONE;
-			}
-			numFlares++;
-			break;
-		default:
-			ri.Error( ERR_DROP, "Bad surfaceType" );
-		}
-	}
-
-	if (hdrVertColors)
-	{
-		ri.FS_FreeFile(hdrVertColors);
-	}
-
-#ifdef PATCH_STITCHING
-	R_StitchAllPatches();
-#endif
-
-	R_FixSharedVertexLodError();
-
-#ifdef PATCH_STITCHING
-	R_MovePatchSurfacesToHunk();
-#endif
-
-	ri.Printf( PRINT_ALL, "...loaded %d faces, %i meshes, %i trisurfs, %i flares\n",
-			   numFaces, numMeshes, numTriSurfs, numFlares );
-}
-*/
-
-/*
-===============
-R_LoadSurfaces
-===============
 */
 static void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
 	dsurface_t  *in;
@@ -2544,7 +2417,7 @@ static void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
 		{
 			//ri.Printf(PRINT_ALL, "Found!\n");
 			if (size != sizeof(float) * 3 * (verts->filelen / sizeof(*dv)))
-				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!\n", filename, size, (int)((sizeof(float)) * 3 * (verts->filelen / sizeof(*dv))));
+				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!", filename, size, (int)((sizeof(float)) * 3 * (verts->filelen / sizeof(*dv))));
 		}
 	}
 
@@ -3159,7 +3032,7 @@ void R_LoadLightGrid( lump_t *l ) {
 
 			if (size != sizeof(float) * 6 * numGridPoints)
 			{
-				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!\n", filename, size, (int)(sizeof(float)) * 6 * numGridPoints);
+				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!", filename, size, (int)(sizeof(float)) * 6 * numGridPoints);
 			}
 
 			w->hdrLightGrid = ri.Hunk_Alloc(size, h_low);

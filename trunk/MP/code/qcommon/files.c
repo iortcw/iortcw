@@ -1512,7 +1512,7 @@ Return the searchpath in "startSearch".
 =================
 */
 
-vmInterpret_t FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, qboolean unpure, int enableQvm)
+int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, qboolean unpure, int enableQvm)
 {
 	searchpath_t *search, *lastSearch;
 	directory_t *dir;
@@ -3049,7 +3049,6 @@ void FS_Which_f( void ) {
 	}
 
 	Com_Printf("File not found: \"%s\"\n", filename);
-	return;
 }
 
 //===========================================================================
