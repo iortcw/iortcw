@@ -1530,6 +1530,7 @@ static void RB_SurfaceAxis( void ) {
 	glIndex_t indicies[6] = {0, 1, 0, 2, 0, 3};
 #endif
 	GL_Bind( tr.whiteImage );
+	GL_State( GLS_DEFAULT );
 	qglLineWidth( 3 );
 #ifdef VCMODS_OPENGLES
 	qglEnableClientState( GL_COLOR_ARRAY );
