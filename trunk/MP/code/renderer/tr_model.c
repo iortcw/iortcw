@@ -2280,123 +2280,20 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 	// done.
 }
 
-//---------------------------------------------------------------------------
-// Virtual Memory, used for model caching, since we can't allocate them
-// in the main Hunk (since it gets cleared on level changes), and they're
-// too large to go into the Zone, we have a special memory chunk just for
-// caching models in between levels.
-//
-// Optimized for Win32 systems, so that they'll grow the swapfile at startup
-// if needed, but won't actually commit it until it's needed.
-//
-// GOAL: reserve a big chunk of virtual memory for the media cache, and only
-// use it when we actually need it. This will make sure the swap file grows
-// at startup if needed, rather than each allocation we make.
-byte    *membase = NULL;
-int hunkmaxsize;
-int cursize;
-
-#define R_HUNK_MEGS     24
-#define R_HUNK_SIZE     ( R_HUNK_MEGS*1024*1024 )
-
 void *R_Hunk_Begin( void ) {
-	int maxsize = R_HUNK_SIZE;
-
-	//Com_Printf("R_Hunk_Begin\n");
-
-	// reserve a huge chunk of memory, but don't commit any yet
-	cursize = 0;
-	hunkmaxsize = maxsize;
-
-#ifdef _WIN32
-
-	// this will "reserve" a chunk of memory for use by this application
-	// it will not be "committed" just yet, but the swap file will grow
-	// now if needed
-	membase = VirtualAlloc( NULL, maxsize, MEM_RESERVE, PAGE_NOACCESS );
-
-#else
-
-	// show_bug.cgi?id=440
-	// if not win32, then just allocate it now
-	// it is possible that we have been allocated already, in case we don't do anything
-	if ( !membase ) {
-		membase = malloc( maxsize );
-		// TTimo NOTE: initially, I was doing the memset even if we had an existing membase
-		// but this breaks some shaders (i.e. /map mp_beach, then go back to the main menu .. some shaders are missing)
-		// I assume the shader missing is because we don't clear memory either on win32
-		// meaning even on win32 we are using memory that is still reserved but was uncommited .. it works out of pure luck
-		memset( membase, 0, maxsize );
-	}
-
-#endif
-
-	if ( !membase ) {
-		ri.Error( ERR_DROP, "R_Hunk_Begin: reserve failed" );
-	}
-
-	return (void *)membase;
+	return NULL;
 }
 
 void *R_Hunk_Alloc( int size ) {
-#ifdef _WIN32
-	void    *buf;
-#endif
-
-	//Com_Printf("R_Hunk_Alloc(%d)\n", size);
-
-	// round to cacheline
-	size = ( size + 31 ) & ~31;
-
-#ifdef _WIN32
-
-	// commit pages as needed
-	buf = VirtualAlloc( membase, cursize + size, MEM_COMMIT, PAGE_READWRITE );
-
-	if ( !buf ) {
-		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &buf, 0, NULL );
-		ri.Error( ERR_DROP, "VirtualAlloc commit failed.\n" );
-	}
-
-#endif
-
-	cursize += size;
-	if ( cursize > hunkmaxsize ) {
-		ri.Error( ERR_DROP, "R_Hunk_Alloc overflow" );
-	}
-
-	return ( void * )( membase + cursize - size );
+	return NULL;
 }
 
 // this is only called when we shutdown GL
 void R_Hunk_End( void ) {
-	//Com_Printf("R_Hunk_End\n");
-
-	if ( membase ) {
-#ifdef _WIN32
-		VirtualFree( membase, 0, MEM_RELEASE );
-#else
-		free( membase );
-#endif
-	}
-
-	membase = NULL;
+	return;
 }
 
 void R_Hunk_Reset( void ) {
-	//Com_Printf("R_Hunk_Reset\n");
-
-	if ( !membase ) {
-		ri.Error( ERR_DROP, "R_Hunk_Reset called without a membase!" );
-	}
-
-#ifdef _WIN32
-	// mark the existing committed pages as reserved, but not committed
-	VirtualFree( membase, cursize, MEM_DECOMMIT );
-#endif
-	// on non win32 OS, we keep the allocated chunk as is, just start again to curzise = 0
-
-	// start again at the top
-	cursize = 0;
+	return;
 }
 
