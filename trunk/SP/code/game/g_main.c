@@ -84,7 +84,7 @@ vmCvar_t g_debugAudibleEvents;      //----(SA)	added
 vmCvar_t g_headshotMaxDist;     //----(SA)	added
 vmCvar_t g_weaponRespawn;
 vmCvar_t g_motd;
-vmCvar_t g_syncronousClients;
+vmCvar_t g_synchronousClients;
 vmCvar_t g_warmup;
 vmCvar_t g_restarted;
 vmCvar_t g_logfile;
@@ -179,7 +179,7 @@ cvarTable_t gameCvarTable[] = {
 	{ &g_timelimit, "timelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 	{ &g_capturelimit, "capturelimit", "8", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
-	{ &g_syncronousClients, "g_syncronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
+	{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
 
 	{ &g_friendlyFire, "g_friendlyFire", "1", CVAR_ARCHIVE, 0, qtrue  },
 

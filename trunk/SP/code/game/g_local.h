@@ -1099,7 +1099,7 @@ extern vmCvar_t g_debugBullets;     //----(SA)	added
 extern vmCvar_t g_debugAudibleEvents;       //----(SA)	added
 extern vmCvar_t g_headshotMaxDist;      //----(SA)	added
 extern vmCvar_t g_weaponRespawn;
-extern vmCvar_t g_syncronousClients;
+extern vmCvar_t g_synchronousClients;
 extern vmCvar_t g_motd;
 extern vmCvar_t g_warmup;
 extern vmCvar_t g_blood;
