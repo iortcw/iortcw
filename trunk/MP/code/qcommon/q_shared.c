@@ -324,7 +324,7 @@ static int backup_lines;
 static char    *backup_text;
 
 void COM_BeginParseSession( const char *name ) {
-	com_lines = 0;
+	com_lines = 1;
 	Com_sprintf( com_parsename, sizeof( com_parsename ), "%s", name );
 }
 
@@ -515,6 +515,10 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks ) {
 			data += 2;
 			while ( *data && ( *data != '*' || data[1] != '/' ) )
 			{
+				if ( *data == '\n' )
+				{
+					com_lines++;
+				}
 				data++;
 			}
 			if ( *data ) {
@@ -537,6 +541,10 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks ) {
 				*data_p = ( char * ) data;
 				return com_token;
 			}
+			if ( c == '\n' )
+			{
+				com_lines++;
+			}
 			if ( len < MAX_TOKEN_CHARS - 1) {
 				com_token[len] = c;
 				len++;
@@ -553,9 +561,6 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks ) {
 		}
 		data++;
 		c = *data;
-		if ( c == '\n' ) {
-			com_lines++;
-		}
 	} while ( c > 32 );
 
 	com_token[len] = 0;
