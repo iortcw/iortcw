@@ -975,8 +975,10 @@ If you have questions concerning this license or the applicable additional terms
 {"trap_Endgame", (byte *)trap_Endgame},
 {"trap_Error", (byte *)trap_Error},
 {"trap_Print", (byte *)trap_Print},
+#ifndef Q3_VM
 {"PASSFLOAT", (byte *)PASSFLOAT},
 {"dllEntry", (byte *)dllEntry},
+#endif
 {"G_RunFrame", (byte *)G_RunFrame},
 {"G_RunThink", (byte *)G_RunThink},
 {"CheckCvars", (byte *)CheckCvars},

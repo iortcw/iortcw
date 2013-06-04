@@ -2308,7 +2308,7 @@ void        trap_S_StopStreamingSound( int entnum );  // usually AI.  character 
 void        trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum );
 void        trap_S_ClearLoopingSounds( qboolean killall );
 void        trap_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
-void        trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
+//void        trap_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, int range, sfxHandle_t sfx, int volume );
 void        trap_S_UpdateEntityPosition( int entityNum, const vec3_t origin );
 
 // Ridah, talking animations

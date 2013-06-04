@@ -2420,6 +2420,6 @@ void CG_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_
 }
 
 void CG_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
-	trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 ); //----(SA) modified
+	//trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 ); //----(SA) modified
 }
 
