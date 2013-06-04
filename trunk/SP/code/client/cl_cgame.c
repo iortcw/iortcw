@@ -1343,8 +1343,25 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 	if ( VM_IsNative( cgvm ) ) {
 		return VM_Call( cgvm, CG_GET_TAG, clientNum, tagname, or );
 	} else {
-		// Hacking around passing pointers to QVM isn't pretty
-		// needs fallback code, so QVM should be fine.
-		return qfalse;
+		qboolean foundTag;
+		unsigned cgOr;
+		unsigned cgTagname;
+
+		// alloc data on cgame hunk and copy data to it
+		cgOr = VM_GetTempMemory( cgvm, sizeof (orientation_t), or );
+		cgTagname = VM_GetTempMemory( cgvm, MAX_QPATH, tagname );
+
+		if ( !cgOr || !cgTagname ) {
+			Com_Printf("WARNING: CL_GetTag: Not enough cgame QVM memory (increase vm_minQvmHunkMegs cvar).\n");
+			return qfalse;
+		}
+
+		foundTag = VM_Call( cgvm, CG_GET_TAG, clientNum, cgTagname, cgOr );
+
+		// copy result back to game memory and free temp in reverse order
+		VM_FreeTempMemory( cgvm, cgTagname, MAX_QPATH, tagname );
+		VM_FreeTempMemory( cgvm, cgOr, sizeof (orientation_t), or );
+
+		return foundTag;
 	}
 }

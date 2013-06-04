@@ -996,10 +996,27 @@ void SV_SendMoveSpeedsToGame( int entnum, char *text ) {
 	if ( VM_IsNative( gvm ) ) {
 		VM_Call( gvm, GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT, entnum, text );
 	} else {
-		// Hacking around passing pointers to QVM isn't pretty
-		// and this was mainly a left over from SP. It's usage is
-		// disabled in official RTCW MP code. So this is probably fine.
-		Com_Error( ERR_DROP, "Sending move speeds to game QVM isn't supported, use a game DLL" );
+		unsigned gText = 0;
+		int	textLen = 0;
+
+		if ( text && strlen( text ) ) {
+			textLen = strlen( text ) + 1;
+
+			// alloc data on game hunk and copy text to it
+			gText = VM_GetTempMemory( gvm, textLen, text );
+
+			if ( !gText ) {
+				Com_Printf("WARNING: SV_SendMoveSpeedsToGame: Not enough game QVM memory (increase vm_minQvmHunkMegs cvar).\n");
+				return;
+			}
+		}
+
+		VM_Call( gvm, GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT, entnum, gText );
+
+		// copy text back to cgame memory and free temp
+		if ( gText ) {
+			VM_FreeTempMemory( gvm, gText, textLen, text );
+		}
 	}
 }
 

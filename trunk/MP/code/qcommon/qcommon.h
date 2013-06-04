@@ -427,6 +427,11 @@ void	*VM_ExplicitArgPtr( vm_t *vm, intptr_t intValue );
 
 qboolean VM_IsNative( vm_t *vm );
 
+// for making block of memory available for passing data to a qvm
+unsigned VM_GetTempMemory( vm_t *vm, int size, const void *initData );
+void VM_FreeTempMemory( vm_t *vm, unsigned qvmPointer, int size, void *outData );
+
+
 #define	VMA(x) VM_ArgPtr(args[x])
 static ID_INLINE float _vmf(intptr_t x)
 {
