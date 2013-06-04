@@ -1561,10 +1561,7 @@ void SP_Bubbles( gentity_t *ent ) {
 	ent->spawnflags |= 2;
 }
 
-static vec3_t forward, right, up;
-static vec3_t muzzle;
-
-void flakPuff( vec3_t origin, qboolean sky ) {
+void flakPuff( vec3_t origin, qboolean sky, vec3_t forward ) {
 	gentity_t *tent;
 	vec3_t point;
 
@@ -1630,15 +1627,18 @@ Fire_Lead
 ==============
 */
 //----(SA)	added 'activator' so the bits that used to expect 'ent' to be the gun still work
-void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage ) {
+void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage, vec3_t muzzle, vec3_t angles ) {
 	trace_t tr;
 	vec3_t end, lead_muzzle, mg42_muzzle;
 	float r;
 	float u;
 	gentity_t       *tent;
 	gentity_t       *traceEnt;
+	vec3_t forward, right, up;
 
 	//qboolean	isflak = qfalse;
+
+	AngleVectors( angles, forward, right, up );
 
 	// 'muzzle' is bogus for mg42.  adjust for it
 	if ( !Q_stricmp( ent->classname, "misc_mg42" ) ) {
@@ -1672,7 +1672,7 @@ void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage )
 				G_AddEvent( ent, EV_FLAKGUN4, 0 );
 			}
 
-			flakPuff( tr.endpos, qtrue );
+			flakPuff( tr.endpos, qtrue, forward );
 		} else {
 //			mg42_muzzleflash (ent, 0);
 			G_AddEvent( ent, EV_FIRE_WEAPON_MG42, 0 );
@@ -1732,7 +1732,7 @@ void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage )
 			G_AddEvent( ent, EV_FLAKGUN4, 0 );
 		}
 
-		flakPuff( tr.endpos, qfalse );
+		flakPuff( tr.endpos, qfalse, forward );
 	}
 
 }
@@ -1940,6 +1940,8 @@ void mg42_track( gentity_t *self, gentity_t *other ) {
 	int i;
 	qboolean validshot = qfalse;
 	qboolean is_flak = qfalse;
+	vec3_t forward, right, up;
+	vec3_t muzzle;
 
 	if ( !Q_stricmp( self->classname, "misc_flak" ) ) {
 		is_flak = qtrue;
@@ -2003,17 +2005,17 @@ void mg42_track( gentity_t *self, gentity_t *other ) {
 				if ( validshot ) {
 					if ( !( other->r.svFlags & SVF_CASTAI ) ) {
 						if ( is_flak ) {
-							Fire_Lead( self, other, FLAK_SPREAD, FLAK_DAMAGE );
+							Fire_Lead( self, other, FLAK_SPREAD, FLAK_DAMAGE, muzzle, self->s.apos.trBase );
 						} else
 						{
-							Fire_Lead( self, other, MG42_SPREAD, MG42_DAMAGE );
+							Fire_Lead( self, other, MG42_SPREAD, MG42_DAMAGE, muzzle, self->s.apos.trBase );
 						}
 					} else
 					{
 						if ( self->damage ) {
-							Fire_Lead( self, other, MG42_SPREAD / self->accuracy, self->damage );
+							Fire_Lead( self, other, MG42_SPREAD / self->accuracy, self->damage, muzzle, self->s.apos.trBase );
 						} else {
-							Fire_Lead( self, other, MG42_SPREAD / self->accuracy, MG42_DAMAGE_AI );
+							Fire_Lead( self, other, MG42_SPREAD / self->accuracy, MG42_DAMAGE_AI, muzzle, self->s.apos.trBase );
 						}
 
 					}
