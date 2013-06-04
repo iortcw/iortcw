@@ -966,8 +966,8 @@ void CL_InitCGame( void ) {
 		if(interpret != VMI_COMPILED && interpret != VMI_BYTECODE)
 			interpret = VMI_COMPILED;
 	}
+
 	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, interpret );
-//	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, Cvar_VariableValue( "vm_cgame" ) );
 	if ( !cgvm ) {
 		Com_Error( ERR_DROP, "VM_Create on cgame failed" );
 	}
@@ -977,7 +977,6 @@ void CL_InitCGame( void ) {
 	// use the lastExecutedServerCommand instead of the serverCommandSequence
 	// otherwise server commands sent just before a gamestate are dropped
 	VM_Call( cgvm, CG_INIT, clc.serverMessageSequence, clc.lastExecutedServerCommand, clc.clientNum );
-//	VM_Call( cgvm, CG_INIT, clc.serverMessageSequence, clc.serverCommandSequence );
 
 	// reset any CVAR_CHEAT cvars registered by cgame
 	if ( !clc.demoplaying && !cl_connectedToCheatServer )
