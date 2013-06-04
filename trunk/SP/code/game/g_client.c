@@ -573,7 +573,7 @@ void reinforce( gentity_t *ent ) {
 	} else if ( team == TEAM_BLUE ) {
 		classname = "team_CTF_bluespawn";
 	} else {
-		G_Error( "In game's reinforce function, team is not red or blue\n" );
+		G_Error( "In game's reinforce function, team is not red or blue" );
 	}
 
 	finished = 0;
