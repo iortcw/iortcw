@@ -1153,7 +1153,7 @@ extern void mg42_track ( gentity_t * self , gentity_t * other ) ;
 extern void mg42_touch ( gentity_t * self , gentity_t * other , trace_t * trace ) ;
 extern void clamp_playerbehindgun ( gentity_t * self , gentity_t * other , vec3_t dang ) ;
 extern void clamp_hweapontofirearc ( gentity_t * self , gentity_t * other , vec3_t dang ) ;
-extern void Fire_Lead ( gentity_t * ent , gentity_t * activator , float spread , int damage ) ;
+extern void Fire_Lead ( gentity_t * ent , gentity_t * activator , float spread , int damage, vec3_t muzzle, vec3_t angles ) ;
 extern void mg42_muzzleflash ( gentity_t * ent , vec3_t muzzlepos ) ;
 extern void flakPuff ( vec3_t origin , qboolean sky ) ;
 extern void SP_Bubbles ( gentity_t * ent ) ;
