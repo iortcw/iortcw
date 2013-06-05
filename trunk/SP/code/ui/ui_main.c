@@ -2878,7 +2878,7 @@ static qboolean UI_SavegameName_HandleKey( int flags, float *special, int key ) 
 
 	// disable
 	return qfalse;
-
+#if 0
 	if ( key == K_MOUSE1 || key == K_MOUSE2 || key == K_ENTER || key == K_KP_ENTER ) {
 		int i;
 		i = UI_SavegameIndexFromName( ui_savegameName.string );
@@ -2902,6 +2902,7 @@ static qboolean UI_SavegameName_HandleKey( int flags, float *special, int key ) 
 		return qtrue;
 	}
 	return qfalse;
+#endif
 }
 //----(SA)	end
 
