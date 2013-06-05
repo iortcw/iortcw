@@ -487,11 +487,6 @@ void CL_SystemInfoChanged( void ) {
 
 	memset( &entLastVisible, 0, sizeof( entLastVisible ) );
 
-	// don't set any vars when playing a demo
-	if ( clc.demoplaying ) {
-		return;
-	}
-
 #ifdef USE_VOIP
 #ifdef LEGACY_PROTOCOL
 	if(clc.compat)
@@ -500,12 +495,14 @@ void CL_SystemInfoChanged( void ) {
 #endif
 	{
 		s = Info_ValueForKey( systemInfo, "sv_voip" );
-		if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive"))
-			clc.voipEnabled = qfalse;
-		else
-			clc.voipEnabled = atoi(s);
+		clc.voipEnabled = atoi(s);
 	}
 #endif
+
+	// don't set any vars when playing a demo
+	if ( clc.demoplaying ) {
+		return;
+	}
 
 	s = Info_ValueForKey( systemInfo, "sv_cheats" );
 	cl_connectedToCheatServer = atoi( s );
