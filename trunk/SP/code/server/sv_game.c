@@ -1065,5 +1065,8 @@ SV_GetModelInfo
 ===================
 */
 qboolean SV_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
+	if ( !gvm ) {
+		return qfalse;
+	}
 	return VM_Call( gvm, GAME_GETMODELINFO, clientNum, modelName, modelInfo );
 }
