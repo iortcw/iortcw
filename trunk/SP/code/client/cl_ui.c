@@ -1109,6 +1109,10 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return CL_GetLimboString( args[1], VMA( 2 ) );
 		// -NERVE - SMF
 
+	// New in IORTCW
+	case UI_ALLOC:
+		return VM_Alloc( args[1] );
+
 	default:
 		Com_Error( ERR_DROP, "Bad UI system trap: %ld", (long int) args[0] );
 

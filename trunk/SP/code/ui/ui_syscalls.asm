@@ -108,3 +108,6 @@ equ	sqrt						-107
 equ floor						-108
 equ	ceil						-109
 
+; New in iortcw
+equ trap_Alloc					-901
+

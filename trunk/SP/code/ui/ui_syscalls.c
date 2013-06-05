@@ -451,3 +451,9 @@ qboolean trap_GetLimboString( int index, char *buf ) {
 	return syscall( UI_CL_GETLIMBOSTRING, index, buf );
 }
 // -NERVE - SMF
+
+// New in IORTCW
+void *trap_Alloc( int size ) {
+	return (void*)syscall( UI_ALLOC, size );
+}
+

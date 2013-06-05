@@ -216,7 +216,11 @@ typedef enum {
 	CG_INGAME_CLOSEPOPUP,   // NERVE - SMF
 	CG_LIMBOCHAT,           // NERVE - SMF
 
-	CG_GETMODELINFO
+	CG_GETMODELINFO,
+
+	// New in IORTCW
+	CG_ALLOC = 900
+
 } cgameImport_t;
 
 

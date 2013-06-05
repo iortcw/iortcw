@@ -1089,7 +1089,6 @@ void VM_FreeTempMemory( vm_t *vm, unsigned qvmPointer, int size, void *outData )
 	vm->dataAllocTop += allocSize;
 }
 
-#if 0 // ZTM: new unused code for allocating unfreeable memory in dlls and qvms.
 /*
 =================
 QVM_Alloc
@@ -1143,5 +1142,4 @@ VM_Alloc
 intptr_t VM_Alloc( int size ) {
 	return VM_ExplicitAlloc( currentVM, size );
 }
-#endif
 

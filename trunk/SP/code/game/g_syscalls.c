@@ -805,3 +805,9 @@ void trap_BotResetWeaponState( int weaponstate ) {
 int trap_GeneticParentsAndChildSelection( int numranks, float *ranks, int *parent1, int *parent2, int *child ) {
 	return syscall( BOTLIB_AI_GENETIC_PARENTS_AND_CHILD_SELECTION, numranks, ranks, parent1, parent2, child );
 }
+
+// New in IORTCW
+void *trap_Alloc( int size ) {
+	return (void*)syscall( G_ALLOC, size );
+}
+

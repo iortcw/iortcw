@@ -238,3 +238,7 @@ equ trap_BotLibReadToken				-582
 equ trap_BotLibSourceFileAndLine		-583
  
 equ trap_FS_CopyFile					-584
+
+; New in iortcw
+equ trap_Alloc							-901
+

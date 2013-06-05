@@ -805,7 +805,11 @@ static void CG_LoadTranslationStrings( void ) {
 		if ( !token[0] ) {
 			break;
 		}
+#ifdef Q3_VM // new IORTCW syscall (works for qvms and dlls), but have dlls use vanilla rtcw compatible code
+		translateStrings[i].localname = (char *)trap_Alloc( strlen( token ) + 1 );
+#else
 		translateStrings[i].localname = (char *)malloc( strlen( token ) + 1 );
+#endif
 		strcpy( translateStrings[i].localname, token );
 	}
 }

@@ -531,3 +531,9 @@ void trap_UI_ClosePopup( const char *arg0 ) {
 qboolean trap_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **modelInfo ) {
 	return syscall( CG_GETMODELINFO, clientNum, modelName, modelInfo );
 }
+
+// New in IORTCW
+void *trap_Alloc( int size ) {
+	return (void*)syscall( CG_ALLOC, size );
+}
+

@@ -152,7 +152,10 @@ typedef enum {
 	UI_ATAN2,
 	UI_SQRT,
 	UI_FLOOR,
-	UI_CEIL
+	UI_CEIL,
+
+	// New in IORTCW
+	UI_ALLOC = 900
 
 } uiImport_t;
 

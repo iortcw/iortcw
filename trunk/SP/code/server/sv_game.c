@@ -876,6 +876,11 @@ intptr_t SV_GameSystemCalls( intptr_t *args ) {
 		return FloatAsInt( ceil( VMF( 1 ) ) );
 
 
+	// New in IORTCW
+	case G_ALLOC:
+		return VM_Alloc( args[1] );
+
+
 	default:
 		Com_Error( ERR_DROP, "Bad game system trap: %ld", (long int) args[0] );
 

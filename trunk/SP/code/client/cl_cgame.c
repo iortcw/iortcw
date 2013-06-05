@@ -835,6 +835,10 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_GETMODELINFO:
 		return SV_GetModelInfo( args[1], VMA( 2 ), VMA( 3 ) );
 
+	// New in IORTCW
+	case CG_ALLOC:
+		return VM_Alloc( args[1] );
+
 	default:
 		assert(0);
 		Com_Error( ERR_DROP, "Bad cgame system trap: %ld", (long int) args[0] );

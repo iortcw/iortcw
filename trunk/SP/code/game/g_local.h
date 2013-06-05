@@ -1367,6 +1367,9 @@ int     trap_GeneticParentsAndChildSelection( int numranks, float *ranks, int *p
 
 void    trap_SnapVector( float *v );
 
+// New in IORTCW
+void	*trap_Alloc( int size );
+
 typedef enum
 {
 	shard_glass = 0,

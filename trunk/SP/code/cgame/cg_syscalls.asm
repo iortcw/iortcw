@@ -127,3 +127,6 @@ equ trap_UI_ClosePopup			-124
 equ trap_UI_LimboChat			-125
 equ trap_GetModelInfo			-126
 
+; New in iortcw
+equ trap_Alloc					-901
+

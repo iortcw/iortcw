@@ -426,7 +426,10 @@ typedef enum {
 	BOTLIB_PC_READ_TOKEN,
 	BOTLIB_PC_SOURCE_FILE_AND_LINE,
 
-	G_FS_COPY_FILE  //DAJ
+	G_FS_COPY_FILE,  //DAJ
+
+	// New in IORTCW
+	G_ALLOC = 900
 } gameImport_t;
 
 
