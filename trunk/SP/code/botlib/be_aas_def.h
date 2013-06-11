@@ -142,6 +142,21 @@ typedef struct aas_routingcache_s
 	unsigned short int traveltimes[1];          //travel time for every area (variable sized)
 } aas_routingcache_t;
 
+//32bit values for pointers to allow loading cache on non-32 bit platforms
+typedef struct
+{
+	int size;                                   //size of the routing cache
+	float time;                                 //last time accessed or updated
+	int cluster;                                //cluster the cache is for
+	int areanum;                                //area the cache is created for
+	vec3_t origin;                              //origin within the area
+	float starttraveltime;                      //travel time to start with
+	int travelflags;                            //combinations of the travel flags
+	int prev_, next_;
+	int reachabilities_;                        //reachabilities used for routing
+	unsigned short int traveltimes[1];          //travel time for every area (variable sized)
+} aas_routingcache_32_t;
+
 //fields for the routing algorithm
 typedef struct aas_routingupdate_s
 {

@@ -1005,37 +1005,58 @@ void AAS_WriteRouteCache( void ) {
 // Changes Globals:		-
 //===========================================================================
 aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
-	int i, size;
-	aas_routingcache_t *cache;
+	int i, size, numtraveltimes;
+	aas_routingcache_t *nativecache;
+	aas_routingcache_32_t *cache;
+	unsigned char *cache_reachabilities;
 
 	botimport.FS_Read( &size, sizeof( size ), fp );
 	size = LittleLong( size );
-	cache = (aas_routingcache_t *) AAS_RoutingGetMemory( size );
+	cache = (aas_routingcache_32_t *) AAS_RoutingGetMemory( size );
 	cache->size = size;
 	botimport.FS_Read( (unsigned char *)cache + sizeof( size ), size - sizeof( size ), fp );
 
-	if ( 1 != LittleLong( 1 ) ) {
-		cache->time = LittleFloat( cache->time );
-		cache->cluster = LittleLong( cache->cluster );
-		cache->areanum = LittleLong( cache->areanum );
-		cache->origin[0] = LittleFloat( cache->origin[0] );
-		cache->origin[1] = LittleFloat( cache->origin[1] );
-		cache->origin[2] = LittleFloat( cache->origin[2] );
-		cache->starttraveltime = LittleFloat( cache->starttraveltime );
-		cache->travelflags = LittleLong( cache->travelflags );
+	numtraveltimes = ( size - sizeof( aas_routingcache_32_t ) ) / 3;
+
+	cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
+
+	if ( sizeof (intptr_t) == 4 ) {
+		nativecache = (aas_routingcache_t *) cache;
+	} else {
+		int nativesize = size - sizeof (aas_routingcache_32_t) + sizeof (aas_routingcache_t);
+		nativecache = (aas_routingcache_t *) AAS_RoutingGetMemory( nativesize );
+		nativecache->size = nativesize;
 	}
 
-//	cache->reachabilities = (unsigned char *) cache + sizeof(aas_routingcache_t) - sizeof(unsigned short) +
-//		(size - sizeof(aas_routingcache_t) + sizeof(unsigned short)) / 3 * 2;
-	cache->reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_t ) +
-							( ( size - sizeof( aas_routingcache_t ) ) / 3 ) * 2;
+	// copy to native structure and/or swap
+	if ( sizeof (intptr_t) != 4 || 1 != LittleLong( 1 ) ) {
+		nativecache->time = LittleFloat( cache->time );
+		nativecache->cluster = LittleLong( cache->cluster );
+		nativecache->areanum = LittleLong( cache->areanum );
+		nativecache->origin[0] = LittleFloat( cache->origin[0] );
+		nativecache->origin[1] = LittleFloat( cache->origin[1] );
+		nativecache->origin[2] = LittleFloat( cache->origin[2] );
+		nativecache->starttraveltime = LittleFloat( cache->starttraveltime );
+		nativecache->travelflags = LittleLong( cache->travelflags );
 
-	//DAJ BUGFIX for missing byteswaps for traveltimes
-	size = ( size - sizeof( aas_routingcache_t ) ) / 3 + 1;
-	for ( i = 0; i < size; i++ ) {
-		cache->traveltimes[i] = LittleShort( cache->traveltimes[i] );
+		//DAJ BUGFIX for missing byteswaps for traveltimes
+		for ( i = 0; i < numtraveltimes; i++ ) {
+			nativecache->traveltimes[i] = LittleShort( nativecache->traveltimes[i] );
+		}
 	}
-	return cache;
+
+	nativecache->reachabilities = (unsigned char *) nativecache + sizeof( aas_routingcache_t ) + numtraveltimes * sizeof (nativecache->traveltimes[0]);
+
+	// copy reachabilities to native structure, free original cache
+	if ( sizeof (intptr_t) != 4 ) {
+		for ( i = 0; i < numtraveltimes; i++ ) {
+			nativecache->reachabilities[i] = cache_reachabilities[i];
+		}
+
+		AAS_RoutingFreeMemory(cache);
+	}
+
+	return nativecache;
 } //end of the function AAS_ReadCache
 //===========================================================================
 //
@@ -1049,11 +1070,6 @@ int AAS_ReadRouteCache( void ) {
 	char filename[MAX_QPATH];
 	routecacheheader_t routecacheheader;
 	aas_routingcache_t *cache;
-
-	// ZTM FIXME: route cache fails loading, because aas_routingcache_t contains 32 bit pointers in cache?
-	if ( sizeof ( intptr_t ) == 8 ) {
-		return qfalse;
-	}
 
 	Com_sprintf( filename, MAX_QPATH, "maps/%s.rcd", ( *aasworld ).mapname );
 	botimport.FS_FOpenFile( filename, &fp, FS_READ );
