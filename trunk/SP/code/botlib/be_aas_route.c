@@ -915,7 +915,7 @@ void AAS_WriteRouteCache( void ) {
 	byte *buf;
 
 	// ZTM FIXME: route cache created here will not work on 32 bit systems, so just don't save it for now.
-	if ( sizeof ( intptr_t ) == 8 ) {
+	if ( sizeof ( intptr_t ) != 4 ) {
 		return;
 	}
 

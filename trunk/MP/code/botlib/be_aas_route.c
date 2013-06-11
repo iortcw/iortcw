@@ -913,6 +913,11 @@ void AAS_WriteRouteCache( void ) {
 	routecacheheader_t routecacheheader;
 	byte *buf;
 
+	// ZTM FIXME: route cache created here will not work on 32 bit systems, so just don't save it for now.
+	if ( sizeof ( intptr_t ) != 4 ) {
+		return;
+	}
+
 	buf = (byte *) GetClearedMemory( ( *aasworld ).numareas * 2 * sizeof( byte ) );   // in case it ends up bigger than the decompressedvis, which is rare but possible
 
 	numportalcache = 0;
