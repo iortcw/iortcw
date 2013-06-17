@@ -537,14 +537,19 @@ void SP_trigger_hurt( gentity_t *self ) {
 		self->damage = 5;
 	}
 
+	self->r.contents = CONTENTS_TRIGGER;
+
+//----(SA)
+//	if ( self->spawnflags & 2 ) {
+//		self->use = hurt_use;
+//	}
+
 	self->use = hurt_use;
 
 	// link in to the world if starting active
-	if ( self->spawnflags & 1 ) {
-		trap_UnlinkEntity (self);
-	}
-	else {
-		trap_LinkEntity (self);
+	if ( !( self->spawnflags & 1 ) ) {
+		//----(SA)	any reason this needs to be linked? (predicted?)
+//		trap_LinkEntity (self);
 		self->touch = hurt_touch;
 	}
 
