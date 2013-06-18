@@ -1041,7 +1041,7 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 
 		//DAJ BUGFIX for missing byteswaps for traveltimes
 		for ( i = 0; i < numtraveltimes; i++ ) {
-			nativecache->traveltimes[i] = LittleShort( nativecache->traveltimes[i] );
+			nativecache->traveltimes[i] = LittleShort( cache->traveltimes[i] );
 		}
 	}
 
