@@ -632,7 +632,6 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	va_end( argptr );
 
 	CG_Printf( "%s", text );
-	trap_Print( text );
 }
 
 /*
