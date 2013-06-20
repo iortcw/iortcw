@@ -1475,9 +1475,17 @@ void RB_ExecuteRenderCommands( const void *data ) {
 			data = RB_StretchPic( data );
 			break;
 		case RC_ROTATED_PIC:
+#ifdef USE_BLOOM
+			//Check if it's time for BLOOM!
+			R_BloomScreen();
+#endif
 			data = RB_RotatedPic( data );
 			break;
 		case RC_STRETCH_PIC_GRADIENT:
+#ifdef USE_BLOOM
+			//Check if it's time for BLOOM!
+			R_BloomScreen();
+#endif
 			data = RB_StretchPicGradient( data );
 			break;
 		case RC_DRAW_SURFS:

@@ -176,6 +176,8 @@ void R_InitBloomTextures( void )
 {
 	if( !r_bloom->integer )
 		return;
+	if ( r_rmse->integer )	// this breaks bloom
+		return;
 	memset( &bloom, 0, sizeof( bloom ));
 	R_Bloom_InitTextures ();
 }
@@ -393,6 +395,11 @@ void R_BloomScreen( void )
 {
 	if( !r_bloom->integer )
 		return;
+	if ( r_rmse->integer ) { // this breaks bloom
+		ri.Cvar_Set( "r_bloom", "0" );
+		Com_Printf( S_COLOR_YELLOW "WARNING: 'r_rmse' is not set to 0, bloom effect disabled\n" );
+		return;
+	}
 	if ( backEnd.doneBloom )
 		return;
 	if ( !backEnd.doneSurfaces )
