@@ -514,7 +514,8 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			xOut = 0;
 			yOut = 0;
 			ri.Free( imageBuff );
-			i++;
+			if(i == GLYPH_END)
+				i++;
 		} else {
 			memcpy( &font->glyphs[i], glyph, sizeof( glyphInfo_t ) );
 			i++;
