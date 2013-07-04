@@ -412,6 +412,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			font->glyphs[i].glyph = RE_RegisterShaderNoMip( font->glyphs[i].shaderName );
 		}
 		memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
+		ri.FS_FreeFile(faceData);
 		return;
 	}
 
