@@ -3268,19 +3268,24 @@ static __attribute__ ((format (printf, 2, 3))) void QDECL CL_RefPrintf( int prin
 	}
 }
 
-
-
 /*
 ============
 CL_ShutdownRef
 ============
 */
 void CL_ShutdownRef( void ) {
-	if ( !re.Shutdown ) {
-		return;
+	if ( re.Shutdown ) {
+		re.Shutdown( qtrue );
 	}
-	re.Shutdown( qtrue );
+
 	memset( &re, 0, sizeof( re ) );
+
+#ifdef USE_RENDERER_DLOPEN
+	if ( rendererLib ) {
+		Sys_UnloadLibrary( rendererLib );
+		rendererLib = NULL;
+	}
+#endif
 }
 
 /*
