@@ -2267,6 +2267,9 @@ void CL_KeyDownEvent( int key, unsigned time )
 		}
 	}
 
+	// send the bound action
+	CL_ParseBinding( key, qtrue, time );
+
 	// distribute the key down event to the apropriate handler
 	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {
 		Console_Key( key );
@@ -2304,9 +2307,6 @@ void CL_KeyDownEvent( int key, unsigned time )
 		Message_Key( key );
 	} else if ( clc.state == CA_DISCONNECTED ) {
 		Console_Key( key );
-	} else {
-		// send the bound action
-		CL_ParseBinding( key, qtrue, time );
 	}
 }
 
