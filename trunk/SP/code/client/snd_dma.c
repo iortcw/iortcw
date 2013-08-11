@@ -1618,8 +1618,6 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 		loop = intro;
 	}
 
-	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
-
 	Com_DPrintf( "S_StartBackgroundTrack( %s, %s )\n", intro, loop );
 
 	if(!*intro)
@@ -1642,7 +1640,7 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 		s_backgroundStream = NULL;
 	}
 
-	Cvar_Set( "s_currentMusic", s_backgroundLoop ); //----(SA)	so the savegame will have the right musi
+	Cvar_Set( "s_currentMusic", "" ); //----(SA)	so the savegame will have the right music
 
 	// Open stream
 	s_backgroundStream = S_CodecOpenStream(intro);
@@ -1654,6 +1652,8 @@ void S_Base_StartBackgroundTrack( const char *intro, const char *loop ){
 	if(s_backgroundStream->info.channels != 2 || s_backgroundStream->info.rate != 22050) {
 		Com_Printf(S_COLOR_YELLOW "WARNING: music file %s is not 22k stereo\n", intro );
 	}
+
+	Cvar_Set( "s_currentMusic", s_backgroundLoop ); //----(SA)	so the savegame will have the right music
 }
 
 /*
