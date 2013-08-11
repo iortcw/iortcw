@@ -2088,7 +2088,7 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop )
 	int i;
 	qboolean issame;
 
-	Com_Printf( "S_AL_StartBackgroundTrack( %s, %s )\n", intro, loop );
+	Com_DPrintf( "S_AL_StartBackgroundTrack( %s, %s )\n", intro, loop );
 
 	// Stop any existing music that might be playing
 	S_AL_StopBackgroundTrack();
