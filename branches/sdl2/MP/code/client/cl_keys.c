@@ -2138,7 +2138,7 @@ CL_ParseBinding
 Execute the commands in the bind string
 ===================
 */
-void CL_ParseBinding( int key, qboolean down, unsigned time )
+void CL_ParseBinding( int key, qboolean down, unsigned time, qboolean forceAll )
 {
 	char buf[ MAX_STRING_CHARS ], *p = buf, *end;
 	qboolean allCommands, allowUpCmds;
@@ -2150,7 +2150,7 @@ void CL_ParseBinding( int key, qboolean down, unsigned time )
 	Q_strncpyz( buf, keys[key].binding, sizeof( buf ) );
 
 	// run all bind commands if console, ui, etc aren't reading keys
-	allCommands = ( Key_GetCatcher( ) == 0 );
+	allCommands = forceAll || ( Key_GetCatcher( ) == 0 );
 
 	// allow button up commands if in game even if key catcher is set
 	allowUpCmds = ( clc.state != CA_DISCONNECTED );
@@ -2307,7 +2307,7 @@ void CL_KeyDownEvent( int key, unsigned time )
 	}
 
 	// send the bound action
-	CL_ParseBinding( key, qtrue, time );
+	CL_ParseBinding( key, qtrue, time, bypassMenu );
 
 	// distribute the key down event to the apropriate handler
 	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {
@@ -2377,8 +2377,7 @@ void CL_KeyUpEvent( int key, unsigned time )
 	// console mode and menu mode, to keep the character from continuing
 	// an action started before a mode switch.
 	//
-	if( clc.state != CA_DISCONNECTED )
-		CL_ParseBinding( key, qfalse, time );
+	CL_ParseBinding( key, qfalse, time, qfalse );
 
 	if ( Key_GetCatcher( ) & KEYCATCH_UI && uivm ) {
 		VM_Call( uivm, UI_KEY_EVENT, key, qfalse );
