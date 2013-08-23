@@ -26,7 +26,6 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-//#include "../game/q_shared.h"
 #include "math_vector.h"
 #include <assert.h>
 #include <math.h>
@@ -37,7 +36,9 @@ If you have questions concerning this license or the applicable additional terms
 #include <time.h>
 #include <ctype.h>
 
+#ifndef MACOS_X
 #define M_PI        3.14159265358979323846  // matches value in gcc v2 math.h
+#endif
 
 #define LERP_DELTA 1e-6
 
