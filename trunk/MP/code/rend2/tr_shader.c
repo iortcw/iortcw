@@ -2556,13 +2556,16 @@ static qboolean CollapseStagesToGLSL(void)
 
 	// convert any remaining lightmap stages to a lighting pass with a white texture
 	// only do this with r_sunlightMode non-zero, as it's only for correct shadows.
-	if (r_sunlightMode->integer)
+	if (r_sunlightMode->integer && shader.numDeforms == 0)
 	{
 		for (i = 0; i < MAX_SHADER_STAGES; i++)
 		{
 			shaderStage_t *pStage = &stages[i];
 
 			if (!pStage->active)
+				continue;
+
+			if (pStage->adjustColorsForFog)
 				continue;
 
 			if (pStage->bundle[TB_DIFFUSEMAP].isLightmap)
@@ -2574,6 +2577,27 @@ static qboolean CollapseStagesToGLSL(void)
 				pStage->bundle[TB_LIGHTMAP] = pStage->bundle[TB_DIFFUSEMAP];
 				pStage->bundle[TB_DIFFUSEMAP].image[0] = tr.whiteImage;
 				pStage->bundle[TB_DIFFUSEMAP].isLightmap = qfalse;
+			}
+		}
+	}
+
+	// convert any remaining lightingdiffuse stages to a lighting pass
+	if (shader.numDeforms == 0)
+	{
+		for (i = 0; i < MAX_SHADER_STAGES; i++)
+		{
+			shaderStage_t *pStage = &stages[i];
+
+			if (!pStage->active)
+				continue;
+
+			if (pStage->adjustColorsForFog)
+				continue;
+
+			if (pStage->rgbGen == CGEN_LIGHTING_DIFFUSE)
+			{
+				pStage->glslShaderGroup = tr.lightallShader;
+				pStage->glslShaderIndex = LIGHTDEF_USE_LIGHT_VECTOR;
 			}
 		}
 	}
