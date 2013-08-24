@@ -722,8 +722,6 @@ Windows specific GL implementation initialisation
 */
 void Sys_GLimpInit( void )
 {
-#ifndef DEDICATED
-
 }
 
 /*
