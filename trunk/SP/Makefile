@@ -240,6 +240,10 @@ ifndef USE_BLOOM
 USE_BLOOM=1
 endif
 
+ifndef USE_OPENGLES
+USE_OPENGLES=0
+endif
+
 
 #############################################################################
 
@@ -251,6 +255,7 @@ RDIR=$(MOUNT_DIR)/renderer
 R2DIR=$(MOUNT_DIR)/rend2
 CMDIR=$(MOUNT_DIR)/qcommon
 SDLDIR=$(MOUNT_DIR)/sdl
+ESDIR=$(MOUNT_DIR)/es
 ASMDIR=$(MOUNT_DIR)/asm
 SYSDIR=$(MOUNT_DIR)/sys
 GDIR=$(MOUNT_DIR)/game
@@ -390,8 +395,15 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   THREAD_LIBS=-lpthread
   LIBS=-ldl -lm
 
-  CLIENT_LIBS=$(SDL_LIBS)
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
+  ifeq ($(USE_OPENGLES),1)
+    CLIENT_LIBS=-lSDL
+    RENDERER_LIBS =-lSDL -lvchostif -lvcfiled_check -lbcm_host -lkhrn_static -lvchiq_arm -lopenmaxil -lEGL -lGLESv2 -lvcos
+    SERVER_LIBS=-lbcm_host -lvchiq_arm -lvcos
+  else
+    CLIENT_LIBS=$(SDL_LIBS)
+    RENDERER_LIBS = $(SDL_LIBS) -lGL
+    SERVER_LIBS=
+  endif
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
@@ -1687,9 +1699,14 @@ ifeq ($(USE_BLOOM),1)
   Q3ROBJ += $(B)/renderer/tr_bloom.o 
 endif
 
+ifeq ($(USE_OPENGLES),1)
+  Q3ROBJ += $(B)/renderer/es_gamma.o 
+  Q3ROBJ += $(B)/renderer/es_glimp.o
+  Q3ROBJ += $(B)/renderer/etc1encode.o
+else
   Q3ROBJ += $(B)/renderer/sdl_gamma.o
   Q3ROBJ += $(B)/renderer/sdl_glimp.o
-
+endif
 
 ifneq ($(USE_RENDERER_DLOPEN), 0)
   Q3ROBJ += \
@@ -2398,6 +2415,9 @@ $(B)/renderer/%.o: $(JPDIR)/%.c
 
 $(B)/renderer/%.o: $(RDIR)/%.c
 	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(ESDIR)/%.c
+	$(DO_CC)
 
 $(B)/rend2/glsl/%.c: $(R2DIR)/glsl/%.glsl
 	$(DO_REF_STR)

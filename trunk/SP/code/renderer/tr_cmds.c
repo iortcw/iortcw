@@ -459,6 +459,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	// NVidia stuff
 	//
 
+#ifndef VCMODS_OPENGLES
 	// fog control
 	if ( glConfig.NVFogAvailable && r_nv_fogdist_mode->modified ) {
 		r_nv_fogdist_mode->modified = qfalse;
@@ -474,7 +475,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			ri.Cvar_Set( "r_nv_fogdist_mode", "GL_EYE_RADIAL_NV" );
 		}
 	}
-
+#endif
 
 	//
 	// gamma stuff

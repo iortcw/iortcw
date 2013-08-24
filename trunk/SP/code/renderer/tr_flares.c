@@ -327,31 +327,11 @@ RB_TestFlare
 ==================
 */
 void RB_TestFlare( flare_t *f ) {
-//	float			depth;
 	qboolean visible;
 	float fade;
-//	float			screenZ;
 
 	backEnd.pc.c_flareTests++;
 
-	// doing a readpixels is as good as doing a glFinish(), so
-	// don't bother with another sync
-//	glState.finishCalled = qfalse;
-//	glState.finishCalled = qtrue;	// (SA) Hmm, shouldn't this be true?
-
-	// read back the z buffer contents
-//	qglReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
-//	screenZ = backEnd.viewParms.projectionMatrix[14] /
-//		( ( 2*depth - 1 ) * backEnd.viewParms.projectionMatrix[11] - backEnd.viewParms.projectionMatrix[10] );
-
-	//----(SA)	24 was way to low tolerance.  It gave Dan problems with free standing light fixtures
-	//----(SA)	I will monitor to see if changing this screws up any other situations
-	//----(SA)	and 2 was way to high tolerance
-//	visible = ( -f->eyeZ - -screenZ ) < 2;
-//	visible = ( -f->eyeZ - -screenZ ) < 24;
-//	visible = ( -f->eyeZ - -screenZ ) < 6;
-
-//	visible = qtrue;
 	visible = (qboolean)( f->flags & 1 );
 
 	if ( visible ) {

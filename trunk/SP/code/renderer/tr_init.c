@@ -211,9 +211,11 @@ int max_polys;
 cvar_t  *r_maxpolyverts;
 int max_polyverts;
 
+#ifndef VCMODS_OPENGLES
 //----(SA)	added
 void ( APIENTRY * qglPNTrianglesiATI )( GLenum pname, GLint param );
 void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
+#endif
 /*
 The tessellation level and normal generation mode are specified with:
 
@@ -945,13 +947,16 @@ void GL_SetDefaultState( void ) {
 	//
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 
+#ifndef VCMODS_OPENGLES
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+#endif
 	qglDepthMask( GL_TRUE );
 	qglDisable( GL_DEPTH_TEST );
 	qglEnable( GL_SCISSOR_TEST );
 	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_BLEND );
 
+#ifndef VCMODS_OPENGLES
 	qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 	qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 	qglClearDepth( 1.0 );
@@ -989,6 +994,7 @@ void GL_SetDefaultState( void ) {
 	}
 
 //----(SA)	end
+#endif
 }
 
 /*
@@ -1260,7 +1266,11 @@ void R_Register( void ) {
 	r_bonesDebug = ri.Cvar_Get( "r_bonesDebug", "0", CVAR_CHEAT );
 
 	// Rafael - wolf fog
+#ifdef VCMODS_OPENGLES
+	r_wolffog = ri.Cvar_Get( "r_wolffog", "0", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
+#else
 	r_wolffog = ri.Cvar_Get( "r_wolffog", "1", 0 );
+#endif
 	// done
 
 	r_nocurves = ri.Cvar_Get( "r_nocurves", "0", CVAR_CHEAT );

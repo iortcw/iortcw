@@ -38,8 +38,13 @@ If you have questions concerning this license or the applicable additional terms
 #include "qgl.h"
 #include "iqm.h"
 
+#ifdef VCMODS_OPENGLES
+#define GL_INDEX_TYPE		GL_UNSIGNED_SHORT
+typedef unsigned short glIndex_t;
+#else
 #define GL_INDEX_TYPE       GL_UNSIGNED_INT
 typedef unsigned int glIndex_t;
+#endif
 
 // 11 bits
 // can't be increased without changing bit packing for drawsurfs
