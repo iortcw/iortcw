@@ -396,8 +396,8 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   LIBS=-ldl -lm
 
   ifeq ($(USE_OPENGLES),1)
-    CLIENT_LIBS=-lSDL
-    RENDERER_LIBS =-lSDL -lvchostif -lvcfiled_check -lbcm_host -lkhrn_static -lvchiq_arm -lopenmaxil -lEGL -lGLESv2 -lvcos
+    CLIENT_LIBS=-lSDL2
+    RENDERER_LIBS =-lSDL2 -lvchostif -lvcfiled_check -lbcm_host -lkhrn_static -lvchiq_arm -lopenmaxil -lEGL -lGLESv2 -lvcos
     SERVER_LIBS=-lbcm_host -lvchiq_arm -lvcos
   else
     CLIENT_LIBS=$(SDL_LIBS)
