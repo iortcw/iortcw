@@ -1481,11 +1481,13 @@ void RB_StageIteratorGeneric( void ) {
 	// set GL fog
 	SetIteratorFog();
 
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		// RF< so we can send the normals as an array
 		qglEnableClientState( GL_NORMAL_ARRAY );
 		qglEnable( GL_PN_TRIANGLES_ATI ); // ATI PN-Triangles extension
 	}
+#endif
 
 	//
 	// set face culling appropriately
@@ -1522,9 +1524,11 @@ void RB_StageIteratorGeneric( void ) {
 	// RF, send normals only if required
 	// This must be done first, since we can't change the arrays once they have been
 	// locked
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglNormalPointer( GL_FLOAT, 16, input->normal );
 	}
+#endif
 
 	//
 	// lock XYZ
@@ -1579,10 +1583,12 @@ void RB_StageIteratorGeneric( void ) {
 	}
 
 	// turn truform back off
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglDisable( GL_PN_TRIANGLES_ATI );    // ATI PN-Triangles extension
 		qglDisableClientState( GL_NORMAL_ARRAY );
 	}
+#endif
 
 }
 
@@ -1627,11 +1633,13 @@ void RB_StageIteratorVertexLitTexture( void ) {
 	qglEnableClientState( GL_COLOR_ARRAY );
 	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglEnable( GL_PN_TRIANGLES_ATI ); // ATI PN-Triangles extension
 		qglEnableClientState( GL_NORMAL_ARRAY );         // RF< so we can send the normals as an array
 		qglNormalPointer( GL_FLOAT, 16, input->normal );
 	}
+#endif
 
 	qglColorPointer( 4, GL_UNSIGNED_BYTE, 0, tess.svars.colors );
 	qglTexCoordPointer( 2, GL_FLOAT, 16, tess.texCoords[0][0] );
@@ -1672,9 +1680,11 @@ void RB_StageIteratorVertexLitTexture( void ) {
 		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglDisable( GL_PN_TRIANGLES_ATI );    // ATI PN-Triangles extension
 	}
+#endif
 }
 
 //define	REPLACE_MODE
@@ -1709,10 +1719,12 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	GL_State( GLS_DEFAULT );
 	qglVertexPointer( 3, GL_FLOAT, 16, input->xyz );
 
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglEnable( GL_PN_TRIANGLES_ATI ); // ATI PN-Triangles extension
 		qglNormalPointer( GL_FLOAT, 16, input->normal );
 	}
+#endif
 
 #ifdef REPLACE_MODE
 	qglDisableClientState( GL_COLOR_ARRAY );
@@ -1797,9 +1809,11 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 
+#ifndef VCMODS_OPENGLES
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglDisable( GL_PN_TRIANGLES_ATI );    // ATI PN-Triangles extension
 	}
+#endif
 }
 
 /*

@@ -406,6 +406,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	// ATI stuff
 	//
 
+#ifndef VCMODS_OPENGLES
 	// TRUFORM
 	if ( qglPNTrianglesiATI ) {
 
@@ -454,6 +455,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			qglPNTrianglesiATI( GL_PN_TRIANGLES_NORMAL_MODE_ATI, glConfig.ATINormalMode );
 		}
 	}
+#endif
 
 	//
 	// NVidia stuff

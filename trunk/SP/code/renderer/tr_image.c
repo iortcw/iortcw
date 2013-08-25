@@ -945,7 +945,7 @@ static void Upload32(   unsigned *data,
 #endif
 				} else if ( r_texturebits->integer == 32 )   {
 #ifdef VCMODS_OPENGLES
-					assert(0);
+					internalFormat = GL_RGBA;
 #else
 					internalFormat = GL_RGBA8;
 #endif
