@@ -224,6 +224,26 @@ void R_ImageList_f( void ) {
 
 		switch(image->internalFormat)
 		{
+#ifdef VCMODS_OPENGLES
+			case 1:
+				ri.Printf( PRINT_ALL, "I    " );
+				break;
+			case 2:
+				ri.Printf( PRINT_ALL, "IA   " );
+				break;
+			case 3:
+				ri.Printf( PRINT_ALL, "RGB  " );
+				// 3 bytes per pixel?
+				estSize *= 3;
+				break;
+			case 4:
+				ri.Printf( PRINT_ALL, "RGBA " );
+				// 4 bytes per pixel
+				estSize *= 4;
+				break;
+			default:
+				ri.Printf( PRINT_ALL, "???? " );
+#else
 			case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:
 				format = "sDXT1";
 				// 64 bits per 16 pixels, so 4 bits per pixel
@@ -309,6 +329,7 @@ void R_ImageList_f( void ) {
 				// 2 byte per pixel?
 				estSize *= 2;
 				break;
+#endif
 		}
 
 		// mipmap adds about 50%
@@ -846,25 +867,46 @@ static void Upload32(   unsigned *data,
 
 			if(r_greyscale->integer)
 			{
+#ifdef VCMODS_OPENGLES
+				assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
+#else
 				if(r_texturebits->integer == 16)
 					internalFormat = GL_LUMINANCE8;
 				else if(r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE16;
 				else
+#endif
 					internalFormat = GL_LUMINANCE;
 			}
 			else
 			{
 				if ( !noCompress && glConfig.textureCompression == TC_EXT_COMP_S3TC ) {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					// TODO: which format is best for which textures?
 					internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
 				} else if ( !noCompress && glConfig.textureCompression == TC_S3TC )   {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					internalFormat = GL_RGB4_S3TC;
+#endif
 				} else if ( r_texturebits->integer == 16 )   {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					internalFormat = GL_RGB5;
+#endif
 				} else if ( r_texturebits->integer == 32 )   {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					internalFormat = GL_RGB8;
-				} else
+#endif
+				}
+				else
 				{
 					internalFormat = GL_RGB;
 				}
@@ -875,23 +917,40 @@ static void Upload32(   unsigned *data,
 
 			if(r_greyscale->integer)
 			{
+#ifdef VCMODS_OPENGLES
+				assert(r_texturebits->integer != 16 && r_texturebits->integer != 32);
+#else
 				if(r_texturebits->integer == 16)
 					internalFormat = GL_LUMINANCE8_ALPHA8;
 				else if(r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE16_ALPHA16;
 				else
+#endif
 					internalFormat = GL_LUMINANCE_ALPHA;
 			}
 			else
 			{
 				if ( !noCompress && glConfig.textureCompression == TC_EXT_COMP_S3TC ) {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					// TODO: which format is best for which textures?
 					internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
 				} else if ( r_texturebits->integer == 16 )   {
+#ifdef VCMODS_OPENGLES
+					assert(0);
+#else
 					internalFormat = GL_RGBA4;
+#endif
 				} else if ( r_texturebits->integer == 32 )   {
+#ifdef VCMODS_OPENGLES
+					internalFormat = GL_RGBA;
+#else
 					internalFormat = GL_RGBA8;
-				} else
+#endif
+				}
+				else
 				{
 					internalFormat = GL_RGBA;
 				}
@@ -964,17 +1023,20 @@ static void Upload32(   unsigned *data,
 done:
 
 	if ( mipmap ) {
+#ifndef VCMODS_OPENGLES
 		if ( textureFilterAnisotropic )
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					(GLint)Com_Clamp( 1, maxAnisotropy, r_ext_max_anisotropy->integer ) );
-
+#endif
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
-	} else
+	}
+	else
 	{
+#ifndef VCMODS_OPENGLES
 		if ( textureFilterAnisotropic )
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1 );
-
+#endif
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	}
@@ -1389,7 +1451,9 @@ static void R_CreateFogImage( void ) {
 	borderColor[2] = 1.0;
 	borderColor[3] = 1;
 
+#ifndef VCMODS_OPENGLES
 	qglTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor );
+#endif
 }
 
 /*

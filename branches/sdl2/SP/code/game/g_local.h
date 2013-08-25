@@ -1067,6 +1067,8 @@ extern gentity_t       *g_camEnt;
 
 extern vmCvar_t g_gametype;
 
+extern vmCvar_t g_skipcutscenes;
+
 // Rafael gameskill
 extern vmCvar_t g_gameskill;
 // done

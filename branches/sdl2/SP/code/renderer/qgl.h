@@ -26,6 +26,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __QGL_H__
 #define __QGL_H__
 
+#ifdef VCMODS_OPENGLES
+#include <GLES/gl.h>
+
+
+#define qglActiveTextureARB glActiveTexture
+#define qglClientActiveTextureARB glClientActiveTexture
+#define qglMultiTexCoord2fARB glMultiTexCoord2f
+
+extern void (* qglLockArraysEXT) (GLint first, GLsizei count);
+extern void (* qglUnlockArraysEXT) (void);
+
+extern void myglClear(GLbitfield mask);
+extern void myglTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+extern void myglDrawBuffer(GLenum mode);
+extern void myglViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+extern void myglScissor(GLint x, GLint y, GLsizei width, GLsizei height);
+#else
 #ifdef USE_LOCAL_HEADERS
 #	include "SDL_opengl.h"
 #else
@@ -494,6 +511,8 @@ extern          HGLRC(APIENTRY * qwglCreateContextAttribsARB) (HDC hdC, HGLRC hS
 extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list);
 #endif
 
+#endif
+
 //===========================================================================
 
 #define qglAccum glAccum
@@ -506,13 +525,25 @@ extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBC
 #define qglBlendFunc glBlendFunc
 #define qglCallList glCallList
 #define qglCallLists glCallLists
+#ifdef VCMODS_DEPTH
+#define qglClear myglClear
+#else
 #define qglClear glClear
+#endif
 #define qglClearAccum glClearAccum
 #define qglClearColor glClearColor
+#ifdef VCMODS_OPENGLES
+#define qglClearDepth glClearDepthf
+#else
 #define qglClearDepth glClearDepth
+#endif
 #define qglClearIndex glClearIndex
 #define qglClearStencil glClearStencil
+#ifdef VCMODS_OPENGLES
+#define qglClipPlane glClipPlanef
+#else
 #define qglClipPlane glClipPlane
+#endif
 #define qglColor3b glColor3b
 #define qglColor3bv glColor3bv
 #define qglColor3d glColor3d
@@ -558,11 +589,19 @@ extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBC
 #define qglDeleteTextures glDeleteTextures
 #define qglDepthFunc glDepthFunc
 #define qglDepthMask glDepthMask
+#ifdef VCMODS_OPENGLES
+#define qglDepthRange glDepthRangef
+#else
 #define qglDepthRange glDepthRange
+#endif
 #define qglDisable glDisable
 #define qglDisableClientState glDisableClientState
 #define qglDrawArrays glDrawArrays
+#ifdef VCMODS_OPENGLES
+#define qglDrawBuffer myglDrawBuffer
+#else
 #define qglDrawBuffer glDrawBuffer
+#endif
 #define qglDrawElements glDrawElements
 #define qglDrawPixels glDrawPixels
 #define qglEdgeFlag glEdgeFlag
@@ -683,7 +722,11 @@ extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBC
 #define qglNormal3s glNormal3s
 #define qglNormal3sv glNormal3sv
 #define qglNormalPointer glNormalPointer
+#ifdef VCMODS_OPENGLES
+#define qglOrtho glOrthof
+#else
 #define qglOrtho glOrtho
+#endif
 #define qglPassThrough glPassThrough
 #define qglPixelMapfv glPixelMapfv
 #define qglPixelMapuiv glPixelMapuiv
@@ -795,7 +838,11 @@ extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBC
 #define qglTexGeni glTexGeni
 #define qglTexGeniv glTexGeniv
 #define qglTexImage1D glTexImage1D
+#ifdef VCMODS_OPENGLES
+#define qglTexImage2D myglTexImage2D
+#else
 #define qglTexImage2D glTexImage2D
+#endif
 #define qglTexParameterf glTexParameterf
 #define qglTexParameterfv glTexParameterfv
 #define qglTexParameteri glTexParameteri
@@ -832,3 +879,9 @@ extern GLXContext	(APIENTRY * qglXCreateContextAttribsARB) (Display *dpy, GLXFBC
 #define qglViewport glViewport
 
 #endif
+
+#ifdef VCMODS_OPENGLES
+#define GL_BACK_LEFT 0x402
+#define GL_BACK_RIGHT 0x403
+#endif
+

@@ -2271,7 +2271,7 @@ AICast_ScriptAction_ChangeLevel
 
 	syntax: changelevel <mapname> [exitTime] <persistent> <silent>
 
-  Issues an spdevmap/spmap to the consol.
+  Issues an spdevmap/spmap to the console.
   Optionally add
 	"persistent" if you want the player to keep their inventory through the transition.
 	"silent" if you want it to not play the mission success music
@@ -2661,6 +2661,11 @@ AICast_ScriptAction_StartCam
 qboolean ScriptStartCam( cast_state_t *cs, char *params, qboolean black ) {
 	char *pString, *token;
 	gentity_t *ent;
+
+	if ( g_skipcutscenes.integer ) {
+		AICast_ScriptEvent( cs, "trigger", "cameraInterrupt" );
+		return qtrue;
+	}
 
 	ent = &g_entities[cs->entityNum];
 

@@ -49,7 +49,10 @@ frame.
 
 static float frontlerp, backlerp;
 static float torsoFrontlerp, torsoBacklerp;
-static int             *triangles, *boneRefs, *pIndexes;
+static int *triangles, *pIndexes;
+#ifndef VCMODS_OPENGLES
+static int *boneRefs;
+#endif
 static int indexes;
 static int baseIndex, baseVertex, oldIndexes;
 static int numVerts;
@@ -1161,7 +1164,10 @@ RB_SurfaceAnim
 ==============
 */
 void RB_SurfaceAnim( mdsSurface_t *surface ) {
-	int i, j, k;
+#ifndef VCMODS_OPENGLES
+	int i;
+#endif
+	int j, k;
 	refEntity_t *refent;
 	int             *boneList;
 	mdsHeader_t     *header;
