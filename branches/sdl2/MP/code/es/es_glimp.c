@@ -50,6 +50,9 @@ typedef enum
    RSERR_UNKNOWN
 } rserr_t;
 
+SDL_Window *SDL_window = NULL;
+static SDL_GLContext *SDL_glContext = NULL;
+
 void (* qglLockArraysEXT) (GLint first, GLsizei count) = NULL;
 void (* qglUnlockArraysEXT) (void) = NULL;
 
@@ -278,7 +281,7 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, Nati
 #ifndef VCMODS_NOSDL
    if (!SDL_WasInit(SDL_INIT_VIDEO))
    {
-      char driverName[ 64 ];
+      const char *driverName;
 
       if (SDL_Init(SDL_INIT_VIDEO) == -1)
       {
@@ -287,12 +290,12 @@ static qboolean GLimp_StartDriverAndSetMode( int mode, qboolean fullscreen, Nati
          return qfalse;
       }
 
-      SDL_VideoDriverName( driverName, sizeof( driverName ) );
+      driverName = SDL_GetCurrentVideoDriver( );
       ri.Printf( PRINT_ALL, "SDL using driver \"%s\"\n", driverName );
       Cvar_Set( "r_sdlDriver", driverName );
 
-      if (!SDL_SetVideoMode(32, 32, 0, 0)) {
-         ri.Printf(PRINT_ALL, "SDL_SetVideoMode() failed (%s)\n", SDL_GetError());
+      if( SDL_GL_MakeCurrent( SDL_window, SDL_glContext ) < 0 ) {
+	 ri.Printf( PRINT_DEVELOPER, "SDL_GL_MakeCurrent failed: %s\n", SDL_GetError( ) );
          return qfalse;
       }
    }
@@ -484,7 +487,7 @@ void GLimp_Init( void )
    ri.Cvar_Get( "r_availableModes", "", CVAR_ROM );
 
    // This depends on SDL_INIT_VIDEO, hence having it here
-   IN_Init( );
+   IN_Init( SDL_window );
 }
 
 
