@@ -50,6 +50,8 @@ static SDL_GLContext *SDL_glContext = NULL;
 
 cvar_t *r_allowSoftwareGL; // Don't abort out if a hardware visual can't be obtained
 cvar_t *r_allowResize; // make window resizable
+cvar_t *r_windowPosx;
+cvar_t *r_windowPosy;
 cvar_t *r_centerWindow;
 cvar_t *r_sdlDriver;
 
@@ -67,6 +69,19 @@ GLimp_Shutdown
 */
 void GLimp_Shutdown( void )
 {
+	int x, y;
+	const char *posx;
+	const char *posy;
+
+	SDL_GetWindowPosition( SDL_window, &x, &y );
+	ri.Printf( PRINT_DEVELOPER, "Saving window position at %d,%d before closing.\n", x, y );
+
+	posx = va( "%d", x );
+	posy = va( "%d", y );
+
+	ri.Cvar_Set( "r_windowPosx", posx );
+	ri.Cvar_Set( "r_windowPosy", posy );
+
 	ri.IN_Shutdown();
 
 	SDL_QuitSubSystem( SDL_INIT_VIDEO );
@@ -200,7 +215,6 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 	Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	SDL_DisplayMode desktopMode;
 	int display = 0;
-	int x = 0, y = 0;
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL display\n");
 
@@ -265,13 +279,6 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 	}
 	ri.Printf( PRINT_ALL, " %d %d\n", glConfig.vidWidth, glConfig.vidHeight);
 
-	// Center window
-	if( r_centerWindow->integer && !fullscreen )
-	{
-		x = ( desktopMode.w / 2 ) - ( glConfig.vidWidth / 2 );
-		y = ( desktopMode.h / 2 ) - ( glConfig.vidHeight / 2 );
-	}
-
 	// Destroy existing state if it exists
 	if( SDL_glContext != NULL )
 	{
@@ -281,6 +288,8 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 
 	if( SDL_window != NULL )
 	{
+		int x, y;
+
 		SDL_GetWindowPosition( SDL_window, &x, &y );
 		ri.Printf( PRINT_DEVELOPER, "Existing window at %dx%d before being destroyed\n", x, y );
 		SDL_DestroyWindow( SDL_window );
@@ -409,12 +418,33 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		if( !r_allowSoftwareGL->integer )
 			SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
 
-		if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
-				glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
-		{
-			ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-			continue;
+		if( r_centerWindow->integer && !fullscreen )
+ 		{
+			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
+			{
+				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+				continue;
+			}
 		}
+		else if ( ( r_windowPosx->integer == 0 ) && ( r_windowPosy->integer == 0 ) )
+		{
+			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
+			{
+				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+				continue;
+			}
+		}
+		else
+		{
+			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, r_windowPosx->integer, r_windowPosy->integer,
+					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
+			{
+				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+				continue;
+			}
+ 		}
 
 		if( fullscreen )
 		{
@@ -718,6 +748,8 @@ void GLimp_Init( void )
 	r_allowSoftwareGL = ri.Cvar_Get( "r_allowSoftwareGL", "0", CVAR_LATCH );
 	r_sdlDriver = ri.Cvar_Get( "r_sdlDriver", "", CVAR_ROM );
 	r_allowResize = ri.Cvar_Get( "r_allowResize", "0", CVAR_ARCHIVE );
+	r_windowPosx = ri.Cvar_Get( "r_windowPosx", "0", CVAR_ARCHIVE );
+	r_windowPosy = ri.Cvar_Get( "r_windowPosy", "0", CVAR_ARCHIVE );
 	r_centerWindow = ri.Cvar_Get( "r_centerWindow", "0", CVAR_ARCHIVE );
 
 	if( ri.Cvar_VariableIntegerValue( "com_abnormalExit" ) )
