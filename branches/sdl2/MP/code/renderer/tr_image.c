@@ -1888,6 +1888,11 @@ qhandle_t RE_RegisterSkin( const char *name ) {
 		}
 
 		if ( strstr( token, "md3_" ) ) {  // this is specifying a model
+			if ( skin->numModels >= MAX_PART_MODELS ) {
+				ri.Printf( PRINT_WARNING, "WARNING: Ignoring models in '%s', the max is %d!\n", name, MAX_PART_MODELS );
+				break;
+			}
+
 			model = skin->models[ skin->numModels ] = ri.Hunk_Alloc( sizeof( *skin->models[0] ), h_low );
 			Q_strncpyz( model->type, token, sizeof( model->type ) );
 
