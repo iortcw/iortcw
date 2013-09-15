@@ -236,8 +236,8 @@ ifndef DEBUG_CFLAGS
 DEBUG_CFLAGS=-g -O0
 endif
 
-ifndef USE_ANTICHEAT
-USE_ANTICHEAT=0
+ifndef USE_ANTIWALLHACK
+USE_ANTIWALLHACK=0
 endif
 
 ifndef USE_BLOOM
@@ -1114,8 +1114,8 @@ else
   STRIP_FLAG = -s
 endif
 
-ifeq ($(USE_ANTICHEAT),1)
-  SERVER_CFLAGS += -DANTICHEAT
+ifeq ($(USE_ANTIWALLHACK),1)
+  SERVER_CFLAGS += -DANTIWALLHACK
 endif
 
 ifeq ($(USE_BLOOM),1)
@@ -2128,7 +2128,7 @@ Q3DOBJ = \
   $(B)/ded/con_log.o \
   $(B)/ded/sys_main.o
 
-ifeq ($(USE_ANTICHEAT),1)
+ifeq ($(USE_ANTIWALLHACK),1)
   Q3DOBJ += \
       $(B)/ded/sv_wallhack.o
 endif

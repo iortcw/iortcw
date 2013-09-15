@@ -1,12 +1,15 @@
 /*
    sv_wallhack.c -- functions to prevent wallhack cheats
 
-   Copyright (C) 2012 Laszlo Menczel
+   Copyright (C) 2013 Laszlo Menczel
 
    This is free software distributed under the terms of the GNU
    General Public License version 2. NO WARRANTY, see 'LICENSE.TXT'.
-*/
+ */
 
+#ifdef ANTIWALLHACK		// added whole file
+
+#include <time.h>               // for random seed generation
 #include "server.h"
 
 //======================================================================
@@ -15,9 +18,7 @@ static vec3_t pred_ppos, pred_opos;
 
 static trajectory_t traject;
 
-static vec3_t old_origin[MAX_CLIENTS];
-
-static int origin_changed[MAX_CLIENTS];
+static int rand_seed;
 
 static float delta_sign[8][3] =
 {
@@ -32,9 +33,6 @@ static float delta_sign[8][3] =
 };
 
 static vec3_t delta[8];
-
-static int bbox_horz;
-static int bbox_vert;
 
 //======================================================================
 // local functions
@@ -63,7 +61,7 @@ static int zero_vector(vec3_t v)
    have been adopted from 'g_unlagged.c' which is part of the
    'unlagged' system created by Neil "haste" Toronto.
    WEB site: http://www.ra.is/unlagged
-*/
+ */
 
 #define OVERCLIP                1.001f
 
@@ -292,13 +290,14 @@ static void predict_move(sharedEntity_t * ent, float frametime, trajectory_t * t
    Calculates the view point of a player model at position 'org' using
    information in the player state 'ps' of its client, and stores the
    viewpoint coordinates in 'vp'.
-*/
+ */
 
 static void calc_viewpoint(playerState_t * ps, vec3_t org, vec3_t vp)
 {
 	VectorCopy(org, vp);
-	
-	if ( ps->leanf != 0 ) {
+
+	if ( ps->leanf != 0 )
+	{
 		vec3_t right, v3ViewAngles;
 		VectorCopy( ps->viewangles, v3ViewAngles );
 		v3ViewAngles[2] += ps->leanf / 2.0f;
@@ -320,18 +319,15 @@ static int player_in_fov(vec3_t viewangle, vec3_t ppos, vec3_t opos)
 {
 	float yaw, pitch, cos_angle;
 	vec3_t dir, los;
-	int vofs;
-
-	VectorSubtract(opos, ppos, los);
 
 	/*
-	   Check if the two players are roughly on the same X/Y plane
-	   and skip the test if not. We only want to eliminate info that
-	   would reveal the position of opponents behind the player on
-	   the same X/Y plane (e.g. on the same floor in a room).
-	*/
-	vofs = (int) (opos[2] - ppos[2]);
-	if (VectorLength(los) < 5 * abs(vofs))
+	   FIXME:
+	   For some reason my FOV calculation does not work correctly for large
+	   pitch values. It does not matter, the test's purpose is to eliminate
+	   info that would reveal the position of opponents behind the player
+	   on the same floor.
+	 */
+	if (viewangle[PITCH] > MAX_PITCH || viewangle[PITCH] < -1 * MAX_PITCH)
 		return 1;
 
 	// calculate unit vector of the direction the player looks at
@@ -342,6 +338,7 @@ static int player_in_fov(vec3_t viewangle, vec3_t ppos, vec3_t opos)
 	dir[2] = cos(yaw) * sin(pitch);
 
 	// calculate unit vector corresponding to line of sight to opponent
+	VectorSubtract(opos, ppos, los);
 	VectorNormalize(los);
 
 	// calculate and test the angle between the two vectors
@@ -354,7 +351,7 @@ static int player_in_fov(vec3_t viewangle, vec3_t ppos, vec3_t opos)
 
 //======================================================================
 
-static void copy_trajectory(trajectory_t *src, trajectory_t *dst)
+static void copy_trajectory(trajectory_t * src, trajectory_t * dst)
 {
 	dst->trType = src->trType;
 	dst->trTime = src->trTime;
@@ -365,7 +362,7 @@ static void copy_trajectory(trajectory_t *src, trajectory_t *dst)
 
 //======================================================================
 
-static int is_visible(vec3_t start, vec3_t end)
+int is_visible(vec3_t start, vec3_t end)
 {
 	trace_t trace;
 
@@ -379,44 +376,58 @@ static int is_visible(vec3_t start, vec3_t end)
 
 //======================================================================
 
-static void init_horz_delta(void)
+#define MIN_DIST           200.0
+#define MAX_DIST           1000.0
+#define MIN_OFS_FACT       0.1
+#define MAX_OFS_FACT       0.4
+#define OFS_FACT_DIFF      (MAX_OFS_FACT - MIN_OFS_FACT)
+
+static void randomize_position(sharedEntity_t *anchor, sharedEntity_t *object)
 {
-	int i;
+	vec3_t los;
+	float dist, ofs, rand_fact, dist_fact;
 
-	bbox_horz = wh_bbox_horz->integer;
+	VectorSubtract(anchor->s.pos.trBase, object->s.pos.trBase, los);
+	dist = VectorLength(los);
 
-	for (i = 0; i < 8; i++)
-	{
-		delta[i][0] = ((float) bbox_horz * delta_sign[i][0]) / 2.0;
-		delta[i][1] = ((float) bbox_horz * delta_sign[i][1]) / 2.0;
-	}
-}
+	if (dist > MAX_DIST)
+		dist_fact = MIN_OFS_FACT;
+	else if (dist < MIN_DIST)
+		dist_fact = MAX_OFS_FACT;
+	else
+		dist_fact = MAX_OFS_FACT - OFS_FACT_DIFF * (dist - MIN_DIST) / (MAX_DIST - MIN_DIST);
 
-//======================================================================
+	rand_fact = (float) (rand() % 100) / 100.0;
+	ofs = dist * dist_fact;
+	ofs += ofs * rand_fact;
 
-static void init_vert_delta(void)
-{
-	int i;
+	if (rand() & 1)
+		object->s.pos.trBase[0] += ofs;
+	else
+		object->s.pos.trBase[0] -= ofs;
 
-	bbox_vert = wh_bbox_vert->integer;
+	rand_fact = (float) (rand() % 100) / 100.0;
+	ofs = dist * dist_fact;
+	ofs += ofs * rand_fact;
 
-	for (i = 0; i < 8; i++)
-		delta[i][2] = ((float) bbox_vert * delta_sign[i][2]) / 2.0;
-}
+	if (rand() & 1)
+		object->s.pos.trBase[1] += ofs;
+	else
+		object->s.pos.trBase[1] -= ofs;
 
-//======================================================================
-// public functions
-//======================================================================
+	rand_fact = (float) (rand() % 100) / 100.0;
+	ofs = dist * dist_fact;
+	ofs += ofs * rand_fact;
 
-void SV_InitWallhack(void)
-{
-	init_horz_delta();
-	init_vert_delta();
+	if (rand() & 1)
+		object->s.pos.trBase[2] += ofs;
+	else
+		object->s.pos.trBase[2] -= ofs;
 }
 
 //======================================================================
 /*
-   'SV_CanSee' checks if 'player' can see 'other' or not. First
+   'can_see' checks if 'player' can see 'other' or not. First
    a check is made if 'other' is in the maximum allowed fov of
    'player'. If not, then zero is returned w/o any further checks.
    Next traces are carried out from the present viewpoint of 'player'
@@ -429,35 +440,19 @@ void SV_InitWallhack(void)
    tests are carried out again. The result is reported by returning non-zero
    (expected to become visible) or zero (not expected to become visible
    in the next frame).
-*/
+ */
 
 #define PREDICT_TIME      0.1
 #define VOFS              6
 
-int SV_CanSee(int player, int other)
+static int can_see(sharedEntity_t *pent, sharedEntity_t*oent, playerState_t *ps)
 {
-	sharedEntity_t *pent, *oent;
-	playerState_t *ps;
 	vec3_t viewpoint, tmp;
 	int i;
 
-	// check if bounding box has been changed
-	if (wh_bbox_horz->integer != bbox_horz)
-		init_horz_delta();
-
-	if (wh_bbox_vert->integer != bbox_vert)
-		init_vert_delta();
-
-	ps = SV_GameClientNum(player);
-	pent = SV_GentityNum(player);
-	oent = SV_GentityNum(other);
-
 	/* check if 'other' is in the maximum fov allowed */
-	if (wh_check_fov->integer)
-	{
-		if (!player_in_fov(pent->s.apos.trBase, pent->s.pos.trBase, oent->s.pos.trBase))
-			return 0;
-	}
+	if (!player_in_fov(pent->s.apos.trBase, pent->s.pos.trBase, oent->s.pos.trBase))
+		return 0;
 
 	/* check if visible in this frame */
 	calc_viewpoint(ps, pent->s.pos.trBase, viewpoint);
@@ -485,12 +480,9 @@ int SV_CanSee(int player, int other)
 	   FIXME: We use the original viewangle that may have
 	   changed during the move. This could introduce some
 	   errors.
-	*/
-	if (wh_check_fov->integer)
-	{
-		if (!player_in_fov(pent->s.apos.trBase, pred_ppos, pred_opos))
-			return 0;
-	}
+	 */
+	if (!player_in_fov(pent->s.apos.trBase, pred_ppos, pred_opos))
+		return 0;
 
 	/* check if expected to be visible in the next frame */
 	calc_viewpoint(ps, pred_ppos, viewpoint);
@@ -510,48 +502,88 @@ int SV_CanSee(int player, int other)
 }
 
 //======================================================================
-/*
-   Changes the position of client 'other' so that it is directly
-   below 'player'. The distance is maintained so that sound scaling
-   will work correctly.
-*/
+// public functions
+//======================================================================
 
-void SV_RandomizePos(int player, int other)
+void AWH_Init(void)
+{
+	int i;
+
+	for (i = 0; i < 8; i++)
+	{
+		delta[i][0] = ((float) awh_bbox_horz->integer * delta_sign[i][0]) / 2.0;
+		delta[i][1] = ((float) awh_bbox_horz->integer * delta_sign[i][1]) / 2.0;
+		delta[i][2] = ((float) awh_bbox_vert->integer * delta_sign[i][2]) / 2.0;
+	}
+
+	rand_seed = (int) time(NULL);
+}
+
+//======================================================================
+
+int AWH_CanSee(int player, int other)
 {
 	sharedEntity_t *pent, *oent;
-	vec3_t los;
-	float dist;
+	playerState_t *ps;
+
+	ps = SV_GameClientNum(player);
+	pent = SV_GentityNum(player);
+	oent = SV_GentityNum(other);
+
+	return can_see(pent, oent, ps);
+}
+
+//======================================================================
+
+// The value below is equal to the default value of the Cvar
+// 's_alMaxDistance' (= 1024).
+#define SOUND_HEARING_LIMIT    1024
+
+int AWH_CanHear(int player, int other)
+{
+	sharedEntity_t *pent, *oent;
+	vec3_t dist;
 
 	pent = SV_GentityNum(player);
 	oent = SV_GentityNum(other);
 
-	VectorCopy(oent->s.pos.trBase, old_origin[other]);
-	origin_changed[other] = 1;
+	VectorSubtract(pent->s.pos.trBase, oent->s.pos.trBase, dist);
+	if (VectorLength(dist) > SOUND_HEARING_LIMIT)
+		return 0;
 
-	// get distance (we need it for correct sound scaling)
-	VectorSubtract(oent->s.pos.trBase, pent->s.pos.trBase, los);
-	dist = VectorLength(los);
-
-	// set the opponent's position directly below the player
-	VectorCopy(pent->s.pos.trBase, oent->s.pos.trBase);
-	oent->s.pos.trBase[2] -= dist;
+	return 1;
 }
 
 //======================================================================
+/*
+   Randomizes the position of 'other'. Amount of displacement depends
+   on the distance of 'other' from 'player'. Checks if the new position
+   is still invisible from the position of 'player', returns if yes,
+   otherwise tries again. After three attempts the function gives up and
+   restores the original position of 'other'.
+ */
 
-void SV_RestorePos(int cli)
+void AWH_RandomizePos(int player, int other)
 {
-	sharedEntity_t *ent;
+	int i;
+	sharedEntity_t *pent, *oent;
+	playerState_t *ps;
+	vec3_t pos;
 
-	ent = SV_GentityNum(cli);
-	VectorCopy(old_origin[cli], ent->s.pos.trBase);
-	origin_changed[cli] = 0;
+	ps = SV_GameClientNum(player);
+	pent = SV_GentityNum(player);
+	oent = SV_GentityNum(other);
+	VectorCopy(oent->s.pos.trBase, pos);
+
+	for (i = 0; i < 3; i++)
+	{
+		randomize_position(pent, oent);
+
+		if (!can_see(pent, oent, ps))
+			return;
+		else
+			VectorCopy(pos, oent->s.pos.trBase);
+	}
 }
 
-//======================================================================
-
-int SV_PositionChanged(int cli)
-{
-	return origin_changed[cli];
-}
-
+#endif

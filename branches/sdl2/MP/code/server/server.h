@@ -347,11 +347,10 @@ extern	int serverBansCount;
 extern	cvar_t	*sv_voip;
 #endif
 
-#if defined ANTICHEAT
-extern cvar_t *wh_active;
-extern cvar_t *wh_bbox_horz;
-extern cvar_t *wh_bbox_vert;
-extern cvar_t *wh_check_fov;
+#if defined ANTIWALLHACK
+extern cvar_t *awh_active;
+extern cvar_t *awh_bbox_horz;
+extern cvar_t *awh_bbox_vert;
 #endif
 
 extern cvar_t  *sv_showAverageBPS;          // NERVE - SMF - net debugging
@@ -491,15 +490,14 @@ void BotImport_DebugPolygonDelete( int id );
 
 void SV_BotInitBotLib(void);
 
+#if defined ANTIWALLHACK
 //
 // sv_wallhack.c
 //
-#if defined ANTICHEAT
-void SV_RandomizePos(int player, int other);
-void SV_InitWallhack(void);
-void SV_RestorePos(int cli);
-int SV_CanSee(int player, int other);
-int SV_PositionChanged(int cli);
+void AWH_Init(void);
+void AWH_RandomizePos(int player, int other);
+int AWH_CanSee(int player, int other);
+int AWH_CanHear(int player, int other);
 #endif
 
 //============================================================

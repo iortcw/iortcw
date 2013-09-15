@@ -889,26 +889,12 @@ void SV_Init( void ) {
 	Cvar_Get( "sv_referencedPaks", "", CVAR_SYSTEMINFO | CVAR_ROM );
 	Cvar_Get( "sv_referencedPakNames", "", CVAR_SYSTEMINFO | CVAR_ROM );
 
-#if defined ANTICHEAT
-	wh_active = Cvar_Get("wh_active", "0", CVAR_SYSTEMINFO);
+#if defined ANTIWALLHACK
+	awh_active = Cvar_Get("awh_active", "0", CVAR_SYSTEMINFO);
+	awh_bbox_horz = Cvar_Get("awh_bbox_horz", "30", CVAR_SYSTEMINFO);
+	awh_bbox_vert = Cvar_Get("awh_bbox_vert", "60", CVAR_SYSTEMINFO);
 
-	wh_bbox_horz = Cvar_Get("wh_bbox_horz", "50", CVAR_SYSTEMINFO);
-
-	if (wh_bbox_horz->integer < 10)
-		Cvar_Set("wh_bbox_horz", "10");
-	if (wh_bbox_horz->integer > 50)
-		Cvar_Set("wh_bbox_horz", "50");
-
-	wh_bbox_vert = Cvar_Get("wh_bbox_vert", "80", CVAR_SYSTEMINFO);
-
-	if (wh_bbox_vert->integer < 10)
-		Cvar_Set("wh_bbox_vert", "30");
-	if (wh_bbox_vert->integer > 50)
-		Cvar_Set("wh_bbox_vert", "80");
-
-	wh_check_fov = Cvar_Get("wh_check_fov", "0", CVAR_SYSTEMINFO);
-
-	SV_InitWallhack();
+	AWH_Init();
 #endif
 
 	// server vars
