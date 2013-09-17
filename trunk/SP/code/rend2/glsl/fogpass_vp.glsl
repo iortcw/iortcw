@@ -90,16 +90,13 @@ float CalcFog(vec4 position)
 #else // defined(USE_QUAKE3_FOG)
 	float t = dot(position, u_FogDepth);
 
-	if (t < 1.0)
-	{
-		t = step(step(0.0, -u_FogEyeT), t);
-	}
-	else
-	{
-		t /= t - min(u_FogEyeT, 0.0);
-	}
-	
-	return s * 8.0 * t;
+	bool eyeOutside = u_FogEyeT < 0.0;
+	float t2 = float(t >= float(eyeOutside));
+
+	if (eyeOutside)
+		t2 *= t / (t - u_FogEyeT);
+
+	return s * t2;
 #endif
 }
 

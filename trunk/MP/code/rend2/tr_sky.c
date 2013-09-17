@@ -463,7 +463,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 
 		color[0] = 
 		color[1] = 
-		color[2] = tr.identityLight;
+		color[2] = tr.identityLight * backEnd.refdef.colorScale;
 		color[3] = 1.0f;
 		GLSL_SetUniformVec4(sp, UNIFORM_BASECOLOR, color);
 
@@ -582,7 +582,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		
 		color[0] = 
 		color[1] = 
-		color[2] = tr.identityLight;
+		color[2] = tr.identityLight * backEnd.refdef.colorScale;
 		color[3] = 1.0f;
 		GLSL_SetUniformVec4(sp, UNIFORM_BASECOLOR, color);
 
@@ -1038,7 +1038,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	// farthest depth range
 	qglDepthRange( 1.0, 1.0 );
 
-	RB_BeginSurface( shader, 0 );
+	RB_BeginSurface( shader, 0, 0 );
 
 //	color[0] = color[1] = color[2] = color[3] = 1;
 
@@ -1071,7 +1071,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 		// (SA) FIXME: todo: flare effect should render last (on top of everything else) and only when sun is in view (sun moving out of camera past degree n should start to cause flare dimming until view angle to sun is off by angle n + x.
 
 		// draw the flare
-		RB_BeginSurface( tr.sunflareShader_old[0], 0 );
+		RB_BeginSurface( tr.sunflareShader_old[0], 0, 0 );
 		RB_AddQuadStamp( origin, vec1, vec2, colorWhite );
 		RB_EndSurface();
 	}
