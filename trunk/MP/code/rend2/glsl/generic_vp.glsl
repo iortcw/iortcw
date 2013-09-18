@@ -199,7 +199,7 @@ float CalcFog(vec4 position)
 
 	if (eyeOutside)
 		t2 *= t / (t - u_FogEyeT);
- 
+
 	return s * t2;
 }
 #endif
