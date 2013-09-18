@@ -428,9 +428,9 @@ void RB_RenderFlare( flare_t *f ) {
 	iColor[2] = color[2] * fogFactors[2];
 
 	if ( f->flags & 2 ) {  // spotlight flare
-		RB_BeginSurface( tr.spotFlareShader, f->fogNum );
+		RB_BeginSurface( tr.spotFlareShader, f->fogNum, 0 );
 	} else {
-		RB_BeginSurface( tr.flareShader, f->fogNum );
+		RB_BeginSurface( tr.flareShader, f->fogNum, 0 );
 	}
 
 	// FIXME: use quadstamp?

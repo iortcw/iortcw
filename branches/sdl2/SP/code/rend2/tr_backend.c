@@ -43,13 +43,13 @@ static float s_flipMatrix[16] = {
 
 
 /*
-** GL_Bind2
+** GL_Bind
 */
-void GL_Bind2( image_t *image, GLenum type ) {
+void GL_Bind( image_t *image ) {
 	int texnum;
 
 	if ( !image ) {
-		ri.Printf( PRINT_WARNING, "GL_Bind2: NULL image\n" );
+		ri.Printf( PRINT_WARNING, "GL_Bind: NULL image\n" );
 		texnum = tr.defaultImage->texnum;
 	} else {
 		texnum = image->texnum;
@@ -64,25 +64,13 @@ void GL_Bind2( image_t *image, GLenum type ) {
 			image->frameUsed = tr.frameCount;
 		}
 		glState.currenttextures[glState.currenttmu] = texnum;
-		qglBindTexture( type, texnum );
+		if (image && image->flags & IMGFLAG_CUBEMAP)
+			qglBindTexture( GL_TEXTURE_CUBE_MAP, texnum );
+		else
+			qglBindTexture( GL_TEXTURE_2D, texnum );
 	}
 }
 
-/*
-** GL_Bind
-*/
-void GL_Bind( image_t *image )
-{
-	GL_Bind2( image, GL_TEXTURE_2D );
-}
-
-/*
-** GL_BindCubemap
-*/
-void GL_BindCubemap( image_t *image )
-{
-	GL_Bind2( image, GL_TEXTURE_CUBE_MAP );
-}
 
 /*
 ** GL_SelectTexture
@@ -102,33 +90,6 @@ void GL_SelectTexture( int unit ) {
 
 
 /*
-** GL_BindMultitexture
-*/
-void GL_BindMultitexture( image_t *image0, GLuint env0, image_t *image1, GLuint env1 ) {
-	int texnum0, texnum1;
-
-	texnum0 = image0->texnum;
-	texnum1 = image1->texnum;
-
-	if ( r_nobind->integer && tr.dlightImage ) {        // performance evaluation option
-		texnum0 = texnum1 = tr.dlightImage->texnum;
-	}
-
-	if ( glState.currenttextures[1] != texnum1 ) {
-		GL_SelectTexture( 1 );
-		image1->frameUsed = tr.frameCount;
-		glState.currenttextures[1] = texnum1;
-		qglBindTexture( GL_TEXTURE_2D, texnum1 );
-	}
-	if ( glState.currenttextures[0] != texnum0 ) {
-		GL_SelectTexture( 0 );
-		image0->frameUsed = tr.frameCount;
-		glState.currenttextures[0] = texnum0;
-		qglBindTexture( GL_TEXTURE_2D, texnum0 );
-	}
-}
-
-/*
 ** GL_BindToTMU
 */
 void GL_BindToTMU( image_t *image, int tmu )
@@ -146,7 +107,11 @@ void GL_BindToTMU( image_t *image, int tmu )
 		if (image)
 			image->frameUsed = tr.frameCount;
 		glState.currenttextures[tmu] = texnum;
-		qglBindTexture( GL_TEXTURE_2D, texnum );
+
+		if (image && (image->flags & IMGFLAG_CUBEMAP))
+			qglBindTexture( GL_TEXTURE_CUBE_MAP, texnum );
+		else
+			qglBindTexture( GL_TEXTURE_2D, texnum );
 		GL_SelectTexture( oldtmu );
 	}
 }
@@ -486,6 +451,13 @@ void RB_BeginDrawingView( void ) {
 		else
 		{
 			FBO_Bind(backEnd.viewParms.targetFbo);
+
+			// FIXME: hack for cubemap testing
+			if (backEnd.viewParms.targetFbo == tr.renderCubeFbo)
+			{
+				//qglFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + backEnd.viewParms.targetFboLayer, backEnd.viewParms.targetFbo->colorImage[0]->texnum, 0);
+				qglFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + backEnd.viewParms.targetFboLayer, tr.cubemaps[backEnd.viewParms.targetFboCubemapIndex]->texnum, 0);
+			}
 		}
 	}
 
@@ -583,6 +555,12 @@ void RB_BeginDrawingView( void ) {
 		}
 	}
 
+	// clear to black for cube maps
+	if (backEnd.viewParms.targetFbo == tr.renderCubeFbo)
+	{
+		clearBits |= GL_COLOR_BUFFER_BIT;
+		qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+	}
 
 	if ( clearBits ) {
 		qglClear( clearBits );
@@ -934,6 +912,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	int entityNum, oldEntityNum;
 	int dlighted, oldDlighted;
 	int				pshadowed, oldPshadowed;
+	int             cubemapIndex, oldCubemapIndex;
 	qboolean depthRange, oldDepthRange, isCrosshair, wasCrosshair;
 	int i;
 	drawSurf_t      *drawSurf;
@@ -961,6 +940,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	wasCrosshair = qfalse;
 	oldDlighted = qfalse;
 	oldPshadowed = qfalse;
+	oldCubemapIndex = -1;
 	oldSort = -1;
 // GR - tessellation also forces to draw everything
 	oldAtiTess = -1;
@@ -971,7 +951,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	backEnd.pc.c_surfaces += numDrawSurfs;
 
 	for ( i = 0, drawSurf = drawSurfs ; i < numDrawSurfs ; i++, drawSurf++ ) {
-		if ( drawSurf->sort == oldSort ) {
+		if ( drawSurf->sort == oldSort && drawSurf->cubemapIndex == oldCubemapIndex) {
 			if (backEnd.depthFill && shader && shader->sort != SS_OPAQUE)
 				continue;
 
@@ -985,12 +965,13 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		oldSort = drawSurf->sort;
 // GR - also extract tesselation flag
 		R_DecomposeSort( drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted, &pshadowed, &atiTess );
+		cubemapIndex = drawSurf->cubemapIndex;
 
 		//
 		// change the tess parameters if needed
 		// a "entityMergable" shader is a shader that can have surfaces from seperate
 		// entities merged into a single batch, like smoke and blood puff sprites
-		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted || pshadowed != oldPshadowed
+		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted || pshadowed != oldPshadowed || cubemapIndex != oldCubemapIndex
 // GR - force draw on tessellation flag change
 			 || ( atiTess != oldAtiTess )
 			 || ( entityNum != oldEntityNum && !shader->entityMergable ) ) ){
@@ -1001,12 +982,13 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 				RB_EndSurface();
 			}
-			RB_BeginSurface( shader, fogNum );
+			RB_BeginSurface( shader, fogNum, cubemapIndex );
 			backEnd.pc.c_surfBatches++;
 			oldShader = shader;
 			oldFogNum = fogNum;
 			oldDlighted = dlighted;
 			oldPshadowed = pshadowed;
+			oldCubemapIndex = cubemapIndex;
 // GR - update old tessellation flag
 			oldAtiTess = atiTess;
 		}
@@ -1374,7 +1356,7 @@ const void *RB_StretchPic( const void *data ) {
 			RB_EndSurface();
 		}
 		backEnd.currentEntity = &backEnd.entity2D;
-		RB_BeginSurface( shader, 0 );
+		RB_BeginSurface( shader, 0, 0 );
 	}
 
 	RB_CHECKOVERFLOW( 4, 6 );
@@ -1469,7 +1451,7 @@ const void *RB_RotatedPic( const void *data ) {
 			RB_EndSurface();
 		}
 		backEnd.currentEntity = &backEnd.entity2D;
-		RB_BeginSurface( shader, 0 );
+		RB_BeginSurface( shader, 0, 0 );
 	}
 
 	RB_CHECKOVERFLOW( 4, 6 );
@@ -1566,7 +1548,7 @@ const void *RB_StretchPicGradient( const void *data ) {
 			RB_EndSurface();
 		}
 		backEnd.currentEntity = &backEnd.entity2D;
-		RB_BeginSurface( shader, 0 );
+		RB_BeginSurface( shader, 0, 0 );
 	}
 
 	RB_CHECKOVERFLOW( 4, 6 );
@@ -1896,8 +1878,14 @@ const void  *RB_DrawSurfs( const void *data ) {
 		RB_RenderFlares();
 	}
 
-	//if (glRefConfig.framebufferObject)
-		//FBO_Bind(NULL);
+	if (glRefConfig.framebufferObject && backEnd.viewParms.targetFbo == tr.renderCubeFbo)
+	{
+		FBO_Bind(NULL);
+		GL_SelectTexture(TB_CUBEMAP);
+		GL_BindToTMU(tr.cubemaps[backEnd.viewParms.targetFboCubemapIndex], TB_CUBEMAP);
+		qglGenerateMipmapEXT(GL_TEXTURE_CUBE_MAP);
+		GL_SelectTexture(0);
+	}
 
 	return (const void *)( cmd + 1 );
 }
@@ -2173,7 +2161,7 @@ const void *RB_CapShadowMap(const void *data)
 		GL_SelectTexture(0);
 		if (cmd->cubeSide != -1)
 		{
-			GL_BindCubemap(tr.shadowCubemaps[cmd->map]);
+			GL_Bind(tr.shadowCubemaps[cmd->map]);
 			qglCopyTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + cmd->cubeSide, 0, GL_RGBA8, backEnd.refdef.x, glConfig.vidHeight - ( backEnd.refdef.y + PSHADOW_MAP_SIZE ), PSHADOW_MAP_SIZE, PSHADOW_MAP_SIZE, 0);
 		}
 		else
@@ -2269,7 +2257,7 @@ const void *RB_PostProcess(const void *data)
 			color[2] = pow(2, r_cameraExposure->value); //exp2(r_cameraExposure->value);
 			color[3] = 1.0f;
 
-			FBO_Blit(srcFbo, NULL, NULL, tr.screenScratchFbo, dstBox, NULL, color, 0);
+			FBO_Blit(srcFbo, srcBox, NULL, tr.screenScratchFbo, dstBox, NULL, color, 0);
 		}
 	}
 
@@ -2307,6 +2295,21 @@ const void *RB_PostProcess(const void *data)
 		VectorSet4(dstBox, 256, glConfig.vidHeight - 256, 256, 256);
 		FBO_BlitFromTexture(tr.sunRaysImage, NULL, NULL, tr.screenScratchFbo, dstBox, NULL, NULL, 0);
 	}
+
+#if 0
+	if (r_cubeMapping->integer && tr.numCubemaps)
+	{
+		vec4i_t dstBox;
+		int cubemapIndex = R_CubemapForPoint( backEnd.viewParms.or.origin );
+
+		if (cubemapIndex)
+		{
+			VectorSet4(dstBox, 0, glConfig.vidHeight - 256, 256, 256);
+			//FBO_BlitFromTexture(tr.renderCubeImage, NULL, NULL, tr.screenScratchFbo, dstBox, &tr.testcubeShader, NULL, 0);
+			FBO_BlitFromTexture(tr.cubemaps[cubemapIndex - 1], NULL, NULL, tr.screenScratchFbo, dstBox, &tr.testcubeShader, NULL, 0);
+		}
+	}
+#endif
 
 	backEnd.framePostProcessed = qtrue;
 

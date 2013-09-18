@@ -24,45 +24,40 @@ uniform sampler2D u_ShadowMap;
 uniform samplerCube u_CubeMap;
 #endif
 
-#if defined(USE_LIGHT_VECTOR)
+#if defined(USE_LIGHT_VECTOR) && !defined(USE_FAST_LIGHT)
 uniform vec3      u_DirectedLight;
 uniform vec3      u_AmbientLight;
-uniform float     u_LightRadius;
 #endif
 
 #if defined(USE_PRIMARY_LIGHT) || defined(USE_SHADOWMAP)
 uniform vec3  u_PrimaryLightColor;
 uniform vec3  u_PrimaryLightAmbient;
-uniform float u_PrimaryLightRadius;
 #endif
 
-#if defined(USE_LIGHT)
+#if defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)
 uniform vec2      u_MaterialInfo;
 #endif
 
-varying vec2      var_DiffuseTex;
-#if defined(USE_LIGHTMAP)
-varying vec2      var_LightTex;
-#endif
+varying vec4      var_TexCoords;
+
 varying vec4      var_Color;
 
 #if (defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)) || defined(USE_PARALLAXMAP)
-varying vec3      var_ViewDir;
-varying vec3      var_Normal;
-varying vec3      var_Tangent;
-varying vec3      var_Bitangent;
+varying vec4      var_Normal;
+varying vec4      var_Tangent;
+varying vec4      var_Bitangent;
 #endif
 
 #if defined(USE_LIGHT_VERTEX) && !defined(USE_FAST_LIGHT)
-varying vec3      var_lightColor;
+varying vec3      var_LightColor;
 #endif
 
-#if defined(USE_LIGHT) && !defined(USE_DELUXEMAP)
+#if defined(USE_LIGHT) && !defined(USE_DELUXEMAP) && !defined(USE_FAST_LIGHT)
 varying vec4      var_LightDir;
 #endif
 
 #if defined(USE_PRIMARY_LIGHT) || defined(USE_SHADOWMAP)
-varying vec3      var_PrimaryLightDir;
+varying vec4      var_PrimaryLightDir;
 #endif
 
 
@@ -261,60 +256,66 @@ vec3 CalcSpecular(vec3 specular, float NH, float NL, float NE, float EH, float s
 	return vec3(0.0);
 }
 
+
+float CalcLightAttenuation(vec3 dir, float sqrRadius)
+{
+	// point light at >0 radius, directional otherwise
+	float point = float(sqrRadius > 0.0);
+
+	// inverse square light
+	float attenuation = sqrRadius / dot(dir, dir);
+
+	// zero light at radius, approximating q3 style
+	// also don't attenuate directional light
+	attenuation = (0.5 * attenuation - 1.5) * point + 1.0;
+	
+	// clamp attenuation
+	#if defined(NO_LIGHT_CLAMP)
+	attenuation = max(attenuation, 0.0);
+	#else
+	attenuation = clamp(attenuation, 0.0, 1.0);
+	#endif
+	
+	return attenuation;
+}
+
+
 void main()
 {
 	vec3 L, N, E, H;
 	float NL, NH, NE, EH;
 	
 #if (defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)) || defined(USE_PARALLAXMAP)
-	mat3 tangentToWorld = mat3(var_Tangent, var_Bitangent, var_Normal);
+	mat3 tangentToWorld = mat3(var_Tangent.xyz, var_Bitangent.xyz, var_Normal.xyz);
 #endif
 
 #if defined(USE_DELUXEMAP)
-	L = (2.0 * texture2D(u_DeluxeMap, var_LightTex).xyz - vec3(1.0));
+	L = (2.0 * texture2D(u_DeluxeMap, var_TexCoords.zw).xyz - vec3(1.0));
   #if defined(USE_TANGENT_SPACE_LIGHT)
-    L = L * tangentToWorld;
+	L = L * tangentToWorld;
   #endif
 #elif defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)
 	L = var_LightDir.xyz;
 #endif
 
 #if (defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)) || defined(USE_PARALLAXMAP)
-	E = normalize(var_ViewDir);
+	E = normalize(vec3(var_Normal.w, var_Tangent.w, var_Bitangent.w));
 #endif
 
 #if defined(USE_LIGHTMAP)
-	vec4 lightSample = texture2D(u_LightMap, var_LightTex).rgba;
-  #if defined(RGBE_LIGHTMAP)
-	lightSample.rgb *= exp2(lightSample.a * 255.0 - 128.0);
+	vec4 lightSample = texture2D(u_LightMap, var_TexCoords.zw).rgba;
+  #if defined(RGBM_LIGHTMAP)
+	lightSample.rgb *= 32.0 * lightSample.a;
   #endif
 	vec3 lightColor = lightSample.rgb;
 #elif defined(USE_LIGHT_VECTOR) && !defined(USE_FAST_LIGHT)
-	// inverse square light
-	float attenuation = u_LightRadius * u_LightRadius / dot(L, L);
-	
-	// zero light at radius, approximating q3 style
-	attenuation = 0.5 * attenuation - 0.5;
-	//attenuation = 0.0697168 * attenuation;
-	//attenuation *= step(0.294117, attenuation);
-	
-	// clamp attenuation
-	#if defined(NO_LIGHT_CLAMP)
-	attenuation *= step(0.0, attenuation);
-	#else
-	attenuation = clamp(attenuation, 0.0, 1.0);
-	#endif
-	
-	// don't attenuate directional light
-	attenuation = (attenuation - 1.0) * var_LightDir.w + 1.0;
-
-	vec3 lightColor   = u_DirectedLight * attenuation;
+	vec3 lightColor   = u_DirectedLight * CalcLightAttenuation(L, var_LightDir.w);
 	vec3 ambientColor = u_AmbientLight;
 #elif defined(USE_LIGHT_VERTEX) && !defined(USE_FAST_LIGHT)
-	vec3 lightColor = var_lightColor;
+	vec3 lightColor = var_LightColor;
 #endif
-	
-	vec2 texCoords = var_DiffuseTex;
+
+	vec2 texCoords = var_TexCoords.xy;
 
 #if defined(USE_PARALLAXMAP)
   #if defined(USE_TANGENT_SPACE_LIGHT)
@@ -349,7 +350,7 @@ void main()
   #elif defined(USE_TANGENT_SPACE_LIGHT)
 	N = vec3(0.0, 0.0, 1.0);
   #else
-    N = normalize(var_Normal);
+    N = normalize(var_Normal.xyz);
   #endif
   
 	L = normalize(L);
@@ -360,9 +361,9 @@ void main()
 
 	// surfaces not facing the light are always shadowed
 	#if defined(USE_TANGENT_SPACE_LIGHT)
-	shadowValue *= step(0.0, var_PrimaryLightDir.z);
+	shadowValue *= float(var_PrimaryLightDir.z > 0.0);
 	#else
-	shadowValue *= step(0.0, dot(var_Normal, var_PrimaryLightDir));
+	shadowValue *= float(dot(var_Normal.xyz, var_PrimaryLightDir.xyz) > 0.0);
 	#endif
   
     #if defined(SHADOWMAP_MODULATE)
@@ -371,7 +372,7 @@ void main()
 
       #if 0
 	// Only shadow when the world light is parallel to the primary light
-	shadowValue = 1.0 + (shadowValue - 1.0) * clamp(dot(L, var_PrimaryLightDir), 0.0, 1.0);
+	shadowValue = 1.0 + (shadowValue - 1.0) * clamp(dot(L, var_PrimaryLightDir.xyz), 0.0, 1.0);
       #endif
 	lightColor = mix(shadowColor, lightColor, shadowValue);
     #endif
@@ -383,7 +384,7 @@ void main()
 	#if defined(USE_TANGENT_SPACE_LIGHT)
 	float surfNL = L.z;
 	#else
-	float surfNL = clamp(dot(var_Normal, L), 0.0, 1.0);
+	float surfNL = clamp(dot(var_Normal.xyz, L), 0.0, 1.0);
 	#endif
 
 	// Scale the incoming light to compensate for the baked-in light angle
@@ -468,7 +469,7 @@ void main()
 	#if defined(USE_LIGHTMAP)
 	cubeLightColor *= lightSample.rgb;
 	#elif defined (USE_LIGHT_VERTEX)
-	cubeLightColor *= var_lightColor;
+	cubeLightColor *= var_LightColor;
 	#else
 	cubeLightColor *= lightColor * NL + ambientColor;
 	#endif
@@ -478,7 +479,7 @@ void main()
   #endif
 
   #if defined(USE_PRIMARY_LIGHT)
-	L = normalize(var_PrimaryLightDir);
+	L = normalize(var_PrimaryLightDir.xyz);
 	NL = clamp(dot(N, L), 0.0, 1.0);
 
 	H = normalize(L + E);
@@ -488,11 +489,13 @@ void main()
 	reflectance  = CalcDiffuse(diffuse.rgb, N, L, E, NE, NL, shininess);
 	reflectance += CalcSpecular(specular.rgb, NH, NL, NE, EH, shininess);
 
+	lightColor = u_PrimaryLightColor; // * CalcLightAttenuation(L, u_PrimaryLightDir.w);
+	
     #if defined(USE_SHADOWMAP)
-	reflectance *= shadowValue;
+	lightColor *= shadowValue;
     #endif
 
-	gl_FragColor.rgb += u_PrimaryLightColor * reflectance * NL;
+	gl_FragColor.rgb += lightColor * reflectance * NL;
   #endif
   
   #if defined(USE_LINEAR_LIGHT)

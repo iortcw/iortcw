@@ -302,6 +302,7 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 	int cull;
 	int lod;
 	int fogNum;
+	int cubemapIndex;
 	qboolean personalModel;
 
 	// don't add third_person objects if not in a portal
@@ -357,6 +358,8 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 	// see if we are in a fog volume
 	//
 	fogNum = R_ComputeFogNum( model, ent );
+
+	cubemapIndex = R_CubemapForPoint(ent->e.origin);
 
 	//
 	// draw all surfaces
@@ -415,7 +418,7 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 
 		// for testing polygon shadows (on /all/ models)
 		if ( r_shadows->integer == 4 ) {
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse );
+			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse, 0 );
 		}
 
 
@@ -424,7 +427,7 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 		{
 			srfVBOMDVMesh_t *vboSurface = &model->vboSurfaces[i];
 
-			R_AddDrawSurf((void *)vboSurface, shader, fogNum, qfalse, qfalse );
+			R_AddDrawSurf((void *)vboSurface, shader, fogNum, qfalse, qfalse, cubemapIndex );
 		}
 
 		surface++;
