@@ -489,6 +489,69 @@ static qboolean CG_RegisterAcc( clientInfo_t *ci, const char *modelName, const c
 //----(SA)	end
 
 
+static char text[100000];                   // <- was causing callstacks >64k
+
+/*
+=============
+CG_ParseAnimationFiles
+
+Used for demo playback, copied from G_ParseAnimationFiles.
+=============
+*/
+qboolean CG_ParseAnimationFiles( char *modelname, animModelInfo_t *modelInfo, int clientNum ) {
+	char filename[MAX_QPATH];
+	fileHandle_t f;
+	int len;
+
+	// set the name of the model in the modelinfo structure
+	Q_strncpyz( modelInfo->modelname, modelname, sizeof( modelInfo->modelname ) );
+
+	// load the cfg file
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/wolfanim.cfg", modelname );
+	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+	if ( len <= 0 ) {
+		CG_Printf( "G_ParseAnimationFiles(): file '%s' not found\n", filename );       //----(SA)	added
+		return qfalse;
+	}
+	if ( len >= sizeof( text ) - 1 ) {
+		CG_Printf( "File %s too long\n", filename );
+		return qfalse;
+	}
+	trap_FS_Read( text, len, f );
+	text[len] = 0;
+	trap_FS_FCloseFile( f );
+
+	// parse the text
+	BG_AnimParseAnimConfig( modelInfo, filename, text );
+
+	// load the script file
+	Com_sprintf( filename, sizeof( filename ), "models/players/%s/wolfanim.script", modelname );
+	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+	if ( len <= 0 ) {
+		if ( modelInfo->version > 1 ) {
+			return qfalse;
+		}
+		// try loading the default script for old legacy models
+		Com_sprintf( filename, sizeof( filename ), "models/players/default.script" );
+		len = trap_FS_FOpenFile( filename, &f, FS_READ );
+		if ( len <= 0 ) {
+			return qfalse;
+		}
+	}
+	if ( len >= sizeof( text ) - 1 ) {
+		CG_Printf( "File %s too long\n", filename );
+		return qfalse;
+	}
+	trap_FS_Read( text, len, f );
+	text[len] = 0;
+	trap_FS_FCloseFile( f );
+
+	// parse the text
+	BG_AnimParseAnimScript( modelInfo, &cgs.animScriptData, clientNum, filename, text );
+
+	return qtrue;
+}
+
 /*
 ==================
 CG_CheckForExistingModelInfo
@@ -500,6 +563,7 @@ CG_CheckForExistingModelInfo
 ==================
 */
 extern animScriptData_t *globalScriptData;
+static animModelInfo_t cgModelInfo[MAX_ANIMSCRIPT_MODELS];
 qboolean CG_CheckForExistingModelInfo( clientInfo_t *ci, char *modelName, animModelInfo_t **modelInfo ) {
 	int i;
 	animModelInfo_t *trav; // *firstFree=NULL; // TTimo: unused
@@ -518,21 +582,25 @@ qboolean CG_CheckForExistingModelInfo( clientInfo_t *ci, char *modelName, animMo
 			}
 		} else {
 			// if we fell down to here, then we have found a free slot
+			cgs.animScriptData.clientModels[ci->clientNum] = i + 1;
 
 			// request it from the server (game module)
-			if ( trap_GetModelInfo( ci->clientNum, modelName, &cgs.animScriptData.modelInfo[i] ) ) {
+			if ( !trap_GetModelInfo( ci->clientNum, modelName, &cgs.animScriptData.modelInfo[i] ) ) {
+				memset( &cgModelInfo[i], 0, sizeof ( animModelInfo_t ) );
 
-				// success
-				cgs.animScriptData.clientModels[ci->clientNum] = i + 1;
-				*modelInfo = cgs.animScriptData.modelInfo[i];
-				// calc movespeed/footstep values
-				CG_CalcMoveSpeeds( ci );
-				return qfalse;  // we need to cache all the assets for this character
+				cgs.animScriptData.modelInfo[i] = &cgModelInfo[i];
 
+				// manually load for demos
+				if ( !CG_ParseAnimationFiles( modelName, cgs.animScriptData.modelInfo[i], ci->clientNum ) ) {
+					CG_Error( "Failed to load animation scripts for model %s\n", modelName );
+				}
 			}
 
-			// huh!?
-			CG_Error( "CG_CheckForExistingModelInfo: unable to optain modelInfo from server" );
+			// success
+			*modelInfo = cgs.animScriptData.modelInfo[i];
+			// calc movespeed/footstep values
+			CG_CalcMoveSpeeds( ci );
+			return qfalse;  // we need to cache all the assets for this character
 		}
 
 	}
