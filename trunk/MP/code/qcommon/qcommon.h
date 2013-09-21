@@ -283,7 +283,7 @@ You or the server may be running older versions of the game. Press the auto-upda
 #ifndef PRE_RELEASE_DEMO
 // 1.33 - protocol 59
 // 1.4 - protocol 60
-#define	PROTOCOL_VERSION	72
+#define	PROTOCOL_VERSION	61
 #define PROTOCOL_LEGACY_VERSION	60
 #define GAMENAME_STRING     "wolfmp"
 #else

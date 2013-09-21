@@ -272,7 +272,7 @@ PROTOCOL
 ==============================================================
 */
 
-#define	PROTOCOL_VERSION	72
+#define	PROTOCOL_VERSION	50
 #define PROTOCOL_LEGACY_VERSION	49
 //#define	PROTOCOL_VERSION	43	// (SA) bump this up
 
