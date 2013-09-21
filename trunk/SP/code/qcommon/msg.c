@@ -1385,7 +1385,7 @@ netField_t playerStateFields[] =
 	{ PSF( legsAnim ), ANIM_BITS },
 	{ PSF( torsoAnim ), ANIM_BITS },
 	{ PSF( movementDir ), 8 },
-	{ PSF( eFlags ), 16 },
+	{ PSF( eFlags ), 32 },
 	{ PSF( eventSequence ), 8 },
 	{ PSF( events[0] ), 8 },
 	{ PSF( events[1] ), 8 },
@@ -1400,6 +1400,7 @@ netField_t playerStateFields[] =
 	{ PSF( weapons[1] ), 32 },
 	{ PSF( weapon ), 7 }, // (SA) yup, even more
 	{ PSF( weaponstate ), 4 },
+	{ PSF( weapAnim ), ANIM_BITS },
 	{ PSF( viewangles[0] ), 0 },
 	{ PSF( viewangles[1] ), 0 },
 	{ PSF( viewangles[2] ), 0 },
@@ -1434,8 +1435,7 @@ netField_t playerStateFields[] =
 	{ PSF( aiState ), 2},
 	{ PSF( serverCursorHint ), 8}, //----(SA)	added
 	{ PSF( serverCursorHintVal ), 8}, //----(SA)	added
-// RF not needed anymore
-//{ PSF(classWeaponTime), 32}, // JPW NERVE
+	{ PSF( classWeaponTime ), 32}, // JPW NERVE
 	{ PSF( footstepCount ), 0},
 };
 
