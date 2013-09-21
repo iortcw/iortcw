@@ -3315,6 +3315,8 @@ void R_RenderAllCubemaps(void)
 	{
 		tr.cubemaps[i] = R_CreateImage(va("*cubeMap%d", i), NULL, CUBE_MAP_SIZE, CUBE_MAP_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE | IMGFLAG_MIPMAP | IMGFLAG_CUBEMAP, GL_RGBA8);
 	}
+
+	ri.Printf(PRINT_ALL, "Total cubemaps: %d\n", tr.numCubemaps );
 	
 	for (i = 0; i < tr.numCubemaps; i++)
 	{
@@ -4095,8 +4097,8 @@ void RE_LoadWorldMap( const char *name ) {
 		R_LoadCubemapEntities("misc_cubemap");
 		if (!tr.numCubemaps)
 		{
-			// use deathmatch spawn points as cubemaps
-			R_LoadCubemapEntities("info_player_deathmatch");
+			// use ai markers as cubemaps
+			R_LoadCubemapEntities("ai_marker");
 		}
 
 		if (tr.numCubemaps)
