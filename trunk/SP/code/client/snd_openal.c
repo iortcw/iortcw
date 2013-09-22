@@ -265,7 +265,7 @@ static void S_AL_BufferUnload(sfxHandle_t sfx)
 		return;
 
 	// Delete it 
-	S_AL_ClearError( qfalse );
+	S_AL_ClearError( qtrue );
 	qalDeleteBuffers(1, &knownSfx[sfx].buffer);
 	if(qalGetError() != AL_NO_ERROR)
 		Com_Printf( S_COLOR_RED "ERROR: Can't delete sound buffer for %s\n",
@@ -354,7 +354,7 @@ static void S_AL_BufferLoad(sfxHandle_t sfx, qboolean cache)
 	format = S_AL_Format(info.width, info.channels);
 
 	// Create a buffer
-	S_AL_ClearError( qfalse );
+	S_AL_ClearError( qtrue );
 	qalGenBuffers(1, &curSfx->buffer);
 	if((error = qalGetError()) != AL_NO_ERROR)
 	{
@@ -701,7 +701,7 @@ qboolean S_AL_SrcInit( void )
 	else if(limit < 16)
 		limit = 16;
  
-	S_AL_ClearError( qfalse );
+	S_AL_ClearError( qtrue );
 	// Allocate as many sources as possible
 	for(i = 0; i < limit; i++)
 	{
@@ -817,7 +817,7 @@ static void S_AL_SaveLoopPos(src_t *dest, ALuint alSource)
 {
 	int error;
 	
-	S_AL_ClearError(qtrue);
+	S_AL_ClearError( qtrue );
 	
 	qalGetSourcef(alSource, AL_SEC_OFFSET, &dest->lastTimePos);
 	if((error = qalGetError()) != AL_NO_ERROR)
@@ -1569,7 +1569,7 @@ void S_AL_SrcUpdate( void )
 							int offset, error;
 						
 							// we already have a master loop playing, get buffer position.
-							S_AL_ClearError(qfalse);
+							S_AL_ClearError( qtrue );
 							qalGetSourcei(srcList[curSfx->masterLoopSrc].alSource, AL_SAMPLE_OFFSET, &offset);
 							if((error = qalGetError()) != AL_NO_ERROR)
 							{
@@ -2027,7 +2027,7 @@ void S_AL_MusicProcess(ALuint b)
 	ALuint format;
 	snd_stream_t *curstream;
 
-	S_AL_ClearError( qfalse );
+	S_AL_ClearError( qtrue );
 
 	if(intro_stream)
 		curstream = intro_stream;
@@ -2550,10 +2550,10 @@ qboolean S_AL_Init( soundInterface_t *si )
 	s_alSources = Cvar_Get( "s_alSources", "96", CVAR_ARCHIVE );
 	s_alDopplerFactor = Cvar_Get( "s_alDopplerFactor", "1.0", CVAR_ARCHIVE );
 	s_alDopplerSpeed = Cvar_Get( "s_alDopplerSpeed", "2200", CVAR_ARCHIVE );
-	s_alMinDistance = Cvar_Get( "s_alMinDistance", "512", CVAR_CHEAT );
-	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "1024", CVAR_CHEAT);
-	s_alRolloff = Cvar_Get( "s_alRolloff", "2", CVAR_CHEAT);
-	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "512", CVAR_CHEAT);
+	s_alMinDistance = Cvar_Get( "s_alMinDistance", "256", CVAR_ARCHIVE );
+	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "1024", CVAR_ARCHIVE);
+	s_alRolloff = Cvar_Get( "s_alRolloff", "1", CVAR_ARCHIVE);
+	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "512", CVAR_ARCHIVE);
 
 	s_alDriver = Cvar_Get( "s_alDriver", ALDRIVER_DEFAULT, CVAR_ARCHIVE | CVAR_LATCH );
 
