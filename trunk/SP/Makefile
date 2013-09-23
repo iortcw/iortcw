@@ -244,6 +244,10 @@ ifndef USE_OPENGLES
 USE_OPENGLES=0
 endif
 
+ifndef BUILD_FRENCH
+BUILD_FRENCH=0
+endif
+
 
 #############################################################################
 
@@ -1120,7 +1124,9 @@ ifeq ($(USE_BLOOM),1)
   CLIENT_CFLAGS += -DUSE_BLOOM
 endif
 
-
+ifeq ($(BUILD_FRENCH),1)
+  CLIENT_CFLAGS += -DBUILD_FRENCH
+endif
 
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
 BASE_CFLAGS += -Wformat=2 -Wformat-security -Wno-format-nonliteral

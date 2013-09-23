@@ -184,7 +184,11 @@ static const unsigned int pak_checksums[] = {
 };
 
 static const unsigned int sppak_checksums[] = {
+#ifdef BUILD_FRENCH
+	2183777857u,
+#else
 	2837138611u,
+#endif
 	3033901371u,
 	483593179u
 };
