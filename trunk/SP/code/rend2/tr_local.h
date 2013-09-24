@@ -280,8 +280,7 @@ typedef enum {
 	AGEN_LIGHTING_SPECULAR,
 	AGEN_WAVEFORM,
 	AGEN_PORTAL,
-	AGEN_CONST,
-	AGEN_FRESNEL
+	AGEN_CONST
 } alphaGen_t;
 
 typedef enum {
