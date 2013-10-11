@@ -1,14 +1,14 @@
-                   ,---------------------------------------.
-                   |   _                     _       ____  |
-                   |  (_)___  __ _ _  _ __ _| |_____|__ /  |
-                   |  | / _ \/ _` | || / _` | / / -_)|_ \  |
-                   |  |_\___/\__, |\_,_\__,_|_\_\___|___/  |
-                   |            |_|                        |
-                   |                                       |
-                   `---------- http://ioquake3.org --------'
+			 _            _                
+			(_)          | |               
+			 _  ___  _ __| |_ _____      __
+			| |/ _ \| '__| __/ __\ \ /\ / /
+			| | (_) | |  | || (__ \ V  V / 
+			|_|\___/|_|   \__\___| \_/\_/  
+                               
+                               
 
-The intent of this project is to provide a baseline Quake 3 which may be used
-for further development and baseq3 fun. 
+The intent of this project is to provide a baseline RTCW which may be used
+for further development and fun. 
 Some of the major features currently implemented are:
 
   * SDL backend
@@ -27,14 +27,14 @@ Some of the major features currently implemented are:
   * cl_guid support
   * HTTP/FTP download redirection (using cURL)
   * Multiuser support on Windows systems (user specific game data
-    is stored in "%APPDATA%\Quake3")
+    is stored in "My Documents\RTCW")
   * PNG support
   * Many, many bug fixes
 
 The map editor and associated compiling tools are not included. We suggest you
 use a modern copy from http://icculus.org/gtkradiant/.
 
-The original id software readme that accompanied the Q3 source release has been
+The original id software readme that accompanied the RTCW source release has been
 renamed to id-readme.txt so as to prevent confusion. Please refer to the
 web-site for updated status.
 
@@ -54,13 +54,13 @@ For Mac OS X, building a Universal Binary
      install MacOSX10.4u.sdk and MacOSX10.3.9.sdk, and MacOSX10.2.8.sdk.
   2. Change to the directory containing this README file.
   3. Run './make-macosx-ub.sh'
-  4. Copy the resulting ioquake3.app in /build/release-darwin-ub to your
-     /Applications/ioquake3 folder.
+  4. Copy the resulting iowolfmp.app or iowolfsp.app in /build/release-darwin-ub to your
+     /Applications/iortcw folder.
 
 Installation, for *nix
-  1. Set the COPYDIR variable in the shell to be where you installed Quake 3
-     to. By default it will be /usr/local/games/quake3 if you haven't set it.
-     This is the path as used by the original Linux Q3 installer and subsequent
+  1. Set the COPYDIR variable in the shell to be where you installed RTCW
+     to. By default it will be /usr/local/games/wolf if you haven't set it.
+     This is the path as used by the original Linux RTCW installer and subsequent
      point releases.
   2. Run 'make copyfiles'.
 
@@ -75,20 +75,17 @@ Makefile.local:
 
   CFLAGS             - use this for custom CFLAGS
   V                  - set to show cc command line when building
-  DEFAULT_BASEDIR    - extra path to search for baseq3 and such
-  BUILD_SERVER       - build the 'ioq3ded' server binary
-  BUILD_CLIENT       - build the 'ioquake3' client binary
-  BUILD_BASEGAME     - build the 'baseq3' binaries
-  BUILD_MISSIONPACK  - build the 'missionpack' binaries
+  DEFAULT_BASEDIR    - extra path to search for main and such
+  BUILD_SERVER       - build the 'iowolfmpded' server binary
+  BUILD_CLIENT       - build the 'iowolfmp' or 'iowolfsp' client binary
+  BUILD_BASEGAME     - build the 'main' binaries
   BUILD_GAME_SO      - build the game shared libraries
   BUILD_GAME_QVM     - build the game qvms
   BUILD_STANDALONE   - build binaries suited for stand-alone games
-  SERVERBIN          - rename 'ioq3ded' server binary
-  CLIENTBIN          - rename 'ioquake3' client binary
-  BASEGAME           - rename 'baseq3'
+  SERVERBIN          - rename 'iowolfmpded' server binary
+  CLIENTBIN          - rename 'iowolfmp' or 'iowolfsp' client binary
+  BASEGAME           - rename 'main'
   BASEGAME_CFLAGS    - custom CFLAGS for basegame
-  MISSIONPACK        - rename 'missionpack'
-  MISSIONPACK_CFLAGS - custom CFLAGS for missionpack (default '-DMISSIONPACK')
   USE_OPENAL         - use OpenAL where available
   USE_OPENAL_DLOPEN  - link with OpenAL at runtime
   USE_CURL           - use libcurl for http/ftp download support
@@ -183,16 +180,16 @@ New cvars
 
   com_ansiColor                     - enable use of ANSI escape codes in the tty
   com_altivec                       - enable use of altivec on PowerPC systems
-  com_standalone (read only)        - If set to 1, quake3 is running in
+  com_standalone (read only)        - If set to 1, RTCW is running in
                                       standalone mode
-  com_basegame                      - Use a different base than baseq3. If no
-                                      original Quake3 or TeamArena pak files
+  com_basegame                      - Use a different base than main. If no
+                                      original RTCW pak files
                                       are found, this will enable running in
                                       standalone mode
   com_homepath                      - Specify name that is to be appended to the
                                       home path
   com_legacyprotocol                - Specify protocol version number for
-                                      legacy Quake3 1.32c protocol, see
+                                      legacy RTCW 1.4 protocol, see
                                       "Network protocols" section below
                                       (startup only)
   com_maxfpsUnfocused               - Maximum frames per second when unfocused
@@ -208,7 +205,7 @@ New cvars
                                       "gamename" infostring value. Also used
                                       for filtering local network games.
   com_protocol                      - Specify protocol version number for
-                                      current ioquake3 protocol, see
+                                      current iortcw protocol, see
                                       "Network protocols" section below
                                       (startup only)
 
@@ -312,11 +309,11 @@ New commands
 --------------------------------------------------------- README for Users -----
 
 Using shared libraries instead of qvm
-  To force Q3 to use shared libraries instead of qvms run it with the following
-  parameters: +set sv_pure 0 +set vm_cgame 0 +set vm_game 0 +set vm_ui 0
+  To force RTCW-MP to use qvms run it with the following
+  parameters: +set sv_pure 0 +set vm_cgame 2 +set vm_game 2 +set vm_ui 2
 
 Using Demo Data Files
-  Copy demoq3/pak0.pk3 from the demo installer to your baseq3 directory. The
+  Copy demomain/pak0.pk3 from the demo installer to your main directory. The
   qvm files in this pak0.pk3 will not work, so you have to use the native
   shared libraries or qvms from this project. To use the new qvms, they must be
   put into a pk3 file. A pk3 file is just a zip file, so any compression tool
@@ -327,28 +324,28 @@ Using Demo Data Files
   data, nor is it something that we like to spend much time maintaining or
   supporting.
 
-Help! Ioquake3 won't give me an fps of X anymore when setting com_maxfps!
-  Ioquake3 now uses the select() system call to wait for the rendering of the
+Help! Iortcw won't give me an fps of X anymore when setting com_maxfps!
+  Iortcw now uses the select() system call to wait for the rendering of the
   next frame when com_maxfps was hit. This will improve your CPU load
   considerably in these cases. However, not all systems may support a
   granularity for its timing functions that is required to perform this waiting
-  correctly. For instance, ioquake3 tells select() to wait 2 milliseconds, but
+  correctly. For instance, iortcw tells select() to wait 2 milliseconds, but
   really it can only wait for a multiple of 5ms, i.e. 5, 10, 15, 20... ms.
   In this case you can always revert back to the old behaviour by setting the
   cvar com_busyWait to 1.
 
 Using HTTP/FTP Download Support (Server)
   You can enable redirected downloads on your server even if it's not
-  an ioquake3 server.  You simply need to use the 'sets' command to put
+  an iortcw server.  You simply need to use the 'sets' command to put
   the sv_dlURL cvar into your SERVERINFO string and ensure sv_allowDownloads
   is set to 1
 
   sv_dlURL is the base of the URL that contains your custom .pk3 files
   the client will append both fs_game and the filename to the end of
   this value.  For example, if you have sv_dlURL set to
-  "http://ioquake3.org", fs_game is "baseq3", and the client is
+  "http://yoursite.org", fs_game is "main", and the client is
   missing "test.pk3", it will attempt to download from the URL
-  "http://ioquake3.org/baseq3/test.pk3"
+  "http://yoursite.org/main/test.pk3"
 
   sv_allowDownload's value is now a bitmask made up of the following
   flags:
@@ -357,8 +354,8 @@ Using HTTP/FTP Download Support (Server)
     8 - do not ask the client to disconnect when using HTTP/FTP
 
   Server operators who are concerned about potential "leeching" from their
-  HTTP servers from other ioquake3 servers can make use of the HTTP_REFERER
-  that ioquake3 sets which is "ioQ3://{SERVER_IP}:{SERVER_PORT}".  For,
+  HTTP servers from other iortcw servers can make use of the HTTP_REFERER
+  that iortcw sets which is "ioQ3://{SERVER_IP}:{SERVER_PORT}".  For,
   example, Apache's mod_rewrite can restrict access based on HTTP_REFERER.
 
   On a sidenote, downloading via UDP has been improved and yields higher data
@@ -368,46 +365,48 @@ Using HTTP/FTP Download Support (Server)
 
 Using HTTP/FTP Download Support (Client)
   Simply setting cl_allowDownload to 1 will enable HTTP/FTP downloads
-  assuming ioquake3 was compiled with USE_CURL=1 (the default).
+  assuming iortcw was compiled with USE_CURL=1 (the default).
   like sv_allowDownload, cl_allowDownload also uses a bitmask value
   supporting the following flags:
     1 - ENABLE
     2 - do not use HTTP/FTP downloads
     4 - do not use UDP downloads
 
-  When ioquake3 is built with USE_CURL_DLOPEN=1 (default on some platforms),
+  When iortcw is built with USE_CURL_DLOPEN=1 (default on some platforms),
   it will use the value of the cvar cl_cURLLib as the filename of the cURL
   library to dynamically load.
 
 Multiuser Support on Windows systems
   On Windows, all user specific files such as autogenerated configuration,
   demos, videos, screenshots, and autodownloaded pk3s are now saved in a
-  directory specific to the user who is running ioquake3.
+  directory specific to the user who is running iortcw.
 
   On NT-based such as Windows XP, this is usually a directory named:
-    "C:\Documents and Settings\%USERNAME%\Application Data\Quake3\"
+    "C:\Documents and Settings\%USERNAME%\My Docuemtns\RTCW"
 
   Windows 95, Windows 98, and Windows ME will use a directory like:
-    "C:\Windows\Application Data\Quake3"
+    "C:\Windows\My Documents\RTCW"
   in single-user mode, or:
-    "C:\Windows\Profiles\%USERNAME%\Application Data\Quake3"
+    "C:\Windows\Profiles\%USERNAME%\My Documents\RTCW"
   if multiple logins have been enabled.
 
   In order to access this directory more easily, the installer may create a
   Shortcut which has its target set to:
-    "%APPDATA%\Quake3\"
+    "%Userprofile%\My Documents"
   This Shortcut would work for all users on the system regardless of the
   locale settings.  Unfortunately, this environment variable is only
   present on Windows NT based systems.
 
   You can revert to the old single-user behaviour by setting the fs_homepath
-  cvar to the directory where ioquake3 is installed.  For example:
-    ioquake3.exe +set fs_homepath "c:\ioquake3"
+  cvar to the directory where iortcw is installed.  For example:
+    iowolfmp.exe +set fs_homepath "c:\iortcw"
+or
+    iowolfsp.exe +set fs_homepath "c:\iortcw"
   Note that this cvar MUST be set as a command line parameter.
 
 SDL Keyboard Differences
-  ioquake3 clients have different keyboard behaviour compared to the original
-  Quake3 clients.
+  iortcw clients have different keyboard behaviour compared to the original
+  RTTCW clients.
 
     * "Caps Lock" and "Num Lock" can not be used as normal binds since they
       do not send a KEYUP event until the key is pressed again.
@@ -417,7 +416,7 @@ SDL Keyboard Differences
       sometimes the same character again) after the character to send it on
       many international keyboard layouts.
 
-    * The SDL client supports many more keys than the original Quake3 client.
+    * The SDL client supports many more keys than the original RTCW client.
       For example the keys: "Windows", "SysReq", "ScrollLock", and "Break".
       For non-US keyboards, all of the so called "World" keys are now supported
       as well as F13, F14, F15, and the country-specific mode/meta keys.
@@ -425,12 +424,12 @@ SDL Keyboard Differences
   On many international layouts the default console toggle keys are also dead
   keys, meaning that dropping the console potentially results in
   unintentionally initiating the keying of a dead key. Furthermore SDL 1.2's
-  dead key support is broken by design and Q3 doesn't support non-ASCII text
+  dead key support is broken by design and RTCW doesn't support non-ASCII text
   entry, so the chances are you won't get the correct character anyway.
 
   If you use such a keyboard layout, you can set the cvar cl_consoleKeys. This
   is a space delimited list of key names that will toggle the console. The key
-  names are the usual Q3 names e.g. "~", "`", "c", "BACKSPACE", "PAUSE",
+  names are the usual RTCW names e.g. "~", "`", "c", "BACKSPACE", "PAUSE",
   "WINDOWS" etc. It's also possible to use ASCII characters, by hexadecimal
   number. Some example values for cl_consoleKeys:
 
@@ -493,15 +492,9 @@ QuakeLive mouse acceleration (patch and this text written by TTimo from id)
 
 ---------------------------------------------------- README for Developers -----
 
-pk3dir
-  ioquake3 has a useful new feature for mappers. Paths in a game directory with
-  the extension ".pk3dir" are treated like pk3 files. This means you can keep
-  all files specific to your map in one directory tree and easily zip this
-  folder for distribution.
-
 64bit mods
   If you wish to compile external mods as shared libraries on a 64bit platform,
-  and the mod source is derived from the id Q3 SDK, you will need to modify the
+  and the mod source is derived from the id RTCW SDK, you will need to modify the
   interface code a little. Open the files ending in _syscalls.c and change
   every instance of int to intptr_t in the declaration of the syscall function
   pointer and the dllEntry function. Also find the vmMain function for each
@@ -516,25 +509,22 @@ pk3dir
     #include <stdint.h>
     #endif
 
-  Note if you simply wish to run mods on a 64bit platform you do not need to
-  recompile anything since by default Q3 uses a virtual machine system.
-
-Creating mods compatible with Q3 1.32b
+Creating mods compatible with RTCW 1.41
   If you're using this package to create mods for the last official release of
-  Q3, it is necessary to pass the commandline option '-vq3' to your invocation
+  RTCW, it is necessary to pass the commandline option '-vq3' to your invocation
   of q3asm. This is because by default q3asm outputs an updated qvm format that
   is necessary to fix a bug involving the optimizing pass of the x86 vm JIT
   compiler.
 
 Creating standalone games
-  Have you finished the daunting task of removing all dependencies on the Q3
+  Have you finished the daunting task of removing all dependencies on the RTCW 
   game data? You probably now want to give your users the opportunity to play
-  the game without owning a copy of Q3, which consequently means removing cd-key
-  and authentication server checks. In addition to being a straightforward Q3
-  client, ioquake3 also purports to be a reliable and stable code base on which
+  the game without owning a copy of RTCW, which consequently means removing cd-key
+  and authentication server checks. In addition to being a straightforward RTCW
+  client, iortcw also purports to be a reliable and stable code base on which
   to base your game project.
 
-  However, before you start compiling your own version of ioquake3, you have to
+  However, before you start compiling your own version of iortcw, you have to
   ask yourself: Have we changed or will we need to change anything of importance
   in the engine?
 
@@ -545,12 +535,12 @@ Creating standalone games
     +set com_basegame <yournewbase>
     
   in any links/scripts you install for your users to start the game. The
-  binary must not detect any original quake3 game pak files. If this
+  binary must not detect any original RTCW game pak files. If this
   condition is met, the game will set com_standalone to 1 and is then running
   in stand alone mode.
   
   If you want the engine to use a different directory in your homepath than
-  e.g. "Quake3" on Windows or ".q3a" on Linux, then set a new name at startup
+  e.g. "My Documents\RTCW" on Windows or ".wolf" on Linux, then set a new name at startup
   by adding
   
     +set com_homepath <homedirname>
@@ -569,21 +559,21 @@ Creating standalone games
     +set com_gamename foo
 
 
-  If you really changed parts that would make vanilla ioquake3 incompatible with
+  If you really changed parts that would make vanilla iortcw incompatible with
   your mod, we have included another way to conveniently build a stand-alone
   binary. Just run make with the option BUILD_STANDALONE=1. Don't forget to edit
   the PRODUCT_NAME and subsequent #defines in qcommon/q_shared.h with
   information appropriate for your project.
 
-  While a lot of work has been put into ioquake3 that you can benefit from free
+  While a lot of work has been put into iortcw that you can benefit from free
   of charge, it does not mean that you have no obligations to fulfill. Please be
   aware that as soon as you start distributing your game with an engine based on
   our sources we expect you to fully comply with the requirements as stated in
   the GPL. That includes making sources and modifications you made to the
-  ioquake3 engine as well as the game-code used to compile the .qvm files for
-  the game logic freely available to everyone. Furthermore, note that the "QIIIA
+  iortcw engine as well as the game-code used to compile the .qvm files for
+  the game logic freely available to everyone. Furthermore, note that the "RTCW
   Game Source License" prohibits distribution of mods that are intended to
-  operate on a version of Q3 not sanctioned by id software:
+  operate on a version of RTCW not sanctioned by id software:
 
     "with this Agreement, ID grants to you the non-exclusive and limited right
     to distribute copies of the Software ... for operation only with the full
@@ -603,15 +593,15 @@ Network protocols
   protocol versions between clients and servers: "com_protocol" and
   "com_legacyprotocol".
   The reason for this is that some standalone games increased the protocol
-  number even though nothing really changed in their protocol and the ioquake3
+  number even though nothing really changed in their protocol and the iortcw
   engine is still fully compatible.
 
   In order to harden the network protocol against UDP spoofing attacks a new
   network protocol was introduced that defends against such attacks.
-  Unfortunately, this protocol will be incompatible to the original quake3 1.32c
+  Unfortunately, this protocol will be incompatible to the original RTCW 1.4
   which is the latest official release from id.
-  Luckily, ioquake3 has backwards compatibility, on the client as well as on the
-  server. This means ioquake3 players can play on old servers just as ioquake3
+  Luckily, iortcw has backwards compatibility, on the client as well as on the
+  server. This means iortcw players can play on old servers just as iortcw
   servers are able to service old clients.
 
   The cvar "com_protocol" denotes the protocol version for the new hardened
@@ -630,7 +620,7 @@ Network protocols
 cl_guid Support
   cl_guid is a cvar which is part of the client's USERINFO string.  Its value
   is a 32 character string made up of [a-f] and [0-9] characters.  This
-  value is pseudo-unique for every player.  Id's Quake 3 Arena client also
+  value is pseudo-unique for every player.  Id's RTCW client also
   sets cl_guid, but only if Punkbuster is enabled on the client.
 
   If cl_guidServerUniq is non-zero (the default), then this value is also
@@ -646,14 +636,14 @@ cl_guid Support
     2) granting some weak admin rights to players without requiring passwords
 
 PNG support
-  ioquake3 supports the use of PNG (Portable Network Graphic) images as
+  iortcw supports the use of PNG (Portable Network Graphic) images as
   textures. It should be noted that the use of such images in a map will
   result in missing placeholder textures where the map is used with the id
-  Quake 3 client or earlier versions of ioquake3.
+  RTCW client or earlier versions of iortcw.
 
   Recent versions of GtkRadiant and q3map2 support PNG images without
   modification. However GtkRadiant is not aware that PNG textures are supported
-  by ioquake3. To change this behaviour open the file 'q3.game' in the 'games'
+  by iortcw. To change this behaviour open the file 'q3.game' in the 'games'
   directory of the GtkRadiant base directory with an editor and change the
   line:
 
@@ -682,7 +672,7 @@ submit your patch there.  The best case scenario is that you submit your patch
 to bugzilla, and then post the URL to the mailing list.
 
 The focus for ioq3 is to develop a stable base suitable for further development
-and provide players with the same Quake 3 experience they've had for years. As
+and provide players with the same RTCW experience they've had for years. As
 such ioq3 does not have any significant graphical enhancements and none are
 planned at this time. However, improved graphics and sound patches will be
 accepted as long as they are entirely optional, do not require new media and
@@ -691,7 +681,7 @@ are off by default.
 
 --------------------------------------------- Building Official Installers -----
 
-We need help getting automated installers on all the platforms that ioquake3
+We need help getting automated installers on all the platforms that iortcw
 supports. We don't necessarily care about all the installers being identical,
 but we have some general guidelines:
 
@@ -703,7 +693,7 @@ but we have some general guidelines:
     do not.
 
   * Please don't require pak0.pk3, since not everyone using the engine
-    plans on playing Quake 3 Arena on it. It's fine to (optionally) assist the
+    plans on playing RTCW on it. It's fine to (optionally) assist the
     user in copying the file or tell them how.
 
   * It is fine to just install the binaries without requiring id EULA agreement,
