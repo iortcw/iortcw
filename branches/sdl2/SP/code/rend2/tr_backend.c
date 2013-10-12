@@ -2337,9 +2337,6 @@ void RB_ExecuteRenderCommands( const void *data ) {
 		case RC_STRETCH_PIC:
 			data = RB_StretchPic( data );
 			break;
-		case RC_ROTATED_PIC:
-			data = RB_RotatedPic( data );
-			break;
 		case RC_STRETCH_PIC_GRADIENT:
 			data = RB_StretchPicGradient( data );
 			break;

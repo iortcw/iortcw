@@ -2703,7 +2703,6 @@ static void FixRenderCommandList( int newShader ) {
 				break;
 			}
 			case RC_STRETCH_PIC:
-			case RC_ROTATED_PIC:
 			case RC_STRETCH_PIC_GRADIENT:
 			{
 				const stretchPicCommand_t *sp_cmd = (const stretchPicCommand_t *)curCmd;

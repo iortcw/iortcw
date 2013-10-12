@@ -266,41 +266,6 @@ void R_SetColorMode(GLboolean *rgba, stereoFrame_t stereoFrame, int colormode)
 	}
 }
 
-/*
-=============
-RE_RotatedPic
-=============
-*/
-void RE_RotatedPic( float x, float y, float w, float h,
-					float s1, float t1, float s2, float t2, qhandle_t hShader, float angle ) {
-	stretchPicCommand_t *cmd;
-
-	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
-	if ( !cmd ) {
-		return;
-	}
-	cmd->commandId = RC_ROTATED_PIC;
-	cmd->shader = R_GetShaderByHandle( hShader );
-	cmd->x = x;
-	cmd->y = y;
-	cmd->w = w;
-	cmd->h = h;
-
-	// fixup
-	cmd->w /= 2;
-	cmd->h /= 2;
-	cmd->x += cmd->w;
-	cmd->y += cmd->h;
-	cmd->w = sqrt( ( cmd->w * cmd->w ) + ( cmd->h * cmd->h ) );
-	cmd->h = cmd->w;
-
-	cmd->angle = angle;
-	cmd->s1 = s1;
-	cmd->t1 = t1;
-	cmd->s2 = s2;
-	cmd->t2 = t2;
-}
-
 //----(SA)	added
 /*
 ==============
