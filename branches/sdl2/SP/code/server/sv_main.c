@@ -1121,13 +1121,13 @@ void SV_Frame( int msec ) {
 	// 2giga-milliseconds = 23 days, so it won't be too often
 	if ( svs.time > 0x70000000 ) {
 		SV_Shutdown( "Restarting server due to time wrapping" );
-		Cbuf_AddText( va( "map %s\n", Cvar_VariableString( "mapname" ) ) );
+		Cbuf_AddText( va( "spmap %s\n", Cvar_VariableString( "mapname" ) ) );
 		return;
 	}
 	// this can happen considerably earlier when lots of clients play and the map doesn't change
 	if ( svs.nextSnapshotEntities >= 0x7FFFFFFE - svs.numSnapshotEntities ) {
 		SV_Shutdown( "Restarting server due to numSnapshotEntities wrapping" );
-		Cbuf_AddText( va( "map %s\n", Cvar_VariableString( "mapname" ) ) );
+		Cbuf_AddText( va( "spmap %s\n", Cvar_VariableString( "mapname" ) ) );
 		return;
 	}
 
@@ -1150,7 +1150,7 @@ void SV_Frame( int msec ) {
 	if ( com_speeds->integer ) {
 		startTime = Sys_Milliseconds();
 	} else {
-		startTime = 0;  // quite a compiler warning
+		startTime = 0;  // quiet a compiler warning
 	}
 
 	// update ping based on the all received frames
