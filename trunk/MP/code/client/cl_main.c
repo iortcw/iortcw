@@ -2793,11 +2793,11 @@ void CL_ConnectionlessPacket( netadr_t from, msg_t *msg ) {
 			return;
 		}
 		
-		c = Cmd_Argv(2);
+		c = Cmd_Argv(3);
 		if(*c)
 			challenge = atoi(c);
 
-		strver = Cmd_Argv(3);
+		strver = Cmd_Argv(4);
 		if(*strver)
 		{
 			ver = atoi(strver);
@@ -2854,6 +2854,11 @@ void CL_ConnectionlessPacket( netadr_t from, msg_t *msg ) {
 
 		// start sending challenge response instead of challenge request packets
 		clc.challenge = atoi(Cmd_Argv(1));
+		if ( Cmd_Argc() > 2 ) {
+			clc.onlyVisibleClients = atoi( Cmd_Argv( 2 ) );         // DHM - Nerve
+		} else {
+			clc.onlyVisibleClients = 0;
+		}
 		clc.state = CA_CHALLENGING;
 		clc.connectPacketCount = 0;
 		clc.connectTime = -99999;

@@ -206,8 +206,8 @@ void SV_GetChallenge( netadr_t from )
 #endif
 
 	challenge->pingTime = svs.time;
-	NET_OutOfBandPrint(NS_SERVER, challenge->adr, "challengeResponse %d %d %d",
-			   challenge->challenge, clientChallenge, com_protocol->integer);
+	NET_OutOfBandPrint(NS_SERVER, challenge->adr, "challengeResponse %d %d %d %d",
+			   challenge->challenge, sv_onlyVisibleClients->integer, clientChallenge, com_protocol->integer);
 }
 
 
@@ -260,13 +260,8 @@ void SV_AuthorizeIpPacket( netadr_t from ) {
 		return;
 	}
 	if ( !Q_stricmp( s, "accept" ) ) {
-		if ( sv_onlyVisibleClients->integer ) {
-			NET_OutOfBandPrint( NS_SERVER, challengeptr->adr,
-				"challengeResponse %d %d %d %i", challengeptr->challenge, challengeptr->clientChallenge, com_protocol->integer, sv_onlyVisibleClients->integer );
-		} else {
-			NET_OutOfBandPrint( NS_SERVER, challengeptr->adr,
-				"challengeResponse %d %d %d", challengeptr->challenge, challengeptr->clientChallenge, com_protocol->integer);
-		}
+		NET_OutOfBandPrint( NS_SERVER, challengeptr->adr,
+			"challengeResponse %d %d %d %d", challengeptr->challenge, sv_onlyVisibleClients->integer, challengeptr->clientChallenge, com_protocol->integer );
 		return;
 	}
 	if ( !Q_stricmp( s, "unknown" ) ) {
