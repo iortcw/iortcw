@@ -201,12 +201,12 @@ void SV_GetChallenge(netadr_t from)
 			
 			return;
 		}
+	}
 #endif
 
-		challenge->pingTime = svs.time;
-		NET_OutOfBandPrint(NS_SERVER, challenge->adr, "challengeResponse %d %d %d",
-			   challenge->challenge, clientChallenge, com_protocol->integer);		
-	}
+	challenge->pingTime = svs.time;
+	NET_OutOfBandPrint(NS_SERVER, challenge->adr, "challengeResponse %d %d %d",
+		   challenge->challenge, clientChallenge, com_protocol->integer);		
 }
 
 #ifndef STANDALONE

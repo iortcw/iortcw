@@ -330,7 +330,9 @@ void QDECL Com_Error( int code, const char *fmt, ... ) {
 			CL_Disconnect( qtrue );
 			CL_FlushMemory();
 			VM_Forced_Unload_Done();
+#ifndef DEDICATED
 			CL_EndgameMenu();
+#endif
 		}
 
 		FS_PureServerSetLoadedPaks("", "");
@@ -2867,10 +2869,6 @@ Com_Shutdown
 =================
 */
 void Com_Shutdown( void ) {
-
-	// write config file if anything changed
-	Com_WriteConfiguration();
-
 	if ( logfile ) {
 		FS_FCloseFile( logfile );
 		logfile = 0;
