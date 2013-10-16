@@ -772,8 +772,6 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 			tri->indexes[2] = LittleLong(md3Tri->indexes[2]);
 		}
 
-		R_CalcSurfaceTriangleNeighbors(surf->numTriangles, surf->triangles);
-
 		// swap all the ST
 		surf->st = st = ri.Hunk_Alloc(sizeof(*st) * mdcSurf->numVerts, h_low);
 
@@ -1276,8 +1274,6 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, const char *modN
 			tri->indexes[1] = LittleLong(md3Tri->indexes[1]);
 			tri->indexes[2] = LittleLong(md3Tri->indexes[2]);
 		}
-
-		R_CalcSurfaceTriangleNeighbors(surf->numTriangles, surf->triangles);
 
 		// swap all the XyzNormals
 		surf->numVerts = md3Surf->numVerts;

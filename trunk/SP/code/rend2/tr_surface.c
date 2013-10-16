@@ -643,7 +643,7 @@ static qboolean RB_SurfaceVbo(VBO_t *vbo, IBO_t *ibo, int numVerts, int numIndex
 RB_SurfaceTriangles
 =============
 */
-static void RB_SurfaceTriangles( srfTriangles_t *srf ) {
+static void RB_SurfaceTriangles( srfBspSurface_t *srf ) {
 	if( RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numTriangles * 3,
 				srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue ) )
 	{
@@ -1584,7 +1584,7 @@ void RB_SurfaceCMesh( mdcSurface_t *surface ) {
 RB_SurfaceFace
 ==============
 */
-static void RB_SurfaceFace( srfSurfaceFace_t *srf ) {
+static void RB_SurfaceFace( srfBspSurface_t *srf ) {
 	if( RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numTriangles * 3,
 					srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue ) )
 	{
@@ -1633,7 +1633,7 @@ RB_SurfaceGrid
 Just copy the grid of points and triangulate
 =============
 */
-static void RB_SurfaceGrid( srfGridMesh_t *srf ) {
+static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 	int i, j;
 	float   *xyz;
 	float	*texCoords, *lightCoords;
@@ -1912,9 +1912,9 @@ static void RB_SurfaceFlare( srfFlare_t *surf ) {
 		RB_AddFlare(surf, tess.fogNum, surf->origin, surf->color, 1.0f, surf->normal, 0, qtrue);
 }
 
-static void RB_SurfaceVBOMesh(srfVBOMesh_t * srf)
+static void RB_SurfaceVBOMesh(srfBspSurface_t * srf)
 {
-	RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes, srf->firstIndex,
+	RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numTriangles * 3, srf->firstIndex,
 			srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qfalse );
 }
 

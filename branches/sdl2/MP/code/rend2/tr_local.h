@@ -1126,12 +1126,11 @@ typedef struct
 {
 	int             indexes[3];
 	int             neighbors[3];
-	vec4_t          plane;
-	qboolean        facingLight;
-	qboolean        degenerated;
 } srfTriangle_t;
 
-typedef struct srfGridMesh_s {
+// srfBspSurface_t covers SF_GRID, SF_TRIANGLES, SF_POLY, and SF_VBO_MESH
+typedef struct srfBspSurface_s
+{
 	surfaceType_t surfaceType;
 
 	// dynamic lighting information
@@ -1139,107 +1138,44 @@ typedef struct srfGridMesh_s {
 	int 	pshadowBits;
 
 	// culling information
-	vec3_t meshBounds[2];
-	vec3_t localOrigin;
-	float meshRadius;
+	vec3_t			cullBounds[2];
+	vec3_t			cullOrigin;
+	float			cullRadius;
+	cplane_t        cullPlane;
+
+	// triangle definitions
+	int             numTriangles;
+	srfTriangle_t  *triangles;
+
+	// vertexes
+	int             numVerts;
+	srfVert_t      *verts;
+
+	// BSP VBO offsets
+	int             firstVert;
+	int             firstIndex;
+	glIndex_t       minIndex;
+	glIndex_t       maxIndex;
+
+	// static render data
+	VBO_t          *vbo;
+	IBO_t          *ibo;
+
+	// SF_GRID specific variables after here
 
 	// lod information, which may be different
 	// than the culling information to allow for
 	// groups of curves that LOD as a unit
-	vec3_t lodOrigin;
-	float lodRadius;
-	int lodFixed;
-	int lodStitched;
+	vec3_t			lodOrigin;
+	float			lodRadius;
+	int				lodFixed;
+	int				lodStitched;
 
 	// vertexes
-	int width, height;
-	float           *widthLodError;
-	float           *heightLodError;
-
-	int             numTriangles;
-	srfTriangle_t  *triangles;
- 
-	int             numVerts;
-	srfVert_t      *verts;
-
-	// BSP VBO offsets
-	int             firstVert;
-	int             firstIndex;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
-
-	// static render data
-	VBO_t          *vbo;		// points to bsp model VBO
-	IBO_t          *ibo;
-} srfGridMesh_t;
-
-
-//#define	VERTEXSIZE	8
-typedef struct
-{
-	surfaceType_t   surfaceType;
-
-	// dynamic lighting information
-	int dlightBits;
-	int 	pshadowBits;
-
-	// triangle definitions (no normals at points)
-//	int			numPoints;
-//	int			numIndices;
-//	int			ofsIndices;
-//	float		points[1][VERTEXSIZE];	// variable sized
-
-	// culling information
-	cplane_t        plane;
-//	vec3_t          bounds[2];
-
-	// triangle definitions
-	int             numTriangles;
-	srfTriangle_t  *triangles;
-
-	int             numVerts;
-	srfVert_t      *verts;
-
-	// BSP VBO offsets
-	int             firstVert;
-	int             firstIndex;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
-
-	// static render data
-	VBO_t          *vbo;		// points to bsp model VBO
-	IBO_t          *ibo;
-} srfSurfaceFace_t;
-
-
-// misc_models in maps are turned into direct geometry by q3map
-typedef struct {
-	surfaceType_t surfaceType;
-
-	// dynamic lighting information
-	int dlightBits;
-	int 	pshadowBits;
-
-	// culling information
-//	vec3_t          bounds[2];
-
-	// triangle definitions
-	int             numTriangles;
-	srfTriangle_t  *triangles;
-
-	int             numVerts;
-	srfVert_t      *verts;
-
-	// BSP VBO offsets
-	int             firstVert;
-	int             firstIndex;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
-
-	// static render data
-	VBO_t          *vbo;		// points to bsp model VBO
-	IBO_t          *ibo;
-} srfTriangles_t;
+	int				width, height;
+	float			*widthLodError;
+	float			*heightLodError;
+} srfBspSurface_t;
 
 // inter-quake-model
 typedef struct {
@@ -1275,33 +1211,6 @@ typedef struct srfIQModel_s {
 	int		first_vertex, num_vertexes;
 	int		first_triangle, num_triangles;
 } srfIQModel_t;
-
-typedef struct srfVBOMesh_s
-{
-	surfaceType_t   surfaceType;
-
-	struct shader_s	*shader;	// FIXME move this to somewhere else
-	int	fogIndex;
-	int	cubemapIndex;
-
-	// dynamic lighting information
-	int			dlightBits;
-	int         pshadowBits;
-
-	// culling information
-	vec3_t          bounds[2];
-
-	// backEnd stats
-	int             numIndexes;
-	int             numVerts;
-	int				firstIndex;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
-
-	// static render data
-	VBO_t          *vbo;
-	IBO_t          *ibo;
-} srfVBOMesh_t;
 
 typedef struct srfVBOMDVMesh_s
 {
@@ -2071,7 +1980,7 @@ extern cvar_t   *r_fullscreen;
 extern cvar_t	*r_noborder;
 extern cvar_t   *r_gamma;
 extern cvar_t   *r_ignorehwgamma;       // overrides hardware gamma capabilities
-extern cvar_t	*r_displayRefresh;		// optional display refresh option
+extern cvar_t	*r_displayRefresh;	// optional display refresh option
 
 extern cvar_t   *r_allowExtensions;             // global enable/disable of OpenGL extensions
 extern cvar_t   *r_ext_compressed_textures;     // these control use of specific extensions
@@ -2259,8 +2168,6 @@ void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
 void R_CalcTangentSpace(vec3_t tangent, vec3_t bitangent, vec3_t normal,
                         const vec3_t v0, const vec3_t v1, const vec3_t v2, const vec2_t t0, const vec2_t t1, const vec2_t t2);
 qboolean R_CalcTangentVectors(srfVert_t * dv[3]);
-void R_CalcSurfaceTriangleNeighbors(int numTriangles, srfTriangle_t * triangles);
-void R_CalcSurfaceTrianglePlanes(int numTriangles, srfTriangle_t * triangles, srfVert_t * verts);
 
 #define CULL_IN     0       // completely unclipped
 #define CULL_CLIP   1       // clipped by one or more planes
@@ -2581,11 +2488,11 @@ CURVE TESSELATION
 
 #define PATCH_STITCHING
 
-srfGridMesh_t *R_SubdividePatchToGrid( int width, int height,
+srfBspSurface_t *R_SubdividePatchToGrid( int width, int height,
 								srfVert_t points[MAX_PATCH_SIZE*MAX_PATCH_SIZE] );
-srfGridMesh_t *R_GridInsertColumn( srfGridMesh_t *grid, int column, int row, vec3_t point, float loderror );
-srfGridMesh_t *R_GridInsertRow( srfGridMesh_t *grid, int row, int column, vec3_t point, float loderror );
-void R_FreeSurfaceGridMesh( srfGridMesh_t *grid );
+srfBspSurface_t *R_GridInsertColumn( srfBspSurface_t *grid, int column, int row, vec3_t point, float loderror );
+srfBspSurface_t *R_GridInsertRow( srfBspSurface_t *grid, int row, int column, vec3_t point, float loderror );
+void R_FreeSurfaceGridMesh( srfBspSurface_t *grid );
 
 /*
 ============================================================
@@ -2741,15 +2648,9 @@ void    R_TransformClipToWindow( const vec4_t clip, const viewParms_t *view, vec
 
 void    RB_DeformTessGeometry( void );
 
-void    RB_CalcEnvironmentTexCoords( float *dstTexCoords );
 void    RB_CalcFireRiseEnvTexCoords( float *st );
 void    RB_CalcFogTexCoords( float *dstTexCoords );
-void    RB_CalcScrollTexCoords( const float scroll[2], float *dstTexCoords );
-void    RB_CalcRotateTexCoords( float rotSpeed, float *dstTexCoords );
-void    RB_CalcScaleTexCoords( const float scale[2], float *dstTexCoords );
 void    RB_CalcSwapTexCoords( float *dstTexCoords );
-void    RB_CalcTurbulentTexCoords( const waveForm_t *wf, float *dstTexCoords );
-void    RB_CalcTransformTexCoords( const texModInfo_t *tmi, float *dstTexCoords );
 
 void	RB_CalcScaleTexMatrix( const float scale[2], float *matrix );
 void	RB_CalcScrollTexMatrix( const float scrollSpeed[2], float *matrix );
@@ -2759,19 +2660,8 @@ void	RB_CalcTransformTexMatrix( const texModInfo_t *tmi, float *matrix  );
 void	RB_CalcStretchTexMatrix( const waveForm_t *wf, float *matrix );
 
 void    RB_CalcModulateColorsByFog( unsigned char *dstColors );
-void    RB_CalcModulateAlphasByFog( unsigned char *dstColors );
-void    RB_CalcModulateRGBAsByFog( unsigned char *dstColors );
-void    RB_CalcWaveAlpha( const waveForm_t *wf, unsigned char *dstColors );
 float	RB_CalcWaveAlphaSingle( const waveForm_t *wf );
-void    RB_CalcWaveColor( const waveForm_t *wf, unsigned char *dstColors );
 float	RB_CalcWaveColorSingle( const waveForm_t *wf );
-void    RB_CalcAlphaFromEntity( unsigned char *dstColors );
-void    RB_CalcAlphaFromOneMinusEntity( unsigned char *dstColors );
-void    RB_CalcStretchTexCoords( const waveForm_t *wf, float *texCoords );
-void    RB_CalcColorFromEntity( unsigned char *dstColors );
-void    RB_CalcColorFromOneMinusEntity( unsigned char *dstColors );
-void    RB_CalcSpecularAlpha( unsigned char *alphas );
-void    RB_CalcDiffuseColor( unsigned char *colors );
 
 /*
 =============================================================

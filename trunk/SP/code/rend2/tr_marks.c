@@ -289,7 +289,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 	vec3_t clipPoints[2][MAX_VERTS_ON_POLY];
 	int numClipPoints;
 	float           *v;
-	srfGridMesh_t   *cv;
+	srfBspSurface_t	*cv;
 	srfTriangle_t	*tri;
 	srfVert_t		*dv;
 	vec3_t normal;
@@ -350,7 +350,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 
 		if ( *surfaces[i] == SF_GRID ) {
 
-			cv = (srfGridMesh_t *) surfaces[i];
+			cv = (srfBspSurface_t *) surfaces[i];
 			for ( m = 0 ; m < cv->height - 1 ; m++ ) {
 				for ( n = 0 ; n < cv->width - 1 ; n++ ) {
 					// We triangulate the grid and chop all triangles within
@@ -429,9 +429,10 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 			}
 		} else if ( *surfaces[i] == SF_FACE )     {
 
-			srfSurfaceFace_t *surf = ( srfSurfaceFace_t * ) surfaces[i];
+			srfBspSurface_t *surf = ( srfBspSurface_t * ) surfaces[i];
+
 			// check the normal of this face
-			if ( DotProduct( surf->plane.normal, projectionDir ) > -0.5 ) {
+			if (DotProduct(surf->cullPlane.normal, projectionDir) > -0.5) {
 				continue;
 			}
 
@@ -440,7 +441,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 				for(j = 0; j < 3; j++)
 				{
 					v = surf->verts[tri->indexes[j]].xyz;
-					VectorMA(v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j]);
+					VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 				}
 				// add the fragments of this face
 				R_AddMarkFragments( 3, clipPoints,
@@ -455,7 +456,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 		}
 		else if(*surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer) {
 
-			srfTriangles_t *surf = (srfTriangles_t *) surfaces[i];
+			srfBspSurface_t *surf = (srfBspSurface_t *) surfaces[i];
 
 			for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
 			{
@@ -499,7 +500,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	vec3_t clipPoints[2][MAX_VERTS_ON_POLY];
 	int numClipPoints;
 	float           *v;
-	srfGridMesh_t   *cv;
+	srfBspSurface_t	*cv;
 	srfTriangle_t	*tri;
 	srfVert_t		*dv;
 	vec3_t normal;
@@ -580,7 +581,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 
 		if ( *surfaces[i] == SF_GRID ) {
 
-			cv = (srfGridMesh_t *) surfaces[i];
+			cv = (srfBspSurface_t *) surfaces[i];
 			for ( m = 0 ; m < cv->height - 1 ; m++ ) {
 				for ( n = 0 ; n < cv->width - 1 ; n++ ) {
 					// We triangulate the grid and chop all triangles within
@@ -670,7 +671,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 			float ldists[MAX_VERTS_ON_POLY + 2];
 			vec3_t lmins, lmaxs;
 
-			srfSurfaceFace_t *surf = ( srfSurfaceFace_t * ) surfaces[i];
+			srfBspSurface_t *surf = ( srfBspSurface_t * ) surfaces[i];
 
 			if ( !oldMapping ) {
 
@@ -680,10 +681,10 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 				// onto the current surface
 
 				// find the center of the new decal
-				dot = DotProduct( center, surf->plane.normal );
-				dot -= surf->plane.dist;
+				dot = DotProduct( center, surf->cullPlane.normal );
+				dot -= surf->cullPlane.dist;
 				// check the normal of this face
-				if ( dot < -epsilon && DotProduct( surf->plane.normal, projectionDir ) >= 0.01 ) {
+				if ( dot < -epsilon && DotProduct(surf->cullPlane.normal, projectionDir) >= 0.01 ) {
 					continue;
 				} else if ( fabs( dot ) > radius ) {
 					continue;
@@ -692,14 +693,14 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 				VectorMA( center, -dot, bestnormal, newCenter );
 
 				// recalc dot from the offset position
-				dot = DotProduct( newCenter, surf->plane.normal );
-				dot -= surf->plane.dist;
-				VectorMA( newCenter, -dot, surf->plane.normal, newCenter );
+				dot = DotProduct( newCenter, surf->cullPlane.normal );
+				dot -= surf->cullPlane.dist;
+				VectorMA( newCenter, -dot, surf->cullPlane.normal, newCenter );
 
-				VectorMA( newCenter, MARKER_OFFSET, surf->plane.normal, newCenter );
+				VectorMA( newCenter, MARKER_OFFSET, surf->cullPlane.normal, newCenter );
 
 				// create the texture axis
-				VectorNormalize2( surf->plane.normal, axis[0] );
+				VectorNormalize2( surf->cullPlane.normal, axis[0] );
 				PerpendicularVector( axis[1], axis[0] );
 				RotatePointAroundVector( axis[2], axis[0], axis[1], (float)orientation );
 				CrossProduct( axis[0], axis[2], axis[1] );
@@ -721,7 +722,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 					AddPointToBounds( originalPoints[j], lmins, lmaxs );
 
 					VectorSubtract( originalPoints[( j + 1 ) % numPoints], originalPoints[j], v1 );
-					VectorSubtract( originalPoints[j], surf->plane.normal, v2 );
+					VectorSubtract( originalPoints[j], surf->cullPlane.normal, v2 );
 					VectorSubtract( originalPoints[j], v2, v2 );
 					CrossProduct( v1, v2, lnormals[j] );
 					VectorNormalize( lnormals[j] );
@@ -736,7 +737,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 					for(j = 0; j < 3; j++)
 					{
 						v = surf->verts[tri->indexes[j]].xyz;
-						VectorMA(v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j]);
+						VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 					}
 
 					oldNumPoints = returnedPoints;
@@ -768,7 +769,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 			} else {    // old mapping
 
 				// check the normal of this face
-				//if (DotProduct(surf->plane.normal, projectionDir) > 0.0) {
+				//if (DotProduct(surf->cullPlane.normal, projectionDir) > 0.0) {
 				//	continue;
 				//}
 
@@ -777,7 +778,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 					for(j = 0; j < 3; j++)
 					{
 						v = surf->verts[tri->indexes[j]].xyz;
-						VectorMA(v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j]);
+						VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 					}
 					// add the fragments of this face
 					R_AddMarkFragments( 3, clipPoints,
@@ -795,7 +796,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 		}
 		else if(*surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer) {
 
-			srfTriangles_t *surf = (srfTriangles_t *) surfaces[i];
+			srfBspSurface_t *surf = (srfBspSurface_t *) surfaces[i];
 
 			for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
 			{
