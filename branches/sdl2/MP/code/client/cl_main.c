@@ -3162,11 +3162,26 @@ void CL_Frame ( int msec ) {
 		if ( clc.state == CA_ACTIVE || cl_forceavidemo->integer) {
 			CL_TakeVideoFrame( );
 
-			// fixed time for next frame'
+#if 0
+			// fixed time for next frame
 			msec = (int)ceil( (1000.0f / cl_aviFrameRate->value) * com_timescale->value );
 			if (msec == 0) {
 				msec = 1;
 			}
+#endif
+			float fps = cl_aviFrameRate->value * com_timescale->value;
+
+			if ( fps > 1000.0f )
+				fps = 1000.0f;
+
+			float frameTime = ( 1000.0f / fps );
+
+			if ( frameTime < 1 )
+				frameTime = 1;
+
+			frameTime += clc.aviDemoRemain;
+			msec = (int)frameTime;
+			clc.aviDemoRemain = frameTime - msec;
 		}
 	}
 	
