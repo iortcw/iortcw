@@ -2633,6 +2633,14 @@ void CL_InitServerInfo( serverInfo_t *server, netadr_t *address ) {
 	server->gameType = 0;
 	server->netType = 0;
 	server->allowAnonymous = 0;
+	server->friendlyFire = 0;           // NERVE - SMF
+	server->maxlives = 0;               // NERVE - SMF
+	server->tourney = 0;                // NERVE - SMF
+	server->punkbuster = 0;             // DHM - Nerve
+	server->gameName[0] = '\0';           // Arnout
+	server->antilag = 0;
+	server->g_humanplayers = 0;
+	server->g_needpass = 0;
 }
 
 #define MAX_SERVERSPERPACKET    256
@@ -4370,8 +4378,8 @@ static void CL_SetServerInfo( serverInfo_t *server, const char *info, int ping )
 			server->punkbuster = atoi( Info_ValueForKey( info, "punkbuster" ) );             // DHM - Nerve
 			Q_strncpyz( server->gameName, Info_ValueForKey( info, "gamename" ), MAX_NAME_LENGTH );   // Arnout
 			server->antilag = atoi( Info_ValueForKey( info, "g_antilag" ) );
-//			server->g_humanplayers = atoi(Info_ValueForKey(info, "g_humanplayers"));
-//			server->g_needpass = atoi(Info_ValueForKey(info, "g_needpass"));
+			server->g_humanplayers = atoi( Info_ValueForKey( info, "g_humanplayers" ) );
+			server->g_needpass = atoi( Info_ValueForKey( info, "g_needpass" ) );
 		}
 		server->ping = ping;
 	}
@@ -4503,23 +4511,7 @@ void CL_ServerInfoPacket( netadr_t from, msg_t *msg ) {
 
 	// add this to the list
 	cls.numlocalservers = i + 1;
-	cls.localServers[i].adr = from;
-	cls.localServers[i].clients = 0;
-	cls.localServers[i].hostName[0] = '\0';
-	cls.localServers[i].mapName[0] = '\0';
-	cls.localServers[i].maxClients = 0;
-	cls.localServers[i].maxPing = 0;
-	cls.localServers[i].minPing = 0;
-	cls.localServers[i].ping = -1;
-	cls.localServers[i].game[0] = '\0';
-	cls.localServers[i].gameType = 0;
-	cls.localServers[i].netType = from.type;
-	cls.localServers[i].allowAnonymous = 0;
-	cls.localServers[i].friendlyFire = 0;           // NERVE - SMF
-	cls.localServers[i].maxlives = 0;               // NERVE - SMF
-	cls.localServers[i].tourney = 0;                // NERVE - SMF
-	cls.localServers[i].punkbuster = 0;             // DHM - Nerve
-	cls.localServers[i].gameName[0] = '\0';           // Arnout
+	CL_InitServerInfo( &cls.localServers[i], &from );
 
 	Q_strncpyz( info, MSG_ReadString( msg ), MAX_INFO_STRING );
 	if (strlen(info)) {
