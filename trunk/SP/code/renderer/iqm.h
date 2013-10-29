@@ -74,7 +74,7 @@ enum
     IQM_UINT   = 5,
     IQM_HALF   = 6,
     IQM_FLOAT  = 7,
-    IQM_DOUBLE = 8,
+    IQM_DOUBLE = 8
 };
 
 typedef struct iqmtriangle
@@ -82,12 +82,32 @@ typedef struct iqmtriangle
     unsigned int vertex[3];
 } iqmTriangle_t;
 
+typedef struct iqmadjacency
+{
+    unsigned int triangle[3];
+} iqmAdjacency_t;
+
+typedef struct iqmjointv1
+{
+    unsigned int name;
+    int parent;
+    float translate[3], rotate[3], scale[3];
+} iqmJointv1_t;
+
 typedef struct iqmjoint
 {
     unsigned int name;
     int parent;
     float translate[3], rotate[4], scale[3];
 } iqmJoint_t;
+
+typedef struct iqmposev1
+{
+    int parent;
+    unsigned int mask;
+    float channeloffset[9];
+    float channelscale[9];
+} iqmPosev1_t;
 
 typedef struct iqmpose
 {
@@ -124,6 +144,13 @@ typedef struct iqmbounds
     float bbmin[3], bbmax[3];
     float xyradius, radius;
 } iqmBounds_t;
+
+typedef struct iqmextension
+{
+    unsigned int name;
+    unsigned int num_data, ofs_data;
+    unsigned int ofs_extensions; // pointer to next extension
+} iqmExtension_t;
 
 #endif
 
