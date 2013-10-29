@@ -1107,7 +1107,6 @@ extern vmCvar_t g_warmup;
 extern vmCvar_t g_blood;
 extern vmCvar_t g_allowVote;
 
-extern vmCvar_t g_needpass;
 extern vmCvar_t g_weaponTeamRespawn;
 extern vmCvar_t g_doWarmup;
 extern vmCvar_t g_teamAutoJoin;
