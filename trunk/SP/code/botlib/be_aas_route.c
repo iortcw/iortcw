@@ -1272,7 +1272,7 @@ void AAS_FreeRoutingCaches( void ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-__inline void AAS_AddUpdateToList( aas_routingupdate_t **updateliststart,
+static ID_INLINE void AAS_AddUpdateToList( aas_routingupdate_t **updateliststart,
 								   aas_routingupdate_t **updatelistend,
 								   aas_routingupdate_t *update ) {
 	if ( !update->inlist ) {
