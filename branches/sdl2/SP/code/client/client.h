@@ -252,8 +252,8 @@ typedef struct {
 	int			timeDemoMaxDuration;	// maximum frame duration
 	unsigned char	timeDemoDurations[ MAX_TIMEDEMO_DURATIONS ];	// log of frame durations
 
-	float	aviDemoRemain;		// Used for accurate fps recording
-	float	aviSoundRemain;		// Used for accurate fps recording
+	float	aviVideoFrameRemainder;
+	float	aviSoundFrameRemainder;
 
 #ifdef USE_VOIP
 	qboolean voipEnabled;

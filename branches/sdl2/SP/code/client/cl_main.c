@@ -2985,28 +2985,13 @@ void CL_Frame( int msec ) {
 	if ( CL_VideoRecording( ) && cl_aviFrameRate->integer && msec) {
 		// save the current screen
 		if ( clc.state == CA_ACTIVE || cl_forceavidemo->integer) {
+			float fps = MIN(cl_aviFrameRate->value * com_timescale->value, 1000.0f);
+			float frameDuration = MAX(1000.0f / fps, 1.0f) + clc.aviVideoFrameRemainder;
+
 			CL_TakeVideoFrame( );
 
-#if 0
-			// fixed time for next frame
-			msec = (int)ceil( (1000.0f / cl_aviFrameRate->value) * com_timescale->value );
-			if (msec == 0) {
-				msec = 1;
-			}
-#endif
-			float fps = cl_aviFrameRate->value * com_timescale->value;
-
-			if ( fps > 1000.0f )
-				fps = 1000.0f;
-
-			float frameTime = ( 1000.0f / fps );
-
-			if ( frameTime < 1 )
-				frameTime = 1;
-
-			frameTime += clc.aviDemoRemain;
-			msec = (int)frameTime;
-			clc.aviDemoRemain = frameTime - msec;
+			msec = (int)frameDuration;
+			clc.aviVideoFrameRemainder = frameDuration - msec;
 		}
 	}
 
