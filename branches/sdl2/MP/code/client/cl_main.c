@@ -1561,7 +1561,7 @@ void CL_Disconnect( qboolean showMainMenu ) {
 #endif
 
 	// Stop recording any video
-	if( CL_VideoRecording( ) ) {
+	if( clc.demoplaying && CL_VideoRecording( ) ) {
 		// Finish rendering current frame
 		SCR_UpdateScreen( );
 		CL_CloseAVI( );
@@ -3167,7 +3167,7 @@ void CL_Frame ( int msec ) {
 	// if recording an avi, lock to a fixed fps
 	if ( CL_VideoRecording( ) && cl_aviFrameRate->integer && msec) {
 		// save the current screen
-		if ( clc.state == CA_ACTIVE || cl_forceavidemo->integer) {
+		if ( !clc.demoplaying || clc.state == CA_ACTIVE || cl_forceavidemo->integer ) {
 			float fps = MIN(cl_aviFrameRate->value * com_timescale->value, 1000.0f);
 			float frameDuration = MAX(1000.0f / fps, 1.0f) + clc.aviVideoFrameRemainder;
 
@@ -3862,52 +3862,45 @@ video [filename]
 */
 void CL_Video_f( void )
 {
-  char  filename[ MAX_OSPATH ];
-  int   i, last;
+	char  filename[ MAX_OSPATH ];
+	int   i, last;
 
-  if( !clc.demoplaying )
-  {
-    Com_Printf( "The video command can only be used when playing back demos\n" );
-    return;
-  }
+	if( Cmd_Argc( ) == 2 )
+	{
+		// explicit filename
+		Com_sprintf( filename, MAX_OSPATH, "videos/%s.avi", Cmd_Argv( 1 ) );
+	}
+	else
+	{
+		// scan for a free filename
+		for( i = 0; i <= 9999; i++ )
+		{
+			int a, b, c, d;
 
-  if( Cmd_Argc( ) == 2 )
-  {
-    // explicit filename
-    Com_sprintf( filename, MAX_OSPATH, "videos/%s.avi", Cmd_Argv( 1 ) );
-  }
-  else
-  {
-    // scan for a free filename
-    for( i = 0; i <= 9999; i++ )
-    {
-      int a, b, c, d;
+			last = i;
 
-      last = i;
+			a = last / 1000;
+			last -= a * 1000;
+			b = last / 100;
+			last -= b * 100;
+			c = last / 10;
+			last -= c * 10;
+			d = last;
 
-      a = last / 1000;
-      last -= a * 1000;
-      b = last / 100;
-      last -= b * 100;
-      c = last / 10;
-      last -= c * 10;
-      d = last;
+			Com_sprintf( filename, MAX_OSPATH, "videos/video%d%d%d%d.avi", a, b, c, d );
 
-      Com_sprintf( filename, MAX_OSPATH, "videos/video%d%d%d%d.avi",
-          a, b, c, d );
+			if( !FS_FileExists( filename ) )
+			break; // file doesn't exist
+		}
 
-      if( !FS_FileExists( filename ) )
-        break; // file doesn't exist
-    }
+		if( i > 9999 )
+		{
+			Com_Printf( S_COLOR_RED "ERROR: no free file names to create video\n" );
+			return;
+		}
+	}
 
-    if( i > 9999 )
-    {
-      Com_Printf( S_COLOR_RED "ERROR: no free file names to create video\n" );
-      return;
-    }
-  }
-
-  CL_OpenAVIForWriting( filename );
+	CL_OpenAVIForWriting( filename );
 }
 
 /*
@@ -3917,7 +3910,7 @@ CL_StopVideo_f
 */
 void CL_StopVideo_f( void )
 {
-  CL_CloseAVI( );
+	CL_CloseAVI( );
 }
 
 /*
