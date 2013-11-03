@@ -467,7 +467,7 @@ void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking )
 	int numareas, i, w;
 	//
 	// check for resetting AAS blocking
-	if ( VectorCompare( absmin, absmax ) && blocking < 0 ) {
+	if ( VectorCompare( absmin, absmax ) && !blocking ) {
 		for ( w = 0; w < MAX_AAS_WORLDS; w++ ) {
 			AAS_SetCurrentWorld( w );
 			//
