@@ -771,14 +771,13 @@ BG_ParseConditionBits
 void BG_ParseConditionBits( char **text_pp, animStringItem_t *stringTable, int condIndex, int result[RESULT_SIZE] ) {
 	qboolean endFlag = qfalse;
 	int indexFound;
-	int /*indexBits,*/ tempBits[2];
+	int tempBits[2];
 	char currentString[MAX_QPATH];
 	qboolean minus = qfalse;
 	char *token;
 
-	//indexBits = 0;
 	currentString[0] = '\0';
-	memset( result, 0, sizeof( result ) * RESULT_SIZE );
+	memset( result, 0, sizeof( result[0] ) * RESULT_SIZE );
 	memset( tempBits, 0, sizeof( tempBits ) );
 
 	while ( !endFlag ) {

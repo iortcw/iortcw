@@ -3119,7 +3119,7 @@ void BatMoveThink( gentity_t *bat ) {
 			}
 		}
 
-	} else if ( owner->active == 2 ) {
+	} else if ( !owner->active ) {
 		// owner has finished
 		G_FreeEntity( bat );
 		return;
