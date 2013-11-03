@@ -1440,24 +1440,21 @@ void CG_DrawSkyBoxPortal( void ) {
 		}
 
 		// do smooth transitions for the binocs
-		if ( cg.zoomedBinoc ) {        // binoc zooming in
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f > 1.0 ) {
-				fov_x = zoomFov;
-			} else {
-				fov_x = fov_x + f * ( zoomFov - fov_x );
-			}
+		if (cg.zoomedBinoc)            // binoc zooming in
+		{
+			f       = (cg.time - cg.zoomTime) / (float)ZOOM_TIME;
+			fov_x   = (f > 1.0) ? zoomFov : fov_x + f * (zoomFov - fov_x);
 			lastfov = fov_x;
-		} else if ( cg.zoomval ) {    // zoomed by sniper/snooper
-			fov_x = cg.zoomval;
+		}
+		else if (cg.zoomval)       // zoomed by sniper/snooper
+		{
+			fov_x   = cg.zoomval;
 			lastfov = fov_x;
-		} else {                    // binoc zooming out
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f > 1.0 ) {
-				fov_x = fov_x;
-			} else {
-				fov_x = zoomFov + f * ( fov_x - zoomFov );
-			}
+		}
+		else                        // binoc zooming out
+		{
+			f     = (cg.time - cg.zoomTime) / (float)ZOOM_TIME;
+			fov_x = (f > 1.0) ? fov_x : zoomFov + f * (fov_x - zoomFov);
 		}
 	}
 
