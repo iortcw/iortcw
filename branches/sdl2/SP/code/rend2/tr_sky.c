@@ -460,7 +460,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 
 		color[0] = 
 		color[1] = 
-		color[2] = tr.identityLight * backEnd.refdef.colorScale;
+		color[2] = (r_softOverbright->integer ? 1.0 : tr.identityLight) * backEnd.refdef.colorScale;
 		color[3] = 1.0f;
 		GLSL_SetUniformVec4(sp, UNIFORM_BASECOLOR, color);
 
@@ -579,7 +579,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		
 		color[0] = 
 		color[1] = 
-		color[2] = tr.identityLight * backEnd.refdef.colorScale;
+		color[2] = (r_softOverbright->integer ? 1.0 : tr.identityLight) * backEnd.refdef.colorScale;
 		color[3] = 1.0f;
 		GLSL_SetUniformVec4(sp, UNIFORM_BASECOLOR, color);
 
