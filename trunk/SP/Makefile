@@ -350,7 +350,7 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   endif
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow \
+  BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
@@ -590,7 +590,7 @@ ifeq ($(PLATFORM),mingw32)
     endif
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow \
+  BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -DUSE_ICON
 
   # In the absence of wspiapi.h, require Windows XP or later
@@ -699,7 +699,7 @@ ifeq ($(PLATFORM),freebsd)
 
   # flags
   BASE_CFLAGS = $(shell env MACHINE_ARCH=$(ARCH) make -f /dev/null -VCFLAGS) \
-    -Wall -fno-strict-aliasing -fno-strict-overflow \
+    -Wall -fno-strict-aliasing \
     -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
   HAVE_VM_COMPILED = true
@@ -752,7 +752,7 @@ else # ifeq freebsd
 
 ifeq ($(PLATFORM),openbsd)
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow \
+  BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
@@ -839,7 +839,7 @@ ifeq ($(PLATFORM),netbsd)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
   THREAD_LIBS=-lpthread
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow
+  BASE_CFLAGS = -Wall -fno-strict-aliasing
 
   ifeq ($(ARCH),x86)
     HAVE_VM_COMPILED=true
@@ -893,7 +893,7 @@ ifeq ($(PLATFORM),sunos)
     endif
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -fno-strict-overflow \
+  BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
