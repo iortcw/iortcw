@@ -365,9 +365,9 @@ int AAS_LoadMap( const char *mapname ) {
 		AAS_SetCurrentWorld( i );
 
 		Q_strncpyz( this_mapname, mapname, sizeof( this_mapname ) );
-		strncat( this_mapname, "_b", sizeof( this_mapname ) - strlen( this_mapname ) - 1 );
+		Q_strcat( this_mapname, sizeof( this_mapname ) - strlen( this_mapname ) - 1, "_b" );
 		Com_sprintf( intstr, sizeof( intstr ), "%i", i);
-		strncat( this_mapname, intstr, sizeof( this_mapname ) - strlen( this_mapname ) - 1 );
+		Q_strcat( this_mapname, sizeof( this_mapname ) - strlen( this_mapname ) - 1, intstr );
 
 		//if no mapname is provided then the string indexes are updated
 		if ( !mapname ) {
