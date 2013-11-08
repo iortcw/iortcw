@@ -925,9 +925,16 @@ void Sys_DoStartProcess( char *cmdline ) {
 		// main thread
 		break;
 	case 0:
-		if ( strchr( cmdline, ' ' ) ) {
-			system( cmdline );
-		} else
+		if ( strchr( cmdline, ' ' ) )
+		{
+			int ret;
+
+			ret = system( cmdline );
+			if ( ret == -1 )
+				printf( "Failed to run '%s' command\n", cmdline );
+
+		}
+		else
 		{
 			execl( cmdline, cmdline, NULL );
 		}

@@ -1636,6 +1636,7 @@ qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const
 	unsigned char   *destData;
 	qboolean needToCopy;
 	FILE            *destHandle;
+	int	read;
 
 	needToCopy = qtrue;
 
@@ -1659,7 +1660,11 @@ qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const
 		if ( destLength > 0 ) {
 			destData = (unsigned char*)Z_Malloc( destLength );
 
-			fread( destData, 1, destLength, destHandle );
+			read = fread( destData, 1, destLength, destHandle );
+
+			if (read == 0) {
+				Com_Error (ERR_FATAL, "FS_CL_ExtractFromPakFile: 0 bytes read");
+			}
 
 			// compare files
 			if ( destLength == srcLength ) {

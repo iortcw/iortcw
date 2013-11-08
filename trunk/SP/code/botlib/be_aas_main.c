@@ -353,9 +353,10 @@ int AAS_LoadFiles( const char *mapname ) {
 // Ridah, modified this for multiple AAS files
 
 int AAS_LoadMap( const char *mapname ) {
+#define MAPNAME_LEN 256
 	int errnum;
 	int i;
-	char this_mapname[256], intstr[4];
+	char this_mapname[MAPNAME_LEN], intstr[4];
 	qboolean loaded = qfalse;
 	int missingErrNum = 0;     // TTimo: init
 
@@ -363,10 +364,10 @@ int AAS_LoadMap( const char *mapname ) {
 	{
 		AAS_SetCurrentWorld( i );
 
-		strncpy( this_mapname, mapname, 256 );
-		strncat( this_mapname, "_b", 256 );
-		sprintf( intstr, "%i", i );
-		strncat( this_mapname, intstr, 256 );
+		Q_strncpyz( this_mapname, mapname, sizeof( this_mapname ) );
+		strncat( this_mapname, "_b", sizeof( this_mapname ) - strlen( this_mapname ) - 1 );
+		Com_sprintf( intstr, sizeof( intstr ), "%i", i);
+		strncat( this_mapname, intstr, sizeof( this_mapname ) - strlen( this_mapname ) - 1 );
 
 		//if no mapname is provided then the string indexes are updated
 		if ( !mapname ) {
