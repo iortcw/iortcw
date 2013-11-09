@@ -99,6 +99,19 @@ int flareCoeff;
 
 /*
 ==================
+R_SetFlareCoeff
+==================
+*/
+static void R_SetFlareCoeff( void ) {
+
+	if(r_flareCoeff->value == 0.0f)
+		flareCoeff = atof(FLARE_STDCOEFF);
+	else
+		flareCoeff = r_flareCoeff->value;
+}
+
+/*
+==================
 R_ClearFlares
 ==================
 */
@@ -113,6 +126,8 @@ void R_ClearFlares( void ) {
 		r_flareStructs[i].next = r_inactiveFlares;
 		r_inactiveFlares = &r_flareStructs[i];
 	}
+
+	R_SetFlareCoeff();
 }
 
 
@@ -509,11 +524,7 @@ void RB_RenderFlares( void ) {
 
 	if(r_flareCoeff->modified)
 	{
-		if(r_flareCoeff->value == 0.0f)
-			flareCoeff = atof(FLARE_STDCOEFF);
-		else
-			flareCoeff = r_flareCoeff->value;
-			
+		R_SetFlareCoeff();			
 		r_flareCoeff->modified = qfalse;
 	}
 
