@@ -353,9 +353,9 @@ R_FreeSurfaceGridMesh
 =================
 */
 void R_FreeSurfaceGridMesh( srfGridMesh_t *grid ) {
-	free( grid->widthLodError );
-	free( grid->heightLodError );
-	free( grid );
+	ri.Free( grid->widthLodError );
+	ri.Free( grid->heightLodError );
+	ri.Free( grid );
 }
 
 /*

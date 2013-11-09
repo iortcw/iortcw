@@ -69,7 +69,7 @@ void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
 	}
 	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
 		if ( imageBufferPtr[bufferType] ) {
-			free( imageBufferPtr[bufferType] );
+			ri.Free( imageBufferPtr[bufferType] );
 		}
 //DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = size;
@@ -86,7 +86,7 @@ void R_FreeImageBuffer( void ) {
 		if ( !imageBufferPtr[bufferType] ) {
 			return;
 		}
-		free( imageBufferPtr[bufferType] );
+		ri.Free( imageBufferPtr[bufferType] );
 //DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
 		imageBufferPtr[bufferType] = NULL;

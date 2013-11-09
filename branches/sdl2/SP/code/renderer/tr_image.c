@@ -67,7 +67,7 @@ void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
 	}
 	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
 		if ( imageBufferPtr[bufferType] ) {
-			free( imageBufferPtr[bufferType] );
+			ri.Free( imageBufferPtr[bufferType] );
 		}
 		imageBufferSize[bufferType] = size;
 		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
@@ -82,7 +82,7 @@ void R_FreeImageBuffer( void ) {
 		if ( !imageBufferPtr[bufferType] ) {
 			return;
 		}
-		free( imageBufferPtr[bufferType] );
+		ri.Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
 		imageBufferPtr[bufferType] = NULL;
 	}
@@ -901,7 +901,7 @@ static void Upload32(   unsigned *data,
 #endif
 				} else if ( r_texturebits->integer == 32 )   {
 #ifdef VCMODS_OPENGLES
-					internalFormat = GL_RGB;
+					assert(0);
 #else
 					internalFormat = GL_RGB8;
 #endif
@@ -2575,7 +2575,7 @@ void    R_CropAndNumberImagesInDirectory( char *dir, char *ext, int maxWidth, in
 		temppic = malloc( sizeof( unsigned int ) * newWidth * newHeight );
 		ResampleTexture( (unsigned int *)pic, width, height, (unsigned int *)temppic, newWidth, newHeight );
 		memcpy( pic, temppic, sizeof( unsigned int ) * newWidth * newHeight );
-		free( temppic );
+		ri.Free( temppic );
 		width = newWidth;
 		height = newHeight;
 #endif

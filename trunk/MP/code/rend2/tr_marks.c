@@ -290,7 +290,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 	int numClipPoints;
 	float           *v;
 	srfBspSurface_t	*cv;
-	srfTriangle_t	*tri;
+	glIndex_t		*tri;
 	srfVert_t		*dv;
 	vec3_t normal;
 	vec3_t projectionDir;
@@ -436,11 +436,11 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 				continue;
 			}
 
-			for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
+			for(k = 0, tri = surf->indexes; k < surf->numIndexes; k += 3, tri += 3)
 			{
 				for(j = 0; j < 3; j++)
 				{
-					v = surf->verts[tri->indexes[j]].xyz;
+					v = surf->verts[tri[j]].xyz;
 					VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 				}
 
@@ -459,12 +459,12 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 
 			srfBspSurface_t *surf = (srfBspSurface_t *) surfaces[i];
 
-			for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
+			for(k = 0, tri = surf->indexes; k < surf->numIndexes; k += 3, tri += 3)
 			{
 				for(j = 0; j < 3; j++)
 				{
-					v = surf->verts[tri->indexes[j]].xyz;
-					VectorMA(v, MARKER_OFFSET, surf->verts[tri->indexes[j]].normal, clipPoints[0][j]);
+					v = surf->verts[tri[j]].xyz;
+					VectorMA(v, MARKER_OFFSET, surf->verts[tri[j]].normal, clipPoints[0][j]);
 				}
 
 				// add the fragments of this face
@@ -502,7 +502,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	int numClipPoints;
 	float           *v;
 	srfBspSurface_t	*cv;
-	srfTriangle_t	*tri;
+	glIndex_t		*tri;
 	srfVert_t		*dv;
 	vec3_t normal;
 	vec3_t projectionDir;
@@ -761,11 +761,11 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 
 				// done.
 
-				for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
+				for(k = 0, tri = surf->indexes; k < surf->numIndexes; k += 3, tri += 3)
 				{
 					for(j = 0; j < 3; j++)
 					{
-						v = surf->verts[tri->indexes[j]].xyz;
+						v = surf->verts[tri[j]].xyz;
 						VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 					}
 
@@ -802,11 +802,11 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 				//	continue;
 				//}
 
-				for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
+				for(k = 0, tri = surf->indexes; k < surf->numIndexes; k += 3, tri += 3)
 				{
 					for(j = 0; j < 3; j++)
 					{
-						v = surf->verts[tri->indexes[j]].xyz;
+						v = surf->verts[tri[j]].xyz;
 						VectorMA(v, MARKER_OFFSET, surf->cullPlane.normal, clipPoints[0][j]);
 					}
 					// add the fragments of this face
@@ -827,12 +827,12 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 
 			srfBspSurface_t *surf = (srfBspSurface_t *) surfaces[i];
 
-			for(k = 0, tri = surf->triangles; k < surf->numTriangles; k++, tri++)
+			for(k = 0, tri = surf->indexes; k < surf->numIndexes; k += 3, tri += 3)
 			{
 				for(j = 0; j < 3; j++)
 				{
-					v = surf->verts[tri->indexes[j]].xyz;
-					VectorMA(v, MARKER_OFFSET, surf->verts[tri->indexes[j]].normal, clipPoints[0][j]);
+					v = surf->verts[tri[j]].xyz;
+					VectorMA(v, MARKER_OFFSET, surf->verts[tri[j]].normal, clipPoints[0][j]);
 				}
 
 				// add the fragments of this face
