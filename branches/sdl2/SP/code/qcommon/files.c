@@ -273,9 +273,9 @@ typedef struct qfile_us {
 typedef struct {
 	qfile_ut handleFiles;
 	qboolean handleSync;
-	int baseOffset;
 	int fileSize;
 	int zipFilePos;
+	int zipFileLen;
 	qboolean zipFile;
 	qboolean streamed;
 	char name[MAX_ZPATH];
@@ -1464,6 +1464,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 					// open the file in the zip
 					unzOpenCurrentFile(fsh[*file].handleFiles.file.z);
 					fsh[*file].zipFilePos = pakFile->pos;
+					fsh[*file].zipFileLen = pakFile->len;
 
 					if(fs_debug->integer)
 					{
@@ -1866,29 +1867,60 @@ int FS_Seek( fileHandle_t f, long offset, int origin ) {
 	}
 
 	if ( fsh[f].streamed ) {
+		int r;
 		fsh[f].streamed = qfalse;
-		FS_Seek( f, offset, origin );
+		r = FS_Seek( f, offset, origin );
 		fsh[f].streamed = qtrue;
+		return r;
 	}
 
 	if ( fsh[f].zipFile == qtrue ) {
-		//FIXME: this is incomplete and really, really
-		//crappy (but better than what was here before)
+		//FIXME: this is really, really crappy
+		//(but better than what was here before)
 		byte	buffer[PK3_SEEK_BUFFER_SIZE];
-		int		remainder = offset;
+		int		remainder;
+		int		currentPosition = FS_FTell( f );
 
-		if( offset < 0 || origin == FS_SEEK_END ) {
-			Com_Error( ERR_FATAL, "Negative offsets and FS_SEEK_END not implemented "
-					"for FS_Seek on pk3 file contents" );
-			return -1;
+		// change negative offsets into FS_SEEK_SET
+		if ( offset < 0 ) {
+			switch( origin ) {
+				case FS_SEEK_END:
+					remainder = fsh[f].zipFileLen + offset;
+					break;
+
+				case FS_SEEK_CUR:
+					remainder = currentPosition + offset;
+					break;
+
+				case FS_SEEK_SET:
+				default:
+					remainder = 0;
+					break;
+			}
+
+			if ( remainder < 0 ) {
+				remainder = 0;
+			}
+
+			origin = FS_SEEK_SET;
+		} else {
+			if ( origin == FS_SEEK_END ) {
+				remainder = fsh[f].zipFileLen - currentPosition + offset;
+			} else {
+				remainder = offset;
+			}
 		}
 
 		switch( origin ) {
 			case FS_SEEK_SET:
+				if ( remainder == currentPosition ) {
+					return offset;
+				}
 				unzSetOffset(fsh[f].handleFiles.file.z, fsh[f].zipFilePos);
 				unzOpenCurrentFile(fsh[f].handleFiles.file.z);
 				//fallthrough
 
+			case FS_SEEK_END:
 			case FS_SEEK_CUR:
 				while( remainder > PK3_SEEK_BUFFER_SIZE ) {
 					FS_Read( buffer, PK3_SEEK_BUFFER_SIZE, f );
@@ -1896,12 +1928,10 @@ int FS_Seek( fileHandle_t f, long offset, int origin ) {
 				}
 				FS_Read( buffer, remainder, f );
 				return offset;
-				break;
 
 			default:
 				Com_Error( ERR_FATAL, "Bad origin in FS_Seek" );
 				return -1;
-				break;
 		}
 	} else {
 		FILE *file;
@@ -4229,11 +4259,6 @@ int     FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) 
 	}
 
 	if ( *f ) {
-		if ( fsh[*f].zipFile == qtrue ) {
-			fsh[*f].baseOffset = unztell( fsh[*f].handleFiles.file.z );
-		} else {
-			fsh[*f].baseOffset = ftell( fsh[*f].handleFiles.file.o );
-		}
 		fsh[*f].fileSize = r;
 		fsh[*f].streamed = qfalse;
 
