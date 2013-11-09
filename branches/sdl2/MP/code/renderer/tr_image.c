@@ -69,7 +69,7 @@ void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
 	}
 	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
 		if ( imageBufferPtr[bufferType] ) {
-			ri.Free( imageBufferPtr[bufferType] );
+			free( imageBufferPtr[bufferType] );
 		}
 //DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = size;
@@ -86,7 +86,7 @@ void R_FreeImageBuffer( void ) {
 		if ( !imageBufferPtr[bufferType] ) {
 			return;
 		}
-		ri.Free( imageBufferPtr[bufferType] );
+		free( imageBufferPtr[bufferType] );
 //DAJ TEST		Z_Free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
 		imageBufferPtr[bufferType] = NULL;
@@ -860,7 +860,7 @@ static void Upload32(   unsigned *data,
 #endif
 				} else if ( r_texturebits->integer == 32 )   {
 #ifdef VCMODS_OPENGLES
-					internalFormat = GL_RGB;
+					assert(0);
 #else
 					internalFormat = GL_RGB8;
 #endif
@@ -904,7 +904,7 @@ static void Upload32(   unsigned *data,
 #endif
 				} else if ( r_texturebits->integer == 32 )   {
 #ifdef VCMODS_OPENGLES
-					internalFormat = GL_RGBA;
+					assert(0);
 #else
 					internalFormat = GL_RGBA8;
 #endif

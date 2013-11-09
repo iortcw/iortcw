@@ -67,7 +67,7 @@ void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
 	}
 	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
 		if ( imageBufferPtr[bufferType] ) {
-			ri.Free( imageBufferPtr[bufferType] );
+			free( imageBufferPtr[bufferType] );
 		}
 		imageBufferSize[bufferType] = size;
 		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
@@ -82,7 +82,7 @@ void R_FreeImageBuffer( void ) {
 		if ( !imageBufferPtr[bufferType] ) {
 			return;
 		}
-		ri.Free( imageBufferPtr[bufferType] );
+		free( imageBufferPtr[bufferType] );
 		imageBufferSize[bufferType] = 0;
 		imageBufferPtr[bufferType] = NULL;
 	}
