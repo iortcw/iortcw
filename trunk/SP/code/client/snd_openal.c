@@ -119,7 +119,7 @@ static void S_AL_ClearError( qboolean quiet )
 		return;
 	if(error != AL_NO_ERROR)
 	{
-		Com_Printf(S_COLOR_YELLOW "WARNING: unhandled AL error: %s\n",
+		Com_DPrintf(S_COLOR_YELLOW "WARNING: unhandled AL error: %s\n",
 			S_AL_ErrorMsg(error));
 	}
 }
@@ -265,7 +265,7 @@ static void S_AL_BufferUnload(sfxHandle_t sfx)
 		return;
 
 	// Delete it 
-	S_AL_ClearError( qtrue );
+	S_AL_ClearError( qfalse );
 	qalDeleteBuffers(1, &knownSfx[sfx].buffer);
 	if(qalGetError() != AL_NO_ERROR)
 		Com_Printf( S_COLOR_RED "ERROR: Can't delete sound buffer for %s\n",
@@ -306,6 +306,44 @@ static qboolean S_AL_BufferEvict( void )
 	}
 	else
 		return qfalse;
+}
+
+/*
+=================
+S_AL_GenBuffers
+=================
+*/
+static qboolean S_AL_GenBuffers(ALsizei numBuffers, ALuint *buffers, const char *name)
+{
+	ALenum error;
+
+	S_AL_ClearError( qfalse );
+	qalGenBuffers( numBuffers, buffers );
+	error = qalGetError();
+
+	// If we ran out of buffers, start evicting the least recently used sounds
+	while( error == AL_INVALID_VALUE )
+	{
+		if( !S_AL_BufferEvict( ) )
+		{
+			Com_Printf( S_COLOR_RED "ERROR: Out of audio buffers\n");
+			return qfalse;
+		}
+
+		// Try again
+		S_AL_ClearError( qfalse );
+		qalGenBuffers( numBuffers, buffers );
+		error = qalGetError();
+	}
+
+	if( error != AL_NO_ERROR )
+	{
+		Com_Printf( S_COLOR_RED "ERROR: Can't create a sound buffer for %s - %s\n",
+				    name, S_AL_ErrorMsg(error));
+		return qfalse;
+	}
+
+	return qtrue;
 }
 
 /*
@@ -354,14 +392,10 @@ static void S_AL_BufferLoad(sfxHandle_t sfx, qboolean cache)
 	format = S_AL_Format(info.width, info.channels);
 
 	// Create a buffer
-	S_AL_ClearError( qtrue );
-	qalGenBuffers(1, &curSfx->buffer);
-	if((error = qalGetError()) != AL_NO_ERROR)
+	if (!S_AL_GenBuffers(1, &curSfx->buffer, curSfx->filename))
 	{
 		S_AL_BufferUseDefault(sfx);
 		Hunk_FreeTempMemory(data);
-		Com_Printf( S_COLOR_RED "ERROR: Can't create a sound buffer for %s - %s\n",
-				curSfx->filename, S_AL_ErrorMsg(error));
 		return;
 	}
 
@@ -383,6 +417,7 @@ static void S_AL_BufferLoad(sfxHandle_t sfx, qboolean cache)
 	{
 		if( !S_AL_BufferEvict( ) )
 		{
+			qalDeleteBuffers(1, &curSfx->buffer);
 			S_AL_BufferUseDefault(sfx);
 			Hunk_FreeTempMemory(data);
 			Com_Printf( S_COLOR_RED "ERROR: Out of memory loading %s\n", curSfx->filename);
@@ -397,6 +432,7 @@ static void S_AL_BufferLoad(sfxHandle_t sfx, qboolean cache)
 	// Some other error condition
 	if(error != AL_NO_ERROR)
 	{
+		qalDeleteBuffers(1, &curSfx->buffer);
 		S_AL_BufferUseDefault(sfx);
 		Hunk_FreeTempMemory(data);
 		Com_Printf( S_COLOR_RED "ERROR: Can't fill sound buffer for %s - %s\n",
@@ -701,7 +737,7 @@ qboolean S_AL_SrcInit( void )
 	else if(limit < 16)
 		limit = 16;
  
-	S_AL_ClearError( qtrue );
+	S_AL_ClearError( qfalse );
 	// Allocate as many sources as possible
 	for(i = 0; i < limit; i++)
 	{
@@ -817,7 +853,7 @@ static void S_AL_SaveLoopPos(src_t *dest, ALuint alSource)
 {
 	int error;
 	
-	S_AL_ClearError( qtrue );
+	S_AL_ClearError( qfalse );
 	
 	qalGetSourcef(alSource, AL_SEC_OFFSET, &dest->lastTimePos);
 	if((error = qalGetError()) != AL_NO_ERROR)
@@ -967,7 +1003,7 @@ static void S_AL_SrcKill(srcHandle_t src)
 		curSource->isPlaying = qfalse;
 	}
 
-	// Remove the buffer
+	// Detach any buffers
 	qalSourcei(curSource->alSource, AL_BUFFER, 0);
 
 	curSource->sfx = 0;
@@ -1559,6 +1595,10 @@ void S_AL_SrcUpdate( void )
 
 				if(!curSource->isPlaying)
 				{
+					qalSourcei(curSource->alSource, AL_LOOPING, AL_TRUE);
+					curSource->isPlaying = qtrue;
+					qalSourcePlay(curSource->alSource);
+
 					if(curSource->priority == SRCPRI_AMBIENT)
 					{
 						// If there are other ambient looping sources with the same sound,
@@ -1569,7 +1609,7 @@ void S_AL_SrcUpdate( void )
 							int offset, error;
 						
 							// we already have a master loop playing, get buffer position.
-							S_AL_ClearError( qtrue );
+							S_AL_ClearError( qfalse );
 							qalGetSourcei(srcList[curSfx->masterLoopSrc].alSource, AL_SAMPLE_OFFSET, &offset);
 							if((error = qalGetError()) != AL_NO_ERROR)
 							{
@@ -1616,10 +1656,6 @@ void S_AL_SrcUpdate( void )
 					}
 						
 					curSfx->loopActiveCnt++;
-					
-					qalSourcei(curSource->alSource, AL_LOOPING, AL_TRUE);
-					curSource->isPlaying = qtrue;
-					qalSourcePlay(curSource->alSource);
 				}
 
 				// Update locality
@@ -1701,9 +1737,15 @@ ALuint S_AL_SrcGet(srcHandle_t src)
 
 //===========================================================================
 
+// Q3A cinematics use up to 12 buffers at once
+#define MAX_STREAM_BUFFERS 20
+
 static srcHandle_t streamSourceHandles[MAX_RAW_STREAMS];
 static qboolean streamPlaying[MAX_RAW_STREAMS];
 static ALuint streamSources[MAX_RAW_STREAMS];
+static ALuint streamBuffers[MAX_RAW_STREAMS][MAX_STREAM_BUFFERS];
+static int streamNumBuffers[MAX_RAW_STREAMS];
+static int streamBufIndex[MAX_RAW_STREAMS];
 
 /*
 =================
@@ -1761,6 +1803,9 @@ static void S_AL_AllocateStreamChannel(int stream, int entityNum)
 
         streamSourceHandles[stream] = cursrc;
        	streamSources[stream] = alsrc;
+
+	streamNumBuffers[stream] = 0;
+	streamBufIndex[stream] = 0;
 }
 
 /*
@@ -1772,6 +1817,15 @@ static void S_AL_FreeStreamChannel( int stream )
 {
 	if ((stream < 0) || (stream >= MAX_RAW_STREAMS))
 		return;
+
+	// Detach any buffers
+	qalSourcei(streamSources[stream], AL_BUFFER, 0);
+
+	// Delete the buffers
+	if (streamNumBuffers[stream] > 0) {
+		qalDeleteBuffers(streamNumBuffers[stream], streamBuffers[stream]);
+		streamNumBuffers[stream] = 0;
+	}
 
 	// Release the output streamSource
 	S_AL_SrcUnlock(streamSourceHandles[stream]);
@@ -1788,6 +1842,7 @@ S_AL_RawSamples
 static
 void S_AL_RawSamples(int stream, int samples, int rate, int width, int channels, const byte *data, float volume, int entityNum)
 {
+	int numBuffers;
 	ALuint buffer;
 	ALuint format;
 
@@ -1809,8 +1864,40 @@ void S_AL_RawSamples(int stream, int samples, int rate, int width, int channels,
 		}
 	}
 
-	// Create a buffer, and stuff the data into it
-	qalGenBuffers(1, &buffer);
+	qalGetSourcei(streamSources[stream], AL_BUFFERS_QUEUED, &numBuffers);
+
+	if (numBuffers == MAX_STREAM_BUFFERS)
+	{
+		Com_DPrintf(S_COLOR_RED"WARNING: Steam dropping raw samples, reached MAX_STREAM_BUFFERS\n");
+		return;
+	}
+
+	// Allocate a new AL buffer if needed
+	if (numBuffers == streamNumBuffers[stream])
+	{
+		ALuint oldBuffers[MAX_STREAM_BUFFERS];
+		int	i;
+
+		if (!S_AL_GenBuffers(1, &buffer, "stream"))
+			return;
+
+		Com_Memcpy(oldBuffers, &streamBuffers[stream], sizeof (oldBuffers));
+
+		// Reorder buffer array in order of oldest to newest
+		for ( i = 0; i < streamNumBuffers[stream]; ++i )
+			streamBuffers[stream][i] = oldBuffers[(streamBufIndex[stream] + i) % streamNumBuffers[stream]];
+
+		// Add the new buffer to end
+		streamBuffers[stream][streamNumBuffers[stream]] = buffer;
+		streamBufIndex[stream] = streamNumBuffers[stream];
+		streamNumBuffers[stream]++;
+	}
+
+	// Select next buffer in loop
+	buffer = streamBuffers[stream][ streamBufIndex[stream] ];
+	streamBufIndex[stream] = (streamBufIndex[stream] + 1) % streamNumBuffers[stream];
+
+	// Fill buffer
 	qalBufferData(buffer, format, (ALvoid *)data, (samples * width * channels), rate);
 
 	// Shove the data onto the streamSource
@@ -1821,6 +1908,13 @@ void S_AL_RawSamples(int stream, int samples, int rate, int width, int channels,
         	// Volume
         	S_AL_Gain (streamSources[stream], volume * s_volume->value * s_alGain->value);
         }
+
+	// Start stream
+	if(!streamPlaying[stream])
+	{
+		qalSourcePlay( streamSources[stream] );
+		streamPlaying[stream] = qtrue;
+	}
 }
 
 /*
@@ -1840,13 +1934,12 @@ void S_AL_StreamUpdate( int stream )
 	if(streamSourceHandles[stream] == -1)
 		return;
 
-	// Un-queue any buffers, and delete them
+	// Un-queue any buffers
 	qalGetSourcei( streamSources[stream], AL_BUFFERS_PROCESSED, &numBuffers );
 	while( numBuffers-- )
 	{
 		ALuint buffer;
 		qalSourceUnqueueBuffers(streamSources[stream], 1, &buffer);
-		qalDeleteBuffers(1, &buffer);
 	}
 
 	// Start the streamSource playing if necessary
@@ -1877,8 +1970,6 @@ S_AL_StreamDie
 static
 void S_AL_StreamDie( int stream )
 {
-	int		numBuffers;
-
 	if ((stream < 0) || (stream >= MAX_RAW_STREAMS))
 		return;
 
@@ -1887,15 +1978,6 @@ void S_AL_StreamDie( int stream )
 
 	streamPlaying[stream] = qfalse;
 	qalSourceStop(streamSources[stream]);
-
-	// Un-queue any buffers, and delete them
-	qalGetSourcei( streamSources[stream], AL_BUFFERS_PROCESSED, &numBuffers );
-	while( numBuffers-- )
-	{
-		ALuint buffer;
-		qalSourceUnqueueBuffers(streamSources[stream], 1, &buffer);
-		qalDeleteBuffers(1, &buffer);
-	}
 
 	S_AL_FreeStreamChannel(stream);
 }
@@ -1988,22 +2070,17 @@ S_AL_StopBackgroundTrack
 static
 void S_AL_StopBackgroundTrack( void )
 {
-	int	numBuffers;
-
 	if(!musicPlaying)
 		return;
 
 	// Stop playing
 	qalSourceStop(musicSource);
 
-	// Un-queue any buffers, and delete them
-	qalGetSourcei( musicSource, AL_BUFFERS_PROCESSED, &numBuffers );
-	while( numBuffers-- )
-	{
-		ALuint buffer;
-		qalSourceUnqueueBuffers(musicSource, 1, &buffer);
-		qalDeleteBuffers(1, &buffer);
-	}
+	// Detach any buffers
+	qalSourcei(musicSource, AL_BUFFER, 0);
+
+	// Delete the buffers
+	qalDeleteBuffers(NUM_MUSIC_BUFFERS, musicBuffers);
 
 	// Free the musicSource
 	S_AL_MusicSourceFree();
@@ -2027,7 +2104,7 @@ void S_AL_MusicProcess(ALuint b)
 	ALuint format;
 	snd_stream_t *curstream;
 
-	S_AL_ClearError( qtrue );
+	S_AL_ClearError( qfalse );
 
 	if(intro_stream)
 		curstream = intro_stream;
@@ -2142,7 +2219,8 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop )
 	}
 
 	// Generate the musicBuffers
-	qalGenBuffers(NUM_MUSIC_BUFFERS, musicBuffers);
+	if (!S_AL_GenBuffers(NUM_MUSIC_BUFFERS, musicBuffers, "music"))
+		return;
 	
 	// Queue the musicBuffers up
 	for(i = 0; i < NUM_MUSIC_BUFFERS; i++)
@@ -2542,6 +2620,8 @@ qboolean S_AL_Init( soundInterface_t *si )
 		streamSourceHandles[i] = -1;
 		streamPlaying[i] = qfalse;
 		streamSources[i] = 0;
+		streamNumBuffers[i] = 0;
+		streamBufIndex[i] = 0;
 	}
 
 	// New console variables
@@ -2549,10 +2629,10 @@ qboolean S_AL_Init( soundInterface_t *si )
 	s_alGain = Cvar_Get( "s_alGain", "1.0", CVAR_ARCHIVE );
 	s_alSources = Cvar_Get( "s_alSources", "96", CVAR_ARCHIVE );
 	s_alDopplerFactor = Cvar_Get( "s_alDopplerFactor", "1.0", CVAR_ARCHIVE );
-	s_alDopplerSpeed = Cvar_Get( "s_alDopplerSpeed", "2200", CVAR_ARCHIVE );
+	s_alDopplerSpeed = Cvar_Get( "s_alDopplerSpeed", "13512", CVAR_ARCHIVE );
 	s_alMinDistance = Cvar_Get( "s_alMinDistance", "256", CVAR_ARCHIVE );
 	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "1024", CVAR_ARCHIVE);
-	s_alRolloff = Cvar_Get( "s_alRolloff", "1", CVAR_ARCHIVE);
+	s_alRolloff = Cvar_Get( "s_alRolloff", "1.3", CVAR_ARCHIVE);
 	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "512", CVAR_ARCHIVE);
 
 	s_alDriver = Cvar_Get( "s_alDriver", ALDRIVER_DEFAULT, CVAR_ARCHIVE | CVAR_LATCH );
