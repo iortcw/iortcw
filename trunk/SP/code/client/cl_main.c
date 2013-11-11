@@ -119,7 +119,6 @@ cvar_t  *cl_conXOffset;
 cvar_t  *cl_inGameVideo;
 
 cvar_t  *cl_serverStatusResendTime;
-cvar_t  *cl_trn;
 
 cvar_t	*cl_lanForcePackets;
 
