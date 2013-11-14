@@ -673,7 +673,8 @@ void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitD
 }
 
 void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNumVerts, int numSurfVerts ) {
-	float *xyzTrav, *normTrav;
+	float *xyzTrav;
+	uint8_t *normTrav;
 	vec3_t hitPos, hitDir, v, testDir;
 	float bestHitDist, thisDist;
 	qboolean foundHit;
@@ -704,13 +705,19 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 		for (   j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = tess.normal[oldNumVerts];
 				j < numSurfVerts;
 				j++, xyzTrav += 4, normTrav += 4 ) {
+			vec3_t fNormTrav;
 
 			// if this vert has been hit enough times already
 			if ( hitCounts[j] > ZOMBIEFX_MAX_HITS_PER_VERT ) {
 				continue;
 			}
+
+			fNormTrav[0] = normTrav[0] / 127.5f - 1.0f;
+			fNormTrav[1] = normTrav[1] / 127.5f - 1.0f;
+			fNormTrav[2] = normTrav[2] / 127.5f - 1.0f;
+
 			// if this normal faces the wrong way, reject it
-			if ( DotProduct( normTrav, hitDir ) > 0 ) {
+			if ( DotProduct( fNormTrav, hitDir ) > 0 ) {
 				continue;
 			}
 			// get the diff vector
@@ -792,7 +799,9 @@ void RB_ZombieFXShowFleshHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNu
 
 void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeScale ) {
 	byte *vertColors;
-	float   *xyz, *norm;
+	float   *xyz;
+	uint8_t *norm;
+	vec3_t fNorm;
 	int i;
 	float alpha;
 
@@ -811,8 +820,12 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
 			vertColors[3] -= (byte)alpha;
 		}
 
+		fNorm[0] = norm[0] / 127.5f - 1.0f;
+		fNorm[1] = norm[1] / 127.5f - 1.0f;
+		fNorm[2] = norm[2] / 127.5f - 1.0f;
+
 		// skin shrinks with age
-		VectorMA( xyz, -2.0 * deltaTimeScale, norm, xyz );
+		VectorMA( xyz, -2.0 * deltaTimeScale, fNorm, xyz );
 	}
 }
 

@@ -66,7 +66,8 @@ static int frameSize;
 static short           *sh, *sh2;
 static float           *pf;
 static vec3_t angles, tangles, torsoParentOffset, torsoAxis[3], tmpAxis[3];
-static float           *tempVert, *tempNormal;
+static float           *tempVert;
+static uint8_t         *tempNormal;
 static vec3_t vec, v2, dir;
 static float diff, a1, a2;
 static int render_count;
@@ -1310,9 +1311,10 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 	numVerts = surface->numVerts;
 	v = ( mdsVertex_t * )( (byte *)surface + surface->ofsVerts );
 	tempVert = ( float * )( tess.xyz + baseVertex );
-	tempNormal = ( float * )( tess.normal + baseVertex );
+	tempNormal = ( uint8_t * )( tess.normal + baseVertex );
 	for ( j = 0; j < render_count; j++, tempVert += 4, tempNormal += 4 ) {
 		mdsWeight_t *w;
+		vec3_t newNormal;
 
 		VectorClear( tempVert );
 
@@ -1321,7 +1323,12 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 			bone = &bones[w->boneIndex];
 			LocalAddScaledMatrixTransformVectorTranslate( w->offset, w->boneWeight, bone->matrix, bone->translation, tempVert );
 		}
-		LocalMatrixTransformVector( v->normal, bones[v->weights[0].boneIndex].matrix, tempNormal );
+		LocalMatrixTransformVector( v->normal, bones[v->weights[0].boneIndex].matrix, newNormal );
+		
+		tempNormal[0] = (uint8_t)(newNormal[0] * 127.5f + 128.0f);
+		tempNormal[1] = (uint8_t)(newNormal[1] * 127.5f + 128.0f);
+		tempNormal[2] = (uint8_t)(newNormal[2] * 127.5f + 128.0f);
+		tempNormal[3] = 0;
 
 		tess.texCoords[baseVertex + j][0][0] = v->texCoords[0];
 		tess.texCoords[baseVertex + j][0][1] = v->texCoords[1];
@@ -1370,7 +1377,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 
 			// show mesh edges
 			tempVert = ( float * )( tess.xyz + baseVertex );
-			tempNormal = ( float * )( tess.normal + baseVertex );
+			tempNormal = ( uint8_t * )( tess.normal + baseVertex );
 
 			GL_Bind( tr.whiteImage );
 			qglLineWidth( 1 );
@@ -1871,9 +1878,9 @@ void RB_MDRSurfaceAnim( md4Surface_t *surface )
 		tess.xyz[baseVertex + j][1] = tempVert[1];
 		tess.xyz[baseVertex + j][2] = tempVert[2];
 
-		tess.normal[baseVertex + j][0] = tempNormal[0];
-		tess.normal[baseVertex + j][1] = tempNormal[1];
-		tess.normal[baseVertex + j][2] = tempNormal[2];
+		tess.normal[baseVertex + j][0] = (uint8_t)(tempNormal[0] * 127.5f + 128.0f);
+		tess.normal[baseVertex + j][1] = (uint8_t)(tempNormal[1] * 127.5f + 128.0f);
+		tess.normal[baseVertex + j][2] = (uint8_t)(tempNormal[2] * 127.5f + 128.0f);
 
 		tess.texCoords[baseVertex + j][0][0] = v->texCoords[0];
 		tess.texCoords[baseVertex + j][0][1] = v->texCoords[1];
