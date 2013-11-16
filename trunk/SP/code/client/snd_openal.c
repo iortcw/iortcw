@@ -2317,6 +2317,20 @@ void S_AL_StopEntStreamingSound( int entnum ) {
 	// FIXME: Stub
 }
 
+/*
+======================
+S_GetVoiceAmplitude
+======================
+*/
+int S_AL_GetVoiceAmplitude( int entityNum ) {
+	if ( entityNum >= MAX_CLIENTS ) {
+		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
+		return 0;
+	}
+
+	return (int)s_entityTalkAmplitude[entityNum] * 2;
+}
+
 //===========================================================================
 
 
@@ -2826,6 +2840,7 @@ qboolean S_AL_Init( soundInterface_t *si )
 	si->FadeAllSounds = S_AL_FadeAllSounds;
 	si->StartStreamingSound = S_AL_StartStreamingSound;
 	si->StopEntStreamingSound = S_AL_StopEntStreamingSound;
+	si->GetVoiceAmplitude = S_AL_GetVoiceAmplitude;
 	si->RawSamples = S_AL_RawSamples;
 	si->StopAllSounds = S_AL_StopAllSounds;
 	si->ClearLoopingSounds = S_AL_ClearLoopingSounds;

@@ -139,6 +139,7 @@ typedef struct
 	void (*StopBackgroundTrack)( void );
 	void (*StartStreamingSound)( const char *intro, const char *loop, int entnum, int channel, int attenuation );
 	void (*StopEntStreamingSound)( int entNum );
+	int (*GetVoiceAmplitude)( int entityNum );
 	void (*FadeStreamingSound)( float targetVol, int time, int ssNum );
 	void (*FadeAllSounds)( float targetVol, int time );
 	void (*RawSamples)(int stream, int samples, int rate, int width, int channels, const byte *data, float volume, int entityNum);

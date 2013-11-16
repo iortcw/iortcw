@@ -1776,6 +1776,20 @@ void S_Base_StopEntStreamingSound( int entnum ) {
 
 /*
 ======================
+S_GetVoiceAmplitude
+======================
+*/
+int S_Base_GetVoiceAmplitude( int entityNum ) {
+	if ( entityNum >= MAX_CLIENTS ) {
+		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
+		return 0;
+	}
+
+	return (int)s_entityTalkAmplitude[entityNum] * 2;
+}
+
+/*
+======================
 S_FreeOldestSound
 ======================
 */
@@ -1872,6 +1886,7 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	si->FadeAllSounds = S_Base_FadeAllSounds;
 	si->StartStreamingSound = S_Base_StartStreamingSound;
 	si->StopEntStreamingSound = S_Base_StopEntStreamingSound;
+	si->GetVoiceAmplitude = S_Base_GetVoiceAmplitude;
 	si->RawSamples = S_Base_RawSamples;
 	si->StopAllSounds = S_Base_StopAllSounds;
 	si->ClearLoopingSounds = S_Base_ClearLoopingSounds;

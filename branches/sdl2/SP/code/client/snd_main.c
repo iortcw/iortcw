@@ -53,6 +53,7 @@ static qboolean S_ValidSoundInterface( soundInterface_t *si )
 	if( !si->FadeAllSounds ) return qfalse;
 	if( !si->StartStreamingSound ) return qfalse;
 	if( !si->StopEntStreamingSound ) return qfalse;
+	if( !si->GetVoiceAmplitude ) return qfalse;
 	if( !si->RawSamples ) return qfalse;
 	if( !si->StopAllSounds ) return qfalse;
 	if( !si->ClearLoopingSounds ) return qfalse;
@@ -187,6 +188,20 @@ void S_StopEntStreamingSound( int entNum )
 		si.StopEntStreamingSound( entNum );
 	}
 }
+
+/* 		
+================= 		
+S_GetVoiceAmplitude 		
+================= 		
+*/ 		
+int S_GetVoiceAmplitude( int entityNum ) 		
+{
+	if( si.GetVoiceAmplitude ) {
+		return si.GetVoiceAmplitude( entityNum );
+	}
+	return 0;
+}
+
 
 /*
 =================

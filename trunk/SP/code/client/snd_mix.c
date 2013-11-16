@@ -438,20 +438,6 @@ void S_SetVoiceAmplitudeFromMuLaw( const sfx_t *sc, int sampleOffset, int count,
 }
 
 /*
-======================
-S_GetVoiceAmplitude
-======================
-*/
-int S_GetVoiceAmplitude( int entityNum ) {
-	if ( entityNum >= MAX_CLIENTS ) {
-		Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
-		return 0;
-	}
-
-	return (int)s_entityTalkAmplitude[entityNum];
-}
-
-/*
 ===============================================================================
 
 CHANNEL MIXING
@@ -891,7 +877,7 @@ void S_PaintChannelFromMuLaw( channel_t *ch, sfx_t *sc, int count, int sampleOff
 	}
 }
 
-#define TALK_FUTURE_SEC 0.25        // go this far into the future (seconds)
+#define TALK_FUTURE_SEC 0.01        // go this far into the future (seconds)
 
 /*
 ===================
@@ -943,7 +929,7 @@ void S_PaintChannels( int endtime ) {
 
 					// we need to go into the future, since the interpolated behaviour of the facial
 					// animation creates lag in the time it takes to display the current facial frame
-					talktime = s_paintedtime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
+					talktime = s_paintedtime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
 					vstop = ( talktime + 100 < s_rawend[stream] ) ? talktime + 100 : s_rawend[stream];
 					sfx_count = 0;
 
@@ -997,7 +983,7 @@ void S_PaintChannels( int endtime ) {
 					int talkofs, talkcnt, talktime;
 					// we need to go into the future, since the interpolated behaviour of the facial
 					// animation creates lag in the time it takes to display the current facial frame
-					talktime = ltime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
+					talktime = ltime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
 					talkofs = talktime - ch->startSample;
 					talkcnt = 100;
 					if ( talkofs + talkcnt < sc->soundLength ) {
@@ -1055,7 +1041,7 @@ void S_PaintChannels( int endtime ) {
 						int talkofs, talkcnt, talktime;
 						// we need to go into the future, since the interpolated behaviour of the facial
 						// animation creates lag in the time it takes to display the current facial frame
-						talktime = ltime + (int)( TALK_FUTURE_SEC * 11 * 1000 );
+						talktime = ltime + (int)( TALK_FUTURE_SEC * 22 * 1000 );
 						talkofs = talktime % sc->soundLength;
 						talkcnt = 100;
 						if ( talkofs + talkcnt < sc->soundLength ) {
