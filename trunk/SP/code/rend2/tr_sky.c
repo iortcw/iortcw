@@ -440,7 +440,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
-		GLSL_SetUniformMatrix16(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
+		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 		
 		color[0] = 
 		color[1] = 
@@ -456,7 +456,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
-		GLSL_SetUniformMatrix16(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
+		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 
 		color[0] = 
 		color[1] = 
@@ -559,7 +559,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
-		GLSL_SetUniformMatrix16(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
+		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 		
 		color[0] = 
 		color[1] = 
@@ -575,7 +575,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
-		GLSL_SetUniformMatrix16(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
+		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 		
 		color[0] = 
 		color[1] = 
@@ -1013,10 +1013,10 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 	//qglTranslatef (backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2]);
 	{
 		// FIXME: this could be a lot cleaner
-		matrix_t translation, modelview;
+		mat4_t translation, modelview;
 
-		Matrix16Translation( backEnd.viewParms.or.origin, translation );
-		Matrix16Multiply( backEnd.viewParms.world.modelMatrix, translation, modelview );
+		Mat4Translation( backEnd.viewParms.or.origin, translation );
+		Mat4Multiply( backEnd.viewParms.world.modelMatrix, translation, modelview );
 		GL_SetModelviewMatrix( modelview );
 	}
 
@@ -1129,18 +1129,18 @@ void RB_StageIteratorSky( void ) {
 
 	// draw the outer skybox
 	if ( tess.shader->sky.outerbox[0] && tess.shader->sky.outerbox[0] != tr.defaultImage ) {
-		matrix_t oldmodelview;
+		mat4_t oldmodelview;
 
 		GL_State( 0 );
 		//qglTranslatef( backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2] );
 
 		{
 			// FIXME: this could be a lot cleaner
-			matrix_t trans, product;
+			mat4_t trans, product;
 
-			Matrix16Copy( glState.modelview, oldmodelview );
-			Matrix16Translation( backEnd.viewParms.or.origin, trans );
-			Matrix16Multiply( glState.modelview, trans, product );
+			Mat4Copy( glState.modelview, oldmodelview );
+			Mat4Translation( backEnd.viewParms.or.origin, trans );
+			Mat4Multiply( glState.modelview, trans, product );
 			GL_SetModelviewMatrix( product );
 
 		}
@@ -1159,18 +1159,18 @@ void RB_StageIteratorSky( void ) {
 	// draw the inner skybox
 	// Rafael - drawing inner skybox
 	if ( tess.shader->sky.innerbox[0] && tess.shader->sky.innerbox[0] != tr.defaultImage ) {
-		matrix_t oldmodelview;
+		mat4_t oldmodelview;
 
 		GL_State( 0 );
 		//qglTranslatef( backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2] );
 
 		{
 			// FIXME: this could be a lot cleaner
-			matrix_t trans, product;
+			mat4_t trans, product;
 
-			Matrix16Copy( glState.modelview, oldmodelview );
-			Matrix16Translation( backEnd.viewParms.or.origin, trans );
-			Matrix16Multiply( glState.modelview, trans, product );
+			Mat4Copy( glState.modelview, oldmodelview );
+			Mat4Translation( backEnd.viewParms.or.origin, trans );
+			Mat4Multiply( glState.modelview, trans, product );
 			GL_SetModelviewMatrix( product );
 
 		}
