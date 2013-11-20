@@ -982,6 +982,7 @@ static void RB_SurfaceLightningBolt( void ) {
 * The inputs to this routing seem to always be close to length = 1.0 (about 0.6 to 2.0)
 * This means that we don't have to worry about zero length or enormously long vectors.
 */
+#if 0 // Unused in rend2
 static void VectorArrayNormalize( vec4_t *normals, unsigned int count ) {
 //    assert(count);
 
@@ -1028,14 +1029,15 @@ static void VectorArrayNormalize( vec4_t *normals, unsigned int count ) {
 		normals++;
 	}
 #endif
-
 }
+#endif
 
 
 
 /*
 ** LerpMeshVertexes
 */
+#if 0 // Unused
 #if idppc_altivec
 static void LerpMeshVertexes_altivec(md3Surface_t *surf, float backlerp)
 {
@@ -1164,6 +1166,7 @@ static void LerpMeshVertexes_altivec(md3Surface_t *surf, float backlerp)
     	VectorArrayNormalize((vec4_t *)tess.normal[tess.numVertexes], numVerts);
    	}
 }
+#endif
 #endif
 
 static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
