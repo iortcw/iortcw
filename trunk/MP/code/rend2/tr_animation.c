@@ -1535,7 +1535,7 @@ static int R_MDRCullModel( mdrHeader_t *header, trRefEntity_t *ent ) {
 			switch ( R_CullLocalPointAndRadius( newFrame->localOrigin, newFrame->radius ) )
 			{
 				// Ummm... yeah yeah I know we don't really have an md3 here.. but we pretend
-				// we do. After all, the purpose of md4s are not that different, are they?
+				// we do. After all, the purpose of mdrs are not that different, are they?
 				
 				case CULL_OUT:
 					tr.pc.c_sphere_cull_md3_out++;
@@ -1786,7 +1786,7 @@ void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
 RB_MDRSurfaceAnim
 ==============
 */
-void RB_MDRSurfaceAnim( md4Surface_t *surface )
+void RB_MDRSurfaceAnim( mdrSurface_t *surface )
 {
 	int				i, j, k;
 	float			frontlerp, backlerp;
@@ -1798,7 +1798,7 @@ void RB_MDRSurfaceAnim( md4Surface_t *surface )
 	mdrHeader_t		*header;
 	mdrFrame_t		*frame;
 	mdrFrame_t		*oldFrame;
-	mdrBone_t		bones[MD4_MAX_BONES], *bonePtr, *bone;
+	mdrBone_t		bones[MDR_MAX_BONES], *bonePtr, *bone;
 
 	int			frameSize;
 

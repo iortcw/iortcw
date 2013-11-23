@@ -1546,7 +1546,7 @@ static qboolean R_LoadMDR( model_t *mod, void *buffer, int filesize, const char 
 	LL(pinmodel->ofsFrames);
 
 	// This is a model that uses some type of compressed Bones. We don't want to uncompress every bone for each rendered frame
-	// over and over again, we'll uncompress it in this function already, so we must adjust the size of the target md4.
+	// over and over again, we'll uncompress it in this function already, so we must adjust the size of the target mdr.
 	if(pinmodel->ofsFrames < 0)
 	{
 		// mdrFrame_t is larger than mdrCompFrame_t:
