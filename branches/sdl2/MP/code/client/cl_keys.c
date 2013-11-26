@@ -1408,14 +1408,6 @@ void Field_KeyDownEvent( field_t *edit, int key ) {
 			}
 			break;
 
-		case K_BACKSPACE:
-			if ( edit->cursor > 0 ) {
-				memmove( edit->buffer + edit->cursor - 1,
-						edit->buffer + edit->cursor, len + 1 - edit->cursor );
-				edit->cursor--;
-			}
-			break;
-
 		case K_RIGHTARROW:
 			if ( edit->cursor < len ) {
 				edit->cursor++;
