@@ -1136,6 +1136,8 @@ image_t *R_CreateImageExt( const char *name, byte *pic, int width, int height, i
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode );
 
+	// FIXME: this stops fog from setting border color?
+	glState.currenttextures[glState.currenttmu] = 0;
 	qglBindTexture( GL_TEXTURE_2D, 0 );
 
 	if ( image->TMU == 1 ) {
