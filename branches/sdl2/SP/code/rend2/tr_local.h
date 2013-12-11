@@ -1562,6 +1562,8 @@ typedef struct {
 
 	qboolean depthClamp;
 	qboolean seamlessCubeMap;
+
+	GLenum packedNormalDataType;
 } glRefConfig_t;
 
 typedef struct {
@@ -1922,6 +1924,7 @@ extern  cvar_t  *r_ext_texture_float;
 extern  cvar_t  *r_arb_half_float_pixel;
 extern  cvar_t  *r_ext_framebuffer_multisample;
 extern  cvar_t  *r_arb_seamless_cube_map;
+extern  cvar_t  *r_arb_vertex_type_2_10_10_10_rev;
 
 extern cvar_t  *r_waterFogColor;        //----(SA)	added
 extern cvar_t  *r_mapFogColor;          //----(SA)	added
@@ -2269,13 +2272,13 @@ typedef struct shaderCommands_s
 {
 	glIndex_t	indexes[SHADER_MAX_INDEXES] QALIGN(16);
 	vec4_t		xyz[SHADER_MAX_VERTEXES] QALIGN(16);
-	uint8_t		normal[SHADER_MAX_VERTEXES][4] QALIGN(16);
+	uint32_t	normal[SHADER_MAX_VERTEXES] QALIGN(16);
 #ifdef USE_VERT_TANGENT_SPACE
-	uint8_t		tangent[SHADER_MAX_VERTEXES][4] QALIGN(16);
+	uint32_t	tangent[SHADER_MAX_VERTEXES] QALIGN(16);
 #endif
 	vec2_t		texCoords[SHADER_MAX_VERTEXES][2] QALIGN(16);
 	vec4_t		vertexColors[SHADER_MAX_VERTEXES] QALIGN(16);
-	vec4_t      lightdir[SHADER_MAX_VERTEXES] QALIGN(16);
+	uint32_t    lightdir[SHADER_MAX_VERTEXES] QALIGN(16);
 	//int			vertexDlightBits[SHADER_MAX_VERTEXES] QALIGN(16);
 
 	VBO_t       *vbo;
@@ -2441,6 +2444,12 @@ VERTEX BUFFER OBJECTS
 
 ============================================================
 */
+
+uint32_t R_VboPackTangent(vec4_t v);
+uint32_t R_VboPackNormal(vec3_t v);
+void R_VboUnpackTangent(vec4_t v, uint32_t b);
+void R_VboUnpackNormal(vec3_t v, uint32_t b);
+
 VBO_t          *R_CreateVBO(const char *name, byte * vertexes, int vertexesSize, vboUsage_t usage);
 VBO_t          *R_CreateVBO2(const char *name, int numVertexes, srfVert_t * vertexes, uint32_t stateBits, vboUsage_t usage);
 

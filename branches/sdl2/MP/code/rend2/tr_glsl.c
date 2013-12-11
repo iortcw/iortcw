@@ -1688,7 +1688,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 	{
 		GLimp_LogComment("qglVertexAttribPointerARB( ATTR_INDEX_NORMAL )\n");
 
-		qglVertexAttribPointerARB(ATTR_INDEX_NORMAL, 3, GL_UNSIGNED_BYTE, GL_TRUE, vbo->stride_normal, BUFFER_OFFSET(vbo->ofs_normal + newFrame * vbo->size_normal));
+		qglVertexAttribPointerARB(ATTR_INDEX_NORMAL, 4, glRefConfig.packedNormalDataType, GL_TRUE, vbo->stride_normal, BUFFER_OFFSET(vbo->ofs_normal + newFrame * vbo->size_normal));
 		glState.vertexAttribPointersSet |= ATTR_NORMAL;
 	}
 
@@ -1697,7 +1697,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 	{
 		GLimp_LogComment("qglVertexAttribPointerARB( ATTR_INDEX_TANGENT )\n");
 
-		qglVertexAttribPointerARB(ATTR_INDEX_TANGENT, 4, GL_UNSIGNED_BYTE, GL_TRUE, vbo->stride_tangent, BUFFER_OFFSET(vbo->ofs_tangent + newFrame * vbo->size_normal)); // FIXME
+		qglVertexAttribPointerARB(ATTR_INDEX_TANGENT, 4, glRefConfig.packedNormalDataType, GL_TRUE, vbo->stride_tangent, BUFFER_OFFSET(vbo->ofs_tangent + newFrame * vbo->size_normal)); // FIXME
 		glState.vertexAttribPointersSet |= ATTR_TANGENT;
 	}
 #endif
@@ -1714,7 +1714,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 	{
 		GLimp_LogComment("qglVertexAttribPointerARB( ATTR_INDEX_LIGHTDIRECTION )\n");
 
-		qglVertexAttribPointerARB(ATTR_INDEX_LIGHTDIRECTION, 3, GL_FLOAT, 0, vbo->stride_lightdir, BUFFER_OFFSET(vbo->ofs_lightdir));
+		qglVertexAttribPointerARB(ATTR_INDEX_LIGHTDIRECTION, 4, glRefConfig.packedNormalDataType, GL_TRUE, vbo->stride_lightdir, BUFFER_OFFSET(vbo->ofs_lightdir));
 		glState.vertexAttribPointersSet |= ATTR_LIGHTDIRECTION;
 	}
 
@@ -1730,7 +1730,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 	{
 		GLimp_LogComment("qglVertexAttribPointerARB( ATTR_INDEX_NORMAL2 )\n");
 
-		qglVertexAttribPointerARB(ATTR_INDEX_NORMAL2, 3, GL_UNSIGNED_BYTE, GL_TRUE, vbo->stride_normal, BUFFER_OFFSET(vbo->ofs_normal + oldFrame * vbo->size_normal));
+		qglVertexAttribPointerARB(ATTR_INDEX_NORMAL2, 4, glRefConfig.packedNormalDataType, GL_TRUE, vbo->stride_normal, BUFFER_OFFSET(vbo->ofs_normal + oldFrame * vbo->size_normal));
 		glState.vertexAttribPointersSet |= ATTR_NORMAL2;
 	}
 
@@ -1739,7 +1739,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 	{
 		GLimp_LogComment("qglVertexAttribPointerARB( ATTR_INDEX_TANGENT2 )\n");
 
-		qglVertexAttribPointerARB(ATTR_INDEX_TANGENT2, 4, GL_UNSIGNED_BYTE, GL_TRUE, vbo->stride_tangent, BUFFER_OFFSET(vbo->ofs_tangent + oldFrame * vbo->size_normal)); // FIXME
+		qglVertexAttribPointerARB(ATTR_INDEX_TANGENT2, 4, glRefConfig.packedNormalDataType, GL_TRUE, vbo->stride_tangent, BUFFER_OFFSET(vbo->ofs_tangent + oldFrame * vbo->size_normal)); // FIXME
 		glState.vertexAttribPointersSet |= ATTR_TANGENT2;
 	}
 #endif

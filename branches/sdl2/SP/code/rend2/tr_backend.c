@@ -674,7 +674,7 @@ void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitD
 
 void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNumVerts, int numSurfVerts ) {
 	float *xyzTrav;
-	uint8_t *normTrav;
+	uint32_t *normTrav;
 	vec3_t hitPos, hitDir, v, testDir;
 	float bestHitDist, thisDist;
 	qboolean foundHit;
@@ -702,9 +702,9 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 		foundHit = qfalse;
 
 		// for each vertex
-		for (   j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = tess.normal[oldNumVerts];
+		for (   j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = &tess.normal[oldNumVerts];
 				j < numSurfVerts;
-				j++, xyzTrav += 4, normTrav += 4 ) {
+				j++, xyzTrav += 4, normTrav++ ) {
 			vec3_t fNormTrav;
 
 			// if this vert has been hit enough times already
@@ -712,9 +712,7 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 				continue;
 			}
 
-			fNormTrav[0] = normTrav[0] / 127.5f - 1.0f;
-			fNormTrav[1] = normTrav[1] / 127.5f - 1.0f;
-			fNormTrav[2] = normTrav[2] / 127.5f - 1.0f;
+			R_VboUnpackNormal(fNormTrav, *normTrav);
 
 			// if this normal faces the wrong way, reject it
 			if ( DotProduct( fNormTrav, hitDir ) > 0 ) {
@@ -800,16 +798,16 @@ void RB_ZombieFXShowFleshHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNu
 void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeScale ) {
 	byte *vertColors;
 	float   *xyz;
-	uint8_t *norm;
+	uint32_t *norm;
 	vec3_t fNorm;
 	int i;
 	float alpha;
 
 	vertColors = (byte *)tess.vertexColors[oldNumVerts];
 	xyz = tess.xyz[oldNumVerts];
-	norm = tess.normal[oldNumVerts];
+	norm = &tess.normal[oldNumVerts];
 
-	for ( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm += 4 ) {
+	for ( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm++ ) {
 		alpha = 255.0 * ( (float)( 1 + i % 3 ) / 3.0 ) * deltaTimeScale * 2;
 		if ( alpha > 255.0 ) {
 			alpha = 255.0;
@@ -820,9 +818,7 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
 			vertColors[3] -= (byte)alpha;
 		}
 
-		fNorm[0] = norm[0] / 127.5f - 1.0f;
-		fNorm[1] = norm[1] / 127.5f - 1.0f;
-		fNorm[2] = norm[2] / 127.5f - 1.0f;
+		R_VboUnpackNormal(fNorm, *norm);
 
 		// skin shrinks with age
 		VectorMA( xyz, -2.0 * deltaTimeScale, fNorm, xyz );
