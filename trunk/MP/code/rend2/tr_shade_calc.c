@@ -151,13 +151,16 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 		{
 			float off = ( xyz[0] + xyz[1] + xyz[2] ) * ds->deformationSpread;
 			float dot;
+			vec3_t fNormal;
+
+			R_VboUnpackNormal(fNormal, *normal);
 
 			scale = WAVEVALUE( table, ds->deformationWave.base,
 							   ds->deformationWave.amplitude,
 							   ds->deformationWave.phase + off,
 							   ds->deformationWave.frequency );
 
-			dot = DotProduct( worldUp, normal );
+			dot = DotProduct( worldUp, fNormal );
 
 			if ( dot * scale > 0 ) {
 				if ( inverse ) {

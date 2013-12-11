@@ -67,7 +67,7 @@ static short           *sh, *sh2;
 static float           *pf;
 static vec3_t angles, tangles, torsoParentOffset, torsoAxis[3], tmpAxis[3];
 static float           *tempVert;
-static uint8_t         *tempNormal;
+static uint32_t         *tempNormal;
 static vec3_t vec, v2, dir;
 static float diff, a1, a2;
 static int render_count;
@@ -1311,8 +1311,8 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 	numVerts = surface->numVerts;
 	v = ( mdsVertex_t * )( (byte *)surface + surface->ofsVerts );
 	tempVert = ( float * )( tess.xyz + baseVertex );
-	tempNormal = ( uint8_t * )( tess.normal + baseVertex );
-	for ( j = 0; j < render_count; j++, tempVert += 4, tempNormal += 4 ) {
+	tempNormal = ( uint32_t * )( tess.normal + baseVertex );
+	for ( j = 0; j < render_count; j++, tempVert += 4, tempNormal++ ) {
 		mdsWeight_t *w;
 		vec3_t newNormal;
 
@@ -1325,10 +1325,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 		}
 		LocalMatrixTransformVector( v->normal, bones[v->weights[0].boneIndex].matrix, newNormal );
 		
-		tempNormal[0] = (uint8_t)(newNormal[0] * 127.5f + 128.0f);
-		tempNormal[1] = (uint8_t)(newNormal[1] * 127.5f + 128.0f);
-		tempNormal[2] = (uint8_t)(newNormal[2] * 127.5f + 128.0f);
-		tempNormal[3] = 0;
+		*tempNormal = R_VboPackNormal(newNormal);
 
 		tess.texCoords[baseVertex + j][0][0] = v->texCoords[0];
 		tess.texCoords[baseVertex + j][0][1] = v->texCoords[1];
@@ -1377,7 +1374,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 
 			// show mesh edges
 			tempVert = ( float * )( tess.xyz + baseVertex );
-			tempNormal = ( uint8_t * )( tess.normal + baseVertex );
+			tempNormal = ( uint32_t * )( tess.normal + baseVertex );
 
 			GL_Bind( tr.whiteImage );
 			qglLineWidth( 1 );
