@@ -8,6 +8,6 @@ void main()
 #if defined(USE_WOLF_FOG_LINEAR) || defined(USE_WOLF_FOG_EXPONENTIAL)
 	gl_FragColor.a *= var_Scale;
 #else
-	gl_FragColor.a *= sqrt(clamp(var_Scale, 0.0, 1.0));
+	gl_FragColor.a = sqrt(clamp(var_Scale, 0.0, 1.0));
 #endif
 }
