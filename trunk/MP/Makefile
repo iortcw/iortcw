@@ -269,9 +269,9 @@ NDIR=$(MOUNT_DIR)/null
 UIDIR=$(MOUNT_DIR)/ui
 JPDIR=$(MOUNT_DIR)/jpeg-8c
 SPEEXDIR=$(MOUNT_DIR)/libspeex
-OGGDIR=$(MOUNT_DIR)/libogg-1.3.0
-OPUSDIR=$(MOUNT_DIR)/opus-1.0.2
-OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.2
+OGGDIR=$(MOUNT_DIR)/libogg-1.3.1
+OPUSDIR=$(MOUNT_DIR)/opus-1.1
+OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.4
 ZDIR=$(MOUNT_DIR)/zlib
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
@@ -1827,10 +1827,17 @@ Q3OBJ += \
   $(B)/client/opus/opus_decoder.o \
   $(B)/client/opus/opus_encoder.o \
   $(B)/client/opus/opus_multistream.o \
+  $(B)/client/opus/opus_multistream_encoder.o \
+  $(B)/client/opus/opus_multistream_decoder.o \
   $(B)/client/opus/repacketizer.o \
+  $(B)/client/opus/analysis.o \
+  $(B)/client/opus/mlp.o \
+  $(B)/client/opus/mlp_data.o \
   \
   $(B)/client/opus/bands.o \
   $(B)/client/opus/celt.o \
+  $(B)/client/opus/celt_encoder.o \
+  $(B)/client/opus/celt_decoder.o \
   $(B)/client/opus/cwrs.o \
   $(B)/client/opus/entcode.o \
   $(B)/client/opus/entdec.o \
@@ -1960,6 +1967,10 @@ Q3OBJ += \
   $(B)/client/internal.o \
   $(B)/client/opusfile.o \
   $(B)/client/stream.o
+ifeq ($(PLATFORM),mingw32)
+Q3OBJ += \
+  $(B)/client/wincerts.o
+endif
 endif
 endif
 
