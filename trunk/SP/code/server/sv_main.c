@@ -31,6 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef USE_VOIP
 cvar_t *sv_voip;
+cvar_t *sv_voipProtocol;
 #endif
 
 serverStatic_t svs;                 // persistant server info
@@ -683,8 +684,8 @@ void SVC_Info( netadr_t from ) {
 	Info_SetValueForKey( infostring, "g_needpass", va( "%d", Cvar_VariableIntegerValue( "g_needpass" ) ) );
 
 #ifdef USE_VOIP
-	if (sv_voip->integer) {
-		Info_SetValueForKey( infostring, "voip", va("%i", sv_voip->integer ) );
+	if (sv_voipProtocol->string && *sv_voipProtocol->string) {
+		Info_SetValueForKey( infostring, "voip", sv_voipProtocol->string );
 	}
 #endif
 
