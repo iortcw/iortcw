@@ -509,6 +509,8 @@ static void Cmd_TokenizeString2( const char *text_in, qboolean ignoreQuotes ) {
 		return;
 	}
 
+	Q_strncpyz( cmd_cmd, text_in, sizeof( cmd_cmd ) );
+
 	text = text_in;
 	textOut = cmd_tokenized;
 
