@@ -1259,10 +1259,12 @@ This routine would be a bit simpler with a goto but i abstained
 */
 static void SV_VerifyPaks_f( client_t *cl ) {
 	int nChkSum1, nChkSum2, nClientPaks, nServerPaks, i, j, nCurArg;
+	int nChkSumQvm1, nChkSumQvm2;
 	int nClientChkSum[1024];
 	int nServerChkSum[1024];
 	const char *pPaks, *pArg;
 	qboolean bGood = qtrue;
+	qboolean bQvmGood = qtrue;
 
 	// if we are pure, we "expect" the client to load certain things from
 	// certain pk3 files, namely we want the client to have loaded the
@@ -1274,6 +1276,11 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 		bGood = ( FS_FileIsInPAK( Sys_GetDLLName( "cgame" ), &nChkSum1 ) == 1) ;
 		if ( bGood ) {
 			bGood = ( FS_FileIsInPAK( Sys_GetDLLName( "ui" ), &nChkSum2 ) == 1) ;
+		}
+
+		bQvmGood = ( FS_FileIsInPAK( "vm/cgame.mp.qvm", &nChkSumQvm1 ) == 1) ;
+		if ( bQvmGood ) {
+			bQvmGood = ( FS_FileIsInPAK( "vm/ui.mp.qvm", &nChkSumQvm2 ) == 1) ;
 		}
 
 		nClientPaks = Cmd_Argc();
@@ -1307,13 +1314,13 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 			}
 			// verify first to be the cgame checksum
 			pArg = Cmd_Argv( nCurArg++ );
-			if ( !pArg || *pArg == '@' || atoi( pArg ) != nChkSum1 ) {
+			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum1 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm1 ) ) ) {
 				bGood = qfalse;
 				break;
 			}
 			// verify the second to be the ui checksum
 			pArg = Cmd_Argv( nCurArg++ );
-			if ( !pArg || *pArg == '@' || atoi( pArg ) != nChkSum2 ) {
+			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum1 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm2 ) ) ) {
 				bGood = qfalse;
 				break;
 			}

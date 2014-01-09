@@ -1524,9 +1524,10 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 	if(!fs_searchpaths)
 		Com_Error(ERR_FATAL, "Filesystem call made without initialization");
 
-	Q_strncpyz(dllName, Sys_GetDLLName(name), sizeof(dllName));
 	if(enableQvm)
 		Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.mp.qvm", name);
+
+	Q_strncpyz(dllName, Sys_GetDLLName(name), sizeof(dllName));
 
 	lastSearch = *startSearch;
 	if(*startSearch == NULL)
@@ -1542,18 +1543,18 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 
 			netpath = FS_BuildOSPath(dir->path, dir->gamedir, dllName);
 
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
+			{
+				*startSearch = search;
+				return VMI_COMPILED;
+			}
+
 			if(FS_FileInPathExists(netpath))
 			{
 				Q_strncpyz(found, netpath, foundlen);
 				*startSearch = search;
 				
 				return VMI_NATIVE;
-			}
-
-			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
-			{
-				*startSearch = search;
-				return VMI_COMPILED;
 			}
 		}
 		else if(search->pack)
