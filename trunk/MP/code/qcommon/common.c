@@ -78,6 +78,7 @@ cvar_t	*com_pipefile;
 cvar_t  *com_showtrace;
 cvar_t  *com_fsgame;
 cvar_t  *com_version;
+cvar_t	*com_legacyversion;
 cvar_t  *com_blood;
 cvar_t  *com_buildScript;   // for automated data building scripts
 cvar_t  *com_introPlayed;
@@ -2822,8 +2823,9 @@ void Com_Init( char *commandLine ) {
 	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
 	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, __DATE__ );
 	com_fsgame = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
+	com_legacyversion = Cvar_Get( "com_legacyversion", "0", CVAR_ARCHIVE );
 
-	if ( strcmp(com_fsgame->string,"banimod") == 0 || strcmp(com_fsgame->string,"bani") == 0 ) {
+	if ( strcmp(com_fsgame->string,"banimod") == 0 || strcmp(com_fsgame->string,"bani") == 0 || com_legacyversion->integer ) {
 			com_version = Cvar_Get( "version", t, CVAR_ROM | CVAR_SERVERINFO );
 	} else {
 			com_version = Cvar_Get( "version", s, CVAR_ROM | CVAR_SERVERINFO );
