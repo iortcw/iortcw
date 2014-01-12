@@ -879,3 +879,7 @@ void Sys_OpenURL( char *url, qboolean doexit ) {                // NERVE - SMF
 	}
 }
 //----(SA)	end
+
+char* Sys_GetDLLName( const char *name ) {
+	return va("%s_sp_" ARCH_STRING DLL_EXT, name);
+}

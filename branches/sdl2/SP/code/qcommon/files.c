@@ -1263,22 +1263,6 @@ qboolean FS_IsDemoExt(const char *filename, int namelen)
 
 /*
 ===========
-FS_ShiftedStrStr
-===========
-*/
-char *FS_ShiftedStrStr( const char *string, const char *substring, int shift ) {
-	char buf[MAX_STRING_TOKENS];
-	int i;
-
-	for ( i = 0; substring[i]; i++ ) {
-		buf[i] = substring[i] + shift;
-	}
-	buf[i] = '\0';
-	return strstr( string, buf );
-}
-
-/*
-===========
 FS_FOpenFileReadDir
 
 Tries opening file "filename" in searchpath "search"
@@ -1433,16 +1417,17 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 						}
 					}
 
-					// cgame.qvm	- 7
-					// \`Zf^'jof
-					if ( !( pak->referenced & FS_CGAME_REF ) && FS_ShiftedStrStr( filename, "\\`Zf^'jof", 7 ) ) {
+					if(strstr(filename, Sys_GetDLLName( "cgame" )))
 						pak->referenced |= FS_CGAME_REF;
-					}
-					// ui.qvm		- 5
-					// pd)lqh
-					if ( !( pak->referenced & FS_UI_REF ) && FS_ShiftedStrStr( filename, "pd)lqh", 5 ) ) {
+
+					if(strstr(filename, Sys_GetDLLName( "ui" )))
 						pak->referenced |= FS_UI_REF;
-					}
+
+					if(strstr(filename, "cgame.mp.qvm"))
+						pak->referenced |= FS_CGAME_REF;
+
+					if(strstr(filename, "ui.mp.qvm"))
+						pak->referenced |= FS_UI_REF;
 
 					if(uniqueFILE)
 					{
@@ -1614,9 +1599,9 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, i
 		Com_Error(ERR_FATAL, "Filesystem call made without initialization");
 
 	if(enableDll)
-		Com_sprintf(dllName, sizeof(dllName), "%s" ARCH_STRING DLL_EXT, name);
+		Q_strncpyz(dllName, Sys_GetDLLName(name), sizeof(dllName));
 
-	Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.qvm", name);
+	Com_sprintf(qvmName, sizeof(qvmName), "vm/%s.sp.qvm", name);
 
 	lastSearch = *startSearch;
 	if(*startSearch == NULL)

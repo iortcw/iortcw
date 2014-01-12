@@ -1014,3 +1014,7 @@ void Sys_OpenURL( char *url, qboolean doexit ) {
 	Sys_StartProcess( cmdline, doexit );
 
 }
+
+char* Sys_GetDLLName( const char *name ) {
+	return va("%s.sp." ARCH_STRING DLL_EXT, name);
+}
