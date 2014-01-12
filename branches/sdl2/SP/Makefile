@@ -2520,6 +2520,10 @@ ifneq ($(BUILD_CLIENT),0)
     ifneq ($(BUILD_RENDERER_REND2),0)
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/renderer_sp_rend2_$(SHLIBNAME) $(COPYBINDIR)/renderer_sp_rend2_$(SHLIBNAME)
     endif
+  else
+    ifneq ($(BUILD_RENDERER_REND2),0)
+	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(CLIENTBIN)_rend2$(FULLBINEXT) $(COPYBINDIR)/$(CLIENTBIN)_rend2$(FULLBINEXT)
+    endif
   endif
 endif
 
