@@ -713,7 +713,7 @@ void CL_ParseVoip ( msg_t *msg, qboolean ignoreData ) {
 	const int flags = MSG_ReadBits(msg, VOIP_FLAGCNT);
 	unsigned char encoded[4000];
 	int	numSamples;
-	int seqdiff = sequence - clc.voipIncomingSequence[sender];
+	int seqdiff;
 	int written = 0;
 	int i;
 
@@ -757,6 +757,8 @@ void CL_ParseVoip ( msg_t *msg, qboolean ignoreData ) {
 	// !!! FIXME: make sure data is narrowband? Does decoder handle this?
 
 	Com_DPrintf("VoIP: packet accepted!\n");
+
+	seqdiff = sequence - clc.voipIncomingSequence[sender];
 
 	// This is a new "generation" ... a new recording started, reset the bits.
 	if (generation != clc.voipIncomingGeneration[sender]) {
