@@ -40,9 +40,9 @@ BIN_OBJ="
 	build/release-darwin-${BUILDARCH}/iowolfsp.${BUILDARCH}
 "
 BASE_OBJ="
-	build/release-darwin-${BUILDARCH}/$BASEDIR/cgame${ARCH}.dylib
-	build/release-darwin-${BUILDARCH}/$BASEDIR/ui${ARCH}.dylib
-	build/release-darwin-${BUILDARCH}/$BASEDIR/qagame${ARCH}.dylib
+	build/release-darwin-${BUILDARCH}/$BASEDIR/cgame.sp.${ARCH}.dylib
+	build/release-darwin-${BUILDARCH}/$BASEDIR/ui.sp.${ARCH}.dylib
+	build/release-darwin-${BUILDARCH}/$BASEDIR/qagame.sp.${ARCH}.dylib
 "
 RENDER_OBJ="
 	build/release-darwin-${BUILDARCH}/renderer_sp_opengl1_${ARCH}.dylib

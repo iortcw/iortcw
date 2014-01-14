@@ -13,15 +13,15 @@ BIN_OBJ="
 	build/release-darwin-ppc/iowolfsp.ppc
 "
 BASE_OBJ="
-	build/release-darwin-x86_64/$BASEDIR/cgamex86_64.dylib
-	build/release-darwin-x86/$BASEDIR/cgamei386.dylib
-	build/release-darwin-ppc/$BASEDIR/cgameppc.dylib
-	build/release-darwin-x86_64/$BASEDIR/uix86_64.dylib
-	build/release-darwin-x86/$BASEDIR/uii386.dylib
-	build/release-darwin-ppc/$BASEDIR/uippc.dylib
-	build/release-darwin-x86_64/$BASEDIR/qagamex86_64.dylib
-	build/release-darwin-x86/$BASEDIR/qagamei386.dylib
-	build/release-darwin-ppc/$BASEDIR/qagameppc.dylib
+	build/release-darwin-x86_64/$BASEDIR/cgame.sp.x86_64.dylib
+	build/release-darwin-x86/$BASEDIR/cgame.sp.i386.dylib
+	build/release-darwin-ppc/$BASEDIR/cgame.sp.ppc.dylib
+	build/release-darwin-x86_64/$BASEDIR/ui.sp.x86_64.dylib
+	build/release-darwin-x86/$BASEDIR/ui.sp.i386.dylib
+	build/release-darwin-ppc/$BASEDIR/ui.sp.ppc.dylib
+	build/release-darwin-x86_64/$BASEDIR/qagame.sp.x86_64.dylib
+	build/release-darwin-x86/$BASEDIR/qagame.sp.i386.dylib
+	build/release-darwin-ppc/$BASEDIR/qagame.sp.ppc.dylib
 "
 RENDER_OBJ="
 	build/release-darwin-x86_64/renderer_sp_opengl1_x86_64.dylib
