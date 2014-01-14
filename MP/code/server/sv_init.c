@@ -473,7 +473,7 @@ static void SV_TouchCGame( void ) {
 	fileHandle_t f;
 	char filename[MAX_QPATH];
 
-	Com_sprintf( filename, sizeof( filename ), "vm/%s.qvm", "cgame" );
+	Com_sprintf( filename, sizeof( filename ), "vm/%s.mp.qvm", "cgame" );
 	FS_FOpenFileRead( filename, &f, qfalse );
 	if ( f ) {
 		FS_FCloseFile( f );
@@ -491,7 +491,8 @@ void SV_TouchCGameDLL( void ) {
 	fileHandle_t f;
 	char *filename;
 
-	filename = Sys_GetDLLName( "cgame" );
+	// Only touch the legacy dll since we have qvm support
+	filename = "cgame_mp_x86.dll";
 	FS_FOpenFileRead_Filtered( filename, &f, qfalse, FS_EXCLUDE_DIR );
 	if ( f ) {
 		FS_FCloseFile( f );
