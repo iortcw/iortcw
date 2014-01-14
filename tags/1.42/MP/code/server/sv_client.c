@@ -1273,9 +1273,10 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 
 		nChkSum1 = nChkSum2 = 0;
 
-		bGood = ( FS_FileIsInPAK( Sys_GetDLLName( "cgame" ), &nChkSum1 ) == 1) ;
+		// Only check the legacy dll for legacy clients
+		bGood = ( FS_FileIsInPAK( "cgame_mp_x86.dll", &nChkSum1 ) == 1) ;
 		if ( bGood ) {
-			bGood = ( FS_FileIsInPAK( Sys_GetDLLName( "ui" ), &nChkSum2 ) == 1) ;
+			bGood = ( FS_FileIsInPAK( "ui_mp_x86.dll", &nChkSum2 ) == 1) ;
 		}
 
 		bQvmGood = ( FS_FileIsInPAK( "vm/cgame.mp.qvm", &nChkSumQvm1 ) == 1) ;
@@ -1320,7 +1321,7 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 			}
 			// verify the second to be the ui checksum
 			pArg = Cmd_Argv( nCurArg++ );
-			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum1 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm2 ) ) ) {
+			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum2 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm2 ) ) ) {
 				bGood = qfalse;
 				break;
 			}
