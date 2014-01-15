@@ -2288,7 +2288,7 @@ void CL_KeyDownEvent( int key, unsigned time )
 	}
 
 	// NERVE - SMF - if we just want to pass it along to game
-	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer ) {    //DAJ BUG in dedicated cl_missionStats don't exist
+	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer && !( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) ) {    //DAJ BUG in dedicated cl_missionStats don't exist
 		if ( ( key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3 ) ) {
 			if ( cl_bypassMouseInput->integer == 1 ) {
 				bypassMenu = qtrue;
