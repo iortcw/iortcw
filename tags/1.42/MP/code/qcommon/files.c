@@ -1574,9 +1574,9 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 		        }
 
 #ifndef DEDICATED
-			// if the server is pure, extract the dlls from the mp_bin.pk3 so
+			// extract the dlls from the mp_bin.pk3 so
 			// that they can be referenced
-			if (cl_connectedToPureServer && Q_stricmp(name, "qagame"))
+			if (Q_stricmp(name, "qagame"))
 			{
 				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
 
