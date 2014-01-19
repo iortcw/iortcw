@@ -1539,7 +1539,7 @@ CG_UpdateFlamethrowerSounds
 ===============
 */
 void CG_UpdateFlamethrowerSounds( void ) {
-	flameChunk_t *f, *trav;
+	flameChunk_t *f;
 	//flameChunk_t *lastSoundFlameChunk=NULL; // TTimo: unused
 	int i;
 	centity_t *cent;
@@ -1572,17 +1572,6 @@ void CG_UpdateFlamethrowerSounds( void ) {
 			}
 
 			centFlameInfo[f->ownerCent].lastSoundUpdate = cg.time;
-		}
-
-		// traverse the chunks, spawning flame sound sources as we go
-		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
-			// update the sound volume
-			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
-				//if (!lastSoundFlameChunk || Distance( lastSoundFlameChunk->org, trav->org ) > lastSoundFlameChunk->size) {
-				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
-				//	lastSoundFlameChunk = trav;
-				//}
-			}
 		}
 
 		f = f->nextHead;

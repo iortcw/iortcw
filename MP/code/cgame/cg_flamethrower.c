@@ -1360,7 +1360,7 @@ CG_UpdateFlamethrowerSounds
 ===============
 */
 void CG_UpdateFlamethrowerSounds( void ) {
-	flameChunk_t *f, *trav; // , *lastSoundFlameChunk=NULL; // TTimo: unused
+	flameChunk_t *f; //, *trav; // , *lastSoundFlameChunk=NULL; // TTimo: unused
 	#define MIN_BLOW_VOLUME     30
 
 	// draw each of the headFlameChunk's
@@ -1387,12 +1387,12 @@ void CG_UpdateFlamethrowerSounds( void ) {
 		}
 
 		// traverse the chunks, spawning flame sound sources as we go
-		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
+//		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
 			// update the sound volume
-			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
-				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
-			}
-		}
+//			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
+//				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
+//			}
+//		}
 
 		f = f->nextHead;
 	}
