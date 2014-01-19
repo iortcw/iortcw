@@ -1,7 +1,7 @@
-OpenGL2
+Rend2
 <insert ascii art here>
 
-OpenGL2 is an alternate renderer for ioquake3.  It aims to implement modern
+Rend2 is an alternate renderer for ioquake3.  It aims to implement modern
 features and technologies into the id tech 3 engine, but without sacrificing
 compatibility with existing Quake 3 mods.
 
@@ -232,7 +232,7 @@ Cvars for image interpolation and generation:
                                      1 - Do.
 
 Cvars for the sunlight and cascaded shadow maps:
-  r_forceSun                     - Cheat. Force sunlight and shadows, using sun
+  r_forceSun                     - Force sunlight and shadows, using sun
                                    position from sky material.
                                      0 - Don't. (default)
                                      1 - Do.
@@ -345,7 +345,7 @@ Cvars that have broken bits:
   MATERIALS
 -------------------------------------------------------------------------------
 
-OpenGL2 supports .mtr files, which are basically the same as .shader files, and
+Rend2 supports .mtr files, which are basically the same as .shader files, and
 are located in the same place, but override existing .shader files if they 
 exist.  This is to allow maps and mods to use the new material features without
 breaking the map when using the old renderer.
@@ -380,7 +380,7 @@ shader files.  The next thing to notice are the new keywords.  Here is what
 they mean:
 
   stage <type>        
-    - State how this imagemap will be used by OpenGL2:
+    - State how this imagemap will be used by Rend2:
         diffuseMap        - Standard, same as no stage entry
         normalMap         - Image will be used as a normal map
         normalParallaxMap - Image will be used as a normal map with 

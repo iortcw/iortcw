@@ -14,7 +14,7 @@ Some of the major features currently implemented are:
   * SDL backend
   * OpenAL sound API support (multiple speaker support and better sound
     quality)
-  * Full x86_64 support on Linux
+  * Full x86_64 support
   * VoIP support, both in-game and external support through Mumble.
   * MinGW compilation support on Windows and cross compilation support on Linux
   * AVI video capture of demos
@@ -444,7 +444,7 @@ SDL Keyboard Differences
   text. Also, in addition to the nominated console keys, Shift-ESC is hard
   coded to always toggle the console.
 
-QuakeLive mouse acceleration (patch and this text written by TTimo from id)
+  QuakeLive mouse acceleration (patch and this text written by TTimo from id)
   I've been using an experimental mouse acceleration code for a while, and
   decided to make it available to everyone. Don't be too worried if you don't
   understand the explanations below, this is mostly intended for advanced
