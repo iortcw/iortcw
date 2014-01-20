@@ -1388,7 +1388,7 @@ S_AL_SrcLoop
 =================
 */
 static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
-		const vec3_t origin, const vec3_t velocity, int entityNum )
+		const vec3_t origin, const vec3_t velocity, int entityNum, int volume )
 {
 	int				src;
 	sentity_t	*sent = &entityList[ entityNum ];
@@ -1448,8 +1448,15 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 
 		VectorClear(sorigin);
 
+		if ( volume > 255 ) {
+			volume = 255;
+		} else if ( volume < 0 ) {
+			volume = 0;
+		}
+
 		qalSourcefv(curSource->alSource, AL_POSITION, sorigin);
 		qalSourcefv(curSource->alSource, AL_VELOCITY, vec3_origin);
+		S_AL_Gain(curSource->alSource, volume / 255.0f);
 	}
 	else
 	{
@@ -1472,8 +1479,15 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 		else
 			VectorClear(svelocity);
 
+		if ( volume > 255 ) {
+			volume = 255;
+		} else if ( volume < 0 ) {
+			volume = 0;
+		}
+
 		qalSourcefv(curSource->alSource, AL_POSITION, (ALfloat *) sorigin);
 		qalSourcefv(curSource->alSource, AL_VELOCITY, (ALfloat *) svelocity);
+		S_AL_Gain(curSource->alSource, volume / 255.0f);
 	}
 }
 
@@ -1484,7 +1498,7 @@ S_AL_AddLoopingSound
 */
 static void S_AL_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume)
 {
-	S_AL_SrcLoop(SRCPRI_ENTITY, sfx, origin, velocity, entityNum);
+	S_AL_SrcLoop(SRCPRI_ENTITY, sfx, origin, velocity, entityNum, volume);
 }
 
 /*
@@ -1494,7 +1508,7 @@ S_AL_AddRealLoopingSound
 */
 static void S_AL_AddRealLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx)
 {
-	S_AL_SrcLoop(SRCPRI_AMBIENT, sfx, origin, velocity, entityNum);
+	S_AL_SrcLoop(SRCPRI_AMBIENT, sfx, origin, velocity, entityNum, 0);
 }
 
 /*
