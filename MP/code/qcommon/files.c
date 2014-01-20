@@ -1719,6 +1719,40 @@ qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const
 #endif
 
 /*
+==============
+FS_Delete
+TTimo - this was not in the 1.30 filesystem code
+using fs_homepath for the file to remove
+==============
+*/
+int FS_Delete( char *filename ) {
+#if 0 // Stub...not used in MP
+	char *ospath;
+
+	if ( !fs_searchpaths ) {
+		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
+	}
+
+	if ( !filename || filename[0] == 0 ) {
+		return 0;
+	}
+
+	// for safety, only allow deletion from the save directory
+	if ( Q_strncmp( filename, "save/", 5 ) != 0 ) {
+		return 0;
+	}
+
+	ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, filename );
+
+	if ( remove( ospath ) != -1 ) {  // success
+		return 1;
+	}
+#endif
+
+	return 0;
+}
+
+/*
 =================
 FS_Read
 
