@@ -1479,15 +1479,8 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 		else
 			VectorClear(svelocity);
 
-		if ( volume > 255 ) {
-			volume = 255;
-		} else if ( volume < 0 ) {
-			volume = 0;
-		}
-
 		qalSourcefv(curSource->alSource, AL_POSITION, (ALfloat *) sorigin);
 		qalSourcefv(curSource->alSource, AL_VELOCITY, (ALfloat *) svelocity);
-		S_AL_Gain(curSource->alSource, volume / 255.0f);
 	}
 }
 
