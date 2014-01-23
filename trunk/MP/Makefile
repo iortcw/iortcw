@@ -2523,7 +2523,7 @@ ifneq ($(BUILD_GAME_SO),0)
 					$(COPYDIR)/$(BASEGAME)/.
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/ui_mp_$(SHLIBNAME) \
 					$(COPYDIR)/$(BASEGAME)/.
-	else
+    else
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/cgame.mp.$(SHLIBNAME) \
                                         $(COPYDIR)/$(BASEGAME)/.
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/qagame.mp.$(SHLIBNAME) \
