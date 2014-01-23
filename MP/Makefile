@@ -2516,7 +2516,7 @@ endif
 
 ifneq ($(BUILD_GAME_SO),0)
   ifneq ($(BUILD_BASEGAME),0)
-	ifeq ($(PLATFORM),mingw32)
+    ifeq ($(PLATFORM),mingw32)
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/cgame_mp_$(SHLIBNAME) \
 					$(COPYDIR)/$(BASEGAME)/.
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/qagame_mp_$(SHLIBNAME) \
@@ -2530,7 +2530,7 @@ ifneq ($(BUILD_GAME_SO),0)
                                         $(COPYDIR)/$(BASEGAME)/.
 	$(INSTALL) $(STRIP_FLAG) -m 0755 $(BR)/$(BASEGAME)/ui.mp.$(SHLIBNAME) \
                                         $(COPYDIR)/$(BASEGAME)/.
-	endif
+    endif
   endif
 endif
 
