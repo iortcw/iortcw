@@ -244,6 +244,10 @@ ifndef USE_OPENGLES
 USE_OPENGLES=0
 endif
 
+ifndef USE_PBMD5
+USE_PBMD5=1
+endif
+
 
 #############################################################################
 
@@ -1115,6 +1119,9 @@ ifeq ($(USE_BLOOM),1)
   CLIENT_CFLAGS += -DUSE_BLOOM
 endif
 
+ifeq ($(USE_PBMD5),1)
+  CLIENT_CFLAGS += -DUSE_PBMD5
+endif
 
 
 BASE_CFLAGS += -DPRODUCT_VERSION=\\\"$(VERSION)\\\"
@@ -1492,6 +1499,7 @@ Q3OBJ = \
   $(B)/client/files.o \
   $(B)/client/md4.o \
   $(B)/client/md5.o \
+  $(B)/client/pbmd5.o \
   $(B)/client/msg.o \
   $(B)/client/net_chan.o \
   $(B)/client/net_ip.o \

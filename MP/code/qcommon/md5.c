@@ -14,6 +14,8 @@
  * needed on buffers full of bytes, and then call MD5Final, which
  * will fill a supplied 16-byte array with the digest.
  */
+#ifndef USE_PBMD5
+
 #include "q_shared.h"
 #include "qcommon.h"
 
@@ -308,3 +310,5 @@ char *Com_MD5File( const char *fn, int length, const char *prefix, int prefix_le
 	}
 	return final;
 }
+
+#endif // USE_PBMD5

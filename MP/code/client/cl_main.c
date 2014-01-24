@@ -1425,6 +1425,7 @@ update cl_guid using QKEY_FILE and optional prefix
 */
 static void CL_UpdateGUID( const char *prefix, int prefix_len )
 {
+#if !defined( USE_PBMD5 )
 	fileHandle_t f;
 	int len;
 
@@ -1436,6 +1437,9 @@ static void CL_UpdateGUID( const char *prefix, int prefix_len )
 	else
 		Cvar_Set( "cl_guid", Com_MD5File( QKEY_FILE, QKEY_SIZE,
 			prefix, prefix_len ) );
+#else
+	Cvar_Set( "cl_guid", Com_PBMD5File( cl_cdkey ) );
+#endif
 }
 
 static void CL_OldGame(void)
