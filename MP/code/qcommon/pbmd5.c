@@ -322,7 +322,7 @@ char *Com_PBMD5File( char *key ) {
 
 	k = key;
 
-	Com_DPrintf( "GUID of cdkey %s: ", k );
+//	Com_DPrintf( "GUID of cdkey %s: ", k );
 
 	// Process first seed
 	k = do_md5x( k, strlen( k ), get_num( "0x00b684a3", NULL ) );
@@ -330,7 +330,7 @@ char *Com_PBMD5File( char *key ) {
 	// Process second seed
 	k = do_md5x( k, 32, get_num( "0x00051a56", NULL ) );
 
-	Com_DPrintf( "%s\n", k );
+//	Com_DPrintf( "%s\n", k );
 
 	return k;
 }
@@ -339,7 +339,7 @@ char *Com_PBMD5File( char *key ) {
 char *do_md5x( char *data, int len, int seed ) {
 	MD5_CTX ctx;
 	int i;
-	char      *p;
+	char *p;
 	static char ret[33];
 	static const char hex[] = "0123456789abcdef";
 
@@ -353,19 +353,20 @@ char *do_md5x( char *data, int len, int seed ) {
 		*p++ = hex[ctx.digest[i] & 15];
 	}
 	*p = 0;
-	return( ret );
+
+	return ret;
 }
 
 
 
 int get_num( char *str, int *len ) {
-	int num,
-		tmp;
+	int num, tmp;
 
 	if ( !len ) {
 		len = &tmp;
 	}
 	*len = 0;
+
 	if ( !str[0] ) {
 		return( 0 );
 	}
@@ -374,7 +375,7 @@ int get_num( char *str, int *len ) {
 	} else {
 		sscanf( str, "%d%n", &num, len );
 	}
-	return( num );
+	return num;
 }
 
 #endif // USE_PBMD5
