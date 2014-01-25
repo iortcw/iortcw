@@ -319,6 +319,7 @@ int get_num( char *str, int *len );
 
 char *Com_PBMD5File( char *key ) {
 	char    *k;
+	char	*guid;
 
 	k = key;
 
@@ -330,9 +331,10 @@ char *Com_PBMD5File( char *key ) {
 	// Process second seed
 	k = do_md5x( k, 32, get_num( "0x00051a56", NULL ) );
 
-//	Com_DPrintf( "%s\n", k );
+	guid = Q_strupr( k );
+//	Com_DPrintf( "%s\n", guid );
 
-	return k;
+	return guid;
 }
 
 
