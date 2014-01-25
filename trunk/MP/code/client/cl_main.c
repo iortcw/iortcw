@@ -143,6 +143,7 @@ cvar_t  *cl_updatefiles;
 
 cvar_t	*cl_lanForcePackets;
 
+cvar_t	*cl_guid;
 cvar_t	*cl_guidServerUniq;
 
 cvar_t	*cl_consoleKeys;
@@ -1438,7 +1439,10 @@ static void CL_UpdateGUID( const char *prefix, int prefix_len )
 		Cvar_Set( "cl_guid", Com_MD5File( QKEY_FILE, QKEY_SIZE,
 			prefix, prefix_len ) );
 #else
-	Cvar_Set( "cl_guid", Com_PBMD5File( cl_cdkey ) );
+	if ( strcmp( cl_guid->string,"" ) == 0 )
+		Cvar_Set( "cl_guid", Com_PBMD5File( cl_cdkey ) );
+	else
+		return;
 #endif
 }
 
@@ -4075,6 +4079,8 @@ void CL_Init( void ) {
 
 	cl_lanForcePackets = Cvar_Get ("cl_lanForcePackets", "1", CVAR_ARCHIVE);
 
+	cl_guid = Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
+
 	cl_guidServerUniq = Cvar_Get ("cl_guidServerUniq", "1", CVAR_ARCHIVE);
 
 	// ~ and `, as keys and characters
@@ -4236,7 +4242,6 @@ void CL_Init( void ) {
 	CL_InitTranslation();   // NERVE - SMF - localization
 
 	CL_GenerateQKey();
-	Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
 	CL_UpdateGUID( NULL, 0 );
 
 	Com_Printf( "----- Client Initialization Complete -----\n" );
