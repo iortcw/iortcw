@@ -649,7 +649,7 @@ static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel,
 	}
 
 	fullVolume = qfalse;
-	if (localSound || S_Base_HearingThroughEntity(entityNum, origin)) {
+	if (S_Base_HearingThroughEntity(entityNum, origin)) {
 		fullVolume = qtrue;
 	}
 
