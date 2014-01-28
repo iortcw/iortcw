@@ -1439,7 +1439,14 @@ static void CL_UpdateGUID( const char *prefix, int prefix_len )
 		Cvar_Set( "cl_guid", Com_MD5File( QKEY_FILE, QKEY_SIZE,
 			prefix, prefix_len ) );
 #else
-	if ( strcmp( cl_guid->string,"" ) == 0 )
+	if ( !Q_stricmp( cl_cdkey, "                " )  )
+	{
+		Cvar_Set( "cl_guid", "NO_GUID" );
+
+		return;
+	}
+
+	if ( !Q_stricmp( cl_guid->string, "unknown" ) )
 		Cvar_Set( "cl_guid", Com_PBMD5File( cl_cdkey ) );
 	else
 		return;
@@ -4079,7 +4086,7 @@ void CL_Init( void ) {
 
 	cl_lanForcePackets = Cvar_Get ("cl_lanForcePackets", "1", CVAR_ARCHIVE);
 
-	cl_guid = Cvar_Get( "cl_guid", "", CVAR_USERINFO | CVAR_ROM );
+	cl_guid = Cvar_Get( "cl_guid", "unknown", CVAR_USERINFO | CVAR_ROM );
 
 	cl_guidServerUniq = Cvar_Get ("cl_guidServerUniq", "1", CVAR_ARCHIVE);
 
