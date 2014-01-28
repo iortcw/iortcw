@@ -2621,20 +2621,17 @@ qboolean S_AL_Init( soundInterface_t *si )
 
 	s_alDriver = Cvar_Get( "s_alDriver", ALDRIVER_DEFAULT, CVAR_ROM );
 
-	s_alInputDevice = Cvar_Get( "s_alInputDevice", "", CVAR_ROM );
-	s_alDevice = Cvar_Get( "s_alDevice", "", CVAR_ROM );
+	s_alInputDevice = Cvar_Get( "s_alInputDevice", "", CVAR_ARCHIVE | CVAR_LATCH );
+	s_alDevice = Cvar_Get("s_alDevice", "", CVAR_ARCHIVE | CVAR_LATCH);
 
 	// Load QAL
 	if( !QAL_Init( s_alDriver->string ) )
-	{
-#ifdef _WIN64
-		s_alDriver = Cvar_Get( "s_alDriver", "OpenAL32.dll", CVAR_ROM ); // Try falling back to default name
-		if ( !QAL_Init( s_alDriver->string ) )
-#endif
-		Com_Printf( "Failed to load library: \"%s\".\n", s_alDriver->string );
-
-		return qfalse;
-	}
+ 	{
+ 		Com_Printf( "Failed to load library: \"%s\".\n", s_alDriver->string );
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
+			return qfalse;
+		}
+ 	}
 
 	device = s_alDevice->string;
 	if(device && !*device)
