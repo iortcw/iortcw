@@ -41,8 +41,8 @@ extern	refimport_t		ri;
 #include <jpeglib.h>
 
 #ifndef USE_INTERNAL_JPEG
-#  if JPEG_LIB_VERSION < 80
-#    error Need system libjpeg >= 80
+#  if JPEG_LIB_VERSION < 80 && !defined(MEM_SRCDST_SUPPORTED)
+#    error Need system libjpeg >= 80 or jpeg_mem_ support
 #  endif
 #endif
 
