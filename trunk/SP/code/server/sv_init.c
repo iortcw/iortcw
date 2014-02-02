@@ -743,11 +743,6 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// clear the whole hunk because we're (re)loading the server
 	Hunk_Clear();
 
-#ifndef DEDICATED
-	// Restart renderer
-	CL_StartHunkUsers( qtrue );
-#endif
-
 //	// clear collision map data		// (SA) NOTE: TODO: used in missionpack
 //	CM_ClearMap();
 
@@ -941,15 +936,17 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 
 	Hunk_SetMark();
 
-	Com_Printf( "-----------------------------------\n" );
-
-	/* MrE: 2000-09-13: now called in CL_DownloadsComplete
-	// don't call when running dedicated
-	if ( !com_dedicated->integer ) {
-		// note that this is called after setting the hunk mark with Hunk_SetMark
-		CL_StartHunkUsers();
+/*
+#ifndef DEDICATED
+	if ( com_dedicated->integer ) {
+		// restart renderer in order to show console for dedicated servers
+		// launched through the regular binary
+		CL_StartHunkUsers( qtrue );
 	}
-	*/
+#endif
+*/
+
+	Com_Printf( "-----------------------------------\n" );
 }
 
 
