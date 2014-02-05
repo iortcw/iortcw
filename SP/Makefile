@@ -38,6 +38,9 @@ endif
 ifndef BUILD_RENDERER_REND2
   BUILD_RENDERER_REND2 = 
 endif
+ifndef BUILD_ARCHIVE
+  BUILD_ARCHIVE = 0
+endif
 
 #############################################################################
 #
@@ -1288,17 +1291,23 @@ endif
 	@echo "  Output:"
 	$(call print_list, $(NAKED_TARGETS))
 	@echo ""
-ifneq ($(TARGETS),)
-  ifndef DEBUG_MAKEFILE
+ifneq ($(BUILD_ARCHIVE),0)
+  ifneq ($(TARGETS),)
+    ifndef DEBUG_MAKEFILE
 	@$(MAKE) $(TARGETS) $(B).zip V=$(V)
+    endif
+  endif
+else
+  ifneq ($(TARGETS),)
+    ifndef DEBUG_MAKEFILE
+	@$(MAKE) $(TARGETS) V=$(V)
+    endif
   endif
 endif
 
 $(B).zip: $(TARGETS)
-ifdef ARCHIVE
 	@rm -f $@
 	@(cd $(B) && zip -r9 ../../$@ $(NAKED_TARGETS))
-endif
 
 makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
