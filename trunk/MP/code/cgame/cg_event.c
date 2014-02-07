@@ -96,6 +96,8 @@ static void CG_Obituary( entityState_t *ent ) {
 	const char  *attackerInfo;
 	char targetName[32];
 	char attackerName[32];
+	char buf[32];
+	gender_t gender;
 	clientInfo_t    *ci, *ca; // JPW NERVE ca = attacker
 
 	// Ridah, no obituaries in single player
@@ -128,6 +130,16 @@ static void CG_Obituary( entityState_t *ent ) {
 	strcat( targetName, S_COLOR_WHITE );
 
 	message2 = "";
+
+	trap_Cvar_VariableStringBuffer("sex", buf, sizeof(buf));
+
+	switch (tolower(buf[0])) {
+	case 'f':
+		ci->gender = GENDER_FEMALE;
+		break;
+	default:
+		ci->gender = GENDER_MALE;
+	}
 
 	// check for single client messages
 
@@ -162,30 +174,49 @@ static void CG_Obituary( entityState_t *ent ) {
 	}
 
 	if ( attacker == target ) {
+		gender = ci->gender;
 		switch ( mod ) {
 // JPW NERVE per atvi req
 		case MOD_DYNAMITE:
 		case MOD_DYNAMITE_SPLASH:
-			message = "dynamited himself to pieces";
+			if ( gender == GENDER_FEMALE )
+				message = "dynamited herself to pieces";
+			else
+				message = "dynamited himself to pieces";
 			break;
 // jpw
 		case MOD_GRENADE_SPLASH:
-			message = "dove on his own grenade";
+			if ( gender == GENDER_FEMALE )
+				message = "dove on her own grenade";
+			else
+				message = "dove on his own grenade";
 			break;
 		case MOD_ROCKET_SPLASH:
-			message = "vaporized himself";
+			if ( gender == GENDER_FEMALE )
+				message = "vaporized herself";
+			else
+				message = "vaporized himself";
 			break;
 		case MOD_AIRSTRIKE:
-			message = "obliterated himself";
+			if ( gender == GENDER_FEMALE )
+				message = "obliterated herself";
+			else
+				message = "obliterated himself";
 			break;
 			//case MOD_BFG_SPLASH:
 			//message = "should have used a smaller gun";
 			//break;
 		case MOD_EXPLOSIVE:
-			message = "died in his own explosion";
+			if ( gender == GENDER_FEMALE )
+				message = "died in her own explosion";
+			else
+				message = "died in his own explosion";
 			break;
 		default:
-			message = "killed himself";
+			if ( gender == GENDER_FEMALE )
+				message = "killed herself";
+			else
+				message = "killed himself";
 			break;
 		}
 	}
