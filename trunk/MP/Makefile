@@ -577,6 +577,10 @@ ifeq ($(PLATFORM),mingw32)
     endif
   endif
 
+  ifeq ($(CC),)
+    $(error Cannot find a suitable cross compiler for $(PLATFORM))
+  endif
+
   BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
     -DUSE_ICON
 
