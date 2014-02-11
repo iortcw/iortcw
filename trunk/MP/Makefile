@@ -363,15 +363,21 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+      -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
-      -funroll-loops -falign-loops=2 -falign-jumps=2 \
-      -falign-functions=2 -fstrength-reduce
+      -funroll-loops -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED=true
   else
@@ -528,7 +534,9 @@ ifeq ($(PLATFORM),darwin)
     $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
   RENDERER_LIBS += -framework OpenGL $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
 
-  OPTIMIZEVM += -falign-loops=16
+  ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+    OPTIMIZEVM += -falign-loops=16
+  endif
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   SHLIBEXT=dylib
@@ -603,16 +611,22 @@ ifeq ($(PLATFORM),mingw32)
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3 -fno-omit-frame-pointer \
-      -falign-loops=2 -funroll-loops -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+      -funroll-loops -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) --fast-math
     HAVE_VM_COMPILED = true
     FILE_ARCH=x64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586 -fno-omit-frame-pointer \
-      -falign-loops=2 -funroll-loops -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+      -funroll-loops -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   endif
@@ -757,15 +771,21 @@ ifeq ($(PLATFORM),openbsd)
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+      -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
-      -funroll-loops -falign-loops=2 -falign-jumps=2 \
-      -falign-functions=2 -fstrength-reduce
+      -funroll-loops -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED=true
   else
@@ -903,8 +923,11 @@ ifeq ($(PLATFORM),sunos)
   else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=i586 -fomit-frame-pointer \
-      -falign-loops=2 -falign-jumps=2 \
       -falign-functions=2 -fstrength-reduce
+    # clang 3.4 doesn't support these
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-loops=2 -falign-jumps=2
+    endif
     HAVE_VM_COMPILED=true
     BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
