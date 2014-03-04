@@ -1,16 +1,16 @@
 Rend2
 <insert ascii art here>
 
-Rend2 is an alternate renderer for ioquake3.  It aims to implement modern
+Rend2 is an alternate renderer for iortcw.  It aims to implement modern
 features and technologies into the id tech 3 engine, but without sacrificing
-compatibility with existing Quake 3 mods.
+compatibility with existing RTCW mods.
 
 
 -------------------------------------------------------------------------------
   FEATURES
 -------------------------------------------------------------------------------
 
-  - Compatible with most vanilla Quake 3 mods.
+  - Compatible with most vanilla RTCW mods.
   - HDR Rendering, and support for HDR lightmaps
   - Tone mapping and auto-exposure.
   - Cascaded shadow maps.
@@ -29,19 +29,19 @@ compatibility with existing Quake 3 mods.
 
 For *nix:
 
-1. This should be identical to installing ioq3.  Check their README for more
+1. This should be identical to installing iortcw.  Check their README for more
    details.
 
    
 For Win32:
 
-1. Have a Quake 3 install, fully patched.
+1. Have a RTCW install, fully patched.
 
-2. Copy the following files into Quake 3's install directory: 
+2. Copy the following files into RTCW's install directory: 
      
-     ioquake3.x86.exe
+     ioWolfMP.x86.exe
      renderer_opengl1_x86.dll
-     renderer_opengl2_x86.dll
+     renderer_rend2_x86.dll
      
    These can be found in build/release-mingw32-x86 after compiling, or bug
    someone to release binaries.
@@ -51,9 +51,9 @@ For Win32:
   RUNNING
 -------------------------------------------------------------------------------
 
-1. Start ioquake3. (ioquake3.x86.exe on Win32)
+1. Start iowolfmp. (ioWolfMP.x86.exe on Win32)
  
-2. Open the console (default key ~) and type '/cl_renderer opengl2; vid_restart'
+2. Open the console (default key ~) and type '/cl_renderer rend2; vid_restart'
 
 3. Enjoy.
 
@@ -203,6 +203,44 @@ Cvars for advanced material usage:
                                      0 - No. (default)
                                      1 - Yes.
 
+  r_baseSpecular                 - Set the specular reflectance of materials
+                                   which don't include a specular map or
+                                   use the specularReflectance keyword.
+                                     0    - No.
+                                     0.04 - Realistic. (default)
+                                     1.0  - Ack.
+
+  r_baseGloss                    - Set the glossiness of materials which don't
+                                   include a specular map or use the
+                                   specularExponent keyword.
+                                     0   - Rough.
+                                     0.3 - Default.
+                                     1.0 - Shiny.
+
+  r_baseNormalX                  - Set the scale of the X values from normal
+                                   maps when the normalScale keyword is not
+                                   used.
+                                     -1  - Flip X.
+                                     0   - Ignore X.
+                                     1   - Normal X. (default)
+                                     2   - Double X.
+
+  r_baseNormalY                  - Set the scale of the Y values from normal
+                                   maps when the normalScale keyword is not
+                                   used.
+                                     -1  - Flip Y.
+                                     0   - Ignore Y.
+                                     1   - Normal Y. (default)
+                                     2   - Double Y.
+
+  r_baseParallax                 - Sets the scale of the parallax effect for
+                                   materials when the parallaxDepth keyword
+                                   is not used.
+                                     0    - No depth.
+                                     0.01 - Pretty smooth.
+                                     0.05 - Standard depth. (default)
+                                     0.1  - Looks broken.
+
 Cvars for image interpolation and generation:
   r_imageUpsample                - Use interpolation to artifically increase
                                    the resolution of all textures.  Looks good
@@ -232,7 +270,7 @@ Cvars for image interpolation and generation:
                                      1 - Do.
 
 Cvars for the sunlight and cascaded shadow maps:
-  r_forceSun                     - Force sunlight and shadows, using sun
+  r_forceSun                     - Cheat. Force sunlight and shadows, using sun
                                    position from sky material.
                                      0 - Don't. (default)
                                      1 - Do.
@@ -330,7 +368,7 @@ Cvars that you probably don't care about or shouldn't mess with:
   
 Cvars that have broken bits:
   r_dlightMode                   - Change how dynamic lights look.
-                                     0 - Quake 3 style dlights, fake
+                                     0 - RTCW style dlights, fake
                                          brightening. (default)
                                      1 - Actual lighting, no shadows.
                                      2 - Light and shadows. (broken)
@@ -362,6 +400,8 @@ Here's an example of a material stored in one, showing off some new features:
         {
             stage normalparallaxmap
             map textures/abandon/grass3_1024_n.png
+            normalScale 1 1
+            parallaxDepth 0.05
         }
         {
             stage specularmap
@@ -375,7 +415,7 @@ Here's an example of a material stored in one, showing off some new features:
         }
     }
 
-The first thing to notice is that this is basically the same as old Quake 3 
+The first thing to notice is that this is basically the same as old RTCW 
 shader files.  The next thing to notice are the new keywords.  Here is what 
 they mean:
 
@@ -401,7 +441,16 @@ they mean:
       alpha channel of the specular map, so if it were set to 16, and the alpha
       channel of the specular map was set to 0.5, then the shininess would be
       set to 8.  Default 256.
-      
+
+  normalScale <x> <y>
+    - State the X and Y scales of the normal map.  This is useful for increasing
+      or decreasing the "strength" of the normal map, or entering negative values
+      to flip the X and/or Y values.  Default 1 1.
+
+  parallaxDepth <value>
+    - State the maximum depth of the parallax map.  This is a fairly sensitive
+      value, and I recommend the default or lower.  Default 0.05.
+
 An important note is that normal and specular maps influence the diffuse map
 declared before them, so materials like this are possible:
 
@@ -557,7 +606,7 @@ adjust the effect before settling on fixed settings.
 I'd like to take this part of the readme to thank the numerous people who
 contributed thoughts, ideas, and whole swaths of code to this project.
 
-  - Id Software, for creating Quake 3 and releasing its source code under a
+  - Id Software, for creating RTCW and releasing its source code under a
     GPL license, without which this project would not be possible.
 
   - Zachary 'Zakk' Slater, Thilo Schulz, Tim Angus, and the rest of the
