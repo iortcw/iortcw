@@ -270,7 +270,7 @@ Cvars for image interpolation and generation:
                                      1 - Do.
 
 Cvars for the sunlight and cascaded shadow maps:
-  r_forceSun                     - Cheat. Force sunlight and shadows, using sun
+  r_forceSun                     - Force sunlight and shadows, using sun
                                    position from sky material.
                                      0 - Don't. (default)
                                      1 - Do.
