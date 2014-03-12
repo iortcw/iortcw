@@ -970,6 +970,10 @@ void S_PaintChannels( int endtime ) {
 				S_memoryLoad( sc );
 			}
 
+			if (sc->soundData==NULL || sc->soundLength==0) {
+				continue;
+			}
+
 			sampleOffset = ltime - ch->startSample;
 			count = end - ltime;
 			if ( sampleOffset + count > sc->soundLength ) {
