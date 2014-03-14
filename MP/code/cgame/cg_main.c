@@ -2252,6 +2252,7 @@ extern qboolean initTrails;
 void CG_ClearTrails( void );
 extern qboolean initparticles;
 void CG_ClearParticles( void );
+void CG_InitTrapAnimations( void );
 
 /*
 =================
@@ -2356,6 +2357,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_InitLocalEntities();
 
 	CG_InitMarkPolys();
+
+	CG_InitTrapAnimations();
 
 	// remove the last loading update
 	cg.infoScreenText[0] = 0;

@@ -1122,8 +1122,39 @@ static void CG_Bat( centity_t *cent ) {
 	CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.batsFlyingLoopSound, 5 );
 }
 
+static animation_t grabberAnims[6];
+static animation_t footlockerAnims[3];
+static animation_t multi_flagpoleAnims[9];
+
+typedef struct {
+	char *name;                 // for QVM this cannot be char name[MAX_QPATH];
+	int firstFrame;
+	int numFrames;
+	int loopFrames;             // 0 to numFrames
+	int frameLerp;              // msec between frames
+	int initialLerp;            // msec to get to first frame
+	int moveSpeed;
+	int animBlend;              // take this long to blend to next anim
+	//
+	// derived
+	//
+	int duration;
+	int nameHash;
+	int flags;
+	int movetype;
+} animationInline_t;
+
+static void CG_InlineAnimToFullAnim( const animationInline_t *inl, animation_t *anim ) {
+	Com_Memset( anim, 0, sizeof ( animation_t ) );
+	anim->firstFrame = inl->firstFrame;
+	anim->numFrames = inl->numFrames;
+	anim->loopFrames = inl->loopFrames;
+	anim->frameLerp = inl->frameLerp;
+	anim->initialLerp = inl->initialLerp;
+}
+
 //----(SA)	animation_t struct changed, so changes are to keep this working
-static animation_t grabberAnims[] = {
+static animationInline_t grabberAnimsInline[6] = {
 	{"", 0,  6,  6,  1000 / 5,     1000 / 5  },  // (main idle)
 	{"", 5,  21, 21, 1000 / 7,     1000 / 7  },  // (random idle)
 	{"", 25, 11, 0,  1000 / 15,    1000 / 15 },  // (attack big swipe)
@@ -1133,7 +1164,7 @@ static animation_t grabberAnims[] = {
 };
 
 //----(SA)	added
-static animation_t footlockerAnims[] = {
+static animationInline_t footlockerAnimsInline[3] = {
 	{"", 0,  1,  1,  1000 / 5,     1000 / 5  },  // (main idle)
 	{"", 0,  5,  5,  1000 / 5,     1000 / 5  },  // (lock rattle)
 	{"", 5,  6,  0,  1000 / 5,     1000 / 5  }   // (break open)
@@ -1143,7 +1174,7 @@ static animation_t footlockerAnims[] = {
 
 // DHM - Nerve :: capture and hold flag
 
-static animation_t multi_flagpoleAnims[] = {
+static animationInline_t multi_flagpoleAnimsInline[] = {
 	{"", 0,      1,      0,      1000 / 15,    1000 / 15 },  // (no flags, idle)
 	{"", 0,      15,     0,      1000 / 15,    1000 / 15 },  // (axis flag rising)
 	{"", 490,    15,     0,      1000 / 15,    1000 / 15 },  // (american flag rising)
@@ -1156,6 +1187,25 @@ static animation_t multi_flagpoleAnims[] = {
 };
 
 // dhm - end
+
+/*
+===============
+CG_InitTrapAnimations
+===============
+*/
+void CG_InitTrapAnimations( void ) {
+	int i;
+
+	for ( i = 0; i < ARRAY_LEN(grabberAnims); i++ ) {
+		CG_InlineAnimToFullAnim( &grabberAnimsInline[i], &grabberAnims[i] );
+	}
+	for ( i = 0; i < ARRAY_LEN(footlockerAnims); i++ ) {
+		CG_InlineAnimToFullAnim( &footlockerAnimsInline[i], &footlockerAnims[i] );
+	}
+	for ( i = 0; i < ARRAY_LEN(multi_flagpoleAnims); i++ ) {
+		CG_InlineAnimToFullAnim( &multi_flagpoleAnimsInline[i], &multi_flagpoleAnims[i] );
+	}
+}
 
 extern void CG_RunLerpFrame( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, float speedScale );
 
