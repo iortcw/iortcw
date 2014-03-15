@@ -866,7 +866,7 @@ void G_ArmorDamage( gentity_t *targ ) {
 }
 /*
 ============
-T_Damage
+G_Damage
 
 targ		entity that is being damaged
 inflictor	entity that is causing the damage
