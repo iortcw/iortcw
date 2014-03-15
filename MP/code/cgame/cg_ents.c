@@ -1174,7 +1174,7 @@ static animationInline_t footlockerAnimsInline[3] = {
 
 // DHM - Nerve :: capture and hold flag
 
-static animationInline_t multi_flagpoleAnimsInline[] = {
+static animationInline_t multi_flagpoleAnimsInline[9] = {
 	{"", 0,      1,      0,      1000 / 15,    1000 / 15 },  // (no flags, idle)
 	{"", 0,      15,     0,      1000 / 15,    1000 / 15 },  // (axis flag rising)
 	{"", 490,    15,     0,      1000 / 15,    1000 / 15 },  // (american flag rising)
