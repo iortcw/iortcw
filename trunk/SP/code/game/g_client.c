@@ -1069,7 +1069,7 @@ void SetWolfSpawnWeapons( gclient_t *client ) {
 
 /*
 ===========
-ClientCheckName
+ClientCleanName
 ============
 */
 static void ClientCleanName(const char *in, char *out, int outSize)
