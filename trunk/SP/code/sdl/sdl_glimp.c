@@ -418,7 +418,13 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 
 		// If not allowing software GL, demand accelerated
 		if( !r_allowSoftwareGL->integer )
+		{
 			SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+
+			//Fall back to allow either if setting attribute failed
+			if( SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 ) <  0)
+				SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, -1 );
+		}
 
 		if( r_centerWindow->integer && !fullscreen )
  		{
