@@ -603,8 +603,6 @@ static void R_LoadVisibility( lump_t *l ) {
 	byte    *buf;
 
 	len = ( s_worldData.numClusters + 63 ) & ~63;
-	s_worldData.novis = ri.Hunk_Alloc( len, h_low );
-	memset( s_worldData.novis, 0xff, len );
 
 	len = l->filelen;
 	if ( !len ) {
