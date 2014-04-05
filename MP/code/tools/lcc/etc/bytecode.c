@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "../../../qcommon/q_platform.h"
 
-#if defined(_WIN32) || defined (__CYGWIN__)
+#if defined _WIN32 || defined __CYGWIN__
 #define BINEXT ".exe"
 #else
 #define BINEXT ""

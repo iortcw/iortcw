@@ -1351,7 +1351,11 @@ makedirs:
 
 ifndef TOOLS_CC
   # A compiler which probably produces native binaries
+  ifeq ($(COMPILE_PLATFORM),cygwin)
+  TOOLS_CC = $(CC)
+  else
   TOOLS_CC = gcc
+  endif
 endif
 
 TOOLS_OPTIMIZE = -g -Wall -fno-strict-aliasing
