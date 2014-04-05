@@ -112,7 +112,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define DLL_EXT ".dll"
 
-#elif defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
+#elif defined(_WIN32) || defined(__WIN32__)
 
 #undef QDECL
 #define QDECL __cdecl
@@ -122,7 +122,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #if defined( _MSC_VER )
 #define OS_STRING "win_msvc"
-#elif defined __MINGW32__ || defined __CYGWIN__
+#elif defined __MINGW32__
 #define OS_STRING "win_mingw"
 #endif
 
