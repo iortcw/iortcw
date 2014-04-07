@@ -95,12 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 
 #define ID_INLINE __inline
-
-#if defined( __CYGWIN__ )
-#define PATH_SEP '/'
-#else
 #define PATH_SEP '\\'
-#endif
 
 #if defined( __WIN64__ ) 
 #define ARCH_STRING "x64"
@@ -127,12 +122,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 
 #define ID_INLINE __inline
-
-#if defined( __CYGWIN__ )
-#define PATH_SEP '/'
-#else
 #define PATH_SEP '\\'
-#endif
 
 #if defined( _M_IX86 ) || defined( __i386__ )
 #define ARCH_STRING "x86"
