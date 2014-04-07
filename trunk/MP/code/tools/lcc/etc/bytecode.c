@@ -36,7 +36,12 @@ void UpdatePaths( const char *lccBinary )
 	char *p;
 
 	strncpy( basepath, lccBinary, 1024 );
+
+#if defined( __CYGWIN__ )
+	p = strrchr( basepath, '/' );
+#else
 	p = strrchr( basepath, PATH_SEP );
+#endif
 
 	if( p )
 	{
