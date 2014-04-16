@@ -671,9 +671,6 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 				{
 					if (r_genNormalMaps->integer)
 						flags |= IMGFLAG_GENNORMALMAP;
-
-					if (r_srgb->integer)
-						flags |= IMGFLAG_SRGB;
 				}
 
 				stage->bundle[0].image[0] = R_FindImageFileExt( token, type, flags, shader.characterMip );
@@ -714,9 +711,6 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 			{
 				if (r_genNormalMaps->integer)
 					flags |= IMGFLAG_GENNORMALMAP;
-
-				if (r_srgb->integer)
-					flags |= IMGFLAG_SRGB;
 			}
 
 			stage->bundle[0].image[0] = R_FindImageFileExt( token, type, flags, shader.characterMip );
@@ -753,9 +747,6 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 
 					if (!shader.noPicMip)
 						flags |= IMGFLAG_PICMIP;
-
-					if (r_srgb->integer)
-						flags |= IMGFLAG_SRGB;
 
 					stage->bundle[0].image[num] = R_FindImageFileExt( token, IMGTYPE_COLORALPHA, flags, shader.characterMip );
 					if ( !stage->bundle[0].image[num] ) {
@@ -1440,9 +1431,6 @@ static void ParseSkyParms( char **text ) {
 	char pathname[MAX_QPATH];
 	int i;
 	imgFlags_t imgFlags = IMGFLAG_MIPMAP | IMGFLAG_PICMIP;
-
-	if (r_srgb->integer)
-		imgFlags |= IMGFLAG_SRGB;
 
 	// outerbox
 	token = COM_ParseExt( text, qfalse );
@@ -3441,9 +3429,6 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 		imgFlags_t flags;
 
 		flags = IMGFLAG_NONE;
-
-		if (r_srgb->integer)
-			flags |= IMGFLAG_SRGB;
 
 		if (mipRawImage)
 		{
