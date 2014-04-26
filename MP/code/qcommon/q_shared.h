@@ -72,7 +72,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #ifndef PRODUCT_VERSION
-  #define PRODUCT_VERSION "1.42"
+  #define PRODUCT_VERSION "1.42b"
 #endif
 
 #ifndef OLD_PRODUCT_VERSION
