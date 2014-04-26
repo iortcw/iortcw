@@ -228,7 +228,7 @@ void main()
 
 #if defined(USE_LIGHT) && !defined(USE_FAST_LIGHT)
   #if defined(USE_LIGHT_VECTOR)
-	var_LightDir = vec4(L, u_LightRadius * u_LightRadius);
+	var_LightDir = vec4(L + normal * 0.00001, u_LightRadius * u_LightRadius);
   #else
 	var_LightDir = vec4(L, 0.0);
   #endif
