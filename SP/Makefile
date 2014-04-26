@@ -116,7 +116,7 @@ endif
 export CROSS_COMPILING
 
 ifndef VERSION
-VERSION=1.42b
+VERSION=1.42a
 endif
 
 ifndef CLIENTBIN
@@ -307,23 +307,6 @@ ifneq ($(BUILD_CLIENT),0)
       SDL_LIBS=$(shell sdl2-config --libs)
     endif
   endif
-endif
-
-# Add svn version info
-USE_SVN=
-ifeq ($(wildcard .svn),.svn)
-  SVN_REV=$(shell LANG=C svnversion .)
-  ifneq ($(SVN_REV),)
-    VERSION:=$(VERSION)_SVN$(SVN_REV)
-    USE_SVN=1
-  endif
-else
-ifeq ($(wildcard .git/svn/.metadata),.git/svn/.metadata)
-  SVN_REV=$(shell LANG=C git svn info | awk '$$1 == "Revision:" {print $$2; exit 0}')
-  ifneq ($(SVN_REV),)
-    VERSION:=$(VERSION)_SVN$(SVN_REV)
-  endif
-endif
 endif
 
 
@@ -2501,13 +2484,6 @@ $(B)/ded/%.o: $(SYSDIR)/%.rc
 
 $(B)/ded/%.o: $(NDIR)/%.c
 	$(DO_DED_CC)
-
-# Extra dependencies to ensure the SVN version is incorporated
-ifeq ($(USE_SVN),1)
-  $(B)/client/cl_console.o : .svn/entries
-  $(B)/client/common.o : .svn/entries
-  $(B)/ded/common.o : .svn/entries
-endif
 
 
 #############################################################################

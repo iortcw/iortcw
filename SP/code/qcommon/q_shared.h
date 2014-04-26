@@ -57,7 +57,7 @@ If you have questions concerning this license or the applicable additional terms
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"Return To Castle Wolfenstein"
   #define CLIENT_WINDOW_MIN_TITLE 	"iowolfsp"
-  #define HOMEPATH_NAME_UNIX		".iortcw"
+  #define HOMEPATH_NAME_UNIX		".wolf"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfmp"
@@ -67,7 +67,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #ifndef PRODUCT_VERSION
-  #define PRODUCT_VERSION "1.42b"
+  #define PRODUCT_VERSION "1.42a"
 #endif
 
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
