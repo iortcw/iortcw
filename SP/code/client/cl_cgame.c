@@ -1340,10 +1340,13 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 		qboolean foundTag;
 		unsigned cgOr;
 		unsigned cgTagname;
+		int tagnameSize;
+
+		tagnameSize = strlen( tagname ) + 1;
 
 		// alloc data on cgame hunk and copy data to it
 		cgOr = VM_GetTempMemory( cgvm, sizeof (orientation_t), or );
-		cgTagname = VM_GetTempMemory( cgvm, MAX_QPATH, tagname );
+		cgTagname = VM_GetTempMemory( cgvm, tagnameSize, tagname );
 
 		if ( !cgOr || !cgTagname ) {
 			Com_Printf("WARNING: CL_GetTag: Not enough cgame QVM memory (increase vm_minQvmHunkMegs cvar).\n");
@@ -1354,7 +1357,7 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 
 		// copy result back to game memory and free temp in reverse order
 		// tagname isn't copied back because it might be a static string.
-		VM_FreeTempMemory( cgvm, cgTagname, MAX_QPATH, NULL );
+		VM_FreeTempMemory( cgvm, cgTagname, tagnameSize, NULL );
 		VM_FreeTempMemory( cgvm, cgOr, sizeof (orientation_t), or );
 
 		return foundTag;
