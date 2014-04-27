@@ -1419,7 +1419,8 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 		foundTag = VM_Call( cgvm, CG_GET_TAG, clientNum, cgTagname, cgOr );
 
 		// copy result back to game memory and free temp in reverse order
-		VM_FreeTempMemory( cgvm, cgTagname, MAX_QPATH, tagname );
+		// tagname isn't copied back because it might be a static string.
+		VM_FreeTempMemory( cgvm, cgTagname, MAX_QPATH, NULL );
 		VM_FreeTempMemory( cgvm, cgOr, sizeof (orientation_t), or );
 
 		return foundTag;
