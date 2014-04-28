@@ -2644,17 +2644,18 @@ static void CG_DrawWarmup( void ) {
 
 		cw = 10;
 
-		w = CG_DrawStrlen( s );
-		CG_DrawStringExt( 320 - w * cw / 2, 140, s, colorWhite,
-						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
+		// L0 - Pushed all lower for 20 so it's no so stacked..
+		w = CG_DrawStrlen(s); 
+		CG_DrawStringExt(320 - w * cw / 2, 160, s, colorWhite,
+			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
 
-		w = CG_DrawStrlen( s1 );
-		CG_DrawStringExt( 320 - w * cw / 2, 160, s1, colorWhite,
-						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
+		w = CG_DrawStrlen(s1);
+		CG_DrawStringExt(320 - w * cw / 2, 180, s1, colorWhite,
+			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
 
-		w = CG_DrawStrlen( s2 );
-		CG_DrawStringExt( 320 - w * cw / 2, 180, s2, colorWhite,
-						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
+		w = CG_DrawStrlen(s2);
+		CG_DrawStringExt(320 - w * cw / 2, 200, s2, colorWhite,
+			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
 	}
 }
 
@@ -3097,11 +3098,17 @@ void CG_DrawObjectiveIcons( void ) {
 	seconds -= mins * 60;
 	tens = seconds / 10;
 	seconds -= tens * 10;
-	if ( msec < 0 ) {
-		fade = fabs( sin( cg.time * 0.002 ) ) * cg_hudAlpha.value;
-		s = va( "0:00" );
-	} else {
-		s = va( "%i:%i%i", mins, tens, seconds ); // float cast to line up with reinforce time
+	
+	if (cgs.gamestate != GS_PLAYING) {
+		fade = fabs(sin(cg.time * 0.002)) * cg_hudAlpha.value;
+		s = va("^3Warmup");
+	}
+	else if (msec < 0) {
+		fade = fabs(sin(cg.time * 0.002)) * cg_hudAlpha.value;
+		s = va("0:00");
+	}
+	else {
+		s = va("%i:%i%i", mins, tens, seconds); // float cast to line up with reinforce time
 		fade = cg_hudAlpha.value;
 	}
 
