@@ -286,6 +286,7 @@ vmCvar_t cg_bloodDamageBlend;
 vmCvar_t cg_bloodFlash;
 vmCvar_t cg_muzzleFlash;
 vmCvar_t cg_complaintPopUp;
+vmCvar_t cg_noAmmoAutoSwitch;
 // ~L0
 
 typedef struct {
@@ -495,7 +496,8 @@ cvarTable_t cvarTable[] = {
 	{ &cg_bloodDamageBlend, "cg_bloodDamageBlend", "1.0", CVAR_ARCHIVE },
 	{ &cg_bloodFlash, "cg_bloodFlash", "1.0", CVAR_ARCHIVE },
 	{ &cg_muzzleFlash, "cg_muzzleFlash", "1", CVAR_ARCHIVE },
-	{ &cg_complaintPopUp, "cg_complaintPopUp", "1", CVAR_ARCHIVE }
+	{ &cg_complaintPopUp, "cg_complaintPopUp", "1", CVAR_ARCHIVE },
+	{ &cg_noAmmoAutoSwitch, "cg_noAmmoAutoSwitch", "1", CVAR_ARCHIVE }
 	// ~L0
 };
 
