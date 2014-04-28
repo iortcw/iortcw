@@ -1685,7 +1685,7 @@ static void CG_DrawCrosshair( void ) {
 	w = h = cg_crosshairSize.value;
 
 	// RF, crosshair size represents aim spread
-	f = (float)cg.snap->ps.aimSpreadScale / 255.0;
+	f = (float)((cg_crosshairPulse.integer == 0) ? 0 : cg.snap->ps.aimSpreadScale / 255.0);
 	w *= ( 1 + f * 2.0 );
 	h *= ( 1 + f * 2.0 );
 
@@ -2229,8 +2229,8 @@ static void CG_DrawVote( void ) {
 			s = "Server Host cannot be complained against";
 			CG_DrawStringExt( 8, 200, CG_TranslateString( s ), color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
 			return;
-		}
-		if ( cgs.complaintClient == -4 ) {
+		}							  // L0 - Complaint popup
+		if (cgs.complaintClient == -4 && cg_complaintPopUp.integer) {
 			s = "You were team-killed by the Server Host";
 			CG_DrawStringExt( 8, 200, CG_TranslateString( s ), color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
 			return;
@@ -2245,12 +2245,16 @@ static void CG_DrawVote( void ) {
 			Q_strncpyz( str2, "vote no", 32 );
 		}
 
-		s = va( CG_TranslateString( "File complaint against %s for team-killing?" ), cgs.clientinfo[cgs.complaintClient].name );
-		CG_DrawStringExt( 8, 200, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
+		// L0 - Complaint popup wrapper
+		if (cg_complaintPopUp.integer)
+		{
+			s = va(CG_TranslateString("File complaint against %s for team-killing?"), cgs.clientinfo[cgs.complaintClient].name);
+			CG_DrawStringExt(8, 200, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80);
 
-		s = va( CG_TranslateString( "Press '%s' for YES, or '%s' for No" ), str1, str2 );
-		CG_DrawStringExt( 8, 214, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
-		return;
+			s = va(CG_TranslateString("Press '%s' for YES, or '%s' for No"), str1, str2);
+			CG_DrawStringExt(8, 214, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80);
+			return;
+		}
 	}
 
 	if ( !cgs.voteTime ) {
@@ -2771,7 +2775,9 @@ static void CG_DrawFlashDamage( void ) {
 		}
 
 		VectorSet( col, 0.2, 0, 0 );
-		col[3] =  0.7 * ( redFlash / 5.0 );
+		col[3] = 0.7 * (redFlash / 5.0) * ( (cg_bloodFlash.value > 1.0) ? 1.0 :
+											(cg_bloodFlash.value < 0.0) ? 0.0 :
+											 cg_bloodFlash.value );
 
 		CG_FillRect( -10, -10, 650, 490, col );
 	}

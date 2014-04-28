@@ -1770,6 +1770,14 @@ extern vmCvar_t cg_descriptiveText;
 extern vmCvar_t cg_autoReload;
 extern vmCvar_t cg_antilag;
 
+// L0
+extern vmCvar_t cg_crosshairPulse;
+extern vmCvar_t cg_bloodDamageBlend;
+extern vmCvar_t cg_drawWeaponIconFlash;
+extern vmCvar_t cg_bloodFlash;
+extern vmCvar_t cg_muzzleFlash;
+extern vmCvar_t cg_complaintPopUp;
+
 //
 // cg_main.c
 //

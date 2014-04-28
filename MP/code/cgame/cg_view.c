@@ -1024,8 +1024,9 @@ static void CG_DamageBlendBlob( void ) {
 		ent.shaderRGBA[0] = 255;
 		ent.shaderRGBA[1] = 255;
 		ent.shaderRGBA[2] = 255;
-		ent.shaderRGBA[3] = 255;
-		trap_R_AddRefEntityToScene( &ent );
+		ent.shaderRGBA[3] = 255 * ( (cg_bloodDamageBlend.value > 1.0f) ? 1.0f :
+									(cg_bloodDamageBlend.value < 0.0f) ? 0.0f : cg_bloodDamageBlend.value);
+		trap_R_AddRefEntityToScene(&ent);
 
 		redFlash += ent.radius;
 	}
