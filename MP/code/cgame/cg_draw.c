@@ -1685,7 +1685,7 @@ static void CG_DrawCrosshair( void ) {
 	w = h = cg_crosshairSize.value;
 
 	// RF, crosshair size represents aim spread
-	f = (float)((cg_crosshairPulse.integer == 0) ? 0 : cg.snap->ps.aimSpreadScale / 255.0);
+	f = (float)cg.snap->ps.aimSpreadScale / 255.0;
 	w *= ( 1 + f * 2.0 );
 	h *= ( 1 + f * 2.0 );
 
@@ -2229,8 +2229,8 @@ static void CG_DrawVote( void ) {
 			s = "Server Host cannot be complained against";
 			CG_DrawStringExt( 8, 200, CG_TranslateString( s ), color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
 			return;
-		}							  // L0 - Complaint popup
-		if (cgs.complaintClient == -4 && cg_complaintPopUp.integer) {
+		}
+		if ( cgs.complaintClient == -4 ) {
 			s = "You were team-killed by the Server Host";
 			CG_DrawStringExt( 8, 200, CG_TranslateString( s ), color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
 			return;
@@ -2245,16 +2245,12 @@ static void CG_DrawVote( void ) {
 			Q_strncpyz( str2, "vote no", 32 );
 		}
 
-		// L0 - Complaint popup wrapper
-		if (cg_complaintPopUp.integer)
-		{
-			s = va(CG_TranslateString("File complaint against %s for team-killing?"), cgs.clientinfo[cgs.complaintClient].name);
-			CG_DrawStringExt(8, 200, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80);
+		s = va( CG_TranslateString( "File complaint against %s for team-killing?" ), cgs.clientinfo[cgs.complaintClient].name );
+		CG_DrawStringExt( 8, 200, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
 
-			s = va(CG_TranslateString("Press '%s' for YES, or '%s' for No"), str1, str2);
-			CG_DrawStringExt(8, 214, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80);
-			return;
-		}
+		s = va( CG_TranslateString( "Press '%s' for YES, or '%s' for No" ), str1, str2 );
+		CG_DrawStringExt( 8, 214, s, color, qtrue, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 80 );
+		return;
 	}
 
 	if ( !cgs.voteTime ) {
@@ -2644,18 +2640,17 @@ static void CG_DrawWarmup( void ) {
 
 		cw = 10;
 
-		// L0 - Pushed all lower for 20 so it's no so stacked..
-		w = CG_DrawStrlen(s); 
-		CG_DrawStringExt(320 - w * cw / 2, 160, s, colorWhite,
-			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
+		w = CG_DrawStrlen( s );
+		CG_DrawStringExt( 320 - w * cw / 2, 140, s, colorWhite,
+						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
 
-		w = CG_DrawStrlen(s1);
-		CG_DrawStringExt(320 - w * cw / 2, 180, s1, colorWhite,
-			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
+		w = CG_DrawStrlen( s1 );
+		CG_DrawStringExt( 320 - w * cw / 2, 160, s1, colorWhite,
+						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
 
-		w = CG_DrawStrlen(s2);
-		CG_DrawStringExt(320 - w * cw / 2, 200, s2, colorWhite,
-			qfalse, qtrue, cw, (int)(cw * 1.5), 0);
+		w = CG_DrawStrlen( s2 );
+		CG_DrawStringExt( 320 - w * cw / 2, 180, s2, colorWhite,
+						  qfalse, qtrue, cw, (int)( cw * 1.5 ), 0 );
 	}
 }
 
@@ -2776,9 +2771,7 @@ static void CG_DrawFlashDamage( void ) {
 		}
 
 		VectorSet( col, 0.2, 0, 0 );
-		col[3] = 0.7 * (redFlash / 5.0) * ( (cg_bloodFlash.value > 1.0) ? 1.0 :
-											(cg_bloodFlash.value < 0.0) ? 0.0 :
-											 cg_bloodFlash.value );
+		col[3] =  0.7 * ( redFlash / 5.0 );
 
 		CG_FillRect( -10, -10, 650, 490, col );
 	}
@@ -3098,17 +3091,11 @@ void CG_DrawObjectiveIcons( void ) {
 	seconds -= mins * 60;
 	tens = seconds / 10;
 	seconds -= tens * 10;
-	
-	if (cgs.gamestate != GS_PLAYING) {
-		fade = fabs(sin(cg.time * 0.002)) * cg_hudAlpha.value;
-		s = va("^3Warmup");
-	}
-	else if (msec < 0) {
-		fade = fabs(sin(cg.time * 0.002)) * cg_hudAlpha.value;
-		s = va("0:00");
-	}
-	else {
-		s = va("%i:%i%i", mins, tens, seconds); // float cast to line up with reinforce time
+	if ( msec < 0 ) {
+		fade = fabs( sin( cg.time * 0.002 ) ) * cg_hudAlpha.value;
+		s = va( "0:00" );
+	} else {
+		s = va( "%i:%i%i", mins, tens, seconds ); // float cast to line up with reinforce time
 		fade = cg_hudAlpha.value;
 	}
 
@@ -3638,12 +3625,13 @@ void CG_ShakeCamera( void ) {
 	// JPW NERVE starts at 1, approaches 0 over time
 	x = ( cg.cameraShakeTime - cg.time ) / cg.cameraShakeLength;
 
-	val = sin(M_PI * 7 * x + cg.cameraShakePhase) * x * 4.0f * cg.cameraShakeScale;
-	cg.refdef.vieworg[2] += val;
-	val = sin(M_PI * 13 * x + cg.cameraShakePhase) * x * 4.0f * cg.cameraShakeScale;
-	cg.refdef.vieworg[1] += val;
-	val = cos(M_PI * 17 * x + cg.cameraShakePhase) * x * 4.0f * cg.cameraShakeScale;
-	cg.refdef.vieworg[0] += val;	
+	// up/down
+	val = sin( M_PI * 8 * x + cg.cameraShakePhase ) * x * 18.0f * cg.cameraShakeScale;
+	cg.refdefViewAngles[0] += val;
+
+	// left/right
+	val = sin( M_PI * 15 * x + cg.cameraShakePhase ) * x * 16.0f * cg.cameraShakeScale;
+	cg.refdefViewAngles[1] += val;
 
 	AnglesToAxis( cg.refdefViewAngles, cg.refdef.viewaxis );
 }

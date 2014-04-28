@@ -524,33 +524,6 @@ static void CG_DumpLocation_f( void ) {
 			   (int) cg.snap->ps.origin[0], (int) cg.snap->ps.origin[1], (int) cg.snap->ps.origin[2] );
 }
 
-/*
-===================
-L0
-
-+vstr
-===================
-*/
-void CG_vstrDown_f(void) {
-	if (trap_Argc() == 5) {
-		trap_SendConsoleCommand(va("vstr %s;", CG_Argv(1)));
-	}
-	else { CG_Printf("[cgnotify]^3Usage: ^7+vstr [down_vstr] [up_vstr]\n"); }
-}
-
-/*
-===================
-L0
-
--vstr
-===================
-*/
-void CG_vstrUp_f(void) {
-	if (trap_Argc() == 5) {
-		trap_SendConsoleCommand(va("vstr %s;", CG_Argv(2)));
-	}
-	else { CG_Printf("[cgnotify]^3Usage: ^7+vstr [down_vstr] [up_vstr]\n"); }
-}
 
 typedef struct {
 	char    *cmd;
@@ -608,10 +581,6 @@ static consoleCommand_t commands[] = {
 
 	// Arnout
 	{ "dumploc", CG_DumpLocation_f },
-
-	// L0
-	{ "+vstr", CG_vstrDown_f },
-	{ "-vstr", CG_vstrUp_f },
 };
 
 
