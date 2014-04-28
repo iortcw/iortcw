@@ -1924,9 +1924,13 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		if ( ( es->weapon != WP_GRENADE_LAUNCHER ) && ( es->weapon != WP_GRENADE_PINEAPPLE ) && ( es->weapon != WP_DYNAMITE )  && ( es->weapon != WP_DYNAMITE2 ) ) {
 			trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
 		}
-		if ( es->number == cg.snap->ps.clientNum ) {
-			CG_OutOfAmmoChange();
-		}
+		// L0 - noAmmoAutoSwitch (patched)
+		if (es->number == cg.snap->ps.clientNum 
+			&& (cg_noAmmoAutoSwitch.integer > 0 
+			&& !CG_WeaponSelectable(cg.weaponSelect))) 
+		{
+			CG_OutOfAmmoChange(event == EV_NOAMMO ? qfalse : qtrue);
+		} // ~
 		break;
 	case EV_CHANGE_WEAPON:
 	{
