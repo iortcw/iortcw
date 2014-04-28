@@ -456,7 +456,6 @@ void Menu_PaintAll( void );
 menuDef_t *Menus_ActivateByName( const char *p, qboolean modalStack );
 void Menu_Reset( void );
 qboolean Menus_AnyFullScreenVisible( void );
-qboolean trap_Key_IsDown(int keynum);
 void  Menus_Activate( menuDef_t *menu );
 
 displayContextDef_t *Display_GetContext( void );

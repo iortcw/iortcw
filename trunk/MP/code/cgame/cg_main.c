@@ -279,16 +279,6 @@ vmCvar_t cg_bluelimbotime;
 vmCvar_t cg_autoReload;
 vmCvar_t cg_antilag;
 
-// L0
-vmCvar_t cg_crosshairPulse;
-vmCvar_t cg_drawWeaponIconFlash;
-vmCvar_t cg_bloodDamageBlend;
-vmCvar_t cg_bloodFlash;
-vmCvar_t cg_muzzleFlash;
-vmCvar_t cg_complaintPopUp;
-vmCvar_t cg_noAmmoAutoSwitch;
-// ~L0
-
 typedef struct {
 	vmCvar_t    *vmCvar;
 	char        *cvarName;
@@ -488,17 +478,7 @@ cvarTable_t cvarTable[] = {
 
 	{ &cg_autoReload, "cg_autoReload", "1", CVAR_ARCHIVE },
 
-	{ &cg_antilag, "g_antilag", "0", 0 },
-
-	// L0
-	{ &cg_crosshairPulse, "cg_crosshairPulse", "1", CVAR_ARCHIVE },
-	{ &cg_drawWeaponIconFlash, "cg_drawWeaponIconFlash", "0", CVAR_ARCHIVE },
-	{ &cg_bloodDamageBlend, "cg_bloodDamageBlend", "1.0", CVAR_ARCHIVE },
-	{ &cg_bloodFlash, "cg_bloodFlash", "1.0", CVAR_ARCHIVE },
-	{ &cg_muzzleFlash, "cg_muzzleFlash", "1", CVAR_ARCHIVE },
-	{ &cg_complaintPopUp, "cg_complaintPopUp", "1", CVAR_ARCHIVE },
-	{ &cg_noAmmoAutoSwitch, "cg_noAmmoAutoSwitch", "1", CVAR_ARCHIVE }
-	// ~L0
+	{ &cg_antilag, "g_antilag", "0", 0 }
 };
 
 static int  cvarTableSize = ARRAY_LEN( cvarTable );

@@ -2657,11 +2657,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		flash.hModel = 0;
 	}
 
-	// L0 - Disable muzzleFlash if they have it off..	
-	if (!cg_muzzleFlash.integer) {
-		flash.hModel = 0;
-	}
-
 	// weaps with barrel smoke
 	if ( ps || cg.renderingThirdPerson || !isPlayer ) {
 		if ( weaponNum == WP_STEN || weaponNum == WP_VENOM ) {
@@ -3110,7 +3105,7 @@ static qboolean CG_WeaponHasAmmo( int i ) {
 CG_WeaponSelectable
 ===============
 */
-qboolean CG_WeaponSelectable( int i ) {
+static qboolean CG_WeaponSelectable( int i ) {
 
 	// allow the player to unselect all weapons
 //	if(i == WP_NONE)
@@ -4156,7 +4151,7 @@ CG_OutOfAmmoChange
 The current weapon has just run out of ammo
 ===================
 */
-void CG_OutOfAmmoChange( qboolean allowForceSwitch ) {
+void CG_OutOfAmmoChange( void ) {
 	int i;
 	int bank = 0, cycle = 0;
 	int equiv = WP_NONE;
@@ -4175,51 +4170,47 @@ void CG_OutOfAmmoChange( qboolean allowForceSwitch ) {
 	}
 // jpw
 
-	// L0 - wrapped for noAmmoAutoSwitch
-	if ( allowForceSwitch )
-	{
-		// JPW NERVE -- early out if we just fired Panzerfaust, go to pistola, then grenades
-		if (cg.weaponSelect == WP_PANZERFAUST) {
-			for (i = 0; i < MAX_WEAPS_IN_BANK_MP; i++)
-			if (CG_WeaponSelectable(weapBanksMultiPlayer[2][i])) { // find a pistol
+// JPW NERVE -- early out if we just fired Panzerfaust, go to pistola, then grenades
+	if ( cg.weaponSelect == WP_PANZERFAUST ) {
+		for ( i = 0; i < MAX_WEAPS_IN_BANK_MP; i++ )
+			if ( CG_WeaponSelectable( weapBanksMultiPlayer[2][i] ) ) { // find a pistol
 				cg.weaponSelect = weapBanksMultiPlayer[2][i];
-				CG_FinishWeaponChange(cg.predictedPlayerState.weapon, cg.weaponSelect);
+				CG_FinishWeaponChange( cg.predictedPlayerState.weapon, cg.weaponSelect );
 				return;
 			}
-			for (i = 0; i < MAX_WEAPS_IN_BANK_MP; i++)
-			if (CG_WeaponSelectable(weapBanksMultiPlayer[4][i])) { // find a grenade
+		for ( i = 0; i < MAX_WEAPS_IN_BANK_MP; i++ )
+			if ( CG_WeaponSelectable( weapBanksMultiPlayer[4][i] ) ) { // find a grenade
 				cg.weaponSelect = weapBanksMultiPlayer[4][i];
-				CG_FinishWeaponChange(cg.predictedPlayerState.weapon, cg.weaponSelect);
+				CG_FinishWeaponChange( cg.predictedPlayerState.weapon, cg.weaponSelect );
 				return;
 			}
-		}
-		// jpw
+	}
+// jpw
 
-		// never switch weapon if auto-reload is disabled
-		if (!cg.pmext.bAutoReload && IS_AUTORELOAD_WEAPON(cg.weaponSelect)) {
+	// never switch weapon if auto-reload is disabled
+	if ( !cg.pmext.bAutoReload && IS_AUTORELOAD_WEAPON( cg.weaponSelect ) ) {
+		return;
+	}
+
+	// if you're using an alt mode weapon, try switching back to the parent
+	// otherwise, switch to the equivalent if you've got it
+	if ( cg.weaponSelect >= WP_BEGINSECONDARY && cg.weaponSelect <= WP_LASTSECONDARY ) {
+		cg.weaponSelect = equiv = getAltWeapon( cg.weaponSelect );    // base any further changes on the parent
+		if ( CG_WeaponSelectable( equiv ) ) {    // the parent was selectable, drop back to that
+			CG_FinishWeaponChange( cg.predictedPlayerState.weapon, cg.weaponSelect ); //----(SA)
 			return;
 		}
-
-		// if you're using an alt mode weapon, try switching back to the parent
-		// otherwise, switch to the equivalent if you've got it
-		if (cg.weaponSelect >= WP_BEGINSECONDARY && cg.weaponSelect <= WP_LASTSECONDARY) {
-			cg.weaponSelect = equiv = getAltWeapon(cg.weaponSelect);    // base any further changes on the parent
-			if (CG_WeaponSelectable(equiv)) {    // the parent was selectable, drop back to that
-				CG_FinishWeaponChange(cg.predictedPlayerState.weapon, cg.weaponSelect); //----(SA)
-				return;
-			}
-		}
+	}
 
 
-		// now try the opposite team's equivalent weap
-		equiv = getEquivWeapon(cg.weaponSelect);
+	// now try the opposite team's equivalent weap
+	equiv = getEquivWeapon( cg.weaponSelect );
 
-		if (equiv != cg.weaponSelect && CG_WeaponSelectable(equiv)) {
-			cg.weaponSelect = equiv;
-			CG_FinishWeaponChange(cg.predictedPlayerState.weapon, cg.weaponSelect); //----(SA)
-			return;
-		}
-	} // ~L0 - Wrapper ends here..
+	if ( equiv != cg.weaponSelect && CG_WeaponSelectable( equiv ) ) {
+		cg.weaponSelect = equiv;
+		CG_FinishWeaponChange( cg.predictedPlayerState.weapon, cg.weaponSelect ); //----(SA)
+		return;
+	}
 
 	//
 	// more complicated selection
