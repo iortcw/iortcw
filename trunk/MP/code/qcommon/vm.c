@@ -629,7 +629,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 
 	do
 	{
-		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, pureVM, (interpret != VMI_NATIVE));
+		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, !pureVM, (interpret != VMI_NATIVE));
 		
 		if(retval == VMI_NATIVE)
 		{
