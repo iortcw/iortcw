@@ -631,7 +631,16 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 	{
 		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, !pureVM, (interpret != VMI_NATIVE));
 		
-		if(retval == VMI_NATIVE)
+		if(retval == VMI_COMPILED)
+		{
+			vm->searchPath = startSearch;
+			if((header = VM_LoadQVM(vm, qtrue, qfalse)))
+				break;
+
+			// VM_Free overwrites the name on failed load
+			Q_strncpyz(vm->name, module, sizeof(vm->name));
+		}
+		else if(retval == VMI_NATIVE)
 		{
 			Com_Printf("Try loading dll file %s\n", filename);
 
@@ -644,15 +653,6 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 			}
 			
 			Com_Printf("Failed loading dll, trying next\n");
-		}
-		else if(retval == VMI_COMPILED)
-		{
-			vm->searchPath = startSearch;
-			if((header = VM_LoadQVM(vm, qtrue, qfalse)))
-				break;
-
-			// VM_Free overwrites the name on failed load
-			Q_strncpyz(vm->name, module, sizeof(vm->name));
 		}
 		else if ( pureServer && pureVM )
 		{
