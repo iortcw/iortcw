@@ -2313,8 +2313,6 @@ static cvar_t *s_alCapture;
 
 #ifdef _WIN32
 #define ALDRIVER_DEFAULT "OpenAL32.dll"
-#elif defined(_WIN64)
-#define ALDRIVER_DEFAULT "OpenAL64.dll"
 #elif defined(MACOS_X)
 #define ALDRIVER_DEFAULT "/System/Library/Frameworks/OpenAL.framework/OpenAL"
 #elif defined(__OpenBSD__)
@@ -2628,7 +2626,11 @@ qboolean S_AL_Init( soundInterface_t *si )
 	if( !QAL_Init( s_alDriver->string ) )
  	{
  		Com_Printf( "Failed to load library: \"%s\".\n", s_alDriver->string );
+#ifdef _WIN32
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
+#else
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
+#endif
 			return qfalse;
 		}
  	}
