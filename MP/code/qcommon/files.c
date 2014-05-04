@@ -233,6 +233,7 @@ typedef struct {
 	char path[MAX_OSPATH];              // c:\quake3
 	char		fullpath[MAX_OSPATH];		// c:\quake3\baseq3
 	char gamedir[MAX_OSPATH];           // baseq3
+	qboolean	allowUnzippedDLLs;		// whether to load unzipped dlls from directory
 } directory_t;
 
 typedef struct searchpath_s {
@@ -1550,7 +1551,7 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 				return VMI_COMPILED;
 			}
 
-			if(FS_FileInPathExists(netpath))
+			if(dir->allowUnzippedDLLs && FS_FileInPathExists(netpath))
 			{
 				Q_strncpyz(found, netpath, foundlen);
 				*startSearch = search;
@@ -3144,7 +3145,7 @@ then loads the zip headers
 ================
 */
 #define MAX_PAKFILES    1024
-void FS_AddGameDirectory( const char *path, const char *dir ) {
+void FS_AddGameDirectory( const char *path, const char *dir, qboolean allowUnzippedDLLs ) {
 	searchpath_t    *sp;
 	int i;
 	searchpath_t    *search;
@@ -3233,6 +3234,7 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	Q_strncpyz(search->dir->path, path, sizeof(search->dir->path));
 	Q_strncpyz(search->dir->fullpath, curpath, sizeof(search->dir->fullpath));
 	Q_strncpyz(search->dir->gamedir, dir, sizeof(search->dir->gamedir));
+	search->dir->allowUnzippedDLLs = allowUnzippedDLLs;
 
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
@@ -3518,7 +3520,7 @@ static void FS_Startup( const char *gameName ) {
 
 	// add search path elements in reverse priority order
 	if ( fs_basepath->string[0] ) {
-		FS_AddGameDirectory( fs_basepath->string, gameName );
+		FS_AddGameDirectory( fs_basepath->string, gameName, qtrue );
 	}
 	// fs_homepath is somewhat particular to *nix systems, only add if relevant
 	
@@ -3526,32 +3528,32 @@ static void FS_Startup( const char *gameName ) {
 	fs_apppath = Cvar_Get ("fs_apppath", Sys_DefaultAppPath(), CVAR_INIT|CVAR_PROTECTED );
 	// Make MacOSX also include the base path included with the .app bundle
 	if (fs_apppath->string[0])
-		FS_AddGameDirectory(fs_apppath->string, gameName);
+		FS_AddGameDirectory(fs_apppath->string, gameName, qtrue);
 	#endif
 	
 	// NOTE: same filtering below for mods and basegame
 	if (fs_homepath->string[0] && Q_stricmp(fs_homepath->string,fs_basepath->string)) {
 		FS_CreatePath ( fs_homepath->string );
-		FS_AddGameDirectory( fs_homepath->string, gameName );
+		FS_AddGameDirectory( fs_homepath->string, gameName, qfalse );
 	}
 
 	// check for additional base game so mods can be based upon other mods
 	if ( fs_basegame->string[0] && Q_stricmp( fs_basegame->string, gameName ) ) {
 		if ( fs_basepath->string[0] ) {
-			FS_AddGameDirectory( fs_basepath->string, fs_basegame->string );
+			FS_AddGameDirectory( fs_basepath->string, fs_basegame->string, qtrue );
 		}
 		if ( fs_homepath->string[0] && Q_stricmp( fs_homepath->string,fs_basepath->string ) ) {
-			FS_AddGameDirectory( fs_homepath->string, fs_basegame->string );
+			FS_AddGameDirectory( fs_homepath->string, fs_basegame->string, qfalse );
 		}
 	}
 
 	// check for additional game folder for mods
 	if ( fs_gamedirvar->string[0] && Q_stricmp( fs_gamedirvar->string, gameName ) ) {
 		if ( fs_basepath->string[0] ) {
-			FS_AddGameDirectory( fs_basepath->string, fs_gamedirvar->string );
+			FS_AddGameDirectory( fs_basepath->string, fs_gamedirvar->string, qtrue );
 		}
 		if ( fs_homepath->string[0] && Q_stricmp( fs_homepath->string,fs_basepath->string ) ) {
-			FS_AddGameDirectory( fs_homepath->string, fs_gamedirvar->string );
+			FS_AddGameDirectory( fs_homepath->string, fs_gamedirvar->string, qfalse );
 		}
 	}
 
