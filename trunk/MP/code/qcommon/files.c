@@ -3154,11 +3154,6 @@ void FS_AddGameDirectory( const char *path, const char *dir, qboolean allowUnzip
 	int numfiles;
 	char            **pakfiles;
 	char            *sorted[MAX_PAKFILES];
-// JPW NERVE
-	char mpsppakfilestring[4];
-
-	sprintf( mpsppakfilestring,"msp" );
-// jpw
 
 	// find all pak files in this directory
 	Q_strncpyz(curpath, FS_BuildOSPath(path, dir, ""), sizeof(curpath));
