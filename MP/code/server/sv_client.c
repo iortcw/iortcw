@@ -1243,6 +1243,25 @@ static void SV_Disconnect_f( client_t *cl ) {
 	SV_DropClient( cl, "disconnected" );
 }
 
+// Paths in pk3s to allowing using as cgame and ui VM.
+// Must be in pk3 with same checksum on server and client.
+char *sv_pureVMPaths[] = {
+	// QVM names
+	"vm/%s.mp.qvm",
+	// Files in original mp_bin.pk3
+	"%s_mp_x86.dll",
+	"%s.mp.i386.so",
+	// Other VM names used by the game which could be put in a pk3.
+	// They would be loaded by clients so it makes no sense to kick for using them.
+	"%s_mp_x86_64.dll",
+	"%s.mp.x86_64.so",
+	"%s.mp.i386.dylib",
+	"%s.mp.x86_64.dylib",
+	"%s.mp.ppc.dylib"
+};
+
+const int sv_numPureVMPaths = ARRAY_LEN( sv_pureVMPaths );
+
 /*
 =================
 SV_VerifyPaks_f
@@ -1258,32 +1277,16 @@ This routine would be a bit simpler with a goto but i abstained
 =================
 */
 static void SV_VerifyPaks_f( client_t *cl ) {
-	int nChkSum1, nChkSum2, nClientPaks, nServerPaks, i, j, nCurArg;
-	int nChkSumQvm1, nChkSumQvm2;
+	int nChkSum1, nClientPaks, nServerPaks, i, j, nCurArg;
 	int nClientChkSum[1024];
 	int nServerChkSum[1024];
 	const char *pPaks, *pArg;
 	qboolean bGood = qtrue;
-	qboolean bQvmGood = qtrue;
 
 	// if we are pure, we "expect" the client to load certain things from
 	// certain pk3 files, namely we want the client to have loaded the
 	// ui and cgame that we think should be loaded based on the pure setting
 	if ( sv_pure->integer != 0 ) {
-
-		nChkSum1 = nChkSum2 = 0;
-
-		// Only check the legacy dll for legacy clients
-		bGood = ( FS_FileIsInPAK( "cgame_mp_x86.dll", &nChkSum1 ) == 1) ;
-		if ( bGood ) {
-			bGood = ( FS_FileIsInPAK( "ui_mp_x86.dll", &nChkSum2 ) == 1) ;
-		}
-
-		bQvmGood = ( FS_FileIsInPAK( "vm/cgame.mp.qvm", &nChkSumQvm1 ) == 1) ;
-		if ( bQvmGood ) {
-			bQvmGood = ( FS_FileIsInPAK( "vm/ui.mp.qvm", &nChkSumQvm2 ) == 1) ;
-		}
-
 		nClientPaks = Cmd_Argc();
 
 		// start at arg 2 ( skip serverId cl_paks )
@@ -1315,16 +1318,38 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 			}
 			// verify first to be the cgame checksum
 			pArg = Cmd_Argv( nCurArg++ );
-			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum1 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm1 ) ) ) {
+			if ( !pArg || *pArg == '@' ) {
 				bGood = qfalse;
 				break;
 			}
+			// check valid cgame checksums
+			for ( i = 0; i < sv_numPureVMPaths; i++ ) {
+				if ( FS_FileIsInPAK( va( sv_pureVMPaths[i], "cgame" ), &nChkSum1 ) == 1 && atoi( pArg ) == nChkSum1 ) {
+					break;
+				}
+			}
+			if ( i == sv_numPureVMPaths ) {
+				bGood = qfalse;
+				break;
+			}
+
 			// verify the second to be the ui checksum
 			pArg = Cmd_Argv( nCurArg++ );
-			if ( !pArg || *pArg == '@' || ( atoi( pArg ) != nChkSum2 && ( !bQvmGood || atoi( pArg ) != nChkSumQvm2 ) ) ) {
+			if ( !pArg || *pArg == '@' ) {
 				bGood = qfalse;
 				break;
 			}
+			// check valid ui checksums
+			for ( i = 0; i < sv_numPureVMPaths; i++ ) {
+				if ( FS_FileIsInPAK( va( sv_pureVMPaths[i], "ui" ), &nChkSum1 ) == 1 && atoi( pArg ) == nChkSum1 ) {
+					break;
+				}
+			}
+			if ( i == sv_numPureVMPaths ) {
+				bGood = qfalse;
+				break;
+			}
+
 			// should be sitting at the delimeter now
 			pArg = Cmd_Argv( nCurArg++ );
 			if ( *pArg != '@' ) {
