@@ -2625,7 +2625,6 @@ qboolean S_AL_Init( soundInterface_t *si )
 	// Load QAL
 	if( !QAL_Init( s_alDriver->string ) )
  	{
- 		Com_Printf( "Failed to load library: \"%s\".\n", s_alDriver->string );
 #ifdef _WIN32
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
 #else
