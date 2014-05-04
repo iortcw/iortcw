@@ -1584,6 +1584,7 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, unpure) > 0
 						&& FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL))
 				{
+					Com_Printf( "Loading %s dll from %s\n", name, pack->pakFilename );
 					Q_strncpyz(found, netpath, foundlen);
 					*startSearch = search;
 
