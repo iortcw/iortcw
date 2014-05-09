@@ -2143,12 +2143,13 @@ static int R_GetTag(mdvModel_t * model, int frame, const char *_tagName, int sta
 	return -1;
 }
 
-mdvTag_t *R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdvTag_t * dest)
+static int R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, int startTagIndex, mdvTag_t **outTag)
 {
 	int				i, j, k;
 	int				frameSize;
 	mdrFrame_t		*frame;
 	mdrTag_t		*tag;
+	mdvTag_t		*dest = *outTag;
 
 	if ( framenum >= mod->numFrames ) 
 	{
@@ -2156,10 +2157,16 @@ mdvTag_t *R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdv
 		framenum = mod->numFrames - 1;
 	}
 
+	if ( startTagIndex > mod->numTags ) 
+	{
+		*outTag = NULL;
+		return -1;
+	}
+
 	tag = (mdrTag_t *)((byte *)mod + mod->ofsTags);
 	for ( i = 0 ; i < mod->numTags ; i++, tag++ )
 	{
-		if ( !strcmp( tag->name, tagName ) )
+		if ( ( i >= startTagIndex ) && !strcmp( tag->name, tagName ) )
 		{
 			// uncompressed model...
 			//
@@ -2176,11 +2183,12 @@ mdvTag_t *R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdv
 			dest->origin[1]=frame->bones[tag->boneIndex].matrix[1][3];
 			dest->origin[2]=frame->bones[tag->boneIndex].matrix[2][3];				
 
-			return dest;
+			return i;
 		}
 	}
 
-	return NULL;
+	*outTag = NULL;
+	return -1;
 }
 
 /*
@@ -2213,8 +2221,10 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 	if ( !model->mdv[0] /*&& !model->mdc[0]*/ && !model->mds ) {
 		if(model->type == MOD_MDR)
 		{
-			start = R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, &start_space);
-			end = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, &end_space);
+			start = &start_space;
+			end = &end_space;
+			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, startIndex, &start);
+			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, startIndex, &end);
 		}
 		else if( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
