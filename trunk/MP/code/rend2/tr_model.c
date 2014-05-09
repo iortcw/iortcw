@@ -2219,7 +2219,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 		else if( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
 					startFrame, endFrame,
-					frac, tagName );
+					frac, tagName, startIndex );
 		} else {
 			start = end = NULL;
 		}

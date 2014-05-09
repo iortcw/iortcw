@@ -2536,7 +2536,7 @@ void R_AddIQMSurfaces( trRefEntity_t *ent );
 void RB_IQMSurfaceAnim( surfaceType_t *surface );
 int R_IQMLerpTag( orientation_t *tag, iqmData_t *data,
                   int startFrame, int endFrame,
-                  float frac, const char *tagName );
+                  float frac, const char *tagName, int startIndex );
 
 /*
 =============================================================
