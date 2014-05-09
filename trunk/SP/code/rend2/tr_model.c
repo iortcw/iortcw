@@ -2139,7 +2139,7 @@ static int R_GetTag(mdvModel_t * model, int frame, const char *_tagName, int sta
 	return -1;
 }
 
-void R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdvTag_t * dest)
+mdvTag_t *R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdvTag_t * dest)
 {
 	int				i, j, k;
 	int				frameSize;
@@ -2172,12 +2172,11 @@ void R_GetAnimTag( mdrHeader_t *mod, int framenum, const char *tagName, mdvTag_t
 			dest->origin[1]=frame->bones[tag->boneIndex].matrix[1][3];
 			dest->origin[2]=frame->bones[tag->boneIndex].matrix[2][3];				
 
-			return;
+			return dest;
 		}
 	}
 
-	AxisClear( dest->axis );
-	VectorClear( dest->origin );
+	return NULL;
 }
 
 
@@ -2211,26 +2210,17 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 	if ( !model->mdv[0] /*&& !model->mdc[0]*/ && !model->mds ) {
 		if(model->type == MOD_MDR)
 		{
-			start = &start_space;
-			end = &end_space;
-			R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, start);
-			R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, end);
+			start = R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, &start_space);
+			end = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, &end_space);
 		}
 		else if ( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
 					startFrame, endFrame,
 					frac, tagName );
 		} else {
-			AxisClear( tag->axis );
-			VectorClear( tag->origin );
-			return -1;
+			start = end = NULL;
 		}
-	}
-
-	frontLerp = frac;
-	backLerp = 1.0f - frac;
-
-	if ( model->type == MOD_MESH ) {
+	} else if ( model->type == MOD_MESH ) {
 		// old MD3 style
 		retval = R_GetTag(model->mdv[0], startFrame, tagName, startIndex, &start);
 		retval = R_GetTag(model->mdv[0], endFrame, tagName, startIndex, &end);
@@ -2244,7 +2234,6 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 
 		// failed
 		return -1;
-
 	} else {
 		// failed
 		return -1;
@@ -2255,6 +2244,9 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 		VectorClear( tag->origin );
 		return -1;
 	}
+
+	frontLerp = frac;
+	backLerp = 1.0f - frac;
 
 	for ( i = 0 ; i < 3 ; i++ ) {
 		tag->origin[i] = start->origin[i] * backLerp +  end->origin[i] * frontLerp;
