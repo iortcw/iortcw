@@ -1757,7 +1757,7 @@ const void  *RB_DrawSurfs( const void *data ) {
 
 		if (r_drawSun->integer)
 		{
-			RB_DrawSun(0.1, tr.sunShader);
+			RB_DrawSun(0.2, tr.sunShader);
 		}
 
 		if (r_drawSunRays->integer)
