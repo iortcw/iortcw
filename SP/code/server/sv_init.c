@@ -691,7 +691,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	int i;
 	int checksum;
 	qboolean isBot;
-	char systemInfo[MAX_INFO_STRING];
+	char systemInfo[16384];
 	const char  *p;
 
 	// Ridah, enforce maxclients in single player, so there is enough room for AI characters
@@ -746,14 +746,6 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 //	// clear collision map data		// (SA) NOTE: TODO: used in missionpack
 //	CM_ClearMap();
 
-	// wipe the entire per-level structure
-	SV_ClearServer();
-
-	// allocate empty config strings
-	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
-		sv.configstrings[i] = CopyString( "" );
-	}
-
 	// init client structures and svs.numSnapshotEntities
 	if ( !Cvar_VariableValue( "sv_running" ) ) {
 		SV_Startup();
@@ -787,6 +779,14 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 		}
 	}
 
+	// wipe the entire per-level structure
+	SV_ClearServer();
+
+	// allocate empty config strings
+	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
+		sv.configstrings[i] = CopyString( "" );
+	}
+
 	// Ridah
 	if ( sv_gametype->integer == GT_SINGLE_PLAYER ) {
 		SV_SetExpectedHunkUsage( va( "maps/%s.bsp", server ) );
@@ -799,7 +799,7 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	Cvar_Set( "cl_paused", "0" );
 
 	// get a new checksum feed and restart the file system
-	sv.checksumFeed = ( ( (int) rand() << 16 ) ^ rand() ) ^ Sys_Milliseconds();
+	sv.checksumFeed = ( ( (int) rand() << 16 ) ^ rand() ) ^ Com_Milliseconds();
 	FS_Restart( sv.checksumFeed );
 
 	CM_LoadMap( va( "maps/%s.bsp", server ), qfalse, &checksum );
