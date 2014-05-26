@@ -631,6 +631,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i][j];
 		p2 = grid->points[i + 1][j];
 		p = CM_GridPlane( gridPlanes, i, j, 0 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p1, p2, up );
 
@@ -638,6 +641,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i][j + 1];
 		p2 = grid->points[i + 1][j + 1];
 		p = CM_GridPlane( gridPlanes, i, j, 1 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p2, p1, up );
 
@@ -645,6 +651,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i][j];
 		p2 = grid->points[i][j + 1];
 		p = CM_GridPlane( gridPlanes, i, j, 1 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p2, p1, up );
 
@@ -652,6 +661,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i + 1][j];
 		p2 = grid->points[i + 1][j + 1];
 		p = CM_GridPlane( gridPlanes, i, j, 0 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p1, p2, up );
 
@@ -659,6 +671,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i + 1][j + 1];
 		p2 = grid->points[i][j];
 		p = CM_GridPlane( gridPlanes, i, j, 0 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p1, p2, up );
 
@@ -666,6 +681,9 @@ static int CM_EdgePlaneNum( cGrid_t *grid, int gridPlanes[MAX_GRID_SIZE][MAX_GRI
 		p1 = grid->points[i][j];
 		p2 = grid->points[i + 1][j + 1];
 		p = CM_GridPlane( gridPlanes, i, j, 1 );
+		if ( p == -1 ) {
+			return -1;
+		}
 		VectorMA( p1, 4, planes[ p ].plane, up );
 		return CM_FindPlane( p1, p2, up );
 
