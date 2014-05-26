@@ -2041,6 +2041,8 @@ static qboolean R_LoadMDS( model_t *mod, void *buffer, const char *mod_name ) {
 ** RE_BeginRegistration
 */
 void RE_BeginRegistration( glconfig_t *glconfigOut ) {
+	int	i;
+
 	ri.Hunk_Clear();    // (SA) MEM NOTE: not in missionpack
 
 	R_Init();
@@ -2049,7 +2051,10 @@ void RE_BeginRegistration( glconfig_t *glconfigOut ) {
 	R_IssuePendingRenderCommands();
 
 	tr.visIndex = 0;
-	memset(tr.visClusters, -2, sizeof(tr.visClusters));	// force markleafs to regenerate
+	// force markleafs to regenerate
+	for(i = 0; i < MAX_VISCOUNTS; i++) {
+		tr.visClusters[i] = -2;
+	}
 
 	R_ClearFlares();
 	RE_ClearScene();
