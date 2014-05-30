@@ -2455,11 +2455,14 @@ static void UI_DrawGLInfo( rectDef_t *rect, int font, float scale, vec4_t color,
 	eptr = buff;
 	y = rect->y + 45;
 	numLines = 0;
-	// don't overflow the line buffer, don't go above 62, as it goes out of the screen anyway
-	while ( y < rect->y + rect->h && *eptr && numLines < 62 )
+	while ( y < rect->y + rect->h && *eptr )
 	{
 		while ( *eptr && *eptr == ' ' )
 			*eptr++ = '\0';
+
+		// don't overflow the line buffer, don't go above 63, as it goes out of the screen anyway
+		if ( numLines == 63 )
+			break;
 
 		// track start of valid string
 		if ( *eptr && *eptr != ' ' ) {
