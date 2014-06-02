@@ -974,7 +974,7 @@ nodam_rtknee          attached to tag_calfright
 
 			cgs.media.heinrichArmorBreak = CG_SoundScriptPrecache( "Heinrich_loseArmor" );
 
-			// RF, these are also used but supersoldier "spirits" in end map
+			// RF, these are also used by supersoldier "spirits" in end map
 			cgs.media.ssSpiritSkullModel = trap_R_RegisterModel( "models/players/supersoldier/ssghost.md3" );
 
 			cgs.media.zombieSpiritTrailShader = trap_R_RegisterShader( "zombieSpiritTrail" );
