@@ -770,7 +770,6 @@ static qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelN
 			cgs.media.skeletonHeadSkin = trap_R_RegisterSkin( "models/players/skel/head_default.skin" );
 
 			cgs.media.zombieSpiritSound = trap_S_RegisterSound( "sound/zombie/attack/spirit_start.wav" );
-			cgs.media.zombieSpiritLoopSound = trap_S_RegisterSound( "sound/zombie/attack/spirit_loop.wav" );
 			cgs.media.zombieDeathSound = trap_S_RegisterSound( "sound/world/ceramicbreak.wav" ); // Zombie Gib
 
 			cgs.media.spiritSkullModel = trap_R_RegisterModel( "models/mapobjects/skull/skul2t.md3" );
@@ -976,11 +975,9 @@ nodam_rtknee          attached to tag_calfright
 			cgs.media.heinrichArmorBreak = CG_SoundScriptPrecache( "Heinrich_loseArmor" );
 
 			// RF, these are also used but supersoldier "spirits" in end map
-			cgs.media.zombieSpiritLoopSound = trap_S_RegisterSound( "sound/zombie/attack/spirit_loop.wav" );
 			cgs.media.ssSpiritSkullModel = trap_R_RegisterModel( "models/players/supersoldier/ssghost.md3" );
 
 			cgs.media.zombieSpiritTrailShader = trap_R_RegisterShader( "zombieSpiritTrail" );
-			cgs.media.zombieSpiritLoopSound = trap_S_RegisterSound( "sound/zombie/attack/spirit_loop.wav" );
 			cgs.media.helgaGaspSound = CG_SoundScriptPrecache( "helgaSpiritGasp" );
 
 			cgs.media.debrisHitSound = trap_S_RegisterSound( "sound/world/debris_hit.wav" );
