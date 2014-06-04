@@ -2353,7 +2353,7 @@ static cvar_t *s_alCapture;
 #ifdef _WIN32
 #define ALDRIVER_DEFAULT "OpenAL32.dll"
 #elif defined(MACOS_X)
-#define ALDRIVER_DEFAULT "/System/Library/Frameworks/OpenAL.framework/OpenAL"
+#define ALDRIVER_DEFAULT "libopenal.dylib"
 #elif defined(__OpenBSD__)
 #define ALDRIVER_DEFAULT "libopenal.so"
 #else
@@ -2574,7 +2574,11 @@ static void S_AL_SoundInfo(void)
 #ifdef USE_VOIP
 	if(capture_ext)
 	{
+#ifdef MACOS_X
+		Com_Printf("  Input Device:   %s\n", qalcGetString(alCaptureDevice, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER));
+#else
 		Com_Printf("  Input Device:   %s\n", qalcGetString(alCaptureDevice, ALC_CAPTURE_DEVICE_SPECIFIER));
+#endif
 		Com_Printf("  Available Input Devices:\n%s", s_alAvailableInputDevices->string);
 	}
 #endif
@@ -2664,8 +2668,10 @@ qboolean S_AL_Init( soundInterface_t *si )
 	// Load QAL
 	if( !QAL_Init( s_alDriver->string ) )
  	{
-#ifdef _WIN32
+#if defined( _WIN32 )
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
+#elif defined ( MACOS_X )
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "/System/Library/Frameworks/OpenAL.framework/OpenAL" ) ) {
 #else
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
 #endif
