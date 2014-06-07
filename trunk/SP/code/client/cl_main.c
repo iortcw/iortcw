@@ -1266,8 +1266,8 @@ void CL_ClearMemory(qboolean shutdownRef)
 	if ( !com_sv_running->integer ) {
 		// clear the whole hunk
 		Hunk_Clear();
-//		// clear collision map data
-//		CM_ClearMap();
+		// clear collision map data
+		CM_ClearMap();
 	} else {
 		// clear all the client data on the hunk
 		Hunk_ClearToMark();
