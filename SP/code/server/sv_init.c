@@ -743,8 +743,8 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// clear the whole hunk because we're (re)loading the server
 	Hunk_Clear();
 
-//	// clear collision map data		// (SA) NOTE: TODO: used in missionpack
-//	CM_ClearMap();
+	// clear collision map data
+	CM_ClearMap();
 
 	// init client structures and svs.numSnapshotEntities
 	if ( !Cvar_VariableValue( "sv_running" ) ) {
