@@ -1,5 +1,5 @@
-Return to Castle Wolfenstein multiplayer GPL source release
-===========================================================
+Return to Castle Wolfenstein single player GPL source release
+=============================================================
 
 This file contains the following sections:
 
@@ -29,19 +29,19 @@ Compiling on win32:
 A Visual C++ 2008 project is provided in src\wolf.sln.
 The solution file is compatible with the Express release of Visual C++.
 
-In order to test your binaries, backup and remove Main\mp_bin.pk3,
-then replace WolfMP.exe, Main\qagame_mp_x86.dll, Main\cgame_mp_x86.dll, Main\ui_mp_x86.dll.
-When starting the server make sure to specify Pure Server: No (sv_pure 0).
+You will need to execute src\extractfuncs\extractfuncs.bat to generate src\game\g_save.c
+
+You can test your binaries by replacing WolfSP.exe, qagamex86.dll, cgamex86.dll, uix86.dll at the top of the RTCW install
 
 Compiling on GNU/Linux x86:
 ---------------------------
 
 Go to the src/unix directory, and run the cons script
-(cons was an old precursor to scons which we had been using in earlier projects)
+(cons is a perl based precursor to scons, this is what we were using at the time)
 
 Run ./cons -h to review build options. Use ./cons -- release to compile in release mode.
 
-If any problems occur, consult the internet.
+If problems occur, consult the internet.
 
 Other platforms, updated source code, security issues:
 ------------------------------------------------------
@@ -58,9 +58,9 @@ LICENSE
 
 See COPYING.txt for the GNU GENERAL PUBLIC LICENSE
 
-ADDITIONAL TERMS:  The Return to Castle Wolfenstein multiplayer GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU GPL which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+ADDITIONAL TERMS:  The Return to Castle Wolfenstein single player GPL Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU GPL which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
-EXCLUDED CODE:  The code described below and contained in the Return to Castle Wolfenstein multiplayer GPL Source Code release is not part of the Program covered by the GPL and is expressly excluded from its terms.  You are solely responsible for obtaining from the copyright holder a license for such code and complying with the applicable license terms.
+EXCLUDED CODE:  The code described below and contained in the Return to Castle Wolfenstein single player GPL Source Code release is not part of the Program covered by the GPL and is expressly excluded from its terms.  You are solely responsible for obtaining from the copyright holder a license for such code and complying with the applicable license terms.
 
 IO on .zip files using portions of zlib
 ---------------------------------------------------------------------------
