@@ -93,6 +93,7 @@ cvar_t	*cl_timedemoLog;
 cvar_t	*cl_autoRecordDemo;
 cvar_t	*cl_aviFrameRate;
 cvar_t	*cl_aviMotionJpeg;
+cvar_t  *cl_avidemo;
 cvar_t  *cl_forceavidemo;
 
 cvar_t  *cl_freelook;
@@ -3168,16 +3169,26 @@ void CL_Frame ( int msec ) {
 	}
 
 	// if recording an avi, lock to a fixed fps
-	if ( CL_VideoRecording( ) && cl_aviFrameRate->integer && msec) {
+	if ( ( CL_VideoRecording( ) && cl_aviFrameRate->integer && msec ) || ( cl_avidemo->integer && msec ) ) {
 		// save the current screen
-		if ( !clc.demoplaying || clc.state == CA_ACTIVE || cl_forceavidemo->integer ) {
-			float fps = MIN(cl_aviFrameRate->value * com_timescale->value, 1000.0f);
-			float frameDuration = MAX(1000.0f / fps, 1.0f) + clc.aviVideoFrameRemainder;
+		if ( clc.state == CA_ACTIVE || cl_forceavidemo->integer ) {
+			if ( cl_avidemo->integer ) {	// Legacy (screenshot) method
+				Cbuf_ExecuteText( EXEC_NOW, "screenshot silent\n" );
 
-			CL_TakeVideoFrame( );
-
-			msec = (int)frameDuration;
-			clc.aviVideoFrameRemainder = frameDuration - msec;
+				// fixed time for next frame
+				msec = ( 1000 / cl_avidemo->integer ) * com_timescale->value;
+				if ( msec == 0 ) {
+					msec = 1;
+				}
+			} else {			// ioquake3 method
+				float fps = MIN(cl_aviFrameRate->value * com_timescale->value, 1000.0f);
+				float frameDuration = MAX(1000.0f / fps, 1.0f) + clc.aviVideoFrameRemainder;
+	
+				CL_TakeVideoFrame( );
+	
+				msec = (int)frameDuration;
+				clc.aviVideoFrameRemainder = frameDuration - msec;
+			}
 		}
 	}
 	
@@ -4007,6 +4018,7 @@ void CL_Init( void ) {
 	cl_autoRecordDemo = Cvar_Get ("cl_autoRecordDemo", "0", CVAR_ARCHIVE);
 	cl_aviFrameRate = Cvar_Get ("cl_aviFrameRate", "25", CVAR_ARCHIVE);
 	cl_aviMotionJpeg = Cvar_Get ("cl_aviMotionJpeg", "1", CVAR_ARCHIVE);
+	cl_avidemo = Cvar_Get( "cl_avidemo", "0", 0 );
 	cl_forceavidemo = Cvar_Get( "cl_forceavidemo", "0", 0 );
 
 	rconAddress = Cvar_Get( "rconAddress", "", 0 );
