@@ -26,7 +26,7 @@ Cygwin is very much like a 'rolling' Linux distribution in that it is always upd
 
 1. Install Cygwin
 First off you want to download the Cygwin setup package from here:
-http://cygwin.com/install.html2
+http://cygwin.com/install.html
 
 Choose either the 32-bit or 64-bit environment (32-bit will work fine on both 32 and 64 bit versions of Windows)
 
