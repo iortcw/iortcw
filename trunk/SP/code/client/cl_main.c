@@ -1494,7 +1494,7 @@ void CL_Disconnect( qboolean showMainMenu ) {
 #endif
 
 	// Stop recording any video
-	if( clc.demoplaying && CL_VideoRecording( ) ) {
+	if( CL_VideoRecording( ) ) {
 		// Finish rendering current frame
 		SCR_UpdateScreen( );
 		CL_CloseAVI( );
@@ -3550,6 +3550,12 @@ void CL_Video_f( void )
 {
 	char  filename[ MAX_OSPATH ];
 	int   i, last;
+
+	if( !clc.demoplaying )
+	{
+		Com_Printf( "The video command can only be used when playing back demos\n" );
+		return;
+	}
 
 	if( Cmd_Argc( ) == 2 )
 	{
