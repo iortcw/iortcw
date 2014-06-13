@@ -3713,7 +3713,7 @@ void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( tra
 	int i;
 	pmove_t tpm;
 
-	if ( pm->ps->pm_type == PM_FREEZE ) {
+	if ( ps->pm_type == PM_FREEZE ) {
 		return;
 	}
 
