@@ -239,6 +239,10 @@ ifndef DEBUG_CFLAGS
 DEBUG_CFLAGS=-g -O0
 endif
 
+ifndef USE_SVN
+USE_SVN=1
+endif
+
 ifndef USE_BLOOM
 USE_BLOOM=1
 endif
@@ -310,20 +314,20 @@ ifneq ($(BUILD_CLIENT),0)
 endif
 
 # Add svn version info
-USE_SVN=
-ifeq ($(wildcard .svn),.svn)
-  SVN_REV=$(shell LANG=C svnversion .)
-  ifneq ($(SVN_REV),)
-    VERSION:=$(VERSION)_SVN$(SVN_REV)
-    USE_SVN=1
+ifeq ($(USE_SVN),1)
+  ifeq ($(wildcard .svn),.svn)
+    SVN_REV=$(shell LANG=C svnversion .)
+    ifneq ($(SVN_REV),)
+      VERSION:=$(VERSION)_SVN$(SVN_REV)
+    endif
+  else
+  ifeq ($(wildcard .git/svn/.metadata),.git/svn/.metadata)
+    SVN_REV=$(shell LANG=C git svn info | awk '$$1 == "Revision:" {print $$2; exit 0}')
+    ifneq ($(SVN_REV),)
+      VERSION:=$(VERSION)_SVN$(SVN_REV)
+    endif
   endif
-else
-ifeq ($(wildcard .git/svn/.metadata),.git/svn/.metadata)
-  SVN_REV=$(shell LANG=C git svn info | awk '$$1 == "Revision:" {print $$2; exit 0}')
-  ifneq ($(SVN_REV),)
-    VERSION:=$(VERSION)_SVN$(SVN_REV)
   endif
-endif
 endif
 
 
