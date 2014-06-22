@@ -318,18 +318,13 @@ endif
 
 # Add svn version info
 ifeq ($(USE_SVN),1)
-  ifeq ($(wildcard .svn),.svn)
+  ifeq ($(wildcard ../.svn),../.svn)
     SVN_REV=$(shell LANG=C svnversion .)
     ifneq ($(SVN_REV),)
       VERSION:=$(VERSION)_SVN$(SVN_REV)
     endif
   else
-  ifeq ($(wildcard .git/svn/.metadata),.git/svn/.metadata)
-    SVN_REV=$(shell LANG=C git svn info | awk '$$1 == "Revision:" {print $$2; exit 0}')
-    ifneq ($(SVN_REV),)
-      VERSION:=$(VERSION)_SVN$(SVN_REV)
-    endif
-  endif
+    USE_SVN=0
   endif
 endif
 
@@ -2497,9 +2492,9 @@ $(B)/ded/%.o: $(NDIR)/%.c
 
 # Extra dependencies to ensure the SVN version is incorporated
 ifeq ($(USE_SVN),1)
-  $(B)/client/cl_console.o : .svn/entries
-  $(B)/client/common.o : .svn/entries
-  $(B)/ded/common.o : .svn/entries
+  $(B)/client/cl_console.o : ../.svn/entries
+  $(B)/client/common.o : ../.svn/entries
+  $(B)/ded/common.o : ../.svn/entries
 endif
 
 
