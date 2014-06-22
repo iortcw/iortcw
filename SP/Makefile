@@ -321,7 +321,14 @@ ifeq ($(USE_SVN),1)
       VERSION:=$(VERSION)_SVN$(SVN_REV)
     endif
   else
+  ifeq ($(wildcard ../../.svn),../../.svn)
+    SVN_REV=$(shell LANG=C svnversion .)
+    ifneq ($(SVN_REV),)
+      VERSION:=$(VERSION)_SVN$(SVN_REV)
+    endif
+  else
     USE_SVN=0
+  endif
   endif
 endif
 
@@ -2503,9 +2510,17 @@ $(B)/ded/%.o: $(NDIR)/%.c
 
 # Extra dependencies to ensure the SVN version is incorporated
 ifeq ($(USE_SVN),1)
-  $(B)/client/cl_console.o : ../.svn/entries
-  $(B)/client/common.o : ../.svn/entries
-  $(B)/ded/common.o : ../.svn/entries
+  ifeq ($(wildcard ../.svn),../.svn)
+    $(B)/client/cl_console.o : ../.svn/entries
+    $(B)/client/common.o : ../.svn/entries
+    $(B)/ded/common.o : ../.svn/entries
+  else
+  ifeq ($(wildcard ../../.svn),../../.svn)
+    $(B)/client/cl_console.o : ../../.svn/entries
+    $(B)/client/common.o : ../../.svn/entries
+    $(B)/ded/common.o : ../../.svn/entries
+  endif
+  endif
 endif
 
 
