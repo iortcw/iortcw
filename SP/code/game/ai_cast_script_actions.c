@@ -114,7 +114,7 @@ qboolean AICast_ScriptAction_GotoMarker( cast_state_t *cs, char *params ) {
 	pString = params;
 	token = COM_ParseExt( &pString, qfalse );
 	if ( !token[0] ) {
-		G_Error( "AI scripting: gotomarker must have an targetname\n" );
+		G_Error( "AI Scripting: gotomarker must have an targetname\n" );
 	}
 
 	// if we already are going to the marker, just use that, and check if we're in range
@@ -198,7 +198,7 @@ qboolean AICast_ScriptAction_GotoMarker( cast_state_t *cs, char *params ) {
 	}
 
 	if ( !ent ) {
-		G_Error( "AI Scripting: can't find ai_marker with \"targetname\" = \"%s\"\n", token );
+		G_Error( "AI Scripting: gotomarker can't find ai_marker with \"targetname\" = \"%s\"\n", token );
 	}
 
 	if ( Distance( cs->bs->origin, ent->r.currentOrigin ) < SCRIPT_REACHGOAL_DIST ) { // we made it
@@ -305,7 +305,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params ) {
 	pString = params;
 	token = COM_ParseExt( &pString, qfalse );
 	if ( !token[0] ) {
-		G_Error( "AI scripting: gotocast must have an ainame\n" );
+		G_Error( "AI Scripting: gotocast must have an ainame\n" );
 	}
 
 	// if we already are going to the marker, just use that, and check if we're in range
@@ -328,7 +328,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params ) {
 					if ( !ent ) {
 						ent = AICast_FindEntityForName( token );
 						if ( !ent ) {
-							G_Error( "AI Scripting: gotomarker cannot find targetname \"%s\"\n", token );
+							G_Error( "AI Scripting: gotocast cannot find targetname \"%s\"\n", token );
 						}
 					}
 
@@ -376,7 +376,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params ) {
 	// find the cast/player with the given "name"
 	ent = AICast_FindEntityForName( token );
 	if ( !ent ) {
-		G_Error( "AI Scripting: can't find AI cast with \"ainame\" = \"%s\"\n", token );
+		G_Error( "AI Scripting: gotocast can't find AI cast with \"ainame\" = \"%s\"\n", token );
 	}
 
 	if ( Distance( cs->bs->origin, ent->r.currentOrigin ) < SCRIPT_REACHCAST_DIST ) { // we made it
@@ -384,7 +384,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params ) {
 	}
 
 	if ( !ent ) {
-		G_Error( "AI Scripting: can't find ai_marker with \"targetname\" = \"%s\"\n", token );
+		G_Error( "AI Scripting: gotocast can't find ai_marker with \"targetname\" = \"%s\"\n", token );
 	}
 
 	cs->castScriptStatus.scriptNoMoveTime = 0;
@@ -507,7 +507,7 @@ qboolean AICast_ScriptAction_Wait( cast_state_t *cs, char *params ) {
 	pString = params;
 	token = COM_ParseExt( &pString, qfalse );
 	if ( !token[0] ) {
-		G_Error( "AI scripting: wait must have a duration\n" );
+		G_Error( "AI Scripting: wait must have a duration\n" );
 	}
 	if ( !Q_stricmp( token, "forever" ) ) {
 		duration = level.time + 10000;
@@ -616,7 +616,7 @@ qboolean AICast_ScriptAction_Trigger( cast_state_t *cs, char *params ) {
 	pString = params;
 	token = COM_ParseExt( &pString, qfalse );
 	if ( !token[0] ) {
-		G_Error( "AI scripting: trigger must have a name and an identifier\n" );
+		G_Error( "AI Scripting: trigger must have a name and an identifier\n" );
 	}
 
 	ent = AICast_FindEntityForName( token );
@@ -624,7 +624,7 @@ qboolean AICast_ScriptAction_Trigger( cast_state_t *cs, char *params ) {
 		ent = G_Find( &g_entities[MAX_CLIENTS], FOFS( scriptName ), token );
 		if ( !ent ) {
 			if ( trap_Cvar_VariableIntegerValue( "developer" ) ) {
-				G_Printf( "AI Scripting: can't find AI cast with \"ainame\" = \"%s\"\n", params );
+				G_Printf( "AI Scripting: trigger can't find AI cast with \"ainame\" = \"%s\"\n", params );
 			}
 			return qtrue;
 		}
@@ -632,7 +632,7 @@ qboolean AICast_ScriptAction_Trigger( cast_state_t *cs, char *params ) {
 
 	token = COM_ParseExt( &pString, qfalse );
 	if ( !token[0] ) {
-		G_Error( "AI scripting: trigger must have a name and an identifier\n" );
+		G_Error( "AI Scripting: trigger must have a name and an identifier\n" );
 	}
 
 	oldId = cs->castScriptStatus.scriptId;
@@ -659,7 +659,7 @@ qboolean AICast_ScriptAction_FollowCast( cast_state_t *cs, char *params ) {
 	// find the cast/player with the given "name"
 	ent = AICast_FindEntityForName( params );
 	if ( !ent ) {
-		G_Error( "AI Scripting: can't find AI cast with \"ainame\" = \"%s\"\n", params );
+		G_Error( "AI Scripting: followcast can't find AI cast with \"ainame\" = \"%s\"\n", params );
 	}
 
 	AIFunc_ChaseGoalStart( cs, ent->s.number, 64, qtrue );
@@ -1277,7 +1277,7 @@ qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params ) {
 	}
 
 	if ( !item ) { // item not found
-		G_Error( "AI Scripting: givearmor%s, unknown item", params );
+		G_Error( "AI Scripting: givearmor %s, unknown item", params );
 	}
 
 	if ( item->giType == IT_ARMOR ) {
@@ -2077,7 +2077,7 @@ qboolean AICast_ScriptAction_FaceTargetAngles( cast_state_t *cs, char *params ) 
 
 	targetEnt = G_Find( NULL, FOFS( targetname ), params );
 	if ( !targetEnt ) {
-		G_Error( "AI Scripting: cannot find targetname \"%s\"\n", params );
+		G_Error( "AI Scripting: facetargetangles cannot find targetname \"%s\"\n", params );
 	}
 
 	VectorCopy( targetEnt->s.angles, cs->ideal_viewangles );
@@ -2147,7 +2147,7 @@ qboolean AICast_ScriptAction_Mount( cast_state_t *cs, char *params ) {
 
 	targetEnt = G_Find( NULL, FOFS( targetname ), params );
 	if ( !targetEnt ) {
-		G_Error( "AI Scripting: cannot find targetname \"%s\"\n", params );
+		G_Error( "AI Scripting: mount cannot find targetname \"%s\"\n", params );
 	}
 
 	VectorSubtract( targetEnt->r.currentOrigin, cs->bs->origin, vec );
