@@ -507,7 +507,6 @@ IN_JoyMove
 */
 static void IN_JoyMove( void )
 {
-	qboolean joy_pressed[ARRAY_LEN(joy_keys)];
 	unsigned int axes = 0;
 	unsigned int hats = 0;
 	int total = 0;
@@ -517,8 +516,6 @@ static void IN_JoyMove( void )
 		return;
 
 	SDL_JoystickUpdate();
-
-	memset(joy_pressed, '\0', sizeof (joy_pressed));
 
 	// update the ball state.
 	total = SDL_JoystickNumBalls(stick);
