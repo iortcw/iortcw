@@ -271,6 +271,7 @@ static void AddIP( char *str ) {
 
 	UpdateIPBans();
 }
+
 /*
 =================
 AddMaxLivesGUID
@@ -286,7 +287,6 @@ void AddMaxLivesGUID( char *str ) {
 	Q_strncpyz( ipMaxLivesFilters[numMaxLivesFilters].compare, str, 33 );
 	numMaxLivesFilters++;
 }
-
 
 /*
 =================
@@ -312,7 +312,6 @@ void G_ProcessIPBans( void ) {
 		t = s;
 	}
 }
-
 
 /*
 =================
@@ -371,7 +370,7 @@ void Svcmd_RemoveIP_f( void ) {
 /*
  Xian - Clears out the entire list maxlives enforcement banlist
 */
-void ClearMaxLivesGUID() {
+void ClearMaxLivesGUID( void ) {
 	int i;
 
 	for ( i = 0 ; i < numMaxLivesFilters ; i++ ) {
@@ -606,8 +605,6 @@ void Svcmd_SwapTeams_f( void ) {
 	trap_Cvar_Set( "g_swapteams", "1" );
 	trap_SendConsoleCommand( EXEC_APPEND, va( "map_restart 0 %i\n", GS_WARMUP ) );
 }
-
-
 
 char    *ConcatArgs( int start );
 
