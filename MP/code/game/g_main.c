@@ -2392,16 +2392,20 @@ void CheckGameState( void ) {
 
 	// check warmup latch
 	if ( current_gs == GS_WARMUP ) {
-		int delay = g_warmup.integer + 1;
+		if ( g_warmup.integer <= 0 || !g_doWarmup.integer ) {
+			trap_Cvar_Set( "gamestate", va( "%i", GS_PLAYING ) );
+		} else {
+			int delay = g_warmup.integer + 1;
 
-		if ( delay < 6 ) {
-			trap_Cvar_Set( "g_warmup", "5" );
-			delay = 7;
+			if ( delay < 6 ) {
+				trap_Cvar_Set( "g_warmup", "5" );
+				delay = 7;
+			}
+
+			level.warmupTime = level.time + ( delay * 1000 );
+			trap_SetConfigstring( CS_WARMUP, va( "%i", level.warmupTime ) );
+			trap_Cvar_Set( "gamestate", va( "%i", GS_WARMUP_COUNTDOWN ) );
 		}
-
-		level.warmupTime = level.time + ( delay * 1000 );
-		trap_SetConfigstring( CS_WARMUP, va( "%i", level.warmupTime ) );
-		trap_Cvar_Set( "gamestate", va( "%i", GS_WARMUP_COUNTDOWN ) );
 	}
 }
 
