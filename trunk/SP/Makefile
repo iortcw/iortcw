@@ -616,7 +616,7 @@ ifeq ($(PLATFORM),mingw32)
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3 -fno-omit-frame-pointer \
       -funroll-loops -falign-functions=2 -fstrength-reduce
-    OPTIMIZE = $(OPTIMIZEVM) --fast-math
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
     FILE_ARCH=x64
   endif
