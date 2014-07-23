@@ -4847,6 +4847,9 @@ void CL_GlobalServers_f( void ) {
 				com_gamename->string, Cmd_Argv(2));
 		}
 	}
+	else if ( !Q_stricmp( com_gamename->string, LEGACY_MASTER_GAMENAME ) )
+		Com_sprintf(command, sizeof(command), "getservers %s",
+			Cmd_Argv(2));
 	else
 		Com_sprintf(command, sizeof(command), "getservers %s %s",
 			com_gamename->string, Cmd_Argv(2));
