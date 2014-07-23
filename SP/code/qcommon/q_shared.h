@@ -50,8 +50,6 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
-// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
-  #define HEARTBEAT_FOR_MASTER		"DarkPlaces"
 #else
   #define PRODUCT_NAME			"iortcw"
   #define BASEGAME			"main"
@@ -60,11 +58,18 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_UNIX		".iortcw"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
-  #define GAMENAME_FOR_MASTER		"wolfmp"
+  #define GAMENAME_FOR_MASTER		"wolfsp"
   #define LEGACY_PROTOCOL
-  #define HEARTBEAT_GAME  "Wolfenstein-1"
-  #define HEARTBEAT_DEAD  "WolfFlatline-1"
 #endif
+
+// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
+#define HEARTBEAT_FOR_MASTER		"DarkPlaces"
+#define FLATLINE_FOR_MASTER		"WolfFlatline-1"
+
+// When com_gamename is LEGACY_MASTER_GAMENAME, use wolfenstein master protocol.
+// You shouldn't change this unless you know what you're doing
+#define LEGACY_MASTER_GAMENAME		"wolfsp"
+#define LEGACY_HEARTBEAT_FOR_MASTER	"Wolfenstein-1"
 
 #ifndef PRODUCT_VERSION
   #define PRODUCT_VERSION "1.42b"
