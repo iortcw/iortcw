@@ -636,7 +636,7 @@ ifeq ($(PLATFORM),mingw32)
   LIBS= -lws2_32 -lwinmm -lpsapi
   # clang 3.4 doesn't support this
   ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
-    CLIENT_LDFLAGS += -mwindows
+    CLIENT_LDFLAGS += -mwindows -static-libgcc -static-libstdc++
   endif
   CLIENT_LIBS = -lgdi32 -lole32
   RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
