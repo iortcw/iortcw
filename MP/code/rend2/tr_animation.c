@@ -86,15 +86,15 @@ static int totalrv, totalrt, totalv, totalt;    //----(SA)
 
 //-----------------------------------------------------------------------------
 
-static float ProjectRadius( float r, vec3_t location ) {
+static float RB_ProjectRadius( float r, vec3_t location ) {
 	float pr;
 	float dist;
 	float c;
 	vec3_t p;
 	float projected[4];
 
-	c = DotProduct( tr.viewParms.or.axis[0], tr.viewParms.or.origin );
-	dist = DotProduct( tr.viewParms.or.axis[0], location ) - c;
+	c = DotProduct( backEnd.viewParms.or.axis[0], backEnd.viewParms.or.origin );
+	dist = DotProduct( backEnd.viewParms.or.axis[0], location ) - c;
 
 	if ( dist <= 0 ) {
 		return 0;
@@ -104,25 +104,25 @@ static float ProjectRadius( float r, vec3_t location ) {
 	p[1] = fabs( r );
 	p[2] = -dist;
 
-	projected[0] = p[0] * tr.viewParms.projectionMatrix[0] +
-				   p[1] * tr.viewParms.projectionMatrix[4] +
-				   p[2] * tr.viewParms.projectionMatrix[8] +
-				   tr.viewParms.projectionMatrix[12];
+	projected[0] = p[0] * backEnd.viewParms.projectionMatrix[0] +
+				   p[1] * backEnd.viewParms.projectionMatrix[4] +
+				   p[2] * backEnd.viewParms.projectionMatrix[8] +
+				   backEnd.viewParms.projectionMatrix[12];
 
-	projected[1] = p[0] * tr.viewParms.projectionMatrix[1] +
-				   p[1] * tr.viewParms.projectionMatrix[5] +
-				   p[2] * tr.viewParms.projectionMatrix[9] +
-				   tr.viewParms.projectionMatrix[13];
+	projected[1] = p[0] * backEnd.viewParms.projectionMatrix[1] +
+				   p[1] * backEnd.viewParms.projectionMatrix[5] +
+				   p[2] * backEnd.viewParms.projectionMatrix[9] +
+				   backEnd.viewParms.projectionMatrix[13];
 
-	projected[2] = p[0] * tr.viewParms.projectionMatrix[2] +
-				   p[1] * tr.viewParms.projectionMatrix[6] +
-				   p[2] * tr.viewParms.projectionMatrix[10] +
-				   tr.viewParms.projectionMatrix[14];
+	projected[2] = p[0] * backEnd.viewParms.projectionMatrix[2] +
+				   p[1] * backEnd.viewParms.projectionMatrix[6] +
+				   p[2] * backEnd.viewParms.projectionMatrix[10] +
+				   backEnd.viewParms.projectionMatrix[14];
 
-	projected[3] = p[0] * tr.viewParms.projectionMatrix[3] +
-				   p[1] * tr.viewParms.projectionMatrix[7] +
-				   p[2] * tr.viewParms.projectionMatrix[11] +
-				   tr.viewParms.projectionMatrix[15];
+	projected[3] = p[0] * backEnd.viewParms.projectionMatrix[3] +
+				   p[1] * backEnd.viewParms.projectionMatrix[7] +
+				   p[2] * backEnd.viewParms.projectionMatrix[11] +
+				   backEnd.viewParms.projectionMatrix[15];
 
 
 	pr = projected[1] / projected[3];
@@ -216,17 +216,17 @@ static int R_CullModel( mdsHeader_t *header, trRefEntity_t *ent ) {
 
 /*
 =================
-R_CalcMDSLod
+RB_CalcMDSLod
 
 =================
 */
-float R_CalcMDSLod( refEntity_t *refent, vec3_t origin, float radius, float modelBias, float modelScale ) {
+float RB_CalcMDSLod( refEntity_t *refent, vec3_t origin, float radius, float modelBias, float modelScale ) {
 	float flod, lodScale;
 	float projectedRadius;
 
 	// compute projected bounding sphere and use that as a criteria for selecting LOD
 
-	projectedRadius = ProjectRadius( radius, origin );
+	projectedRadius = RB_ProjectRadius( radius, origin );
 	if ( projectedRadius != 0 ) {
 
 //		ri.Printf (PRINT_ALL, "projected radius: %f\n", projectedRadius);
@@ -1192,7 +1192,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 	// TODO: lerp the radius and origin
 	VectorAdd( refent->origin, frame->localOrigin, vec );
 	lodRadius = frame->radius;
-	lodScale = R_CalcMDSLod( refent, vec, lodRadius, header->lodBias, header->lodScale );
+	lodScale = RB_CalcMDSLod( refent, vec, lodRadius, header->lodBias, header->lodScale );
 
 
 //DBG_SHOWTIME
