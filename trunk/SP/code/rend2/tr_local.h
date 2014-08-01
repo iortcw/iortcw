@@ -408,6 +408,7 @@ enum
 	TB_SPECULARMAP = 4,
 	TB_SHADOWMAP  = 5,
 	TB_CUBEMAP     = 6,
+	TB_SHADOWMAP4  = 6,
 	NUM_TEXTURE_BUNDLES = 7
 };
 
@@ -723,10 +724,12 @@ typedef enum
 	UNIFORM_SHADOWMAP,
 	UNIFORM_SHADOWMAP2,
 	UNIFORM_SHADOWMAP3,
+	UNIFORM_SHADOWMAP4,
 
 	UNIFORM_SHADOWMVP,
 	UNIFORM_SHADOWMVP2,
 	UNIFORM_SHADOWMVP3,
+	UNIFORM_SHADOWMVP4,
 
 	UNIFORM_ENABLETEXTURES,
 
@@ -853,7 +856,7 @@ typedef struct {
 	int         num_pshadows;
 	struct pshadow_s *pshadows;
 
-	float       sunShadowMvp[3][16];
+	float       sunShadowMvp[4][16];
 	float       sunDir[4];
 	float       sunCol[4];
 	float       sunAmbCol[4];
@@ -1672,7 +1675,7 @@ typedef struct {
 	image_t					*calcLevelsImage;
 	image_t					*targetLevelsImage;
 	image_t					*fixedLevelsImage;
-	image_t					*sunShadowDepthImage[3];
+	image_t					*sunShadowDepthImage[4];
 	image_t                 *screenShadowImage;
 	image_t                 *screenSsaoImage;
 	image_t					*hdrDepthImage;
@@ -1689,7 +1692,7 @@ typedef struct {
 	FBO_t                   *quarterFbo[2];
 	FBO_t					*calcLevelsFbo;
 	FBO_t					*targetLevelsFbo;
-	FBO_t					*sunShadowFbo[3];
+	FBO_t					*sunShadowFbo[4];
 	FBO_t					*screenShadowFbo;
 	FBO_t					*screenSsaoFbo;
 	FBO_t					*hdrDepthFbo;
@@ -1766,6 +1769,8 @@ typedef struct {
 
 	vec3_t sunLight;                            // from the sky shader for this level
 	vec3_t sunDirection;
+	vec3_t                  lastCascadeSunDirection;
+	float                   lastCascadeSunMvp[16];
 
 //----(SA)	added
 	float lightGridMulAmbient;          // lightgrid multipliers specified in sky shader
