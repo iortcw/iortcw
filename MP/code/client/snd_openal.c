@@ -1118,14 +1118,6 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 				continue;
 			}
 
-			// RF, let client voice sounds be overwritten
-			if ( entnum < MAX_CLIENTS && curSource->channel != -1 && curSource->channel != CHAN_AUTO && curSource->channel != CHAN_WEAPON ) {
-				S_AL_SrcKill(i);
-				if (empty == -1)
-					empty = i;
-				continue;
-			}
-
 			// cutoff sounds that expect to be overwritten
 			if ( curSource->flags & SND_OKTOCUT ) {
 				S_AL_SrcKill(i);
