@@ -585,9 +585,9 @@ typedef struct src_s
 } src_t;
 
 #ifdef MACOS_X
-	#define MAX_SRC 64
-#else
 	#define MAX_SRC 128
+#else
+	#define MAX_SRC 256
 #endif
 static src_t srcList[MAX_SRC];
 static int srcCount = 0;
@@ -2660,7 +2660,7 @@ qboolean S_AL_Init( soundInterface_t *si )
 	// New console variables
 	s_alPrecache = Cvar_Get( "s_alPrecache", "1", CVAR_ARCHIVE );
 	s_alGain = Cvar_Get( "s_alGain", "1.0", CVAR_ARCHIVE );
-	s_alSources = Cvar_Get( "s_alSources", "96", CVAR_ARCHIVE );
+	s_alSources = Cvar_Get( "s_alSources", "128", CVAR_ARCHIVE );
 	s_alDopplerFactor = Cvar_Get( "s_alDopplerFactor", "1.0", CVAR_ARCHIVE );
 	s_alDopplerSpeed = Cvar_Get( "s_alDopplerSpeed", "9000", CVAR_ARCHIVE );
 	s_alMinDistance = Cvar_Get( "s_alMinDistance", "256", CVAR_ARCHIVE );
