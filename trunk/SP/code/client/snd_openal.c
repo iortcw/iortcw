@@ -44,6 +44,7 @@ cvar_t *s_alDevice;
 cvar_t *s_alInputDevice;
 cvar_t *s_alAvailableDevices;
 cvar_t *s_alAvailableInputDevices;
+cvar_t *s_alTalkAnims;
 
 static qboolean enumeration_ext = qfalse;
 static qboolean enumeration_all_ext = qfalse;
@@ -1325,7 +1326,7 @@ static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxH
 
 	if ( entnum < MAX_CLIENTS && entchannel == CHAN_VOICE )
 	{
-		s_entityTalkAmplitude[entnum] = (unsigned char)AL_GAIN;
+		s_entityTalkAmplitude[entnum] = (unsigned char)(s_alTalkAnims->integer);
 	}
 
 	// Try to grab a source
@@ -2343,7 +2344,7 @@ int S_AL_GetVoiceAmplitude( int entityNum ) {
 		return 0;
 	}
 
-	return (int)s_entityTalkAmplitude[entityNum] * 18;
+	return (int)s_entityTalkAmplitude[entityNum];
 }
 
 //===========================================================================
@@ -2667,6 +2668,7 @@ qboolean S_AL_Init( soundInterface_t *si )
 	s_alMaxDistance = Cvar_Get("s_alMaxDistance", "1024", CVAR_ARCHIVE);
 	s_alRolloff = Cvar_Get( "s_alRolloff", "1.3", CVAR_ARCHIVE);
 	s_alGraceDistance = Cvar_Get("s_alGraceDistance", "512", CVAR_ARCHIVE);
+	s_alTalkAnims = Cvar_Get("s_alTalkAnims", "160", CVAR_ARCHIVE);
 
 	s_alDriver = Cvar_Get( "s_alDriver", ALDRIVER_DEFAULT, CVAR_ARCHIVE | CVAR_LATCH );
 
