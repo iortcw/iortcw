@@ -1320,6 +1320,14 @@ static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxH
 		return;
 	}
 
+	// Talk anims default to ZERO amplitude
+	memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
+
+	if ( entnum < MAX_CLIENTS && entchannel == CHAN_VOICE )
+	{
+		s_entityTalkAmplitude[entnum] = (unsigned char)AL_GAIN;
+	}
+
 	// Try to grab a source
 	src = S_AL_SrcAlloc(sfx, SRCPRI_ONESHOT, entnum, entchannel, flags);
 	if(src == -1)
@@ -2335,7 +2343,7 @@ int S_AL_GetVoiceAmplitude( int entityNum ) {
 		return 0;
 	}
 
-	return (int)s_entityTalkAmplitude[entityNum] * 2;
+	return (int)s_entityTalkAmplitude[entityNum] * 18;
 }
 
 //===========================================================================
