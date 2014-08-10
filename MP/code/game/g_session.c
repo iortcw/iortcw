@@ -85,7 +85,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	const char  *var;
 	qboolean test;
 
-	var = va( "session%i", (int)(client - level.clients) );
+	var = va( "session%i", client - level.clients );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
 
 	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve
@@ -113,7 +113,7 @@ void G_ReadSessionData( gclient_t *client ) {
 		test = g_currentRound.integer == 1;
 	}
 
-	if ( g_gametype.integer == GT_WOLF_STOPWATCH && level.warmupTime > 0 && test ) {
+	if ( g_gametype.integer == GT_WOLF_STOPWATCH && test ) {
 		if ( client->sess.sessionTeam == TEAM_RED ) {
 			client->sess.sessionTeam = TEAM_BLUE;
 		} else if ( client->sess.sessionTeam == TEAM_BLUE )   {
