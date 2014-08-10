@@ -206,7 +206,7 @@ cvarTable_t gameCvarTable[] = {
 	{ &g_teamForceBalance, "g_teamForceBalance", "0", CVAR_ARCHIVE  },                            // NERVE - SMF - merge from team arena
 
 	{ &g_warmup, "g_warmup", "20", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_doWarmup, "g_doWarmup", "0", CVAR_ARCHIVE, 0, qtrue  },
+	{ &g_doWarmup, "g_doWarmup", "1", CVAR_ARCHIVE, 0, qtrue  },
 
 	// NERVE - SMF
 	{ &g_warmupLatch, "g_warmupLatch", "1", 0, 0, qfalse },
