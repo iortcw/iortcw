@@ -85,7 +85,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	const char  *var;
 	qboolean test;
 
-	var = va( "session%i", client - level.clients );
+	var = va( "session%i", (int)(client - level.clients) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
 
 	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve
