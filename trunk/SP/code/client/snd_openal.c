@@ -2372,6 +2372,18 @@ static cvar_t *s_alCapture;
 
 /*
 =================
+S_AL_ClearSoundBuffer
+=================
+*/
+static
+void S_AL_ClearSoundBuffer( void )
+{
+	S_AL_SrcShutdown( );
+	S_AL_SrcInit( );
+}
+
+/*
+=================
 S_AL_StopAllSounds
 =================
 */
@@ -2383,6 +2395,7 @@ void S_AL_StopAllSounds( void )
 	S_AL_StopBackgroundTrack();
 	for (i = 0; i < MAX_RAW_STREAMS; i++)
 		S_AL_StreamDie(i);
+	S_AL_ClearSoundBuffer();
 }
 
 /*
@@ -2496,18 +2509,6 @@ void S_AL_BeginRegistration( void )
 {
 	if(!numSfx)
 		S_AL_BufferInit();
-}
-
-/*
-=================
-S_AL_ClearSoundBuffer
-=================
-*/
-static
-void S_AL_ClearSoundBuffer( void )
-{
-	S_AL_SrcShutdown( );
-	S_AL_SrcInit( );
 }
 
 /*
