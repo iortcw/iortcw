@@ -747,9 +747,8 @@ qboolean S_AL_SrcInit( void )
 		srcCount++;
 	}
 
-	// All done. Print this for informational purposes
-	Com_Printf( "Allocated %d sources.\n", srcCount);
 	alSourcesInitialised = qtrue;
+
 	return qtrue;
 }
 
@@ -2729,6 +2728,9 @@ qboolean S_AL_Init( soundInterface_t *si )
 	// Initialize sources, buffers, music
 	S_AL_BufferInit( );
 	S_AL_SrcInit( );
+
+	// Print this for informational purposes
+	Com_Printf( "Allocated %d sources.\n", srcCount);
 
 	// Set up OpenAL parameters (doppler, etc)
 	qalDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
