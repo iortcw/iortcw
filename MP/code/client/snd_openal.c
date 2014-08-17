@@ -771,6 +771,8 @@ void S_AL_SrcShutdown( void )
 	for(i = 0; i < srcCount; i++)
 	{
 		curSource = &srcList[i];
+
+		srcList[i].isLocked = qfalse;
 		
 		if(curSource->isLocked)
 			Com_DPrintf( S_COLOR_YELLOW "WARNING: Source %d is locked\n", i);
@@ -2449,6 +2451,8 @@ S_AL_ClearSoundBuffer
 static
 void S_AL_ClearSoundBuffer( void )
 {
+	S_AL_SrcShutdown( );
+	S_AL_SrcInit( );
 }
 
 /*
