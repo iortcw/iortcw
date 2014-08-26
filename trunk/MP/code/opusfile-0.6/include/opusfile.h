@@ -1453,6 +1453,10 @@ int op_channel_count(const OggOpusFile *_of,int _li) OP_ARG_NONNULL(1);
 /**Get the total (compressed) size of the stream, or of an individual link in
     a (possibly-chained) Ogg Opus stream, including all headers and Ogg muxing
     overhead.
+   \warning If the Opus stream (or link) is concurrently multiplexed with other
+    logical streams (e.g., video), this returns the size of the entire stream
+    (or link), not just the number of bytes in the first logical Opus stream.
+   Returning the latter would require scanning the entire file.
    \param _of The \c OggOpusFile from which to retrieve the compressed size.
    \param _li The index of the link whose compressed size should be computed.
               Use a negative number to get the compressed size of the entire
@@ -1537,13 +1541,22 @@ const OpusTags *op_tags(const OggOpusFile *_of,int _li) OP_ARG_NONNULL(1);
    \retval #OP_EINVAL The stream was only partially open.*/
 int op_current_link(const OggOpusFile *_of) OP_ARG_NONNULL(1);
 
-/**Computes the bitrate for a given link in a (possibly chained) Ogg Opus
-    stream.
+/**Computes the bitrate of the stream, or of an individual link in a
+    (possibly-chained) Ogg Opus stream.
    The stream must be seekable to compute the bitrate.
    For unseekable streams, use op_bitrate_instant() to get periodic estimates.
+   \warning If the Opus stream (or link) is concurrently multiplexed with other
+    logical streams (e.g., video), this uses the size of the entire stream (or
+    link) to compute the bitrate, not just the number of bytes in the first
+    logical Opus stream.
+   Returning the latter requires scanning the entire file, but this may be done
+    by decoding the whole file and calling op_bitrate_instant() once at the
+    end.
+   Install a trivial decoding callback with op_set_decode_callback() if you
+    wish to skip actual decoding during this process.
    \param _of The \c OggOpusFile from which to retrieve the bitrate.
    \param _li The index of the link whose bitrate should be computed.
-              USe a negative number to get the bitrate of the whole stream.
+              Use a negative number to get the bitrate of the whole stream.
    \return The bitrate on success, or a negative value on error.
    \retval #OP_EINVAL The stream was only partially open, the stream was not
                        seekable, or \a _li was larger than the number of

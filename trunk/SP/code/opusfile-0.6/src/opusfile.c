@@ -156,8 +156,8 @@ static int op_get_data(OggOpusFile *_of,int _nbytes){
 /*Save a tiny smidge of verbosity to make the code more readable.*/
 static int op_seek_helper(OggOpusFile *_of,opus_int64 _offset){
   if(_offset==_of->offset)return 0;
-  if(_of->callbacks.seek==NULL||
-   (*_of->callbacks.seek)(_of->source,_offset,SEEK_SET)){
+  if(_of->callbacks.seek==NULL
+   ||(*_of->callbacks.seek)(_of->source,_offset,SEEK_SET)){
     return OP_EREAD;
   }
   _of->offset=_offset;
@@ -496,30 +496,25 @@ static int op_fetch_headers_impl(OggOpusFile *_of,OpusHead *_head,
       ogg_stream_pagein(&_of->os,_og);
       if(OP_LIKELY(ogg_stream_packetout(&_of->os,&op)>0)){
         ret=opus_head_parse(_head,op.packet,op.bytes);
-        /*If it's just a stream type we don't recognize, ignore it.*/
-        if(ret==OP_ENOTFORMAT)continue;
-        /*Everything else is fatal.*/
-        if(OP_UNLIKELY(ret<0))return ret;
         /*Found a valid Opus header.
           Continue setup.*/
-        _of->ready_state=OP_STREAMSET;
+        if(OP_LIKELY(ret>=0))_of->ready_state=OP_STREAMSET;
+        /*If it's just a stream type we don't recognize, ignore it.
+          Everything else is fatal.*/
+        else if(ret!=OP_ENOTFORMAT)return ret;
       }
     }
     /*Get the next page.
       No need to clamp the boundary offset against _of->end, as all errors
-       become OP_ENOTFORMAT.*/
+       become OP_ENOTFORMAT or OP_EBADHEADER.*/
     if(OP_UNLIKELY(op_get_next_page(_of,_og,
      OP_ADV_OFFSET(_of->offset,OP_CHUNK_SIZE))<0)){
-      return OP_ENOTFORMAT;
-    }
-    /*If this page also belongs to our Opus stream, submit it and break.*/
-    if(_of->ready_state==OP_STREAMSET
-     &&_of->os.serialno==ogg_page_serialno(_og)){
-      ogg_stream_pagein(&_of->os,_og);
-      break;
+      return _of->ready_state<OP_STREAMSET?OP_ENOTFORMAT:OP_EBADHEADER;
     }
   }
   if(OP_UNLIKELY(_of->ready_state!=OP_STREAMSET))return OP_ENOTFORMAT;
+  /*If the first non-header page belonged to our Opus stream, submit it.*/
+  if(_of->os.serialno==ogg_page_serialno(_og))ogg_stream_pagein(&_of->os,_og);
   /*Loop getting packets.*/
   for(;;){
     switch(ogg_stream_packetout(&_of->os,&op)){
@@ -930,7 +925,7 @@ static int op_find_initial_pcm_offset(OggOpusFile *_of,
   prev_packet_gp=pcm_start;
   for(pi=0;pi<op_count;pi++){
     if(cur_page_eos){
-      ogg_int64_t diff;
+      ogg_int64_t diff = 0;
       OP_ALWAYS_TRUE(!op_granpos_diff(&diff,cur_page_gp,prev_packet_gp));
       diff=durations[pi]-diff;
       /*If we have samples to trim...*/
@@ -1715,7 +1710,7 @@ opus_int64 op_raw_total(const OggOpusFile *_of,int _li){
 
 ogg_int64_t op_pcm_total(const OggOpusFile *_of,int _li){
   OggOpusLink *links;
-  ogg_int64_t  diff;
+  ogg_int64_t  diff = 0;
   int          nlinks;
   nlinks=_of->nlinks;
   if(OP_UNLIKELY(_of->ready_state<OP_OPENED)
@@ -2114,7 +2109,7 @@ int op_raw_seek(OggOpusFile *_of,opus_int64 _pos){
 static ogg_int64_t op_get_granulepos(const OggOpusFile *_of,
  ogg_int64_t _pcm_offset,int *_li){
   const OggOpusLink *links;
-  ogg_int64_t        duration;
+  ogg_int64_t        duration = 0;
   int                nlinks;
   int                li;
   OP_ASSERT(_pcm_offset>=0);
@@ -2166,7 +2161,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
  ogg_int64_t _target_gp,int _li){
   const OggOpusLink *link;
   ogg_page           og;
-  ogg_int64_t        pcm_pre_skip;
+  ogg_int64_t        pcm_pre_skip = 0;
   ogg_int64_t        pcm_start;
   ogg_int64_t        pcm_end;
   ogg_int64_t        best_gp;
@@ -2239,7 +2234,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
             }
           }
           else{
-            ogg_int64_t prev_page_gp;
+            ogg_int64_t prev_page_gp = 0;
             /*We might get lucky and already have the packet with the target
                buffered.
               Worth checking.
@@ -2289,7 +2284,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
       d2=end-begin>>1;
       if(force_bisect)bisect=begin+(end-begin>>1);
       else{
-        ogg_int64_t diff2;
+        ogg_int64_t diff2 = 0;
         OP_ALWAYS_TRUE(!op_granpos_diff(&diff,_target_gp,pcm_start));
         OP_ALWAYS_TRUE(!op_granpos_diff(&diff2,pcm_end,pcm_start));
         /*Take a (pretty decent) guess.*/
@@ -2503,7 +2498,7 @@ static ogg_int64_t op_get_pcm_offset(const OggOpusFile *_of,
  ogg_int64_t _gp,int _li){
   const OggOpusLink *links;
   ogg_int64_t        pcm_offset;
-  ogg_int64_t        delta;
+  ogg_int64_t        delta = 0;
   int                li;
   links=_of->links;
   pcm_offset=0;
