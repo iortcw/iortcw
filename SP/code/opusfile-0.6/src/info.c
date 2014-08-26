@@ -28,11 +28,13 @@ static int op_parse_int16le(const unsigned char *_data){
 }
 
 static opus_uint32 op_parse_uint32le(const unsigned char *_data){
-  return _data[0]|_data[1]<<8|_data[2]<<16|_data[3]<<24;
+  return _data[0]|(opus_uint32)_data[1]<<8|
+   (opus_uint32)_data[2]<<16|(opus_uint32)_data[3]<<24;
 }
 
 static opus_uint32 op_parse_uint32be(const unsigned char *_data){
-  return _data[3]|_data[2]<<8|_data[1]<<16|_data[0]<<24;
+  return _data[3]|(opus_uint32)_data[2]<<8|
+   (opus_uint32)_data[1]<<16|(opus_uint32)_data[0]<<24;
 }
 
 int opus_head_parse(OpusHead *_head,const unsigned char *_data,size_t _len){
@@ -259,10 +261,11 @@ int opus_tags_add(OpusTags *_tags,const char *_tag,const char *_value){
   _tags->user_comments[ncomments]=comment=
    (char *)_ogg_malloc(sizeof(*comment)*(tag_len+value_len+2));
   if(OP_UNLIKELY(comment==NULL))return OP_EFAULT;
-  _tags->comment_lengths[ncomments]=tag_len+value_len+1;
   memcpy(comment,_tag,sizeof(*comment)*tag_len);
   comment[tag_len]='=';
   memcpy(comment+tag_len+1,_value,sizeof(*comment)*(value_len+1));
+  _tags->comment_lengths[ncomments]=tag_len+value_len+1;
+  _tags->comments=ncomments+1;
   return 0;
 }
 
@@ -278,6 +281,7 @@ int opus_tags_add_comment(OpusTags *_tags,const char *_comment){
   _tags->user_comments[ncomments]=op_strdup_with_len(_comment,comment_len);
   if(OP_UNLIKELY(_tags->user_comments[ncomments]==NULL))return OP_EFAULT;
   _tags->comment_lengths[ncomments]=comment_len;
+  _tags->comments=ncomments+1;
   return 0;
 }
 
@@ -560,7 +564,7 @@ static int opus_picture_tag_parse_impl(OpusPictureTag *_pic,const char *_tag,
   i+=4;
   /*If one of these is set, they all must be, but colors==0 is a valid value.*/
   colors_set=width!=0||height!=0||depth!=0||colors!=0;
-  if(width==0||height==0||depth==0&&colors_set)return OP_ENOTFORMAT;
+  if((width==0||height==0||depth==0)&&colors_set)return OP_ENOTFORMAT;
   data_length=op_parse_uint32be(_buf+i);
   i+=4;
   if(data_length>_buf_sz-i)return OP_ENOTFORMAT;
