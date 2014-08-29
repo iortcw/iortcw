@@ -1209,7 +1209,7 @@ redump:
 		if ( cinTable[currentHandle].numQuads == -1 ) {
 			readQuadInfo( framedata );
 			setupQuad( 0, 0 );
-			cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds() * com_timescale->value;
+			cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds();
 		}
 		if ( cinTable[currentHandle].numQuads != 1 ) {
 			cinTable[currentHandle].numQuads = 0;
@@ -1285,7 +1285,7 @@ redump:
 ******************************************************************************/
 
 static void RoQ_init( void ) {
-	cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds() * com_timescale->value;
+	cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds();
 
 	cinTable[currentHandle].RoQPlayed = 24;
 

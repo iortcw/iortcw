@@ -1204,7 +1204,7 @@ redump:
 		if ( cinTable[currentHandle].numQuads == -1 ) {
 			readQuadInfo( framedata );
 			setupQuad( 0, 0 );
-			cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds() * com_timescale->value;
+			cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds();
 		}
 		if ( cinTable[currentHandle].numQuads != 1 ) {
 			cinTable[currentHandle].numQuads = 0;
@@ -1274,7 +1274,7 @@ redump:
 ******************************************************************************/
 
 static void RoQ_init( void ) {
-	cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds() * com_timescale->value;
+	cinTable[currentHandle].startTime = cinTable[currentHandle].lastTime = CL_ScaledMilliseconds();
 
 	cinTable[currentHandle].RoQPlayed = 24;
 
@@ -1409,11 +1409,11 @@ e_status CIN_RunCinematic( int handle ) {
 		return cinTable[currentHandle].status;
 	}
 
-	thisTime = CL_ScaledMilliseconds() * com_timescale->value;
+	thisTime = CL_ScaledMilliseconds();
 	if ( cinTable[currentHandle].shader && ( abs( thisTime - cinTable[currentHandle].lastTime ) ) > 100 ) {
 		cinTable[currentHandle].startTime += thisTime - cinTable[currentHandle].lastTime;
 	}
-	cinTable[currentHandle].tfps = ( ( ( ( CL_ScaledMilliseconds() * com_timescale->value ) - cinTable[currentHandle].startTime ) * 3 ) / 100 );
+	cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime ) * 3 ) / 100 );
 
 	start = cinTable[currentHandle].startTime;
 	while (  ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads )
@@ -1421,8 +1421,7 @@ e_status CIN_RunCinematic( int handle ) {
 	{
 		RoQInterrupt();
 		if ( start != cinTable[currentHandle].startTime ) {
-			cinTable[currentHandle].tfps = ( ( ( ( CL_ScaledMilliseconds() * com_timescale->value )
-												 - cinTable[currentHandle].startTime ) * 3 ) / 100 );
+			cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime) * 3 ) / 100 );
 			start = cinTable[currentHandle].startTime;
 		}
 	}
