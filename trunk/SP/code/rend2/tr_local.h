@@ -660,8 +660,10 @@ enum
 	GENERICDEF_USE_FOG              = 0x0008,
 	GENERICDEF_USE_RGBAGEN          = 0x0010,
 	GENERICDEF_USE_LIGHTMAP         = 0x0020,
-	GENERICDEF_ALL                  = 0x003F,
-	GENERICDEF_COUNT                = 0x0040,
+	GENERICDEF_USE_WOLF_FOG_LINEAR      = 0x0040,
+	GENERICDEF_USE_WOLF_FOG_EXPONENTIAL = 0x0080,
+	GENERICDEF_ALL                  = 0x00FF,
+	GENERICDEF_COUNT                = 0x0100,
 };
 
 enum
@@ -2506,7 +2508,7 @@ void GLSL_SetUniformVec3(shaderProgram_t *program, int uniformNum, const vec3_t 
 void GLSL_SetUniformVec4(shaderProgram_t *program, int uniformNum, const vec4_t v);
 void GLSL_SetUniformMat4(shaderProgram_t *program, int uniformNum, const mat4_t matrix);
 
-shaderProgram_t *GLSL_GetGenericShaderProgram(int stage);
+shaderProgram_t *GLSL_GetGenericShaderProgram(int stage, glfog_t *glFog);
 
 /*
 ============================================================

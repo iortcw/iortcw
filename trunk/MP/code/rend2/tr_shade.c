@@ -1153,6 +1153,7 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 {
 	int stage;
 	
+	glfog_t *glFog;
 	vec4_t fogDistanceVector, fogDepthVector = {0, 0, 0, 0};
 	float eyeT = 0;
 
@@ -1160,8 +1161,6 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 	vec5_t deformParams;
 
 	ComputeDeformValues(&deformGen, deformParams);
-
-	ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, NULL);
 
 	for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
 	{
@@ -1174,6 +1173,8 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		{
 			break;
 		}
+
+		glFog = NULL;
 
 		if (backEnd.depthFill)
 		{
@@ -1240,7 +1241,28 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		}
 		else
 		{
-			sp = GLSL_GetGenericShaderProgram(stage);
+			if ( r_wolffog->integer && pStage->adjustColorsForFog && !backEnd.projection2D )
+			{
+				if ( !tess.shader->noFog || pStage->isFogged ) {
+					if ( backEnd.refdef.rdflags & RDF_DRAWINGSKY ) {
+						if ( glfogsettings[FOG_SKY].registered ) {
+							glFog = &glfogsettings[FOG_SKY];
+						}
+					}
+
+					if ( skyboxportal && backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) {
+						if ( glfogsettings[FOG_PORTALVIEW].registered ) {
+							glFog = &glfogsettings[FOG_PORTALVIEW];
+						}
+					} else {
+						if ( glfogNum > FOG_NONE ) {
+							glFog = &glfogsettings[FOG_CURRENT];
+						}
+					}
+				}
+			}
+
+			sp = GLSL_GetGenericShaderProgram(stage, glFog);
 
 			backEnd.pc.c_genericDraws++;
 		}
@@ -1260,7 +1282,9 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			GLSL_SetUniformFloat(sp, UNIFORM_TIME, tess.shaderTime);
 		}
 
-		if ( input->fogNum ) {
+		if ( input->fogNum || glFog ) {
+			ComputeFogValues(fogDistanceVector, fogDepthVector, &eyeT, glFog);
+
 			GLSL_SetUniformVec4(sp, UNIFORM_FOGDISTANCE, fogDistanceVector);
 			GLSL_SetUniformVec4(sp, UNIFORM_FOGDEPTH, fogDepthVector);
 			GLSL_SetUniformFloat(sp, UNIFORM_FOGEYET, eyeT);
@@ -1326,7 +1350,7 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		GLSL_SetUniformInt(sp, UNIFORM_COLORGEN, pStage->rgbGen);
 		GLSL_SetUniformInt(sp, UNIFORM_ALPHAGEN, pStage->alphaGen);
 
-		if ( input->fogNum )
+		if ( input->fogNum || glFog )
 		{
 			vec4_t fogColorMask;
 
@@ -1732,33 +1756,27 @@ void RB_StageIteratorGeneric( void )
 	if ( r_wolffog->integer && tess.shader->fogPass && tess.shader->sort <= SS_OPAQUE )
 	{
 		int stage, stageFog = 0;
-		
-		// make sure at least one stage has fog
-		for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
-		{
-			shaderStage_t *pStage = tess.xstages[stage];
 
-			if ( !pStage )
+		if ( tess.shader->noFog ) {
+			// make sure at least one stage has fog
+			for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
 			{
-				break;
-			}
+				shaderStage_t *pStage = tess.xstages[stage];
 
-			if (pStage->isFogged)
-			{
-				stageFog = 1;
-				break;
+				if ( !pStage )
+				{
+					break;
+				}
+
+				if (pStage->isFogged)
+				{
+					stageFog = 1;
+					break;
+				}
 			}
 		}
-		
-		// FIXME: this logic sucks
-		if (tess.shader->noFog && stageFog)
-		{
-			RB_FogPass(1);
-		}
-		else if (tess.shader->noFog && !stageFog)
-		{
-		}
-		else
+
+		if ( !tess.shader->noFog || stageFog )
 		{
 			RB_FogPass(1);
 		}

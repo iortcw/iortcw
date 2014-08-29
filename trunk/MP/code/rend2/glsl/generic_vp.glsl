@@ -189,7 +189,12 @@ vec4 CalcColor(vec3 position, vec3 normal)
 #if defined(USE_FOG)
 float CalcFog(vec3 position)
 {
-	float s = dot(vec4(position, 1.0), u_FogDistance) * 8.0;
+	float s = dot(vec4(position, 1.0), u_FogDistance);
+#if defined(USE_WOLF_FOG_LINEAR)
+	return 1.0 - (u_FogDepth.y - s) / (u_FogDepth.y - u_FogDepth.x);
+#elif defined(USE_WOLF_FOG_EXPONENTIAL)
+	return 1.0 - exp(-u_FogDepth.z * s);
+#else // defined(USE_QUAKE3_FOG)
 	float t = dot(vec4(position, 1.0), u_FogDepth);
 
 	float eyeOutside = float(u_FogEyeT < 0.0);
@@ -198,7 +203,8 @@ float CalcFog(vec3 position)
 	t += 1e-6;
 	t *= fogged / (t - u_FogEyeT * eyeOutside);
 
-	return s * t;
+	return s * 8.0 * t;
+#endif
 }
 #endif
 
