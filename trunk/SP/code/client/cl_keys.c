@@ -2190,7 +2190,7 @@ void CL_KeyDownEvent( int key, unsigned time )
 	int activeMenu = 0;
 	keys[key].down = qtrue;
 	keys[key].repeats++;
-	if( keys[key].repeats == 1 && key != K_SCROLLOCK && key != K_KP_NUMLOCK && key != K_CAPSLOCK )
+	if( keys[key].repeats == 1 )
 		anykeydown++;
 
 	if( keys[K_ALT].down && key == K_ENTER )
@@ -2338,8 +2338,7 @@ void CL_KeyUpEvent( int key, unsigned time )
 {
 	keys[key].repeats = 0;
 	keys[key].down = qfalse;
-	if (key != K_SCROLLOCK && key != K_KP_NUMLOCK && key != K_CAPSLOCK)
-		anykeydown--;
+	anykeydown--;
 
 	if (anykeydown < 0) {
 		anykeydown = 0;
@@ -2416,9 +2415,6 @@ void Key_ClearStates( void ) {
 	anykeydown = 0;
 
 	for ( i = 0 ; i < MAX_KEYS ; i++ ) {
-		if (i == K_SCROLLOCK || i == K_KP_NUMLOCK || i == K_CAPSLOCK)
-			continue;
-
 		if ( keys[i].down ) {
 			CL_KeyEvent( i, qfalse, 0 );
 		}
