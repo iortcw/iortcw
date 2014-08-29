@@ -1062,6 +1062,8 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 			} else if ( !Q_stricmp( token, "const" ) )    {
 				vec3_t color;
 
+				VectorClear( color );
+
 				ParseVector( text, 3, color );
 				stage->constantColor[0] = 255 * color[0];
 				stage->constantColor[1] = 255 * color[1];
