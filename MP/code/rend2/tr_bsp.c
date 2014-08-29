@@ -3439,7 +3439,6 @@ void R_MergeLeafSurfaces(void)
 	R_IssuePendingRenderCommands();
 
 	// actually merge surfaces
-	numIboIndexes = 0;
 	mergedSurfIndex = 0;
 	mergedSurf = s_worldData.mergedSurfaces;
 	for (i = 0; i < numWorldSurfaces; i++)
