@@ -926,6 +926,12 @@ void GLSL_InitGPUShaders(void)
 		if (i & GENERICDEF_USE_LIGHTMAP)
 			Q_strcat(extradefines, 1024, "#define USE_LIGHTMAP\n");
 
+		if (i & GENERICDEF_USE_WOLF_FOG_LINEAR)
+			Q_strcat(extradefines, 1024, "#define USE_WOLF_FOG_LINEAR\n");
+		
+		if (i & GENERICDEF_USE_WOLF_FOG_EXPONENTIAL)
+			Q_strcat(extradefines, 1024, "#define USE_WOLF_FOG_EXPONENTIAL\n");
+
 		if (r_hdr->integer && !glRefConfig.floatLightmap)
 			Q_strcat(extradefines, 1024, "#define RGBM_LIGHTMAP\n");
 
@@ -1775,7 +1781,7 @@ void GLSL_VertexAttribPointers(uint32_t attribBits)
 }
 
 
-shaderProgram_t *GLSL_GetGenericShaderProgram(int stage)
+shaderProgram_t *GLSL_GetGenericShaderProgram(int stage, glfog_t *glFog)
 {
 	shaderStage_t *pStage = tess.xstages[stage];
 	int shaderAttribs = 0;
@@ -1783,6 +1789,17 @@ shaderProgram_t *GLSL_GetGenericShaderProgram(int stage)
 	if (tess.fogNum && pStage->adjustColorsForFog)
 	{
 		shaderAttribs |= GENERICDEF_USE_FOG;
+	}
+
+	//
+	// RTCW fog
+	//
+	if (glFog) {
+		shaderAttribs |= GENERICDEF_USE_FOG;
+		if (glFog->mode == GL_LINEAR)
+			shaderAttribs |= GENERICDEF_USE_WOLF_FOG_LINEAR;
+		else // if (glFog->mode == GL_EXP)
+			shaderAttribs |= GENERICDEF_USE_WOLF_FOG_EXPONENTIAL;
 	}
 
 	if (pStage->bundle[1].image[0] && tess.shader->multitextureEnv)
