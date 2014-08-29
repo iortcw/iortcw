@@ -1633,12 +1633,17 @@ static char *CommaParse( char **data_p ) {
 		c = *data;
 
 		// skip double slash comments
-		if ( c == '/' && data[1] == '/' ) {
-			while ( *data && *data != '\n' )
+		if ( c == '/' && data[1] == '/' )
+		{
+			data += 2;
+			while (*data && *data != '\n') {
 				data++;
+			}
 		}
 		// skip /* */ comments
-		else if ( c == '/' && data[1] == '*' ) {
+		else if ( c == '/' && data[1] == '*' )
+		{
+			data += 2;
 			while ( *data && ( *data != '*' || data[1] != '/' ) )
 			{
 				data++;
@@ -1667,7 +1672,7 @@ static char *CommaParse( char **data_p ) {
 				*data_p = ( char * ) data;
 				return com_token;
 			}
-			if ( len < MAX_TOKEN_CHARS ) {
+			if ( len < MAX_TOKEN_CHARS - 1 ) {
 				com_token[len] = c;
 				len++;
 			}
@@ -1677,7 +1682,7 @@ static char *CommaParse( char **data_p ) {
 	// parse a regular word
 	do
 	{
-		if ( len < MAX_TOKEN_CHARS ) {
+		if ( len < MAX_TOKEN_CHARS - 1 ) {
 			com_token[len] = c;
 			len++;
 		}
@@ -1685,10 +1690,6 @@ static char *CommaParse( char **data_p ) {
 		c = *data;
 	} while ( c > 32 && c != ',' );
 
-	if ( len == MAX_TOKEN_CHARS ) {
-//		ri.Printf (PRINT_DEVELOPER, "Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
-		len = 0;
-	}
 	com_token[len] = 0;
 
 	*data_p = ( char * ) data;
