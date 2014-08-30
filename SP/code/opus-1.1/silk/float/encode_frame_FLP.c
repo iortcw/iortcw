@@ -87,7 +87,7 @@ opus_int silk_encode_frame_FLP(
     silk_float   *x_frame, *res_pitch_frame;
     silk_float   xfw[ MAX_FRAME_LENGTH ];
     silk_float   res_pitch[ 2 * MAX_FRAME_LENGTH + LA_PITCH_MAX ];
-    ec_enc       sRangeEnc_copy, sRangeEnc_copy2;
+    ec_enc       sRangeEnc_copy, sRangeEnc_copy2 = {0};
     silk_nsq_state sNSQ_copy, sNSQ_copy2;
     opus_int32   seed_copy, nBits, nBits_lower, nBits_upper, gainMult_lower, gainMult_upper;
     opus_int32   gainsID, gainsID_lower, gainsID_upper;

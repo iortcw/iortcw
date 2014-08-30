@@ -130,11 +130,13 @@ UpdateIPBans
 =================
 */
 static void UpdateIPBans( void ) {
-	byte b[4];
-	int i;
-	char iplist[MAX_INFO_STRING];
+	byte b[4] = {0};
+	byte m[4] = {0};
+	int i,j;
+	char iplist_final[MAX_CVAR_VALUE_STRING] = {0};
+	char ip[64] = {0};
 
-	*iplist = 0;
+	*iplist_final = 0;
 	for ( i = 0 ; i < numIPFilters ; i++ )
 	{
 		if ( ipFilters[i].compare == 0xffffffff ) {
@@ -142,11 +144,27 @@ static void UpdateIPBans( void ) {
 		}
 
 		*(unsigned *)b = ipFilters[i].compare;
-		Com_sprintf( iplist + strlen( iplist ), sizeof( iplist ) - strlen( iplist ),
-					 "%i.%i.%i.%i ", b[0], b[1], b[2], b[3] );
+		*(unsigned *)m = ipFilters[i].mask;
+		*ip = 0;
+		for ( j = 0 ; j < 4 ; j++ )
+		{
+			if ( m[j] != 255 ) {
+				Q_strcat( ip, sizeof( ip ), "*" );
+			} else {
+				Q_strcat( ip, sizeof( ip ), va( "%i", b[j] ) );
+			}
+			Q_strcat( ip, sizeof( ip ), ( j < 3 ) ? "." : " " );
+		}
+		if ( strlen( iplist_final ) + strlen( ip ) < MAX_CVAR_VALUE_STRING ) {
+			Q_strcat( iplist_final, sizeof( iplist_final ), ip );
+		} else
+		{
+			Com_Printf( "g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n" );
+			break;
+		}
 	}
 
-	trap_Cvar_Set( "g_banIPs", iplist );
+	trap_Cvar_Set( "g_banIPs", iplist_final );
 }
 
 /*
@@ -157,7 +175,7 @@ G_FilterPacket
 qboolean G_FilterPacket( char *from ) {
 	int i;
 	unsigned in;
-	byte m[4];
+	byte m[4] = {0};
 	char *p;
 
 	i = 0;
