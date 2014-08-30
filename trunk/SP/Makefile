@@ -306,16 +306,17 @@ ifneq ($(BUILD_CLIENT),0)
     OPENAL_LIBS ?= $(shell pkg-config --silence-errors --libs openal)
     SDL_CFLAGS ?= $(shell pkg-config --silence-errors --cflags sdl2|sed 's/-Dmain=SDL_main//')
     SDL_LIBS ?= $(shell pkg-config --silence-errors --libs sdl2)
+    FREETYPE_CFLAGS ?= $(shell pkg-config --silence-errors --cflags freetype2)
   else
     # assume they're in the system default paths (no -I or -L needed)
-    CURL_LIBS=-lcurl
-    OPENAL_LIBS=-lopenal
+    CURL_LIBS ?= -lcurl
+    OPENAL_LIBS ?= -lopenal
   endif
-  # Use sdl-config if all else fails
+  # Use sdl2-config if all else fails
   ifeq ($(SDL_CFLAGS),)
     ifneq ($(call bin_path, sdl2-config),)
-      SDL_CFLAGS=$(shell sdl2-config --cflags)
-      SDL_LIBS=$(shell sdl2-config --libs)
+      SDL_CFLAGS ?= $(shell sdl2-config --cflags)
+      SDL_LIBS ?= $(shell sdl2-config --libs)
     endif
   endif
 endif
@@ -349,6 +350,8 @@ LIB=lib
 
 INSTALL=install
 MKDIR=mkdir
+EXTRA_FILES=
+CLIENT_EXTRA_FILES=
 
 ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
 
@@ -530,6 +533,7 @@ ifeq ($(PLATFORM),darwin)
   CLIENT_LIBS += -framework IOKit \
     $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
   RENDERER_LIBS += -framework OpenGL $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
+  CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib $(LIBSDIR)/macosx/libopenal.dylib
 
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
@@ -690,12 +694,14 @@ ifeq ($(PLATFORM),mingw32)
     RENDERER_LIBS += $(LIBSDIR)/win32/libSDL2main.a \
                       $(LIBSDIR)/win32/libSDL2.dll.a
     SDLDLL=SDL2.dll
+    CLIENT_EXTRA_FILES += $(LIBSDIR)/win32/SDL2.dll $(LIBSDIR)/win32/OpenAL32.dll
     else
     CLIENT_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
                       $(LIBSDIR)/win64/libSDL264.dll.a
     RENDERER_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
                       $(LIBSDIR)/win64/libSDL264.dll.a
     SDLDLL=SDL264.dll
+    CLIENT_EXTRA_FILES += $(LIBSDIR)/win64/SDL264.dll $(LIBSDIR)/win32/OpenAL64.dll
     endif
   else
     CLIENT_CFLAGS += $(SDL_CFLAGS)
@@ -1272,6 +1278,29 @@ ifneq ($(call bin_path, tput),)
   TERM_COLUMNS=$(shell echo $$((`tput cols`-4)))
 else
   TERM_COLUMNS=76
+endif
+
+define ADD_COPY_TARGET
+TARGETS += $2
+$2: $1
+	$(echo_cmd) "CP $$<"
+	@cp $1 $2
+endef
+
+# These functions allow us to generate rules for copying a list of files
+# into the base directory of the build; this is useful for bundling libs,
+# README files or whatever else
+define GENERATE_COPY_TARGETS
+$(foreach FILE,$1, \
+  $(eval $(call ADD_COPY_TARGET, \
+    $(FILE), \
+    $(addprefix $(B)/,$(notdir $(FILE))))))
+endef
+
+$(call GENERATE_COPY_TARGETS,$(EXTRA_FILES))
+
+ifneq ($(BUILD_CLIENT),0)
+  $(call GENERATE_COPY_TARGETS,$(CLIENT_EXTRA_FILES))
 endif
 
 NAKED_TARGETS=$(shell echo $(TARGETS) | sed -e "s!$(B)/!!g")
