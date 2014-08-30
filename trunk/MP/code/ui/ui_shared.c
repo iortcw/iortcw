@@ -429,6 +429,8 @@ qboolean PC_Int_Parse( int handle, int *i ) {
 	pc_token_t token;
 	int negative = qfalse;
 
+	if (!i)
+		return qfalse;
 	if ( !trap_PC_ReadToken( handle, &token ) ) {
 		return qfalse;
 	}
@@ -660,7 +662,7 @@ void Fade( int *flags, float *f, float clamp, int *nextTime, int offsetTime, qbo
 
 void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle ) {
 	//float bordersize = 0;
-	vec4_t color;
+	vec4_t color = {0};
 	rectDef_t fillRect = w->rect;
 
 	if ( debugMode ) {
@@ -4553,6 +4555,10 @@ menuDef_t *Menus_ActivateByName( const char *p, qboolean modalStack ) {
 
 
 void Item_Init( itemDef_t *item ) {
+	if (item == NULL) {
+		return;
+	}
+
 	memset( item, 0, sizeof( itemDef_t ) );
 	item->textscale = 0.55f;
 	Window_Init( &item->window );
