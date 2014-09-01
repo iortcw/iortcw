@@ -47,6 +47,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_interface.h"
 #include "be_aas_def.h"
 
+#define	LL(x) x=LittleLong(x)
+#define	LS(x) x=LittleShort(x)
+
 // ugly hack to turn off route-tables, can't find a way to check cvar's
 int disable_routetable = 0;
 
@@ -339,7 +342,7 @@ qboolean AAS_RT_ReadRouteTable( fileHandle_t fp ) {
 
 	// check ident
 	AAS_RT_DBG_Read( &ident, sizeof( ident ), fp );
-	ident = LittleLong( ident );
+	LL( ident );
 
 	if ( ident != RTBID ) {
 		AAS_Error( "File is not an RTB file\n" );
@@ -349,7 +352,7 @@ qboolean AAS_RT_ReadRouteTable( fileHandle_t fp ) {
 
 	// check version
 	AAS_RT_DBG_Read( &version, sizeof( version ), fp );
-	version = LittleLong( version );
+	LL( version );
 
 	if ( version != RTBVERSION ) {
 		AAS_Error( "File is version %i not %i\n", version, RTBVERSION );
@@ -359,7 +362,7 @@ qboolean AAS_RT_ReadRouteTable( fileHandle_t fp ) {
 
 	// read the CRC check on the AAS data
 	AAS_RT_DBG_Read( &crc, sizeof( crc ), fp );
-	crc = LittleShort( crc );
+	LS( crc );
 
 	// calculate a CRC on the AAS areas
 	crc_aas = CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas );

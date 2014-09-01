@@ -53,6 +53,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #define ROUTING_DEBUG
 
+#define	LL(x) x=LittleLong(x)
+
 //travel time in hundreths of a second = distance * 100 / speed
 #define DISTANCEFACTOR_CROUCH       1.3     //crouch speed = 100
 #define DISTANCEFACTOR_SWIM         1       //should be 0.66, swim speed = 150
@@ -1011,7 +1013,7 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 	unsigned char *cache_reachabilities;
 
 	botimport.FS_Read( &size, sizeof( size ), fp );
-	size = LittleLong( size );
+	LL( size );
 	cache = (aas_routingcache_32_t *) AAS_RoutingGetMemory( size );
 	cache->size = size;
 	botimport.FS_Read( (unsigned char *)cache + sizeof( size ), size - sizeof( size ), fp );
@@ -1111,7 +1113,8 @@ int AAS_ReadRouteCache( void ) {
 		//AAS_Error("route cache dump has wrong number of clusters\n");
 		return qfalse;
 	} //end if
-#ifdef _WIN32                           // crc code is only good on intel machines
+#ifdef _WIN32
+	// crc code is only good on intel machines
 	if ( routecacheheader.areacrc !=
 		 CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas ) ) {
 		botimport.FS_FCloseFile( fp );
@@ -1160,7 +1163,7 @@ int AAS_ReadRouteCache( void ) {
 	for ( i = 0; i < ( *aasworld ).numareas; i++ )
 	{
 		botimport.FS_Read( &size, sizeof( size ), fp );
-		size = LittleLong( size );
+		LL( size );
 		if ( size ) {
 			( *aasworld ).areavisibility[i] = (byte *) GetMemory( size );
 			botimport.FS_Read( ( *aasworld ).areavisibility[i], size, fp );
@@ -1264,27 +1267,6 @@ void AAS_FreeRoutingCaches( void ) {
 	}
 	( *aasworld ).areawaypoints = NULL;
 } //end of the function AAS_FreeRoutingCaches
-//===========================================================================
-// this function could be replaced by a bubble sort or for even faster
-// routing by a B+ tree
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
-static ID_INLINE void AAS_AddUpdateToList( aas_routingupdate_t **updateliststart,
-								   aas_routingupdate_t **updatelistend,
-								   aas_routingupdate_t *update ) {
-	if ( !update->inlist ) {
-		if ( *updatelistend ) {
-			( *updatelistend )->next = update;
-		} else { *updateliststart = update;}
-		update->prev = *updatelistend;
-		update->next = NULL;
-		*updatelistend = update;
-		update->inlist = qtrue;
-	} //end if
-} //end of the function AAS_AddUpdateToList
 //===========================================================================
 //
 // Parameter:				-
