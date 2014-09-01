@@ -1060,6 +1060,10 @@ trace_t *CheckMeleeAttack( gentity_t *ent, float dist, qboolean isTest ) {
 		return NULL;
 	}
 
+	if ( ent->client->noclip ) {
+		return NULL;
+	}
+
 	traceEnt = &g_entities[ tr.entityNum ];
 
 	// send blood impact

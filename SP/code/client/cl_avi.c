@@ -126,10 +126,12 @@ static ID_INLINE void WRITE_2BYTES( int x ) {
 WRITE_1BYTES
 ===============
 */
+#if 0
 static ID_INLINE void WRITE_1BYTES( int x ) {
 	buffer[ bufIndex ] = x;
 	bufIndex += 1;
 }
+#endif
 
 /*
 ===============

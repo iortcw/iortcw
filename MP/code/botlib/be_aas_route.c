@@ -51,6 +51,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_interface.h"
 #include "be_aas_def.h"
 
+#define	LL(x) x=LittleLong(x)
+
 #define ROUTING_DEBUG
 
 //travel time in hundreths of a second = distance * 100 / speed
@@ -1010,7 +1012,7 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 	unsigned char *cache_reachabilities;
 
 	botimport.FS_Read( &size, sizeof( size ), fp );
-	size = LittleLong( size );
+	LL( size );
 	cache = (aas_routingcache_32_t *) AAS_RoutingGetMemory( size );
 	cache->size = size;
 	botimport.FS_Read( (unsigned char *)cache + sizeof( size ), size - sizeof( size ), fp );
@@ -1243,27 +1245,6 @@ void AAS_FreeRoutingCaches( void ) {
 	}
 	( *aasworld ).areawaypoints = NULL;
 } //end of the function AAS_FreeRoutingCaches
-//===========================================================================
-// this function could be replaced by a bubble sort or for even faster
-// routing by a B+ tree
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
-static ID_INLINE void AAS_AddUpdateToList( aas_routingupdate_t **updateliststart,
-								   aas_routingupdate_t **updatelistend,
-								   aas_routingupdate_t *update ) {
-	if ( !update->inlist ) {
-		if ( *updatelistend ) {
-			( *updatelistend )->next = update;
-		} else { *updateliststart = update;}
-		update->prev = *updatelistend;
-		update->next = NULL;
-		*updatelistend = update;
-		update->inlist = qtrue;
-	} //end if
-} //end of the function AAS_AddUpdateToList
 //===========================================================================
 //
 // Parameter:				-
