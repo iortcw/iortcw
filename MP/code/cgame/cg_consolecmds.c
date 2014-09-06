@@ -369,11 +369,11 @@ static void CG_OpenLimbo_f( void ) {
 	}
 
 	// Arnout - don't set currentteam when following as it won't be the actual currentteam
-	if ( currentTeam != mp_team.integer && !( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
+	if ( currentTeam != mp_team.integer && cg.snap && !( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
 		trap_Cvar_Set( "mp_team", va( "%d", currentTeam ) );
 	}
 
-	if ( currentTeam != mp_currentTeam.integer && !( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
+	if ( currentTeam != mp_currentTeam.integer && cg.snap && !( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
 		trap_Cvar_Set( "mp_currentTeam", va( "%d", currentTeam ) );
 	}
 

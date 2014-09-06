@@ -187,7 +187,7 @@ CG_CalcMoveSpeeds
 */
 void CG_CalcMoveSpeeds( clientInfo_t *ci ) {
 	char *tags[2] = {"tag_footleft", "tag_footright"};
-	vec3_t oldPos[2];
+	vec3_t oldPos[2] = {{ 0 }};
 	refEntity_t refent;
 	animation_t *anim;
 	int i, j, k;
@@ -1177,6 +1177,10 @@ void CG_RunLerpFrame( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, float
 
 		// get the next frame based on the animation
 		anim = lf->animation;
+
+		if ( !anim )
+			return;
+
 		if ( !anim->frameLerp ) {
 			return;     // shouldn't happen
 		}
@@ -2816,7 +2820,7 @@ void CG_Player( centity_t *cent ) {
 	cent->pe.headRefEnt = head;
 
 	// add the shadow
-	shadow = CG_PlayerShadow( cent, &shadowPlane );
+	CG_PlayerShadow( cent, &shadowPlane );
 
 	// set the shadowplane for accessories
 	acc.shadowPlane = shadowPlane;

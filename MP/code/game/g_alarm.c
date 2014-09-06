@@ -70,7 +70,13 @@ alarmbox_updateparts
 */
 void alarmbox_updateparts( gentity_t *ent, qboolean matestoo ) {
 	gentity_t   *t, *mate;
-	qboolean alarming = ( ent->s.frame == 1 );
+	qboolean alarming;
+
+	if ( !ent ) {
+		return;
+	}
+
+	alarming = ( ent->s.frame == 1 );
 
 	// update teammates
 	if ( matestoo ) {

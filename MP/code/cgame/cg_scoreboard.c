@@ -239,9 +239,7 @@ int WM_DrawObjectives( int x, int y, int width, float fade ) {
 		buf = Info_ValueForKey( s, "winner" );
 
 		if ( atoi( buf ) == -1 ) {
-			str = "ITS A TIE!";
 		} else if ( atoi( buf ) ) {
-			str = "ALLIES";
 			shader = "ui_mp/assets/portraits/allies_win";
 			flagshader = "ui_mp/assets/portraits/allies_win_flag.tga";
 			nameshader = "ui_mp/assets/portraits/text_allies.tga";
@@ -251,7 +249,6 @@ int WM_DrawObjectives( int x, int y, int width, float fade ) {
 				trap_S_StartLocalSound( trap_S_RegisterSound( "sound/multiplayer/music/l_complete_2.wav" ), CHAN_LOCAL_SOUND );
 			}
 		} else {
-			str = "AXIS";
 			shader = "ui_mp/assets/portraits/axis_win";
 			flagshader = "ui_mp/assets/portraits/axis_win_flag.tga";
 			nameshader = "ui_mp/assets/portraits/text_axis.tga";
@@ -399,7 +396,6 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 			width = INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
 
 			CG_FillRect( tempx, y + 1, width - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-			tempx += width;
 		} else {
 			CG_FillRect( tempx, y + 1, INFO_CLASS_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
 			tempx += INFO_CLASS_WIDTH;
@@ -408,7 +404,6 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 			tempx += INFO_SCORE_WIDTH;
 
 			CG_FillRect( tempx, y + 1, INFO_LATENCY_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-			tempx += INFO_LATENCY_WIDTH;
 		}
 	}
 
@@ -478,7 +473,6 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 	tempx += INFO_SCORE_WIDTH;
 
 	CG_DrawSmallString( tempx, y, va( "%4i", score->ping ), fade );
-	tempx += INFO_LATENCY_WIDTH;
 }
 
 const char* WM_TimeToString( float msec ) {
@@ -604,7 +598,6 @@ static int WM_TeamScoreboard( int x, int y, team_t team, float fade, int maxrows
 	tempx += INFO_SCORE_WIDTH;
 
 	CG_DrawSmallString( tempx, y, CG_TranslateString( "Ping" ), fade );
-	tempx += INFO_LATENCY_WIDTH;
 
 	y += SMALLCHAR_HEIGHT;
 
@@ -677,7 +670,6 @@ qboolean CG_DrawScoreboard( void ) {
 	if ( cg.showScores || ( cg.predictedPlayerState.pm_type == PM_DEAD && cgs.gametype < GT_WOLF ) ||
 		 cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 		fade = 1.0;
-		fadeColor = colorWhite;
 	} else {
 		fadeColor = CG_FadeColor( cg.scoreFadeTime, FADE_TIME );
 
@@ -799,14 +791,14 @@ qboolean CG_DrawScoreboard( void ) {
 			y = CG_TeamScoreboard( x, y, TEAM_BLUE, fade );
 			y = CG_TeamScoreboard( x, y, TEAM_RED, fade );
 		}
-		y = CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
+		CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
 
 	} else if ( cgs.gametype != GT_SINGLE_PLAYER ) {   //----(SA) modified
 		//
 		// free for all scoreboard
 		//
 		y = CG_TeamScoreboard( x, y, TEAM_FREE, fade );
-		y = CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
+		CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
 	}
 
 	// load any models that have been deferred

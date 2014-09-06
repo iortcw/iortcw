@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
-int wolfkickModel;
+//int wolfkickModel;
 int hWeaponSnd;
 int hWeaponEchoSnd;     // JPW NERVE
 int hflakWeaponSnd;
@@ -473,8 +473,6 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		dir[1] = crandom() * 5;
 		dir[2] = 0;
 		VectorAdd( lastPos,dir,origin ); // store in origin
-
-		rnd = random();
 
 		CG_GetWindVector( dir );
 		VectorScale( dir,65,dir ); // was 75, before that 55
@@ -1208,8 +1206,6 @@ void CG_RegisterWeapon( int weaponNum ) {
 				bail = qtrue;
 			}
 		}
-
-		bail = qfalse;
 
 		// used for spinning belt on venom
 		if ( i == W_FP_MODEL ) {
@@ -2717,6 +2713,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 }
 
 void CG_AddPlayerFoot( refEntity_t *parent, playerState_t *ps, centity_t *cent ) {
+/*
 	refEntity_t wolfkick;
 	vec3_t kickangle;
 	int frame;
@@ -2763,7 +2760,7 @@ void CG_AddPlayerFoot( refEntity_t *parent, playerState_t *ps, centity_t *cent )
 	wolfkick.oldframe = frame - 1;
 	wolfkick.backlerp = 1 - cg.frameInterpolation;
 	trap_R_AddRefEntityToScene( &wolfkick );
-
+*/
 }
 
 /*
@@ -2867,7 +2864,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 	// Rafael
 	// add the foot
-	CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
+	//CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
 
 	cg.predictedPlayerEntity.lastWeaponClientFrame = cg.clientFrame;
 }
@@ -5347,7 +5344,6 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 // jpw
 		break;
 	case WP_PANZERFAUST:
-		sfx = cgs.media.sfx_rockexp;
 	case WP_ROCKET_LAUNCHER:
 	case VERYBIGEXPLOSION:
 //		mod = cgs.media.dishFlashModel;
@@ -5380,7 +5376,6 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			}
 
 			// NOTE: these must all have the same duration, so that we are less likely to use a wider range of images per scene
-			r = 2 + rand() % 3;
 			for ( i = 0; i < 4; i++ ) {
 				if ( weapon == VERYBIGEXPLOSION ) {
 					for ( j = 0; j < 3; j++ ) sprOrg[j] = origin[j] + 32 * dir[j] + 32 * crandom();
@@ -5565,12 +5560,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	vec3_t sprVel;
 //	int				i,j;
 
-	mark = 0;
-	radius = 32;
-	sfx = 0;
 	mod = 0;
-	shader = 0;
-	light = 0;
 	lightColor[0] = 1;
 	lightColor[1] = 1;
 	lightColor[2] = 0;
@@ -5578,9 +5568,6 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	lightOverdraw = 0;
 
 	// set defaults
-	isSprite = qfalse;
-	duration = 600;
-
 	shader = cgs.media.rocketExplosionShader;       // copied from RL
 	sfx = cgs.media.sfx_rockexp;
 	mark = cgs.media.burnMarkShader;
@@ -5990,7 +5977,7 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 	trace_t trace,trace2;
 	int sourceContentType, destContentType;
 	vec3_t dir;
-	vec3_t start, trend;      // JPW
+	vec3_t start = { 0 }, trend;      // JPW
 	static int lastBloodSpat;
 	centity_t *cent;
 

@@ -2227,7 +2227,7 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 			if ( enemy->s.weapon != WP_TESLA ) {
 				break;
 			}
-			if ( !( enemy->client->buttons & BUTTON_ATTACK ) ) {
+			if ( enemy->client && !( enemy->client->buttons & BUTTON_ATTACK ) ) {
 				break;
 			}
 			//if ( AICast_GetCastState( enemy->s.number )->lastWeaponFiredWeaponNum != WP_TESLA )

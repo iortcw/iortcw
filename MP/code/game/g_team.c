@@ -801,7 +801,7 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team, int spawnObje
 	gentity_t   *spots[MAX_TEAM_SPAWN_POINTS];
 	char        *classname;
 	qboolean initialSpawn = qfalse;     // DHM - Nerve
-	int i = 0,j;       // JPW NERVE
+	int i = 0,j = 0;       // JPW NERVE
 	int closest;         // JPW NERVE
 	float shortest,tmp;       // JPW NERVE
 	vec3_t target;      // JPW NERVE
@@ -886,7 +886,6 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team, int spawnObje
 		if ( spawnObjective ) {
 			i = spawnObjective - 1;
 		} else {
-			j = 0;
 			for ( j = 0; j < count; j++ ) {
 				if ( spots[j]->spawnflags & 1 ) { // only use spawnpoint if it's a permanent one
 					// NERVE - SMF - make defenders spawn all the way back by default

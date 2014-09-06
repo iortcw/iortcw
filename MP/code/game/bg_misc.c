@@ -3645,7 +3645,6 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 			return;
 		}
 		deltaTime = ( atTime - tr->trTime ) * 0.001;    // milliseconds to seconds
-		phase = deltaTime / (float)tr->trDuration;
 		VectorScale( tr->trDelta, deltaTime * deltaTime, result );
 		break;
 	case TR_DECCELERATE:    // trDelta is breaking force

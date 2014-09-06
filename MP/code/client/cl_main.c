@@ -1829,8 +1829,6 @@ void CL_Connect_f( void ) {
 	// clear any previous "server full" type messages
 	clc.serverMessage[0] = 0;
 
-	server = Cmd_Argv( 1 );
-
 	if ( com_sv_running->integer && !strcmp( server, "localhost" ) ) {
 		// if running a local server, kill it
 		SV_Shutdown( "Server quit\n" );
@@ -5776,13 +5774,16 @@ void CL_LoadTransTable( const char *fileName ) {
 
 		// set offset if we have one
 		if ( !Q_stricmp( "offset", token ) ) {
-			token = COM_Parse( &text_p );
-			t->x_offset = atof( token );
-
-			token = COM_Parse( &text_p );
-			t->y_offset = atof( token );
-
-			token = COM_Parse( &text_p );
+			if ( t )
+			{
+				token = COM_Parse( &text_p );
+				t->x_offset = atof( token );
+	
+				token = COM_Parse( &text_p );
+				t->y_offset = atof( token );
+	
+				token = COM_Parse( &text_p );
+			}
 		}
 
 		if ( Q_stricmp( "}", token ) ) {

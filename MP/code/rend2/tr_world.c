@@ -629,6 +629,9 @@ static void R_RecursiveWorldNode( mnode_t *node, int planeBits, int dlightBits, 
 		int			c;
 		int surf, *view;
 
+		// RF, hack, dlight elimination above is unreliable
+		dlightBits = 0xffffffff;
+
 		tr.pc.c_leafs++;
 
 		// add to z buffer bounds

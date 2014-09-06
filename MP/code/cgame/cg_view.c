@@ -476,15 +476,10 @@ void CG_Concussive( centity_t *cent ) {
 	if ( !cg.renderingThirdPerson && cent->currentState.density == cg.snap->ps.clientNum ) {
 		//
 		pitchRecoilAdd = 0;
-		pitchAdd = 0;
-		yawRandom = 0;
 		//
 
 		VectorSubtract( cg.snap->ps.origin, cent->currentState.origin, vec );
 		length = VectorLength( vec );
-
-		// pitchAdd = 12+rand()%3;
-		// yawRandom = 6;
 
 		if ( length > 1024 ) {
 			return;
@@ -1346,12 +1341,6 @@ void CG_DrawSkyBoxPortal( void ) {
 	if ( !token || !token[0] ) {
 		CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 	}
-	fov_x = atoi( token );
-
-	if ( !fov_x ) {
-		fov_x = 90;
-	}
-
 
 	// setup fog the first time, ignore this part of the configstring after that
 	token = COM_ParseExt( &cstr, qfalse );
@@ -1512,60 +1501,7 @@ int CG_GetMPSetupValue( void ) {
 CG_DrawNotebook
 =========================
 */
-/*
-	VectorCopy(cg.refdefViewAngles, kickangle);
-	AnglesToAxis (kickangle, wolfkick.axis);
-
-
-	frame = cg.snap->ps.persistant[PERS_WOLFKICK];
-
-	wolfkick.frame = frame;
-	wolfkick.oldframe = frame - 1;
-	wolfkick.backlerp = 1 - cg.frameInterpolation;
-
-*/
 void CG_DrawNotebook( void ) {
-/*
-	refEntity_t		notebook;
-	vec3_t			notebookangle;
-	int				frame;
-	static int		oldtime = 0;
-
-	static int		tempnotebookcnt = 0;
-
-	memset (&notebook, 0, sizeof (notebook));
-
-	// note to self we want this to lerp and advance frame
-	notebook.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_HILIGHT;
-	notebook.hModel = notebookModel;
-
-	VectorCopy( cg.refdef.vieworg, notebook.origin );
-
-	//----(SA)	allow offsets for testing boot model
-	if(cg_gun_x.value)	VectorMA( notebook.origin, cg_gun_x.value,	cg.refdef.viewaxis[0], notebook.origin );
-	if(cg_gun_y.value)	VectorMA( notebook.origin, cg_gun_y.value,	cg.refdef.viewaxis[1], notebook.origin );
-	if(cg_gun_z.value)	VectorMA( notebook.origin, cg_gun_z.value,	cg.refdef.viewaxis[2], notebook.origin );
-	//----(SA)	end
-
-	VectorCopy(cg.refdefViewAngles, notebookangle);
-	AnglesToAxis (notebookangle, notebook.axis);
-
-	frame = tempnotebookcnt;
-
-	tempnotebookcnt++;
-
-	if (tempnotebookcnt > 25)
-		tempnotebookcnt = 0;
-
-	// CG_Printf("frame: %d\n", frame);
-
-	CG_Printf("journal: frame: %d\n", frame);
-
-	notebook.frame = frame;
-	notebook.oldframe = frame - 1;
-	notebook.backlerp = 1 - cg.frameInterpolation;
-	trap_R_AddRefEntityToScene( &notebook );
-*/
 }
 
 //=========================================================================

@@ -549,36 +549,36 @@ void Weapon_Engineer( gentity_t *ent ) {
 							} else if ( ( ent->client->sess.sessionTeam == TEAM_RED ) && ( hit->spawnflags & ALLIED_OBJECTIVE ) )         { // redundant but added for code clarity
 								te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-dynamite_planted.wav" );
 							}
-						}
 
-						if ( hit->spawnflags & AXIS_OBJECTIVE ) {
-							te->s.teamNum = TEAM_RED;
-							if ( ent->client->sess.sessionTeam == TEAM_BLUE ) { // transfer score info if this is a bomb scoring objective
-								traceEnt->accuracy = hit->accuracy;
+							if ( hit->spawnflags & AXIS_OBJECTIVE ) {
+								te->s.teamNum = TEAM_RED;
+								if ( ent->client->sess.sessionTeam == TEAM_BLUE ) { // transfer score info if this is a bomb scoring objective
+									traceEnt->accuracy = hit->accuracy;
+								}
+							} else if ( hit->spawnflags & ALLIED_OBJECTIVE ) {
+								te->s.teamNum = TEAM_BLUE;
+								if ( ent->client->sess.sessionTeam == TEAM_RED ) { // ditto other team
+									traceEnt->accuracy = hit->accuracy;
+								}
 							}
-						} else if ( hit->spawnflags & ALLIED_OBJECTIVE )     {
-							te->s.teamNum = TEAM_BLUE;
-							if ( ent->client->sess.sessionTeam == TEAM_RED ) { // ditto other team
-								traceEnt->accuracy = hit->accuracy;
-							}
-						}
-						te->r.svFlags |= SVF_BROADCAST;
+							te->r.svFlags |= SVF_BROADCAST;
 
-						if ( ( ( hit->spawnflags & AXIS_OBJECTIVE ) && ( ent->client->sess.sessionTeam == TEAM_BLUE ) ) ||
-							 ( ( hit->spawnflags & ALLIED_OBJECTIVE ) && ( ent->client->sess.sessionTeam == TEAM_RED ) ) ) {
-							if ( hit->track ) {
-								trap_SendServerCommand( -1, va( "cp \"%s\" 1", va( "Dynamite planted near %s!", hit->track ) ) );
-							} else {
-								trap_SendServerCommand( -1, va( "cp \"%s\" 1", va( "Dynamite planted near objective #%d!", hit->count ) ) );
+							if ( ( ( hit->spawnflags & AXIS_OBJECTIVE ) && ( ent->client->sess.sessionTeam == TEAM_BLUE ) ) ||
+								 ( ( hit->spawnflags & ALLIED_OBJECTIVE ) && ( ent->client->sess.sessionTeam == TEAM_RED ) ) ) {
+								if ( hit->track ) {
+									trap_SendServerCommand( -1, va( "cp \"%s\" 1", va( "Dynamite planted near %s!", hit->track ) ) );
+								} else {
+									trap_SendServerCommand( -1, va( "cp \"%s\" 1", va( "Dynamite planted near objective #%d!", hit->count ) ) );
+								}
 							}
-						}
-						i = num;
-
-						if ( ( !( hit->spawnflags & OBJECTIVE_DESTROYED ) ) &&
-							 te->s.teamNum && ( te->s.teamNum != ent->client->sess.sessionTeam ) ) {
-							AddScore( traceEnt->parent, WOLF_DYNAMITE_PLANT ); // give drop score to guy who dropped it
-							traceEnt->parent = ent; // give explode score to guy who armed it
-//	jpw pulled					hit->spawnflags |= OBJECTIVE_DESTROYED; // this is pretty kludgy but we can't test it in explode fn
+							i = num;
+	
+							if ( ( !( hit->spawnflags & OBJECTIVE_DESTROYED ) ) &&
+								 te->s.teamNum && ( te->s.teamNum != ent->client->sess.sessionTeam ) ) {
+								AddScore( traceEnt->parent, WOLF_DYNAMITE_PLANT ); // give drop score to guy who dropped it
+								traceEnt->parent = ent; // give explode score to guy who armed it
+//	jpw pulled						hit->spawnflags |= OBJECTIVE_DESTROYED; // this is pretty kludgy but we can't test it in explode fn
+							}
 						}
 // jpw
 					}

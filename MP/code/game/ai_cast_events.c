@@ -173,7 +173,7 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	}
 
 	// record the sighting (FIXME: silent weapons shouldn't do this, but the AI should react in some way)
-	if ( attacker->client ) {
+	if ( attacker && attacker != self ) {
 		AICast_UpdateVisibility( self, attacker, qtrue, qtrue );
 	}
 
@@ -316,7 +316,7 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 			// set enemy weapon
 			BG_UpdateConditionValue( self->s.number, ANIM_COND_ENEMY_WEAPON, 0, qfalse );
-			if ( attacker->client ) {
+			if ( attacker && attacker != self ) {
 				BG_UpdateConditionValue( self->s.number, ANIM_COND_ENEMY_WEAPON, inflictor->s.weapon, qtrue );
 			} else {
 				BG_UpdateConditionValue( self->s.number, ANIM_COND_ENEMY_WEAPON, 0, qfalse );

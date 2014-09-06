@@ -725,7 +725,7 @@ qboolean AICast_CheckAttack_real( cast_state_t *cs, int enemy, qboolean allowHit
 				}
 			}
 			//if the projectile does a radial damage
-			if ( cs->bs->weaponnum == WP_ROCKET_LAUNCHER || cs->bs->weaponnum == WP_PANZERFAUST ) {
+			if ( cs->bs && ( cs->bs->weaponnum == WP_ROCKET_LAUNCHER || cs->bs->weaponnum == WP_PANZERFAUST ) ) {
 				if ( Distance( trace.endpos, g_entities[enemy].s.pos.trBase ) > 120 ) {
 					continue;
 				}
@@ -1279,7 +1279,7 @@ bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 	//direction towards the enemy
 	VectorSubtract( cs->vislist[cs->bs->enemy].visible_pos, bs->origin, forward );
 	//the distance towards the enemy
-	dist = VectorNormalize( forward );
+	VectorNormalize( forward );
 	//
 	// do we have somewhere we are trying to get to?
 	if ( cs->combatGoalTime > level.time ) {

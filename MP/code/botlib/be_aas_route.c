@@ -1019,8 +1019,6 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 
 	numtraveltimes = ( size - sizeof( aas_routingcache_32_t ) ) / 3;
 
-	cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
-
 	if ( sizeof (intptr_t) == 4 ) {
 		nativecache = (aas_routingcache_t *) cache;
 	} else {
@@ -1051,6 +1049,8 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 	// copy reachabilities to native structure, free original cache
 	if ( sizeof (intptr_t) != 4 ) {
 		for ( i = 0; i < numtraveltimes; i++ ) {
+			cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
+
 			nativecache->reachabilities[i] = cache_reachabilities[i];
 		}
 

@@ -633,6 +633,10 @@ int BotAISetupClient( int client, struct bot_settings_s *settings ) {
 	}
 	bs = botstates[client];
 
+	if ( !bs ) {
+		return qfalse;
+	}
+
 	if ( bs && bs->inuse ) {
 		BotAI_Print( PRT_FATAL, "client %d already setup\n", client );
 		return qfalse;
