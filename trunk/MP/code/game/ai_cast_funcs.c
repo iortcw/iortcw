@@ -2055,8 +2055,6 @@ char *AIFunc_BattleHunt( cast_state_t *cs ) {
 					// try to go to ambush mode
 					cs->bs->enemy = -1;
 					return AIFunc_DefaultStart( cs );
-				} else {
-					moved = qtrue;
 				}
 			}
 		}
@@ -2231,7 +2229,6 @@ char *AIFunc_BattleAmbush( cast_state_t *cs ) {
 						&&  ( ( enemyDist - 1 ) > ( Distance( move.endpos, g_entities[cs->bs->enemy].s.pos.trBase ) ) ) ) ) {
 			// abort the manouver
 			VectorClear( cs->takeCoverPos );
-			dist = 0;
 		}
 		//
 		// we should slow down on approaching the destination point
@@ -2695,8 +2692,6 @@ char *AIFunc_BattleChase( cast_state_t *cs ) {
 			VectorCopy( cs->bs->origin, cs->combatGoalOrigin );
 			VectorCopy( cs->bs->origin, cs->takeCoverPos );
 			return AIFunc_BattleAmbushStart( cs );
-		} else {
-			moved = qtrue;
 		}
 	}
 	//
@@ -3187,7 +3182,6 @@ char *AIFunc_BattleTakeCover( cast_state_t *cs ) {
 						&&  ( ( enemyDist - 1 ) > ( Distance( move.endpos, g_entities[cs->bs->enemy].s.pos.trBase ) ) ) ) ) {
 			// abort the manouver
 			VectorClear( cs->takeCoverPos );
-			dist = 0;
 		}
 		//
 		// do we went to play a rolling animation into a cover position?
@@ -3206,7 +3200,6 @@ char *AIFunc_BattleTakeCover( cast_state_t *cs ) {
 		if ( !( cs->aiFlags & AIFL_MISCFLAG1 ) && !AICast_VisibleFromPos( cs->vislist[cs->bs->enemy].real_visible_pos, cs->bs->enemy, move.endpos, cs->entityNum, qfalse )
 			 && !AICast_VisibleFromPos( cs->vislist[cs->bs->enemy].real_visible_pos, cs->bs->enemy, cs->bs->origin, cs->entityNum, qfalse ) ) {
 			VectorCopy( move.endpos, cs->takeCoverPos );
-			dist = 0;
 			cs->aiFlags |= AIFL_MISCFLAG1;  // dont do this again
 		}
 		//
@@ -3567,8 +3560,6 @@ char *AIFunc_GrenadeFlush( cast_state_t *cs ) {
 				cs->bs->enemy = -1;
 				//G_Printf("aborting, movement failure\n");
 				return AIFunc_DefaultStart( cs );
-			} else {
-				moved = qtrue;
 			}
 		}
 	}
@@ -3967,7 +3958,7 @@ char *AIFunc_GrenadeKick( cast_state_t *cs ) {
 	bot_state_t *bs;
 	vec3_t destorg, vec;
 	float dist, speed;
-	int enemies[MAX_CLIENTS], numEnemies, i;
+	int enemies[MAX_CLIENTS], numEnemies = 0, i;
 	qboolean shouldAttack;
 	gentity_t *danger;
 	gentity_t *ent;
@@ -4179,7 +4170,6 @@ char *AIFunc_GrenadeKick( cast_state_t *cs ) {
 	// look for things we should attack
 	// if we are out of ammo, we shouldn't bother trying to attack
 	shouldAttack = qfalse;
-	numEnemies = 0;
 	if ( AICast_GotEnoughAmmoForWeapon( cs, cs->bs->weaponnum ) ) {
 		numEnemies = AICast_ScanForEnemies( cs, enemies );
 		if ( numEnemies == -1 ) { // query mode
@@ -4324,7 +4314,6 @@ AIFunc_Battle()
 */
 char *AIFunc_Battle( cast_state_t *cs ) {
 	bot_moveresult_t moveresult;
-	int tfl;
 	bot_state_t *bs;
 	gentity_t *ent, *enemy;
 
@@ -4464,15 +4453,6 @@ char *AIFunc_Battle( cast_state_t *cs ) {
 	}
 	//
 	// setup for the fight
-	//
-	tfl = cs->travelflags;
-	//if in lava or slime the bot should be able to get out
-	if ( BotInLava( bs ) ) {
-		tfl |= TFL_LAVA;
-	}
-	if ( BotInSlime( bs ) ) {
-		tfl |= TFL_SLIME;
-	}
 	//
 	/*
 	moveresult = AICast_CombatMove(cs, tfl);

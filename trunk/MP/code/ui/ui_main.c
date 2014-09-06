@@ -640,7 +640,7 @@ void Text_Paint( float x, float y, float scale, vec4_t color, const char *text, 
 // NOTE: this is clearly non-optimal implementation, see Item_Text_AutoWrap_Paint for one
 // if color_save != NULL, use to keep track of the current color between wraps
 char* Text_AutoWrap_Paint_Chunk( float x, float y, int width, float scale, vec4_t color, char *text, float adjust, int limit, int style, qboolean dummy, vec4_t color_save ) {
-	int len, count;
+	int len = 0, count;
 	vec4_t newColor;
 	glyphInfo_t *glyph;
 	float useScale;
@@ -757,7 +757,7 @@ char* Text_AutoWrap_Paint_Chunk( float x, float y, int width, float scale, vec4_
 			trap_R_SetColor( NULL );
 		}
 	}
-	return text + strlen( text );
+	return text + len;
 }
 
 // count the lines that we will need to have to print with the given wrap parameters
@@ -4310,7 +4310,7 @@ void WM_ActivateLimboChat( void ) {
 	menuDef_t *menu;
 	itemDef_t *itemdef;
 
-	menu = Menu_GetFocused();
+	Menu_GetFocused();
 	menu = Menus_ActivateByName( "wm_limboChat", qtrue );
 
 	if ( !menu || g_editItem ) {
@@ -5289,13 +5289,11 @@ UI_BuildServerDisplayList
 ==================
 */
 static void UI_BuildServerDisplayList( int force ) {
-	int i, count, clients, maxClients, ping, game, len, visible, friendlyFire, tourney, maxlives, punkbuster, antilag;
+	int i, count, clients, maxClients, ping, game = 0, len, visible, friendlyFire, tourney, maxlives, punkbuster, antilag;
 	char info[MAX_STRING_CHARS];
 	//qboolean startRefresh = qtrue; // TTimo: unused
 	static int numinvisible;
 	int	lanSource;
-
-	game = 0;       // NERVE - SMF - shut up compiler warning
 
 	if ( !( force || uiInfo.uiDC.realTime > uiInfo.serverStatus.nextDisplayRefresh ) ) {
 		return;

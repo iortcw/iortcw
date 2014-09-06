@@ -746,7 +746,7 @@ int BotAddToTarget( vec3_t start, vec3_t end, float maxdist, float *dist, vec3_t
 
 int BotMovementViewTarget( int movestate, bot_goal_t *goal, int travelflags, float lookahead, vec3_t target ) {
 	aas_reachability_t reach;
-	int reachnum, lastareanum;
+	int reachnum = 0, lastareanum;
 	bot_movestate_t *ms;
 	vec3_t end;
 	float dist;
@@ -755,7 +755,6 @@ int BotMovementViewTarget( int movestate, bot_goal_t *goal, int travelflags, flo
 	if ( !ms ) {
 		return qfalse;
 	}
-	reachnum = 0;
 	//if the bot has no goal or no last reachability
 	if ( !ms->lastreachnum || !goal ) {
 		return qfalse;

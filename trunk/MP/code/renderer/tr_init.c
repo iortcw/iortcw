@@ -1444,10 +1444,8 @@ void RE_Shutdown( qboolean destroyWindow ) {
 	if ( destroyWindow ) {
 		GLimp_Shutdown();
 
-		// Ridah, release the virtual memory
-		R_Hunk_End();
-		R_FreeImageBuffer();
-		ri.Tag_Free();  // wipe all render alloc'd zone memory
+		Com_Memset( &glConfig, 0, sizeof( glConfig ) );
+		Com_Memset( &glState, 0, sizeof( glState ) );
 	}
 
 	tr.registered = qfalse;

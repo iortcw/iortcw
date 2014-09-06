@@ -772,13 +772,13 @@ void AICast_StartFrame( int time ) {
 //G_Printf( "AI startframe: %i\n", time );
 
 	if ( elapsed < 0 ) {
-		elapsed = 0;
+	//	elapsed = 0;
 		lasttime = time;
 	}
 	// don't let the framerate drop below 10
-	if ( elapsed > 100 ) {
-		elapsed = 100;
-	}
+	//if ( elapsed > 100 ) {
+	//	elapsed = 100;
+	//}
 	//AICast_SightUpdate( (int)((float)SIGHT_PER_SEC * ((float)elapsed / 1000)) );
 	//
 	count = 0;
@@ -1079,7 +1079,7 @@ done:
 
 	// hack, if we are above ground, chances are it's because we only did one frame, and gravity isn't applied until
 	// after the frame, so try and drop us down some
-	if ( move->groundEntityNum == ENTITYNUM_NONE ) {
+	if ( pm.ps->groundEntityNum == ENTITYNUM_NONE ) {
 		VectorCopy( move->endpos, end );
 		end[2] -= 32;
 		trap_Trace( &tr, move->endpos, pm.mins, pm.maxs, end, pm.ps->clientNum, pm.tracemask );

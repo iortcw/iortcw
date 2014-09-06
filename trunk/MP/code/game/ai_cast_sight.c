@@ -549,15 +549,13 @@ static int lastsrc = 0, lastdest = 0;
 
 void AICast_SightUpdate( int numchecks ) {
 	int count = 0, destcount, srccount;
-	int src, dest;
+	int src = 0, dest = 0;
 	gentity_t       *srcent, *destent;
 	cast_state_t    *cs;
 	// TTimo unused
 //	static int	lastNumUpdated;
 	cast_visibility_t *vis;
 
-	src = 0;
-	dest = 0;
 	if ( numchecks < 5 ) {
 		numchecks = 5;
 	}

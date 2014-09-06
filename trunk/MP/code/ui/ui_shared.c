@@ -1226,7 +1226,7 @@ void Script_Clipboard( itemDef_t *item, char **args ) {
 
 
 
-#define NOTEBOOK_MAX_PAGES 6    // this will not be a define
+//#define NOTEBOOK_MAX_PAGES 6    // this will not be a define
 
 
 /*
@@ -1240,6 +1240,7 @@ Script_NotebookShowpage
 ==============
 */
 void Script_NotebookShowpage( itemDef_t *item, char **args ) {
+/*
 	int i, inc, curpage, newpage = 0, pages;
 
 	pages = DC->getCVarValue( "cg_notebookpages" );
@@ -1330,6 +1331,7 @@ void Script_NotebookShowpage( itemDef_t *item, char **args ) {
 		DC->setCVar( "ui_notebookCurrentPage", va( "%d", curpage ) ); // store new current page
 
 	}
+*/
 }
 
 
@@ -4638,7 +4640,7 @@ void Menu_HandleMouseMove( menuDef_t *menu, float x, float y ) {
 						}
 					}
 				}
-			} else if ( menu->items[i]->window.flags & WINDOW_MOUSEOVER ) {
+			} else if ( menu->items[i] && menu->items[i]->window.flags & WINDOW_MOUSEOVER ) {
 				Item_MouseLeave( menu->items[i] );
 				Item_SetMouseOver( menu->items[i], qfalse );
 			}
@@ -6078,6 +6080,9 @@ qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 	menuDef_t *menu = (menuDef_t*)item;
 	if ( menu->itemCount < MAX_MENUITEMS ) {
 		menu->items[menu->itemCount] = UI_Alloc( sizeof( itemDef_t ) );
+		if ( !menu->items[menu->itemCount] ) {
+			return qfalse;
+		}
 		Item_Init( menu->items[menu->itemCount] );
 		if ( !Item_Parse( handle, menu->items[menu->itemCount] ) ) {
 			return qfalse;

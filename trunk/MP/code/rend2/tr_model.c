@@ -543,8 +543,6 @@ qboolean R_MDC_EncodeXyzCompressed( const vec3_t vec, const vec3_t normal, mdcXy
 	int i;
 	unsigned char anorm;
 
-	i = sizeof( mdcXyzCompressed_t );
-
 	retval.ofsVec = 0;
 	for ( i = 0; i < 3; i++ ) {
 		if ( fabs( vec[i] ) >= MDC_MAX_DIST ) {
@@ -2172,16 +2170,16 @@ R_LerpTag
 ================
 */
 int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNameIn, int startIndex ) {
-	mdvTag_t    *start, *end;
+	mdvTag_t	*start, *end;
 	mdvTag_t	start_space, end_space;
-	int i;
-	float frontLerp, backLerp;
-	model_t     *model;
-	char tagName[MAX_QPATH];       //, *ch;
-	int retval = 0;
-	qhandle_t handle;
-	int startFrame, endFrame;
-	float frac;
+	int		i;
+	float		frontLerp, backLerp;
+	model_t		*model;
+	char		tagName[MAX_QPATH];
+	int		retval = 0;
+	qhandle_t	handle;
+	int		startFrame, endFrame;
+	float		frac;
 
 	handle = refent->hModel;
 	startFrame = refent->oldframe;
@@ -2196,8 +2194,9 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 		{
 			start = &start_space;
 			end = &end_space;
+
 			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, startIndex, &start);
-			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, startIndex, &end);
+			R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, startIndex, &end);
 		}
 		else if( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
@@ -2209,7 +2208,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 	} else if (model->type == MOD_MESH) {
 		// old MD3 style
 		retval = R_GetTag(model->mdv[0], startFrame, tagName, startIndex, &start);
-		retval = R_GetTag(model->mdv[0], endFrame, tagName, startIndex, &end);
+		R_GetTag(model->mdv[0], endFrame, tagName, startIndex, &end);
 	} else if ( model->type == MOD_MDS ) {    // use bone lerping
 
 		retval = R_GetBoneTag( tag, model->mds, startIndex, refent, tagNameIn );

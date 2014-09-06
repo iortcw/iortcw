@@ -550,6 +550,10 @@ extern void func_explosive_explode( gentity_t *self, gentity_t *inflictor, genti
 void Tramcar_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
 	gentity_t       *slave;
 
+	if ( !self ) {
+		return;
+	}
+
 	func_explosive_explode( self, self, inflictor, 0, 0 );
 
 	// link all teammembers

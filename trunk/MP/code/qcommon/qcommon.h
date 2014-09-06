@@ -828,8 +828,6 @@ int FS_RandChecksumFeed( void );
 char *FS_ShiftedStrStr( const char *string, const char *substring, int shift );
 char *FS_ShiftStr( const char *string, int shift );
 
-void FS_CopyFile( char *fromOSPath, char *toOSPath );
-
 qboolean FS_VerifyPak( const char *pak );
 
 /*

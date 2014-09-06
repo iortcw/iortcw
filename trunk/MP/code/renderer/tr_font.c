@@ -456,7 +456,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 	maxHeight = 0;
 
 	for ( i = GLYPH_START; i < GLYPH_END; i++ ) {
-		glyph = RE_ConstructGlyphInfo( out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qtrue );
+		RE_ConstructGlyphInfo( out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qtrue );
 	}
 
 	xOut = 0;

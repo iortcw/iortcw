@@ -3450,13 +3450,14 @@ void AAS_Reachability_JumpPad( void ) {
 		velocity[2] = time * gravity;
 		//get the areas the jump pad brush is in
 		areas = AAS_LinkEntityClientBBox( absmins, absmaxs, -1, PRESENCE_CROUCH );
-		//*
+		/*
 		for ( link = areas; link; link = link->next_area )
 		{
 			if ( link->areanum == 5772 ) {
 				ret = qfalse;
 			}
-		} //*/
+		}
+		*/
 		for ( link = areas; link; link = link->next_area )
 		{
 			if ( AAS_AreaJumpPad( link->areanum ) ) {
@@ -3468,7 +3469,7 @@ void AAS_Reachability_JumpPad( void ) {
 			AAS_UnlinkFromAreas( areas );
 			continue;
 		} //end if
-		  //
+		//
 		botimport.Print( PRT_MESSAGE, "found a trigger_push with velocity %f %f %f\n", velocity[0], velocity[1], velocity[2] );
 		//if there is a horizontal velocity check for a reachability without air control
 		if ( velocity[0] || velocity[1] ) {

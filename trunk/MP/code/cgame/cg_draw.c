@@ -873,7 +873,7 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 		y = CG_DrawFPS( y );
 	}
 	if ( cg_drawTimer.integer ) {
-		y = CG_DrawTimer( y );
+		CG_DrawTimer( y );
 	}
 // (SA) disabling drawattacker for the time being
 //	if ( cg_drawAttacker.integer ) {
@@ -1015,8 +1015,7 @@ CG_DrawNotify
 #define NOTIFYLOC_X 0
 
 static void CG_DrawNotify( void ) {
-	int w;
-	int i, len;
+	int i;
 	vec4_t hcolor;
 	int chatHeight;
 	float alphapercent;
@@ -1036,17 +1035,6 @@ static void CG_DrawNotify( void ) {
 		if ( cg.time - cgs.notifyMsgTimes[cgs.notifyLastPos % chatHeight] > notifytime ) {
 			cgs.notifyLastPos++;
 		}
-
-		w = 0;
-
-		for ( i = cgs.notifyLastPos; i < cgs.notifyPos; i++ ) {
-			len = CG_DrawStrlen( cgs.notifyMsgs[i % chatHeight] );
-			if ( len > w ) {
-				w = len;
-			}
-		}
-		w *= TINYCHAR_WIDTH;
-		w += TINYCHAR_WIDTH * 2;
 
 		if ( maxCharsBeforeOverlay <= 0 ) {
 			maxCharsBeforeOverlay = 80;
@@ -1926,12 +1914,6 @@ static void CG_DrawDynamiteStatus( void ) {
 
 	trap_R_SetColor( color );
 
-	timeleft *= 5;
-	timeleft -= ( timeleft % 5000 );
-	timeleft += 5000;
-	timeleft /= 1000;
-
-//	name = va("Timer: %d", timeleft);
 	name = va( "Timer: 30" );
 	w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
 
@@ -2415,7 +2397,6 @@ static void CG_DrawSpectatorMessage( void ) {
 	str2 = BindingFromName( "+attack" );
 	str = va( CG_TranslateString( "- Press %s to follow next player" ), str2 );
 	CG_DrawStringExt( x, y, str, color, qtrue, 0, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
-	y += TINYCHAR_HEIGHT;
 }
 
 /*
@@ -2837,7 +2818,6 @@ CG_DrawFlashLightning
 =================
 */
 static void CG_DrawFlashLightning( void ) {
-	float alpha;
 	centity_t *cent;
 	qhandle_t shader;
 
@@ -2855,20 +2835,13 @@ static void CG_DrawFlashLightning( void ) {
 		return;
 	}
 
-	alpha = 1.0 - (float)( cg.time - cent->pe.teslaDamagedTime ) / LIGHTNING_FLASH_TIME;
-	if ( alpha > 0 ) {
-		if ( alpha >= 1.0 ) {
-			alpha = 1.0;
-		}
-
-		if ( ( cg.time / 50 ) % ( 2 + ( cg.time % 2 ) ) == 0 ) {
-			shader = cgs.media.viewTeslaAltDamageEffectShader;
-		} else {
-			shader = cgs.media.viewTeslaDamageEffectShader;
-		}
-
-		CG_DrawPic( -10, -10, 650, 490, shader );
+	if ( ( cg.time / 50 ) % ( 2 + ( cg.time % 2 ) ) == 0 ) {
+		shader = cgs.media.viewTeslaAltDamageEffectShader;
+	} else {
+		shader = cgs.media.viewTeslaDamageEffectShader;
 	}
+
+	CG_DrawPic( -10, -10, 650, 490, shader );
 }
 
 
@@ -3003,7 +2976,6 @@ static void CG_DrawObjectiveInfo( void ) {
 		if ( x1 + w > x2 )
 			x2 = x1 + w;
 */
-		x = 320 - w / 2;
 // jpw
 		y += cg.oidPrintCharWidth * 1.5;
 
@@ -3143,7 +3115,7 @@ void CG_DrawObjectiveIcons( void ) {
 
 		for ( i = 0; i < num; i++ ) {
 			s = CG_ConfigString( CS_MULTI_OBJECTIVE1 + i );
-			buf = Info_ValueForKey( s, teamstr );
+			Info_ValueForKey( s, teamstr );
 
 			xx = x;
 
@@ -3232,7 +3204,6 @@ void CG_DrawObjectiveIcons( void ) {
 	if ( cgs.clientinfo[cg.snap->ps.clientNum].powerups & ( 1 << PW_REDFLAG ) ||
 		 cgs.clientinfo[cg.snap->ps.clientNum].powerups & ( 1 << PW_BLUEFLAG ) ) {
 		CG_DrawPic( -7, y, 48, 48, trap_R_RegisterShader( "models/multiplayer/treasure/treasure" ) );
-		y += 50;
 	}
 }
 // -NERVE - SMF

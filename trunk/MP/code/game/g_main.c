@@ -697,8 +697,6 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 						} else {
 							hintDist = 0;
 							hintType = ps->serverCursorHint     = HINT_FORCENONE;
-							hintVal     = ps->serverCursorHintVal   = 0;
-							return;
 						}
 // jpw
 					}

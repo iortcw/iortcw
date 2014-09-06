@@ -1049,7 +1049,7 @@ BotRoamGoal
 void BotRoamGoal( bot_state_t *bs, vec3_t goal ) {
 	float len, r1, r2, sign, n;
 	int pc;
-	vec3_t dir, bestorg, belowbestorg;
+	vec3_t dir, bestorg = {0}, belowbestorg;
 	bsp_trace_t trace;
 
 	for ( n = 0; n < 10; n++ ) {
