@@ -200,7 +200,6 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 		tempx += INFO_SCORE_WIDTH;
 
 		CG_FillRect( tempx, y + 1, INFO_LATENCY_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-		tempx += INFO_LATENCY_WIDTH;
 	}
 
 	tempx = x;
@@ -213,7 +212,6 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 	tempx += INFO_SCORE_WIDTH;
 
 	CG_DrawSmallString( tempx, y, va( "%4i", score->ping ), fade );
-	tempx += INFO_LATENCY_WIDTH;
 }
 
 /*
@@ -266,7 +264,6 @@ static int WM_TeamScoreboard( int x, int y, team_t team, float fade ) {
 	tempx += INFO_SCORE_WIDTH;
 
 	CG_FillRect( tempx, y, INFO_LATENCY_WIDTH - INFO_BORDER, INFO_TEAM_HEIGHT, hcolor );
-	tempx += INFO_LATENCY_WIDTH;
 
 	// draw player info
 	VectorSet( hcolor, 1, 1, 1 );
@@ -423,7 +420,6 @@ int WM_ScoreboardOverlay( int x, int y, float fade ) {
 	x += INFO_SCORE_WIDTH;
 
 	CG_DrawSmallString( x, y, "Latency", fade );
-	x += INFO_LATENCY_WIDTH;
 
 	y += 20;
 
@@ -468,7 +464,6 @@ qboolean CG_DrawScoreboard( void ) {
 	if ( cg.showScores || cg.predictedPlayerState.pm_type == PM_DEAD ||
 		 cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 		fade = 1.0;
-		fadeColor = colorWhite;
 	} else {
 		fadeColor = CG_FadeColor( cg.scoreFadeTime, FADE_TIME );
 
@@ -553,7 +548,7 @@ qboolean CG_DrawScoreboard( void ) {
 			y = WM_TeamScoreboard( x, y, TEAM_BLUE, fade );
 			y = WM_TeamScoreboard( x, y, TEAM_RED, fade );
 		}
-		y = WM_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
+		WM_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
 	}
 	// -NERVE - SMF
 	else if ( cgs.gametype >= GT_TEAM ) {
@@ -567,14 +562,14 @@ qboolean CG_DrawScoreboard( void ) {
 			y = CG_TeamScoreboard( x, y, TEAM_BLUE, fade );
 			y = CG_TeamScoreboard( x, y, TEAM_RED, fade );
 		}
-		y = CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
+		CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
 
 	} else if ( cgs.gametype != GT_SINGLE_PLAYER ) {   //----(SA) modified
 		//
 		// free for all scoreboard
 		//
 		y = CG_TeamScoreboard( x, y, TEAM_FREE, fade );
-		y = CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
+		CG_TeamScoreboard( x, y, TEAM_SPECTATOR, fade );
 	}
 
 	// load any models that have been deferred

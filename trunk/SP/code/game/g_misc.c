@@ -1629,7 +1629,7 @@ Fire_Lead
 //----(SA)	added 'activator' so the bits that used to expect 'ent' to be the gun still work
 void Fire_Lead( gentity_t *ent, gentity_t *activator, float spread, int damage, vec3_t muzzle, vec3_t angles ) {
 	trace_t tr;
-	vec3_t end, lead_muzzle, mg42_muzzle;
+	vec3_t end, lead_muzzle, mg42_muzzle = {0};
 	float r;
 	float u;
 	gentity_t       *tent;
@@ -1953,6 +1953,8 @@ void mg42_track( gentity_t *self, gentity_t *other ) {
 
 	if ( other->active ) {
 		if ( ( !( level.time % 100 ) ) && ( other->client ) && ( other->client->buttons & BUTTON_ATTACK ) ) {
+			other->client->ps.viewlocked = 1;
+
 			if ( self->s.frame && !is_flak ) {
 				// G_Printf ("gun: destroyed = %d\n", self->s.frame);
 				G_AddEvent( self, EV_GENERAL_SOUND, snd_noammo );
@@ -2026,8 +2028,6 @@ void mg42_track( gentity_t *self, gentity_t *other ) {
 					other->client->ps.viewlocked = 2; // this enable screen jitter when firing
 				}
 			}
-		} else {
-			other->client->ps.viewlocked = 1;
 		}
 
 		// move to the position over the next frame

@@ -633,6 +633,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			token = COM_ParseExt( &text_p, qfalse );
 			if ( !token || !token[0] ) {
 				BG_AnimParseError( "end of file without ENDANIMS" );
+				break;
 			}
 		} else {
 			// just set it to the equivalent animStrings[]
@@ -658,18 +659,21 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 			BG_AnimParseError( "end of file without ENDANIMS" );
+			break;
 		}
 		animations[i].numFrames = atoi( token );
 
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 			BG_AnimParseError( "end of file without ENDANIMS: line %i", COM_GetCurrentParseLine() + 1 );
+			break;
 		}
 		animations[i].loopFrames = atoi( token );
 
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 			BG_AnimParseError( "end of file without ENDANIMS: line %i", COM_GetCurrentParseLine() + 1 );
+			break;
 		}
 		fps = atof( token );
 		if ( fps == 0 ) {
@@ -682,6 +686,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 			BG_AnimParseError( "end of file without ENDANIMS" );
+			break;
 		}
 		animations[i].moveSpeed = atoi( token );
 
@@ -771,7 +776,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 				headAnims[i].numFrames = atoi( token );
 
 				// skip the movespeed
-				token = COM_ParseExt( &text_p, qfalse );
+				COM_ParseExt( &text_p, qfalse );
 			}
 
 			animModelInfo->numHeadAnims = i;
@@ -937,6 +942,7 @@ qboolean BG_ParseConditions( char **text_pp, animScriptItem_t *scriptItem ) {
 				token = COM_ParseExt( text_pp, qfalse );
 				if ( !token || !token[0] ) {
 					BG_AnimParseError( "BG_AnimParseAnimScript: expected condition value, found end of line" );  // RF modification
+					break;
 				}
 				// check for a comma (condition divider)
 				if ( token[strlen( token ) - 1] == ',' ) {
@@ -1025,6 +1031,7 @@ void BG_ParseCommands( char **input, animScriptItem_t *scriptItem, animModelInfo
 					token = COM_ParseExt( input, qfalse );
 					if ( !token || !token[0] ) {
 						BG_AnimParseError( "BG_ParseCommands: expected duration value" );
+						break;
 					}
 					command->animDuration[partIndex] = atoi( token );
 				} else {    // unget the token
@@ -1054,6 +1061,7 @@ void BG_ParseCommands( char **input, animScriptItem_t *scriptItem, animModelInfo
 				token = COM_ParseExt( input, qfalse );
 				if ( !token || !token[0] ) {
 					BG_AnimParseError( "BG_ParseCommands: expected sound" );
+					break;
 				}
 				// NOTE: only sound script are supported at this stage
 				if ( strstr( token, ".wav" ) ) {
@@ -1066,6 +1074,7 @@ void BG_ParseCommands( char **input, animScriptItem_t *scriptItem, animModelInfo
 				token = COM_ParseExt( input, qfalse );
 				if ( !token || !token[0] ) {
 					BG_AnimParseError( "BG_ParseCommands: expected showpart number" );
+					break;
 				}
 				if ( atoi( token ) > 7 ) {
 					BG_AnimParseError( "BG_ParseCommands: showpart number '%d' is too big! (max 8)", atoi( token ) ) ;
@@ -1076,6 +1085,7 @@ void BG_ParseCommands( char **input, animScriptItem_t *scriptItem, animModelInfo
 				token = COM_ParseExt( input, qfalse );
 				if ( !token || !token[0] ) {
 					BG_AnimParseError( "BG_ParseCommands: expected hidepart number" );
+					break;
 				}
 				if ( atoi( token ) > 7 ) {
 					BG_AnimParseError( "BG_ParseCommands: hidepart number '%d' is too big! (max 8)", atoi( token ) ) ;

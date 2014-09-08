@@ -571,8 +571,6 @@ qboolean R_MDC_EncodeXyzCompressed( const vec3_t vec, const vec3_t normal, mdcXy
 	int i;
 	unsigned char anorm;
 
-	i = sizeof( mdcXyzCompressed_t );
-
 	retval.ofsVec = 0;
 	for ( i = 0; i < 3; i++ ) {
 		if ( fabs( vec[i] ) >= MDC_MAX_DIST ) {
@@ -880,7 +878,9 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *mod_
 	md3St_t             *st;
 	md3XyzNormal_t      *xyz;
 	mdcXyzCompressed_t  *xyzComp;
+#ifdef Q3_BIG_ENDIAN
 	mdcTag_t            *tag;
+#endif
 	short               *ps;
 	int version;
 	int size;
@@ -941,16 +941,16 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *mod_
 		}
 	}
 
+#ifdef Q3_BIG_ENDIAN
 	// swap all the tags
 	tag = ( mdcTag_t * )( (byte *)mod->mdc[lod] + mod->mdc[lod]->ofsTags );
-	if ( LittleLong( 1 ) != 1 ) {
-		for ( i = 0 ; i < mod->mdc[lod]->numTags * mod->mdc[lod]->numFrames ; i++, tag++ ) {
-			for ( j = 0 ; j < 3 ; j++ ) {
-				tag->xyz[j] = LittleShort( tag->xyz[j] );
-				tag->angles[j] = LittleShort( tag->angles[j] );
-			}
+	for ( i = 0 ; i < mod->mdc[lod]->numTags * mod->mdc[lod]->numFrames ; i++, tag++ ) {
+		for ( j = 0 ; j < 3 ; j++ ) {
+			tag->xyz[j] = LittleShort( tag->xyz[j] );
+			tag->angles[j] = LittleShort( tag->angles[j] );
 		}
 	}
+#endif
 
 	// swap all the surfaces
 	surf = ( mdcSurface_t * )( (byte *)mod->mdc[lod] + mod->mdc[lod]->ofsSurfaces );
@@ -2091,7 +2091,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 			start = &start_space;
 			end = &end_space;
 			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, startFrame, tagName, startIndex, &start);
-			retval = R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, startIndex, &end);
+			R_GetAnimTag((mdrHeader_t *) model->modelData, endFrame, tagName, startIndex, &end);
 		}
 		else if ( model->type == MOD_IQM ) {
 			return R_IQMLerpTag( tag, model->modelData,
@@ -2103,7 +2103,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 	} else if ( model->type == MOD_MESH ) {
 		// old MD3 style
 		retval = R_GetTag( (byte *)model->md3[0], startFrame, tagName, startIndex, &start );
-		retval = R_GetTag( (byte *)model->md3[0], endFrame, tagName, startIndex, &end );
+		R_GetTag( (byte *)model->md3[0], endFrame, tagName, startIndex, &end );
 	} else if ( model->type == MOD_MDS ) {    // use bone lerping
 
 		retval = R_GetBoneTag( tag, model->mds, startIndex, refent, tagNameIn );
@@ -2119,7 +2119,7 @@ int R_LerpTag( orientation_t *tag, const refEntity_t *refent, const char *tagNam
 		mdcTag_t    *cstart, *cend;
 
 		retval = R_GetMDCTag( (byte *)model->mdc[0], startFrame, tagName, startIndex, &cstart );
-		retval = R_GetMDCTag( (byte *)model->mdc[0], endFrame, tagName, startIndex, &cend );
+		R_GetMDCTag( (byte *)model->mdc[0], endFrame, tagName, startIndex, &cend );
 
 		// uncompress the MDC tags into MD3 style tags
 		if ( cstart && cend ) {

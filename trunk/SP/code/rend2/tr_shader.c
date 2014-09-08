@@ -3864,7 +3864,7 @@ a single large text block that can be scanned for shader names
 #define MAX_SHADER_FILES    4096
 static void ScanAndLoadShaderFiles( void ) {
 	char **shaderFiles;
-	char *buffers[MAX_SHADER_FILES];
+	char *buffers[MAX_SHADER_FILES] = {NULL};
 	char *p;
 	int numShaderFiles;
 	int i;

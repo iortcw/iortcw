@@ -1027,7 +1027,7 @@ identical, under the assumption that the in-order delta code will catch it.
 */
 void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entityState_s *to,
 						   qboolean force ) {
-	int i, c;
+	int i;
 	int numFields;
 	netField_t  *field;
 	int trunc;
@@ -1051,8 +1051,6 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 	// if this assert fails, someone added a field to the entityState_t
 	// struct without updating the message fields
 	assert( numFields + 1 == sizeof( *from ) / 4 );
-
-	c = msg->cursize;
 
 	// a NULL to is a delta remove message
 	if ( to == NULL ) {
@@ -1188,7 +1186,6 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 			}
 		}
 	}
-	c = msg->cursize - c;
 
 	if ( print ) {
 		if ( msg->bit == 0 ) {

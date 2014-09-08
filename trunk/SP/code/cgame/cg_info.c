@@ -361,7 +361,7 @@ void CG_DrawExitStats( void ) {
 		CG_Text_Paint( statsItems[i].labelX, y, 2, 0.3, color2, va( "%s:", CG_translateString( statsItems[i].label ) ), 0, 0, statsItems[i].labelFlags );
 
 	}
-	token = COM_Parse( &mstats );
+	COM_Parse( &mstats );
 
 // end (parse it)
 }
@@ -410,7 +410,7 @@ void CG_DrawInformation( void ) {
 	}
 
 	if ( !levelshot ) {
-		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
+		trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
 	}
 
 	trap_R_SetColor( NULL );

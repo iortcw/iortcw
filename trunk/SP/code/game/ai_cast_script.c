@@ -418,7 +418,6 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 		return;
 	}
 
-	buildScript = trap_Cvar_VariableIntegerValue( "com_buildScript" );
 	buildScript = qtrue;
 
 	pScript = level.scriptAI;

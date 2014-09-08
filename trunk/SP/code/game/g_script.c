@@ -308,7 +308,6 @@ void G_Script_ScriptParse( gentity_t *ent ) {
 		return;
 	}
 
-	buildScript = trap_Cvar_VariableIntegerValue( "com_buildScript" );
 	buildScript = qtrue;
 
 	pScript = level.scriptEntity;

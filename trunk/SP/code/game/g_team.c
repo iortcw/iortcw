@@ -636,7 +636,7 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team ) {
 	gentity_t   *spots[MAX_TEAM_SPAWN_POINTS];
 	char        *classname;
 	qboolean initialSpawn = qfalse;     // DHM - Nerve
-	int i = 0,j;       // JPW NERVE
+	int i = 0,j = 0;       // JPW NERVE
 	int closest;         // JPW NERVE
 	float shortest,tmp;       // JPW NERVE
 	vec3_t target;      // JPW NERVE
@@ -695,7 +695,6 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team ) {
 	} else {
 		// FIXME: temporarily select target as farthest point from first team spawnpoint
 		// we'll want to replace this with the target coords pulled from the UI target selection
-		j = 0;
 		for ( j = 0; j < count; j++ ) {
 			if ( spots[j]->spawnflags & 1 ) { // only use spawnpoint if it's a permanent one
 				i = FindFarthestObjectiveIndex( spots[j]->s.origin );

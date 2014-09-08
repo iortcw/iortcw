@@ -1103,7 +1103,7 @@ qboolean IsBinaryMoverBlocked( gentity_t *ent, gentity_t *other, gentity_t *acti
 		if ( !activator ) {
 			if ( Q_stricmp( other->classname, "target_relay" ) == 0 ) {
 				is_relay = qtrue;
-			} else if ( !activator->client )      {
+			} else {
 				return qfalse;
 			}
 		}

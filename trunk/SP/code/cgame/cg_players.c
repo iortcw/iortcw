@@ -1767,6 +1767,10 @@ void CG_RunLerpFrame( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, float
 
 		// get the next frame based on the animation
 		anim = lf->animation;
+
+		if ( !anim )
+			return;
+
 		if ( !anim->frameLerp ) {
 			return;     // shouldn't happen
 		}
@@ -3485,9 +3489,7 @@ void CG_AddZombieSpiritEffect( centity_t *cent ) {
 		fadeRatio = 1.0;
 	}
 
-	if ( cent->pe.cueZombieSpirit ) {
-		alpha = fadeRatio;
-	} else {
+	if ( !cent->pe.cueZombieSpirit ) {
 		alpha = 1.0 - ( (float)( cg.time - cent->pe.zombieSpiritEndTime ) / (float)fadeOutTime );
 		fadeRatio = alpha;
 		if ( alpha < 0.0 ) {
@@ -3617,9 +3619,7 @@ void CG_AddZombieFlameEffect( centity_t *cent ) {
 		fadeRatio = 1.0;
 	}
 
-	if ( cent->pe.cueZombieSpirit ) {
-		alpha = fadeRatio;
-	} else {
+	if ( !cent->pe.cueZombieSpirit ) {
 		alpha = ( (float)( cent->pe.zombieSpiritEndTime - cg.time ) / (float)fadeOutTime );
 		fadeRatio = alpha;
 		if ( alpha < 0.0 ) {
@@ -3860,7 +3860,6 @@ void CG_AddLoperGroundEffect( centity_t *cent ) {
 		}
 	} else {
 		cent->pe.loperGroundValidTime = cg.time;
-		duration = LOPER_GROUNDCHARGE_DURATION;
 		alpha = 1.0;
 		lightAlpha = 1.0;
 	}
@@ -4223,9 +4222,7 @@ void CG_AddHelgaSpiritEffect( centity_t *cent ) {
 		fadeRatio = 1.0;
 	}
 
-	if ( cent->pe.cueZombieSpirit ) {
-		alpha = fadeRatio;
-	} else {
+	if ( !cent->pe.cueZombieSpirit ) {
 		alpha = 1.0 - ( (float)( cg.time - cent->pe.zombieSpiritEndTime ) / (float)fadeOutTime );
 		fadeRatio = alpha;
 		if ( alpha < 0.0 ) {
@@ -5046,7 +5043,7 @@ void CG_Player( centity_t *cent ) {
 	cent->pe.headRefEnt = head;
 
 	// add the shadow
-	shadow = CG_PlayerShadow( cent, &shadowPlane );
+	CG_PlayerShadow( cent, &shadowPlane );
 
 	// set the shadowplane for accessories
 	acc.shadowPlane = shadowPlane;

@@ -267,10 +267,13 @@ localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 	VectorCopy( newOrigin, ex->refEntity.oldorigin );
 
 	// Ridah, move away from the wall as the sprite expands
-	ex->pos.trType = TR_LINEAR;
-	ex->pos.trTime = cg.time;
-	VectorCopy( newOrigin, ex->pos.trBase );
-	VectorScale( dir, 48, ex->pos.trDelta );
+	if ( dir )
+	{
+		ex->pos.trType = TR_LINEAR;
+		ex->pos.trTime = cg.time;
+		VectorCopy( newOrigin, ex->pos.trBase );
+		VectorScale( dir, 48, ex->pos.trDelta );
+	}
 	// done.
 
 	ex->color[0] = ex->color[1] = ex->color[2] = 1.0;
@@ -426,6 +429,10 @@ void CG_LaunchGib( centity_t *cent, vec3_t origin, vec3_t angles, vec3_t velocit
 	localEntity_t   *le;
 	refEntity_t     *re;
 	int i;
+
+	if ( !cent ) {
+		return;
+	}
 
 	le = CG_AllocLocalEntity();
 	re = &le->refEntity;
@@ -668,7 +675,7 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 	vec3_t junctionOrigin[MAXJUNCTIONS];
 	int junction;
 	int j;
-	float size;
+	float size = 0.0;
 	vec3_t axis[3], angles;
 
 	char *JunctiongibTags[] = {
@@ -833,7 +840,7 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 							VectorCopy( junctionOrigin[i], origin );
 
 							if ( ( cent->currentState.aiChar == AICHAR_HELGA ) || ( cent->currentState.aiChar == AICHAR_HEINRICH ) ) {
-								size *= 3.0;
+								//size *= 3.0;
 								velocity[0] = crandom() * GIB_VELOCITY * 2.0;
 								velocity[1] = crandom() * GIB_VELOCITY * 2.0;
 								velocity[2] = GIB_JUMP + random() * GIB_VELOCITY;
@@ -1371,6 +1378,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	// first trace to see if anything is hit
 	if ( flags & SL_NOTRACE ) {
 		tr.fraction = 1.0;  // force no hit
+		VectorCopy(traceEnd, tr.endpos);
 	} else {
 		if ( flags & SL_TRACEWORLDONLY ) {
 			CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, CONTENTS_SOLID );
@@ -1604,7 +1612,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	if ( !( flags & SL_NODLIGHT ) ) {
 		vec3_t dlightLoc;
 //		VectorMA(tr.endpos, -60, lightDir, dlightLoc);	// back away from the hit
-		VectorMA( tr.endpos, 0, lightDir, dlightLoc );    // back away from the hit
+		VectorCopy( tr.endpos, dlightLoc );    // back away from the hit
 //		trap_R_AddLightToScene(dlightLoc, 200, colorNorm[0], colorNorm[1], colorNorm[2], 0);	// ,REF_JUNIOR_DLIGHT);
 //		trap_R_AddLightToScene(dlightLoc, radius*2, colorNorm[0], colorNorm[1], colorNorm[2], 0);	// ,REF_JUNIOR_DLIGHT);
 		trap_R_AddLightToScene( dlightLoc, radius * 2, 0.3, 0.3, 0.3, 0 );  // ,REF_JUNIOR_DLIGHT);
@@ -1673,12 +1681,6 @@ void CG_RumbleEfx( float pitch, float yaw ) {
 	float yawRandom;
 	vec3_t recoil;
 
-	//
-	pitchRecoilAdd = 0;
-	pitchAdd = 0;
-	yawRandom = 0;
-	//
-
 	if ( pitch < 1 ) {
 		pitch = 1;
 	}
@@ -1702,6 +1704,4 @@ void CG_RumbleEfx( float pitch, float yaw ) {
 	// set the recoil
 	cg.recoilPitch -= pitchRecoilAdd;
 }
-
-
 

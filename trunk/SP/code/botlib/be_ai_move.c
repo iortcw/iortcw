@@ -1211,6 +1211,9 @@ int Intersection( vec2_t p1, vec2_t p2, vec2_t p3, vec2_t p4, vec2_t out ) {
 // Changes Globals:		-
 //===========================================================================
 void BotCheckBlocked( bot_movestate_t *ms, vec3_t dir, int checkbottom, bot_moveresult_t *result ) {
+	// RF, not required for Wolf AI
+	return;
+#if 0
 	vec3_t mins, maxs, end, up = {0, 0, 1};
 	bsp_trace_t trace;
 
@@ -1249,6 +1252,7 @@ void BotCheckBlocked( bot_movestate_t *ms, vec3_t dir, int checkbottom, bot_move
 #endif //DEBUG
 		} //end if
 	} //end else
+#endif
 } //end of the function BotCheckBlocked
 //===========================================================================
 //

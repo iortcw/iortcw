@@ -1000,9 +1000,6 @@ void CG_AddClientCritter( localEntity_t *le ) {
 		// calculate new position
 		BG_EvaluateTrajectory( &le->pos, time, newOrigin );
 
-		VectorSubtract( enemyPos, le->refEntity.origin, v );
-		enemyDist = VectorNormalize( v );
-
 		// trace a line from previous position to new position
 		CG_Trace( &trace, le->refEntity.origin, NULL, NULL, newOrigin, le->ownerNum, MASK_SHOT );
 
@@ -1071,7 +1068,6 @@ void CG_AddClientCritter( localEntity_t *le ) {
 		oldSpeed = VectorLength( le->pos.trDelta );
 
 		// track the enemy
-		backup = *le;
 		VectorSubtract( enemyPos, le->refEntity.origin, v );
 		enemyDist = VectorNormalize( v );
 

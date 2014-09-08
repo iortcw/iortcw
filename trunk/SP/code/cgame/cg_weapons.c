@@ -422,7 +422,6 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	for ( ; t <= ent->trailTime ; t += step ) {
 
 		BG_EvaluateTrajectory( &es->pos, t, lastPos );
-		rnd = random();
 
 		//VectorCopy (ent->lerpOrigin, lastPos);
 
@@ -1992,14 +1991,11 @@ static float CG_VenomSpinAngle( centity_t *cent ) {
 	float speed;
 	qboolean firing;
 
-	delta = cg.time - cent->pe.barrelTime;
-
 	firing = (qboolean)( cent->currentState.eFlags & EF_FIRING );
 
 	if ( cg.snap->ps.weaponstate != WEAPON_FIRING ) { // (SA) this seems better
 		firing = qfalse;
 	}
-
 
 	delta = cg.time - cent->pe.barrelTime;
 	if ( cent->pe.barrelSpinning ) {
@@ -5067,7 +5063,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 	// Ridah
 	int lightOverdraw;
 	vec3_t sprOrg;
-	vec3_t sprVel;
+	vec3_t sprVel = { 0 };
 	int i,j;
 
 //----(SA)	added
@@ -5506,7 +5502,6 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			}
 
 			// NOTE: these must all have the same duration, so that we are less likely to use a wider range of images per scene
-			r = 2 + rand() % 3;
 			for ( i = 0; i < 4; i++ ) {
 				if ( weapon == VERYBIGEXPLOSION ) {
 					for ( j = 0; j < 3; j++ ) sprOrg[j] = origin[j] + 32 * dir[j] + 32 * crandom();
@@ -5529,7 +5524,6 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			CG_ParticleExplosion( "explode1", sprOrg, sprVel, 1600, 20, 200 + random() * 400 );
 
 			// NOTE: these must all have the same duration, so that we are less likely to use a wider range of images per scene
-			r = 2 + rand() % 3;
 			for ( i = 0; i < 4; i++ ) {
 				for ( j = 0; j < 3; j++ ) sprOrg[j] = origin[j] + 160 * crandom();
 				CG_ParticleExplosion( "explode1", sprOrg, sprVel, 1600, 40, 260 + rand() % 120 );
@@ -5629,12 +5623,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	vec3_t sprVel;
 //	int				i,j;
 
-	mark = 0;
-	radius = 32;
-	sfx = 0;
 	mod = 0;
-	shader = 0;
-	light = 0;
 	lightColor[0] = 1;
 	lightColor[1] = 1;
 	lightColor[2] = 0;
@@ -5642,9 +5631,6 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	lightOverdraw = 0;
 
 	// set defaults
-	isSprite = qfalse;
-	duration = 600;
-
 	shader = cgs.media.rocketExplosionShader;       // copied from RL
 	sfx = cgs.media.sfx_rockexp;
 	mark = cgs.media.burnMarkShader;

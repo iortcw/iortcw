@@ -1370,7 +1370,7 @@ bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 	//direction towards the enemy
 	VectorSubtract( cs->vislist[cs->enemyNum].visible_pos, bs->origin, forward );
 	//the distance towards the enemy
-	dist = VectorNormalize( forward );
+	VectorNormalize( forward );
 	//VectorNegate( forward, backward );
 	//
 	// do we have somewhere we are trying to get to?

@@ -457,15 +457,10 @@ void CG_Concussive( centity_t *cent ) {
 	if ( !cg.renderingThirdPerson && cent->currentState.density == cg.snap->ps.clientNum ) {
 		//
 		pitchRecoilAdd = 0;
-		pitchAdd = 0;
-		yawRandom = 0;
 		//
 
 		VectorSubtract( cg.snap->ps.origin, cent->currentState.origin, vec );
 		length = VectorLength( vec );
-
-		// pitchAdd = 12+rand()%3;
-		// yawRandom = 6;
 
 		if ( length > 1024 ) {
 			return;
@@ -1242,12 +1237,6 @@ void CG_DrawSkyBoxPortal( void ) {
 		if ( !token || !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
-		fov_x = atoi( token );
-
-		if ( !fov_x ) {
-			fov_x = 90;
-		}
-
 
 		// setup fog the first time, ignore this part of the configstring after that
 		token = COM_ParseExt( &cstr, qfalse );

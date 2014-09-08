@@ -1161,7 +1161,7 @@ void CL_InitUI( void ) {
 #ifdef WOLF_SP_DEMO
 	uivm = VM_Create( "ui", CL_UISystemCalls, VMI_NATIVE );
 #else
-	uivm = VM_Create( "ui", CL_UISystemCalls, Cvar_VariableValue( "vm_ui" ) );
+	uivm = VM_Create( "ui", CL_UISystemCalls, interpret );
 #endif
 
 	if ( !uivm ) {

@@ -488,7 +488,7 @@ void target_relay_use( gentity_t *self, gentity_t *other, gentity_t *activator )
 				}
 			}
 
-			if ( self->spawnflags & 16 ) { // (SA) take key
+			if ( item && ( self->spawnflags & 16 ) ) { // (SA) take key
 				activator->client->ps.stats[STAT_KEYS] &= ~( 1 << item->giTag );
 				// (SA) TODO: "took inventory item" sound
 			}

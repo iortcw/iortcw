@@ -4320,7 +4320,7 @@ void WM_ActivateLimboChat( void ) {
 	menuDef_t *menu;
 	itemDef_t *itemdef;
 
-	menu = Menu_GetFocused();
+	Menu_GetFocused();
 	menu = Menus_ActivateByName( "wm_limboChat" );
 
 	if ( !menu || g_editItem ) {
