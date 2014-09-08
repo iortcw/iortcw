@@ -774,7 +774,7 @@ ReadEntity
 void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 	saveField_t *field;
 	ignoreField_t *ifield;
-	gentity_t temp, backup, backup2;
+	gentity_t temp = {{0}}, backup, backup2;
 	vmCvar_t cvar;
 	int decodedSize;
 

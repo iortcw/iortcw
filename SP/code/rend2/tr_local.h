@@ -2353,7 +2353,6 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], 
 void RB_InstantQuad( vec4_t quadVerts[4] );
 //void RB_InstantQuad2(vec4_t quadVerts[4], vec2_t texCoords[4], vec4_t color, shaderProgram_t *sp, vec2_t invTexRes);
 void RB_InstantQuad2(vec4_t quadVerts[4], vec2_t texCoords[4]);
-void RB_AddQuadStampFadingCornersExt( vec3_t origin, vec3_t left, vec3_t up, byte *color, float s1, float t1, float s2, float t2 );
 
 void RB_ShowImages( void );
 
@@ -2870,6 +2869,5 @@ extern int drawskyboxportal;
 // Ridah, virtual memory
 void *R_Hunk_Begin( void );
 void R_Hunk_End( void );
-void R_FreeImageBuffer( void );
 
 #endif //TR_LOCAL_H (THIS MUST BE LAST!!)

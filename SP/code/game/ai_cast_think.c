@@ -1000,13 +1000,13 @@ void AICast_StartServerFrame( int time ) {
 	AICast_AgePlayTime( 0 );
 
 	if ( elapsed < 0 ) {
-		elapsed = 0;
+	//	elapsed = 0;
 		lasttime = time;
 	}
 	// don't let the framerate drop below 10
-	if ( elapsed > 100 ) {
-		elapsed = 100;
-	}
+	//if ( elapsed > 100 ) {
+	//	elapsed = 100;
+	//}
 	//
 	// process player's current script if it exists
 	AICast_ScriptRun( AICast_GetCastState( 0 ), qfalse );
@@ -1205,7 +1205,7 @@ done:
 
 	// hack, if we are above ground, chances are it's because we only did one frame, and gravity isn't applied until
 	// after the frame, so try and drop us down some
-	if ( move->groundEntityNum == ENTITYNUM_NONE ) {
+	if ( pm.ps->groundEntityNum == ENTITYNUM_NONE ) {
 		VectorCopy( move->endpos, end );
 		end[2] -= 32;
 		trap_Trace( &tr, move->endpos, pm.mins, pm.maxs, end, pm.ps->clientNum, pm.tracemask );

@@ -698,7 +698,7 @@ char *AIFunc_Heinrich_Earthquake( cast_state_t *cs ) {
 	ecs = AICast_GetCastState( cs->enemyNum );
 
 	VectorMA( enemy->r.currentOrigin, HEINRICH_STOMP_DELAY, enemy->client->ps.velocity, enemyVec );
-	enemyDist = VectorDistance( ent->r.currentOrigin, enemyVec );
+	VectorDistance( ent->r.currentOrigin, enemyVec );
 
 	if ( ent->client->ps.torsoTimer < 500 ) {
 		int rnd;

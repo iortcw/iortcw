@@ -571,7 +571,7 @@ RespawnItem
 ===============
 */
 void RespawnItem( gentity_t *ent ) {
-	if (!ent) {
+	if ( !ent ) {
 		return;
 	}
 
@@ -591,8 +591,12 @@ void RespawnItem( gentity_t *ent ) {
 
 		choice = rand() % count;
 
-		for ( count = 0, ent = master; count < choice; ent = ent->teamchain, count++ )
+		for ( count = 0, ent = master; ent && count < choice; ent = ent->teamchain, count++ )
 			;
+	}
+
+	if ( !ent ) {
+		return;
 	}
 
 	ent->r.contents = CONTENTS_TRIGGER;

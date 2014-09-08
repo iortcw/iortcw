@@ -590,11 +590,13 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	fclose( f );
 
 	if ( FS_CreatePath( toOSPath ) ) {
+		free( buf );
 		return;
 	}
 
 	f = Sys_FOpen( toOSPath, "wb" );
 	if ( !f ) {
+		free( buf );
 		return;
 	}
 	if ( fwrite( buf, 1, len, f ) != len ) {
@@ -637,11 +639,13 @@ void FS_CopyFileOS( char *from, char *to ) {
 	fclose( f );
 
 	if ( FS_CreatePath( toOSPath ) ) {
+		free( buf );
 		return;
 	}
 
 	f = Sys_FOpen( toOSPath, "wb" );
 	if ( !f ) {
+		free( buf );
 		return;
 	}
 	if ( fwrite( buf, 1, len, f ) != len ) {

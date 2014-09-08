@@ -566,7 +566,7 @@ qboolean AICast_ScriptAction_Wait( cast_state_t *cs, char *params ) {
 				}
 			} else
 			// if we are reloading, look for somewhere to hide
-			if ( cs->castScriptStatus.scriptWaitHideTime > level.time || cs->bs->cur_ps.weaponTime > 500 ) {
+			if ( cs->castScriptStatus.scriptWaitHideTime > level.time || ( cs->bs && cs->bs->cur_ps.weaponTime > 500 ) ) {
 				if ( cs->castScriptStatus.scriptWaitHideTime < level.time ) {
 					// look for a hide pos within the wait range
 

@@ -66,6 +66,11 @@ qboolean loadCamera( int camNum, const char *name ) {
 
 qboolean getCameraInfo( int camNum, int time, float *origin, float *angles, float *fov ) {
 	idVec3 dir, org;
+
+	dir[0] = 0;
+	dir[1] = 0;
+	dir[2] = 0;
+
 	if ( camNum < 0 || camNum >= MAX_CAMERAS ) {
 		return qfalse;
 	}
@@ -463,7 +468,7 @@ void idSplineList::parse( const char *( *text )  ) {
 			} else if ( Q_stricmp( key.c_str(), "name" ) == 0 ) {
 				name = token;
 			}
-			token = Com_Parse( text );
+			Com_Parse( text );
 
 		} while ( 1 );
 
@@ -958,7 +963,7 @@ void idCameraEvent::parse( const char *( *text )  ) {
 			} else if ( Q_stricmp( key.c_str(), "time" ) == 0 ) {
 				time = atoi( token );
 			}
-			token = Com_Parse( text );
+			Com_Parse( text );
 
 		} while ( 1 );
 
@@ -1070,7 +1075,7 @@ void idCameraFOV::parse( const char *( *text )  ) {
 			} else if ( Q_stricmp( key.c_str(), "time" ) == 0 ) {
 				time = atoi( token );
 			}
-			token = Com_Parse( text );
+			Com_Parse( text );
 
 		} while ( 1 );
 

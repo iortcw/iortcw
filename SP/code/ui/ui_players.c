@@ -1127,6 +1127,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 			token = COM_ParseExt( &text_p, qfalse );
 			if ( !token || !token[0] ) {
 //				BG_AnimParseError( "end of file without ENDANIMS" );
+				break;
 			}
 		} else {
 			// just set it to the equivalent animStrings[]
@@ -1152,18 +1153,21 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS" );
+			break;
 		}
 		animations[i].numFrames = atoi( token );
 
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS: line %i" );
+			break;
 		}
 		animations[i].loopFrames = atoi( token );
 
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS: line %i" );
+			break;
 		}
 		fps = atof( token );
 		if ( fps == 0 ) {
@@ -1176,6 +1180,7 @@ static qboolean AnimParseAnimConfig( playerInfo_t *animModelInfo, const char *fi
 		token = COM_ParseExt( &text_p, qfalse );
 		if ( !token || !token[0] ) {
 //			BG_AnimParseError( "end of file without ENDANIMS" );
+			break;
 		}
 		animations[i].moveSpeed = atoi( token );
 

@@ -411,9 +411,11 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 				//exactly the same when they're both the start point
 				if ( tstack_p->start[0] == start[0] &&
 					 tstack_p->start[1] == start[1] &&
-					 tstack_p->start[2] == start[2] ) {
+					 tstack_p->start[2] == start[2] )
+				{
 					trace.startsolid = qtrue;
 					trace.fraction = 0.0;
+					VectorClear(v1);
 				} //end if
 				else
 				{
@@ -460,9 +462,11 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			//exactly the same when they're both the start point
 			if ( tstack_p->start[0] == start[0] &&
 				 tstack_p->start[1] == start[1] &&
-				 tstack_p->start[2] == start[2] ) {
+				 tstack_p->start[2] == start[2] )
+			{
 				trace.startsolid = qtrue;
 				trace.fraction = 0.0;
+				VectorClear(v1);
 			} //end if
 			else
 			{

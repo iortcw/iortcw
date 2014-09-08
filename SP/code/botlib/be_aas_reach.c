@@ -3455,13 +3455,14 @@ void AAS_Reachability_JumpPad( void ) {
 		velocity[2] = time * gravity;
 		//get the areas the jump pad brush is in
 		areas = AAS_LinkEntityClientBBox( absmins, absmaxs, -1, PRESENCE_CROUCH );
-		//*
+		/*
 		for ( link = areas; link; link = link->next_area )
 		{
 			if ( link->areanum == 5772 ) {
 				ret = qfalse;
 			}
-		} //*/
+		}
+		*/
 		for ( link = areas; link; link = link->next_area )
 		{
 			if ( AAS_AreaJumpPad( link->areanum ) ) {

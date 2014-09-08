@@ -881,10 +881,8 @@ void Props_Chair_Touch( gentity_t *self, gentity_t *other, trace_t *trace );
 void Props_Chair_Die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod );
 
 void Just_Got_Thrown( gentity_t *self ) {
-	float len;
+	float len = 0;
 	vec3_t vec;
-
-	len = 0;
 
 	if ( self->s.groundEntityNum == -1 ) {
 		self->nextthink = level.time + FRAMETIME;
@@ -1713,7 +1711,7 @@ void Use_DamageInflictor( gentity_t *ent, gentity_t *other, gentity_t *activator
 	gentity_t *daent;
 
 	daent = NULL;
-	while ( ( daent = G_Find( daent, FOFS( targetname ), daent->target ) ) != NULL )
+	while ( daent && ( ( daent = G_Find( daent, FOFS( targetname ), daent->target ) ) != NULL ) )
 	{
 		if ( daent == ent ) {
 			G_Printf( "Use_DamageInflictor damaging self.\n" );

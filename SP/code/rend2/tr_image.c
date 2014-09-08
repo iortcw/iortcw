@@ -44,49 +44,6 @@ int gl_filter_max = GL_LINEAR;
 #define FILE_HASH_SIZE      4096
 static image_t*        hashTable[FILE_HASH_SIZE];
 
-// Ridah, in order to prevent zone fragmentation, all images will
-// be read into this buffer. In order to keep things as fast as possible,
-// we'll give it a starting value, which will account for the majority of
-// images, but allow it to grow if the buffer isn't big enough
-#define R_IMAGE_BUFFER_SIZE     ( 512 * 512 * 4 )     // 512 x 512 x 32bit
-
-typedef enum {
-	BUFFER_IMAGE,
-	BUFFER_SCALED,
-	BUFFER_RESAMPLED,
-	BUFFER_MAX_TYPES
-} bufferMemType_t;
-
-int imageBufferSize[BUFFER_MAX_TYPES] = {0,0,0};
-void        *imageBufferPtr[BUFFER_MAX_TYPES] = {NULL,NULL,NULL};
-
-void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
-	if ( imageBufferSize[bufferType] < R_IMAGE_BUFFER_SIZE && size <= imageBufferSize[bufferType] ) {
-		imageBufferSize[bufferType] = R_IMAGE_BUFFER_SIZE;
-		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-	}
-	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
-		if ( imageBufferPtr[bufferType] ) {
-			free( imageBufferPtr[bufferType] );
-		}
-		imageBufferSize[bufferType] = size;
-		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-	}
-
-	return imageBufferPtr[bufferType];
-}
-
-void R_FreeImageBuffer( void ) {
-	int bufferType;
-	for ( bufferType = 0; bufferType < BUFFER_MAX_TYPES; bufferType++ ) {
-		if ( !imageBufferPtr[bufferType] ) {
-			return;
-		}
-		free( imageBufferPtr[bufferType] );
-		imageBufferSize[bufferType] = 0;
-		imageBufferPtr[bufferType] = NULL;
-	}
-}
 
 /*
 ** R_GammaCorrect
@@ -2072,7 +2029,7 @@ static void Upload32( byte *data, int width, int height, imgType_t type, imgFlag
 	if ( r_rmse->value ) {
 		while ( R_RMSE( (byte *)data, width, height ) < r_rmse->value ) {
 			rmse_saved += ( height * width * 4 ) - ( ( width >> 1 ) * ( height >> 1 ) * 4 );
-			resampledBuffer = R_GetImageBuffer( ( width >> 1 ) * ( height >> 1 ) * 4, BUFFER_RESAMPLED );
+			resampledBuffer = ri.Hunk_AllocateTempMemory( ( width >> 1 ) * ( height >> 1 ) * 4 );
 			ResampleTexture( data, width, height, resampledBuffer, width >> 1, height >> 1 );
 			data = resampledBuffer;
 			width = width >> 1;
@@ -2280,26 +2237,12 @@ image_t *R_CreateImageExt( const char *name, byte *pic, int width, int height, i
 	qboolean isLightmap = qfalse;
 	int         glWrapClampMode;
 	long hash;
-	qboolean noCompress = qfalse;
 
 	if ( strlen( name ) >= MAX_QPATH ) {
 		ri.Error( ERR_DROP, "R_CreateImage: \"%s\" is too long", name );
 	}
 	if ( !strncmp( name, "*lightmap", 9 ) ) {
 		isLightmap = qtrue;
-		noCompress = qtrue;
-	}
-	if ( !noCompress && strstr( name, "skies" ) ) {
-		noCompress = qtrue;
-	}
-	if ( !noCompress && strstr( name, "weapons" ) ) {    // don't compress view weapon skins
-		noCompress = qtrue;
-	}
-	// RF, if the shader hasn't specifically asked for it, don't allow compression
-	if ( r_ext_compressed_textures->integer == 2 && ( tr.allowCompress != qtrue ) ) {
-		noCompress = qtrue;
-	} else if ( r_ext_compressed_textures->integer == 1 && ( tr.allowCompress < 0 ) )     {
-		noCompress = qtrue;
 	}
 
 	if ( tr.numImages == MAX_DRAWIMAGES ) {
@@ -3362,9 +3305,9 @@ qhandle_t RE_GetShaderFromModel( qhandle_t modelid, int surfnum, int withlightma
 //	msurface_t  *surf;
 //	shader_t    *shd;
 
-	if ( surfnum < 0 ) {
-		surfnum = 0;
-	}
+//	if ( surfnum < 0 ) {
+//		surfnum = 0;
+//	}
 
 //	model = R_GetModelByHandle( modelid );  // (SA) should be correct now
 /* FIXME - Rend2
@@ -4014,7 +3957,7 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 #endif  // RESIZE
 #endif  // FUNNEL_HACK
 
-	temppic = malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
+	temppic = ri.Z_Malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
 	outpixel = temppic;
 
 	for ( row = mins[1]; row < maxs[1]; row++ )
@@ -4127,7 +4070,7 @@ void    R_CropAndNumberImagesInDirectory( char *dir, char *ext, int maxWidth, in
 #else
 		newWidth = maxWidth;
 		newHeight = maxHeight;
-		temppic = malloc( sizeof( unsigned int ) * newWidth * newHeight );
+		temppic = ri.Z_Malloc( sizeof( unsigned int ) * newWidth * newHeight );
 		ResampleTexture( pic, width, height, temppic, newWidth, newHeight );
 		memcpy( pic, temppic, sizeof( unsigned int ) * newWidth * newHeight );
 		ri.Free( temppic );

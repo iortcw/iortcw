@@ -44,49 +44,6 @@ int gl_filter_max = GL_LINEAR;
 #define FILE_HASH_SIZE      4096
 static image_t*        hashTable[FILE_HASH_SIZE];
 
-// Ridah, in order to prevent zone fragmentation, all images will
-// be read into this buffer. In order to keep things as fast as possible,
-// we'll give it a starting value, which will account for the majority of
-// images, but allow it to grow if the buffer isn't big enough
-#define R_IMAGE_BUFFER_SIZE     ( 512 * 512 * 4 )     // 512 x 512 x 32bit
-
-typedef enum {
-	BUFFER_IMAGE,
-	BUFFER_SCALED,
-	BUFFER_RESAMPLED,
-	BUFFER_MAX_TYPES
-} bufferMemType_t;
-
-int imageBufferSize[BUFFER_MAX_TYPES] = {0,0,0};
-void        *imageBufferPtr[BUFFER_MAX_TYPES] = {NULL,NULL,NULL};
-
-void *R_GetImageBuffer( int size, bufferMemType_t bufferType ) {
-	if ( imageBufferSize[bufferType] < R_IMAGE_BUFFER_SIZE && size <= imageBufferSize[bufferType] ) {
-		imageBufferSize[bufferType] = R_IMAGE_BUFFER_SIZE;
-		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-	}
-	if ( size > imageBufferSize[bufferType] ) {   // it needs to grow
-		if ( imageBufferPtr[bufferType] ) {
-			free( imageBufferPtr[bufferType] );
-		}
-		imageBufferSize[bufferType] = size;
-		imageBufferPtr[bufferType] = malloc( imageBufferSize[bufferType] );
-	}
-
-	return imageBufferPtr[bufferType];
-}
-
-void R_FreeImageBuffer( void ) {
-	int bufferType;
-	for ( bufferType = 0; bufferType < BUFFER_MAX_TYPES; bufferType++ ) {
-		if ( !imageBufferPtr[bufferType] ) {
-			return;
-		}
-		free( imageBufferPtr[bufferType] );
-		imageBufferSize[bufferType] = 0;
-		imageBufferPtr[bufferType] = NULL;
-	}
-}
 
 /*
 ** R_GammaCorrect
@@ -698,7 +655,7 @@ static void Upload32(   unsigned *data,
 	if ( r_rmse->value ) {
 		while ( R_RMSE( (byte *)data, width, height ) < r_rmse->value ) {
 			rmse_saved += ( height * width * 4 ) - ( ( width >> 1 ) * ( height >> 1 ) * 4 );
-			resampledBuffer = R_GetImageBuffer( ( width >> 1 ) * ( height >> 1 ) * 4, BUFFER_RESAMPLED );
+			resampledBuffer = ri.Hunk_AllocateTempMemory( ( width >> 1 ) * ( height >> 1 ) * 4 );
 			ResampleTexture( data, width, height, resampledBuffer, width >> 1, height >> 1 );
 			data = resampledBuffer;
 			width = width >> 1;
@@ -712,7 +669,7 @@ static void Upload32(   unsigned *data,
 		// just do the RMSE of 1 (reduce perfect)
 		while ( R_RMSE( (byte *)data, width, height ) < 1.0 ) {
 			rmse_saved += ( height * width * 4 ) - ( ( width >> 1 ) * ( height >> 1 ) * 4 );
-			resampledBuffer = R_GetImageBuffer( ( width >> 1 ) * ( height >> 1 ) * 4, BUFFER_RESAMPLED );
+			resampledBuffer = ri.Hunk_AllocateTempMemory( ( width >> 1 ) * ( height >> 1 ) * 4 );
 			ResampleTexture( data, width, height, resampledBuffer, width >> 1, height >> 1 );
 			data = resampledBuffer;
 			width = width >> 1;
@@ -728,16 +685,13 @@ static void Upload32(   unsigned *data,
 		;
 	for ( scaled_height = 1 ; scaled_height < height ; scaled_height <<= 1 )
 		;
-	if ( r_roundImagesDown->integer && scaled_width > width ) {
+	if ( r_roundImagesDown->integer && scaled_width > width )
 		scaled_width >>= 1;
-	}
-	if ( r_roundImagesDown->integer && scaled_height > height ) {
+	if ( r_roundImagesDown->integer && scaled_height > height )
 		scaled_height >>= 1;
-	}
 
 	if ( scaled_width != width || scaled_height != height ) {
-		//resampledBuffer = ri.Hunk_AllocateTempMemory( scaled_width * scaled_height * 4 );
-		resampledBuffer = R_GetImageBuffer( scaled_width * scaled_height * 4, BUFFER_RESAMPLED );
+		resampledBuffer = ri.Hunk_AllocateTempMemory( scaled_width * scaled_height * 4 );
 		ResampleTexture( data, width, height, resampledBuffer, scaled_width, scaled_height );
 		data = resampledBuffer;
 		width = scaled_width;
@@ -763,7 +717,7 @@ static void Upload32(   unsigned *data,
 	// deal with a half mip resampling
 	//
 	while ( scaled_width > glConfig.maxTextureSize
-			|| scaled_height > glConfig.maxTextureSize ) {
+		|| scaled_height > glConfig.maxTextureSize ) {
 		scaled_width >>= 1;
 		scaled_height >>= 1;
 	}
@@ -785,7 +739,7 @@ static void Upload32(   unsigned *data,
 
 		ri.Printf( PRINT_ALL, "r_lowMemTextureSize forcing reduction from %i x %i to %i x %i\n", width, height, scaled_width, scaled_height );
 
-		resampledBuffer = R_GetImageBuffer( scaled_width * scaled_height * 4, BUFFER_RESAMPLED );
+		resampledBuffer = ri.Hunk_AllocateTempMemory( scaled_width * scaled_height * 4 );
 		ResampleTexture( data, width, height, resampledBuffer, scaled_width, scaled_height );
 		data = resampledBuffer;
 		width = scaled_width;
@@ -804,8 +758,7 @@ static void Upload32(   unsigned *data,
 		scaled_height = 1;
 	}
 
-	//scaledBuffer = ri.Hunk_AllocateTempMemory( sizeof( unsigned ) * scaled_width * scaled_height );
-	scaledBuffer = R_GetImageBuffer( sizeof( unsigned ) * scaled_width * scaled_height, BUFFER_SCALED );
+	scaledBuffer = ri.Hunk_AllocateTempMemory( sizeof( unsigned ) * scaled_width * scaled_height );
 
 	//
 	// scan the texture for each channel's max values
@@ -1043,10 +996,10 @@ done:
 
 	GL_CheckErrors();
 
-	//if ( scaledBuffer != 0 )
-	//	ri.Hunk_FreeTempMemory( scaledBuffer );
-	//if ( resampledBuffer != 0 )
-	//	ri.Hunk_FreeTempMemory( resampledBuffer );
+	if ( scaledBuffer != 0 )
+		ri.Hunk_FreeTempMemory( scaledBuffer );
+	if ( resampledBuffer != 0 )
+		ri.Hunk_FreeTempMemory( resampledBuffer );
 }
 
 
@@ -2462,7 +2415,7 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 #endif  // RESIZE
 #endif  // FUNNEL_HACK
 
-	temppic = malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
+	temppic = ri.Z_Malloc( sizeof( unsigned int ) * diff[0] * diff[1] );
 	outpixel = temppic;
 
 	for ( row = mins[1]; row < maxs[1]; row++ )
@@ -2575,7 +2528,7 @@ void    R_CropAndNumberImagesInDirectory( char *dir, char *ext, int maxWidth, in
 #else
 		newWidth = maxWidth;
 		newHeight = maxHeight;
-		temppic = malloc( sizeof( unsigned int ) * newWidth * newHeight );
+		temppic = ri.Z_Malloc( sizeof( unsigned int ) * newWidth * newHeight );
 		ResampleTexture( (unsigned int *)pic, width, height, (unsigned int *)temppic, newWidth, newHeight );
 		memcpy( pic, temppic, sizeof( unsigned int ) * newWidth * newHeight );
 		ri.Free( temppic );

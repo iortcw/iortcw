@@ -412,15 +412,17 @@ void S_SetVoiceAmplitudeFromMuLaw( const sfx_t *sc, int sampleOffset, int count,
 	sfx_count = 0;
 	samples = (byte *)chunk->sndChunk + sampleOffset;
 	for ( i = 0; i < count; i++ ) {
-		if ( samples >= (byte *)chunk->sndChunk + ( SND_CHUNK_SIZE * 2 ) ) {
+		if ( chunk && ( samples >= (byte *)chunk->sndChunk + ( SND_CHUNK_SIZE * 2 ) ) ) {
 			chunk = chunk->next;
 			samples = (byte *)chunk->sndChunk;
 		}
-		data  = mulawToShort[*samples];
-		if ( abs( data ) > 5000 ) {
-			sfx_count += ( data * 255 ) >> 8;
+		if ( samples ) {
+			data  = mulawToShort[*samples];
+			if ( abs( data ) > 5000 ) {
+				sfx_count += ( data * 255 ) >> 8;
+			}
+			samples++;
 		}
-		samples++;
 	}
 	//Com_Printf("Voice sfx_count = %d, count = %d\n", sfx_count, count );
 	// adjust the sfx_count according to the frametime (scale down for longer frametimes)
@@ -454,6 +456,10 @@ static void S_PaintChannelFrom16_altivec( channel_t *ch, const sfx_t *sc, int co
 	sndBuffer				*chunk;
 	short					*samples;
 	float					ooff, fdata[2], fdiv, fleftvol, frightvol;
+
+	if (sc->soundChannels <= 0) {
+		return;
+	}
 
 	samp = &paintbuffer[ bufferOffset ];
 
@@ -640,6 +646,10 @@ static void S_PaintChannelFrom16_scalar( channel_t *ch, const sfx_t *sc, int cou
 	sndBuffer				*chunk;
 	short					*samples;
 	float					ooff, fdata[2], fdiv, fleftvol, frightvol;
+
+	if (sc->soundChannels <= 0) {
+		return;
+	}
 
 	samp = &paintbuffer[ bufferOffset ];
 

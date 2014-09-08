@@ -516,9 +516,6 @@ void CG_DrawStringExt3( int x, int y, const char *string, const float *setColor,
 
 	x -= xx;
 
-	s = string;
-	xx = x;
-
 	// draw the drop shadow
 	if ( shadow ) {
 		color[0] = color[1] = color[2] = 0;

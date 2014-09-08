@@ -969,6 +969,15 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 			oldNumIndex = tess.numIndexes;
 
 			rb_surfaceTable[ *drawSurf->surface ]( drawSurf->surface );
+
+			// RF, convert the newly created vertexes into dust particles, and overwrite
+			if (backEnd.currentEntity->e.reFlags & REFLAG_ZOMBIEFX) {
+				RB_ZombieFX( 0, drawSurf, oldNumVerts, oldNumIndex );
+			}
+			else if (backEnd.currentEntity->e.reFlags & REFLAG_ZOMBIEFX2) {
+				RB_ZombieFX( 1, drawSurf, oldNumVerts, oldNumIndex );
+			}
+
 			continue;
 		}
 		oldSort = drawSurf->sort;

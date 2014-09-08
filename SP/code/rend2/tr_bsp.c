@@ -602,8 +602,6 @@ static void R_LoadVisibility( lump_t *l ) {
 	int len;
 	byte    *buf;
 
-	len = ( s_worldData.numClusters + 63 ) & ~63;
-
 	len = l->filelen;
 	if ( !len ) {
 		return;
@@ -1638,7 +1636,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 
 			for ( m = 0; m < 2; m++ ) {
 
-				if ( grid2->width >= MAX_GRID_SIZE ) {
+				if ( !grid2 || grid2->width >= MAX_GRID_SIZE ) {
 					break;
 				}
 				if ( m ) {
@@ -1694,7 +1692,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 			}
 			for ( m = 0; m < 2; m++ ) {
 
-				if ( grid2->height >= MAX_GRID_SIZE ) {
+				if ( !grid2 || grid2->height >= MAX_GRID_SIZE ) {
 					break;
 				}
 				if ( m ) {
@@ -1764,7 +1762,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 		for ( k = grid1->height - 1; k > 1; k -= 2 ) {
 			for ( m = 0; m < 2; m++ ) {
 
-				if ( grid2->width >= MAX_GRID_SIZE ) {
+				if ( !grid2 || grid2->width >= MAX_GRID_SIZE ) {
 					break;
 				}
 				if ( m ) {
@@ -1820,7 +1818,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 			}
 			for ( m = 0; m < 2; m++ ) {
 
-				if ( grid2->height >= MAX_GRID_SIZE ) {
+				if ( !grid2 || grid2->height >= MAX_GRID_SIZE ) {
 					break;
 				}
 				if ( m ) {

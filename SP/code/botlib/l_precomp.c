@@ -1167,25 +1167,20 @@ int PC_Directive_define( source_t *source ) {
 #else
 	define = PC_FindDefine( source->defines, token.string );
 #endif //DEFINEHASHING
-	if ( define ) {
-		if ( define->flags & DEFINE_FIXED ) {
+	if ( define )
+	{
+		if ( define->flags & DEFINE_FIXED )
+		{
 			SourceError( source, "can't redefine %s", token.string );
 			return qfalse;
 		} //end if
 		SourceWarning( source, "redefinition of %s", token.string );
 		//unread the define name before executing the #undef directive
 		PC_UnreadSourceToken( source, &token );
-		if ( !PC_Directive_undef( source ) ) {
+		if ( !PC_Directive_undef( source ) )
 			return qfalse;
-		}
-		//if the define was not removed (define->flags & DEFINE_FIXED)
-#if DEFINEHASHING
-		define = PC_FindHashedDefine( source->definehash, token.string );
-#else
-		define = PC_FindDefine( source->defines, token.string );
-#endif //DEFINEHASHING
 	} //end if
-	  //allocate define
+	//allocate define
 	define = (define_t *) GetMemory(sizeof(define_t));
 	memset( define, 0, sizeof( define_t ) );
 	define->name = (char *) GetMemory(strlen(token.string) + 1);

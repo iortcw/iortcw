@@ -1686,7 +1686,7 @@ static void PM_Footsteps( void ) {
 
 	// mg42, always idle
 	if ( pm->ps->persistant[PERS_HWEAPON_USE] ) {
-		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+		BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
 		//
 		return;
 	}
@@ -1695,9 +1695,9 @@ static void PM_Footsteps( void ) {
 	if ( pm->waterlevel > 1 ) {
 
 		if ( pm->ps->pm_flags & PMF_BACKWARDS_RUN ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIMBK, qtrue );
+			BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIMBK, qtrue );
 		} else {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIM, qtrue );
+			BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_SWIM, qtrue );
 		}
 
 		return;
@@ -1707,10 +1707,10 @@ static void PM_Footsteps( void ) {
 	if ( pm->ps->groundEntityNum == ENTITYNUM_NONE ) {
 		if ( pm->ps->pm_flags & PMF_LADDER ) {             // on ladder
 			if ( pm->ps->velocity[2] >= 0 ) {
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBUP, qtrue );
+				BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBUP, qtrue );
 				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
 			} else if ( pm->ps->velocity[2] < 0 )     {
-				animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBDOWN, qtrue );
+				BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBDOWN, qtrue );
 				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB_DOWN", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
 			}
 		}
@@ -1731,7 +1731,7 @@ static void PM_Footsteps( void ) {
 			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLECR, qtrue );
 		}
 		if ( animResult < 0 ) {
-			animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+			BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
 		}
 		//
 		return;
@@ -1829,7 +1829,7 @@ static void PM_Footsteps( void ) {
 
 	// if no anim found yet, then just use the idle as default
 	if ( animResult < 0 ) {
-		animResult = BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
+		BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_IDLE, qtrue );
 	}
 
 	// check for footstep / splash sounds
@@ -3464,14 +3464,8 @@ addTime = 50;
 break;
 // jpw
 case WP_MONSTER_ATTACK1:
-switch ( pm->ps->aiChar ) {
-case AICHAR_ZOMBIE:
-	// Zombie spitting blood
-	addTime = 1000;
-	break;
-default:
-	break;
-}
+addTime = 1000;
+break;
 
 default:
 case WP_GAUNTLET:
