@@ -749,7 +749,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 				headAnims[i].numFrames = atoi( token );
 
 				// skip the movespeed
--				COM_ParseExt( &text_p, qfalse );
+				COM_ParseExt( &text_p, qfalse );
 			}
 
 			animModelInfo->numHeadAnims = i;
