@@ -30,6 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // this file is only included when building a dll
 // syscalls.asm is included instead when building a qvm
+#ifdef Q3_VM
+#error "Do not use in VM build"
+#endif
 
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 

@@ -3490,7 +3490,13 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 
 	case IT_BAD:
 		Com_Error( ERR_DROP, "BG_CanItemBeGrabbed: IT_BAD" );
-
+	default:
+#ifndef Q3_VM
+#ifndef NDEBUG
+          Com_Printf("BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
+#endif
+#endif
+         break;
 	}
 	return qfalse;
 }
