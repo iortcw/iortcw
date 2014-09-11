@@ -30,7 +30,7 @@ ifndef BUILD_GAME_SO
   BUILD_GAME_SO    =
 endif
 ifndef BUILD_GAME_QVM
-  BUILD_GAME_QVM   = 0
+  BUILD_GAME_QVM   = 
 endif
 ifndef BUILD_BASEGAME
   BUILD_BASEGAME =
