@@ -104,7 +104,9 @@ extern void AxisToAngles ( vec3_t axis [ 3 ] , vec3_t angles ) ;
 extern float vectoyaw ( const vec3_t vec ) ;
 extern void ProjectPointOntoVector ( vec3_t point , vec3_t vStart , vec3_t vEnd , vec3_t vProj ) ;
 extern void GetPerpendicularViewVector ( const vec3_t point , const vec3_t p1 , const vec3_t p2 , vec3_t up ) ;
+#ifndef Q3_VM
 extern float Q_acos ( float c ) ;
+#endif
 extern int Q_isnan ( float x ) ;
 extern void PerpendicularVector ( vec3_t dst , const vec3_t src ) ;
 extern void AngleVectors ( const vec3_t angles , vec3_t forward , vec3_t right , vec3_t up ) ;
@@ -552,8 +554,10 @@ extern int trap_Milliseconds ( void ) ;
 extern void trap_Endgame ( void ) ;
 extern void trap_Error ( const char * text ) ;
 extern void trap_Print ( const char * text ) ;
+#ifndef Q3_VM
 extern int PASSFLOAT ( float x ) ;
 extern Q_EXPORT void dllEntry ( intptr_t ( QDECL * syscallptr ) ( intptr_t arg , ... ) ) ;
+#endif
 extern qboolean ConsoleCommand ( void ) ;
 extern void Svcmd_ForceTeam_f ( void ) ;
 extern gclient_t * ClientForString ( const char * s ) ;

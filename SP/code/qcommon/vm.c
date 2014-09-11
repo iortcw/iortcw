@@ -378,7 +378,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
 	} header;
 
 	// load the image
-	Com_sprintf( filename, sizeof(filename), "vm/%s.qvm", vm->name );
+	Com_sprintf( filename, sizeof(filename), "vm/%s.sp.qvm", vm->name );
 	Com_Printf( "Loading vm file %s...\n", filename );
 
 	FS_ReadFileDir(filename, vm->searchPath, unpure, &header.v);
