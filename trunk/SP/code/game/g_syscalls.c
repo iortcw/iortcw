@@ -32,6 +32,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
+#ifdef Q3_VM
+#error "Do not use in VM build"
+#endif
 
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
@@ -517,9 +520,9 @@ float trap_Characteristic_Float( int character, int index ) {
 }
 
 float trap_Characteristic_BFloat( int character, int index, float min, float max ) {
-	int temp;
-	temp = syscall( BOTLIB_AI_CHARACTERISTIC_BFLOAT, character, index, PASSFLOAT( min ), PASSFLOAT( max ) );
-	return ( *(float*)&temp );
+	floatint_t fi;
+	fi.i = syscall( BOTLIB_AI_CHARACTERISTIC_BFLOAT, character, index, PASSFLOAT( min ), PASSFLOAT( max ) );
+	return fi.f;
 }
 
 int trap_Characteristic_Integer( int character, int index ) {
