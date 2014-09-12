@@ -247,8 +247,13 @@ static keyNum_t IN_TranslateSDLToQ3Key( SDL_Keysym *keysym, qboolean down )
 			case SDLK_LCTRL:
 			case SDLK_RCTRL:        key = K_CTRL;          break;
 
+#ifdef MACOS_X
 			case SDLK_RGUI:
 			case SDLK_LGUI:         key = K_COMMAND;       break;
+#else
+			case SDLK_RGUI:
+			case SDLK_LGUI:         key = K_SUPER;         break;
+#endif
 
 			case SDLK_RALT:
 			case SDLK_LALT:         key = K_ALT;           break;
@@ -266,6 +271,7 @@ static keyNum_t IN_TranslateSDLToQ3Key( SDL_Keysym *keysym, qboolean down )
 			case SDLK_PRINTSCREEN:  key = K_PRINT;         break;
 			case SDLK_SYSREQ:       key = K_SYSREQ;        break;
 			case SDLK_MENU:         key = K_MENU;          break;
+			case SDLK_APPLICATION:	key = K_MENU;          break;
 			case SDLK_POWER:        key = K_POWER;         break;
 			case SDLK_UNDO:         key = K_UNDO;          break;
 			case SDLK_SCROLLLOCK:   key = K_SCROLLOCK;     break;
