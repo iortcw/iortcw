@@ -30,8 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "splines.h"
 
 extern "C" {
-int FS_Write( const void *buffer, int len, fileHandle_t h );
-int FS_ReadFile( const char *qpath, void **buffer );
+int FS_Write( const void *buffer, int len, fileHandle_t f );
+long FS_ReadFile( const char *qpath, void **buffer );
 void FS_FreeFile( void *buffer );
 fileHandle_t FS_FOpenFileWrite( const char *filename );
 void FS_FCloseFile( fileHandle_t f );
