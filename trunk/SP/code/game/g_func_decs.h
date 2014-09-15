@@ -984,7 +984,7 @@ extern void QDECL Com_Printf ( const char * msg , ... ) ;
 extern void QDECL Com_Error ( int level , const char * error , ... ) ;
 extern void G_ShutdownGame ( int restart ) ;
 extern void G_InitGame ( int levelTime , int randomSeed , int restart ) ;
-extern int G_SendMissionStats ( ) ;
+extern int G_SendMissionStats ( void ) ;
 extern void G_SpawnScriptCamera ( void ) ;
 extern void G_UpdateCvars ( void ) ;
 extern void G_RegisterCvars ( void ) ;
