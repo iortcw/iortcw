@@ -288,6 +288,7 @@ VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.4
 OPUSDIR=$(MOUNT_DIR)/opus-1.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.6
 ZDIR=$(MOUNT_DIR)/zlib
+SPLDIR=$(MOUNT_DIR)/splines
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
 Q3CPPDIR=$(MOUNT_DIR)/tools/lcc/cpp
@@ -561,6 +562,9 @@ ifeq ($(PLATFORM),mingw32)
     ifneq ($(findstring $(strip $(CC)),cc gcc),)
       CC=
     endif
+    ifneq ($(findstring $(strip $(CXX)),g++),)
+      CXX=
+    endif
 
     # We need to figure out the correct gcc and windres
     ifeq ($(ARCH),x86_64)
@@ -575,6 +579,11 @@ ifeq ($(PLATFORM),mingw32)
          $(call bin_path, $(MINGW_PREFIX)-gcc)))
     endif
 
+    ifndef CXX
+      CXX=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-g++)))
+    endif
+
     ifndef WINDRES
       WINDRES=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
          $(call bin_path, $(MINGW_PREFIX)-windres)))
@@ -584,6 +593,10 @@ ifeq ($(PLATFORM),mingw32)
     # so check that CC points to a real binary and use gcc if it doesn't
     ifeq ($(call bin_path, $(CC)),)
       CC=gcc
+    endif
+
+    ifndef CXX
+      CC=g++
     endif
 
     ifndef WINDRES
@@ -1132,6 +1145,10 @@ ifeq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
   BASE_CFLAGS += -Qunused-arguments
 endif
 
+ifeq ("$(CXX)", $(findstring "$(CXX)", "clang" "clang++"))
+  BASE_CFLAGS += -Qunused-arguments
+endif
+
 ifdef DEFAULT_BASEDIR
   BASE_CFLAGS += -DDEFAULT_BASEDIR=\\\"$(DEFAULT_BASEDIR)\\\"
 endif
@@ -1249,6 +1266,10 @@ $(echo_cmd) "WINDRES $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
 
+define DO_SPLINE_CXX
+$(echo_cmd) "SPLINE_CXX $<"
+$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+endef
 
 #############################################################################
 # MAIN TARGETS
@@ -1321,6 +1342,7 @@ targets: makedirs
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
 	@echo "  CC: $(CC)"
+	@echo "  CXX: $(CXX)"
 ifeq ($(PLATFORM),mingw32)
 	@echo "  WINDRES: $(WINDRES)"
 endif
@@ -1370,6 +1392,7 @@ makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
 	@if [ ! -d $(B) ];then $(MKDIR) $(B);fi
 	@if [ ! -d $(B)/client ];then $(MKDIR) $(B)/client;fi
+	@if [ ! -d $(B)/splines ];then $(MKDIR) $(B)/splines;fi
 	@if [ ! -d $(B)/client/opus ];then $(MKDIR) $(B)/client/opus;fi
 	@if [ ! -d $(B)/client/vorbis ];then $(MKDIR) $(B)/client/vorbis;fi
 	@if [ ! -d $(B)/renderer ];then $(MKDIR) $(B)/renderer;fi
@@ -1649,6 +1672,14 @@ Q3OBJ = \
   $(B)/client/l_precomp.o \
   $(B)/client/l_script.o \
   $(B)/client/l_struct.o \
+  \
+  $(B)/splines/math_angles.o \
+  $(B)/splines/math_matrix.o \
+  $(B)/splines/math_quaternion.o \
+  $(B)/splines/math_vector.o \
+  $(B)/splines/q_parse.o \
+  $(B)/splines/splines.o \
+  $(B)/splines/util_str.o \
   \
   $(B)/client/sdl_input.o \
   $(B)/client/sdl_snd.o \
@@ -2090,7 +2121,7 @@ endif
 ifneq ($(USE_RENDERER_DLOPEN),0)
 $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
+	$(Q)$(CXX) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
 		-o $@ $(Q3OBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(LIBS)
 
@@ -2106,13 +2137,13 @@ $(B)/renderer_mp_rend2_$(SHLIBNAME): $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ)
 else
 $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
+	$(Q)$(CXX) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
 		-o $@ $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 
 $(B)/$(CLIENTBIN)_rend2$(FULLBINEXT): $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
+	$(Q)$(CXX) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
 		-o $@ $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 endif
@@ -2487,6 +2518,8 @@ $(B)/client/%.o: $(SYSDIR)/%.m
 $(B)/client/%.o: $(SYSDIR)/%.rc
 	$(DO_WINDRES)
 
+$(B)/splines/%.o: $(SPLDIR)/%.cpp
+	$(DO_SPLINE_CXX)
 
 $(B)/renderer/%.o: $(CMDIR)/%.c
 	$(DO_REF_CC)
