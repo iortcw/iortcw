@@ -1110,7 +1110,7 @@ G_SendMissionStats
 	for updating the g_missionStats string to the client
 ==============
 */
-int G_SendMissionStats() {
+int G_SendMissionStats( void ) {
 	char cmd[MAX_QPATH];
 	gentity_t   *player;
 	int i, attempts = 0, playtime = 0, minutes, objs = 0, sec = 0, treas = 0;
