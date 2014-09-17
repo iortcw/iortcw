@@ -39,8 +39,6 @@ If you have questions concerning this license or the applicable additional terms
 // 1.1b - TTimo SP linux release (+ MP updates)
 // 1.1b5 - Mac update merge in
 
-#define NEW_ANIMS
-
 // DHM - Nerve
 //#define PRE_RELEASE_DEMO
 
@@ -548,7 +546,7 @@ static ID_INLINE float Q_rsqrt( float number ) {
 		y = __frsqrte( number );
 #endif
 		return y * (1.5f - (x * y * y));
-	}
+}
 
 #ifdef __GNUC__            
 static ID_INLINE float Q_fabs(float x) {
@@ -564,7 +562,7 @@ static ID_INLINE float Q_fabs(float x) {
 #else
 float Q_fabs( float f );
 float Q_rsqrt( float f );       // reciprocal square root
-#endif
+#endif // idppc
 
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
