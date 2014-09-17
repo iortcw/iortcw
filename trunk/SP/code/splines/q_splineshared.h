@@ -50,8 +50,6 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
-// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
-  #define HEARTBEAT_FOR_MASTER		"DarkPlaces"
 #else
   #define PRODUCT_NAME			"iortcw"
   #define BASEGAME			"main"
@@ -60,20 +58,26 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_UNIX		".iortcw"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
-  #define GAMENAME_FOR_MASTER		"wolfmp"
+  #define GAMENAME_FOR_MASTER		"wolfsp"
   #define LEGACY_PROTOCOL
-  #define HEARTBEAT_GAME  "Wolfenstein-1"
-  #define HEARTBEAT_DEAD  "WolfFlatline-1"
 #endif
 
+// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
+#define HEARTBEAT_FOR_MASTER		"DarkPlaces"
+#define FLATLINE_FOR_MASTER		"WolfFlatline-1"
+
+// When com_gamename is LEGACY_MASTER_GAMENAME, use wolfenstein master protocol.
+// You shouldn't change this unless you know what you're doing
+#define LEGACY_MASTER_GAMENAME		"wolfsp"
+#define LEGACY_HEARTBEAT_FOR_MASTER	"Wolfenstein-1"
+
 #ifndef PRODUCT_VERSION
-  #define PRODUCT_VERSION "1.42"
+  #define PRODUCT_VERSION "1.42b"
 #endif
 
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
 
 #define MAX_TEAMNAME		32
-#define NEW_ANIMS
 #define MAX_MASTER_SERVERS      5	// number of supported master servers
 
 #define DEMOEXT	"dm_"			// standard demo extension
@@ -164,6 +168,11 @@ typedef int intptr_t;
 #include <time.h>
 #include <ctype.h>
 #include <limits.h>
+
+#ifdef VCMODS_REPLACETRIG
+#define sin(f) sinf(f)
+#define cos(f) cosf(f)
+#endif
 
 #ifdef _MSC_VER
   #include <io.h>
@@ -387,6 +396,7 @@ MATHLIB
 
 ==============================================================
 */
+
 #ifdef __cplusplus          // so we can include this in C code
 #define SIDE_FRONT      0
 #define SIDE_BACK       1
@@ -404,7 +414,10 @@ typedef int fixed4_t;
 typedef int fixed8_t;
 typedef int fixed16_t;
 
+#ifndef Q_PI
 #define Q_PI    3.14159265358979323846
+#endif
+
 #ifndef M_PI
 #define M_PI        3.14159265358979323846f // matches value in gcc v2 math.h
 #endif
@@ -469,7 +482,8 @@ extern vec4_t colorDkGrey;
 #define COLOR_CYAN      '5'
 #define COLOR_MAGENTA   '6'
 #define COLOR_WHITE     '7'
-#define ColorIndex( c )   ( ( ( c ) - '0' ) & 0x07 )
+#define ColorIndexForNumber(c) ((c) & 0x07)
+#define ColorIndex(c) (ColorIndexForNumber((c) - '0'))
 
 #define S_COLOR_BLACK   "^0"
 #define S_COLOR_RED     "^1"
@@ -561,6 +575,7 @@ int Q_isnan(float x);
 #endif
 
 #if idppc
+
 static ID_INLINE float Q_rsqrt( float number ) {
 		float x = 0.5f * number;
                 float y;
@@ -571,9 +586,10 @@ static ID_INLINE float Q_rsqrt( float number ) {
 #endif
 		return y * (1.5f - (x * y * y));
 }
+
 #else
 float Q_rsqrt( float f );       // reciprocal square root
-#endif
+#endif // idppc
 
 #define SQRTFAST( x ) ( 1.0f / Q_rsqrt( x ) )
 
@@ -630,7 +646,7 @@ typedef struct {
 
 #define SnapVector( v ) {v[0] = ( (int)( v[0] ) ); v[1] = ( (int)( v[1] ) ); v[2] = ( (int)( v[2] ) );}
 
-// just in case you do't want to use the macros
+// just in case you don't want to use the macros
 vec_t _DotProduct( const vec3_t v1, const vec3_t v2 );
 void _VectorSubtract( const vec3_t veca, const vec3_t vecb, vec3_t out );
 void _VectorAdd( const vec3_t veca, const vec3_t vecb, vec3_t out );
@@ -882,7 +898,7 @@ extern "C" {
 #endif
 
 int QDECL Com_sprintf (char *dest, int size, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
-
+ 
 void Com_RandomBytes( byte *string, int len );
 
 // mode parm for FS_FOpenFile
@@ -1003,6 +1019,7 @@ void	QDECL Com_Printf( const char *msg, ... ) __attribute__ ((format (printf, 1,
 #ifdef __cplusplus
 }
 #endif
+
 /*
 ==============================================================
 

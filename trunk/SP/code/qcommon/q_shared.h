@@ -78,7 +78,6 @@ If you have questions concerning this license or the applicable additional terms
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
 
 #define MAX_TEAMNAME		32
-#define NEW_ANIMS
 #define MAX_MASTER_SERVERS      5	// number of supported master servers
 
 #define DEMOEXT	"dm_"			// standard demo extension
@@ -559,7 +558,7 @@ static ID_INLINE float Q_rsqrt( float number ) {
 		y = __frsqrte( number );
 #endif
 		return y * (1.5f - (x * y * y));
-	}
+}
 
 #ifdef __GNUC__            
 static ID_INLINE float Q_fabs(float x) {
@@ -575,7 +574,7 @@ static ID_INLINE float Q_fabs(float x) {
 #else
 float Q_fabs( float f );
 float Q_rsqrt( float f );       // reciprocal square root
-#endif
+#endif // idppc
 
 #define SQRTFAST( x ) ( 1.0f / Q_rsqrt( x ) )
 

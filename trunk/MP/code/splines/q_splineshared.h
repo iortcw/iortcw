@@ -1,25 +1,25 @@
 /*
 ===========================================================================
 
-Return to Castle Wolfenstein single player GPL Source Code
+Return to Castle Wolfenstein multiplayer GPL Source Code
 Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
 
-This file is part of the Return to Castle Wolfenstein single player GPL Source Code (RTCW SP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
 
-RTCW SP Source Code is free software: you can redistribute it and/or modify
+RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-RTCW SP Source Code is distributed in the hope that it will be useful,
+RTCW MP Source Code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with RTCW SP Source Code.  If not, see <http://www.gnu.org/licenses/>.
+along with RTCW MP Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the RTCW SP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the RTCW MP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW MP Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,13 +32,15 @@ If you have questions concerning this license or the applicable additional terms
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
-// #define Q3_VERSION      "Wolf 1.41"
-// ver 1.0.0	- release
-// ver 1.0.1	- post-release work
-// ver 1.1.0	- patch 1 (12/12/01)
-// ver 1.1b		- TTimo SP linux release (+ MP update)
-// ver 1.2.b5	- Mac code merge in
-// ver 1.3		- patch 2 (02/13/02)
+// #define Q3_VERSION      "Wolf 1.41b-MP"
+// 1.41b-MP: fix autodl sploit
+// 1.4-MP : (== 1.34)
+// 1.3-MP : final for release
+// 1.1b - TTimo SP linux release (+ MP updates)
+// 1.1b5 - Mac update merge in
+
+// DHM - Nerve
+//#define PRE_RELEASE_DEMO
 
 #ifdef STANDALONE
   #define PRODUCT_NAME			"iofoo3"
@@ -49,31 +51,41 @@ If you have questions concerning this license or the applicable additional terms
   #define HOMEPATH_NAME_WIN		"FooBar"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
-//  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
-// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
-  #define HEARTBEAT_FOR_MASTER		"DarkPlaces"
+// #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
 #else
   #define PRODUCT_NAME			"iortcw"
+  #define OLD_PRODUCT_NAME		"Wolf"
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"Return To Castle Wolfenstein"
-  #define CLIENT_WINDOW_MIN_TITLE 	"iowolfsp"
+  #define CLIENT_WINDOW_MIN_TITLE 	"iowolfmp"
   #define HOMEPATH_NAME_UNIX		".iortcw"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfmp"
   #define LEGACY_PROTOCOL
-  #define HEARTBEAT_GAME  "Wolfenstein-1"
-  #define HEARTBEAT_DEAD  "WolfFlatline-1"
 #endif
 
+// Heartbeat for dpmaster protocol. You shouldn't change this unless you know what you're doing
+#define HEARTBEAT_FOR_MASTER		"DarkPlaces"
+#define FLATLINE_FOR_MASTER		"WolfFlatline-1"
+
+// When com_gamename is LEGACY_MASTER_GAMENAME, use wolfenstein master protocol.
+// You shouldn't change this unless you know what you're doing
+#define LEGACY_MASTER_GAMENAME		"wolfmp"
+#define LEGACY_HEARTBEAT_FOR_MASTER	"Wolfenstein-1"
+
 #ifndef PRODUCT_VERSION
-  #define PRODUCT_VERSION "1.42"
+  #define PRODUCT_VERSION "1.42b"
+#endif
+
+#ifndef OLD_PRODUCT_VERSION
+  #define OLD_PRODUCT_VERSION "1.41-MP"
 #endif
 
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
+#define OLDVERSION OLD_PRODUCT_NAME " " OLD_PRODUCT_VERSION
 
 #define MAX_TEAMNAME		32
-#define NEW_ANIMS
 #define MAX_MASTER_SERVERS      5	// number of supported master servers
 
 #define DEMOEXT	"dm_"			// standard demo extension
@@ -101,7 +113,6 @@ If you have questions concerning this license or the applicable additional terms
 #pragma warning(disable : 4702) // unreachable code
 #pragma warning(disable : 4711) // selected for automatic inline expansion
 #pragma warning(disable : 4220) // varargs matches remaining parameters
-//#pragma intrinsic( memset, memcpy )
 #endif
 
 //Ignore __attribute__ on non-gcc platforms
@@ -125,10 +136,6 @@ If you have questions concerning this license or the applicable additional terms
 #define Q_EXPORT __attribute__((visibility("default")))
 #else
 #define Q_EXPORT
-#endif
-
-#if defined( ppc ) || defined( __ppc ) || defined( __ppc__ ) || defined( __POWERPC__ )
-#define idppc 1
 #endif
 
 /**********************************************************************
@@ -164,6 +171,11 @@ typedef int intptr_t;
 #include <time.h>
 #include <ctype.h>
 #include <limits.h>
+
+#ifdef VCMODS_REPLACETRIG
+#define sin(f) sinf(f)
+#define cos(f) cosf(f)
+#endif
 
 #ifdef _MSC_VER
   #include <io.h>
@@ -209,6 +221,13 @@ typedef int sfxHandle_t;
 typedef int fileHandle_t;
 typedef int clipHandle_t;
 
+//#define	SND_NORMAL			0x000	// (default) Allow sound to be cut off only by the same sound on this channel
+#define     SND_OKTOCUT         0x001   // Allow sound to be cut off by any following sounds on this channel
+#define     SND_REQUESTCUT      0x002   // Allow sound to be cut off by following sounds on this channel only for sounds who request cutoff
+#define     SND_CUTOFF          0x004   // Cut off sounds on this channel that are marked 'SND_REQUESTCUT'
+#define     SND_CUTOFF_ALL      0x008   // Cut off all sounds on this channel
+#define     SND_NOCUT           0x010   // Don't cut off.  Always let finish (overridden by SND_CUTOFF_ALL)
+
 #define PAD(base, alignment)	(((base)+(alignment)-1) & ~((alignment)-1))
 #define PADLEN(base, alignment)	(PAD((base), (alignment)) - (base))
 
@@ -219,22 +238,6 @@ typedef int clipHandle_t;
 #else
 #define QALIGN(x)
 #endif
-
-#ifndef ID_INLINE
-#ifdef _WIN32
-#define ID_INLINE __inline
-#else
-#define ID_INLINE inline
-#endif
-#endif
-
-//#define	SND_NORMAL			0x000	// (default) Allow sound to be cut off only by the same sound on this channel
-#define     SND_OKTOCUT         0x001   // Allow sound to be cut off by any following sounds on this channel
-#define     SND_REQUESTCUT      0x002   // Allow sound to be cut off by following sounds on this channel only for sounds who request cutoff
-#define     SND_CUTOFF          0x004   // Cut off sounds on this channel that are marked 'SND_REQUESTCUT'
-#define     SND_CUTOFF_ALL      0x008   // Cut off all sounds on this channel
-#define     SND_NOCUT           0x010   // Don't cut off.  Always let finish (overridden by SND_CUTOFF_ALL)
-
 
 #ifndef NULL
 #define NULL ( (void *)0 )
@@ -250,6 +253,7 @@ typedef int clipHandle_t;
 #define ARRAY_LEN(x)			(sizeof(x) / sizeof(*(x)))
 #define STRARRAY_LEN(x)			(ARRAY_LEN(x) - 1)
 
+// TTimo gcc: was missing, added from Q3 source
 #ifndef max
 #define max( x, y ) ( ( ( x ) > ( y ) ) ? ( x ) : ( y ) )
 #define min( x, y ) ( ( ( x ) < ( y ) ) ? ( x ) : ( y ) )
@@ -278,7 +282,11 @@ typedef int clipHandle_t;
 #define BIG_INFO_VALUE      8192
 
 #define MAX_QPATH           64      // max length of a quake game pathname
+#ifdef PATH_MAX
+#define MAX_OSPATH			PATH_MAX
+#else
 #define MAX_OSPATH          256     // max length of a filesystem pathname
+#endif
 
 #define MAX_NAME_LENGTH     32      // max length of a client name
 
@@ -317,8 +325,7 @@ typedef enum {
 	ERR_DROP,                   // print to console and disconnect from game
 	ERR_SERVERDISCONNECT,       // don't kill server
 	ERR_DISCONNECT,             // client disconnected from the server
-	ERR_NEED_CD,                // pop up the need-cd dialog
-	ERR_ENDGAME                 // not an error.  just clean up properly, exit to the menu, and start up the "endgame" menu  //----(SA)	added
+	ERR_NEED_CD                 // pop up the need-cd dialog
 } errorParm_t;
 
 
@@ -372,12 +379,11 @@ void *Hunk_Alloc( int size, ha_pref preference );
 #define Com_Memset memset
 #define Com_Memcpy memcpy
 
-#define CIN_system      0x01
-#define CIN_loop        0x02
-#define CIN_hold        0x04
-#define CIN_silent      0x08
-#define CIN_shader      0x10
-#define CIN_letterBox   0x20
+#define CIN_system  1
+#define CIN_loop    2
+#define CIN_hold    4
+#define CIN_silent  8
+#define CIN_shader  16
 
 
 /*
@@ -387,6 +393,7 @@ MATHLIB
 
 ==============================================================
 */
+
 #ifdef __cplusplus          // so we can include this in C code
 #define SIDE_FRONT      0
 #define SIDE_BACK       1
@@ -404,7 +411,10 @@ typedef int fixed4_t;
 typedef int fixed8_t;
 typedef int fixed16_t;
 
+#ifndef Q_PI
 #define Q_PI    3.14159265358979323846
+#endif
+
 #ifndef M_PI
 #define M_PI        3.14159265358979323846f // matches value in gcc v2 math.h
 #endif
@@ -469,7 +479,8 @@ extern vec4_t colorDkGrey;
 #define COLOR_CYAN      '5'
 #define COLOR_MAGENTA   '6'
 #define COLOR_WHITE     '7'
-#define ColorIndex( c )   ( ( ( c ) - '0' ) & 0x07 )
+#define ColorIndexForNumber(c) ((c) & 0x07)
+#define ColorIndex(c) (ColorIndexForNumber((c) - '0'))
 
 #define S_COLOR_BLACK   "^0"
 #define S_COLOR_RED     "^1"
@@ -494,6 +505,7 @@ extern vec3_t vec3_origin;
 extern vec3_t axisDefault[3];
 
 #define nanmask ( 255 << 23 )
+
 #define IS_NAN( x ) ( ( ( *(int *)&x ) & nanmask ) == nanmask )
 
 int Q_isnan(float x);
@@ -550,17 +562,8 @@ int Q_isnan(float x);
 #endif
 */
 
-// TTimo
-// handy stuff when tracking isnan problems
-#ifndef NDEBUG
-#define CHECK_NAN( x ) assert( !IS_NAN( x ) )
-#define CHECK_NAN_VEC( v ) assert( !IS_NAN( v[0] ) && !IS_NAN( v[1] ) && !IS_NAN( v[2] ) )
-#else
-#define CHECK_NAN
-#define CHECK_NAN_VEC
-#endif
-
 #if idppc
+
 static ID_INLINE float Q_rsqrt( float number ) {
 		float x = 0.5f * number;
                 float y;
@@ -571,11 +574,12 @@ static ID_INLINE float Q_rsqrt( float number ) {
 #endif
 		return y * (1.5f - (x * y * y));
 }
+
 #else
 float Q_rsqrt( float f );       // reciprocal square root
-#endif
+#endif // idppc
 
-#define SQRTFAST( x ) ( 1.0f / Q_rsqrt( x ) )
+#define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 
 signed char ClampChar( int i );
 signed short ClampShort( int i );
@@ -590,7 +594,6 @@ void ByteToDir( int b, vec3_t dir );
 #define VectorSubtract( a,b,c )   ( ( c )[0] = ( a )[0] - ( b )[0],( c )[1] = ( a )[1] - ( b )[1],( c )[2] = ( a )[2] - ( b )[2] )
 #define VectorAdd( a,b,c )        ( ( c )[0] = ( a )[0] + ( b )[0],( c )[1] = ( a )[1] + ( b )[1],( c )[2] = ( a )[2] + ( b )[2] )
 #define VectorCopy( a,b )         ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2] )
-#define VectorCopy4(a,b)		((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
 #define VectorScale( v, s, o )    ( ( o )[0] = ( v )[0] * ( s ),( o )[1] = ( v )[1] * ( s ),( o )[2] = ( v )[2] * ( s ) )
 #define VectorMA( v, s, b, o )    ( ( o )[0] = ( v )[0] + ( b )[0] * ( s ),( o )[1] = ( v )[1] + ( b )[1] * ( s ),( o )[2] = ( v )[2] + ( b )[2] * ( s ) )
 
@@ -622,15 +625,14 @@ typedef struct {
 
 #define Vector4Set( v, x, y, z, n )   ( ( v )[0] = ( x ),( v )[1] = ( y ),( v )[2] = ( z ),( v )[3] = ( n ) )
 #define Vector4Copy( a,b )            ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2],( b )[3] = ( a )[3] )
-
-#define Byte4Copy(a,b)			((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
-
 #define Vector4MA( v, s, b, o )       ( ( o )[0] = ( v )[0] + ( b )[0] * ( s ),( o )[1] = ( v )[1] + ( b )[1] * ( s ),( o )[2] = ( v )[2] + ( b )[2] * ( s ),( o )[3] = ( v )[3] + ( b )[3] * ( s ) )
 #define Vector4Average( v, b, s, o )  ( ( o )[0] = ( ( v )[0] * ( 1 - ( s ) ) ) + ( ( b )[0] * ( s ) ),( o )[1] = ( ( v )[1] * ( 1 - ( s ) ) ) + ( ( b )[1] * ( s ) ),( o )[2] = ( ( v )[2] * ( 1 - ( s ) ) ) + ( ( b )[2] * ( s ) ),( o )[3] = ( ( v )[3] * ( 1 - ( s ) ) ) + ( ( b )[3] * ( s ) ) )
 
+#define Byte4Copy(a,b)			((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
+
 #define SnapVector( v ) {v[0] = ( (int)( v[0] ) ); v[1] = ( (int)( v[1] ) ); v[2] = ( (int)( v[2] ) );}
 
-// just in case you do't want to use the macros
+// just in case you don't want to use the macros
 vec_t _DotProduct( const vec3_t v1, const vec3_t v2 );
 void _VectorSubtract( const vec3_t veca, const vec3_t vecb, vec3_t out );
 void _VectorAdd( const vec3_t veca, const vec3_t vecb, vec3_t out );
@@ -752,6 +754,7 @@ qboolean BoundsIntersectPoint(const vec3_t mins, const vec3_t maxs,
 
 float   AngleMod( float a );
 float   LerpAngle( float from, float to, float frac );
+void    LerpPosition( vec3_t start, vec3_t end, float frac, vec3_t out );
 float   AngleSubtract( float a1, float a2 );
 void    AnglesSubtract( vec3_t v1, vec3_t v2, vec3_t v3 );
 
@@ -766,11 +769,16 @@ void RotateAroundDirection( vec3_t axis[3], float yaw );
 void MakeNormalVectors( const vec3_t forward, vec3_t right, vec3_t up );
 // perpendicular vector could be replaced by this
 
-int PlaneTypeForNormal( vec3_t normal );
+// int PlaneTypeForNormal( vec3_t normal );
 
 void MatrixMultiply( float in1[3][3], float in2[3][3], float out[3][3] );
 void AngleVectors( const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up );
 void PerpendicularVector( vec3_t dst, const vec3_t src );
+
+// Ridah
+void GetPerpendicularViewVector( const vec3_t point, const vec3_t p1, const vec3_t p2, vec3_t up );
+void ProjectPointOntoVector( vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vProj );
+// done.
 
 #ifndef MAX
 #define MAX(x,y) ((x)>(y)?(x):(y))
@@ -780,11 +788,6 @@ void PerpendicularVector( vec3_t dst, const vec3_t src );
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #endif
 
-// Ridah
-void GetPerpendicularViewVector( const vec3_t point, const vec3_t p1, const vec3_t p2, vec3_t up );
-void ProjectPointOntoVector( vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vProj );
-// done.
-
 //=============================================
 
 float Com_Clamp( float min, float max, float value );
@@ -793,6 +796,7 @@ char    *COM_SkipPath( char *pathname );
 const char	*COM_GetExtension( const char *name );
 void	COM_StripExtension(const char *in, char *out, int destsize);
 qboolean COM_CompareExtension(const char *in, const char *ext);
+void    COM_StripExtension2( const char *in, char *out, int destsize );
 void    COM_StripFilename( char *in, char *out );
 void    COM_DefaultExtension( char *path, int maxSize, const char *extension );
 
@@ -805,8 +809,8 @@ char    *COM_ParseExt( char **data_p, qboolean allowLineBreak );
 int     COM_Compress( char *data_p );
 void	COM_ParseError( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
 void	COM_ParseWarning( char *format, ... ) __attribute__ ((format (printf, 1, 2)));
+//int		COM_ParseInfos( char *buf, int max, char infos[][MAX_INFO_STRING] );
 
-// TTimo
 qboolean COM_BitCheck( const int array[], int bitNum );
 void COM_BitSet( int array[], int bitNum );
 void COM_BitClear( int array[], int bitNum );
@@ -859,6 +863,7 @@ void Com_ScriptError( const char *msg, ... ) __attribute__ ((format (printf, 1, 
 void Com_ScriptWarning( const char *msg, ... ) __attribute__ ((format (printf, 1, 2)));
 
 void SkipBracedSection( char **program );
+void SkipBracedSection_Depth( char **program, int depth ); // start at given depth if already matching stuff
 void SkipRestOfLine( char **data );
 
 float Com_ParseFloat( const char *( *buf_p ) );
@@ -907,9 +912,6 @@ int Q_isupper( int c );
 int Q_isalpha( int c );
 qboolean Q_isanumber( const char *s );
 qboolean Q_isintegral( float f );
-int Q_isnumeric( int c );       //----(SA)	added
-int Q_isalphanumeric( int c );  //----(SA)	added
-int Q_isforfilename( int c );       //----(SA)	added
 
 // portable case insensitive compare
 int     Q_stricmp( const char *s1, const char *s2 );
@@ -939,6 +941,16 @@ int Q_CountChar(const char *string, char tocount);
 int Q_strncasecmp( char *s1, char *s2, int n );
 int Q_strcasecmp( char *s1, char *s2 );
 // done.
+// TTimo
+// vsnprintf is ISO/IEC 9899:1999
+// abstracting this to make it portable
+//#ifdef WIN32
+//#define Q_vsnprintf _vsnprintf
+//#else
+// TODO: Mac define?
+//#define Q_vsnprintf vsnprintf
+//#endif
+
 //=============================================
 
 // 64-bit integers for global rankings interface
@@ -1003,42 +1015,6 @@ void	QDECL Com_Printf( const char *msg, ... ) __attribute__ ((format (printf, 1,
 #ifdef __cplusplus
 }
 #endif
-/*
-==============================================================
-
-SAVE
-
-	12 -
-	13 - (SA) added 'episode' tracking to savegame
-	14 - RF added 'skill'
-	15 - (SA) moved time info above the main game reading
-	16 - (SA) added fog
-	17 - (SA) rats, changed fog.
-  18 - TTimo targetdeath fix
-	   show_bug.cgi?id=434
-
-==============================================================
-*/
-
-#define SAVE_VERSION    18
-#define SAVE_INFOSTRING_LENGTH  256
-
-
-
-/*
-==========================================================
-
-  RELOAD STATES
-
-==========================================================
-*/
-
-#define RELOAD_SAVEGAME         0x01
-#define RELOAD_NEXTMAP          0x02
-#define RELOAD_NEXTMAP_WAITING  0x04
-#define RELOAD_FAILED           0x08
-#define RELOAD_ENDGAME          0x10
-
 
 /*
 ==========================================================
@@ -1073,6 +1049,7 @@ default values.
 #define CVAR_SERVER_CREATED	0x0800	// cvar was created by a server the client connected to.
 #define CVAR_VM_CREATED		0x1000	// cvar was created exclusively in one of the VMs.
 #define CVAR_PROTECTED		0x2000	// prevent modifying this var from VMs or the server
+#define CVAR_WOLFINFO		0x4000   // DHM - NERVE :: Like userinfo, but for wolf multiplayer info
 // These flags are only returned by the Cvar_Flags() function
 #define CVAR_MODIFIED		0x40000000	// Cvar was modified
 #define CVAR_NONEXISTENT	0x80000000	// Cvar doesn't exist.
@@ -1081,15 +1058,15 @@ default values.
 typedef struct cvar_s cvar_t;
 
 struct cvar_s {
-	char			*name;
-	char			*string;
-	char			*resetString;		// cvar_restart will reset to this value
-	char			*latchedString;		// for CVAR_LATCH vars
-	int				flags;
+	char        *name;
+	char        *string;
+	char        *resetString;       // cvar_restart will reset to this value
+	char        *latchedString;     // for CVAR_LATCH vars
+	int flags;
 	qboolean modified;              // set each time the cvar is changed
-	int				modificationCount;	// incremented each time the cvar is changed
-	float			value;				// atof( string )
-	int				integer;			// atoi( string )
+	int modificationCount;          // incremented each time the cvar is changed
+	float value;                    // atof( string )
+	int integer;                    // atoi( string )
 	qboolean	validate;
 	qboolean	integral;
 	float			min;
@@ -1243,10 +1220,10 @@ typedef enum {
 //
 // per-level limits
 //
-#define MAX_CLIENTS         128     // absolute limit
+#define MAX_CLIENTS         64 // JPW NERVE back to q3ta default was 128		// absolute limit
 #define MAX_LOCATIONS       64
 
-#define GENTITYNUM_BITS     10      // don't need to send any more
+#define GENTITYNUM_BITS     10  // JPW NERVE put q3ta default back for testing	// don't need to send any more
 //#define	GENTITYNUM_BITS		11		// don't need to send any more		(SA) upped 4/21/2001 adjusted: tr_local.h (802-822), tr_main.c (1501), sv_snapshot (206)
 #define MAX_GENTITIES       ( 1 << GENTITYNUM_BITS )
 
@@ -1305,6 +1282,8 @@ typedef struct {
 //
 typedef enum
 {
+	// TTimo gcc: enums don't go <=0 unless you force a value
+	AISTATE_NULL = -1,
 	AISTATE_RELAXED,
 	AISTATE_QUERY,
 	AISTATE_ALERT,
@@ -1323,7 +1302,7 @@ typedef enum
 #define MAX_WEAPS_IN_BANK_MP    8
 #define MAX_WEAP_BANKS_MP   7
 // jpw
-#define MAX_WEAP_ALTS       WP_DYNAMITE
+#define MAX_WEAP_ALTS       WP_DYNAMITE2
 
 
 // bit field limits
@@ -1331,7 +1310,6 @@ typedef enum
 #define MAX_PERSISTANT          16
 #define MAX_POWERUPS            16
 #define MAX_WEAPONS             64  // (SA) and yet more!
-#define MAX_HOLDABLE            16
 
 // Ridah, increased this
 //#define	MAX_PS_EVENTS			2
@@ -1427,7 +1405,7 @@ typedef struct playerState_s {
 	int powerups[MAX_POWERUPS];         // level.time that the powerup runs out
 	int ammo[MAX_WEAPONS];              // total amount of ammo
 	int ammoclip[MAX_WEAPONS];          // ammo in clip
-	int holdable[MAX_HOLDABLE];
+	int holdable[16];
 	int holding;                        // the current item in holdable[] that is selected (held)
 	int weapons[MAX_WEAPONS / ( sizeof( int ) * 8 )];   // 64 bits for weapons held
 
@@ -1481,11 +1459,11 @@ typedef struct playerState_s {
 
 	// JPW NERVE -- value for all multiplayer classes with regenerating "class weapons" -- ie LT artillery, medic medpack, engineer build points, etc
 	int classWeaponTime;
-	int jumpTime;         // used in SP/MP to prevent jump accel
+	int jumpTime;         // used in MP to prevent jump accel
 	// jpw
 
-	int weapAnimTimer;              // don't change low priority animations until this runs out
-	int weapAnim;               // mask off ANIM_TOGGLEBIT
+	int weapAnimTimer;              // don't change low priority animations until this runs out		//----(SA)	added
+	int weapAnim;               // mask off ANIM_TOGGLEBIT										//----(SA)	added
 
 	qboolean releasedFire;
 
@@ -1498,20 +1476,19 @@ typedef struct playerState_s {
 
 	int leanStopDebounceTime;
 
+//----(SA)	added
+
+	// seems like heat and aimspread could be tied together somehow, however, they (appear to) change at different rates and
+	// I can't currently see how to optimize this to one server->client transmission "weapstatus" value.
 	int weapHeat[MAX_WEAPONS];          // some weapons can overheat.  this tracks (server-side) how hot each weapon currently is.
 	int curWeapHeat;                    // value for the currently selected weapon (for transmission to client)
 
-	int venomTime;
-
-//----(SA)	added
-	int accShowBits;            // RF (changed from short), these should all be 32 bit
-	int accHideBits;
+	int venomTime;          //----(SA)	added
 //----(SA)	end
 
 	aistateEnum_t aiState;
 
-	float footstepCount;
-
+	int identifyClient;                 // NERVE - SMF
 } playerState_t;
 
 
@@ -1548,15 +1525,26 @@ typedef struct playerState_s {
 #define WBUTTON_RELOAD      8
 #define WBUTTON_LEANLEFT    16
 #define WBUTTON_LEANRIGHT   32
+#define WBUTTON_DROP        64 // JPW NERVE
 
 // unused
-#define WBUTTON_EXTRA6      64
 #define WBUTTON_EXTRA7      128
 //----(SA) end
 
 #define MOVE_RUN            120         // if forwardmove or rightmove are >= MOVE_RUN,
 										// then BUTTON_WALKING should be set
 
+#define MP_TEAM_OFFSET      6
+#define MP_CLASS_OFFSET     4
+#define MP_WEAPON_OFFSET    0
+
+#define MP_TEAM_BITS        2
+#define MP_CLASS_BITS       2
+#define MP_WEAPON_BITS      4
+
+#define MP_TEAM_MASK        0xC0
+#define MP_CLASS_MASK       0x30
+#define MP_WEAPON_MASK      0x0F
 
 // usercmd_t is sent to the server each client frame
 typedef struct usercmd_s {
@@ -1567,11 +1555,11 @@ typedef struct usercmd_s {
 	byte holdable;          //----(SA)	added
 	int angles[3];
 
-
 	signed char forwardmove, rightmove, upmove;
 	signed char wolfkick;       // RF, we should move this over to a wbutton, this is a huge waste of bandwidth
 
-	unsigned short cld;         // NERVE - SMF - send client damage in usercmd instead of as a server command
+	char mpSetup;               // NERVE - SMF
+	char identClient;           // NERVE - SMF
 } usercmd_t;
 
 //===================================================================
@@ -1746,10 +1734,10 @@ typedef struct qtime_s {
 
 
 // server browser sources
-#define AS_LOCAL            0
-#define AS_MPLAYER      1
-#define AS_GLOBAL           2
-#define AS_FAVORITES    3
+#define AS_LOCAL        0
+#define AS_GLOBAL       1           // NERVE - SMF - modified
+#define AS_FAVORITES    2
+#define AS_MPLAYER      3
 
 
 // cinematic states
@@ -1773,7 +1761,7 @@ typedef enum _flag_status {
 
 
 
-#define MAX_GLOBAL_SERVERS          2048
+#define MAX_GLOBAL_SERVERS          4096
 #define MAX_OTHER_SERVERS           128
 #define MAX_PINGREQUESTS            32
 #define MAX_SERVERSTATUSREQUESTS    16
@@ -1796,5 +1784,26 @@ typedef enum {
 	LANGUAGE_SPANISH,
 	MAX_LANGUAGES
 } languages_t;
+
+// NERVE - SMF - wolf server/game states
+typedef enum {
+	GS_INITIALIZE = -1,
+	GS_PLAYING,
+	GS_WARMUP_COUNTDOWN,
+	GS_WARMUP,
+	GS_INTERMISSION,
+	GS_WAITING_FOR_PLAYERS,
+	GS_RESET
+} gamestate_t;
+
+// TTimo - voting config flags
+#define VOTEFLAGS_RESTART           ( 1 << 0 )
+#define VOTEFLAGS_RESETMATCH    ( 1 << 1 )
+#define VOTEFLAGS_STARTMATCH    ( 1 << 2 )
+#define VOTEFLAGS_NEXTMAP           ( 1 << 3 )
+#define VOTEFLAGS_SWAP              ( 1 << 4 )
+#define VOTEFLAGS_TYPE              ( 1 << 5 )
+#define VOTEFLAGS_KICK              ( 1 << 6 )
+#define VOTEFLAGS_MAP                   ( 1 << 7 )
 
 #endif  // __Q_SHARED_H
