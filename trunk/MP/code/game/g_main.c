@@ -2391,6 +2391,7 @@ void CheckGameState( void ) {
 	// check warmup latch
 	if ( current_gs == GS_WARMUP ) {
 		if ( g_warmup.integer <= 0 || !g_doWarmup.integer ) {
+			level.warmupTime = level.time + 1000;
 			trap_Cvar_Set( "gamestate", va( "%i", GS_PLAYING ) );
 		} else {
 			int delay = g_warmup.integer + 1;
