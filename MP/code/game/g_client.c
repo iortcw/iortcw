@@ -1716,8 +1716,8 @@ void ClientBegin( int clientNum ) {
 		AICast_ScriptEvent( AICast_GetCastState( clientNum ), "spawn", "" );
 	}
 
+/*
 	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-
 		if ( g_gametype.integer != GT_TOURNAMENT ) {
 			// Ridah
 			if ( !( ent->r.svFlags & SVF_CASTAI ) ) {
@@ -1726,6 +1726,8 @@ void ClientBegin( int clientNum ) {
 			}
 		}
 	}
+*/
+
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 
 	// Xian - Check for maxlives enforcement
