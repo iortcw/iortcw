@@ -2453,7 +2453,7 @@ static void CollapseStagesToLightall(shaderStage_t *diffuse,
 }
 
 
-static qboolean CollapseStagesToGLSL(void)
+static int CollapseStagesToGLSL(void)
 {
 	int i, j, numStages;
 	qboolean skip = qfalse;
@@ -3194,7 +3194,9 @@ static shader_t *FinishShader( void ) {
 	//
 	// look for multitexture potential
 	//
-	stage = CollapseStagesToGLSL();
+	if ( qglActiveTextureARB ) {
+		stage = CollapseStagesToGLSL();
+	}
 
 	if ( shader.lightmapIndex >= 0 && !hasLightmapStage ) {
 		if ( vertexLightmap ) {
