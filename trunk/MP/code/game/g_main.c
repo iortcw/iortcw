@@ -2561,7 +2561,7 @@ Runs thinking code for this frame if necessary
 =============
 */
 void G_RunThink( gentity_t *ent ) {
-	int thinktime;
+	float thinktime;
 
 	// RF, run scripting
 	if ( ent->s.number >= MAX_CLIENTS ) {
