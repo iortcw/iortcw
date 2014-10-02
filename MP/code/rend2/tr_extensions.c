@@ -180,7 +180,7 @@ void (APIENTRY * qglDrawBuffersARB)(GLsizei n, const GLenum *bufs);
 
 static qboolean GLimp_HaveExtension(const char *ext)
 {
-	const char *ptr = Q_stristr( glConfig.extensions_string, ext );
+	const char *ptr = Q_stristr( (char *)qglGetString(GL_EXTENSIONS), ext );
 	if (ptr == NULL)
 		return qfalse;
 	ptr += strlen(ext);
