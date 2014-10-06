@@ -1258,7 +1258,7 @@ endef
 
 define DO_SPLINE_CXX
 $(echo_cmd) "SPLINE_CXX $<"
-$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
 endef
 
 #############################################################################
