@@ -1071,8 +1071,6 @@ typedef struct {
 
 	int numImages;
 	image_t                 *images[MAX_DRAWIMAGES];
-	// Ridah
-	int numCacheImages;
 
 	// shader indexes from other modules will be looked up in tr.shaders[]
 	// shader indexes from drawsurfs will be looked up in sortedShaders[]
