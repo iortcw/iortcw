@@ -73,19 +73,18 @@ void RB_CheckOverflow( int verts, int indexes ) {
 	RB_BeginSurface( tess.shader, tess.fogNum, tess.cubemapIndex );
 }
 
-void RB_CheckVBOandIBO(VBO_t *vbo, IBO_t *ibo)
+void RB_CheckVao(vao_t *vao)
 {
-	if (!(vbo == glState.currentVBO && ibo == glState.currentIBO) || tess.multiDrawPrimitives >= MAX_MULTIDRAW_PRIMITIVES)
+	if (vao != glState.currentVao || tess.multiDrawPrimitives >= MAX_MULTIDRAW_PRIMITIVES)
 	{
 		RB_EndSurface();
 		RB_BeginSurface(tess.shader, tess.fogNum, tess.cubemapIndex);
 
-		R_BindVBO(vbo);
-		R_BindIBO(ibo);
+		R_BindVao(vao);
 	}
 
-	if (vbo != tess.vbo && ibo != tess.ibo)
-		tess.useInternalVBO = qfalse;
+	if (vao != tess.vao)
+		tess.useInternalVao = qfalse;
 }
 
 /*
@@ -133,7 +132,7 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], 
 	tess.normal[ndx] =
 	tess.normal[ndx+1] =
 	tess.normal[ndx+2] =
-	tess.normal[ndx+3] = R_VboPackNormal(normal);
+	tess.normal[ndx+3] = R_VaoPackNormal(normal);
 
 	// standard square texture coordinates
 	VectorSet2(tess.texCoords[ndx  ][0], s1, t1);
@@ -208,11 +207,9 @@ void RB_InstantQuad2(vec4_t quadVerts[4], vec2_t texCoords[4])
 	tess.minIndex = 0;
 	tess.maxIndex = 3;
 
-	RB_UpdateVBOs(ATTR_POSITION | ATTR_TEXCOORD);
+	RB_UpdateTessVao(ATTR_POSITION | ATTR_TEXCOORD);
 
-	GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
-
-	R_DrawElementsVBO(tess.numIndexes, tess.firstIndex, tess.minIndex, tess.maxIndex);
+	R_DrawElementsVao(tess.numIndexes, tess.firstIndex, tess.minIndex, tess.maxIndex);
 
 	tess.numIndexes = 0;
 	tess.numVertexes = 0;
@@ -353,7 +350,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	glIndex_t      *outIndex;
 	float		*color;
 
-	RB_CheckVBOandIBO(tess.vbo, tess.ibo);
+	RB_CheckVao(tess.vao);
 
 	RB_CHECKOVERFLOW( numVerts, numIndexes );
 
@@ -377,7 +374,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		normal = &tess.normal[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, normal++ )
-			*normal = R_VboPackNormal(dv->normal);
+			*normal = R_VaoPackNormal(dv->normal);
 	}
 
 #ifdef USE_VERT_TANGENT_SPACE
@@ -386,7 +383,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		tangent = &tess.tangent[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, tangent++ )
-			*tangent = R_VboPackTangent(dv->tangent);
+			*tangent = R_VaoPackTangent(dv->tangent);
 	}
 #endif
 
@@ -419,7 +416,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		lightdir = &tess.lightdir[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, lightdir++ )
-			*lightdir = R_VboPackNormal(dv->lightdir);
+			*lightdir = R_VaoPackNormal(dv->lightdir);
 	}
 
 #if 0  // nothing even uses vertex dlightbits
@@ -434,12 +431,12 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	tess.numVertexes += numVerts;
 }
 
-static qboolean RB_SurfaceVbo(VBO_t *vbo, IBO_t *ibo, int numVerts, int numIndexes, int firstIndex, int minIndex, int maxIndex, int dlightBits, int pshadowBits, qboolean shaderCheck)
+static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firstIndex, int minIndex, int maxIndex, int dlightBits, int pshadowBits, qboolean shaderCheck)
 {
 	int i, mergeForward, mergeBack;
 	GLvoid *firstIndexOffset, *lastIndexOffset;
 
-	if (!vbo || !ibo)
+	if (!vao)
 	{
 		return qfalse;
 	}
@@ -449,7 +446,7 @@ static qboolean RB_SurfaceVbo(VBO_t *vbo, IBO_t *ibo, int numVerts, int numIndex
 		return qfalse;
 	}
 
-	RB_CheckVBOandIBO(vbo, ibo);
+	RB_CheckVao(vao);
 
 	tess.dlightBits |= dlightBits;
 	tess.pshadowBits |= pshadowBits;
@@ -543,7 +540,7 @@ RB_SurfaceTriangles
 =============
 */
 static void RB_SurfaceTriangles( srfBspSurface_t *srf ) {
-	if( RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes,
+	if( RB_SurfaceVao (srf->vao, srf->numVerts, srf->numIndexes,
 				srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue ) )
 	{
 		return;
@@ -627,16 +624,15 @@ static void RB_SurfaceBeam( void ) {
 	tess.maxIndex = tess.numVertexes;
 
 	// FIXME: A lot of this can probably be removed for speed, and refactored into a more convenient function
-	RB_UpdateVBOs(ATTR_POSITION);
+	RB_UpdateTessVao(ATTR_POSITION);
 	
-	GLSL_VertexAttribsState(ATTR_POSITION);
 	GLSL_BindProgram(sp);
 		
 	GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
 
 	GLSL_SetUniformVec4(sp, UNIFORM_COLOR, colorRed);
 
-	R_DrawElementsVBO(tess.numIndexes, tess.firstIndex, tess.minIndex, tess.maxIndex);
+	R_DrawElementsVao(tess.numIndexes, tess.firstIndex, tess.minIndex, tess.maxIndex);
 
 	tess.numIndexes = 0;
 	tess.numVertexes = 0;
@@ -1173,7 +1169,7 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 			VectorCopy(newVerts->xyz,    outXyz);
 			VectorCopy(newVerts->normal, normal);
 
-			*outNormal = R_VboPackNormal(normal);
+			*outNormal = R_VaoPackNormal(normal);
 
 			newVerts++;
 			outXyz += 4;
@@ -1198,7 +1194,7 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 			VectorLerp(newVerts->normal, oldVerts->normal, backlerp, normal);
 			VectorNormalize(normal);
 
-			*outNormal = R_VboPackNormal(normal);
+			*outNormal = R_VaoPackNormal(normal);
 
 			newVerts++;
 			oldVerts++;
@@ -1365,7 +1361,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 				fNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
 			}
 
-			*outNormal = R_VboPackNormal(fNormal);
+			*outNormal = R_VaoPackNormal(fNormal);
 		}
 	} else {
 		//
@@ -1435,7 +1431,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 
 			VectorNormalize( fNormal );
 			
-			*outNormal = R_VboPackNormal(fNormal);
+			*outNormal = R_VaoPackNormal(fNormal);
 		}
 	}
 }
@@ -1499,7 +1495,7 @@ RB_SurfaceFace
 ==============
 */
 static void RB_SurfaceFace( srfBspSurface_t *srf ) {
-	if( RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes,
+	if( RB_SurfaceVao (srf->vao, srf->numVerts, srf->numIndexes,
 					srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue ) )
 	{
 		return;
@@ -1569,7 +1565,7 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 	int     pshadowBits;
 	//int		*vDlightBits;
 
-	if( RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes,
+	if( RB_SurfaceVao (srf->vao, srf->numVerts, srf->numIndexes,
 					srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue ) )
 	{
 		return;
@@ -1662,13 +1658,13 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_NORMAL )
 				{
-					*normal++ = R_VboPackNormal(dv->normal);
+					*normal++ = R_VaoPackNormal(dv->normal);
 				}
 
 #ifdef USE_VERT_TANGENT_SPACE
 				if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 				{
-					*tangent++ = R_VboPackTangent(dv->tangent);
+					*tangent++ = R_VaoPackTangent(dv->tangent);
 				}
 #endif
 
@@ -1692,7 +1688,7 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_LIGHTDIRECTION )
 				{
-					*lightdir++ = R_VboPackNormal(dv->lightdir);
+					*lightdir++ = R_VaoPackNormal(dv->lightdir);
 				}
 
 				//*vDlightBits++ = dlightBits;
@@ -1818,31 +1814,30 @@ static void RB_SurfaceFlare( srfFlare_t *surf ) {
 		RB_AddFlare(surf, tess.fogNum, surf->origin, surf->color, 1.0f, surf->normal, 0, qtrue);
 }
 
-static void RB_SurfaceVBOMesh(srfBspSurface_t * srf)
+static void RB_SurfaceVaoMesh(srfBspSurface_t * srf)
 {
-	RB_SurfaceVbo (srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes, srf->firstIndex,
+	RB_SurfaceVao (srf->vao, srf->numVerts, srf->numIndexes, srf->firstIndex,
 			srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qfalse );
 }
 
-void RB_SurfaceVBOMDVMesh(srfVBOMDVMesh_t * surface)
+void RB_SurfaceVaoMdvMesh(srfVaoMdvMesh_t * surface)
 {
 	//mdvModel_t     *mdvModel;
 	//mdvSurface_t   *mdvSurface;
 	refEntity_t    *refEnt;
 
-	GLimp_LogComment("--- RB_SurfaceVBOMDVMesh ---\n");
+	GLimp_LogComment("--- RB_SurfaceVaoMdvMesh ---\n");
 
-	if(!surface->vbo || !surface->ibo)
+	if(!surface->vao)
 		return;
 
-	//RB_CheckVBOandIBO(surface->vbo, surface->ibo);
+	//RB_CheckVao(surface->vao);
 	RB_EndSurface();
 	RB_BeginSurface(tess.shader, tess.fogNum, tess.cubemapIndex);
 
-	R_BindVBO(surface->vbo);
-	R_BindIBO(surface->ibo);
+	R_BindVao(surface->vao);
 
-	tess.useInternalVBO = qfalse;
+	tess.useInternalVao = qfalse;
 
 	tess.numIndexes += surface->numIndexes;
 	tess.numVertexes += surface->numVerts;
@@ -1865,7 +1860,8 @@ void RB_SurfaceVBOMDVMesh(srfVBOMDVMesh_t * surface)
 
 	glState.vertexAttribsOldFrame = refEnt->oldframe;
 	glState.vertexAttribsNewFrame = refEnt->frame;
-	glState.vertexAnimation = qtrue;
+	if (surface->mdvModel->numFrames > 1)
+		glState.vertexAnimation = qtrue;
 
 	RB_EndSurface();
 
@@ -1898,6 +1894,6 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * ) = {
 	( void( * ) ( void* ) )RB_SurfaceFlare,		// SF_FLARE,
 	( void( * ) ( void* ) )RB_SurfaceEntity,	// SF_ENTITY
 	( void( * ) ( void* ) )RB_SurfaceDisplayList,	// SF_DISPLAY_LIST
-	( void( * ) ( void* ) )RB_SurfaceVBOMesh,	// SF_VBO_MESH,
-	( void( * ) ( void* ) )RB_SurfaceVBOMDVMesh,	// SF_VBO_MDVMESH
+	( void( * ) ( void* ) )RB_SurfaceVaoMesh,	// SF_VAO_MESH,
+	( void( * ) ( void* ) )RB_SurfaceVaoMdvMesh,	// SF_VAO_MDVMESH
 };

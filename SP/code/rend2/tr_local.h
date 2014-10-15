@@ -56,8 +56,7 @@ typedef unsigned int glIndex_t;
 
 #define	MAX_FBOS      64
 #define MAX_VISCOUNTS 5
-#define MAX_VBOS      4096
-#define MAX_IBOS      4096
+#define MAX_VAOS      4096
 
 #define MAX_CALC_PSHADOWS    64
 #define MAX_DRAWN_PSHADOWS    16 // do not increase past 32, because bit flags are used on surfaces
@@ -66,6 +65,7 @@ typedef unsigned int glIndex_t;
 #define CUBE_MAP_SIZE      (1 << CUBE_MAP_MIPS)
  
 #define USE_VERT_TANGENT_SPACE
+
 
 // a trRefEntity_t has all the information passed in by
 // the client game, as well as some locally derived info
@@ -135,50 +135,42 @@ typedef struct image_s {
 	struct image_s* next;
 } image_t;
 
+// Ensure this is >= the ATTR_INDEX_COUNT enum below
+#define VAO_MAX_ATTRIBS 16
+
 typedef enum
 {
-	VBO_USAGE_STATIC,
-	VBO_USAGE_DYNAMIC
-} vboUsage_t;
+	VAO_USAGE_STATIC,
+	VAO_USAGE_DYNAMIC
+} vaoUsage_t;
 
-typedef struct VBO_s
+typedef struct vaoAttrib_s
+{
+	uint32_t enabled;
+	uint32_t count;
+	uint32_t type;
+	uint32_t normalized;
+	uint32_t stride;
+	uint32_t offset;
+}
+vaoAttrib_t;
+
+typedef struct vao_s
 {
 	char            name[MAX_QPATH];
+
+	uint32_t        vao;
 
 	uint32_t        vertexesVBO;
 	int             vertexesSize;	// amount of memory data allocated for all vertices in bytes
-	uint32_t        ofs_xyz;
-	uint32_t        ofs_normal;
-	uint32_t        ofs_st;
-	uint32_t        ofs_lightmap;
-	uint32_t        ofs_vertexcolor;
-	uint32_t        ofs_lightdir;
-#ifdef USE_VERT_TANGENT_SPACE
-	uint32_t        ofs_tangent;
-#endif
-	uint32_t        stride_xyz;
-	uint32_t        stride_normal;
-	uint32_t        stride_st;
-	uint32_t        stride_lightmap;
-	uint32_t        stride_vertexcolor;
-	uint32_t        stride_lightdir;
-#ifdef USE_VERT_TANGENT_SPACE
-	uint32_t        stride_tangent;
-#endif
+	vaoAttrib_t     attribs[VAO_MAX_ATTRIBS];
+
 	uint32_t        size_xyz;
 	uint32_t        size_normal;
 
-	int             attribs;
-} VBO_t;
-
-typedef struct IBO_s
-{
-	char            name[MAX_QPATH];
-
-	uint32_t        indexesVBO;
+	uint32_t        indexesIBO;
 	int             indexesSize;	// amount of memory data allocated for all triangles in bytes
-//  uint32_t        ofsIndexes;
-} IBO_t;
+} vao_t;
 
 //===============================================================================
 
@@ -602,8 +594,8 @@ typedef struct dlight_s {
 enum
 {
 	ATTR_INDEX_POSITION       = 0,
-	ATTR_INDEX_TEXCOORD0      = 1,
-	ATTR_INDEX_TEXCOORD1      = 2,
+	ATTR_INDEX_TEXCOORD       = 1,
+	ATTR_INDEX_LIGHTCOORD     = 2,
 	ATTR_INDEX_TANGENT        = 3,
 	ATTR_INDEX_NORMAL         = 4,
 	ATTR_INDEX_COLOR          = 5,
@@ -615,26 +607,28 @@ enum
 	// GPU vertex animations
 	ATTR_INDEX_POSITION2      = 10,
 	ATTR_INDEX_TANGENT2       = 11,
-	ATTR_INDEX_NORMAL2        = 12
+	ATTR_INDEX_NORMAL2        = 12,
+	
+	ATTR_INDEX_COUNT          = 13
 };
 
 enum
 {
-	ATTR_POSITION =       0x0001,
-	ATTR_TEXCOORD =       0x0002,
-	ATTR_LIGHTCOORD =     0x0004,
-	ATTR_TANGENT =        0x0008,
-	ATTR_NORMAL =         0x0010,
-	ATTR_COLOR =          0x0020,
-	ATTR_PAINTCOLOR =     0x0040,
-	ATTR_LIGHTDIRECTION = 0x0080,
-	ATTR_BONE_INDEXES =   0x0100,
-	ATTR_BONE_WEIGHTS =   0x0200,
+	ATTR_POSITION =       1 << ATTR_INDEX_POSITION,
+	ATTR_TEXCOORD =       1 << ATTR_INDEX_TEXCOORD,
+	ATTR_LIGHTCOORD =     1 << ATTR_INDEX_LIGHTCOORD,
+	ATTR_TANGENT =        1 << ATTR_INDEX_TANGENT,
+	ATTR_NORMAL =         1 << ATTR_INDEX_NORMAL,
+	ATTR_COLOR =          1 << ATTR_INDEX_COLOR,
+	ATTR_PAINTCOLOR =     1 << ATTR_INDEX_PAINTCOLOR,
+	ATTR_LIGHTDIRECTION = 1 << ATTR_INDEX_LIGHTDIRECTION,
+	ATTR_BONE_INDEXES =   1 << ATTR_INDEX_BONE_INDEXES,
+	ATTR_BONE_WEIGHTS =   1 << ATTR_INDEX_BONE_WEIGHTS,
 
 	// for .md3 interpolation
-	ATTR_POSITION2 =      0x0400,
-	ATTR_TANGENT2 =       0x0800,
-	ATTR_NORMAL2 =        0x1000,
+	ATTR_POSITION2 =      1 << ATTR_INDEX_POSITION2,
+	ATTR_TANGENT2 =       1 << ATTR_INDEX_TANGENT2,
+	ATTR_NORMAL2 =        1 << ATTR_INDEX_NORMAL2,
 
 	ATTR_DEFAULT = ATTR_POSITION,
 	ATTR_BITS =	ATTR_POSITION |
@@ -976,8 +970,8 @@ typedef enum {
 	SF_FLARE,
 	SF_ENTITY,              // beams, rails, lightning, etc that can be determined by entity
 	SF_DISPLAY_LIST,
-	SF_VBO_MESH,
-	SF_VBO_MDVMESH,
+	SF_VAO_MESH,
+	SF_VAO_MDVMESH,
 
 	SF_NUM_SURFACE_TYPES,
 	SF_MAX = 0xffffffff         // ensures that sizeof( surfaceType_t ) == sizeof( int )
@@ -1040,7 +1034,7 @@ typedef struct
 #define srfVert_t_cleared(x) srfVert_t (x) = {{0, 0, 0}, {0, 0}, {0, 0}, {0, 0, 0}, {0, 0, 0},  {0, 0, 0, 0}}
 #endif
 
-// srfBspSurface_t covers SF_GRID, SF_TRIANGLES, SF_POLY, and SF_VBO_MESH
+// srfBspSurface_t covers SF_GRID, SF_TRIANGLES, SF_POLY, and SF_VAO_MESH
 typedef struct srfBspSurface_s
 {
 	surfaceType_t surfaceType;
@@ -1070,8 +1064,7 @@ typedef struct srfBspSurface_s
 	glIndex_t       maxIndex;
 
 	// static render data
-	VBO_t          *vbo;
-	IBO_t          *ibo;
+	vao_t          *vao;
 
 	// SF_GRID specific variables after here
 
@@ -1133,7 +1126,7 @@ typedef struct srfIQModel_s {
 	int		first_triangle, num_triangles;
 } srfIQModel_t;
 
-typedef struct srfVBOMDVMesh_s
+typedef struct srfVaoMdvMesh_s
 {
 	surfaceType_t   surfaceType;
 
@@ -1147,9 +1140,8 @@ typedef struct srfVBOMDVMesh_s
 	glIndex_t       maxIndex;
 
 	// static render data
-	VBO_t          *vbo;
-	IBO_t          *ibo;
-} srfVBOMDVMesh_t;
+	vao_t          *vao;
+} srfVaoMdvMesh_t;
 
 extern void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * );
 
@@ -1371,8 +1363,8 @@ typedef struct mdvModel_s
 	int             numSurfaces;
 	mdvSurface_t   *surfaces;
 
-	int             numVBOSurfaces;
-	srfVBOMDVMesh_t  *vboSurfaces;
+	int             numVaoSurfaces;
+	srfVaoMdvMesh_t  *vaoSurfaces;
 
 	int             numSkins;
 } mdvModel_t;
@@ -1512,17 +1504,16 @@ typedef struct {
 	qboolean finishCalled;
 	int texEnv[2];
 	int faceCulling;
-	unsigned long glStateBits;
-	uint32_t		vertexAttribsState;
-	uint32_t		vertexAttribPointersSet;
+	int         faceCullFront;
+	uint32_t    glStateBits;
+	uint32_t    storedGlState;
 	uint32_t        vertexAttribsNewFrame;
 	uint32_t        vertexAttribsOldFrame;
 	float           vertexAttribsInterpolation;
 	qboolean        vertexAnimation;
 	shaderProgram_t *currentProgram;
 	FBO_t          *currentFBO;
-	VBO_t          *currentVBO;
-	IBO_t          *currentIBO;
+	vao_t          *currentVao;
 	mat4_t        modelview;
 	mat4_t        projection;
 	mat4_t		modelviewProjection;
@@ -1571,6 +1562,7 @@ typedef struct {
 	GLenum packedNormalDataType;
 
 	qboolean floatLightmap;
+	qboolean vertexArrayObject;
 } glRefConfig_t;
 
 typedef struct {
@@ -1578,13 +1570,12 @@ typedef struct {
 	int     c_surfBatches;
 	float c_overDraw;
 
-	int		c_vboVertexBuffers;
-	int		c_vboIndexBuffers;
-	int		c_vboVertexes;
-	int		c_vboIndexes;
+	int		c_vaoBinds;
+	int		c_vaoVertexes;
+	int		c_vaoIndexes;
 
-	int     c_staticVboDraws;
-	int     c_dynamicVboDraws;
+	int     c_staticVaoDraws;
+	int     c_dynamicVaoDraws;
 
 	int     c_multidraws;
 	int     c_multidrawsMerged;
@@ -1797,14 +1788,11 @@ typedef struct {
 	int						numFBOs;
 	FBO_t					*fbos[MAX_FBOS];
 
-	int						numVBOs;
-	VBO_t					*vbos[MAX_VBOS];
-
-	int						numIBOs;
-	IBO_t					*ibos[MAX_IBOS];
+	int						numVaos;
+	vao_t					*vaos[MAX_VAOS];
 
 	// Ridah
-	int numCacheImages;
+	//int numCacheImages;
 
 	// shader indexes from other modules will be looked up in tr.shaders[]
 	// shader indexes from drawsurfs will be looked up in sortedShaders[]
@@ -1934,6 +1922,7 @@ extern  cvar_t  *r_arb_half_float_pixel;
 extern  cvar_t  *r_ext_framebuffer_multisample;
 extern  cvar_t  *r_arb_seamless_cube_map;
 extern  cvar_t  *r_arb_vertex_type_2_10_10_10_rev;
+extern  cvar_t  *r_arb_vertex_array_object;
 
 extern cvar_t  *r_waterFogColor;        //----(SA)	added
 extern cvar_t  *r_mapFogColor;          //----(SA)	added
@@ -2297,9 +2286,9 @@ typedef struct shaderCommands_s
 	uint32_t    lightdir[SHADER_MAX_VERTEXES] QALIGN(16);
 	//int			vertexDlightBits[SHADER_MAX_VERTEXES] QALIGN(16);
 
-	VBO_t       *vbo;
-	IBO_t       *ibo;
-	qboolean    useInternalVBO;
+	void *attribPointers[ATTR_INDEX_COUNT];
+	vao_t       *vao;
+	qboolean    useInternalVao;
 
 	stageVars_t	svars QALIGN(16);
 
@@ -2342,7 +2331,7 @@ void RB_EndSurface( void );
 void RB_CheckOverflow( int verts, int indexes );
 #define RB_CHECKOVERFLOW( v,i ) if ( tess.numVertexes + ( v ) >= SHADER_MAX_VERTEXES || tess.numIndexes + ( i ) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow( v,i );}
 
-void R_DrawElementsVBO( int numIndexes, glIndex_t firstIndex, glIndex_t minIndex, glIndex_t maxIndex );
+void R_DrawElementsVao( int numIndexes, glIndex_t firstIndex, glIndex_t minIndex, glIndex_t maxIndex );
 void RB_StageIteratorGeneric( void );
 void RB_StageIteratorSky( void );
 void RB_StageIteratorVertexLitTexture( void );
@@ -2460,28 +2449,24 @@ VERTEX BUFFER OBJECTS
 ============================================================
 */
 
-uint32_t R_VboPackTangent(vec4_t v);
-uint32_t R_VboPackNormal(vec3_t v);
-void R_VboUnpackTangent(vec4_t v, uint32_t b);
-void R_VboUnpackNormal(vec3_t v, uint32_t b);
+uint32_t R_VaoPackTangent(vec4_t v);
+uint32_t R_VaoPackNormal(vec3_t v);
+void R_VaoUnpackTangent(vec4_t v, uint32_t b);
+void R_VaoUnpackNormal(vec3_t v, uint32_t b);
 
-VBO_t          *R_CreateVBO(const char *name, byte * vertexes, int vertexesSize, vboUsage_t usage);
-VBO_t          *R_CreateVBO2(const char *name, int numVertexes, srfVert_t * vertexes, uint32_t stateBits, vboUsage_t usage);
+vao_t          *R_CreateVao(const char *name, byte *vertexes, int vertexesSize, byte *indexes, int indexesSize, vaoUsage_t usage);
+vao_t          *R_CreateVao2(const char *name, int numVertexes, srfVert_t *verts, int numIndexes, glIndex_t *inIndexes);
 
-IBO_t          *R_CreateIBO(const char *name, byte * indexes, int indexesSize, vboUsage_t usage);
-IBO_t          *R_CreateIBO2(const char *name, int numIndexes, glIndex_t * inIndexes, vboUsage_t usage);
+void            R_BindVao(vao_t *vao);
+void            R_BindNullVao(void);
 
-void            R_BindVBO(VBO_t * vbo);
-void            R_BindNullVBO(void);
+void Vao_SetVertexPointers(vao_t *vao);
 
-void            R_BindIBO(IBO_t * ibo);
-void            R_BindNullIBO(void);
+void            R_InitVaos(void);
+void            R_ShutdownVaos(void);
+void            R_VaoList_f(void);
 
-void            R_InitVBOs(void);
-void            R_ShutdownVBOs(void);
-void            R_VBOList_f(void);
-
-void            RB_UpdateVBOs(unsigned int attribBits);
+void            RB_UpdateTessVao(unsigned int attribBits);
 
 
 /*
@@ -2494,7 +2479,6 @@ GLSL
 
 void GLSL_InitGPUShaders(void);
 void GLSL_ShutdownGPUShaders(void);
-void GLSL_VertexAttribsState(uint32_t stateBits);
 void GLSL_VertexAttribPointers(uint32_t attribBits);
 void GLSL_BindProgram(shaderProgram_t * program);
 void GLSL_BindNullProgram(void);
