@@ -457,17 +457,14 @@ static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firs
 	firstIndexOffset = BUFFER_OFFSET(firstIndex * sizeof(glIndex_t));
 	lastIndexOffset  = BUFFER_OFFSET((firstIndex + numIndexes) * sizeof(glIndex_t));
 
-	if (r_mergeMultidraws->integer)
+	if (tess.multiDrawPrimitives && r_mergeMultidraws->integer)
 	{
 		i = 0;
 
 		if (r_mergeMultidraws->integer == 1)
 		{
 			// lazy merge, only check the last primitive
-			if (tess.multiDrawPrimitives)
-			{
-				i = tess.multiDrawPrimitives - 1;
-			}
+			i = tess.multiDrawPrimitives - 1;
 		}
 
 		for (; i < tess.multiDrawPrimitives; i++)
@@ -475,11 +472,17 @@ static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firs
 			if (tess.multiDrawLastIndex[i] == firstIndexOffset)
 			{
 				mergeBack = i;
+
+				if (mergeForward != -1)
+					break;
 			}
 
 			if (lastIndexOffset == tess.multiDrawFirstIndex[i])
 			{
 				mergeForward = i;
+
+				if (mergeBack != -1)
+					break;
 			}
 		}
 	}
@@ -504,7 +507,7 @@ static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firs
 	else if (mergeBack != -1 && mergeForward != -1)
 	{
 		tess.multiDrawNumIndexes[mergeBack] += numIndexes + tess.multiDrawNumIndexes[mergeForward];
-		tess.multiDrawLastIndex[mergeBack]   = tess.multiDrawFirstIndex[mergeBack] + tess.multiDrawNumIndexes[mergeBack];
+		tess.multiDrawLastIndex[mergeBack]   = tess.multiDrawFirstIndex[mergeForward] + tess.multiDrawNumIndexes[mergeForward];
 		tess.multiDrawMinIndex[mergeBack] = MIN(tess.multiDrawMinIndex[mergeBack], MIN(tess.multiDrawMinIndex[mergeForward], minIndex));
 		tess.multiDrawMaxIndex[mergeBack] = MAX(tess.multiDrawMaxIndex[mergeBack], MAX(tess.multiDrawMaxIndex[mergeForward], maxIndex));
 		tess.multiDrawPrimitives--;
@@ -513,10 +516,13 @@ static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firs
 		{
 			tess.multiDrawNumIndexes[mergeForward] = tess.multiDrawNumIndexes[tess.multiDrawPrimitives];
 			tess.multiDrawFirstIndex[mergeForward] = tess.multiDrawFirstIndex[tess.multiDrawPrimitives];
+			tess.multiDrawLastIndex[mergeForward]  = tess.multiDrawLastIndex[tess.multiDrawPrimitives];
+			tess.multiDrawMinIndex[mergeForward] = tess.multiDrawMinIndex[tess.multiDrawPrimitives];
+			tess.multiDrawMaxIndex[mergeForward] = tess.multiDrawMaxIndex[tess.multiDrawPrimitives];
 		}
 		backEnd.pc.c_multidrawsMerged += 2;
 	}
-	else if (mergeBack == -1 && mergeForward == -1)
+	else //if (mergeBack == -1 && mergeForward == -1)
 	{
 		tess.multiDrawNumIndexes[tess.multiDrawPrimitives] = numIndexes;
 		tess.multiDrawFirstIndex[tess.multiDrawPrimitives] = firstIndexOffset;
