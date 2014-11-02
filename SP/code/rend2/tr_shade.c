@@ -1668,12 +1668,6 @@ void RB_StageIteratorGeneric( void )
 	}
 
 	//
-	// Set vertex attribs and pointers
-	//
-	if (glState.vertexAnimation)
-		GLSL_VertexAttribPointers(vertexAttribs & (ATTR_POSITION | ATTR_POSITION2 | ATTR_NORMAL | ATTR_NORMAL2 | ATTR_TANGENT | ATTR_TANGENT2));
-
-	//
 	// render depth if in depthfill mode
 	//
 	if (backEnd.depthFill)

@@ -1023,9 +1023,13 @@ void GL_SetDefaultState( void ) {
 	glState.currentProgram = 0;
 	qglUseProgramObjectARB(0);
 
+	if (glRefConfig.vertexArrayObject)
+		qglBindVertexArrayARB(0);
+
 	qglBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 	qglBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
 	glState.currentVao = NULL;
+	glState.vertexAttribsEnabled = 0;
 
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	qglDepthMask( GL_TRUE );
@@ -1036,6 +1040,11 @@ void GL_SetDefaultState( void ) {
 
 	if (glRefConfig.seamlessCubeMap)
 		qglEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+	// GL_POLYGON_OFFSET_FILL will be glEnable()d when this is used
+	qglPolygonOffset( r_offsetFactor->value, r_offsetUnits->value );
+
+	qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	// FIXME: get color of sky
 
 //----(SA)	added.
 	// ATI pn_triangles
@@ -1064,11 +1073,6 @@ void GL_SetDefaultState( void ) {
 	}
 
 //----(SA)	end
-
-	// GL_POLYGON_OFFSET_FILL will be glEnable()d when this is used
-	qglPolygonOffset( r_offsetFactor->value, r_offsetUnits->value );
-
-	qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	// FIXME: get color of sky
 }
 
 /*
