@@ -1243,7 +1243,7 @@ void    RB_SetGL2D( void ) {
 
 	qglDisable( GL_FOG ); //----(SA)	added
 
-	qglDisable( GL_CULL_FACE );
+	GL_Cull( CT_TWO_SIDED );
 	qglDisable( GL_CLIP_PLANE0 );
 
 	// set time for 2D shaders
