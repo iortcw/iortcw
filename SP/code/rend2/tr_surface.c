@@ -94,6 +94,7 @@ RB_AddQuadStampExt
 */
 void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], float s1, float t1, float s2, float t2 ) {
 	vec3_t normal;
+	uint32_t    pNormal;
 	int ndx;
 
 	RB_CHECKOVERFLOW( 4, 6 );
@@ -129,10 +130,11 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], 
 	// constant normal all the way around
 	VectorSubtract( vec3_origin, backEnd.viewParms.or.axis[0], normal );
 
+	R_VaoPackNormal((byte *)&pNormal, normal);
 	tess.normal[ndx] =
 	tess.normal[ndx+1] =
 	tess.normal[ndx+2] =
-	tess.normal[ndx+3] = R_VaoPackNormal(normal);
+	tess.normal[ndx+3] = pNormal;
 
 	// standard square texture coordinates
 	VectorSet2(tess.texCoords[ndx  ][0], s1, t1);
@@ -374,7 +376,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		normal = &tess.normal[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, normal++ )
-			*normal = R_VaoPackNormal(dv->normal);
+			R_VaoPackNormal((byte *)normal, dv->normal);
 	}
 
 #ifdef USE_VERT_TANGENT_SPACE
@@ -383,7 +385,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		tangent = &tess.tangent[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, tangent++ )
-			*tangent = R_VaoPackTangent(dv->tangent);
+			R_VaoPackTangent((byte *)tangent, dv->tangent);
 	}
 #endif
 
@@ -416,7 +418,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		dv = verts;
 		lightdir = &tess.lightdir[ tess.numVertexes ];
 		for ( i = 0 ; i < numVerts ; i++, dv++, lightdir++ )
-			*lightdir = R_VaoPackNormal(dv->lightdir);
+			R_VaoPackNormal((byte *)lightdir, dv->lightdir);
 	}
 
 #if 0  // nothing even uses vertex dlightbits
@@ -1170,7 +1172,7 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 			VectorCopy(newVerts->xyz,    outXyz);
 			VectorCopy(newVerts->normal, normal);
 
-			*outNormal = R_VaoPackNormal(normal);
+			R_VaoPackNormal((byte *)outNormal, normal);
 
 			newVerts++;
 			outXyz += 4;
@@ -1195,7 +1197,7 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 			VectorLerp(newVerts->normal, oldVerts->normal, backlerp, normal);
 			VectorNormalize(normal);
 
-			*outNormal = R_VaoPackNormal(normal);
+			R_VaoPackNormal((byte *)outNormal, normal);
 
 			newVerts++;
 			oldVerts++;
@@ -1362,7 +1364,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 				fNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
 			}
 
-			*outNormal = R_VaoPackNormal(fNormal);
+			R_VaoPackNormal((byte *)outNormal, fNormal);
 		}
 	} else {
 		//
@@ -1432,7 +1434,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 
 			VectorNormalize( fNormal );
 			
-			*outNormal = R_VaoPackNormal(fNormal);
+			R_VaoPackNormal((byte *)outNormal, fNormal);
 		}
 	}
 }
@@ -1659,13 +1661,13 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_NORMAL )
 				{
-					*normal++ = R_VaoPackNormal(dv->normal);
+					R_VaoPackNormal((byte *)normal++, dv->normal);
 				}
 
 #ifdef USE_VERT_TANGENT_SPACE
 				if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 				{
-					*tangent++ = R_VaoPackTangent(dv->tangent);
+					R_VaoPackTangent((byte *)tangent++, dv->tangent);
 				}
 #endif
 
@@ -1689,7 +1691,7 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_LIGHTDIRECTION )
 				{
-					*lightdir++ = R_VaoPackNormal(dv->lightdir);
+					R_VaoPackNormal((byte *)lightdir++, dv->lightdir);
 				}
 
 				//*vDlightBits++ = dlightBits;

@@ -33,8 +33,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 void            (APIENTRY * qglDrawRangeElementsEXT) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices);
 
 // GL_EXT_multi_draw_arrays
-void (APIENTRY * qglMultiDrawArraysEXT) (GLenum mode, const GLint *first, const GLsizei *count, GLsizei primcount);
-void (APIENTRY * qglMultiDrawElementsEXT) (GLenum mode, const GLsizei *count, GLenum type, const GLvoid* *indices, GLsizei primcount);
+void            (APIENTRY * qglMultiDrawArraysEXT) (GLenum mode, const GLint *first, const GLsizei *count, GLsizei primcount);
+void            (APIENTRY * qglMultiDrawElementsEXT) (GLenum mode, const GLsizei *count, GLenum type, const GLvoid* *indices, GLsizei primcount);
 
 // GL_ARB_vertex_shader
 void            (APIENTRY * qglBindAttribLocationARB) (GLhandleARB programObj, GLuint index, const GLcharARB * name);
@@ -703,6 +703,29 @@ void GLimp_InitExtraExtensions()
 			glRefConfig.vertexArrayObject = qtrue;
 
 		ri.Printf(PRINT_ALL, result[glRefConfig.vertexArrayObject ? 1 : 0], extension);
+	}
+	else
+	{
+		ri.Printf(PRINT_ALL, result[2], extension);
+	}
+
+	// GL_ARB_half_float_vertex
+	extension = "GL_ARB_half_float_vertex";
+	glRefConfig.packedTexcoordDataType = GL_FLOAT;
+	glRefConfig.packedTexcoordDataSize = sizeof(float) * 2;
+	glRefConfig.packedColorDataType    = GL_FLOAT;
+	glRefConfig.packedColorDataSize    = sizeof(float) * 4;
+	if( GLimp_HaveExtension( extension ) )
+	{
+		if (r_arb_half_float_vertex->integer)
+		{
+			glRefConfig.packedTexcoordDataType = GL_HALF_FLOAT;
+			glRefConfig.packedTexcoordDataSize = sizeof(uint16_t) * 2;
+			glRefConfig.packedColorDataType    = GL_HALF_FLOAT;
+			glRefConfig.packedColorDataSize    = sizeof(uint16_t) * 4;
+		}
+
+		ri.Printf(PRINT_ALL, result[r_arb_half_float_vertex->integer ? 1 : 0], extension);
 	}
 	else
 	{
