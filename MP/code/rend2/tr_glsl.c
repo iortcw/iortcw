@@ -90,7 +90,6 @@ static uniformInfo_t uniformsInfo[] =
 
 	{ "u_DiffuseTexMatrix",  GLSL_VEC4 },
 	{ "u_DiffuseTexOffTurb", GLSL_VEC4 },
-	{ "u_Texture1Env",       GLSL_INT },
 
 	{ "u_TCGen0",        GLSL_INT },
 	{ "u_TCGen0Vector0", GLSL_VEC3 },
@@ -919,17 +918,11 @@ void GLSL_InitGPUShaders(void)
 		if (i & GENERICDEF_USE_RGBAGEN)
 			Q_strcat(extradefines, 1024, "#define USE_RGBAGEN\n");
 
-		if (i & GENERICDEF_USE_LIGHTMAP)
-			Q_strcat(extradefines, 1024, "#define USE_LIGHTMAP\n");
-
 		if (i & GENERICDEF_USE_WOLF_FOG_LINEAR)
 			Q_strcat(extradefines, 1024, "#define USE_WOLF_FOG_LINEAR\n");
 		
 		if (i & GENERICDEF_USE_WOLF_FOG_EXPONENTIAL)
 			Q_strcat(extradefines, 1024, "#define USE_WOLF_FOG_EXPONENTIAL\n");
-
-		if (r_hdr->integer && !glRefConfig.floatLightmap)
-			Q_strcat(extradefines, 1024, "#define RGBM_LIGHTMAP\n");
 
 		if (!GLSL_InitGPUShader(&tr.genericShader[i], "generic", attribs, qtrue, extradefines, qtrue, fallbackShader_generic_vp, fallbackShader_generic_fp))
 		{
@@ -1516,11 +1509,6 @@ shaderProgram_t *GLSL_GetGenericShaderProgram(int stage, glfog_t *glFog)
 			shaderAttribs |= GENERICDEF_USE_WOLF_FOG_LINEAR;
 		else // if (glFog->mode == GL_EXP)
 			shaderAttribs |= GENERICDEF_USE_WOLF_FOG_EXPONENTIAL;
-	}
-
-	if (pStage->bundle[1].image[0] && tess.shader->multitextureEnv)
-	{
-		shaderAttribs |= GENERICDEF_USE_LIGHTMAP;
 	}
 
 	switch (pStage->rgbGen)
