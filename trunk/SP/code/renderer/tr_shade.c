@@ -481,7 +481,7 @@ static void ProjectDlightTexture_altivec( void ) {
 	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	byte	colorArray[SHADER_MAX_VERTEXES][4];
 #ifdef VCMODS_OPENGLES
-	glInext_t	hitIndexes[SHADER_MAX_INDEXES];
+	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
 #else
 	unsigned	hitIndexes[SHADER_MAX_INDEXES];
 #endif

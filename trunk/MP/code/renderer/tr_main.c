@@ -94,7 +94,9 @@ void R_Fog( glfog_t *curfog ) {
 
 	// only send changes if necessary
 
-#ifndef VCMODS_OPENGLES
+#ifdef VCMODS_OPENGLES
+	qglFogf( GL_FOG_MODE, curfog->mode );
+#else
 	qglFogi( GL_FOG_MODE, curfog->mode );
 #endif
 	qglFogfv( GL_FOG_COLOR, curfog->color );
