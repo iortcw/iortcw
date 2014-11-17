@@ -1505,16 +1505,6 @@ static void RB_SurfaceFlare( srfFlare_t *surf ) {
 		RB_AddFlare(surf, tess.fogNum, surf->origin, surf->color, 1.0f, surf->normal, 0, qtrue);
 }
 
-static void RB_SurfaceDisplayList( srfDisplayList_t *surf ) {
-#ifdef VCMODS_OPENGLES
-   assert(0);
-#else
-	// all apropriate state must be set in RB_BeginSurface
-	// this isn't implemented yet...
-	qglCallList( surf->listNum );
-#endif
-}
-
 static void RB_SurfaceSkip( void *surf ) {
 }
 
@@ -1529,9 +1519,8 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * ) = {
 	( void( * ) ( void* ) )RB_SurfaceMesh,         // SF_MD3,
 	( void( * ) ( void* ) )RB_SurfaceCMesh,        // SF_MDC,
 	( void( * ) ( void* ) )RB_SurfaceAnim,         // SF_MDS,
-	( void( * ) ( void* ) )RB_MDRSurfaceAnim,	// SF_MDR,
-	( void( * ) ( void* ) )RB_IQMSurfaceAnim,	// SF_IQM,
+	( void( * ) ( void* ) )RB_MDRSurfaceAnim,      // SF_MDR,
+	( void( * ) ( void* ) )RB_IQMSurfaceAnim,      // SF_IQM,
 	( void( * ) ( void* ) )RB_SurfaceFlare,        // SF_FLARE,
-	( void( * ) ( void* ) )RB_SurfaceEntity,       // SF_ENTITY
-	( void( * ) ( void* ) )RB_SurfaceDisplayList   // SF_DISPLAY_LIST
+	( void( * ) ( void* ) )RB_SurfaceEntity        // SF_ENTITY
 };
