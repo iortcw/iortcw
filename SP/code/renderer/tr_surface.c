@@ -1171,11 +1171,11 @@ RB_SurfaceFace
 void RB_SurfaceFace( srfSurfaceFace_t *surf ) {
 	int i;
 #ifdef VCMODS_OPENGLES
-	unsigned int *indices;
-	glIndex_t	*tessIndexes;
+	unsigned int	*indices;
 #else
-	unsigned    *indices, *tessIndexes;
+	unsigned	*indices;
 #endif
+	glIndex_t	*tessIndexes;
 	float       *v;
 	float       *normal;
 	int ndx;

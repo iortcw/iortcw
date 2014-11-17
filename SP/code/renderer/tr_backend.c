@@ -562,7 +562,7 @@ void RB_BeginDrawingView( void ) {
 #ifdef VCMODS_OPENGLES
 		float	plane2[4];
 #else
-		double plane2[4];
+		GLdouble plane2[4];
 #endif
 
 		plane[0] = backEnd.viewParms.portalPlane.normal[0];
