@@ -311,6 +311,8 @@ static void RB_SurfacePolychain( srfPoly_t *p ) {
 	int i;
 	int numv;
 
+	RB_CheckVao(tess.vao);
+
 	RB_CHECKOVERFLOW( p->numVerts, 3 * ( p->numVerts - 2 ) );
 
 	// fan triangles into the tess array
