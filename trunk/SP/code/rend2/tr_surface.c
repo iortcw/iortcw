@@ -97,6 +97,8 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], 
 	uint32_t    pNormal;
 	int ndx;
 
+	RB_CheckVao(tess.vao);
+
 	RB_CHECKOVERFLOW( 4, 6 );
 
 	ndx = tess.numVertexes;
@@ -653,6 +655,8 @@ static void DoRailCore( const vec3_t start, const vec3_t end, const vec3_t up, f
 	int vbase;
 	float t = len / 256.0f;
 
+	RB_CheckVao(tess.vao);
+
 	RB_CHECKOVERFLOW( 4, 6 );
 
 	vbase = tess.numVertexes;
@@ -733,6 +737,8 @@ static void DoRailDiscs( int numSegs, const vec3_t start, const vec3_t dir, cons
 			VectorAdd( pos[i], dir, pos[i] );
 		}
 	}
+
+	RB_CheckVao(tess.vao);
 
 	for ( i = 0; i < numSegs; i++ )
 	{
@@ -1249,6 +1255,8 @@ static void RB_SurfaceMesh(mdvSurface_t *surface) {
 		backlerp = backEnd.currentEntity->e.backlerp;
 	}
 
+	RB_CheckVao(tess.vao);
+
 	RB_CHECKOVERFLOW( surface->numVerts, surface->numIndexes );
 
 	LerpMeshVertexes( surface, backlerp );
@@ -1468,6 +1476,8 @@ void RB_SurfaceCMesh( mdcSurface_t *surface ) {
 		backlerp = backEnd.currentEntity->e.backlerp;
 	}
 
+	RB_CheckVao(tess.vao);
+
 	RB_CHECKOVERFLOW( surface->numVerts, surface->numTriangles * 3 );
 
 	LerpCMeshVertexes( surface, backlerp );
@@ -1575,6 +1585,8 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 	{
 		return;
 	}
+
+	RB_CheckVao(tess.vao);
 
 	dlightBits = srf->dlightBits;
 	tess.dlightBits |= dlightBits;
