@@ -1289,7 +1289,20 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			GLSL_SetUniformFloat(sp, UNIFORM_FOGEYET, eyeT);
 		}
 
-		GL_State( pStage->stateBits );
+		{
+			unsigned int stateBits = pStage->stateBits;
+			
+			if (tess.shader->sort == SS_OPAQUE && r_depthPrepass->integer && !backEnd.depthFill && !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL))
+			{
+				if (!(stateBits & GLS_DEPTHMASK_TRUE) && !(stateBits & GLS_DEPTHTEST_DISABLE) && (stateBits & GLS_DEPTHFUNC_BITS) != GLS_DEPTHFUNC_GREATER)
+				{
+					stateBits &= ~GLS_DEPTHFUNC_BITS;
+					stateBits |= GLS_DEPTHMASK_TRUE | GLS_DEPTHFUNC_EQUAL;
+				}
+			}
+ 
+			GL_State( stateBits );
+		}
 
 		{
 			vec4_t baseColor;

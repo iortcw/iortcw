@@ -135,7 +135,7 @@ void GL_Cull( int cullType ) {
 	{
 		qboolean cullFront;
 
-		if ( glState.faceCulling == CT_TWO_SIDED )
+		if ( glState.faceCulling == CT_TWO_SIDED || glState.faceCulling == -1 )
 		{
 			qglEnable( GL_CULL_FACE );
 		}

@@ -1025,6 +1025,8 @@ void GL_SetDefaultState( void ) {
 	//
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 	glState.storedGlState = 0;
+	glState.faceCulling = CT_TWO_SIDED;
+	glState.faceCullFront = CT_FRONT_SIDED;
 
 	glState.currentProgram = 0;
 	qglUseProgramObjectARB(0);
