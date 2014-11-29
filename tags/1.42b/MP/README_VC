@@ -1,0 +1,14 @@
+All BCM2835-specific modifications are enclosed by one of
+
+VCMODS_MISC - small miscellaneous changes
+VCMODS_OPENGLES - remove desktop GL dependencies
+VCMODS_DEPTH - remove depth buffer clears
+VCMODS_REPLACETRIG - replace sin with sinf etc
+VCMODS_NOSDL - remove SDL dependencies
+
+Build-Depends:
+ libcurl4-gnutls-dev libjpeg8-dev libopenal-dev libsdl1.2-dev libspeexdsp-dev libvorbis-dev
+
+Run:
+./make-raspberrypi.sh
+
