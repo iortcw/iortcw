@@ -127,6 +127,8 @@ void GL_Cull( int cullType ) {
 		return;
 	}
 
+	glState.faceCulling = cullType;
+
 	if ( cullType == CT_TWO_SIDED ) 
 	{
 		qglDisable( GL_CULL_FACE );
@@ -134,11 +136,7 @@ void GL_Cull( int cullType ) {
 	else 
 	{
 		qboolean cullFront;
-
-		if ( glState.faceCulling == CT_TWO_SIDED || glState.faceCulling == -1 )
-		{
-			qglEnable( GL_CULL_FACE );
-		}
+		qglEnable( GL_CULL_FACE );
 
 		cullFront = (cullType == CT_FRONT_SIDED);
 		if ( backEnd.viewParms.isMirror )
@@ -150,13 +148,8 @@ void GL_Cull( int cullType ) {
 			cullFront = !cullFront;
 		}
 
-		if (glState.faceCullFront != cullFront)
-			qglCullFace( cullFront ? GL_FRONT : GL_BACK );
-
-		glState.faceCullFront = cullFront;
+		qglCullFace( cullFront ? GL_FRONT : GL_BACK );
 	}
-
-	glState.faceCulling = cullType;
 }
 
 /*
@@ -226,26 +219,9 @@ void GL_State( unsigned long stateBits ) {
 	// check blend bits
 	//
 	if ( diff & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) {
-		uint32_t oldState = glState.glStateBits & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS );
-		uint32_t newState = stateBits & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS );
-		uint32_t storedState = glState.storedGlState & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS );
+		GLenum srcFactor = GL_ONE, dstFactor = GL_ONE;
 
-		if (oldState == 0)
- 		{
-			qglEnable( GL_BLEND );
-		}
-		else if (newState == 0)
-		{
-			qglDisable( GL_BLEND );
-		}
-
-		if (newState != 0 && storedState != newState)
-		{
-			GLenum srcFactor = GL_ONE, dstFactor = GL_ONE;
-
-			glState.storedGlState &= ~( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS );
-			glState.storedGlState |= newState;
-
+		if ( stateBits & ( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS ) ) {
 			switch ( stateBits & GLS_SRCBLEND_BITS )
 			{
 			case GLS_SRCBLEND_ZERO:
@@ -311,7 +287,11 @@ void GL_State( unsigned long stateBits ) {
 				break;
 			}
 
+			qglEnable( GL_BLEND );
 			qglBlendFunc( srcFactor, dstFactor );
+		} else
+		{
+			qglDisable( GL_BLEND );
 		}
 	}
 
@@ -355,36 +335,26 @@ void GL_State( unsigned long stateBits ) {
 	// alpha test
 	//
 	if ( diff & GLS_ATEST_BITS ) {
-		uint32_t oldState = glState.glStateBits & GLS_ATEST_BITS;
-		uint32_t newState = stateBits & GLS_ATEST_BITS;
-		uint32_t storedState = glState.storedGlState & GLS_ATEST_BITS;
-
-		if (oldState == 0)
+		switch ( stateBits & GLS_ATEST_BITS )
 		{
-			qglEnable(GL_ALPHA_TEST);
-		}
-		else if (newState == 0)
-		{
-			qglDisable(GL_ALPHA_TEST);
-		}
-
-		if (newState != 0 && storedState != newState)
-		{
-			glState.storedGlState &= ~GLS_ATEST_BITS;
-			glState.storedGlState |= newState;
-
-			switch ( newState )
-			{
-			case GLS_ATEST_GT_0:
-				qglAlphaFunc( GL_GREATER, 0.0f );
-				break;
-			case GLS_ATEST_LT_80:
-				qglAlphaFunc( GL_LESS, 0.5f );
-				break;
-			case GLS_ATEST_GE_80:
-				qglAlphaFunc( GL_GEQUAL, 0.5f );
-				break;
-			}
+		case 0:
+			qglDisable( GL_ALPHA_TEST );
+			break;
+		case GLS_ATEST_GT_0:
+			qglEnable( GL_ALPHA_TEST );
+			qglAlphaFunc( GL_GREATER, 0.0f );
+			break;
+		case GLS_ATEST_LT_80:
+			qglEnable( GL_ALPHA_TEST );
+			qglAlphaFunc( GL_LESS, 0.5f );
+			break;
+		case GLS_ATEST_GE_80:
+			qglEnable( GL_ALPHA_TEST );
+			qglAlphaFunc( GL_GEQUAL, 0.5f );
+			break;
+		default:
+			assert( 0 );
+			break;
 		}
 	}
 
@@ -422,7 +392,6 @@ static void RB_Hyperspace( void ) {
 	c = ( backEnd.refdef.time & 255 ) / 255.0f;
 	qglClearColor( c, c, c, 1 );
 	qglClear( GL_COLOR_BUFFER_BIT );
-	qglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	backEnd.isHyperspace = qtrue;
 }
@@ -526,7 +495,7 @@ void RB_BeginDrawingView( void ) {
 					qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
 				} else {
 //					qglClearColor ( 1.0, 0.0, 0.0, 1.0 );	// red clear for testing portal sky clear
-//					qglClearColor( 0.5, 0.5, 0.5, 1.0 );
+					qglClearColor( 0.5, 0.5, 0.5, 1.0 );
 				}
 			} else {                                                    // rendered sky (either clear color or draw quake sky)
 				if ( glfogsettings[FOG_PORTALVIEW].registered ) {
@@ -571,7 +540,7 @@ void RB_BeginDrawingView( void ) {
 				qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
 			} else {
 //				qglClearColor ( 0.0, 0.0, 1.0, 1.0 );	// blue clear for testing world sky clear
-//				qglClearColor( 0.05, 0.05, 0.05, 1.0 );  // JPW NERVE changed per id req was 0.5s
+				qglClearColor( 0.05, 0.05, 0.05, 1.0 );  // JPW NERVE changed per id req was 0.5s
 			}
 		} else {        // world scene, no portal sky, not fastsky, clear color if fog says to, otherwise, just set the clearcolor
 			if ( glfogsettings[FOG_CURRENT].registered ) { // try to clear fastsky with current fog color
@@ -584,10 +553,18 @@ void RB_BeginDrawingView( void ) {
 		}
 	}
 
+	// clear to white for shadow maps
+	if (backEnd.viewParms.flags & VPF_SHADOWMAP)
+	{
+		clearBits |= GL_COLOR_BUFFER_BIT;
+		qglClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+
 	// clear to black for cube maps
 	if (tr.renderCubeFbo && backEnd.viewParms.targetFbo == tr.renderCubeFbo)
 	{
 		clearBits |= GL_COLOR_BUFFER_BIT;
+		qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 	}
 
 	if ( clearBits ) {
@@ -605,7 +582,6 @@ void RB_BeginDrawingView( void ) {
 	}
 
 	glState.faceCulling = -1;       // force face culling to set next time
-	glState.faceCullFront = -1;	// same as above
 
 	// we will only draw a sun if there was sky rendered in this view
 	backEnd.skyRenderedThisView = qfalse;
@@ -614,7 +590,7 @@ void RB_BeginDrawingView( void ) {
 	if ( backEnd.viewParms.isPortal ) {
 #if 0
 		float plane[4];
-		GLdouble plane2[4];
+		double plane2[4];
 
 		plane[0] = backEnd.viewParms.portalPlane.normal[0];
 		plane[1] = backEnd.viewParms.portalPlane.normal[1];
@@ -889,7 +865,7 @@ void    RB_SetGL2D( void ) {
 			  GLS_SRCBLEND_SRC_ALPHA |
 			  GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
 
-	GL_Cull( CT_TWO_SIDED );
+	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_CLIP_PLANE0 );
 
 	// set time for 2D shaders

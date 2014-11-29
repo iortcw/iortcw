@@ -556,7 +556,7 @@ void RB_BeginDrawingView( void ) {
 #ifdef VCMODS_OPENGLES
 		float	plane2[4];
 #else
-		GLdouble plane2[4];
+		double plane2[4];
 #endif
 
 		plane[0] = backEnd.viewParms.portalPlane.normal[0];
@@ -813,7 +813,7 @@ void    RB_SetGL2D( void ) {
 			  GLS_SRCBLEND_SRC_ALPHA |
 			  GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
 
-	GL_Cull( CT_TWO_SIDED );
+	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_CLIP_PLANE0 );
 
 	// set time for 2D shaders

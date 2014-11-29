@@ -93,9 +93,7 @@ void R_Fog( glfog_t *curfog ) {
 
 	R_FogOn();
 
-#ifdef VCMODS_OPENGLES
-	qglFogf( GL_FOG_MODE, curfog->mode );
-#else
+#ifndef VCMODS_OPENGLES
 	qglFogi( GL_FOG_MODE, curfog->mode );
 #endif
 	qglFogfv( GL_FOG_COLOR, curfog->color );

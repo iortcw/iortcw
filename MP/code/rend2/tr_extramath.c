@@ -199,35 +199,42 @@ int NextPowerOfTwo(int in)
 	return out;
 }
 
-union f32_u {
-	float f;
-	uint32_t i;
-	struct {
-		unsigned int fraction:23;
-		unsigned int exponent:8;
-		unsigned int sign:1;
-	} pack;
-};
-
-union f16_u {
-	uint16_t i;
-	struct {
-		unsigned int fraction:10;
-		unsigned int exponent:5;
-		unsigned int sign:1;
-	} pack;
-};
-
-uint16_t FloatToHalf(float in)
+unsigned short FloatToHalf(float in)
 {
-	union f32_u f32;
-	union f16_u f16;
+	unsigned short out;
+	
+	union
+	{
+		float f;
+		unsigned int i;
+	} f32;
+
+	int sign, inExponent, inFraction;
+	int outExponent, outFraction;
 
 	f32.f = in;
 
-	f16.pack.exponent = CLAMP(f32.pack.exponent - 112, 0, 31);
-	f16.pack.fraction = f32.pack.fraction >> 13;
-	f16.pack.sign     = f32.pack.sign;
+	sign       = (f32.i & 0x80000000) >> 31;
+	inExponent = (f32.i & 0x7F800000) >> 23;
+	inFraction =  f32.i & 0x007FFFFF;
 
-	return f16.i;
+	outExponent = CLAMP(inExponent - 127, -15, 16) + 15;
+
+	outFraction = 0;
+	if (outExponent == 0x1F)
+	{
+		if (inExponent == 0xFF && inFraction != 0)
+			outFraction = 0x3FF;
+	}
+	else if (outExponent == 0x00)
+	{
+		if (inExponent == 0x00 && inFraction != 0)
+			outFraction = 0x3FF;
+	}
+	else
+		outFraction = inFraction >> 13;
+
+	out = (sign << 15) | (outExponent << 10) | outFraction;
+
+	return out;
 }

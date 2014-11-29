@@ -580,6 +580,7 @@ typedef enum {
 	SF_IQM,
 	SF_FLARE,
 	SF_ENTITY,              // beams, rails, lightning, etc that can be determined by entity
+	SF_DISPLAY_LIST,
 
 	SF_NUM_SURFACE_TYPES,
 	SF_MAX = 0xffffffff         // ensures that sizeof( surfaceType_t ) == sizeof( int )
@@ -605,6 +606,11 @@ typedef struct srfPoly_s {
 	polyVert_t      *verts;
 } srfPoly_t;
 
+typedef struct srfDisplayList_s {
+	surfaceType_t surfaceType;
+	int listNum;
+} srfDisplayList_t;
+
 
 typedef struct srfFlare_s {
 	surfaceType_t surfaceType;
@@ -612,7 +618,6 @@ typedef struct srfFlare_s {
 	vec3_t normal;
 	vec3_t color;
 } srfFlare_t;
-
 
 typedef struct srfGridMesh_s {
 	surfaceType_t surfaceType;
@@ -639,6 +644,7 @@ typedef struct srfGridMesh_s {
 	float           *heightLodError;
 	drawVert_t verts[1];            // variable sized
 } srfGridMesh_t;
+
 
 
 #define VERTEXSIZE  8
@@ -1065,6 +1071,8 @@ typedef struct {
 
 	int numImages;
 	image_t                 *images[MAX_DRAWIMAGES];
+	// Ridah
+	int numCacheImages;
 
 	// shader indexes from other modules will be looked up in tr.shaders[]
 	// shader indexes from drawsurfs will be looked up in sortedShaders[]

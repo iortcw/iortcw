@@ -189,7 +189,7 @@ void R_BoxSurfaces_r( mnode_t *node, vec3_t mins, vec3_t maxs, surfaceType_t **l
 			s = BoxOnPlaneSide( mins, maxs, &surf->cullinfo.plane );
 			if ( s == 1 || s == 2 ) {
 				*surfViewCount = tr.viewCount;
-			} else if (DotProduct(surf->cullinfo.plane.normal, dir) < -0.5) {
+			} else if (DotProduct(surf->cullinfo.plane.normal, dir) > -0.5) {
 				// don't add faces that make sharp angles with the projection direction
 				*surfViewCount = tr.viewCount;
 			}

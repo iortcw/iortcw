@@ -925,173 +925,110 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 	}
 
 	{
-		srfVaoMdvMesh_t *vaoSurf;
+		srfVBOMDVMesh_t *vboSurf;
 
-		mdvModel->numVaoSurfaces = mdvModel->numSurfaces;
-		mdvModel->vaoSurfaces = ri.Hunk_Alloc(sizeof(*mdvModel->vaoSurfaces) * mdvModel->numSurfaces, h_low);
+		mdvModel->numVBOSurfaces = mdvModel->numSurfaces;
+		mdvModel->vboSurfaces = ri.Hunk_Alloc(sizeof(*mdvModel->vboSurfaces) * mdvModel->numSurfaces, h_low);
 
-		vaoSurf = mdvModel->vaoSurfaces;
+		vboSurf = mdvModel->vboSurfaces;
 		surf = mdvModel->surfaces;
-		for (i = 0; i < mdvModel->numSurfaces; i++, vaoSurf++, surf++)
+		for (i = 0; i < mdvModel->numSurfaces; i++, vboSurf++, surf++)
 		{
-			uint32_t offset_xyz, offset_st, offset_normal, offset_tangent;
-			uint32_t stride_xyz, stride_st, stride_normal, stride_tangent;
-			uint32_t dataSize, dataOfs;
-			uint8_t *data;
-
-			if (mdvModel->numFrames > 1)
-			{
-				// vertex animation, store texcoords first, then position/normal/tangents
-				offset_st      = 0;
-				offset_xyz     = surf->numVerts * glRefConfig.packedTexcoordDataSize;
-				offset_normal  = offset_xyz + sizeof(vec3_t);
-				offset_tangent = offset_normal + sizeof(uint32_t);
-				stride_st  = glRefConfig.packedTexcoordDataSize;
-				stride_xyz = sizeof(vec3_t) + sizeof(uint32_t);
+			vec3_t *verts;
+			vec2_t *texcoords;
+			uint32_t *normals;
 #ifdef USE_VERT_TANGENT_SPACE
-				stride_xyz += sizeof(uint32_t);
+			uint32_t *tangents;
 #endif
-				stride_normal = stride_tangent = stride_xyz;
 
-				dataSize = offset_xyz + surf->numVerts * mdvModel->numFrames * stride_xyz;
-			}
-			else
-			{
-				// no animation, interleave everything
-				offset_xyz     = 0;
-				offset_st      = offset_xyz + sizeof(vec3_t);
-				offset_normal  = offset_st + glRefConfig.packedTexcoordDataSize;
-				offset_tangent = offset_normal + sizeof(uint32_t);
+			byte *data;
+			int dataSize;
+
+			int ofs_xyz, ofs_normal, ofs_st;
 #ifdef USE_VERT_TANGENT_SPACE
-				stride_xyz = offset_tangent + sizeof(uint32_t);
-#else
-				stride_xyz = offset_normal + sizeof(uint32_t);
+			int ofs_tangent;
 #endif
-				stride_st = stride_normal = stride_tangent = stride_xyz;
 
-				dataSize = surf->numVerts * stride_xyz;
-			}
+			dataSize = 0;
 
+			ofs_xyz = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*verts);
+
+			ofs_normal = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*normals);
+
+#ifdef USE_VERT_TANGENT_SPACE
+			ofs_tangent = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*tangents);
+#endif
+
+			ofs_st = dataSize;
+			dataSize += surf->numVerts * sizeof(*texcoords);
 
 			data = ri.Z_Malloc(dataSize);
-			dataOfs = 0;
 
-			if (mdvModel->numFrames > 1)
+			verts =      (void *)(data + ofs_xyz);
+			normals =    (void *)(data + ofs_normal);
+#ifdef USE_VERT_TANGENT_SPACE
+			tangents =   (void *)(data + ofs_tangent);
+#endif
+			texcoords =  (void *)(data + ofs_st);
+		
+			v = surf->verts;
+			for ( j = 0; j < surf->numVerts * mdvModel->numFrames ; j++, v++ )
 			{
-				st = surf->st;
-				for ( j = 0 ; j < surf->numVerts ; j++, st++ ) {
-					dataOfs += R_VaoPackTexCoord(data + dataOfs, st->st);
-				}
+				vec3_t nxt;
+				vec4_t tangent;
 
-				v = surf->verts;
-				for ( j = 0; j < surf->numVerts * mdvModel->numFrames ; j++, v++ )
-				{
+				VectorCopy(v->xyz,       verts[j]);
+
+				normals[j] = R_VboPackNormal(v->normal);
 #ifdef USE_VERT_TANGENT_SPACE
-					vec3_t nxt;
-					vec4_t tangent;
+				CrossProduct(v->normal, v->tangent, nxt);
+				VectorCopy(v->tangent, tangent);
+				tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
+
+				tangents[j] = R_VboPackTangent(tangent);
 #endif
-					// xyz
-					memcpy(data + dataOfs, &v->xyz, sizeof(vec3_t));
-					dataOfs += sizeof(vec3_t);
-
-					// normal
-					dataOfs += R_VaoPackNormal(data + dataOfs, v->normal);
-
-#ifdef USE_VERT_TANGENT_SPACE
-					CrossProduct(v->normal, v->tangent, nxt);
-					VectorCopy(v->tangent, tangent);
-					tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
-
-					// tangent
-					dataOfs += R_VaoPackTangent(data + dataOfs, tangent);
-#endif
-				}
-			}
-			else
-			{
-				v = surf->verts;
-				st = surf->st;
-				for ( j = 0; j < surf->numVerts; j++, v++, st++ )
-				{
-#ifdef USE_VERT_TANGENT_SPACE
-					vec3_t nxt;
-					vec4_t tangent;
-#endif
-					// xyz
-					memcpy(data + dataOfs, &v->xyz, sizeof(vec3_t));
-					dataOfs += sizeof(v->xyz);
-
-					// st
-					dataOfs += R_VaoPackTexCoord(data + dataOfs, st->st);
-
-					// normal
-					dataOfs += R_VaoPackNormal(data + dataOfs, v->normal);
-
-#ifdef USE_VERT_TANGENT_SPACE
-					CrossProduct(v->normal, v->tangent, nxt);
-					VectorCopy(v->tangent, tangent);
-					tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
-
-					// tangent
-					dataOfs += R_VaoPackTangent(data + dataOfs, tangent);
-#endif
-				}
 			}
 
-			vaoSurf->surfaceType = SF_VAO_MDVMESH;
-			vaoSurf->mdvModel = mdvModel;
-			vaoSurf->mdvSurface = surf;
-			vaoSurf->numIndexes = surf->numIndexes;
-			vaoSurf->numVerts = surf->numVerts;
+			st = surf->st;
+			for ( j = 0 ; j < surf->numVerts ; j++, st++ ) {
+				texcoords[j][0] = st->st[0];
+				texcoords[j][1] = st->st[1];
+			}
+
+			vboSurf->surfaceType = SF_VBO_MDVMESH;
+			vboSurf->mdvModel = mdvModel;
+			vboSurf->mdvSurface = surf;
+			vboSurf->numIndexes = surf->numIndexes;
+			vboSurf->numVerts = surf->numVerts;
 			
-			vaoSurf->minIndex = 0;
-			vaoSurf->maxIndex = surf->numVerts - 1;
+			vboSurf->minIndex = 0;
+			vboSurf->maxIndex = surf->numVerts;
 
-			vaoSurf->vao = R_CreateVao(va("staticMD3Mesh_VAO '%s'", surf->name), data, dataSize, (byte *)surf->indexes, surf->numIndexes * sizeof(*surf->indexes), VAO_USAGE_STATIC);
+			vboSurf->vbo = R_CreateVBO(va("staticMD3Mesh_VBO '%s'", surf->name), data, dataSize, VBO_USAGE_STATIC);
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].enabled = 1;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].enabled = 1;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].enabled = 1;
+			vboSurf->vbo->ofs_xyz       = ofs_xyz;
+			vboSurf->vbo->ofs_normal    = ofs_normal;
 #ifdef USE_VERT_TANGENT_SPACE
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].enabled = 1;
+			vboSurf->vbo->ofs_tangent   = ofs_tangent;
 #endif
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].count = 3;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].count = 2;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].count = 4;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].count = 4;
+			vboSurf->vbo->ofs_st        = ofs_st;
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].type = GL_FLOAT;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].type = glRefConfig.packedTexcoordDataType;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].type = glRefConfig.packedNormalDataType;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].type = glRefConfig.packedNormalDataType;
+			vboSurf->vbo->stride_xyz       = sizeof(*verts);
+			vboSurf->vbo->stride_normal    = sizeof(*normals);
+#ifdef USE_VERT_TANGENT_SPACE
+			vboSurf->vbo->stride_tangent   = sizeof(*tangents);
+#endif
+			vboSurf->vbo->stride_st        = sizeof(*st);
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].normalized = GL_FALSE;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].normalized = GL_FALSE;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].normalized = GL_TRUE;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].normalized = GL_TRUE;
-
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].offset = offset_xyz;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].offset = offset_st;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].offset = offset_normal;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].offset = offset_tangent;
-
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].stride = stride_xyz;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].stride = stride_st;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].stride = stride_normal;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].stride = stride_tangent;
-
-			if (mdvModel->numFrames > 1)
-			{
-				vaoSurf->vao->attribs[ATTR_INDEX_POSITION2] = vaoSurf->vao->attribs[ATTR_INDEX_POSITION];
-				vaoSurf->vao->attribs[ATTR_INDEX_NORMAL2  ] = vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ];
-				vaoSurf->vao->attribs[ATTR_INDEX_TANGENT2 ] = vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ];
-
-				vaoSurf->vao->frameSize = stride_xyz    * surf->numVerts;
-			}
-
-			Vao_SetVertexPointers(vaoSurf->vao);
+			vboSurf->vbo->size_xyz    = sizeof(*verts) * surf->numVerts;
+			vboSurf->vbo->size_normal = sizeof(*normals) * surf->numVerts;
 
 			ri.Free(data);
+
+			vboSurf->ibo = R_CreateIBO2(va("staticMD3Mesh_IBO %s", surf->name), surf->numIndexes, surf->indexes, VBO_USAGE_STATIC);
 		}
 	}
 
@@ -1418,174 +1355,112 @@ static qboolean R_LoadMD3(model_t * mod, int lod, void *buffer, const char *modN
 		surf++;
 	}
 
+
 	{
-		srfVaoMdvMesh_t *vaoSurf;
+		srfVBOMDVMesh_t *vboSurf;
 
-		mdvModel->numVaoSurfaces = mdvModel->numSurfaces;
-		mdvModel->vaoSurfaces = ri.Hunk_Alloc(sizeof(*mdvModel->vaoSurfaces) * mdvModel->numSurfaces, h_low);
+		mdvModel->numVBOSurfaces = mdvModel->numSurfaces;
+		mdvModel->vboSurfaces = ri.Hunk_Alloc(sizeof(*mdvModel->vboSurfaces) * mdvModel->numSurfaces, h_low);
 
-		vaoSurf = mdvModel->vaoSurfaces;
+		vboSurf = mdvModel->vboSurfaces;
 		surf = mdvModel->surfaces;
-		for (i = 0; i < mdvModel->numSurfaces; i++, vaoSurf++, surf++)
+		for (i = 0; i < mdvModel->numSurfaces; i++, vboSurf++, surf++)
 		{
-			uint32_t offset_xyz, offset_st, offset_normal, offset_tangent;
-			uint32_t stride_xyz, stride_st, stride_normal, stride_tangent;
-			uint32_t dataSize, dataOfs;
-			uint8_t *data;
-
-			if (mdvModel->numFrames > 1)
-			{
-				// vertex animation, store texcoords first, then position/normal/tangents
-				offset_st      = 0;
-				offset_xyz     = surf->numVerts * glRefConfig.packedTexcoordDataSize;
-				offset_normal  = offset_xyz + sizeof(vec3_t);
-				offset_tangent = offset_normal + sizeof(uint32_t);
-				stride_st  = glRefConfig.packedTexcoordDataSize;
-				stride_xyz = sizeof(vec3_t) + sizeof(uint32_t);
+			vec3_t *verts;
+			vec2_t *texcoords;
+			uint32_t *normals;
 #ifdef USE_VERT_TANGENT_SPACE
-				stride_xyz += sizeof(uint32_t);
+			uint32_t *tangents;
 #endif
-				stride_normal = stride_tangent = stride_xyz;
 
-				dataSize = offset_xyz + surf->numVerts * mdvModel->numFrames * stride_xyz;
-			}
-			else
-			{
-				// no animation, interleave everything
-				offset_xyz     = 0;
-				offset_st      = offset_xyz + sizeof(vec3_t);
-				offset_normal  = offset_st + glRefConfig.packedTexcoordDataSize;
-				offset_tangent = offset_normal + sizeof(uint32_t);
+			byte *data;
+			int dataSize;
+
+			int ofs_xyz, ofs_normal, ofs_st;
 #ifdef USE_VERT_TANGENT_SPACE
-				stride_xyz = offset_tangent + sizeof(uint32_t);
-#else
-				stride_xyz = offset_normal + sizeof(uint32_t);
+			int ofs_tangent;
 #endif
-				stride_st = stride_normal = stride_tangent = stride_xyz;
 
-				dataSize = surf->numVerts * stride_xyz;
-			}
+			dataSize = 0;
 
+			ofs_xyz = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*verts);
+
+			ofs_normal = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*normals);
+
+#ifdef USE_VERT_TANGENT_SPACE
+			ofs_tangent = dataSize;
+			dataSize += surf->numVerts * mdvModel->numFrames * sizeof(*tangents);
+#endif
+
+			ofs_st = dataSize;
+			dataSize += surf->numVerts * sizeof(*texcoords);
 
 			data = ri.Z_Malloc(dataSize);
-			dataOfs = 0;
 
-			if (mdvModel->numFrames > 1)
+			verts =      (void *)(data + ofs_xyz);
+			normals =    (void *)(data + ofs_normal);
+#ifdef USE_VERT_TANGENT_SPACE
+			tangents =   (void *)(data + ofs_tangent);
+#endif
+			texcoords =  (void *)(data + ofs_st);
+		
+			v = surf->verts;
+			for ( j = 0; j < surf->numVerts * mdvModel->numFrames ; j++, v++ )
 			{
-				st = surf->st;
-				for ( j = 0 ; j < surf->numVerts ; j++, st++ ) {
-					dataOfs += R_VaoPackTexCoord(data + dataOfs, st->st);
-				}
+				vec3_t nxt;
+				vec4_t tangent;
 
-				v = surf->verts;
-				for ( j = 0; j < surf->numVerts * mdvModel->numFrames ; j++, v++ )
-				{
+				VectorCopy(v->xyz,       verts[j]);
+
+				normals[j] = R_VboPackNormal(v->normal);
 #ifdef USE_VERT_TANGENT_SPACE
-					vec3_t nxt;
-					vec4_t tangent;
+				CrossProduct(v->normal, v->tangent, nxt);
+				VectorCopy(v->tangent, tangent);
+				tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
+
+				tangents[j] = R_VboPackTangent(tangent);
 #endif
-					// xyz
-					memcpy(data + dataOfs, &v->xyz, sizeof(vec3_t));
-					dataOfs += sizeof(vec3_t);
-
-					// normal
-					dataOfs += R_VaoPackNormal(data + dataOfs, v->normal);
-
-#ifdef USE_VERT_TANGENT_SPACE
-					CrossProduct(v->normal, v->tangent, nxt);
-					VectorCopy(v->tangent, tangent);
-					tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
-
-					// tangent
-					dataOfs += R_VaoPackTangent(data + dataOfs, tangent);
-#endif
-				}
-			}
-			else
-			{
-				v = surf->verts;
-				st = surf->st;
-				for ( j = 0; j < surf->numVerts; j++, v++, st++ )
-				{
-#ifdef USE_VERT_TANGENT_SPACE
-					vec3_t nxt;
-					vec4_t tangent;
-#endif
-					// xyz
-					memcpy(data + dataOfs, &v->xyz, sizeof(vec3_t));
-					dataOfs += sizeof(v->xyz);
-
-					// st
-					dataOfs += R_VaoPackTexCoord(data + dataOfs, st->st);
-
-					// normal
-					dataOfs += R_VaoPackNormal(data + dataOfs, v->normal);
-
-#ifdef USE_VERT_TANGENT_SPACE
-					CrossProduct(v->normal, v->tangent, nxt);
-					VectorCopy(v->tangent, tangent);
-					tangent[3] = (DotProduct(nxt, v->bitangent) < 0.0f) ? -1.0f : 1.0f;
-
-					// tangent
-					dataOfs += R_VaoPackTangent(data + dataOfs, tangent);
-#endif
-				}
 			}
 
-			vaoSurf->surfaceType = SF_VAO_MDVMESH;
-			vaoSurf->mdvModel = mdvModel;
-			vaoSurf->mdvSurface = surf;
-			vaoSurf->numIndexes = surf->numIndexes;
-			vaoSurf->numVerts = surf->numVerts;
+			st = surf->st;
+			for ( j = 0 ; j < surf->numVerts ; j++, st++ ) {
+				texcoords[j][0] = st->st[0];
+				texcoords[j][1] = st->st[1];
+			}
+
+			vboSurf->surfaceType = SF_VBO_MDVMESH;
+			vboSurf->mdvModel = mdvModel;
+			vboSurf->mdvSurface = surf;
+			vboSurf->numIndexes = surf->numIndexes;
+			vboSurf->numVerts = surf->numVerts;
 			
-			vaoSurf->minIndex = 0;
-			vaoSurf->maxIndex = surf->numVerts - 1;
+			vboSurf->minIndex = 0;
+			vboSurf->maxIndex = surf->numVerts;
 
-			vaoSurf->vao = R_CreateVao(va("staticMD3Mesh_VAO '%s'", surf->name), data, dataSize, (byte *)surf->indexes, surf->numIndexes * sizeof(*surf->indexes), VAO_USAGE_STATIC);
+			vboSurf->vbo = R_CreateVBO(va("staticMD3Mesh_VBO '%s'", surf->name), data, dataSize, VBO_USAGE_STATIC);
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].enabled = 1;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].enabled = 1;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].enabled = 1;
+			vboSurf->vbo->ofs_xyz       = ofs_xyz;
+			vboSurf->vbo->ofs_normal    = ofs_normal;
 #ifdef USE_VERT_TANGENT_SPACE
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].enabled = 1;
+			vboSurf->vbo->ofs_tangent   = ofs_tangent;
 #endif
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].count = 3;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].count = 2;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].count = 4;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].count = 4;
+			vboSurf->vbo->ofs_st        = ofs_st;
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].type = GL_FLOAT;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].type = glRefConfig.packedTexcoordDataType;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].type = glRefConfig.packedNormalDataType;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].type = glRefConfig.packedNormalDataType;
+			vboSurf->vbo->stride_xyz       = sizeof(*verts);
+			vboSurf->vbo->stride_normal    = sizeof(*normals);
+#ifdef USE_VERT_TANGENT_SPACE
+			vboSurf->vbo->stride_tangent   = sizeof(*tangents);
+#endif
+			vboSurf->vbo->stride_st        = sizeof(*st);
 
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].normalized = GL_FALSE;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].normalized = GL_FALSE;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].normalized = GL_TRUE;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].normalized = GL_TRUE;
-
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].offset = offset_xyz;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].offset = offset_st;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].offset = offset_normal;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].offset = offset_tangent;
-
-			vaoSurf->vao->attribs[ATTR_INDEX_POSITION].stride = stride_xyz;
-			vaoSurf->vao->attribs[ATTR_INDEX_TEXCOORD].stride = stride_st;
-			vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ].stride = stride_normal;
-			vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ].stride = stride_tangent;
-
-			if (mdvModel->numFrames > 1)
-			{
-				vaoSurf->vao->attribs[ATTR_INDEX_POSITION2] = vaoSurf->vao->attribs[ATTR_INDEX_POSITION];
-				vaoSurf->vao->attribs[ATTR_INDEX_NORMAL2  ] = vaoSurf->vao->attribs[ATTR_INDEX_NORMAL  ];
-				vaoSurf->vao->attribs[ATTR_INDEX_TANGENT2 ] = vaoSurf->vao->attribs[ATTR_INDEX_TANGENT ];
-
-				vaoSurf->vao->frameSize = stride_xyz    * surf->numVerts;
-			}
-
-			Vao_SetVertexPointers(vaoSurf->vao);
+			vboSurf->vbo->size_xyz    = sizeof(*verts) * surf->numVerts;
+			vboSurf->vbo->size_normal = sizeof(*normals) * surf->numVerts;
 
 			ri.Free(data);
+
+			vboSurf->ibo = R_CreateIBO2(va("staticMD3Mesh_IBO %s", surf->name), surf->numIndexes, surf->indexes, VBO_USAGE_STATIC);
 		}
 	}
 

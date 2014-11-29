@@ -432,11 +432,12 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 	tess.maxIndex = tess.numVertexes;
 
 	// FIXME: A lot of this can probably be removed for speed, and refactored into a more convenient function
-	RB_UpdateTessVao(ATTR_POSITION | ATTR_TEXCOORD);
+	RB_UpdateVBOs(ATTR_POSITION | ATTR_TEXCOORD);
 /*
 	{
 		shaderProgram_t *sp = &tr.textureColorShader;
 
+		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
 		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
@@ -452,6 +453,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 		shaderProgram_t *sp = &tr.lightallShader[0];
 		vec4_t vector;
 
+		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
 		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
@@ -475,7 +477,7 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 		GLSL_SetUniformVec4(sp, UNIFORM_DIFFUSETEXOFFTURB, vector);
 	}
 
-	R_DrawElementsVao(tess.numIndexes - tess.firstIndex, tess.firstIndex, tess.minIndex, tess.maxIndex);
+	R_DrawElementsVBO(tess.numIndexes - tess.firstIndex, tess.firstIndex, tess.minIndex, tess.maxIndex);
 
 	//qglDrawElements(GL_TRIANGLES, tess.numIndexes - tess.firstIndex, GL_INDEX_TYPE, BUFFER_OFFSET(tess.firstIndex * sizeof(glIndex_t)));
 	
@@ -549,11 +551,12 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 	tess.maxIndex = tess.numVertexes;
 
 	// FIXME: A lot of this can probably be removed for speed, and refactored into a more convenient function
-	RB_UpdateTessVao(ATTR_POSITION | ATTR_TEXCOORD);
+	RB_UpdateVBOs(ATTR_POSITION | ATTR_TEXCOORD);
 /*
 	{
 		shaderProgram_t *sp = &tr.textureColorShader;
 
+		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
 		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
@@ -569,6 +572,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		shaderProgram_t *sp = &tr.lightallShader[0];
 		vec4_t vector;
 
+		GLSL_VertexAttribsState(ATTR_POSITION | ATTR_TEXCOORD);
 		GLSL_BindProgram(sp);
 		
 		GLSL_SetUniformMat4(sp, UNIFORM_MODELVIEWPROJECTIONMATRIX, glState.modelviewProjection);
@@ -592,7 +596,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		GLSL_SetUniformVec4(sp, UNIFORM_DIFFUSETEXOFFTURB, vector);
 	}
 
-	R_DrawElementsVao(tess.numIndexes - tess.firstIndex, tess.firstIndex, tess.minIndex, tess.maxIndex);
+	R_DrawElementsVBO(tess.numIndexes - tess.firstIndex, tess.firstIndex, tess.minIndex, tess.maxIndex);
 
 	//qglDrawElements(GL_TRIANGLES, tess.numIndexes - tess.firstIndex, GL_INDEX_TYPE, BUFFER_OFFSET(tess.firstIndex * sizeof(glIndex_t)));
 	

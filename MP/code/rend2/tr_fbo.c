@@ -447,6 +447,7 @@ void FBO_Init(void)
 	if (tr.renderFbo)
 	{
 		FBO_Bind(tr.renderFbo);
+		qglClearColor( 1, 0, 0.5, 1 );
 		qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		FBO_Bind(NULL);
 	}
@@ -748,7 +749,7 @@ void FBO_BlitFromTexture(struct image_s *src, ivec4_t inSrcBox, vec2_t inSrcTexS
 
 	Mat4Ortho(0, width, height, 0, 0, 1, projection);
 
-	GL_Cull( CT_TWO_SIDED );
+	qglDisable( GL_CULL_FACE );
 
 	GL_BindToTMU(src, TB_COLORMAP);
 
