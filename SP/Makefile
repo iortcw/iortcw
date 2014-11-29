@@ -244,7 +244,7 @@ DEBUG_CFLAGS=-g -O0
 endif
 
 ifndef USE_SVN
-USE_SVN=1
+USE_SVN=0
 endif
 
 ifndef USE_BLOOM
