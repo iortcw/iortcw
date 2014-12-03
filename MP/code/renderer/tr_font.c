@@ -407,7 +407,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 //		memcpy(font, faceData, sizeof(fontInfo_t));
 		Q_strncpyz( font->name, name, sizeof( font->name ) );
-		for ( i = GLYPH_START; i < GLYPH_END; i++ ) {
+		for ( i = GLYPH_START; i <= GLYPH_END; i++ ) {
 			font->glyphs[i].glyph = RE_RegisterShaderNoMip( font->glyphs[i].shaderName );
 		}
 		memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
@@ -455,7 +455,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 	maxHeight = 0;
 
-	for ( i = GLYPH_START; i < GLYPH_END; i++ ) {
+	for ( i = GLYPH_START; i <= GLYPH_END; i++ ) {
 		RE_ConstructGlyphInfo( out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qtrue );
 	}
 
@@ -465,11 +465,16 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 	lastStart = i;
 	imageNumber = 0;
 
-	while ( i <= GLYPH_END ) {
+	while ( i <= GLYPH_END + 1 ) {
 
-		glyph = RE_ConstructGlyphInfo( out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qfalse );
+		if ( i == GLYPH_END + 1 ) {
+			// upload/save current image buffer
+			xOut = yOut = -1;
+		} else {
+			glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qfalse);
+		}
 
-		if ( xOut == -1 || yOut == -1 || i == GLYPH_END ) {
+		if ( xOut == -1 || yOut == -1 ) {
 			// ran out of room
 			// we need to create an image from the bitmap, set all the handles in the glyphs to this point
 			//
@@ -514,7 +519,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			xOut = 0;
 			yOut = 0;
 			ri.Free( imageBuff );
-			if(i == GLYPH_END)
+			if ( i == GLYPH_END + 1 )
 				i++;
 		} else {
 			memcpy( &font->glyphs[i], glyph, sizeof( glyphInfo_t ) );
