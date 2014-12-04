@@ -317,7 +317,7 @@ int Text_Width( const char *text, int font, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &fnt->glyphs[(unsigned char)*s];
+				glyph = &fnt->glyphs[*s & 255];
 				out += glyph->xSkip;
 				s++;
 				count++;
@@ -362,7 +362,7 @@ int Text_Height( const char *text, int font, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &fnt->glyphs[(unsigned char)*s];
+				glyph = &fnt->glyphs[*s & 255];
 				if ( max < glyph->height ) {
 					max = glyph->height;
 				}
@@ -414,7 +414,7 @@ void Text_Paint( float x, float y, int font, float scale, vec4_t color, const ch
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			glyph = &fnt->glyphs[(unsigned char)*s];
+			glyph = &fnt->glyphs[*s & 255];
 			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
@@ -494,9 +494,9 @@ void Text_PaintWithCursor( float x, float y, int font, float scale, vec4_t color
 			len = limit;
 		}
 		count = 0;
-		glyph2 = &fnt->glyphs[(unsigned char)cursor];
+		glyph2 = &fnt->glyphs[cursor & 255];
 		while ( s && *s && count < len ) {
-			glyph = &fnt->glyphs[(unsigned char)*s];
+			glyph = &fnt->glyphs[*s & 255];
 			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
@@ -583,7 +583,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, int font, float scal
 	vec4_t newColor;
 	glyphInfo_t *glyph;
 	if (text) {
-		const unsigned char *s = text;
+		const char *s = text;
 		float max = *maxX;
 		float useScale;
 
@@ -610,7 +610,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, int font, float scal
 		}
 		count = 0;
 		while (s && *s && count < len) {
-			glyph = &fnt->glyphs[*s];
+			glyph = &fnt->glyphs[*s & 255];
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex(*(s+1))], sizeof( newColor ) );
 				newColor[3] = color[3];
