@@ -1238,6 +1238,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	G_RemapTeamShaders();
+
+	trap_SetConfigstring( CS_INTERMISSION, "" );
 }
 
 
