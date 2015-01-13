@@ -1112,39 +1112,41 @@ void CG_RegisterWeapon( int weaponNum ) {
 	}
 
 	if ( item->world_model[W_FP_MODEL] ) {
-		strcpy( comppath, item->world_model[W_FP_MODEL] );  // first try the fp view weap
+		Q_strncpyz( comppath, item->world_model[W_FP_MODEL], sizeof(comppath) ); // first try the fp view weap
 	} else if ( item->world_model[W_TP_MODEL] ) {
-		strcpy( comppath, item->world_model[W_TP_MODEL] );  // not there, use the standard view hand
+		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof(comppath) ); // not there, use the standard view hand
 	}
+
 	if ( !cg_drawFPGun.integer && item->world_model[W_TP_MODEL] ) { // then if it didn't find the 1st person one or you are set to not use one
-		strcpy( comppath, item->world_model[W_TP_MODEL] );  // use the standard view hand
+		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof(comppath) ); // use the standard view hand
 	}
+
 	for ( i = W_TP_MODEL; i < W_NUM_TYPES; i++ )
 	{
 		int j;
 
 		if ( !item->world_model[i] ) {
-			strcpy( path, comppath );
+			Q_strncpyz( path, comppath, sizeof(path) );
 		} else {
-			strcpy( path, item->world_model[i] );
+			Q_strncpyz( path, item->world_model[i], sizeof(path) );
 		}
 
-		COM_StripExtension(path, path, sizeof(path));
-		strcat( path, "_flash.md3" );
+		COM_StripExtension( path, path, sizeof(path) );
+		Q_strcat( path, sizeof(path), "_flash.md3" );
 		weaponInfo->flashModel[i] = trap_R_RegisterModel( path );
 
 
 		for ( j = 0; j < W_MAX_PARTS; j++ ) {
 			if ( !item->world_model[i] ) {
-				strcpy( path, comppath );
+				Q_strncpyz( path, comppath, sizeof(path) );
 			} else {
-				strcpy( path, item->world_model[i] );
+				Q_strncpyz( path, item->world_model[i], sizeof(path) );
 			}
-			COM_StripExtension(path, path, sizeof(path));
+			COM_StripExtension( path, path, sizeof(path) );
 			if ( j == W_PART_1 ) {
-				strcat( path, "_barrel.md3" );
+				Q_strcat( path, sizeof(path), "_barrel.md3" );
 			} else {
-				strcat( path, va( "_barrel%d.md3", j + 1 ) );
+				Q_strcat( path, sizeof(path), va( "_barrel%d.md3", j + 1 ) );
 			}
 			weaponInfo->wpPartModels[i][j] = trap_R_RegisterModel( path );
 		}
@@ -1152,12 +1154,12 @@ void CG_RegisterWeapon( int weaponNum ) {
 		// used for spinning belt on venom
 		if ( i == W_FP_MODEL ) {
 			if ( !item->world_model[2] ) {
-				strcpy( path, comppath );
+				Q_strncpyz( path, comppath, sizeof(path) );
 			} else {
-				strcpy( path, item->world_model[2] );
+				Q_strncpyz( path, item->world_model[2], sizeof(path) );
 			}
-			COM_StripExtension(path, path, sizeof(path));
-			strcat( path, "_barrel6b.md3" );
+			COM_StripExtension( path, path, sizeof(path) );
+			Q_strcat( path, sizeof(path), "_barrel6b.md3" );
 			weaponInfo->wpPartModels[i][W_PART_7] = trap_R_RegisterModel( path );
 		}
 	}
@@ -1167,37 +1169,36 @@ void CG_RegisterWeapon( int weaponNum ) {
 	if ( weaponNum == WP_MAUSER || weaponNum == WP_GARAND ) {
 
 		if ( !item->world_model[W_FP_MODEL] ) {
-			strcpy( path, comppath );
+			Q_strncpyz( path, comppath, sizeof(path) );
 		} else {
-			strcpy( path, item->world_model[W_FP_MODEL] );
+			Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof(path) );
 		}
-		COM_StripExtension(path, path, sizeof(path));
-		strcat( path, "_scope.md3" );
+		COM_StripExtension( path, path, sizeof(path) );
+		Q_strcat( path, sizeof(path), "_scope.md3" );
 		weaponInfo->modModel[0] = trap_R_RegisterModel( path );
 	}
 
 	if ( !item->world_model[W_FP_MODEL] ) {
-		strcpy( path, comppath );
+		Q_strncpyz( path, comppath, sizeof(path) );
 	} else {
-		strcpy( path, item->world_model[W_FP_MODEL] );
+		Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof(path) );
 	}
-	COM_StripExtension(path, path, sizeof(path));
-	strcat( path, "_hand.md3" );
+	COM_StripExtension( path, path, sizeof(path) );
+	Q_strcat( path, sizeof(path), "_hand.md3" );
 	weaponInfo->handsModel = trap_R_RegisterModel( path );
 
 	if ( !weaponInfo->handsModel ) {
 		weaponInfo->handsModel = trap_R_RegisterModel( "models/weapons2/shotgun/shotgun_hand.md3" );
 	}
 
-
 //----(SA)	weapon pickup 'stand'
 	if ( !item->world_model[W_TP_MODEL] ) {
-		strcpy( path, comppath );
+		Q_strncpyz( path, comppath, sizeof(path) );
 	} else {
-		strcpy( path, item->world_model[W_TP_MODEL] );
+		Q_strncpyz( path, item->world_model[W_TP_MODEL], sizeof(path) );
 	}
-	COM_StripExtension(path, path, sizeof(path));
-	strcat( path, "_stand.md3" );
+	COM_StripExtension( path, path, sizeof(path) );
+	Q_strcat( path, sizeof(path), "_stand.md3" );
 	weaponInfo->standModel = trap_R_RegisterModel( path );
 //----(SA)	end
 
