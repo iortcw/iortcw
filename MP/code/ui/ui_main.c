@@ -1849,7 +1849,7 @@ static void UI_DrawPlayerModel( rectDef_t *rect ) {
 }
 
 static void UI_DrawNetSource( rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
-	if ( ui_netSource.integer < 0 || ui_netSource.integer > numNetSources /*uiInfo.numGameTypes*/ ) {        // NERVE - SMF - possible bug
+	if ( ui_netSource.integer < 0 || ui_netSource.integer >= numNetSources /*uiInfo.numGameTypes*/ ) {        // NERVE - SMF - possible bug
 		ui_netSource.integer = 0;
 	}
 	Text_Paint( rect->x, rect->y, scale, color, UI_TranslateString( va( "Source: %s", netSources[ui_netSource.integer] ) ), 0, 0, textStyle );
@@ -1882,7 +1882,7 @@ static void UI_DrawNetMapCinematic( rectDef_t *rect, float scale, vec4_t color )
 
 
 static void UI_DrawNetFilter( rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
-	if ( ui_serverFilterType.integer < 0 || ui_serverFilterType.integer > numServerFilters ) {
+	if ( ui_serverFilterType.integer < 0 || ui_serverFilterType.integer >= numServerFilters ) {
 		ui_serverFilterType.integer = 0;
 	}
 	Text_Paint( rect->x, rect->y, scale, color, va( "Filter: %s", serverFilters[ui_serverFilterType.integer].description ), 0, 0, textStyle );
@@ -1929,7 +1929,7 @@ static void UI_DrawTierMapName( rectDef_t *rect, float scale, vec4_t color, int 
 		i = 0;
 	}
 	j = trap_Cvar_VariableValue( "ui_currentMap" );
-	if ( j < 0 || j > MAPS_PER_TIER ) {
+	if ( j < 0 || j >= MAPS_PER_TIER ) {
 		j = 0;
 	}
 
@@ -1943,7 +1943,7 @@ static void UI_DrawTierGameType( rectDef_t *rect, float scale, vec4_t color, int
 		i = 0;
 	}
 	j = trap_Cvar_VariableValue( "ui_currentMap" );
-	if ( j < 0 || j > MAPS_PER_TIER ) {
+	if ( j < 0 || j >= MAPS_PER_TIER ) {
 		j = 0;
 	}
 
@@ -2258,13 +2258,13 @@ static int UI_OwnerDrawWidth( int ownerDraw, float scale ) {
 		s = va( "%i. %s", ownerDraw - UI_REDTEAM1 + 1, text );
 		break;
 	case UI_NETSOURCE:
-		if (ui_netSource.integer < 0 || ui_netSource.integer > numNetSources) {
+		if (ui_netSource.integer < 0 || ui_netSource.integer >= numNetSources) {
 			ui_netSource.integer = 0;
 		}
 		s = va( "Source: %s", netSources[ui_netSource.integer] );
 		break;
 	case UI_NETFILTER:
-		if ( ui_serverFilterType.integer < 0 || ui_serverFilterType.integer > numServerFilters ) {
+		if ( ui_serverFilterType.integer < 0 || ui_serverFilterType.integer >= numServerFilters ) {
 			ui_serverFilterType.integer = 0;
 		}
 		s = va( "Filter: %s", serverFilters[ui_serverFilterType.integer].description );
