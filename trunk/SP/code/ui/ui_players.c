@@ -95,9 +95,8 @@ tryagain:
 		goto tryagain;
 	}
 
-	strcpy( path, item->world_model[0] );
-	COM_StripExtension(path, path, sizeof(path));
-	strcat( path, "_flash.md3" );
+	COM_StripExtension( item->world_model[0], path, sizeof(path) );
+	Q_strcat( path, sizeof(path), "_flash.md3" );
 	pi->flashModel = trap_R_RegisterModel( path );
 
 	switch ( weaponNum ) {
@@ -1398,7 +1397,7 @@ qboolean UI_RegisterClientModelname( playerInfo_t *pi, const char *modelSkinName
 			}
 		}
 
-		strcpy( skinName, va( "%s%s1", team, playerClass ) );
+		Com_sprintf( skinName, sizeof(skinName), "%s%s1", team, playerClass );
 	}
 	// -NERVE - SMF
 
