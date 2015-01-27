@@ -52,6 +52,10 @@ endif
 #############################################################################
 -include Makefile.local
 
+ifeq ($(COMPILE_PLATFORM),cygwin)
+  PLATFORM=mingw32
+endif
+
 ifndef PLATFORM
 PLATFORM=$(COMPILE_PLATFORM)
 endif
@@ -649,6 +653,7 @@ ifeq ($(PLATFORM),mingw32)
 
   ifeq ($(COMPILE_PLATFORM),cygwin)
     TOOLS_BINEXT=.exe
+    TOOLS_CC=$(CC)
   endif
 
   LIBS= -lws2_32 -lwinmm -lpsapi
@@ -1416,11 +1421,7 @@ makedirs:
 
 ifndef TOOLS_CC
   # A compiler which probably produces native binaries
-  ifeq ($(COMPILE_PLATFORM),cygwin)
-  TOOLS_CC = $(CC)
-  else
   TOOLS_CC = gcc
-  endif
 endif
 
 TOOLS_OPTIMIZE = -g -Wall -fno-strict-aliasing
@@ -2082,6 +2083,11 @@ Q3OBJ += \
   $(B)/client/inflate.o \
   $(B)/client/inftrees.o \
   $(B)/client/zutil.o
+endif
+
+ifeq ($(USE_ANTIWALLHACK),1)
+  Q3OBJ += \
+      $(B)/client/sv_wallhack.o
 endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
