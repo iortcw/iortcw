@@ -3718,7 +3718,7 @@ static void FS_CheckSPPaks( void )
 							"WARNING: " BASEGAME "/sp_pak%d.pk3 is present but its checksum (%u)\n"
 							"is not correct. Please re-install the point release\n"
 							"**************************************************\n\n\n",
-							pakBasename[6]-'1', curpack->checksum );
+							pakBasename[6]-'0', curpack->checksum );
 				}
 			}
 
