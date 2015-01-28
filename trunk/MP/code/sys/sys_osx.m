@@ -115,17 +115,3 @@ char *Sys_StripAppBundle( char *dir )
 	Q_strncpyz(cwd, Sys_Dirname(cwd), sizeof(cwd));
 	return cwd;
 }
-
-/*
-==================
-Sys_StartProcess
-==================
-
-void Sys_StartProcess( char *exeName, qboolean doexit ) {
-	// FIXME TTimo
-	// this is only used for WolfSP / WolfMP spawning for now
-	if ( doexit ) {
-		exit( 0 );
-	}
-}
-*/
