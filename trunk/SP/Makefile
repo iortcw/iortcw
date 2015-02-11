@@ -36,7 +36,7 @@ ifndef BUILD_BASEGAME
   BUILD_BASEGAME =
 endif
 ifndef BUILD_RENDERER_REND2
-  BUILD_RENDERER_REND2 = 
+  BUILD_RENDERER_REND2 =
 endif
 ifndef BUILD_ARCHIVE
   BUILD_ARCHIVE = 0
@@ -259,6 +259,10 @@ ifndef USE_OPENGLES
 USE_OPENGLES=0
 endif
 
+ifndef RASPBERRY_PI
+RASPBERRY_PI=0
+endif
+
 
 #############################################################################
 
@@ -415,13 +419,22 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   LIBS=-ldl -lm
 
   ifeq ($(USE_OPENGLES),1)
-    CLIENT_LIBS=-lSDL2
-    RENDERER_LIBS =-lSDL2 -lvchostif -lvcfiled_check -lbcm_host -lkhrn_static -lvchiq_arm -lopenmaxil -lEGL -lGLESv2 -lvcos
-    SERVER_LIBS=-lbcm_host -lvchiq_arm -lvcos
+    ifeq ($(RASPBERRY_PI),1)
+      BASE_CFLAGS += -DUSE_OPENGLES
+      LDFLAGS += -L/opt/vc/lib
+      CLIENT_LIBS = $(SDL_LIBS) -lbcm_host
+      RENDERER_LIBS = $(SDL_LIBS) -lEGL -lGLESv1_CM -lbcm_host
+      SERVER_LIBS= -lbcm_host
+    else
+      BASE_CFLAGS += -DUSE_OPENGLES
+      CLIENT_LIBS = $(SDL_LIBS)
+      RENDERER_LIBS = $(SDL_LIBS) -lEGL -lGLESv1_CM
+      SERVER_LIBS =
+    endif
   else
-    CLIENT_LIBS=$(SDL_LIBS)
+    CLIENT_LIBS = $(SDL_LIBS)
     RENDERER_LIBS = $(SDL_LIBS) -lGL
-    SERVER_LIBS=
+    SERVER_LIBS =
   endif
 
   ifeq ($(USE_OPENAL),1)
@@ -1783,14 +1796,8 @@ ifeq ($(USE_BLOOM),1)
   Q3ROBJ += $(B)/renderer/tr_bloom.o 
 endif
 
-ifeq ($(USE_OPENGLES),1)
-  Q3ROBJ += $(B)/renderer/es_gamma.o 
-  Q3ROBJ += $(B)/renderer/es_glimp.o
-  Q3ROBJ += $(B)/renderer/etc1encode.o
-else
   Q3ROBJ += $(B)/renderer/sdl_gamma.o
   Q3ROBJ += $(B)/renderer/sdl_glimp.o
-endif
 
 ifneq ($(USE_RENDERER_DLOPEN), 0)
   Q3ROBJ += \

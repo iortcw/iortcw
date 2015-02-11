@@ -38,7 +38,14 @@ If you have questions concerning this license or the applicable additional terms
 #include "qgl.h"
 #include "iqm.h"
 
-#ifdef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+#ifdef USE_LOCAL_HEADERS
+#	include "GLES/glext.h"
+#else
+#	include <GLES/glext.h>
+#endif
+#define GL_RGBA4				0x8056
+#define GL_RGB5					0x8050
 #define GL_INDEX_TYPE		GL_UNSIGNED_SHORT
 typedef unsigned short glIndex_t;
 #else

@@ -31,11 +31,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <errno.h>
 
-#ifdef VCMODS_MISC
-#include "bcm_host.h"
-#endif
-
-#ifndef VCMODS_NOSDL
 #ifndef DEDICATED
 #ifdef USE_LOCAL_HEADERS
 #	include "SDL.h"
@@ -43,7 +38,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #else
 #	include <SDL.h>
 #	include <SDL_cpuinfo.h>
-#endif
 #endif
 #endif
 
@@ -241,9 +235,7 @@ static __attribute__ ((noreturn)) void Sys_Exit( int exitCode )
 	CON_Shutdown( );
 
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
 	SDL_Quit( );
-#endif
 #endif
 
 	if( exitCode < 2 )
@@ -281,13 +273,11 @@ cpuFeatures_t Sys_GetProcessorFeatures( void )
 {
 	cpuFeatures_t features = 0;
 
-#ifndef VCMODS_NOSDL
 #ifndef DEDICATED
 	if( SDL_HasRDTSC( ) )    features |= CF_RDTSC;
 	if( SDL_HasMMX( ) )      features |= CF_MMX;
 	if( SDL_HasSSE( ) )      features |= CF_SSE;
 	if( SDL_HasSSE2( ) )     features |= CF_SSE2;
-#endif
 #endif
 
 	return features;
@@ -381,9 +371,6 @@ Sys_Print
 */
 void Sys_Print( const char *msg )
 {
-#if defined(VCMODS_MISC)&&defined(_WIN32)
-	OutputDebugString(msg);
-#endif
 	CON_LogWrite( msg );
 	CON_Print( msg );
 }
@@ -621,14 +608,10 @@ main
 */
 int main( int argc, char **argv )
 {
-#ifdef VCMODS_MISC
-	bcm_host_init();
-#endif
 	int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
 
 #ifndef DEDICATED
-#ifndef VCMODS_NOSDL
 	// SDL version check
 
 	// Compile time
@@ -654,7 +637,6 @@ int main( int argc, char **argv )
 
 		Sys_Exit( 1 );
 	}
-#endif
 #endif
 
 	Sys_PlatformInit( );

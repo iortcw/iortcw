@@ -213,11 +213,9 @@ int max_polys;
 cvar_t  *r_maxpolyverts;
 int max_polyverts;
 
-#ifndef VCMODS_OPENGLES
 //----(SA)	added
 void ( APIENTRY * qglPNTrianglesiATI )( GLenum pname, GLint param );
 void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
-#endif
 /*
 The tessellation level and normal generation mode are specified with:
 
@@ -465,9 +463,25 @@ byte *RB_ReadPixels(int x, int y, int width, int height, size_t *offset, int *pa
 	// Allocate a few more bytes so that we can choose an alignment we like
 	buffer = ri.Hunk_AllocateTempMemory(padwidth * height + *offset + packAlign - 1);
 	
+#ifdef USE_OPENGLES
+	bufstart=buffer;
+	padwidth=linelen;
+	int p2width=1, p2height=1;
+	int xx, yy, aa;
+	while (p2width<glConfig.vidWidth) p2width*=2;
+	while (p2height<glConfig.vidHeight) p2height*=2;
+	byte *source = (byte*) ri.Z_Malloc( p2width * p2height * 4 );
+	qglReadPixels( 0, 0, p2width, p2height, GL_RGBA, GL_UNSIGNED_BYTE, source );
+	for (yy=y; yy<height; yy++)
+		for (xx=x; xx<width; xx++)
+			for (aa=0; aa<3; aa++)
+				buffer[yy*width*3+xx*3+aa]=source[(yy+y)*p2width*4+(xx+x)*4+aa];
+	ri.Free(source);
+#else
 	bufstart = PADP((intptr_t) buffer + *offset, packAlign);
 	qglReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, bufstart);
-	
+#endif	
+
 	*offset = bufstart - buffer;
 	*padlen = padwidth - linelen;
 	
@@ -949,7 +963,10 @@ void GL_SetDefaultState( void ) {
 	//
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#else
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 #endif
 	qglDepthMask( GL_TRUE );
@@ -958,7 +975,7 @@ void GL_SetDefaultState( void ) {
 	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_BLEND );
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 //----(SA)	added.
 	// ATI pn_triangles
 	if ( qglPNTrianglesiATI ) {
@@ -984,7 +1001,6 @@ void GL_SetDefaultState( void ) {
 		// set when rendering
 //	   qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, glConfig.maxAnisotropy);
 	}
-
 //----(SA)	end
 #endif
 }
@@ -1085,7 +1101,6 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "texenv add: %s\n", enablestrings[glConfig.textureEnvAddAvailable != 0] );
 	ri.Printf( PRINT_ALL, "compressed textures: %s\n", enablestrings[glConfig.textureCompression != TC_NONE] );
 
-#ifndef VCMODS_OPENGLES
 	ri.Printf( PRINT_ALL, "ATI truform: %s\n", enablestrings[qglPNTrianglesiATI != 0] );
 	if ( qglPNTrianglesiATI ) {
 //DAJ bogus at this point		ri.Printf( PRINT_ALL, "MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI: %d\n", glConfig.ATIMaxTruformTess );
@@ -1093,7 +1108,6 @@ void GfxInfo_f( void ) {
 		ri.Printf( PRINT_ALL, "Truform Point Mode: %s\n", r_ati_truform_pointmode->string );
 		ri.Printf( PRINT_ALL, "Truform Normal Mode: %s\n", r_ati_truform_normalmode->string );
 	}
-#endif
 
 	ri.Printf( PRINT_ALL, "NV distance fog: %s\n", enablestrings[glConfig.NVFogAvailable != 0] );
 	if ( glConfig.NVFogAvailable ) {
@@ -1262,11 +1276,7 @@ void R_Register( void ) {
 	r_bonesDebug = ri.Cvar_Get( "r_bonesDebug", "0", CVAR_CHEAT );
 
 	// Rafael - wolf fog
-#ifdef VCMODS_OPENGLES
-	r_wolffog = ri.Cvar_Get( "r_wolffog", "0", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
-#else
 	r_wolffog = ri.Cvar_Get( "r_wolffog", "1", 0 );
-#endif
 	// done
 
 	r_nocurves = ri.Cvar_Get( "r_nocurves", "0", CVAR_CHEAT );
