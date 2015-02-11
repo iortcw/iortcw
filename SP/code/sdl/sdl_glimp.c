@@ -464,7 +464,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		}
 		else if ( ( r_windowPosx->integer == 0 ) && ( r_windowPosy->integer == 0 ) )
 		{
-			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
 					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
 			{
 				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
