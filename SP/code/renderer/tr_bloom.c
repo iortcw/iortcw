@@ -99,6 +99,31 @@ static void ID_INLINE R_Bloom_Quad( int width, int height, float texX, float tex
 	texWidth += texX;
 	texHeight += texY;
 
+#ifdef USE_OPENGLES
+	GLfloat tex[] = {
+	 texX, texHeight,
+	 texX, texY,
+	 texWidth, texY,
+	 texWidth, texHeight };
+	GLfloat vtx[] = {
+	 x, y,
+	 x, height,
+	 width, height,
+	 width, y };
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (glcol)
+		qglDisableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	qglVertexPointer  ( 2, GL_FLOAT, 0, vtx );
+	qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+	if (!text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglEnableClientState(GL_COLOR_ARRAY);
+#else
 	qglBegin( GL_QUADS );							
 	qglTexCoord2f(	texX,						texHeight	);	
 	qglVertex2f(	x,							y	);
@@ -112,6 +137,7 @@ static void ID_INLINE R_Bloom_Quad( int width, int height, float texX, float tex
 	qglTexCoord2f(	texWidth,					texHeight	);	
 	qglVertex2f(	width,						y	);				
 	qglEnd ();
+#endif
 }
 
 

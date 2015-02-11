@@ -611,11 +611,18 @@ static unsigned short yuv_to_rgb( long y, long u, long v ) {
 *
 ******************************************************************************/
 static unsigned int yuv_to_rgb24( long y, long u, long v ) {
+#ifdef USE_OPENGLES
+	long a,r,g,b,YY = (long)( ROQ_YY_tab[( y )]);
+#else
 	long r,g,b,YY = (long)( ROQ_YY_tab[( y )] );
+#endif
 
 	r = ( YY + ROQ_VR_tab[v] ) >> 6;
 	g = ( YY + ROQ_UG_tab[u] + ROQ_VG_tab[v] ) >> 6;
 	b = ( YY + ROQ_UB_tab[u] ) >> 6;
+#ifdef USE_OPENGLES
+	a = 255;
+#endif
 
 	if ( r < 0 ) {
 		r = 0;
@@ -636,7 +643,11 @@ static unsigned int yuv_to_rgb24( long y, long u, long v ) {
 		b = 255;
 	}
 
+#ifdef USE_OPENGLES
+	return LittleLong( ( r ) | ( g << 8 ) | ( b << 16 ) | ( 255 << 24 ) | ( a << 24 ) );
+#else
 	return LittleLong( ( r ) | ( g << 8 ) | ( b << 16 ) | ( 255 << 24 ) );
+#endif
 }
 
 /******************************************************************************

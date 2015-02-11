@@ -316,7 +316,9 @@ for each RE_EndFrame
 */
 void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	drawBufferCommand_t *cmd = NULL;
+#ifndef USE_OPENGLES
 	colorMaskCommand_t *colcmd = NULL;
+#endif
 
 	if ( !tr.registered ) {
 		return;
@@ -329,6 +331,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	//
 	// do overdraw measurement
 	//
+#ifndef USE_OPENGLES
 	if ( r_measureOverdraw->integer ) {
 		if ( glConfig.stencilBits < 4 ) {
 			ri.Printf( PRINT_ALL, "Warning: not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits );
@@ -357,6 +360,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		}
 		r_measureOverdraw->modified = qfalse;
 	}
+#endif
 
 	//
 	// texturemode stuff
@@ -371,7 +375,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	// ATI stuff
 	//
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 	// TRUFORM
 	if ( qglPNTrianglesiATI ) {
 
@@ -420,13 +424,11 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			qglPNTrianglesiATI( GL_PN_TRIANGLES_NORMAL_MODE_ATI, glConfig.ATINormalMode );
 		}
 	}
-#endif
 
 	//
 	// NVidia stuff
 	//
 
-#ifndef VCMODS_OPENGLES
 	// fog control
 	if ( glConfig.NVFogAvailable && r_nv_fogdist_mode->modified ) {
 		r_nv_fogdist_mode->modified = qfalse;
@@ -464,6 +466,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		}
 	}
 
+#ifndef USE_OPENGLES
 	if (glConfig.stereoEnabled) {
 		if( !(cmd = R_GetCommandBuffer(sizeof(*cmd))) )
 			return;
@@ -522,6 +525,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			colcmd->commandId = RC_COLORMASK;
 		}
 		else
+#endif
 		{
 			if(stereoFrame != STEREO_CENTER)
 				ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
@@ -534,6 +538,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		{
 			cmd->commandId = RC_DRAW_BUFFER;
 
+#ifndef USE_OPENGLES
 			if(r_anaglyphMode->modified)
 			{
 				qglColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -543,9 +548,12 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			if (!Q_stricmp(r_drawBuffer->string, "GL_FRONT"))
 				cmd->buffer = (int)GL_FRONT;
 			else
+#endif
 				cmd->buffer = (int)GL_BACK;
 		}
+#ifndef USE_OPENGLES
 	}
+#endif
 
 	tr.refdef.stereoFrame = stereoFrame;
 }
