@@ -226,6 +226,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 	Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	SDL_DisplayMode desktopMode;
 	int display = 0;
+	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
 
 	ri.Printf( PRINT_ALL, "Initializing OpenGL display\n");
 
@@ -301,8 +302,6 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 
 	if( SDL_window != NULL )
 	{
-		int x, y;
-
 		SDL_GetWindowPosition( SDL_window, &x, &y );
 		ri.Printf( PRINT_DEVELOPER, "Existing window at %dx%d before being destroyed\n", x, y );
 		SDL_DestroyWindow( SDL_window );
@@ -448,16 +447,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 				continue;
 			}
 		}
-		else if ( ( r_windowPosx->integer == 0 ) && ( r_windowPosy->integer == 0 ) )
-		{
-			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
-			{
-				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-				continue;
-			}
-		}
-		else
+		else if ( ( r_windowPosx->integer || r_windowPosy->integer ) && !fullscreen )
 		{
 			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, r_windowPosx->integer, r_windowPosy->integer,
 					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
@@ -466,6 +456,15 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 				continue;
 			}
  		}
+		else
+		{
+			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
+					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
+			{
+				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+				continue;
+			}
+		}
 
 		if( fullscreen )
 		{
