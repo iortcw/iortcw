@@ -3330,6 +3330,10 @@ Com_Shutdown
 =================
 */
 void Com_Shutdown( void ) {
+
+	// write config file if anything changed
+	Com_WriteConfiguration();
+
 	if ( logfile ) {
 		FS_FCloseFile( logfile );
 		logfile = 0;
