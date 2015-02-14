@@ -102,10 +102,10 @@ cvar_t  *r_ext_multitexture;
 cvar_t  *r_ext_compiled_vertex_array;
 cvar_t  *r_ext_texture_env_add;
 cvar_t	*r_ext_max_anisotropy;
-
-//----(SA)	added
 cvar_t  *r_ext_texture_filter_anisotropic;
 
+#ifndef USE_OPENGLES
+//----(SA)	added
 cvar_t  *r_ext_NV_fog_dist;
 cvar_t  *r_nv_fogdist_mode;
 
@@ -113,9 +113,9 @@ cvar_t  *r_ext_ATI_pntriangles;
 cvar_t  *r_ati_truform_tess;        //
 cvar_t  *r_ati_truform_normalmode;  // linear/quadratic
 cvar_t  *r_ati_truform_pointmode;   // linear/cubic
+cvar_t  *r_ati_fsaa_samples;        // DAJ valids are 1, 2, 4
 //----(SA)	end
-
-cvar_t  *r_ati_fsaa_samples;        //DAJ valids are 1, 2, 4
+#endif
 
 cvar_t  *r_ignoreGLErrors;
 cvar_t  *r_logFile;
@@ -207,7 +207,7 @@ int max_polys;
 cvar_t  *r_maxpolyverts;
 int max_polyverts;
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 //----(SA)	added
 void ( APIENTRY * qglPNTrianglesiATI )( GLenum pname, GLint param );
 void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
@@ -457,9 +457,25 @@ byte *RB_ReadPixels(int x, int y, int width, int height, size_t *offset, int *pa
 	
 	// Allocate a few more bytes so that we can choose an alignment we like
 	buffer = ri.Hunk_AllocateTempMemory(padwidth * height + *offset + packAlign - 1);
-	
+
+#ifdef USE_OPENGLES
+	bufstart=buffer;
+	padwidth=linelen;
+	int p2width=1, p2height=1;
+	int xx, yy, aa;
+	while (p2width<glConfig.vidWidth) p2width*=2;
+	while (p2height<glConfig.vidHeight) p2height*=2;
+	byte *source = (byte*) ri.Z_Malloc( p2width * p2height * 4 );
+	qglReadPixels( 0, 0, p2width, p2height, GL_RGBA, GL_UNSIGNED_BYTE, source );
+	for (yy=y; yy<height; yy++)
+		for (xx=x; xx<width; xx++)
+			for (aa=0; aa<3; aa++)
+				buffer[yy*width*3+xx*3+aa]=source[(yy+y)*p2width*4+(xx+x)*4+aa];
+	ri.Free(source);
+#else
 	bufstart = PADP((intptr_t) buffer + *offset, packAlign);
 	qglReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, bufstart);
+#endif
 	
 	*offset = bufstart - buffer;
 	*padlen = padwidth - linelen;
@@ -945,7 +961,10 @@ void GL_SetDefaultState( void ) {
 	//
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#else
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 #endif
 	qglDepthMask( GL_TRUE );
@@ -954,7 +973,7 @@ void GL_SetDefaultState( void ) {
 	qglDisable( GL_CULL_FACE );
 	qglDisable( GL_BLEND );
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 //----(SA)	added.
 	// ATI pn_triangles
 	if ( qglPNTrianglesiATI ) {
@@ -970,6 +989,8 @@ void GL_SetDefaultState( void ) {
 		// set Wolf defaults
 		qglPNTrianglesiATI( GL_PN_TRIANGLES_TESSELATION_LEVEL_ATI, r_ati_truform_tess->value );
 	}
+//----(SA)	end
+#endif
 
 	if ( glConfig.anisotropicAvailable ) {
 		float maxAnisotropy;
@@ -980,10 +1001,6 @@ void GL_SetDefaultState( void ) {
 		// set when rendering
 //	   qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, glConfig.maxAnisotropy);
 	}
-
-//----(SA)	end
-#endif
-	
 }
 
 /*
@@ -1050,6 +1067,10 @@ void GfxInfo_f( void ) {
 
 	// rendering primitives
 	{
+#ifdef USE_OPENGLES
+		ri.Printf( PRINT_ALL, "rendering primitives: " );
+		ri.Printf( PRINT_ALL, "single glDrawElements\n" );
+#else
 		int primitives;
 
 		// default is to use triangles if compiled vertex arrays are present
@@ -1071,6 +1092,7 @@ void GfxInfo_f( void ) {
 		} else if ( primitives == 3 ) {
 			ri.Printf( PRINT_ALL, "multiple glColor4ubv + glTexCoord2fv + glVertex3fv\n" );
 		}
+#endif
 	}
 
 	ri.Printf( PRINT_ALL, "texturemode: %s\n", r_textureMode->string );
@@ -1081,10 +1103,12 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "texenv add: %s\n", enablestrings[glConfig.textureEnvAddAvailable != 0] );
 	ri.Printf( PRINT_ALL, "compressed textures: %s\n", enablestrings[glConfig.textureCompression != TC_NONE] );
 
+#ifndef USE_OPENGLES
 	ri.Printf( PRINT_ALL, "NV distance fog: %s\n", enablestrings[glConfig.NVFogAvailable != 0] );
 	if ( glConfig.NVFogAvailable ) {
 		ri.Printf( PRINT_ALL, "Fog Mode: %s\n", r_nv_fogdist_mode->string );
 	}
+#endif
 
 	if ( r_vertexLight->integer || glConfig.hardwareType == GLHW_PERMEDIA2 ) {
 		ri.Printf( PRINT_ALL, "HACK: using vertex lightmap approximation\n" );
@@ -1119,6 +1143,7 @@ void R_Register( void ) {
 	r_ext_compiled_vertex_array = ri.Cvar_Get( "r_ext_compiled_vertex_array", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_glIgnoreWicked3D = ri.Cvar_Get( "r_glIgnoreWicked3D", "0", CVAR_ARCHIVE | CVAR_LATCH );
 
+#ifndef USE_OPENGLES
 //----(SA)	added
 	r_ext_ATI_pntriangles           = ri.Cvar_Get( "r_ext_ATI_pntriangles", "0", CVAR_ARCHIVE | CVAR_LATCH );   //----(SA)	default to '0'
 	r_ati_truform_tess              = ri.Cvar_Get( "r_ati_truform_tess", "1", CVAR_ARCHIVE );
@@ -1130,11 +1155,11 @@ void R_Register( void ) {
 	r_ext_NV_fog_dist                   = ri.Cvar_Get( "r_ext_NV_fog_dist", "0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_nv_fogdist_mode                   = ri.Cvar_Get( "r_nv_fogdist_mode", "GL_EYE_RADIAL_NV", CVAR_ARCHIVE );    // default to 'looking good'
 //----(SA)	end
+#endif
 
 	r_ext_texture_env_add = ri.Cvar_Get( "r_ext_texture_env_add", "1", CVAR_ARCHIVE | CVAR_LATCH );
 
-	r_ext_texture_filter_anisotropic = ri.Cvar_Get( "r_ext_texture_filter_anisotropic",
-			"0", CVAR_ARCHIVE | CVAR_LATCH );
+	r_ext_texture_filter_anisotropic = ri.Cvar_Get( "r_ext_texture_filter_anisotropic", "0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_ext_max_anisotropy = ri.Cvar_Get( "r_ext_max_anisotropy", "2", CVAR_ARCHIVE | CVAR_LATCH );
 
 	r_picmip = ri.Cvar_Get( "r_picmip", "1", CVAR_ARCHIVE | CVAR_LATCH ); //----(SA)	mod for DM and DK for id build.  was "1" // JPW NERVE pushed back to 1
@@ -1151,7 +1176,11 @@ void R_Register( void ) {
 	ri.Cvar_CheckRange( r_ext_multisample, 0, 4, qtrue );
 	r_overBrightBits = ri.Cvar_Get( "r_overBrightBits", "0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_ignorehwgamma = ri.Cvar_Get( "r_ignorehwgamma", "0", CVAR_ARCHIVE | CVAR_LATCH );
+#ifdef USE_OPENGLES
+	r_mode = ri.Cvar_Get( "r_mode", "-2", CVAR_ARCHIVE | CVAR_LATCH );
+#else
 	r_mode = ri.Cvar_Get( "r_mode", "3", CVAR_ARCHIVE | CVAR_LATCH );
+#endif
 	r_fullscreen = ri.Cvar_Get( "r_fullscreen", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_noborder = ri.Cvar_Get("r_noborder", "0", CVAR_ARCHIVE | CVAR_LATCH );
 	r_customwidth = ri.Cvar_Get( "r_customwidth", "1600", CVAR_ARCHIVE | CVAR_LATCH );
@@ -1208,7 +1237,11 @@ void R_Register( void ) {
 	r_railCoreWidth = ri.Cvar_Get( "r_railCoreWidth", "1", CVAR_ARCHIVE );
 	r_railSegmentLength = ri.Cvar_Get( "r_railSegmentLength", "32", CVAR_ARCHIVE );
 
+#ifdef USE_OPENGLES
+	r_primitives = ri.Cvar_Get( "r_primitives", "2", CVAR_ARCHIVE );
+#else
 	r_primitives = ri.Cvar_Get( "r_primitives", "0", CVAR_ARCHIVE );
+#endif
 
 	r_ambientScale = ri.Cvar_Get( "r_ambientScale", "0.5", CVAR_CHEAT );
 	r_directedScale = ri.Cvar_Get( "r_directedScale", "1", CVAR_CHEAT );
@@ -1234,11 +1267,7 @@ void R_Register( void ) {
 	// done.
 
 	// Rafael - wolf fog
-#ifdef VCMODS_OPENGLES
-	r_wolffog = ri.Cvar_Get( "r_wolffog", "0", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
-#else
 	r_wolffog = ri.Cvar_Get( "r_wolffog", "1", CVAR_CHEAT ); // JPW NERVE cheat protected per id request
-#endif
 	// done
 
 	r_nocurves = ri.Cvar_Get( "r_nocurves", "0", CVAR_CHEAT );
@@ -1325,8 +1354,13 @@ void R_Init( void ) {
 	memset( &backEnd, 0, sizeof( backEnd ) );
 	memset( &tess, 0, sizeof( tess ) );
 
+#ifdef USE_OPENGLES
+	if(sizeof(glconfig_t) != 7248)
+		ri.Error( ERR_FATAL, "Mod ABI incompatible: sizeof(glconfig_t) == %u != 7248", (unsigned int) sizeof(glconfig_t));
+#else
 	if(sizeof(glconfig_t) != 7268)
-		ri.Error( ERR_FATAL, "Mod ABI incompatible: sizeof(glconfig_t) == %u != 11332", (unsigned int) sizeof(glconfig_t));
+		ri.Error( ERR_FATAL, "Mod ABI incompatible: sizeof(glconfig_t) == %u != 7268", (unsigned int) sizeof(glconfig_t));
+#endif
 
 //	Swap_Init();
 
