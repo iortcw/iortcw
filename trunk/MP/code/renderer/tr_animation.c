@@ -50,7 +50,7 @@ frame.
 static float frontlerp, backlerp;
 static float torsoFrontlerp, torsoBacklerp;
 static int *triangles, *pIndexes;
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 static int *boneRefs;
 #endif
 static int indexes;
@@ -1037,7 +1037,7 @@ RB_SurfaceAnim
 ==============
 */
 void RB_SurfaceAnim( mdsSurface_t *surface ) {
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 	int i;
 #endif
 	int j, k;
@@ -1195,7 +1195,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 
 	DBG_SHOWTIME
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 	if ( r_bonesDebug->integer ) {
 		if ( r_bonesDebug->integer < 3 ) {
 			// DEBUG: show the bones as a stick figure with axis at each bone

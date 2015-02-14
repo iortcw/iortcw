@@ -94,11 +94,7 @@ void R_Fog( glfog_t *curfog ) {
 
 	// only send changes if necessary
 
-#ifdef VCMODS_OPENGLES
-	qglFogf( GL_FOG_MODE, curfog->mode );
-#else
 	qglFogi( GL_FOG_MODE, curfog->mode );
-#endif
 	qglFogfv( GL_FOG_COLOR, curfog->color );
 	qglFogf( GL_FOG_DENSITY, curfog->density );
 	qglHint( GL_FOG_HINT, curfog->hint );
@@ -110,7 +106,7 @@ void R_Fog( glfog_t *curfog ) {
 		qglFogf( GL_FOG_END, curfog->end );
 	}
 
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 // TTimo - from SP NV fog code
 	// NV fog mode
 	if ( glConfig.NVFogAvailable ) {
@@ -1601,31 +1597,45 @@ R_DebugPolygon
 ================
 */
 void R_DebugPolygon( int color, int numPoints, float *points ) {
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 	int i;
+#endif
 
 	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
 
 	// draw solid shade
 
+#ifdef USE_OPENGLES
+	qglColor4f( color&1, (color>>1)&1, (color>>2)&1, 1.0f );
+	qglVertexPointer  ( 3, GL_FLOAT, 0, points );
+	qglDrawArrays( GL_TRIANGLE_FAN, 0, numPoints );
+#else
 	qglColor3f( color & 1, ( color >> 1 ) & 1, ( color >> 2 ) & 1 );
 	qglBegin( GL_POLYGON );
 	for ( i = 0 ; i < numPoints ; i++ ) {
 		qglVertex3fv( points + i * 3 );
 	}
 	qglEnd();
+#endif
 
 	// draw wireframe outline
+#ifndef USE_OPENGLES
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
+#endif
 	qglDepthRange( 0, 0 );
+#ifdef USE_OPENGLES
+	qglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	qglVertexPointer  ( 3, GL_FLOAT, 0, points );
+	qglDrawArrays( GL_LINES, 0, numPoints );
+#else
 	qglColor3f( 1, 1, 1 );
 	qglBegin( GL_POLYGON );
 	for ( i = 0 ; i < numPoints ; i++ ) {
 		qglVertex3fv( points + i * 3 );
 	}
 	qglEnd();
-	qglDepthRange( 0, 1 );
 #endif
+	qglDepthRange( 0, 1 );
 }
 
 /*

@@ -47,7 +47,7 @@ R_ArrayElementDiscrete
 This is just for OpenGL conformance testing, it should never be the fastest
 ================
 */
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 static void APIENTRY R_ArrayElementDiscrete( GLint index ) {
 	qglColor4ubv( tess.svars.colors[ index ] );
 	if ( glState.currenttmu ) {
@@ -66,9 +66,19 @@ R_DrawStripElements
 
 ===================
 */
+#ifdef USE_OPENGLES
+#define MAX_INDEX 4096
+glIndex_t sindexes[MAX_INDEX];
+int num_sindexed;
+
+void AddIndexe(GLint idx) {
+	sindexes[num_sindexed++]=idx;
+}
+#endif
+
+#ifndef USE_OPENGLES
 static int c_vertexes;          // for seeing how long our average strips are
 static int c_begins;
-#ifndef VCMODS_OPENGLES
 static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void ( APIENTRY *element )( GLint ) ) {
 	int i;
 	int last[3] = { -1, -1, -1 };
@@ -157,7 +167,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void 
 
 	qglEnd();
 }
-#endif
+#endif // USE_OPENGLES
 
 
 
@@ -171,11 +181,17 @@ without compiled vertex arrays.
 ==================
 */
 static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
+#ifdef USE_OPENGLES
+	qglDrawElements( GL_TRIANGLES, 
+						numIndexes,
+						GL_INDEX_TYPE,
+						indexes );
+		return;
+#else
 	int primitives;
 
 	primitives = r_primitives->integer;
 
-#ifndef VCMODS_OPENGLES
 	// default is to use triangles if compiled vertex arrays are present
 	if ( primitives == 0 ) {
 		if ( qglLockArraysEXT ) {
@@ -187,12 +203,10 @@ static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
 
 
 	if ( primitives == 2 ) {
-#endif
 		qglDrawElements( GL_TRIANGLES,
 						 numIndexes,
 						 GL_INDEX_TYPE,
 						 indexes );
-#ifndef VCMODS_OPENGLES
 		return;
 	}
 
@@ -272,11 +286,7 @@ Draws triangle outlines for debugging
 */
 static void DrawTris( shaderCommands_t *input ) {
 	GL_Bind( tr.whiteImage );
-#ifdef VCMODS_OPENGLES
-	qglColor4f (1.0f,1.0f,1.0f,1.0f);
-#else
 	qglColor3f( 1,1,1 );
-#endif
 
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE );
 	qglDepthRange( 0, 0 );
@@ -291,7 +301,14 @@ static void DrawTris( shaderCommands_t *input ) {
 		GLimp_LogComment( "glLockArraysEXT\n" );
 	}
 
+#ifdef USE_OPENGLES
+	qglDrawElements( GL_LINE_STRIP, 
+					input->numIndexes,
+					GL_INDEX_TYPE,
+					input->indexes );
+#else
 	R_DrawElements( input->numIndexes, input->indexes );
+#endif
 
 	if ( qglUnlockArraysEXT ) {
 		qglUnlockArraysEXT();
@@ -311,38 +328,36 @@ Draws vertex normals for debugging
 static void DrawNormals( shaderCommands_t *input ) {
 	int i;
 	vec3_t temp;
-#ifdef VCMODS_OPENGLES
-	vec3_t	verts[2*SHADER_MAX_VERTEXES];
-	glIndex_t indicies[2*SHADER_MAX_VERTEXES];
-
-	for (i = 0 ; i < input->numVertexes ; i++) {
-		VectorCopy(input->xyz[i], verts[i*2]);
-		VectorMA (input->xyz[i], 2, input->normal[i], temp);
-		VectorCopy(temp, verts[(i*2)+1]);
-		indicies[(i*2)] = i*2;
-		indicies[(i*2)+1] = (i*2)+1;
-	}
-#endif
 
 	GL_Bind( tr.whiteImage );
-#ifdef VCMODS_OPENGLES
-	qglColor4f (1.0f,1.0f,1.0f,1.0f);
-#else
 	qglColor3f( 1,1,1 );
-#endif
 	qglDepthRange( 0, 0 );  // never occluded
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE );
 
-#ifdef VCMODS_OPENGLES
-	qglVertexPointer(3, GL_FLOAT, 0, verts);
-	qglDrawElements( GL_LINES, i, GL_INDEX_TYPE, indicies );
+#ifdef USE_OPENGLES
+	vec3_t vtx[2];
+	//*TODO* save states for texture & color array
 #else
 	qglBegin( GL_LINES );
+#endif
 	for ( i = 0 ; i < input->numVertexes ; i++ ) {
+#ifndef USE_OPENGLES
 		qglVertex3fv( input->xyz[i] );
+#endif
 		VectorMA( input->xyz[i], 2, input->normal[i], temp );
+#ifdef USE_OPENGLES
+		memcpy(vtx, input->xyz[i], sizeof(GLfloat)*3);
+		memcpy(vtx+1, temp, sizeof(GLfloat)*3);
+		qglVertexPointer (3, GL_FLOAT, 16, vtx);
+		qglDrawArrays(GL_LINES, 0, 2);
+#else
 		qglVertex3fv( temp );
+#endif
 	}
+
+#ifdef USE_OPENGLES
+	//*TODO* restaure state for texture & color
+#else
 	qglEnd();
 #endif
 
@@ -407,7 +422,7 @@ static void DrawMultitextured( shaderCommands_t *input, int stage ) {
 
 	// this is an ugly hack to work around a GeForce driver
 	// bug with multitexture and clip planes
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 	if ( backEnd.viewParms.isPortal ) {
 		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
@@ -1442,12 +1457,6 @@ void RB_StageIteratorGeneric( void ) {
 
 	input = &tess;
 	shader = input->shader;
-
-#ifdef VCMODS_OPENGLES
-	// if ignoreglerrors is off, qglLockArraysEXT generates a GL error when you
-	// pass it 0 verts
-	if (input->numVertexes == 0 ) return;
-#endif
 
 	RB_DeformTessGeometry();
 

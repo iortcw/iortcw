@@ -53,6 +53,11 @@ static int numEdgeDefs[SHADER_MAX_VERTEXES];
 static int facing[SHADER_MAX_INDEXES / 3];
 static vec3_t shadowXyz[SHADER_MAX_VERTEXES];
 
+#ifdef USE_OPENGLES
+static unsigned short indexes[6*MAX_EDGE_DEFS*SHADER_MAX_VERTEXES];
+static int idx = 0;
+#endif
+
 void R_AddEdgeDef( int i1, int i2, int facing ) {
 	int c;
 
@@ -103,6 +108,9 @@ void R_RenderShadowEdges( void ) {
 	int i2;
 	int c_edges, c_rejected;
 	int hit[2];
+#ifdef USE_OPENGLES
+	idx = 0;
+#endif
 
 	// an edge is NOT a silhouette edge if its face doesn't face the light,
 	// or if it has a reverse paired edge that also faces the light.
@@ -132,15 +140,15 @@ void R_RenderShadowEdges( void ) {
 			// if it doesn't share the edge with another front facing
 			// triangle, it is a sil edge
 			if ( hit[ 1 ] == 0 ) {
-#ifdef VCMODS_OPENGLES
-				glIndex_t indicies[4];
-				indicies[0] = i;
-				indicies[1] = i+tess.numVertexes;
-				indicies[2] = i2;
-				indicies[3] = i2+tess.numVertexes;
-				
-				qglVertexPointer( 3, GL_FLOAT, 16, tess.xyz );
-				qglDrawElements( GL_TRIANGLE_STRIP, 4, GL_INDEX_TYPE, indicies );
+#ifdef USE_OPENGLES
+				// A single drawing call is better than many. So I prefer a singe TRIANGLES call than many TRAINGLE_STRIP call
+				// even if it seems less efficiant, it's faster on the PANDORA
+				indexes[idx++] = i;
+				indexes[idx++] = i + tess.numVertexes;
+				indexes[idx++] = i2;
+				indexes[idx++] = i2;
+				indexes[idx++] = i + tess.numVertexes;
+				indexes[idx++] = i2 + tess.numVertexes;
 #else
 				qglBegin( GL_TRIANGLE_STRIP );
 				qglVertex3fv( tess.xyz[ i ] );
@@ -155,6 +163,11 @@ void R_RenderShadowEdges( void ) {
 			}
 		}
 	}
+
+#ifdef USE_OPENGLES
+	qglDrawElements(GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes);
+#endif
+
 #endif
 }
 
@@ -226,11 +239,7 @@ void RB_ShadowTessEnd( void ) {
 
 	GL_Bind( tr.whiteImage );
 	GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-#ifdef VCMODS_OPENGLES
-	qglColor4f( 0.2f, 0.2f, 0.2f, 1.0f );
-#else
 	qglColor3f( 0.2f, 0.2f, 0.2f );
-#endif
 
 	// don't write to the color buffer
 	qglGetBooleanv(GL_COLOR_WRITEMASK, rgba);
@@ -238,6 +247,16 @@ void RB_ShadowTessEnd( void ) {
 
 	qglEnable( GL_STENCIL_TEST );
 	qglStencilFunc( GL_ALWAYS, 1, 255 );
+
+#ifdef USE_OPENGLES
+	qglVertexPointer (3, GL_FLOAT, 16, tess.xyz);
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglDisableClientState( GL_COLOR_ARRAY );
+#endif
 
 	GL_Cull( CT_BACK_SIDED );
 	qglStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
@@ -247,7 +266,18 @@ void RB_ShadowTessEnd( void ) {
 	GL_Cull( CT_FRONT_SIDED );
 	qglStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
 
+#ifdef USE_OPENGLES
+	qglDrawElements(GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes);
+#else
 	R_RenderShadowEdges();
+#endif
+
+#ifdef USE_OPENGLES
+	if (text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglEnableClientState( GL_COLOR_ARRAY );
+#endif
 
 	// reenable writing to the color buffer
 	qglColorMask(rgba[0], rgba[1], rgba[2], rgba[3]);
@@ -265,15 +295,6 @@ overlap and double darken.
 =================
 */
 void RB_ShadowFinish( void ) {
-#ifdef VCMODS_OPENGLES
-	vec3_t quad[4] = {
-		{-100.0f, 100.0f, -10.0},
-		{100.0f, 100.0f, -10.0f},
-		{100.0f, -100.0f, -10.0f},
-		{-100.0f, -100.0f, -10.0f}
-	};
-	glIndex_t indicies[6] = { 0, 1, 2, 0, 3, 2};
-#endif
 	if ( r_shadows->integer != 2 ) {
 		return;
 	}
@@ -290,19 +311,31 @@ void RB_ShadowFinish( void ) {
 
 	qglLoadIdentity();
 
-#ifdef VCMODS_OPENGLES
-	qglColor4f( 0.6f, 0.6f, 0.6f, 1.0f );
-#else
 	qglColor3f( 0.6f, 0.6f, 0.6f );
-#endif
 	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
 
 //	qglColor3f( 1, 0, 0 );
 //	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
 
-#ifdef VCMODS_OPENGLES
-	qglVertexPointer ( 3, GL_FLOAT, 0, quad );
-	qglDrawElements ( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
+#ifdef USE_OPENGLES
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglDisableClientState( GL_COLOR_ARRAY );
+	GLfloat vtx[] = {
+	 -100,  100, -10,
+	  100,  100, -10,
+	  100, -100, -10,
+	 -100, -100, -10
+	};
+	qglVertexPointer  ( 3, GL_FLOAT, 0, vtx );
+	qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+	if (text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglEnableClientState( GL_COLOR_ARRAY );
 #else
 	qglBegin( GL_QUADS );
 	qglVertex3f( -100, 100, -10 );

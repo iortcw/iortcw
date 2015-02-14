@@ -1195,14 +1195,15 @@ extern cvar_t   *r_ext_compressed_textures;     // these control use of specific
 extern cvar_t   *r_ext_multitexture;
 extern cvar_t   *r_ext_compiled_vertex_array;
 extern cvar_t   *r_ext_texture_env_add;
+extern cvar_t   *r_ext_texture_filter_anisotropic;
+extern cvar_t	*r_ext_max_anisotropy;
+
 //----(SA)	added
 extern cvar_t   *r_ext_ATI_pntriangles;
 extern cvar_t   *r_ati_truform_tess;
 extern cvar_t   *r_ati_truform_pointmode;   //----(SA)
 extern cvar_t   *r_ati_truform_normalmode;  //----(SA)
 extern cvar_t   *r_ati_fsaa_samples;        //DAJ
-extern cvar_t   *r_ext_texture_filter_anisotropic;
-extern cvar_t	*r_ext_max_anisotropy;
 extern cvar_t   *r_ext_NV_fog_dist;
 extern cvar_t   *r_nv_fogdist_mode;
 //----(SA)	end

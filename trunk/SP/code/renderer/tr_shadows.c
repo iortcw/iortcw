@@ -163,6 +163,7 @@ void R_RenderShadowEdges( void ) {
 			}
 		}
 	}
+
 #ifdef USE_OPENGLES
 	qglDrawElements(GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes);
 #endif

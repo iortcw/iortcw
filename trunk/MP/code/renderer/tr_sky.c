@@ -376,30 +376,40 @@ static vec3_t s_skyPoints[SKY_SUBDIVISIONS + 1][SKY_SUBDIVISIONS + 1];
 static float s_skyTexCoords[SKY_SUBDIVISIONS + 1][SKY_SUBDIVISIONS + 1][2];
 
 static void DrawSkySide( struct image_s *image, const int mins[2], const int maxs[2] ) {
-#ifdef VCMODS_OPENGLES
-	int s, t, i=0;
-	int size;
-	glIndex_t *indicies;
-	
-	size = (maxs[1]-mins[1]) * (maxs[0] - mins[0] + 1);
-	indicies = ri.Hunk_AllocateTempMemory( sizeof(glIndex_t) * size );
-#else
 	int s, t;
-#endif
 
 	GL_Bind( image );
 
+#ifdef USE_OPENGLES
+	GLfloat vtx[3*1024];	// arbitrary sized
+	GLfloat tex[2*1024];
+	int idx;
+	
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (glcol)
+		qglDisableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+#endif
+
 	for ( t = mins[1] + HALF_SKY_SUBDIVISIONS; t < maxs[1] + HALF_SKY_SUBDIVISIONS; t++ )
 	{
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+		idx=0;
+#else
 		qglBegin( GL_TRIANGLE_STRIP );
 #endif
 
 		for ( s = mins[0] + HALF_SKY_SUBDIVISIONS; s <= maxs[0] + HALF_SKY_SUBDIVISIONS; s++ )
 		{
-#ifdef VCMODS_OPENGLES
-			indicies[i++] = t*(SKY_SUBDIVISIONS+1) + s;
-			indicies[i++] = (t+1)*(SKY_SUBDIVISIONS+1) + s;
+#ifdef USE_OPENGLES
+			memcpy(tex+idx*2, s_skyTexCoords[t][s], sizeof(GLfloat)*2);
+			memcpy(vtx+idx*3, s_skyPoints[t][s], sizeof(GLfloat)*3);
+			idx++;
+			memcpy(tex+idx*2, s_skyTexCoords[t+1][s], sizeof(GLfloat)*2);
+			memcpy(vtx+idx*3, s_skyPoints[t+1][s], sizeof(GLfloat)*3);
+			idx++;
 #else
 			qglTexCoord2fv( s_skyTexCoords[t][s] );
 			qglVertex3fv( s_skyPoints[t][s] );
@@ -409,33 +419,41 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 #endif
 		}
 
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+		//*TODO* Try to switch from many DrawArrays of GL_TRIANGLE_STRIP to a single DrawArrays of TRIANGLES to see if it perform better
+		qglVertexPointer (3, GL_FLOAT, 0, vtx);
+		qglTexCoordPointer(2, GL_FLOAT, 0, tex);
+		qglDrawArrays(GL_TRIANGLE_STRIP, 0, idx);
+#else
 		qglEnd();
 #endif
 	}
-#ifdef VCMODS_OPENGLES	
-	qglDisableClientState( GL_COLOR_ARRAY);
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY);
-	qglTexCoordPointer( 2, GL_FLOAT, 0, s_skyTexCoords );
-	qglVertexPointer  ( 3, GL_FLOAT, 0, s_skyPoints );
-	qglDrawElements( GL_TRIANGLE_STRIP, i, GL_INDEX_TYPE, indicies );
-	Hunk_FreeTempMemory(indicies);
+
+#ifdef USE_OPENGLES
+	if (glcol)
+		qglEnableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 #endif
 }
 
 static void DrawSkySideInner( struct image_s *image, const int mins[2], const int maxs[2] ) {
-#ifdef VCMODS_OPENGLES
-	int s, t, i=0;
-	int size;
-	glIndex_t *indicies;
-	
-	size = (maxs[1]-mins[1]) * (maxs[0] - mins[0] + 1);
-	indicies = ri.Hunk_AllocateTempMemory( sizeof(glIndex_t) * size );
-#else
 	int s, t;
-#endif
 
 	GL_Bind( image );
+
+#ifdef USE_OPENGLES
+	GLfloat vtx[3*1024];	// arbitrary sized
+	GLfloat tex[2*1024];
+	int idx;
+	
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (glcol)
+		qglDisableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+#endif
 
 	//qglDisable (GL_BLEND);
 	qglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -444,15 +462,21 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 
 	for ( t = mins[1] + HALF_SKY_SUBDIVISIONS; t < maxs[1] + HALF_SKY_SUBDIVISIONS; t++ )
 	{
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+		idx=0;
+#else
 		qglBegin( GL_TRIANGLE_STRIP );
 #endif
 
 		for ( s = mins[0] + HALF_SKY_SUBDIVISIONS; s <= maxs[0] + HALF_SKY_SUBDIVISIONS; s++ )
 		{
-#ifdef VCMODS_OPENGLES
-			indicies[i++] = t*(SKY_SUBDIVISIONS+1) + s;
-			indicies[i++] = (t+1)*(SKY_SUBDIVISIONS+1) + s;
+#ifdef USE_OPENGLES
+			memcpy(tex+idx*2, s_skyTexCoords[t][s], sizeof(GLfloat)*2);
+			memcpy(vtx+idx*3, s_skyPoints[t][s], sizeof(GLfloat)*3);
+			idx++;
+			memcpy(tex+idx*2, s_skyTexCoords[t+1][s], sizeof(GLfloat)*2);
+			memcpy(vtx+idx*3, s_skyPoints[t+1][s], sizeof(GLfloat)*3);
+			idx++;
 #else
 			qglTexCoord2fv( s_skyTexCoords[t][s] );
 			qglVertex3fv( s_skyPoints[t][s] );
@@ -462,21 +486,24 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 #endif
 		}
 
-#ifndef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
+		//*TODO* Try to switch from many DrawArrays of GL_TRIANGLE_STRIP to a single DrawArrays of TRIANGLES to see if it perform better
+		qglVertexPointer (3, GL_FLOAT, 0, vtx);
+		qglTexCoordPointer(2, GL_FLOAT, 0, tex);
+		qglDrawArrays(GL_TRIANGLE_STRIP, 0, idx);
+#else
 		qglEnd();
 #endif
 	}
 
-#ifdef VCMODS_OPENGLES	
-	qglDisableClientState( GL_COLOR_ARRAY);
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY);
-	qglTexCoordPointer( 2, GL_FLOAT, 0, s_skyTexCoords );
-	qglVertexPointer  ( 3, GL_FLOAT, 0, s_skyPoints );
-	qglDrawElements( GL_TRIANGLE_STRIP, i, GL_INDEX_TYPE, indicies );
-	Hunk_FreeTempMemory(indicies);
-#endif
-
 	qglDisable( GL_BLEND );
+
+#ifdef USE_OPENGLES
+	if (glcol)
+		qglEnableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+#endif
 }
 
 static void DrawSkyBox( shader_t *shader ) {
@@ -989,11 +1016,7 @@ void RB_StageIteratorSky( void ) {
 
 	// draw the outer skybox
 	if ( tess.shader->sky.outerbox[0] && tess.shader->sky.outerbox[0] != tr.defaultImage ) {
-#ifdef VCMODS_OPENGLES
-		qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
-#else
 		qglColor3f( tr.identityLight, tr.identityLight, tr.identityLight );
-#endif
 
 		qglPushMatrix();
 		GL_State( 0 );
@@ -1013,11 +1036,7 @@ void RB_StageIteratorSky( void ) {
 	// draw the inner skybox
 	// Rafael - drawing inner skybox
 	if ( tess.shader->sky.innerbox[0] && tess.shader->sky.innerbox[0] != tr.defaultImage ) {
-#ifdef VCMODS_OPENGLES
-		qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
-#else
 		qglColor3f( tr.identityLight, tr.identityLight, tr.identityLight );
-#endif
 
 		qglPushMatrix();
 		GL_State( 0 );

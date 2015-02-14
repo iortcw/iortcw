@@ -298,6 +298,7 @@ typedef struct {
 	qboolean anisotropicAvailable;                  //----(SA)	added
 	float maxAnisotropy;                            //----(SA)	added
 
+#ifndef USE_OPENGLES
 	// vendor-specific support
 	// NVidia
 	qboolean NVFogAvailable;                        //----(SA)	added
@@ -306,6 +307,7 @@ typedef struct {
 	int ATIMaxTruformTess;                          // for truform support
 	int ATINormalMode;                          // for truform support
 	int ATIPointMode;                           // for truform support
+#endif
 
 	int vidWidth, vidHeight;
 	// aspect is the screen's physical width / height, which may be different

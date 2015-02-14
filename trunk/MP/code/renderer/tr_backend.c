@@ -78,30 +78,14 @@ void GL_SelectTexture( int unit ) {
 	}
 
 	if ( unit == 0 ) {
-#ifdef VCMODS_OPENGLES
-		qglActiveTextureARB( GL_TEXTURE0);
-#else
 		qglActiveTextureARB( GL_TEXTURE0_ARB );
-#endif
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE0_ARB )\n" );
-#ifdef VCMODS_OPENGLES
-		qglClientActiveTextureARB( GL_TEXTURE0 );
-#else
 		qglClientActiveTextureARB( GL_TEXTURE0_ARB );
-#endif
 		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE0_ARB )\n" );
 	} else if ( unit == 1 )   {
-#ifdef VCMODS_OPENGLES
-		qglActiveTextureARB( GL_TEXTURE1);
-#else
 		qglActiveTextureARB( GL_TEXTURE1_ARB );
-#endif
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE1_ARB )\n" );
-#ifdef VCMODS_OPENGLES
-		qglClientActiveTextureARB( GL_TEXTURE1);
-#else
 		qglClientActiveTextureARB( GL_TEXTURE1_ARB );
-#endif
 		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE1_ARB )\n" );
 	} else {
 		ri.Error( ERR_DROP, "GL_SelectTexture: unit = %i", unit );
@@ -320,7 +304,7 @@ void GL_State( unsigned long stateBits ) {
 	// fill/line mode
 	//
 	if ( diff & GLS_POLYMODE_LINE ) {
-#ifndef VCMODS_OPENGLES
+#ifndef USE_OPENGLES
 		if ( stateBits & GLS_POLYMODE_LINE ) {
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		} else
@@ -528,11 +512,7 @@ void RB_BeginDrawingView( void ) {
 
 
 	if ( clearBits ) {
-#ifdef VCMODS_DEPTH
-		qglClear( clearBits | GL_COLOR_BUFFER_BIT);
-#else
 		qglClear( clearBits );
-#endif
 	}
 
 //----(SA)	done
@@ -553,11 +533,7 @@ void RB_BeginDrawingView( void ) {
 	// clip to the plane of the portal
 	if ( backEnd.viewParms.isPortal ) {
 		float plane[4];
-#ifdef VCMODS_OPENGLES
-		float	plane2[4];
-#else
 		GLdouble plane2[4];
-#endif
 
 		plane[0] = backEnd.viewParms.portalPlane.normal[0];
 		plane[1] = backEnd.viewParms.portalPlane.normal[1];
@@ -714,11 +690,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					}
 
 					if(!oldDepthRange)
-#ifdef VCMODS_OPENGLES
-						qglDepthRange (0, 0.3f);
-#else
 						qglDepthRange (0, 0.3);
-#endif
 				}
 				else
 				{
@@ -728,11 +700,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 						qglLoadMatrixf(backEnd.viewParms.projectionMatrix);
 						qglMatrixMode(GL_MODELVIEW);
 					}
-#ifdef VCMODS_OPENGLES
-					qglDepthRange (0, 1.0f);
-#else
 					qglDepthRange( 0, 1 );
-#endif
 				}
 
 				oldDepthRange = depthRange;
@@ -759,11 +727,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 	qglLoadMatrixf( backEnd.viewParms.world.modelMatrix );
 	if ( depthRange ) {
-#ifdef VCMODS_OPENGLES
-		qglDepthRange (0, 1.0f);
-#else
 		qglDepthRange( 0, 1 );
-#endif
 	}
 
 	if (r_drawSun->integer) {
@@ -801,11 +765,7 @@ void    RB_SetGL2D( void ) {
 	qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	qglMatrixMode( GL_PROJECTION );
 	qglLoadIdentity();
-#ifdef VCMODS_OPENGLES
-	qglOrtho (0.0f, glConfig.vidWidth, glConfig.vidHeight, 0.0f, 0.0f, 1.0f);
-#else
 	qglOrtho( 0, glConfig.vidWidth, glConfig.vidHeight, 0, 0, 1 );
-#endif
 	qglMatrixMode( GL_MODELVIEW );
 	qglLoadIdentity();
 
@@ -834,11 +794,6 @@ Used for cinematics.
 void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty ) {
 	int i, j;
 	int start, end;
-#ifdef VCMODS_OPENGLES
-	vec2_t		texcoords[4];
-	vec2_t		verts[4];
-	glIndex_t	indicies[6] = {0, 1, 2, 0, 3, 2};
-#endif
 
 	if ( !tr.registered ) {
 		return;
@@ -872,10 +827,8 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef VCMODS_OPENGLES
-      //don't do qglTexImage2D as this may end up doing a compressed image
-      //on which we are not allowed to do further sub images
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+#ifdef USE_OPENGLES
+		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #else
 		qglTexImage2D( GL_TEXTURE_2D, 0, 3, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #endif
@@ -898,27 +851,33 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *
 
 	RB_SetGL2D();
 
-#ifdef VCMODS_OPENGLES
-	qglColor4f( tr.identityLight, tr.identityLight, tr.identityLight, 1.0f );
-
-	verts[0][0] = x;  verts[0][1] = y;
-	verts[1][0] = x+w;  verts[1][1] = y;
-	verts[2][0] = x+w;  verts[2][1] = y+h;
-	verts[3][0] = x;  verts[3][1] = y+h;
-	
-	texcoords[0][0] = 0.5f/cols;      texcoords[0][1] = 0.5f/rows;
-	texcoords[1][0] = (cols-0.5f)/cols;   texcoords[1][1] = 0.5f/rows;
-	texcoords[2][0] = (cols-0.5f)/cols;   texcoords[2][1] = (rows-0.5f)/rows;
-	texcoords[3][0] = 0.5f/cols;      texcoords[3][1] = (rows-0.5f)/rows;
-	
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
-	qglTexCoordPointer( 2, GL_FLOAT, 0, texcoords );
-	qglVertexPointer  ( 2, GL_FLOAT, 0, verts );
-	qglDrawElements( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
-#else
 	qglColor3f( tr.identityLight, tr.identityLight, tr.identityLight );
 
+#ifdef USE_OPENGLES
+	GLfloat tex[] = {
+	 0.5f / cols,  0.5f / rows,
+	 ( cols - 0.5f ) / cols ,  0.5f / rows,
+	 ( cols - 0.5f ) / cols, ( rows - 0.5f ) / rows,
+	 0.5f / cols, ( rows - 0.5f ) / rows };
+	GLfloat vtx[] = {
+	 x, y,
+	 x+w, y,
+	 x+w, y+h,
+	 x, y+h };
+	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+	if (glcol)
+		qglDisableClientState(GL_COLOR_ARRAY);
+	if (!text)
+		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	qglVertexPointer  ( 2, GL_FLOAT, 0, vtx );
+	qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+	if (!text)
+		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	if (glcol)
+		qglEnableClientState(GL_COLOR_ARRAY);
+#else
 	qglBegin( GL_QUADS );
 	qglTexCoord2f( 0.5f / cols,  0.5f / rows );
 	qglVertex2f( x, y );
@@ -941,7 +900,7 @@ void RE_UploadCinematic( int w, int h, int cols, int rows, const byte *data, int
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef VCMODS_OPENGLES
+#ifdef USE_OPENGLES
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #else
 		qglTexImage2D( GL_TEXTURE_2D, 0, 3, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
@@ -1259,7 +1218,9 @@ const void  *RB_DrawBuffer( const void *data ) {
 
 	cmd = (const drawBufferCommand_t *)data;
 
+#ifndef USE_OPENGLES
 	qglDrawBuffer( cmd->buffer );
+#endif
 
 	// clear screen for debugging
 	if ( r_clear->integer ) {
@@ -1285,11 +1246,6 @@ void RB_ShowImages( void ) {
 	image_t *image;
 	float x, y, w, h;
 	int start, end;
-#ifdef VCMODS_OPENGLES
-	vec2_t  texcoords[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
-	vec2_t  verts[4];
-	glIndex_t indicies[6] = { 0, 1, 2, 0, 3, 2};
-#endif
 
 	if ( !backEnd.projection2D ) {
 		RB_SetGL2D();
@@ -1301,9 +1257,6 @@ void RB_ShowImages( void ) {
 
 
 	start = ri.Milliseconds();
-#ifdef VCMODS_OPENGLES
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
-#endif
 
 	for ( i = 0 ; i < tr.numImages ; i++ ) {
 		image = tr.images[i];
@@ -1320,15 +1273,30 @@ void RB_ShowImages( void ) {
 			h *= image->uploadHeight / 512.0f;
 		}
 
-#ifdef VCMODS_OPENGLES
-		verts[0][0] = x;  verts[0][1] = y;
-		verts[1][0] = x+w;  verts[1][1] = y;
-		verts[2][0] = x+w;  verts[2][1] = y+h;
-		verts[3][0] = x;  verts[3][1] = y+h;
-		
-		qglTexCoordPointer( 2, GL_FLOAT, 0, texcoords );
-		qglVertexPointer  ( 2, GL_FLOAT, 0, verts );
-		qglDrawElements( GL_TRIANGLE_STRIP, 6, GL_INDEX_TYPE, indicies );
+#ifdef USE_OPENGLES
+		GLfloat tex[] = {
+		 0, 0, 
+		 1, 0,
+		 1, 1, 
+		 0, 1 };
+		GLfloat vtx[] = {
+		 x, y,
+		 x + w, y,
+		 x + w, y + h,
+		 x, y + h };
+		GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
+		GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
+		if (glcol)
+			qglDisableClientState(GL_COLOR_ARRAY);
+		if (!text)
+			qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+		qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
+		qglVertexPointer  ( 2, GL_FLOAT, 0, vtx );
+		qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+		if (glcol)
+			qglEnableClientState(GL_COLOR_ARRAY);
+		if (!text)
+			qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 #else
 		GL_Bind( image );
 		qglBegin( GL_QUADS );
@@ -1343,10 +1311,6 @@ void RB_ShowImages( void ) {
 		qglEnd();
 #endif
 	}
-
-#ifdef VCMODS_OPENGLES
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
-#endif
 
 	qglFinish();
 
@@ -1415,15 +1379,14 @@ const void  *RB_SwapBuffers( const void *data ) {
 
 	// we measure overdraw by reading back the stencil buffer and
 	// counting up the number of increments that have happened
+#ifndef USE_OPENGLES
 	if ( r_measureOverdraw->integer ) {
 		int i;
 		long sum = 0;
 		unsigned char *stencilReadback;
 
 		stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
-#ifndef VCMODS_OPENGLES
 		qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
-#endif
 
 		for ( i = 0; i < glConfig.vidWidth * glConfig.vidHeight; i++ ) {
 			sum += stencilReadback[i];
@@ -1432,12 +1395,11 @@ const void  *RB_SwapBuffers( const void *data ) {
 		backEnd.pc.c_overDraw += sum;
 		ri.Hunk_FreeTempMemory( stencilReadback );
 	}
+#endif
 
 
 	if ( !glState.finishCalled ) {
-#ifndef VCMODS_OPENGLES
 		qglFinish();
-#endif
 	}
 
 	GLimp_LogComment( "***************** RB_SwapBuffers *****************\n\n\n" );

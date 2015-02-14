@@ -35,6 +35,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../sys/sys_local.h"
 #include "sdl_icon.h"
 
+#ifdef USE_OPENGLES
+#ifdef USE_LOCAL_HEADERS
+#	include "EGL/egl.h"
+#else
+#	include <EGL/egl.h>
+#endif
+void myglMultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
+{
+	glMultiTexCoord4f(texture, s, t, 0, 1);
+}
+#endif
+
 typedef enum
 {
 	RSERR_OK,
@@ -396,6 +408,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		else
 			perChannelColorBits = 4;
 
+#ifndef USE_OPENGLES
 #ifdef __sgi /* Fix for SGIs grabbing too many bits of color */
 		if (perChannelColorBits == 4)
 			perChannelColorBits = 0; /* Use minimum size for 16-bit color */
@@ -488,6 +501,16 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 				continue;
 			}
 		}
+#else
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+
+		if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
+			glConfig.vidWidth, glConfig.vidHeight, flags ) ) == 0 )
+		{
+			ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+			continue;
+		}
+#endif // USE_OPENGLES
 
 		SDL_SetWindowIcon( SDL_window, icon );
 
@@ -646,6 +669,10 @@ static void GLimp_InitExtensions( void )
 
 
 	// GL_EXT_texture_env_add
+#ifdef USE_OPENGLES
+	glConfig.textureEnvAddAvailable = qtrue;
+	ri.Printf( PRINT_ALL, "...using GL_EXT_texture_env_add\n" );
+#else
 	glConfig.textureEnvAddAvailable = qfalse;
 	if ( GLimp_HaveExtension( "EXT_texture_env_add" ) )
 	{
@@ -664,11 +691,31 @@ static void GLimp_InitExtensions( void )
 	{
 		ri.Printf( PRINT_ALL, "...GL_EXT_texture_env_add not found\n" );
 	}
+#endif
 
 	// GL_ARB_multitexture
 	qglMultiTexCoord2fARB = NULL;
 	qglActiveTextureARB = NULL;
 	qglClientActiveTextureARB = NULL;
+#ifdef USE_OPENGLES
+	qglGetIntegerv( GL_MAX_TEXTURE_UNITS, &glConfig.numTextureUnits );
+	//ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, %i texture units\n", glConfig.maxActiveTextures );
+	//glConfig.maxActiveTextures=4;
+	qglMultiTexCoord2fARB = myglMultiTexCoord2f;
+	qglActiveTextureARB = glActiveTexture;
+	qglClientActiveTextureARB = glClientActiveTexture;
+	if ( glConfig.numTextureUnits > 1 )
+	{
+		ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture (%i texture units)\n", glConfig.numTextureUnits );
+	}
+	else
+	{
+		qglMultiTexCoord2fARB = NULL;
+		qglActiveTextureARB = NULL;
+		qglClientActiveTextureARB = NULL;
+		ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
+	}
+#else
 	if ( GLimp_HaveExtension( "GL_ARB_multitexture" ) )
 	{
 		if ( r_ext_multitexture->value )
@@ -704,6 +751,7 @@ static void GLimp_InitExtensions( void )
 	{
 		ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
 	}
+#endif
 
 	// GL_EXT_compiled_vertex_array
 	if ( GLimp_HaveExtension( "GL_EXT_compiled_vertex_array" ) )
