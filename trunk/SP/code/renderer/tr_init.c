@@ -1376,13 +1376,8 @@ void R_Init( void ) {
 	memset( &backEnd, 0, sizeof( backEnd ) );
 	memset( &tess, 0, sizeof( tess ) );
 
-#ifdef USE_OPENGLES
-	if(sizeof(glconfig_t) != 7248)
-		ri.Error( ERR_FATAL, "Mod ABI incompatible: sizeof(glconfig_t) == %u != 7248", (unsigned int) sizeof(glconfig_t));
-#else
 	if(sizeof(glconfig_t) != 7268)
 		ri.Error( ERR_FATAL, "Mod ABI incompatible: sizeof(glconfig_t) == %u != 7268", (unsigned int) sizeof(glconfig_t));
-#endif
 
 //	Swap_Init();
 
