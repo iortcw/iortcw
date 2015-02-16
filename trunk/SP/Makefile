@@ -379,14 +379,20 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   ifeq ($(ARCH),x86_64)
-    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),x86)
-    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
-      -funroll-loops -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED=true
   else
@@ -635,15 +641,21 @@ ifeq ($(PLATFORM),mingw32)
   endif
 
   ifeq ($(ARCH),x86_64)
-    OPTIMIZEVM = -O3 -fno-omit-frame-pointer \
-      -funroll-loops -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -fno-omit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
     FILE_ARCH=x64
   endif
   ifeq ($(ARCH),x86)
-    OPTIMIZEVM = -O3 -march=i586 -fno-omit-frame-pointer \
-      -funroll-loops -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -march=i586 -fno-omit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   endif
@@ -664,7 +676,7 @@ ifeq ($(PLATFORM),mingw32)
   endif
 
   LIBS= -lws2_32 -lwinmm -lpsapi
-  # clang 3.4 doesn't support this
+  # clang 3.5 doesn't support this
   ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
     CLIENT_LDFLAGS += -mwindows -static-libgcc -static-libstdc++
   endif
@@ -798,14 +810,20 @@ ifeq ($(PLATFORM),openbsd)
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   ifeq ($(ARCH),x86_64)
-    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED = true
   else
   ifeq ($(ARCH),x86)
-    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
-      -funroll-loops -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer -funroll-loops
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     HAVE_VM_COMPILED=true
   else
@@ -936,14 +954,19 @@ ifeq ($(PLATFORM),sunos)
   OPTIMIZEVM = -O3 -funroll-loops
 
   ifeq ($(ARCH),sparc)
-    OPTIMIZEVM += -O3 \
-      -fstrength-reduce -falign-functions=2 \
-      -mtune=ultrasparc3 -mv8plus -mno-faster-structs
+    OPTIMIZEVM += -O3 -mtune=ultrasparc3 -mv8plus -mno-faster-structs
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     HAVE_VM_COMPILED=true
   else
   ifeq ($(ARCH),x86)
-    OPTIMIZEVM += -march=i586 -fomit-frame-pointer \
-      -falign-functions=2 -fstrength-reduce
+    OPTIMIZEVM += -march=i586 -fomit-frame-pointer
+    # clang 3.5 doesn't support this
+    ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+      OPTIMIZEVM += -falign-functions=2 -fstrength-reduce
+    endif
     HAVE_VM_COMPILED=true
     BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
