@@ -594,7 +594,7 @@ char *AIFunc_Idle( cast_state_t *cs ) {
 
 				cs->idleYaw = AICast_GetRandomViewAngle( cs, 512 );
 
-				if ( abs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
+				if ( fabs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
 					cs->nextIdleAngleChange = level.time + 1000 + rand() % 2500;
 				} else { // do really fast
 					cs->nextIdleAngleChange = level.time + 500;
@@ -890,7 +890,7 @@ char *AIFunc_InspectFriendly( cast_state_t *cs ) {
 
 			cs->idleYaw = AICast_GetRandomViewAngle( cs, 512 );
 
-			if ( abs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
+			if ( fabs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
 				cs->nextIdleAngleChange = level.time + 1000 + rand() % 2500;
 			} else { // do really fast
 				cs->nextIdleAngleChange = level.time + 500;
@@ -2536,7 +2536,7 @@ char *AIFunc_BattleAmbush( cast_state_t *cs ) {
 
 					cs->idleYaw = AICast_GetRandomViewAngle( cs, 512 );
 
-					if ( abs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
+					if ( fabs( AngleDelta( cs->idleYaw, cs->ideal_viewangles[YAW] ) ) < 45 ) {
 						cs->nextIdleAngleChange = level.time + 1000 + rand() % 2500;
 					} else { // do really fast
 						cs->nextIdleAngleChange = level.time + 500;

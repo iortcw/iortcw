@@ -158,7 +158,7 @@ qboolean AICast_ScriptAction_GotoMarker( cast_state_t *cs, char *params ) {
 						}
 						if ( fire ) {
 							for ( i = 0; i < 2; i++ ) {
-								diff = abs( AngleDifference( cs->bs->viewangles[i], cs->bs->ideal_viewangles[i] ) );
+								diff = fabs( AngleDifference( cs->bs->viewangles[i], cs->bs->ideal_viewangles[i] ) );
 								if ( diff < 20 ) {
 									// force fire
 									trap_EA_Attack( cs->bs->client );
@@ -326,7 +326,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params ) {
 						}
 						if ( fire ) {
 							for ( i = 0; i < 2; i++ ) {
-								diff = abs( AngleDifference( cs->bs->viewangles[i], cs->bs->ideal_viewangles[i] ) );
+								diff = fabs( AngleDifference( cs->bs->viewangles[i], cs->bs->ideal_viewangles[i] ) );
 								if ( diff < 20 ) {
 									// force fire
 									trap_EA_Attack( cs->bs->client );
@@ -1393,7 +1393,7 @@ qboolean AICast_ScriptAction_FireAtTarget( cast_state_t *cs, char *params ) {
 	VectorNormalize( vec );
 	vectoangles( vec, cs->bs->ideal_viewangles );
 	for ( i = 0; i < 2; i++ ) {
-		diff = abs( AngleDifference( cs->bs->cur_ps.viewangles[i], cs->bs->ideal_viewangles[i] ) );
+		diff = fabs( AngleDifference( cs->bs->cur_ps.viewangles[i], cs->bs->ideal_viewangles[i] ) );
 		if ( VectorCompare( vec3_origin, ent->s.pos.trDelta ) ) {
 			if ( diff ) {
 				return qfalse;  // not facing yet

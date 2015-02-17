@@ -1422,7 +1422,7 @@ e_status CIN_RunCinematic( int handle ) {
 	}
 
 	thisTime = CL_ScaledMilliseconds();
-	if ( cinTable[currentHandle].shader && ( abs( thisTime - cinTable[currentHandle].lastTime ) ) > 100 ) {
+	if ( cinTable[currentHandle].shader && ( thisTime - cinTable[currentHandle].lastTime ) > 100 ) {
 		cinTable[currentHandle].startTime += thisTime - cinTable[currentHandle].lastTime;
 	}
 
