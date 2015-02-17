@@ -1776,7 +1776,7 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 		VectorMA( origin, angles[ROLL], right, origin );
 
 		// pitch the gun down a bit to show that firing is not allowed when leaning
-		angles[PITCH] += ( abs( cg.predictedPlayerState.leanf ) / 2.0f );
+		angles[PITCH] += ( fabs( cg.predictedPlayerState.leanf ) / 2.0f );
 
 		// this gives you some impression that the weapon stays in relatively the same
 		// position while you lean, so you appear to 'peek' over the weapon
