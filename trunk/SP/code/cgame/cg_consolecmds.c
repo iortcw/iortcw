@@ -271,7 +271,7 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 	//	return;
 
 	COM_StripExtension( name, lname, sizeof(lname) );    //----(SA)	added
-	strcat( lname, ".camera" );
+	Q_strcat( lname, sizeof( lname ), ".camera" );
 
 	if ( trap_loadCamera( CAM_PRIMARY, va( "cameras/%s", lname ) ) ) {
 		cg.cameraMode = qtrue;                  // camera on in cgame
@@ -294,7 +294,7 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 
 /*
 ==============
-CG_SopCamera
+CG_StopCamera
 ==============
 */
 void CG_StopCamera( void ) {

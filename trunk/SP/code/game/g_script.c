@@ -64,6 +64,7 @@ qboolean G_ScriptAction_TagConnect( gentity_t *ent, char *params );
 qboolean G_ScriptAction_Halt( gentity_t *ent, char *params );
 qboolean G_ScriptAction_StopSound( gentity_t *ent, char *params );
 qboolean G_ScriptAction_StartCam( gentity_t *ent, char *params );
+qboolean G_ScriptAction_StartCamBlack( gentity_t *ent, char *params );
 qboolean G_ScriptAction_EntityScriptName( gentity_t *ent, char *params );
 qboolean G_ScriptAction_AIScriptName( gentity_t *ent, char *params );
 // DHM - Nerve :: Multiplayer scripting commands
@@ -110,6 +111,7 @@ g_script_stack_action_t gScriptActions[] =
 	{"halt",                 G_ScriptAction_Halt},
 	{"stopsound",                G_ScriptAction_StopSound},
 	{"startcam",             G_ScriptAction_StartCam},
+	{"startcamblack",             G_ScriptAction_StartCamBlack},
 	{"entityscriptname",     G_ScriptAction_EntityScriptName},
 	{"aiscriptname",         G_ScriptAction_AIScriptName},
 	// DHM - Nerve :: multiplayer scripting commands start with "wm_" (Wolf Multiplayer)

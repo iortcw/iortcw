@@ -1065,10 +1065,10 @@ qboolean G_ScriptAction_StopSound( gentity_t *ent, char *params ) {
 ===================
 G_ScriptAction_StartCam
 
-  syntax: startcam <camera filename>
+  syntax: startcam<black> <camera filename>
 ===================
 */
-qboolean G_ScriptAction_StartCam( gentity_t *ent, char *params ) {
+qboolean G_ScriptStartCam( gentity_t *ent, char *params, qboolean black ) {
 	char *pString, *token;
 	gentity_t *player;
 
@@ -1086,9 +1086,16 @@ qboolean G_ScriptAction_StartCam( gentity_t *ent, char *params ) {
 	if ( !player ) {
 		G_Error( "player not found, perhaps you should give them more time to spawn in" );
 	}
-	trap_SendServerCommand( player->s.number, va( "startCam %s", token ) );
+	trap_SendServerCommand( player->s.number, va( "startCam %s %d", token, (int)black ) );
 
 	return qtrue;
+}
+
+qboolean G_ScriptAction_StartCam( gentity_t *ent, char *params ) {
+	return G_ScriptStartCam( ent, params, qfalse );
+}
+qboolean G_ScriptAction_StartCamBlack( gentity_t *ent, char *params ) {
+	return G_ScriptStartCam( ent, params, qtrue );
 }
 
 /*
