@@ -818,13 +818,10 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "startCam" ) ) {
-		if ( atoi( CG_Argv( 2 ) ) == 1 ) {
-			CG_StartCamera( CG_Argv( 1 ), qtrue );
-			return;
-		} else {
-			CG_StartCamera( CG_Argv( 1 ), qfalse );
-			return;
-		}
+		qboolean startBlack = atoi( CG_Argv( 2 ) );
+
+		CG_StartCamera( CG_Argv( 1 ), startBlack );
+		return;
 	}
 
 	if ( !strcmp( cmd, "stopCam" ) ) {
@@ -838,9 +835,9 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "dp" ) ) {    // dynamite print (what a hack :(
+		int time = atoi( CG_Argv( 1 ) );
 
-		CG_CenterPrint( va( "%s %d %s", CG_translateString( "dynamitetimer" ), atoi( CG_Argv( 1 ) ), CG_translateString( "seconds" ) ),
-						SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+		CG_CenterPrint( va( "%s %d %s", CG_translateString( "dynamitetimer" ), time, CG_translateString( "seconds" ) ), SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 		return;
 	}
 
@@ -962,7 +959,9 @@ static void CG_ServerCommand( void ) {
 
 	// NERVE - SMF
 	if ( !Q_stricmp( cmd, "oid" ) ) {
-		CG_ObjectivePrint( CG_Argv( 2 ), SMALLCHAR_WIDTH, atoi( CG_Argv( 1 ) ) );
+		int team = atoi( CG_Argv( 1 ) );
+
+		CG_ObjectivePrint( CG_Argv( 2 ), SMALLCHAR_WIDTH, team );
 		return;
 	}
 	// -NERVE - SMF
@@ -976,9 +975,7 @@ static void CG_ServerCommand( void ) {
 	if ( !strcmp( cmd, "mu_start" ) ) {  // has optional parameter for fade-up time
 		int fadeTime = 0;   // default to instant start
 
-		Q_strncpyz( text, CG_Argv( 2 ), MAX_SAY_TEXT );
-
-		fadeTime = atoi( text );
+		fadeTime = atoi( CG_Argv( 2 ) );
 
 		trap_S_StartBackgroundTrack( CG_Argv( 1 ), CG_Argv( 1 ), fadeTime );
 		return;
@@ -993,9 +990,7 @@ static void CG_ServerCommand( void ) {
 	if ( !strcmp( cmd, "mu_stop" ) ) {   // has optional parameter for fade-down time
 		int fadeTime = 0;   // default to instant stop
 
-		Q_strncpyz( text, CG_Argv( 1 ), MAX_SAY_TEXT );
-
-		fadeTime = atoi( text );
+		fadeTime = atoi( CG_Argv( 1 ) );
 
 		trap_S_FadeBackgroundTrack( 0.0f, fadeTime, 0 );
 		trap_S_StartBackgroundTrack( "", "", -2 ); // '-2' for 'queue looping track' (QUEUED_PLAY_LOOPED)
@@ -1003,12 +998,16 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "mu_fade" ) ) {
-		trap_S_FadeBackgroundTrack( atof( CG_Argv( 1 ) ), atoi( CG_Argv( 2 ) ), 0 );
+		int time = atoi( CG_Argv( 2 ) );
+
+		trap_S_FadeBackgroundTrack( atof( CG_Argv( 1 ) ), time, 0 );
 		return;
 	}
 
 	if ( !strcmp( cmd, "snd_fade" ) ) {
-		trap_S_FadeAllSound( atof( CG_Argv( 1 ) ), atoi( CG_Argv( 2 ) ) );
+		int time = atoi( CG_Argv( 2 ) );
+
+		trap_S_FadeAllSound( atof( CG_Argv( 1 ) ), time );
 		return;
 	}
 
