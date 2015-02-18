@@ -818,7 +818,7 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "startCam" ) ) {
-		CG_StartCamera( CG_Argv( 1 ), atoi( CG_Argv( 2 ) ) );
+		CG_StartCamera( CG_Argv( 1 ), atoi( CG_Argv( 1 ) ) );
 		return;
 	}
 
