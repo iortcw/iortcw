@@ -169,11 +169,8 @@ cvarTable_t gameCvarTable[] = {
 	{ &g_soldierChargeTime, "g_soldierChargeTime", "20000", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse },
 // jpw
 
-#ifdef USE_OPENGLES
-	{ &g_skipcutscenes, "g_skipcutscenes", "1", CVAR_ARCHIVE, 0, qtrue  },
-#else
 	{ &g_skipcutscenes, "g_skipcutscenes", "0", CVAR_ARCHIVE, 0, qtrue  },
-#endif
+
 	{ &g_playerStart, "g_playerStart", "0", CVAR_ROM, 0, qfalse  },
 
 	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse  },
