@@ -818,8 +818,13 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "startCam" ) ) {
-		CG_StartCamera( CG_Argv( 1 ), atoi( CG_Argv( 1 ) ) );
-		return;
+		if ( atoi( CG_Argv( 2 ) ) == 1 ) {
+			CG_StartCamera( CG_Argv( 1 ), qtrue );
+			return;
+		} else {
+			CG_StartCamera( CG_Argv( 1 ), qfalse );
+			return;
+		}
 	}
 
 	if ( !strcmp( cmd, "stopCam" ) ) {
