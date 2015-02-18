@@ -620,7 +620,9 @@ extern qboolean G_ScriptAction_AxisRespawntime ( gentity_t * ent , char * params
 extern qboolean G_ScriptAction_MapDescription ( gentity_t * ent , char * params ) ;
 extern qboolean G_ScriptAction_AIScriptName ( gentity_t * ent , char * params ) ;
 extern qboolean G_ScriptAction_EntityScriptName ( gentity_t * ent , char * params ) ;
+extern qboolean G_ScriptStartCam ( gentity_t * ent , char * params, qboolean black ) ;
 extern qboolean G_ScriptAction_StartCam ( gentity_t * ent , char * params ) ;
+extern qboolean G_ScriptAction_StartCamBlack ( gentity_t * ent , char * params ) ;
 extern qboolean G_ScriptAction_StopSound ( gentity_t * ent , char * params ) ;
 extern qboolean G_ScriptAction_Halt ( gentity_t * ent , char * params ) ;
 extern qboolean G_ScriptAction_TagConnect ( gentity_t * ent , char * params ) ;
