@@ -1609,8 +1609,7 @@ qboolean AICast_ScriptAction_FireAtTarget( cast_state_t *cs, char *params ) {
 	gentity_t   *ent;
 	vec3_t vec, org, src;
 	char *pString, *token;
-	float diff;
-	int i;
+	int i, diff;
 
 	pString = params;
 
@@ -1656,7 +1655,7 @@ qboolean AICast_ScriptAction_FireAtTarget( cast_state_t *cs, char *params ) {
 	VectorNormalize( vec );
 	vectoangles( vec, cs->ideal_viewangles );
 	for ( i = 0; i < 2; i++ ) {
-		diff = fabs( AngleDifference( cs->bs->cur_ps.viewangles[i], cs->ideal_viewangles[i] ) );
+		diff = fabs( AngleDifference( cs->viewangles[i], cs->ideal_viewangles[i] ) );
 		if ( VectorCompare( vec3_origin, ent->s.pos.trDelta ) ) {
 			if ( diff ) {
 				return qfalse;  // not facing yet
