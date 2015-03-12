@@ -282,7 +282,6 @@ RDIR=$(MOUNT_DIR)/renderer
 R2DIR=$(MOUNT_DIR)/rend2
 CMDIR=$(MOUNT_DIR)/qcommon
 SDLDIR=$(MOUNT_DIR)/sdl
-ESDIR=$(MOUNT_DIR)/es
 ASMDIR=$(MOUNT_DIR)/asm
 SYSDIR=$(MOUNT_DIR)/sys
 GDIR=$(MOUNT_DIR)/game
@@ -333,22 +332,13 @@ ifneq ($(BUILD_CLIENT),0)
   endif
 endif
 
-# Add svn version info
-ifeq ($(USE_SVN),1)
-  ifeq ($(wildcard ../.svn),../.svn)
-    SVN_REV=$(shell LANG=C svnversion .)
-    ifneq ($(SVN_REV),)
-      VERSION:=$(VERSION)_SVN$(SVN_REV)
-    endif
-  else
-  ifeq ($(wildcard ../../.svn),../../.svn)
-    SVN_REV=$(shell LANG=C svnversion .)
-    ifneq ($(SVN_REV),)
-      VERSION:=$(VERSION)_SVN$(SVN_REV)
-    endif
-  else
-    USE_SVN=0
-  endif
+# Add git version info
+USE_GIT=
+ifeq ($(wildcard .git),.git)
+  GIT_REV=$(shell git show -s --pretty=format:%h-%ad --date=short)
+  ifneq ($(GIT_REV),)
+    VERSION:=$(VERSION)_GIT_$(GIT_REV)
+    USE_GIT=1
   endif
 endif
 
@@ -2613,19 +2603,11 @@ $(B)/ded/%.o: $(SYSDIR)/%.rc
 $(B)/ded/%.o: $(NDIR)/%.c
 	$(DO_DED_CC)
 
-# Extra dependencies to ensure the SVN version is incorporated
-ifeq ($(USE_SVN),1)
-  ifeq ($(wildcard ../.svn),../.svn)
-    $(B)/client/cl_console.o : ../.svn/entries
-    $(B)/client/common.o : ../.svn/entries
-    $(B)/ded/common.o : ../.svn/entries
-  else
-  ifeq ($(wildcard ../../.svn),../../.svn)
-    $(B)/client/cl_console.o : ../../.svn/entries
-    $(B)/client/common.o : ../../.svn/entries
-    $(B)/ded/common.o : ../../.svn/entries
-  endif
-  endif
+# Extra dependencies to ensure the git version is incorporated
+ifeq ($(USE_GIT),1)
+  $(B)/client/cl_console.o : .git/index
+  $(B)/client/common.o : .git/index
+  $(B)/ded/common.o : .git/index
 endif
 
 
@@ -2752,10 +2734,7 @@ distclean: clean toolsclean
 	@rm -rf $(BUILD_DIR)
 
 dist:
-	rm -rf $(CLIENTBIN)-$(VERSION)
-	svn export . $(CLIENTBIN)-$(VERSION)
-	tar --owner=root --group=root --force-local -cjf $(CLIENTBIN)-$(VERSION).tar.bz2 $(CLIENTBIN)-$(VERSION)
-	rm -rf $(CLIENTBIN)-$(VERSION)
+	git archive --format zip --output $(CLIENTBIN)-$(VERSION).zip HEAD
 
 #############################################################################
 # DEPENDENCIES
