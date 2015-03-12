@@ -247,10 +247,6 @@ ifndef DEBUG_CFLAGS
 DEBUG_CFLAGS=-g -O0
 endif
 
-ifndef USE_SVN
-USE_SVN=1
-endif
-
 ifndef USE_ANTIWALLHACK
 USE_ANTIWALLHACK=0
 endif
