@@ -2559,9 +2559,6 @@ $(B)/renderer/%.o: $(JPDIR)/%.c
 $(B)/renderer/%.o: $(RDIR)/%.c
 	$(DO_REF_CC)
 
-$(B)/renderer/%.o: $(ESDIR)/%.c
-	$(DO_CC)
-
 $(B)/rend2/glsl/%.c: $(R2DIR)/glsl/%.glsl
 	$(DO_REF_STR)
 
