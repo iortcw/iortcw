@@ -1,4 +1,6 @@
-To run iortcw on the Raspberry Pi requires SDL2.
+To run iortcw on the Raspberry Pi requires SDL2 and at least 128M for GPU memory.
+
+(Under Raspbian, you can set the GPU memory using the raspi-config tool under Advanced Options->Memory Split)
 
 SDL2 will need to be built in a particular way to have hardware accelerated
 graphics.
@@ -18,6 +20,10 @@ on the Raspberry Pi.)
 Unpack the SDL source and go into the source tree and issue the command:
 
 ./configure --disable-video-x11 --disable-video-opengl
+
+Note: On the newer Raspberry Pi 2 (due to a change in the toolchain naming) use:
+
+./configure --host=armv7l-raspberry-linux-gnueabihf --disable-video-x11 --disable-video-opengl
 
 After that has completed, type:
 make

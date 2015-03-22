@@ -52,7 +52,7 @@ These are the package names you'll want to search for:
 4.) mingw64-x86_64-gcc-g++ (For 64bit, same as above)
 5.) make
 6.) bison
-7.) subversion
+7.) git-core
 
 When you search for your packages you'll see category listings. These packages would all be under the 'Devel' category.
 
@@ -69,7 +69,7 @@ The entire environment uses about 1GB of disk space (as opposed to about 6GB for
 After the install has completed you should have a 'Cygwin Terminal' icon on your Desktop. This is the bash shell for Cygwin, so go ahead and run it.
 
 At the command prompt type:
-svn co http://iortcw.googlecode.com/svn/trunk iortcw
+git clone https://github.com/iortcw/iortcw.git iortcw
 
 This will pull the iortcw trunk source.
 
@@ -79,9 +79,9 @@ cd iortcw/MP (Multi-Player)
 or
 cd iortcw/SP (Single-Player)
 
-./cross-make-mingw.sh (to build 32bit binaries)
+ARCH=x86 make (to build 32bit binaries)
 or
-./cross-make-mingw64.sh (for 64bit binaries)
+ARCH=x86_64 make (for 64bit binaries)
 
 Wait for build to complete.
 
