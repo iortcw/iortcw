@@ -52,7 +52,9 @@ If you have questions concerning this license or the applicable additional terms
 {"Q_strncmp", (byte *)Q_strncmp},
 {"Q_stricmpn", (byte *)Q_stricmpn},
 {"Q_strncpyz", (byte *)Q_strncpyz},
+#ifdef _MSC_VER
 {"Q_vsnprintf", (byte *)Q_vsnprintf},
+#endif
 {"Q_isintegral", (byte *)Q_isintegral},
 {"Q_isanumber", (byte *)Q_isanumber},
 {"Q_isforfilename", (byte *)Q_isforfilename},

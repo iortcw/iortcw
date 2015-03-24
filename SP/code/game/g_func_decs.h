@@ -52,7 +52,9 @@ extern int Q_stricmp ( const char * s1 , const char * s2 ) ;
 extern int Q_strncmp ( const char * s1 , const char * s2 , int n ) ;
 extern int Q_stricmpn ( const char * s1 , const char * s2 , int n ) ;
 extern void Q_strncpyz ( char * dest , const char * src , int destsize ) ;
+#ifdef _MSC_VER
 extern int Q_vsnprintf ( char * str , size_t size , const char * format , va_list ap ) ;
+#endif
 extern qboolean Q_isintegral ( float f ) ;
 extern qboolean Q_isanumber ( const char * s ) ;
 extern int Q_isforfilename ( int c ) ;
