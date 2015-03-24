@@ -1709,6 +1709,8 @@ static void CG_DrawCrosshair( void ) {
 		}
 	}
 	// -NERVE - SMF
+
+	trap_R_SetColor( NULL );
 }
 
 
