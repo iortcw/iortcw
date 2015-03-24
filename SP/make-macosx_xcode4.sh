@@ -58,13 +58,9 @@ Q3_VERSION=`grep '^VERSION=' Makefile | sed -e 's/.*=\(.*\)/\1/'`
 # "8" is the Darwin major kernel version.
 TIGERHOST=`uname -r |perl -w -p -e 's/\A(\d+)\..*\Z/$1/; $_ = (($_ >= 8) ? "1" : "0");'`
 
-# we want to use the oldest available SDK (10.6) for max compatiblity.
-
 unset ARCH_CFLAGS
-unset ARCH_LDFLAGS
 
-ARCH_CFLAGS="-arch ${ARCH} -DMAC_OS_X_VERSION_MIN_REQUIRED=1060"
-ARCH_LDFLAGS=" -mmacosx-version-min=10.6"
+ARCH_CFLAGS="-arch ${ARCH}"
 
 if [ ! -d $DESTDIR ]; then
 	mkdir -p $DESTDIR
@@ -78,7 +74,7 @@ NCPU=`sysctl -n hw.ncpu`
 if [ -d build/release-darwin-${BUILDARCH} ]; then
 	rm -r build/release-darwin-${BUILDARCH}
 fi
-(CC=${CC} CXX=${CXX} ARCH=${BUILDARCH} CFLAGS=$ARCH_CFLAGS LDFLAGS=$ARCH_LDFLAGS make -j$NCPU) || exit 1;
+(CC=${CC} CXX=${CXX} ARCH=${BUILDARCH} CFLAGS=$ARCH_CFLAGS make -j$NCPU) || exit 1;
 
 echo "Creating .app bundle $DESTDIR/$APPBUNDLE"
 if [ ! -d $DESTDIR/$APPBUNDLE/Contents/MacOS/$BASEDIR ]; then

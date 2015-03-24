@@ -72,13 +72,10 @@ TIGERHOST=`uname -r |perl -w -p -e 's/\A(\d+)\..*\Z/$1/; $_ = (($_ >= 8) ? "1" :
 
 unset ARCH_SDK
 unset ARCH_CFLAGS
-unset ARCH_LDFLAGS
 
 if [ -d /Developer/SDKs/MacOSX10.5.sdk ]; then
 	ARCH_SDK=/Developer/SDKs/MacOSX10.5.sdk
-	ARCH_CFLAGS="-arch ${ARCH} -isysroot /Developer/SDKs/MacOSX10.5.sdk \
-			-DMAC_OS_X_VERSION_MIN_REQUIRED=1050"
-	ARCH_LDFLAGS=" -mmacosx-version-min=10.5"
+	ARCH_CFLAGS="-arch ${ARCH} -isysroot /Developer/SDKs/MacOSX10.5.sdk"
 fi
 
 
@@ -97,7 +94,7 @@ NCPU=`sysctl -n hw.ncpu`
 if [ -d build/release-darwin-${BUILDARCH} ]; then
 	rm -r build/release-darwin-${BUILDARCH}
 fi
-(CC=${CC} ARCH=${BUILDARCH} CFLAGS=$ARCH_CFLAGS LDFLAGS=$ARCH_LDFLAGS make -j$NCPU) || exit 1;
+(CC=${CC} ARCH=${BUILDARCH} CFLAGS=$ARCH_CFLAGS make -j$NCPU) || exit 1;
 
 echo "Creating .app bundle $DESTDIR/$APPBUNDLE"
 if [ ! -d $DESTDIR/$APPBUNDLE/Contents/MacOS/$BASEDIR ]; then
