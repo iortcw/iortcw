@@ -1093,14 +1093,12 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 		render_count = surface->numVerts;
 	}
 
-	RB_CheckOverflow( render_count, surface->numTriangles );
-
 //DBG_SHOWTIME
 
 	//
 	// setup triangle list
 	//
-	RB_CheckOverflow( surface->numVerts, surface->numTriangles * 3 );
+	RB_CHECKOVERFLOW( render_count, surface->numTriangles * 3 );
 
 //DBG_SHOWTIME
 
@@ -1690,7 +1688,7 @@ void RB_MDRSurfaceAnim( mdrSurface_t *surface )
 	oldFrame = (mdrFrame_t *)((byte *)header + header->ofsFrames +
 		backEnd.currentEntity->e.oldframe * frameSize );
 
-	RB_CheckOverflow( surface->numVerts, surface->numTriangles * 3 );
+	RB_CHECKOVERFLOW( surface->numVerts, surface->numTriangles * 3 );
 
 	triangles	= (int *) ((byte *)surface + surface->ofsTriangles);
 	indexes		= surface->numTriangles * 3;
