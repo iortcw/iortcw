@@ -529,7 +529,6 @@ ifeq ($(PLATFORM),darwin)
         CLIENT_LIBS += $(THREAD_LIBS) $(OPENAL_LIBS)
       else
         CLIENT_LIBS += -framework OpenAL
-        CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libopenal.dylib
       endif
     endif
   endif
@@ -556,10 +555,13 @@ ifeq ($(PLATFORM),darwin)
     LIBSDLMAINSRC=$(LIBSDIR)/macosx/libSDL2main.a
     CLIENT_LIBS += -framework IOKit $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
     RENDERER_LIBS += -framework OpenGL $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
-    CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
   else
     CLIENT_LIBS += -framework IOKit $(SDL_LIBS)
     RENDERER_LIBS += -framework OpenGL $(SDL_LIBS)
+  endif
+
+  ifeq ($(USE_INTERNAL_LIBS),1)
+    CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib $(LIBSDIR)/macosx/libopenal.dylib
   endif
 
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
