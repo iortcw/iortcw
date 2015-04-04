@@ -4,7 +4,7 @@ static const struct {
   unsigned int 	 width;
   unsigned int 	 height;
   unsigned int 	 bytes_per_pixel; /* 3:RGB, 4:RGBA */ 
-  unsigned char	 pixel_data[128 * 128 * 4 + 1];
+  unsigned char	 pixel_data[128 * 128 * 4];
 } CLIENT_WINDOW_ICON = {
   128, 128, 4,
   "3\0\0\3773\0\0\3773\0\0\3773\0\0\3773\0\0\3773\0\0\3773\0\0\3773\0\0\377"
