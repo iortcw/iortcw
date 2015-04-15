@@ -164,6 +164,7 @@ vmCvar_t cg_autoswitch;
 vmCvar_t cg_ignore;
 vmCvar_t cg_simpleItems;
 vmCvar_t cg_fov;
+vmCvar_t cg_fixedAspect;
 vmCvar_t cg_zoomFov;
 vmCvar_t cg_zoomStepBinoc;
 vmCvar_t cg_zoomStepSniper;
@@ -304,6 +305,7 @@ cvarTable_t cvarTable[] = {
 	{ &cg_zoomStepSnooper, "cg_zoomStepSnooper", "5", CVAR_ARCHIVE },
 	{ &cg_zoomStepFG, "cg_zoomStepFG", "10", CVAR_ARCHIVE },          //----(SA)	added
 	{ &cg_fov, "cg_fov", "90", CVAR_ARCHIVE },
+	{ &cg_fixedAspect, "cg_fixedAspect", "0", CVAR_ARCHIVE }, // Essentially the same as setting DF_FIXED_FOV for widescreen aspects
 	{ &cg_viewsize, "cg_viewsize", "100", CVAR_ARCHIVE },
 	{ &cg_letterbox, "cg_letterbox", "0", CVAR_TEMP },    //----(SA)	added
 	{ &cg_shadows, "cg_shadows", "1", CVAR_ARCHIVE  },
