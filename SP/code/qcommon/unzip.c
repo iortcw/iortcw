@@ -1,4 +1,10 @@
 /* unzip.c -- IO for uncompress .zip files using zlib
+
+   Modified for Quake III Arena to use the Z_Malloc() memory pool;
+   this means a system copy of minizip is not a suitable replacement.
+
+   Based on minizip:
+
    Version 1.01e, February 12th, 2005
 
    Copyright (C) 1998-2005 Gilles Vollant
@@ -713,8 +719,8 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
 
         if (lSeek!=0)
         {
-		if (ZSEEK(s->z_filefunc, s->filestream,lSeek,ZLIB_FILEFUNC_SEEK_CUR)!=0)
-			err=UNZ_ERRNO;
+            if (ZSEEK(s->z_filefunc, s->filestream,lSeek,ZLIB_FILEFUNC_SEEK_CUR)!=0)
+                err=UNZ_ERRNO;
         }
         if ((file_info.size_file_comment>0) && (commentBufferSize>0))
             if (ZREAD(s->z_filefunc, s->filestream,szComment,uSizeRead)!=uSizeRead)
@@ -1140,7 +1146,7 @@ extern int ZEXPORT unzOpenCurrentFile3 (file, method, level, raw, password)
       pfile_in_zip_read_info->stream.avail_in = 0;
 
       if (inflateInit2(&pfile_in_zip_read_info->stream, -MAX_WBITS) == Z_OK)
-	      pfile_in_zip_read_info->stream_initialised=1;
+        pfile_in_zip_read_info->stream_initialised=1;
       else
       {
         TRYFREE(pfile_in_zip_read_info);
