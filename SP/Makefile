@@ -235,6 +235,10 @@ ifndef USE_INTERNAL_JPEG
 USE_INTERNAL_JPEG=$(USE_INTERNAL_LIBS)
 endif
 
+ifndef USE_INTERNAL_FREETYPE
+USE_INTERNAL_FREETYPE=$(USE_INTERNAL_LIBS)
+endif
+
 ifndef USE_LOCAL_HEADERS
 USE_LOCAL_HEADERS=$(USE_INTERNAL_LIBS)
 endif
@@ -283,6 +287,7 @@ VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.4
 OPUSDIR=$(MOUNT_DIR)/opus-1.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.6
 ZDIR=$(MOUNT_DIR)/zlib
+FTDIR=$(MOUNT_DIR)/freetype-2.5.5
 SPLDIR=$(MOUNT_DIR)/splines
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
@@ -305,7 +310,6 @@ ifneq ($(BUILD_CLIENT),0)
     OPENAL_LIBS ?= $(shell pkg-config --silence-errors --libs openal)
     SDL_CFLAGS ?= $(shell pkg-config --silence-errors --cflags sdl2|sed 's/-Dmain=SDL_main//')
     SDL_LIBS ?= $(shell pkg-config --silence-errors --libs sdl2)
-    FREETYPE_CFLAGS ?= $(shell pkg-config --silence-errors --cflags freetype2)
   else
     # assume they're in the system default paths (no -I or -L needed)
     CURL_LIBS ?= -lcurl
@@ -684,7 +688,9 @@ ifeq ($(PLATFORM),mingw32)
   RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
 
   ifeq ($(USE_FREETYPE),1)
-    FREETYPE_CFLAGS = -Ifreetype2
+    ifneq ($(USE_INTERNAL_FREETYPE),1)
+      FREETYPE_CFLAGS = -Ifreetype2
+    endif
   endif
 
   ifeq ($(USE_CURL),1)
@@ -1168,9 +1174,12 @@ else
 endif
 
 ifeq ($(USE_FREETYPE),1)
-  FREETYPE_CFLAGS ?= $(shell pkg-config --silence-errors --cflags freetype2 || true)
-  FREETYPE_LIBS ?= $(shell pkg-config --silence-errors --libs freetype2 || echo -lfreetype)
-
+  ifeq ($(USE_INTERNAL_FREETYPE),1)
+    FREETYPE_CFLAGS += -I$(FTDIR)/include -DFT2_BUILD_LIBRARY
+  else
+    FREETYPE_CFLAGS ?= $(shell pkg-config --silence-errors --cflags freetype2 || true)
+    FREETYPE_LIBS ?= $(shell pkg-config --silence-errors --libs freetype2 || echo -lfreetype)
+  endif
   BASE_CFLAGS += -DBUILD_FREETYPE $(FREETYPE_CFLAGS)
   RENDERER_LIBS += $(FREETYPE_LIBS)
 endif
@@ -1887,6 +1896,54 @@ ifneq ($(USE_INTERNAL_JPEG),0)
     $(B)/renderer/jutils.o
 endif
 
+ifeq ($(USE_FREETYPE),1)
+ifneq ($(USE_INTERNAL_FREETYPE),0)
+  FTOBJ += \
+    $(B)/renderer/ftsystem.o \
+    $(B)/renderer/ftdebug.o \
+    $(B)/renderer/ftinit.o \
+    $(B)/renderer/ftbase.o \
+    $(B)/renderer/ftbbox.o \
+    $(B)/renderer/ftbdf.o \
+    $(B)/renderer/ftbitmap.o \
+    $(B)/renderer/ftcid.o \
+    $(B)/renderer/ftfstype.o \
+    $(B)/renderer/ftgasp.o \
+    $(B)/renderer/ftglyph.o \
+    $(B)/renderer/ftgxval.o \
+    $(B)/renderer/ftlcdfil.o \
+    $(B)/renderer/ftmm.o \
+    $(B)/renderer/ftotval.o \
+    $(B)/renderer/ftpatent.o \
+    $(B)/renderer/ftpfr.o \
+    $(B)/renderer/ftstroke.o \
+    $(B)/renderer/ftsynth.o \
+    $(B)/renderer/fttype1.o \
+    $(B)/renderer/ftwinfnt.o \
+    $(B)/renderer/ftxf86.o \
+    $(B)/renderer/truetype.o \
+    $(B)/renderer/type1.o \
+    $(B)/renderer/cff.o \
+    $(B)/renderer/type1cid.o \
+    $(B)/renderer/pfr.o \
+    $(B)/renderer/type42.o \
+    $(B)/renderer/winfnt.o \
+    $(B)/renderer/pcf.o \
+    $(B)/renderer/bdf.o \
+    $(B)/renderer/sfnt.o \
+    $(B)/renderer/autofit.o \
+    $(B)/renderer/pshinter.o \
+    $(B)/renderer/raster.o \
+    $(B)/renderer/smooth.o \
+    $(B)/renderer/ftcache.o \
+    $(B)/renderer/ftgzip.o \
+    $(B)/renderer/ftlzw.o \
+    $(B)/renderer/ftbzip2.o \
+    $(B)/renderer/psaux.o \
+    $(B)/renderer/psnames.o
+endif
+endif
+
 ifeq ($(ARCH),x86)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
@@ -2138,26 +2195,26 @@ $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(LIBSDLMAIN)
 		-o $@ $(Q3OBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(LIBS)
 
-$(B)/renderer_sp_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(JPGOBJ)
+$(B)/renderer_sp_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(JPGOBJ) $(FTOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(JPGOBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/renderer_sp_rend2_$(SHLIBNAME): $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ)
+$(B)/renderer_sp_rend2_$(SHLIBNAME): $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 else
-$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CXX) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) \
+		-o $@ $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/$(CLIENTBIN)_rend2$(FULLBINEXT): $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)_rend2$(FULLBINEXT): $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CXX) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) \
+		-o $@ $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 endif
 
@@ -2550,6 +2607,77 @@ $(B)/rend2/glsl/%.o: $(B)/rend2/glsl/%.c
 $(B)/rend2/%.o: $(R2DIR)/%.c
 	$(DO_REF_CC)
 
+$(B)/renderer/%.o: $(FTDIR)/src/autofit/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/base/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/bdf/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/bzip2/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/cache/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/cff/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/cid/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/gxvalid/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/gzip/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/lzw/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/otvalid/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/pcf/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/pfr/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/psaux/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/pshinter/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/psnames/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/raster/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/sfnt/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/smooth/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/tools/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/truetype/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/type1/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/type42/%.c
+	$(DO_REF_CC)
+
+$(B)/renderer/%.o: $(FTDIR)/src/winfonts/%.c
+	$(DO_REF_CC)
 
 $(B)/ded/%.o: $(ASMDIR)/%.s
 	$(DO_AS)
@@ -2635,7 +2763,7 @@ $(B)/$(BASEGAME)/qcommon/%.asm: $(CMDIR)/%.c $(Q3LCC)
 # MISC
 #############################################################################
 
-OBJ = $(Q3OBJ) $(Q3ROBJ) $(Q3R2OBJ) $(Q3DOBJ) $(JPGOBJ) \
+OBJ = $(Q3OBJ) $(Q3ROBJ) $(Q3R2OBJ) $(Q3DOBJ) $(JPGOBJ) $(FTOBJ) \
   $(Q3GOBJ) $(Q3CGOBJ) $(Q3UIOBJ) \
   $(Q3GVMOBJ) $(Q3CGVMOBJ) $(Q3UIVMOBJ) 
 TOOLSOBJ = $(LBURGOBJ) $(Q3CPPOBJ) $(Q3RCCOBJ) $(Q3LCCOBJ) $(Q3ASMOBJ)
