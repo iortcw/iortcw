@@ -3712,7 +3712,7 @@ static void FS_CheckMPPaks( void )
 					Com_Printf("\n\n"
 						"**************************************************\n"
 						"WARNING: " BASEGAME "/mp_pak0.pk3 is present but its checksum (%u)\n"
-						"is not correct. Please re-copy pak0.pk3 from your\n"
+						"is not correct. Please re-copy mp_pak0.pk3 from your\n"
 						"legitimate RTCW CDROM.\n"
 						"**************************************************\n\n\n",
 						curpack->checksum );
