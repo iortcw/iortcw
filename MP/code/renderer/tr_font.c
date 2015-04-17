@@ -100,7 +100,6 @@ static fontInfo_t registeredFont[MAX_FONTS];
 
 #ifdef BUILD_FREETYPE
 void R_GetGlyphInfo( FT_GlyphSlot glyph, int *left, int *right, int *width, int *top, int *bottom, int *height, int *pitch ) {
-
 	*left  = _FLOOR( glyph->metrics.horiBearingX );
 	*right = _CEIL( glyph->metrics.horiBearingX + glyph->metrics.width );
 	*width = _TRUNC( *right - *left );
@@ -113,7 +112,6 @@ void R_GetGlyphInfo( FT_GlyphSlot glyph, int *left, int *right, int *width, int 
 
 
 FT_Bitmap *R_RenderGlyph( FT_GlyphSlot glyph, glyphInfo_t* glyphOut ) {
-
 	FT_Bitmap  *bit2;
 	int left, right, width, top, bottom, height, pitch, size;
 
@@ -168,12 +166,12 @@ void WriteTGA (char *filename, byte *data, int width, int height) {
 
 	// swap rgb to bgr
 	c = 18 + width * height * 4;
-	for (i=18 ; i<c ; i+=4)
+	for ( i = 18 ; i < c ; i += 4 )
 	{
-		buffer[i] = data[i-18+2];		// blue
-		buffer[i+1] = data[i-18+1];		// green
-		buffer[i+2] = data[i-18+0];		// red
-		buffer[i+3] = data[i-18+3];		// alpha
+		buffer[i] = data[i - 18 + 2];       // blue
+		buffer[i + 1] = data[i - 18 + 1];     // green
+		buffer[i + 2] = data[i - 18 + 0];     // red
+		buffer[i + 3] = data[i - 18 + 3];     // alpha
 	}
 
 	// flip upside down
@@ -195,7 +193,7 @@ void WriteTGA (char *filename, byte *data, int width, int height) {
 	//fwrite (buffer, 1, c, f);
 	//fclose (f);
 
-	ri.Free (buffer);
+	ri.Free( buffer );
 }
 
 static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, int *yOut, int *maxHeight, FT_Face face, const unsigned char c, qboolean calcHeight ) {
@@ -247,8 +245,8 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 		if (*yOut + *maxHeight + 1 >= 255) {
 			*yOut = -1;
 			*xOut = -1;
-			ri.Free(bitmap->buffer);
-			ri.Free(bitmap);
+			ri.Free( bitmap->buffer );
+			ri.Free( bitmap );
 			return &glyph;
 		}
 
@@ -279,11 +277,10 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 
 				src += glyph.pitch;
 				dst += 256;
-
 			}
 		} else {
 			for ( i = 0; i < glyph.height; i++ ) {
-				memcpy( dst, src, glyph.pitch );
+				Com_Memcpy( dst, src, glyph.pitch );
 				src += glyph.pitch;
 				dst += 256;
 			}
@@ -310,7 +307,7 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 #endif
 
 static int fdOffset;
-static byte *fdFile;
+static byte	*fdFile;
 
 int readInt( void ) {
 	int i = fdFile[fdOffset] + ( fdFile[fdOffset + 1] << 8 ) + ( fdFile[fdOffset + 2] << 16 ) + ( fdFile[fdOffset + 3] << 24 );
@@ -319,8 +316,8 @@ int readInt( void ) {
 }
 
 typedef union {
-	byte fred[4];
-	float ffred;
+	byte	fred[4];
+	float	ffred;
 } poor;
 
 float readFloat( void ) {
@@ -376,7 +373,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 	Com_sprintf( name, sizeof( name ), "fonts/fontImage_%i.dat",pointSize );
 	for ( i = 0; i < registeredFontCount; i++ ) {
 		if ( Q_stricmp( name, registeredFont[i].name ) == 0 ) {
-			memcpy( font, &registeredFont[i], sizeof( fontInfo_t ) );
+			Com_Memcpy( font, &registeredFont[i], sizeof( fontInfo_t ) );
 			return;
 		}
 	}
@@ -403,14 +400,14 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			fdOffset += sizeof(font->glyphs[i].shaderName);
 		}
 		font->glyphScale = readFloat();
-		memcpy( font->name, &fdFile[fdOffset], MAX_QPATH );
+		Com_Memcpy( font->name, &fdFile[fdOffset], MAX_QPATH );
 
-//		memcpy(font, faceData, sizeof(fontInfo_t));
+//		Com_Memcpy(font, faceData, sizeof(fontInfo_t));
 		Q_strncpyz( font->name, name, sizeof( font->name ) );
 		for ( i = GLYPH_START; i <= GLYPH_END; i++ ) {
 			font->glyphs[i].glyph = RE_RegisterShaderNoMip( font->glyphs[i].shaderName );
 		}
-		memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
+		Com_Memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
 		ri.FS_FreeFile(faceData);
 		return;
 	}
@@ -508,7 +505,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			}
 
 			//Com_sprintf (name, sizeof(name), "fonts/fontImage_%i_%i", imageNumber++, pointSize);
-			image = R_CreateImage( name, imageBuff, 256, 256, qfalse, qfalse, GL_CLAMP_TO_EDGE );
+			image = R_CreateImage( name, imageBuff, 256, 256, IMGTYPE_COLORALPHA, IMGFLAG_CLAMPTOEDGE, 0 );
 			h = RE_RegisterShaderFromImage( name, LIGHTMAP_2D, image, qfalse );
 			for ( j = lastStart; j < i; j++ ) {
 				font->glyphs[j].glyph = h;
@@ -522,7 +519,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			if ( i == GLYPH_END + 1 )
 				i++;
 		} else {
-			memcpy( &font->glyphs[i], glyph, sizeof( glyphInfo_t ) );
+			Com_Memcpy( &font->glyphs[i], glyph, sizeof( glyphInfo_t ) );
 			i++;
 		}
 	}
@@ -535,7 +532,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 	registeredFont[registeredFontCount].glyphScale = glyphScale;
 	font->glyphScale = glyphScale;
-	memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
+	Com_Memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
 
 	if ( r_saveFontData->integer ) {
 		ri.FS_WriteFile( va( "fonts/fontImage_%i.dat", pointSize ), font, sizeof( fontInfo_t ) );
@@ -549,7 +546,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 
 
-void R_InitFreeType(void) {
+void R_InitFreeType( void ) {
 #ifdef BUILD_FREETYPE
 	if ( FT_Init_FreeType( &ftLibrary ) ) {
 		ri.Printf(PRINT_WARNING, "R_InitFreeType: Unable to initialize FreeType.\n");
@@ -559,7 +556,7 @@ void R_InitFreeType(void) {
 }
 
 
-void R_DoneFreeType(void) {
+void R_DoneFreeType( void ) {
 #ifdef BUILD_FREETYPE
 	if ( ftLibrary ) {
 		FT_Done_FreeType( ftLibrary );
