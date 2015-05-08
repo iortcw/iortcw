@@ -43,6 +43,10 @@ uniform mat4   u_ModelViewProjectionMatrix;
 uniform vec4   u_BaseColor;
 uniform vec4   u_VertColor;
 
+#if defined(USE_DEFORM_VERTEXES) || defined(USE_RGBAGEN)
+uniform vec3   u_FireRiseDir;
+#endif
+
 #if defined(USE_RGBAGEN)
 uniform int    u_ColorGen;
 uniform int    u_AlphaGen;
@@ -50,6 +54,8 @@ uniform vec3   u_AmbientLight;
 uniform vec3   u_DirectedLight;
 uniform vec3   u_ModelLightDir;
 uniform float  u_PortalRange;
+uniform float  u_ZFadeLowest;
+uniform float  u_ZFadeHighest;
 #endif
 
 #if defined(USE_VERTEX_ANIMATION)
@@ -67,6 +73,20 @@ vec3 DeformPosition(const vec3 pos, const vec3 normal, const vec2 st)
 	float phase =     u_DeformParams[2];
 	float frequency = u_DeformParams[3];
 	float spread =    u_DeformParams[4];
+
+	// a negative frequency is for Z deformation based on normal
+	float zDeformScale = 0;
+	if (frequency < 0)
+	{
+		zDeformScale = 1;
+		frequency *= -1;
+
+		if (frequency > 999)
+		{
+			frequency -= 999;
+			zDeformScale = -1;
+		}
+	}
 
 	if (u_DeformGen == DGEN_BULGE)
 	{
@@ -103,6 +123,20 @@ vec3 DeformPosition(const vec3 pos, const vec3 normal, const vec2 st)
 	else // if (u_DeformGen == DGEN_BULGE)
 	{
 		func = sin(value);
+	}
+
+	if (zDeformScale != 0)
+	{
+		vec3 dir = u_FireRiseDir * (0.4 + 0.6 * u_FireRiseDir.z);
+		float nDot = dot(dir, normal);
+		float scale = base + func * amplitude;
+
+		if (nDot * scale > 0)
+		{
+			return pos + dir * nDot * scale * zDeformScale;
+		}
+
+		return pos;
 	}
 
 	return pos + normal * (base + func * amplitude);
@@ -177,6 +211,27 @@ vec4 CalcColor(vec3 position, vec3 normal)
 	else if (u_AlphaGen == AGEN_PORTAL)
 	{
 		color.a = clamp(length(viewer) / u_PortalRange, 0.0, 1.0);
+	}
+	else if (u_AlphaGen == AGEN_NORMALZFADE)
+	{
+		float nDot = dot(normal, u_FireRiseDir);
+		float halfRange = (u_ZFadeHighest - u_ZFadeLowest) / 2.0;
+
+		if (nDot < u_ZFadeHighest) {
+			if (nDot > u_ZFadeLowest) {
+				float frac;
+				if (nDot < u_ZFadeLowest + halfRange) {
+					frac = ( nDot - u_ZFadeLowest ) / halfRange;
+				} else {
+					frac = 1.0 - ( nDot - u_ZFadeLowest - halfRange ) / halfRange;
+				}
+				color.a *= clamp(frac, 0.0, 1.0);
+			} else {
+				color.a = 0;
+			}
+		} else {
+			color.a = 0;
+		}
 	}
 	
 	return color;

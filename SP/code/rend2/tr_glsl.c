@@ -146,6 +146,10 @@ static uniformInfo_t uniformsInfo[] =
 	{ "u_PrimaryLightRadius",  GLSL_FLOAT },
 
 	{ "u_CubeMapInfo", GLSL_VEC4 },
+
+	{ "u_FireRiseDir", GLSL_VEC3 },
+	{ "u_ZFadeLowest", GLSL_FLOAT },
+	{ "u_ZFadeHighest", GLSL_FLOAT },
 };
 
 
@@ -302,9 +306,11 @@ static void GLSL_GetShaderHeader( GLenum shaderType, const GLcharARB *extra, cha
 								"#define alphaGen_t\n"
 								"#define AGEN_LIGHTING_SPECULAR %i\n"
 								"#define AGEN_PORTAL %i\n"
+								"#define AGEN_NORMALZFADE %i\n"
 								"#endif\n",
 								AGEN_LIGHTING_SPECULAR,
-								AGEN_PORTAL));
+								AGEN_PORTAL,
+								AGEN_NORMALZFADE));
 
 	Q_strcat(dest, size,
 							 va("#ifndef texenv_t\n"
@@ -1528,6 +1534,7 @@ shaderProgram_t *GLSL_GetGenericShaderProgram(int stage, glfog_t *glFog)
 	{
 		case AGEN_LIGHTING_SPECULAR:
 		case AGEN_PORTAL:
+		case AGEN_NORMALZFADE:
 			shaderAttribs |= GENERICDEF_USE_RGBAGEN;
 			break;
 		default:

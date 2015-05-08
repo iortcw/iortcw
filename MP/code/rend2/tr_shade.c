@@ -418,6 +418,23 @@ static void ProjectDlightTexture( void ) {
 		{
 			GLSL_SetUniformFloat5(sp, UNIFORM_DEFORMPARAMS, deformParams);
 			GLSL_SetUniformFloat(sp, UNIFORM_TIME, tess.shaderTime);
+
+			if (tess.shader->deforms[0].deformationWave.frequency < 0)
+			{
+				vec3_t worldUp;
+
+				if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+					VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+				}
+
+				if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+					VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+				} else {
+					VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+				}
+
+				GLSL_SetUniformVec3(sp, UNIFORM_FIRERISEDIR, worldUp);
+			}
 		}
 
 		vector[0] = dl->color[0];
@@ -602,6 +619,13 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 			vertColor[3] = 0.0f;
 			break;
 		case AGEN_NORMALZFADE:
+			baseColor[3] = pStage->constantColor[3] / 255.0f;
+			if (backEnd.currentEntity && backEnd.currentEntity->e.hModel)
+			{
+				baseColor[3] *= ((unsigned char *)backEnd.currentEntity->e.shaderRGBA)[3] / 255.0f;
+			}
+			vertColor[3] = 0.0f;
+			break;
 		case AGEN_VERTEX:
 			baseColor[3] = 0.0f;
 			vertColor[3] = 1.0f;
@@ -797,6 +821,24 @@ static void ForwardDlight( void ) {
 
 		GLSL_SetUniformFloat(sp, UNIFORM_VERTEXLERP, glState.vertexAttribsInterpolation);
 
+		if ((deformGen != DGEN_NONE && tess.shader->deforms[0].deformationWave.frequency < 0 )
+			|| pStage->alphaGen == AGEN_NORMALZFADE)
+		{
+			vec3_t worldUp;
+
+			if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+				VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+			}
+
+			if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+				VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+			} else {
+				VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+			}
+
+			GLSL_SetUniformVec3(sp, UNIFORM_FIRERISEDIR, worldUp);
+		}
+
 		GLSL_SetUniformInt(sp, UNIFORM_DEFORMGEN, deformGen);
 		if (deformGen != DGEN_NONE)
 		{
@@ -829,6 +871,27 @@ static void ForwardDlight( void ) {
 		if (pStage->alphaGen == AGEN_PORTAL)
 		{
 			GLSL_SetUniformFloat(sp, UNIFORM_PORTALRANGE, tess.shader->portalRange);
+		}
+		else if (pStage->alphaGen == AGEN_NORMALZFADE)
+		{
+			float lowest, highest;
+			//qboolean zombieEffect = qfalse;
+
+			lowest = pStage->zFadeBounds[0];
+			if ( lowest == -1000 ) {    // use entity alpha
+				lowest = backEnd.currentEntity->e.shaderTime;
+				//zombieEffect = qtrue;
+			}
+			highest = pStage->zFadeBounds[1];
+			if ( highest == -1000 ) {   // use entity alpha
+				highest = backEnd.currentEntity->e.shaderTime;
+				//zombieEffect = qtrue;
+			}
+
+			// TODO: Handle normalzfade zombie effect
+
+			GLSL_SetUniformFloat(sp, UNIFORM_ZFADELOWEST, lowest);
+			GLSL_SetUniformFloat(sp, UNIFORM_ZFADEHIGHEST, highest);
 		}
 
 		GLSL_SetUniformInt(sp, UNIFORM_COLORGEN, pStage->rgbGen);
@@ -1087,6 +1150,23 @@ static void RB_FogPass( int wolfFog ) {
 	{
 		GLSL_SetUniformFloat5(sp, UNIFORM_DEFORMPARAMS, deformParams);
 		GLSL_SetUniformFloat(sp, UNIFORM_TIME, tess.shaderTime);
+
+		if (tess.shader->deforms[0].deformationWave.frequency < 0)
+		{
+			vec3_t worldUp;
+
+			if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+				VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+			}
+
+			if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+				VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+			} else {
+				VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+			}
+
+			GLSL_SetUniformVec3(sp, UNIFORM_FIRERISEDIR, worldUp);
+		}
 	}
 
 	if (wolfFog)
@@ -1273,6 +1353,24 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		GLSL_SetUniformVec3(sp, UNIFORM_LOCALVIEWORIGIN, backEnd.or.viewOrigin);
 
 		GLSL_SetUniformFloat(sp, UNIFORM_VERTEXLERP, glState.vertexAttribsInterpolation);
+
+		if ((deformGen != DGEN_NONE && tess.shader->deforms[0].deformationWave.frequency < 0 )
+			|| pStage->alphaGen == AGEN_NORMALZFADE)
+		{
+			vec3_t worldUp;
+
+			if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+				VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+			}
+
+			if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+				VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+			} else {
+				VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+			}
+
+			GLSL_SetUniformVec3(sp, UNIFORM_FIRERISEDIR, worldUp);
+		}
 		
 		GLSL_SetUniformInt(sp, UNIFORM_DEFORMGEN, deformGen);
 		if (deformGen != DGEN_NONE)
@@ -1344,6 +1442,27 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		if (pStage->alphaGen == AGEN_PORTAL)
 		{
 			GLSL_SetUniformFloat(sp, UNIFORM_PORTALRANGE, tess.shader->portalRange);
+		}
+		else if (pStage->alphaGen == AGEN_NORMALZFADE)
+		{
+			float lowest, highest;
+			//qboolean zombieEffect = qfalse;
+
+			lowest = pStage->zFadeBounds[0];
+			if ( lowest == -1000 ) {    // use entity alpha
+				lowest = backEnd.currentEntity->e.shaderTime;
+				//zombieEffect = qtrue;
+			}
+			highest = pStage->zFadeBounds[1];
+			if ( highest == -1000 ) {   // use entity alpha
+				highest = backEnd.currentEntity->e.shaderTime;
+				//zombieEffect = qtrue;
+			}
+
+			// TODO: Handle normalzfade zombie effect
+
+			GLSL_SetUniformFloat(sp, UNIFORM_ZFADELOWEST, lowest);
+			GLSL_SetUniformFloat(sp, UNIFORM_ZFADEHIGHEST, highest);
 		}
 
 		GLSL_SetUniformInt(sp, UNIFORM_COLORGEN, pStage->rgbGen);
@@ -1558,6 +1677,23 @@ static void RB_RenderShadowmap( shaderCommands_t *input )
 		{
 			GLSL_SetUniformFloat5(sp, UNIFORM_DEFORMPARAMS, deformParams);
 			GLSL_SetUniformFloat(sp, UNIFORM_TIME, tess.shaderTime);
+
+			if (tess.shader->deforms[0].deformationWave.frequency < 0)
+			{
+				vec3_t worldUp;
+
+				if ( VectorCompare( backEnd.currentEntity->e.fireRiseDir, vec3_origin ) ) {
+					VectorSet( backEnd.currentEntity->e.fireRiseDir, 0, 0, 1 );
+				}
+
+				if ( backEnd.currentEntity->e.hModel ) {    // world surfaces dont have an axis
+					VectorRotate( backEnd.currentEntity->e.fireRiseDir, backEnd.currentEntity->e.axis, worldUp );
+				} else {
+					VectorCopy( backEnd.currentEntity->e.fireRiseDir, worldUp );
+				}
+
+				GLSL_SetUniformVec3(sp, UNIFORM_FIRERISEDIR, worldUp);
+			}
 		}
 
 		VectorCopy(backEnd.viewParms.or.origin, vector);

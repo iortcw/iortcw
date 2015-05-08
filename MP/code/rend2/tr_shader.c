@@ -2363,6 +2363,7 @@ static int CollapseStagesToGLSL(void)
 			{
 				case AGEN_LIGHTING_SPECULAR:
 				case AGEN_PORTAL:
+				case AGEN_NORMALZFADE:
 					skip = qtrue;
 					break;
 				default:
