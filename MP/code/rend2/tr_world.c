@@ -454,6 +454,7 @@ void R_AddBrushModelSurfaces ( trRefEntity_t *ent ) {
 	int			clip;
 	model_t		*pModel;
 	int			i;
+	int fognum;
 
 	pModel = R_GetModelByHandle( ent->e.hModel );
 
@@ -467,15 +468,21 @@ void R_AddBrushModelSurfaces ( trRefEntity_t *ent ) {
 	R_SetupEntityLighting( &tr.refdef, ent );
 	R_DlightBmodel( bmodel );
 
+//----(SA) modified
+	// determine if in fog
+	fognum = R_BmodelFogNum( ent, bmodel );
+
 	for ( i = 0 ; i < bmodel->numSurfaces ; i++ ) {
 		int surf = bmodel->firstSurface + i;
 
 		if (tr.world->surfacesViewCount[surf] != tr.viewCount)
 		{
 			tr.world->surfacesViewCount[surf] = tr.viewCount;
+			tr.world->surfaces[surf].fogIndex = fognum;
 			R_AddWorldSurface( tr.world->surfaces + surf, tr.currentEntity->needDlights, 0 );
 		}
 	}
+//----(SA) end
 }
 
 /*
