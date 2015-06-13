@@ -1711,11 +1711,11 @@ Q3R2OBJ = \
   $(B)/rend2/tr_font.o \
   $(B)/rend2/tr_glsl.o \
   $(B)/rend2/tr_image.o \
-  $(B)/rend2/tr_image_png.o \
-  $(B)/rend2/tr_image_jpg.o \
   $(B)/rend2/tr_image_bmp.o \
-  $(B)/rend2/tr_image_tga.o \
+  $(B)/rend2/tr_image_jpg.o \
   $(B)/rend2/tr_image_pcx.o \
+  $(B)/rend2/tr_image_png.o \
+  $(B)/rend2/tr_image_tga.o \
   $(B)/rend2/tr_init.o \
   $(B)/rend2/tr_light.o \
   $(B)/rend2/tr_main.o \
@@ -1778,11 +1778,11 @@ Q3ROBJ = \
   $(B)/renderer/tr_flares.o \
   $(B)/renderer/tr_font.o \
   $(B)/renderer/tr_image.o \
-  $(B)/renderer/tr_image_png.o \
-  $(B)/renderer/tr_image_jpg.o \
   $(B)/renderer/tr_image_bmp.o \
-  $(B)/renderer/tr_image_tga.o \
+  $(B)/renderer/tr_image_jpg.o \
   $(B)/renderer/tr_image_pcx.o \
+  $(B)/renderer/tr_image_png.o \
+  $(B)/renderer/tr_image_tga.o \
   $(B)/renderer/tr_init.o \
   $(B)/renderer/tr_light.o \
   $(B)/renderer/tr_main.o \
