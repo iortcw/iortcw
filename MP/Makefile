@@ -61,6 +61,13 @@ PLATFORM=$(COMPILE_PLATFORM)
 endif
 export PLATFORM
 
+ifeq ($(PLATFORM),mingw32)
+  MINGW=1
+endif
+ifeq ($(PLATFORM),mingw64)
+  MINGW=1
+endif
+
 ifeq ($(COMPILE_ARCH),i386)
   COMPILE_ARCH=x86
 endif
@@ -98,7 +105,7 @@ export ARCH
 # For historical compatibility reasons on non-windows
 # platform output files use i386 instead of x86
 ifeq ($(ARCH),x86)
-  ifneq ($(PLATFORM),mingw32)
+  ifndef MINGW
     FILE_ARCH=i386
   endif
 endif
@@ -124,7 +131,7 @@ VERSION=1.42c
 endif
 
 ifndef CLIENTBIN
-  ifeq ($(PLATFORM),mingw32)
+  ifdef MINGW
     CLIENTBIN=ioWolfMP
   else
     CLIENTBIN=iowolfmp
@@ -132,7 +139,7 @@ ifndef CLIENTBIN
 endif
 
 ifndef SERVERBIN
-  ifeq ($(PLATFORM),mingw32)
+  ifdef MINGW
     SERVERBIN=ioWolfDED
   else
     SERVERBIN=iowolfded
@@ -184,7 +191,7 @@ USE_CURL=1
 endif
 
 ifndef USE_CURL_DLOPEN
-  ifeq ($(PLATFORM),mingw32)
+  ifdef MINGW
     USE_CURL_DLOPEN=0
   else
     USE_CURL_DLOPEN=1
@@ -575,7 +582,7 @@ else # ifeq darwin
 # SETUP AND BUILD -- MINGW32
 #############################################################################
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 
   ifeq ($(CROSS_COMPILING),1)
     # If CC is already set to something generic, we probably want to use
@@ -736,7 +743,7 @@ ifeq ($(PLATFORM),mingw32)
     SDLDLL=SDL2.dll
   endif
 
-else # ifeq mingw32
+else # ifdef MINGW
 
 #############################################################################
 # SETUP AND BUILD -- FREEBSD
@@ -984,7 +991,7 @@ else # ifeq sunos
 
 endif #Linux
 endif #darwin
-endif #mingw32
+endif #MINGW
 endif #FreeBSD
 endif #OpenBSD
 endif #NetBSD
@@ -1034,7 +1041,7 @@ endif
 
 ifneq ($(BUILD_GAME_SO),0)
   ifneq ($(BUILD_BASEGAME),0)
-   ifeq ($(PLATFORM),mingw32)
+   ifdef MINGW
     TARGETS += \
 	$(B)/$(BASEGAME)/cgame_mp_$(SHLIBNAME) \
 	$(B)/$(BASEGAME)/qagame_mp_$(SHLIBNAME) \
@@ -1360,7 +1367,7 @@ targets: makedirs
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
 	@echo "  CC: $(CC)"
 	@echo "  CXX: $(CXX)"
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 	@echo "  WINDRES: $(WINDRES)"
 endif
 	@echo ""
@@ -1700,7 +1707,7 @@ Q3OBJ = \
   $(B)/client/con_log.o \
   $(B)/client/sys_main.o
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
   Q3OBJ += \
     $(B)/client/con_passive.o
 else
@@ -2089,7 +2096,7 @@ Q3OBJ += \
   $(B)/client/internal.o \
   $(B)/client/opusfile.o \
   $(B)/client/stream.o
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 Q3OBJ += \
   $(B)/client/wincerts.o
 endif
@@ -2159,7 +2166,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   endif
 endif
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
   Q3OBJ += \
     $(B)/client/win_resource.o \
     $(B)/client/sys_win32.o
@@ -2332,7 +2339,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   endif
 endif
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
   Q3DOBJ += \
     $(B)/ded/win_resource.o \
     $(B)/ded/sys_win32.o \
@@ -2396,7 +2403,7 @@ Q3CGOBJ_ = \
 Q3CGOBJ = $(Q3CGOBJ_) $(B)/$(BASEGAME)/cgame/cg_syscalls.o
 Q3CGVMOBJ = $(Q3CGOBJ_:%.o=%.asm)
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 $(B)/$(BASEGAME)/cgame_mp_$(SHLIBNAME): $(Q3CGOBJ)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
@@ -2471,7 +2478,7 @@ Q3GOBJ_ = \
 Q3GOBJ = $(Q3GOBJ_) $(B)/$(BASEGAME)/game/g_syscalls.o
 Q3GVMOBJ = $(Q3GOBJ_:%.o=%.asm)
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 $(B)/$(BASEGAME)/qagame_mp_$(SHLIBNAME): $(Q3GOBJ)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
@@ -2505,7 +2512,7 @@ Q3UIOBJ_ = \
 Q3UIOBJ = $(Q3UIOBJ_) $(B)/$(BASEGAME)/ui/ui_syscalls.o
 Q3UIVMOBJ = $(Q3UIOBJ_:%.o=%.asm)
 
-ifeq ($(PLATFORM),mingw32)
+ifdef MINGW
 $(B)/$(BASEGAME)/ui_mp_$(SHLIBNAME): $(Q3UIOBJ)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
