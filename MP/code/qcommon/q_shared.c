@@ -1386,7 +1386,7 @@ void Info_RemoveKey_Big( char *s, const char *key ) {
 		*o = 0;
 
 		if ( !strcmp( key, pkey ) ) {
-			strcpy( start, s );  // remove this part
+			memmove(start, s, strlen(s) + 1); // remove this part
 			return;
 		}
 
