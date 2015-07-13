@@ -195,6 +195,9 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 		data = gridData;
 		for ( j = 0 ; j < 3 ; j++ ) {
 			if ( i & ( 1 << j ) ) {
+				if ( pos[j] + 1 > tr.world->lightGridBounds[j] - 1 ) {
+					break; // ignore values outside lightgrid
+				}
 				factor *= frac[j];
 				data += gridStep[j];
 			} else {
@@ -202,6 +205,9 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 			}
 		}
 
+		if ( j != 3 ) {
+			continue;
+		}
 		if ( !( data[0] + data[1] + data[2] ) ) {
 			continue;   // ignore samples in walls
 		}

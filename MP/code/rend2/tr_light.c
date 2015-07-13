@@ -195,15 +195,12 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 		byte    *data;
 		int lat, lng;
 		vec3_t normal;
-		qboolean ignore;
 		factor = 1.0;
 		data = gridData;
-		ignore = qfalse;
 		for ( j = 0 ; j < 3 ; j++ ) {
 			if ( i & ( 1 << j ) ) {
-				if ((pos[j] + 1) > world->lightGridBounds[j] - 1)
-				{
-					ignore = qtrue; // ignore values outside lightgrid
+				if ( pos[j] + 1 > world->lightGridBounds[j] - 1 ) {
+					break; // ignore values outside lightgrid
 				}
 				factor *= frac[j];
 				data += gridStep[j];
@@ -212,7 +209,7 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 			}
 		}
 
-		if ( ignore )
+		if ( j != 3 )
 			continue;
 
 		if (world->hdrLightGrid)
