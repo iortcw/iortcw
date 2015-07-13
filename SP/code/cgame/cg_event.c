@@ -556,6 +556,7 @@ int CG_WaterLevel(centity_t *cent) {
 		viewheight = DEFAULT_VIEWHEIGHT;
 	}
 
+	//
 	// get waterlevel, accounting for ducking
 	//
 	waterlevel = 0;
