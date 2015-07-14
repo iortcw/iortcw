@@ -347,30 +347,12 @@ endif
 #############################################################################
 
 ## Defaults
-LIB=lib
-
 INSTALL=install
 MKDIR=mkdir
 EXTRA_FILES=
 CLIENT_EXTRA_FILES=
 
 ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu"))
-
-  ifeq ($(ARCH),x86_64)
-    LIB=lib64
-  else
-  ifeq ($(ARCH),ppc64)
-    LIB=lib64
-  else
-  ifeq ($(ARCH),s390x)
-    LIB=lib64
-  else
-  ifeq ($(ARCH),aarch64)
-    LIB=lib64
-  endif
-  endif
-  endif
-  endif
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON
@@ -900,6 +882,7 @@ else # ifeq netbsd
 #############################################################################
 
 ifeq ($(PLATFORM),irix64)
+  LIB=lib
 
   ARCH=mips
 
