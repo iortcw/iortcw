@@ -782,6 +782,33 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// wipe the entire per-level structure
 	SV_ClearServer();
 
+	// Ridah, check for loading a saved game
+	if ( Cvar_VariableIntegerValue( "savegame_loading" ) ) {
+		// open the current savegame, and find out what the time is, everything else we can ignore
+		char *savemap = "save/current.svg";
+		byte *buffer;
+		int size, savegameTime;
+
+		size = FS_ReadFile( savemap, NULL );
+		if ( size < 0 ) {
+			Com_Printf( "Can't find savegame %s\n", savemap );
+			return;
+		}
+
+		//buffer = Hunk_AllocateTempMemory(size);
+		FS_ReadFile( savemap, (void **)&buffer );
+
+		// the mapname is at the very start of the savegame file
+		savegameTime = *( int * )( buffer + sizeof( int ) + MAX_QPATH );
+
+		if ( savegameTime >= 0 ) {
+			sv.time = savegameTime;
+		}
+
+		Hunk_FreeTempMemory( buffer );
+	}
+	// done.
+
 	// allocate empty config strings
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
 		sv.configstrings[i] = CopyString( "" );

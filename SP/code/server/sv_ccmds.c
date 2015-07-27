@@ -164,7 +164,6 @@ static void SV_Map_f( void ) {
 	char mapname[MAX_QPATH];
 	qboolean killBots, cheat, buildScript;
 	char expanded[MAX_QPATH];
-	int savegameTime = -1;
 
 	map = Cmd_Argv( 1 );
 	if ( !map ) {
@@ -183,6 +182,7 @@ static void SV_Map_f( void ) {
 		char savemap[MAX_QPATH];
 		byte *buffer;
 		int size, csize;
+		//int savegameTime;
 
 		if ( !( strstr( map, "save/" ) == map ) ) {
 			Com_sprintf( savemap, sizeof( savemap ), "save/%s", map );
@@ -227,11 +227,13 @@ static void SV_Map_f( void ) {
 		Q_strncpyz( smapname, savemap, sizeof( smapname ) );
 		map = smapname;
 
+#if 0 // cannot set before SV_SpawnServer clears sv.time
 		savegameTime = *( int * )( buffer + sizeof( int ) + MAX_QPATH );
 
 		if ( savegameTime >= 0 ) {
-			svs.time = savegameTime;
+			sv.time = savegameTime;
 		}
+#endif
 
 		Hunk_FreeTempMemory( buffer );
 	} else {
@@ -386,7 +388,7 @@ static void SV_MapRestart_f( void ) {
 		savegameTime = *( int * )( buffer + sizeof( int ) + MAX_QPATH );
 
 		if ( savegameTime >= 0 ) {
-			svs.time = savegameTime;
+			sv.time = savegameTime;
 		}
 
 		Hunk_FreeTempMemory( buffer );
