@@ -938,7 +938,7 @@ typedef struct routecacheheader_s
 } routecacheheader_t;
 
 #define RCID                        ( ( 'C' << 24 ) + ( 'R' << 16 ) + ( 'E' << 8 ) + 'M' )
-#define RCVERSION                   15
+#define RCVERSION                   12
 
 void AAS_DecompressVis( byte *in, int numareas, byte *decompressed );
 int AAS_CompressVis( byte *vis, int numareas, byte *dest );
