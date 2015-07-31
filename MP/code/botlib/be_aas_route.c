@@ -938,7 +938,7 @@ typedef struct routecacheheader_s
 } routecacheheader_t;
 
 #define RCID                        ( ( 'C' << 24 ) + ( 'R' << 16 ) + ( 'E' << 8 ) + 'M' )
-#define RCVERSION                   12
+#define RCVERSION                   15
 
 void AAS_DecompressVis( byte *in, int numareas, byte *decompressed );
 int AAS_CompressVis( byte *vis, int numareas, byte *dest );
@@ -1107,7 +1107,7 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 //===========================================================================
 int AAS_ReadRouteCache( void ) {
 	int i, clusterareanum, size;
-	fileHandle_t fp;
+	fileHandle_t fp = 0;
 	char filename[MAX_QPATH];
 	routecacheheader_t routecacheheader;
 	aas_routingcache_t *cache;
@@ -1118,14 +1118,25 @@ int AAS_ReadRouteCache( void ) {
 		return qfalse;
 	} //end if
 	botimport.FS_Read( &routecacheheader, sizeof( routecacheheader_t ), fp );
+	routecacheheader.areacrc = LittleLong( routecacheheader.areacrc );
+	routecacheheader.clustercrc = LittleLong( routecacheheader.clustercrc );
+	routecacheheader.ident = LittleLong( routecacheheader.ident );
+	routecacheheader.numareacache = LittleLong( routecacheheader.numareacache );
+	routecacheheader.numareas = LittleLong( routecacheheader.numareas );
+	routecacheheader.numclusters = LittleLong( routecacheheader.numclusters );
+	routecacheheader.numportalcache = LittleLong( routecacheheader.numportalcache );
+	routecacheheader.reachcrc = LittleLong( routecacheheader.reachcrc );
+	routecacheheader.version = LittleLong( routecacheheader.version );
+
 	if ( routecacheheader.ident != RCID ) {
 		botimport.FS_FCloseFile( fp );
-		AAS_Error( "%s is not a route cache dump\n", filename );
-		return qfalse;
+		Com_Printf( "%s is not a route cache dump\n", filename );       // not an aas_error because we want to continue
+		return qfalse;                                              // and remake them by returning false here
 	} //end if
+
 	if ( routecacheheader.version != RCVERSION ) {
 		botimport.FS_FCloseFile( fp );
-		AAS_Error( "route cache dump has wrong version %d, should be %d\n", routecacheheader.version, RCVERSION );
+		Com_Printf( "route cache dump has wrong version %d, should be %d\n", routecacheheader.version, RCVERSION );
 		return qfalse;
 	} //end if
 	if ( routecacheheader.numareas != ( *aasworld ).numareas ) {
@@ -1189,6 +1200,7 @@ int AAS_ReadRouteCache( void ) {
 	for ( i = 0; i < ( *aasworld ).numareas; i++ )
 	{
 		botimport.FS_Read( &size, sizeof( size ), fp );
+		LL( size );
 		if ( size ) {
 			( *aasworld ).areavisibility[i] = (byte *) GetMemory( size );
 			botimport.FS_Read( ( *aasworld ).areavisibility[i], size, fp );
@@ -1197,6 +1209,13 @@ int AAS_ReadRouteCache( void ) {
 	// read the area waypoints
 	( *aasworld ).areawaypoints = (vec3_t *) GetClearedMemory( ( *aasworld ).numareas * sizeof( vec3_t ) );
 	botimport.FS_Read( ( *aasworld ).areawaypoints, ( *aasworld ).numareas * sizeof( vec3_t ), fp );
+	if ( 1 != LittleLong( 1 ) ) {
+		for ( i = 0; i < ( *aasworld ).numareas; i++ ) {
+			( *aasworld ).areawaypoints[i][0] = LittleFloat( ( *aasworld ).areawaypoints[i][0] );
+			( *aasworld ).areawaypoints[i][1] = LittleFloat( ( *aasworld ).areawaypoints[i][1] );
+			( *aasworld ).areawaypoints[i][2] = LittleFloat( ( *aasworld ).areawaypoints[i][2] );
+		}
+	}
 	//
 	botimport.FS_FCloseFile( fp );
 	return qtrue;
