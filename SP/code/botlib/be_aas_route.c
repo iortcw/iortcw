@@ -883,6 +883,43 @@ void AAS_CreateAllRoutingCache( void ) {
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
+void AAS_WriteCache( fileHandle_t fp, aas_routingcache_t *nativecache ) {
+	int i, size, numtraveltimes;
+	aas_routingcache_32_t *cache;
+	unsigned char *cache_reachabilities;
+
+	size = nativecache->size + sizeof (aas_routingcache_32_t) - sizeof (aas_routingcache_t);
+
+	cache = GetClearedMemory( size );
+	cache->size = LittleLong( size );
+	cache->time = LittleFloat( nativecache->time );
+	cache->cluster = LittleLong( nativecache->cluster );
+	cache->areanum = LittleLong( nativecache->areanum );
+	cache->origin[0] = LittleFloat( nativecache->origin[0] );
+	cache->origin[1] = LittleFloat( nativecache->origin[1] );
+	cache->origin[2] = LittleFloat( nativecache->origin[2] );
+	cache->starttraveltime = LittleFloat( nativecache->starttraveltime );
+	cache->travelflags = LittleLong( nativecache->travelflags );
+
+	numtraveltimes = ( size - sizeof( aas_routingcache_32_t ) ) / 3;
+	for ( i = 0; i < numtraveltimes; i++ ) {
+		cache->traveltimes[i] = LittleShort( nativecache->traveltimes[i] );
+	}
+
+	cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
+	for ( i = 0; i < numtraveltimes; i++ ) {
+		cache_reachabilities[i] = nativecache->reachabilities[i];
+	}
+
+	botimport.FS_Write( cache, size, fp );
+	FreeMemory( cache );
+} //end of the function AAS_WriteCache
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
 unsigned short CRC_ProcessString( unsigned char *data, int length );
 
 //the route cache header
@@ -915,11 +952,7 @@ void AAS_WriteRouteCache( void ) {
 	char filename[MAX_QPATH];
 	routecacheheader_t routecacheheader;
 	byte *buf;
-
-	// ZTM FIXME: route cache created here will not work on 32 bit systems, so just don't save it for now.
-	if ( sizeof ( intptr_t ) != 4 ) {
-		return;
-	}
+	vec3_t waypoint;
 
 	buf = (byte *) GetClearedMemory( ( *aasworld ).numareas * 2 * sizeof( byte ) );   // in case it ends up bigger than the decompressedvis, which is rare but possible
 
@@ -951,15 +984,15 @@ void AAS_WriteRouteCache( void ) {
 		return;
 	} //end if
 	  //create the header
-	routecacheheader.ident = RCID;
-	routecacheheader.version = RCVERSION;
-	routecacheheader.numareas = ( *aasworld ).numareas;
-	routecacheheader.numclusters = ( *aasworld ).numclusters;
-	routecacheheader.areacrc = CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas );
-	routecacheheader.clustercrc = CRC_ProcessString( (unsigned char *)( *aasworld ).clusters, sizeof( aas_cluster_t ) * ( *aasworld ).numclusters );
-	routecacheheader.reachcrc = CRC_ProcessString( (unsigned char *)( *aasworld ).reachability, sizeof( aas_reachability_t ) * ( *aasworld ).reachabilitysize );
-	routecacheheader.numportalcache = numportalcache;
-	routecacheheader.numareacache = numareacache;
+	routecacheheader.ident = LittleLong( RCID );
+	routecacheheader.version = LittleLong( RCVERSION );
+	routecacheheader.numareas = LittleLong( ( *aasworld ).numareas );
+	routecacheheader.numclusters = LittleLong( ( *aasworld ).numclusters );
+	routecacheheader.areacrc = LittleLong( CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas ) );
+	routecacheheader.clustercrc = LittleLong( CRC_ProcessString( (unsigned char *)( *aasworld ).clusters, sizeof( aas_cluster_t ) * ( *aasworld ).numclusters ) );
+	routecacheheader.reachcrc = LittleLong( CRC_ProcessString( (unsigned char *)( *aasworld ).reachability, sizeof( aas_reachability_t ) * ( *aasworld ).reachabilitysize ) );
+	routecacheheader.numportalcache = LittleLong( numportalcache );
+	routecacheheader.numareacache = LittleLong( numareacache );
 	//write the header
 	botimport.FS_Write( &routecacheheader, sizeof( routecacheheader_t ), fp );
 	//write all the cache
@@ -967,7 +1000,7 @@ void AAS_WriteRouteCache( void ) {
 	{
 		for ( cache = ( *aasworld ).portalcache[i]; cache; cache = cache->next )
 		{
-			botimport.FS_Write( cache, cache->size, fp );
+			AAS_WriteCache( fp, cache );
 		} //end for
 	} //end for
 	for ( i = 0; i < ( *aasworld ).numclusters; i++ )
@@ -977,7 +1010,7 @@ void AAS_WriteRouteCache( void ) {
 		{
 			for ( cache = ( *aasworld ).clusterareacache[i][j]; cache; cache = cache->next )
 			{
-				botimport.FS_Write( cache, cache->size, fp );
+				AAS_WriteCache( fp, cache );
 			} //end for
 		} //end for
 	} //end for
@@ -985,17 +1018,24 @@ void AAS_WriteRouteCache( void ) {
 	for ( i = 0; i < ( *aasworld ).numareas; i++ )
 	{
 		if ( !( *aasworld ).areavisibility[i] ) {
-			size = 0;
+			size = LittleLong( 0 );
 			botimport.FS_Write( &size, sizeof( int ), fp );
 			continue;
 		}
 		AAS_DecompressVis( ( *aasworld ).areavisibility[i], ( *aasworld ).numareas, ( *aasworld ).decompressedvis );
 		size = AAS_CompressVis( ( *aasworld ).decompressedvis, ( *aasworld ).numareas, buf );
+		LL( size );
 		botimport.FS_Write( &size, sizeof( int ), fp );
+		LL( size ); // convert back to native endian
 		botimport.FS_Write( buf, size, fp );
 	}
 	// write the waypoints
-	botimport.FS_Write( ( *aasworld ).areawaypoints, sizeof( vec3_t ) * ( *aasworld ).numareas, fp );
+	for ( i = 0; i < ( *aasworld ).numareas; i++ ) {
+		waypoint[0] = LittleFloat( ( *aasworld ).areawaypoints[i][0] );
+		waypoint[1] = LittleFloat( ( *aasworld ).areawaypoints[i][1] );
+		waypoint[2] = LittleFloat( ( *aasworld ).areawaypoints[i][2] );
+		botimport.FS_Write( waypoint, sizeof( vec3_t ), fp );
+	}
 	//
 	botimport.FS_FCloseFile( fp );
 	botimport.Print( PRT_MESSAGE, "\nroute cache written to %s\n", filename );
@@ -1049,9 +1089,9 @@ aas_routingcache_t *AAS_ReadCache( fileHandle_t fp ) {
 
 	// copy reachabilities to native structure, free original cache
 	if ( sizeof (intptr_t) != 4 ) {
-		for ( i = 0; i < numtraveltimes; i++ ) {
-			cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
+		cache_reachabilities = (unsigned char *) cache + sizeof( aas_routingcache_32_t ) + numtraveltimes * sizeof (cache->traveltimes[0]);
 
+		for ( i = 0; i < numtraveltimes; i++ ) {
 			nativecache->reachabilities[i] = cache_reachabilities[i];
 		}
 
@@ -1079,9 +1119,6 @@ int AAS_ReadRouteCache( void ) {
 		return qfalse;
 	} //end if
 	botimport.FS_Read( &routecacheheader, sizeof( routecacheheader_t ), fp );
-
-	// GJD: route cache data MUST be written on a PC because I've not altered the writing code.
-
 	routecacheheader.areacrc = LittleLong( routecacheheader.areacrc );
 	routecacheheader.clustercrc = LittleLong( routecacheheader.clustercrc );
 	routecacheheader.ident = LittleLong( routecacheheader.ident );
