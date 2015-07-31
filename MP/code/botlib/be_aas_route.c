@@ -1149,28 +1149,27 @@ int AAS_ReadRouteCache( void ) {
 		//AAS_Error("route cache dump has wrong number of clusters\n");
 		return qfalse;
 	} //end if
-#if defined( MACOSX )
-	// the crc table stuff is endian orientated....
-#else
-	if ( routecacheheader.areacrc !=
-		 CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas ) ) {
-		botimport.FS_FCloseFile( fp );
-		//AAS_Error("route cache dump area CRC incorrect\n");
-		return qfalse;
+	// crc code is only good on little endian machines
+	if ( 1 == LittleLong( 1 ) ) {
+		if ( routecacheheader.areacrc !=
+			 CRC_ProcessString( (unsigned char *)( *aasworld ).areas, sizeof( aas_area_t ) * ( *aasworld ).numareas ) ) {
+			botimport.FS_FCloseFile( fp );
+			//AAS_Error("route cache dump area CRC incorrect\n");
+			return qfalse;
+		} //end if
+		if ( routecacheheader.clustercrc !=
+			 CRC_ProcessString( (unsigned char *)( *aasworld ).clusters, sizeof( aas_cluster_t ) * ( *aasworld ).numclusters ) ) {
+			botimport.FS_FCloseFile( fp );
+			//AAS_Error("route cache dump cluster CRC incorrect\n");
+			return qfalse;
+		} //end if
+		if ( routecacheheader.reachcrc !=
+			 CRC_ProcessString( (unsigned char *)( *aasworld ).reachability, sizeof( aas_reachability_t ) * ( *aasworld ).reachabilitysize ) ) {
+			botimport.FS_FCloseFile( fp );
+			//AAS_Error("route cache dump reachability CRC incorrect\n");
+			return qfalse;
+		} //end if
 	} //end if
-	if ( routecacheheader.clustercrc !=
-		 CRC_ProcessString( (unsigned char *)( *aasworld ).clusters, sizeof( aas_cluster_t ) * ( *aasworld ).numclusters ) ) {
-		botimport.FS_FCloseFile( fp );
-		//AAS_Error("route cache dump cluster CRC incorrect\n");
-		return qfalse;
-	} //end if
-	if ( routecacheheader.reachcrc !=
-		 CRC_ProcessString( (unsigned char *)( *aasworld ).reachability, sizeof( aas_reachability_t ) * ( *aasworld ).reachabilitysize ) ) {
-		botimport.FS_FCloseFile( fp );
-		//AAS_Error("route cache dump reachability CRC incorrect\n");
-		return qfalse;
-	} //end if
-#endif
 	//read all the portal cache
 	for ( i = 0; i < routecacheheader.numportalcache; i++ )
 	{
