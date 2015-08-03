@@ -771,10 +771,11 @@ void S_AL_SrcShutdown( void )
 	{
 		curSource = &srcList[i];
 
-		srcList[i].isLocked = qfalse;
-		
 		if(curSource->isLocked)
-			Com_DPrintf( S_COLOR_YELLOW "WARNING: Source %d is locked\n", i);
+		{
+			srcList[i].isLocked = qfalse;
+			Com_DPrintf( S_COLOR_YELLOW "WARNING: Source %d was locked\n", i);
+		}
 
 		if(curSource->entity > 0)
 			entityList[curSource->entity].srcAllocated = qfalse;
