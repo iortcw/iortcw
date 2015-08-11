@@ -326,7 +326,7 @@ static int R_PshadowSurface( msurface_t *surf, int pshadowBits ) {
 R_AddWorldSurface
 ======================
 */
-static void R_AddWorldSurface( msurface_t *surf, int dlightBits, int pshadowBits ) {
+static void R_AddWorldSurface( msurface_t *surf, shader_t *shader, int dlightBits, int pshadowBits ) {
 	// FIXME: bmodel fog?
 
 	// try to cull before dlighting or adding
@@ -346,7 +346,7 @@ static void R_AddWorldSurface( msurface_t *surf, int dlightBits, int pshadowBits
 		pshadowBits = ( pshadowBits != 0 );
 	}
 
-	R_AddDrawSurf( surf->data, surf->shader, surf->fogIndex, dlightBits, pshadowBits, surf->cubemapIndex );
+	R_AddDrawSurf( surf->data, shader, surf->fogIndex, dlightBits, pshadowBits, surf->cubemapIndex );
 }
 
 /*
@@ -407,47 +407,6 @@ int R_BmodelFogNum( trRefEntity_t *re, bmodel_t *bmodel ) {
 =================
 R_AddBrushModelSurfaces
 =================
-
-void R_AddBrushModelSurfaces( trRefEntity_t *ent ) {
-	bmodel_t    *bmodel;
-	int clip;
-	model_t     *pModel;
-	int i;
-	int fognum;
-
-	pModel = R_GetModelByHandle( ent->e.hModel );
-
-	bmodel = pModel->bmodel;
-
-	clip = R_CullLocalBox( bmodel->bounds );
-	if ( clip == CULL_OUT ) {
-		return;
-	}
-
-	R_SetupEntityLighting( &tr.refdef, ent );
-	R_DlightBmodel( bmodel );
-
-//----(SA) modified
-	// determine if in fog
-	fognum = R_BmodelFogNum( ent, bmodel );
-
-	for ( i = 0 ; i < bmodel->numSurfaces ; i++ ) {
-		( bmodel->firstSurface + i )->fogIndex = fognum;
-		// Arnout: custom shader support for brushmodels
-		if ( ent->e.customShader ) {
-			R_AddWorldSurface( bmodel->firstSurface + i, R_GetShaderByHandle( ent->e.customShader ), tr.currentEntity->needDlights );
-		} else {
-			R_AddWorldSurface( bmodel->firstSurface + i, ( ( msurface_t * )( bmodel->firstSurface + i ) )->shader, tr.currentEntity->needDlights );
-		}
-	}
-//----(SA) end
-}
-*/
-
-/*
-=================
-R_AddBrushModelSurfaces
-=================
 */
 void R_AddBrushModelSurfaces ( trRefEntity_t *ent ) {
 	bmodel_t	*bmodel;
@@ -479,7 +438,13 @@ void R_AddBrushModelSurfaces ( trRefEntity_t *ent ) {
 		{
 			tr.world->surfacesViewCount[surf] = tr.viewCount;
 			tr.world->surfaces[surf].fogIndex = fognum;
-			R_AddWorldSurface( tr.world->surfaces + surf, tr.currentEntity->needDlights, 0 );
+
+			// Arnout: custom shader support for brushmodels
+			if ( ent->e.customShader ) {
+				R_AddWorldSurface( tr.world->surfaces + surf, R_GetShaderByHandle( ent->e.customShader ), tr.currentEntity->needDlights, 0 );
+			} else {
+				R_AddWorldSurface( tr.world->surfaces + surf, ( ( msurface_t * )( tr.world->surfaces + surf ) )->shader, tr.currentEntity->needDlights, 0 );
+			}
 		}
 	}
 //----(SA) end
@@ -898,6 +863,7 @@ void R_AddWorldSurfaces( void ) {
 	// also mask invisible dlights for next frame
 	{
 		int i;
+		msurface_t *surf;
 
 		tr.refdef.dlightMask = 0;
 
@@ -906,7 +872,9 @@ void R_AddWorldSurfaces( void ) {
 			if (tr.world->surfacesViewCount[i] != tr.viewCount)
 				continue;
 
-			R_AddWorldSurface( tr.world->surfaces + i, tr.world->surfacesDlightBits[i], tr.world->surfacesPshadowBits[i] );
+			surf = (msurface_t*)tr.world->surfaces + i;
+
+			R_AddWorldSurface( surf, surf->shader, tr.world->surfacesDlightBits[i], tr.world->surfacesPshadowBits[i] );
 			tr.refdef.dlightMask |= tr.world->surfacesDlightBits[i];
 		}
 		for (i = 0; i < tr.world->numMergedSurfaces; i++)
@@ -914,7 +882,9 @@ void R_AddWorldSurfaces( void ) {
 			if (tr.world->mergedSurfacesViewCount[i] != tr.viewCount)
 				continue;
 
-			R_AddWorldSurface( tr.world->mergedSurfaces + i, tr.world->mergedSurfacesDlightBits[i], tr.world->mergedSurfacesPshadowBits[i] );
+			surf = (msurface_t*)tr.world->mergedSurfaces + i;
+
+			R_AddWorldSurface( surf, surf->shader, tr.world->mergedSurfacesDlightBits[i], tr.world->mergedSurfacesPshadowBits[i] );
 			tr.refdef.dlightMask |= tr.world->mergedSurfacesDlightBits[i];
 		}
 
