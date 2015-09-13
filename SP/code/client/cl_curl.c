@@ -220,14 +220,25 @@ static size_t CL_cURL_CallbackWrite(void *buffer, size_t size, size_t nmemb,
 CURLcode qcurl_easy_setopt_warn(CURL *curl, CURLoption option, ...)
 {
 	CURLcode result;
-	va_list args;
 
-	va_start(args, option);
-	result = qcurl_easy_setopt(curl, option, args);
-	va_end(args);
+	va_list argp;
+	va_start(argp, option);
+
+	if(option < CURLOPTTYPE_OBJECTPOINT) {
+		long longValue = va_arg(argp, long);
+		result = qcurl_easy_setopt_warn(curl, option, longValue);
+	} else if(option < CURLOPTTYPE_OFF_T) {
+		void *pointerValue = va_arg(argp, void *);
+		result = qcurl_easy_setopt_warn(curl, option, pointerValue);
+	} else {
+		curl_off_t offsetValue = va_arg(argp, curl_off_t);
+		result = qcurl_easy_setopt_warn(curl, option, offsetValue);
+	}
+
 	if(result != CURLE_OK) {
 		Com_DPrintf("qcurl_easy_setopt failed: %s\n", qcurl_easy_strerror(result));
 	}
+	va_end(argp);
 
 	return result;
 }
