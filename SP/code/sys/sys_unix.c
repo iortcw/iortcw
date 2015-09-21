@@ -44,7 +44,7 @@ qboolean stdinIsATTY;
 // Used to determine where to store user-specific files
 static char homePath[ MAX_OSPATH ] = { 0 };
 
-// Used to store the Steam Quake 3 installation path
+// Used to store the Steam RTCW installation path
 static char steamPath[ MAX_OSPATH ] = { 0 };
 
 /*
@@ -88,7 +88,7 @@ Sys_SteamPath
 */
 char *Sys_SteamPath( void )
 {
-	// Disabled since Steam doesn't let you install Quake 3 on Mac/Linux
+	// Disabled since Steam doesn't let you install RTCW on Mac/Linux
 #if 0
 	char *p;
 
