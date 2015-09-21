@@ -1883,7 +1883,7 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, vec
 				continue;
 			} else {
 				float yadj = useScale * glyph->top;
-				if ( CG_Text_Width( s, useScale, 1 ) + x > max ) {
+				if ( CG_Text_Width( s, scale, 1 ) + x > max ) {
 					*maxX = 0;
 					break;
 				}

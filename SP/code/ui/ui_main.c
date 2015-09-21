@@ -619,7 +619,7 @@ static void Text_Paint_Limit(float *maxX, float x, float y, int font, float scal
 				continue;
 			} else {
 				float yadj = useScale * glyph->top;
-				if (Text_Width(s, font, useScale, 1) + x > max) {
+				if (Text_Width(s, font, scale, 1) + x > max) {
 					*maxX = 0;
 					break;
 				}
