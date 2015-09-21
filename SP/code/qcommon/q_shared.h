@@ -47,6 +47,7 @@ If you have questions concerning this license or the applicable additional terms
   #define CLIENT_WINDOW_MIN_TITLE 	"changeme2"
   #define HOMEPATH_NAME_UNIX		".foo"
   #define HOMEPATH_NAME_WIN		"FooBar"
+  #define STEAMPATH_NAME		"Foo Bar"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
@@ -57,6 +58,7 @@ If you have questions concerning this license or the applicable additional terms
   #define CLIENT_WINDOW_MIN_TITLE 	"iowolfsp"
   #define HOMEPATH_NAME_UNIX		".iortcw"
   #define HOMEPATH_NAME_WIN		"RTCW"
+  #define STEAMPATH_NAME		"Return To Castle Wolfenstein"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfsp"
   #define LEGACY_PROTOCOL
