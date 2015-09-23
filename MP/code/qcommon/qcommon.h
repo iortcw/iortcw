@@ -1229,7 +1229,10 @@ FILE	*Sys_Mkfifo( const char *ospath );
 char    *Sys_Cwd( void );
 char    *Sys_DefaultBasePath( void );
 char    *Sys_DefaultInstallPath( void );
+
+#ifdef STEAMPATH_NAME
 char    *Sys_SteamPath(void);
+#endif
 
 #ifdef MACOS_X
 char    *Sys_DefaultAppPath(void);

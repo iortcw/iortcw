@@ -44,8 +44,10 @@ qboolean stdinIsATTY;
 // Used to determine where to store user-specific files
 static char homePath[ MAX_OSPATH ] = { 0 };
 
+#ifdef STEAMPATH_NAME
 // Used to store the Steam RTCW installation path
 static char steamPath[ MAX_OSPATH ] = { 0 };
+#endif
 
 /*
 ==================
@@ -81,6 +83,7 @@ char *Sys_DefaultHomePath(void)
 	return homePath;
 }
 
+#ifdef STEAMPATH_NAME
 /*
 ================
 Sys_SteamPath
@@ -105,6 +108,7 @@ char *Sys_SteamPath( void )
 
 	return steamPath;
 }
+#endif
 
 /*
 ================
