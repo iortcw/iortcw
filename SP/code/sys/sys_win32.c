@@ -42,7 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // Used to determine where to store user-specific files
 static char homePath[ MAX_OSPATH ] = { 0 };
 
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 // Used to store the Steam RTCW installation path
 static char steamPath[ MAX_OSPATH ] = { 0 };
 #endif
@@ -132,7 +132,7 @@ char *Sys_DefaultHomePath( void )
 	return homePath;
 }
 
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 /*
 ================
 Sys_SteamPath
@@ -140,25 +140,50 @@ Sys_SteamPath
 */
 char *Sys_SteamPath( void )
 {
+#if defined(STEAMPATH_NAME) || defined(STEAMPATH_APPID)
 	HKEY steamRegKey;
+	DWORD pathLen = MAX_OSPATH;
+	qboolean finishPath = qfalse;
+#endif
 
-	if (!RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Valve\\Steam", 0, KEY_QUERY_VALUE, &steamRegKey))
+#ifdef STEAMPATH_APPID
+	if (!steamPath[0] && !RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App " STEAMPATH_APPID, 0, KEY_QUERY_VALUE, &steamRegKey))
 	{
-		DWORD pathLen = MAX_OSPATH;
+		pathLen = MAX_OSPATH;
+		if (RegQueryValueEx(steamRegKey, "InstallLocation", NULL, NULL, (LPBYTE)steamPath, &pathLen))
+			steamPath[0] = '\0';
+	}
 
+	if (!steamPath[0] && !RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App " STEAMPATH_APPID, 0, KEY_QUERY_VALUE, &steamRegKey))
+	{
+		pathLen = MAX_OSPATH;
+		if (RegQueryValueEx(steamRegKey, "InstallLocation", NULL, NULL, (LPBYTE)steamPath, &pathLen))
+			steamPath[0] = '\0';
+	}
+#endif
+
+#ifdef STEAMPATH_NAME
+	if (!steamPath[0] && !RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Valve\\Steam", 0, KEY_QUERY_VALUE, &steamRegKey))
+	{
+		pathLen = MAX_OSPATH;
 		if (RegQueryValueEx(steamRegKey, "SteamPath", NULL, NULL, (LPBYTE)steamPath, &pathLen))
 			if (RegQueryValueEx(steamRegKey, "InstallPath", NULL, NULL, (LPBYTE)steamPath, &pathLen))
 				steamPath[0] = '\0';
 
 		if (steamPath[0])
-		{
-			if (pathLen == MAX_OSPATH)
-				pathLen--;
+			finishPath = qtrue;
+	}
+#endif
 
-			steamPath[pathLen] = '\0';
+	if (steamPath[0])
+	{
+		if (pathLen == MAX_OSPATH)
+			pathLen--;
 
+		steamPath[pathLen] = '\0';
+
+		if (finishPath)
 			Q_strcat(steamPath, MAX_OSPATH, "\\SteamApps\\common\\" STEAMPATH_NAME );
-		}
 	}
 
 	return steamPath;

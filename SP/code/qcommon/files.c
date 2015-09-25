@@ -255,7 +255,7 @@ static cvar_t      *fs_homepath;
 static  cvar_t          *fs_apppath;
 #endif
 
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 static	cvar_t		*fs_steampath;
 #endif
 
@@ -862,7 +862,7 @@ long FS_SV_FOpenFileRead(const char *filename, fileHandle_t *fp)
 			fsh[f].handleSync = qfalse;
 		}
 
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 		// Check fs_steampath too
 		if (!fsh[f].handleFiles.file.o && fs_steampath->string[0])
 		{
@@ -2744,6 +2744,10 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
 	int dummy;
 	char **pFiles0 = NULL;
 	char **pFiles1 = NULL;
+#ifndef STANDALONE
+	char **pFiles2 = NULL;
+	char **pFiles3 = NULL;
+#endif
 	qboolean bDrop = qfalse;
 
 	*listbuf = 0;
@@ -2751,9 +2755,18 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
 
 	pFiles0 = Sys_ListFiles( fs_homepath->string, NULL, NULL, &dummy, qtrue );
 	pFiles1 = Sys_ListFiles( fs_basepath->string, NULL, NULL, &dummy, qtrue );
+#ifndef STANDALONE
+	pFiles2 = Sys_ListFiles( fs_steampath->string, NULL, NULL, &dummy, qtrue );
+#endif
 	// we searched for mods in the three paths
 	// it is likely that we have duplicate names now, which we will cleanup below
+#ifndef STANDALONE
+	pFiles3 = Sys_ConcatenateFileLists( pFiles0, pFiles1 );
+	pFiles = Sys_ConcatenateFileLists( pFiles2, pFiles3 );
+#else
 	pFiles = Sys_ConcatenateFileLists( pFiles0, pFiles1 );
+#endif
+
 	nPotential = Sys_CountFileList(pFiles);
 
 	for ( i = 0 ; i < nPotential ; i++ ) {
@@ -2794,6 +2807,17 @@ int	FS_GetModList( char *listbuf, int bufsize ) {
 				pPaks = Sys_ListFiles( path, ".pk3", NULL, &nPaks, qfalse );
 				Sys_FreeFileList( pPaks );
 			}
+
+#ifndef STANDALONE
+			/* try on steam path */
+			if ( nPaks <= 0 )
+			{
+				path = FS_BuildOSPath( fs_steampath->string, name, "" );
+				nPaks = 0;
+				pPaks = Sys_ListFiles( path, ".pk3", NULL, &nPaks, qfalse );
+				Sys_FreeFileList( pPaks );
+			}
+#endif
 
 			if (nPaks > 0) {
 				nLen = strlen(name) + 1;
@@ -3491,7 +3515,7 @@ static void FS_Startup( const char *gameName )
 	fs_gamedirvar = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
 
 	// add search path elements in reverse priority order
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 	fs_steampath = Cvar_Get ("fs_steampath", Sys_SteamPath(), CVAR_INIT|CVAR_PROTECTED );
 	if (fs_steampath->string[0]) {
 		FS_AddGameDirectory( fs_steampath->string, gameName );
@@ -3517,6 +3541,11 @@ static void FS_Startup( const char *gameName )
 
 	// check for additional base game so mods can be based upon other mods
 	if ( fs_basegame->string[0] && Q_stricmp( fs_basegame->string, gameName ) ) {
+#ifndef STANDALONE
+		if (fs_steampath->string[0]) {
+			FS_AddGameDirectory(fs_steampath->string, fs_basegame->string );
+		}
+#endif
 		if ( fs_basepath->string[0] ) {
 			FS_AddGameDirectory( fs_basepath->string, fs_basegame->string );
 		}
@@ -3527,6 +3556,11 @@ static void FS_Startup( const char *gameName )
 
 	// check for additional game folder for mods
 	if ( fs_gamedirvar->string[0] && Q_stricmp( fs_gamedirvar->string, gameName ) ) {
+#ifndef STANDALONE
+		if (fs_steampath->string[0]) {
+			FS_AddGameDirectory(fs_steampath->string, fs_gamedirvar->string );
+		}
+#endif
 		if ( fs_basepath->string[0] ) {
 			FS_AddGameDirectory( fs_basepath->string, fs_gamedirvar->string );
 		}

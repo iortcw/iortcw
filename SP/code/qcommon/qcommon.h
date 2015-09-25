@@ -1146,7 +1146,7 @@ char    *Sys_Cwd( void );
 char    *Sys_DefaultBasePath( void );
 char    *Sys_DefaultInstallPath( void );
 
-#ifdef STEAMPATH_NAME
+#ifndef STANDALONE
 char    *Sys_SteamPath(void);
 #endif
 
