@@ -3539,8 +3539,8 @@ static void FS_Startup( const char *gameName ) {
 	// check for additional base game so mods can be based upon other mods
 	if ( fs_basegame->string[0] && Q_stricmp( fs_basegame->string, gameName ) ) {
 #ifndef STANDALONE
-		if (fs_steampath->string[0]) {
-			FS_AddGameDirectory(fs_steampath->string, fs_basegame->string, qtrue );
+		if ( fs_steampath->string[0] ) {
+			FS_AddGameDirectory( fs_steampath->string, fs_basegame->string, qtrue );
 		}
 #endif
 		if ( fs_basepath->string[0] ) {
@@ -3554,8 +3554,8 @@ static void FS_Startup( const char *gameName ) {
 	// check for additional game folder for mods
 	if ( fs_gamedirvar->string[0] && Q_stricmp( fs_gamedirvar->string, gameName ) ) {
 #ifndef STANDALONE
-		if (fs_steampath->string[0]) {
-			FS_AddGameDirectory(fs_steampath->string, fs_gamedirvar->string, qtrue );
+		if ( fs_steampath->string[0] ) {
+			FS_AddGameDirectory( fs_steampath->string, fs_gamedirvar->string, qtrue );
 		}
 #endif
 		if ( fs_basepath->string[0] ) {
