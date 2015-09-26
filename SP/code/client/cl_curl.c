@@ -226,13 +226,13 @@ CURLcode qcurl_easy_setopt_warn(CURL *curl, CURLoption option, ...)
 
 	if(option < CURLOPTTYPE_OBJECTPOINT) {
 		long longValue = va_arg(argp, long);
-		result = qcurl_easy_setopt_warn(curl, option, longValue);
+		result = qcurl_easy_setopt(curl, option, longValue);
 	} else if(option < CURLOPTTYPE_OFF_T) {
 		void *pointerValue = va_arg(argp, void *);
-		result = qcurl_easy_setopt_warn(curl, option, pointerValue);
+		result = qcurl_easy_setopt(curl, option, pointerValue);
 	} else {
 		curl_off_t offsetValue = va_arg(argp, curl_off_t);
-		result = qcurl_easy_setopt_warn(curl, option, offsetValue);
+		result = qcurl_easy_setopt(curl, option, offsetValue);
 	}
 
 	if(result != CURLE_OK) {
