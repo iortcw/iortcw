@@ -3085,7 +3085,7 @@ static int op_http_stream_seek(void *_stream,opus_int64 _offset,int _whence){
         conn=*pnext;
         continue;
       }
-      /*Sucessfully resurrected this connection.*/
+      /*Successfully resurrected this connection.*/
       *pnext=conn->next;
       conn->next=stream->lru_head;
       stream->lru_head=conn;
@@ -3137,7 +3137,7 @@ static int op_http_stream_seek(void *_stream,opus_int64 _offset,int _whence){
         conn=*pnext;
         continue;
       }
-      /*Sucessfully resurrected this connection.*/
+      /*Successfully resurrected this connection.*/
       *pnext=conn->next;
       conn->next=stream->lru_head;
       stream->lru_head=conn;
