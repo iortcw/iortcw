@@ -1383,7 +1383,7 @@ qboolean AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destp
 				if ( !destVisLookup[rt->parentLinks[travChild->startParentLinks].parent] ) {
 					// success ?
 					if ( !botimport.AICast_VisibleFromPos( destpos, destnum, ( *aasworld ).areas[pathArea].center, srcnum, qfalse ) ) {
-						// SUCESS !!
+						// SUCCESS !!
 						travParent = &rt->parents[rt->parentLinks[travChild->startParentLinks].parent];
 						break;
 					}

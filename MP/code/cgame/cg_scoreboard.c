@@ -511,13 +511,13 @@ static int WM_DrawInfoLine( int x, int y, float fade ) {
 		// second round
 		if ( !defender ) {
 			if ( winner != defender ) {
-				s = "Allies sucessfully beat the clock!";
+				s = "Allies successfully beat the clock!";
 			} else {
 				s = "Allies couldn't beat the clock!";
 			}
 		} else {
 			if ( winner != defender ) {
-				s = "Axis sucessfully beat the clock!";
+				s = "Axis successfully beat the clock!";
 			} else {
 				s = "Axis couldn't beat the clock!";
 			}
