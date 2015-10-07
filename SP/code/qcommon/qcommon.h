@@ -631,7 +631,7 @@ issues.
 // #define FS_QAGAME_REF   0x08
 // number of id paks that will never be autodownloaded from baseq3
 #define NUM_ID_PAKS    10 
-#define NUM_SP_PAKS	3
+#define NUM_SP_PAKS	4
 
 #define MAX_FILE_HANDLES    64
 

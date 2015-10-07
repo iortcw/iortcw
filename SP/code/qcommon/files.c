@@ -188,7 +188,7 @@ static const unsigned int sppak_checksums[] = {
 	3033901371u,
 	483593179u,
 	// sp_pak4.pk3 from GOTY edition
-//	4131017020u
+	4131017020u
 };
 
 static const unsigned int fr_sppak_checksums[] = {
@@ -196,7 +196,7 @@ static const unsigned int fr_sppak_checksums[] = {
 	3033901371u,
 	483593179u,
 	// sp_pak4.pk3 from GOTY edition
-//	4131017020u
+	4131017020u
 };
 
 // if this is defined, the executable positively won't work with any paks other
