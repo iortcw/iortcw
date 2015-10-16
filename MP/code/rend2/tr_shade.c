@@ -117,7 +117,7 @@ static void R_BindAnimatedImageToTMU( textureBundle_t *bundle, int tmu ) {
 
 	if ( bundle->numImageAnimations <= 1 ) {
 		if ( bundle->isLightmap && ( backEnd.refdef.rdflags & RDF_SNOOPERVIEW ) ) {
-			GL_BindToTMU( tr.whiteImage, 0 );
+			GL_BindToTMU( tr.whiteImage, tmu );
 		} else {
 			GL_BindToTMU( bundle->image[0], tmu);
 		}
@@ -135,7 +135,7 @@ static void R_BindAnimatedImageToTMU( textureBundle_t *bundle, int tmu ) {
 	index %= bundle->numImageAnimations;
 
 	if ( bundle->isLightmap && ( backEnd.refdef.rdflags & RDF_SNOOPERVIEW ) ) {
-		GL_BindToTMU( tr.whiteImage, 0 );
+		GL_BindToTMU( tr.whiteImage, tmu );
 	} else {
 		GL_BindToTMU( bundle->image[ index ], tmu );
 	}
