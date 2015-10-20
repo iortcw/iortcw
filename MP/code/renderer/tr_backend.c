@@ -553,7 +553,6 @@ void RB_BeginDrawingView( void ) {
 	}
 }
 
-#define MAC_EVENT_PUMP_MSEC     5
 
 /*
 ==================

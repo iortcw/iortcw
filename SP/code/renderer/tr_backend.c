@@ -856,8 +856,6 @@ void RB_ZombieFX( int part, drawSurf_t *drawSurf, int oldNumVerts, int oldNumInd
 }
 
 
-#define MAC_EVENT_PUMP_MSEC     5
-
 /*
 ==================
 RB_RenderDrawSurfList
