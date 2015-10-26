@@ -199,6 +199,14 @@ static const unsigned int fr_sppak_checksums[] = {
 	4131017020u
 };
 
+static const unsigned int es_sppak_checksums[] = {
+	652879493u,
+	3033901371u,
+	1162920123u,
+	// sp_pak4.pk3 from GOTY edition
+	4131017020u
+};
+
 // if this is defined, the executable positively won't work with any paks other
 // than the demo pak, even if productid is present.  This is only used for our
 // last demo release to prevent the mac and linux users from using the demo
@@ -3768,7 +3776,7 @@ static void FS_CheckSPPaks( void )
 				&& strlen(pakBasename) == 7 && !Q_stricmpn( pakBasename, "sp_pak", 6 )
 				&& pakBasename[6] >= '1' && pakBasename[6] <= '1' + NUM_SP_PAKS - 1)
 		{
-			if( curpack->checksum != sppak_checksums[pakBasename[6]-'1'] && curpack->checksum != fr_sppak_checksums[pakBasename[6]-'1'] )
+			if( curpack->checksum != sppak_checksums[pakBasename[6]-'1'] && curpack->checksum != fr_sppak_checksums[pakBasename[6]-'1'] && curpack->checksum != es_sppak_checksums[pakBasename[6]-'1'] )
 			{
 				if(pakBasename[6] == '1')
 				{
