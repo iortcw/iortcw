@@ -875,6 +875,10 @@ static void CG_DrawHoldableItem( rectDef_t *rect, int font, float scale, qboolea
 		return;
 	}
 
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+	}
+
 	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
 
 	if ( value ) {
