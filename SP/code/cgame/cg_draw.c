@@ -1570,9 +1570,9 @@ static void CG_DrawPickupItem( void ) {
 	float color[4];
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
-	} else if ( cg_fixedAspect.integer == 1 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	value = cg.itemPickup;
