@@ -615,6 +615,10 @@ void CG_DrawHoldableSelect( void ) {
 	}
 	trap_R_SetColor( color );
 
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
 	// showing select clears pickup item display, but not the blend blob
 	cg.itemPickupTime = 0;
 

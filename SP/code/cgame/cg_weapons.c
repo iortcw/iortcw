@@ -3112,7 +3112,9 @@ void CG_DrawWeaponSelect( void ) {
 	int bits[MAX_WEAPONS / ( sizeof( int ) * 8 )];
 	float       *color;
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 

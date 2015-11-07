@@ -1199,6 +1199,12 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	y = 0;
 
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
 	if ( cgs.gametype >= GT_TEAM ) {
 		y = CG_DrawTeamOverlay( y );
 	}
@@ -1562,6 +1568,12 @@ static void CG_DrawPickupItem( void ) {
 	float   *fadeColor;
 	char pickupText[256];
 	float color[4];
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+	}
 
 	value = cg.itemPickup;
 	if ( value ) {
@@ -3149,7 +3161,6 @@ static void CG_DrawFlashFade( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		 	CG_FillRect( 0, 0, 640, 480, col );
-			CG_PopScreenPlacement();
 		} else {	
 			CG_FillRect( 0, 0, 640, 480, col ); // why do a bunch of these extend outside 640x480?
 		}
@@ -3209,7 +3220,6 @@ static void CG_DrawFlashZoomTransition( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( -10, -10, 650, 490, color );
-			CG_PopScreenPlacement();
 		} else {
 			CG_FillRect( -10, -10, 650, 490, color );
 		}
@@ -3245,7 +3255,6 @@ static void CG_DrawFlashDamage( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( -10, -10, 650, 490, col );
-			CG_PopScreenPlacement();
 		} else {
 			CG_FillRect( -10, -10, 650, 490, col );
 		}
@@ -3565,7 +3574,6 @@ static void CG_DrawGameScreenFade( void ) {
 	if ( cg_fixedAspect.integer ) {
 		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		CG_FillRect( 0, 0, 640, 480, col );
-		CG_PopScreenPlacement();
 	} else {
 		CG_FillRect( 0, 0, 640, 480, col );
 	}
@@ -3604,7 +3612,6 @@ static void CG_ScreenFade( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
-			CG_PopScreenPlacement();
 		} else {
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
 		}
@@ -3621,7 +3628,6 @@ static void CG_ScreenFade( void ) {
 			if ( cg_fixedAspect.integer ) {
 				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 				CG_FillRect( 0, 0, 640, 480, color );
-				CG_PopScreenPlacement();
 			} else {
 				CG_FillRect( 0, 0, 640, 480, color );
 			}
@@ -3677,7 +3683,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 				CG_DrawCrosshair();
 
 			if ( cg_drawStatus.integer ) {
-				if ( cg_fixedAspect.integer ) {
+				if ( cg_fixedAspect.integer == 2 ) {
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+				} else if ( cg_fixedAspect.integer == 1 ) {
 					CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 				}
 

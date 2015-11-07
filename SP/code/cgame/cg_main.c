@@ -1443,9 +1443,6 @@ static void CG_RegisterGraphics( void ) {
 		}
 	}
 
-	// can be used by HUD so always load it
-	CG_RegisterItemVisuals( 6 /* item_health_large */ );
-
 	// wall marks
 	cgs.media.bulletMarkShader = trap_R_RegisterShader( "gfx/damage/bullet_mrk" );
 	cgs.media.burnMarkShader = trap_R_RegisterShader( "gfx/damage/burn_med_mrk" );

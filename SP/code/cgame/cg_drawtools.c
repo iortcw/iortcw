@@ -198,7 +198,7 @@ void CG_FillRectGradient( float x, float y, float width, float height, const flo
 ==============
 CG_HorizontalPercentBar
 	Generic routine for pretty much all status indicators that show a fractional
-	value to the palyer by virtue of how full a drawn box is.
+	value to the player by virtue of how full a drawn box is.
 
 flags:
 	left		- 1
