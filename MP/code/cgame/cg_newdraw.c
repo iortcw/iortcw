@@ -288,6 +288,12 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t *rect, qboolean drawHighlighted, 
 		return;
 	}
 
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
 	realweap = cg.predictedPlayerState.weapon;
 
 	size = weapIconDrawSize( realweap );
@@ -433,6 +439,10 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 	}
 
 	CG_CheckForCursorHints();
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
 
 	switch ( cg.cursorHintIcon ) {
 
@@ -645,6 +655,12 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, 
 
 	if ( !weap ) {
 		return;
+	}
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	switch ( weap ) {      // some weapons don't draw ammo count text
@@ -1089,6 +1105,12 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, float scale, vec4_t color, qha
 	// DHM - Nerve :: Don't show negative health
 	if ( value < 0 ) {
 		value = 0;
+	}
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( shader ) {
@@ -2199,6 +2221,12 @@ void CG_DrawWeapHeat( rectDef_t *rect, int align ) {
 		return;
 	}
 
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
 	if ( align != HUD_HORIZONTAL ) {
 		flags |= 4;   // BAR_VERT
 
@@ -2221,6 +2249,12 @@ CG_DrawFatigue
 static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 	vec4_t colorBonus = {1, 1, 0, 0.45f};   // yellow (a little more solid for the 'bonus' stamina)
 	int flags = 0;
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
 
 	if ( align != HUD_HORIZONTAL ) {
 		flags |= 4;   // BAR_VERT

@@ -100,15 +100,6 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 			*w *= cgs.screenXScaleStretch;
 			*x *= cgs.screenXScaleStretch;
 		} else {
-			// NERVE - SMF - hack to make images display properly in small view / limbo mode
-			if ( cg.limboMenu && cg.refdef.width ) {
-				float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / 640.f );
-
-				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale );
-				( *w ) *= xscale;
-			}
-			// -NERVE - SMF
-	
 			// scale for screen sizes
 			*w *= cgs.screenXScale;
 			*x *= cgs.screenXScale;
@@ -124,15 +115,6 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 			*h *= cgs.screenYScaleStretch;
 			*y *= cgs.screenYScaleStretch;
 		} else {
-			// NERVE - SMF - hack to make images display properly in small view / limbo mode
-			if ( cg.limboMenu && cg.refdef.width ) {
-				float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / 480.f );
-
-				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale );
-				( *h ) *= yscale;
-			}
-			// -NERVE - SMF
-
 			*h *= cgs.screenYScale;
 			*y *= cgs.screenYScale;
 	
@@ -143,18 +125,6 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 			}
 		}
 	} else {
-		// NERVE - SMF - hack to make images display properly in small view / limbo mode
-		if ( cg.limboMenu && cg.refdef.width ) {
-			float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / 640.f );
-			float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / 480.f );
-
-			( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale );
-			( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale );
-			( *w ) *= xscale;
-			( *h ) *= yscale;
-		}
-		// -NERVE - SMF
-
 		// scale for screen sizes
 		*x *= cgs.screenXScale;
 		*y *= cgs.screenYScale;

@@ -784,7 +784,8 @@ typedef struct {
 
 	// view rendering
 	refdef_t refdef;
-	vec3_t refdefViewAngles;            // will be converted to refdef.viewaxis
+	vec3_t refdefViewAngles;	// will be converted to refdef.viewaxis
+	float fov;			// either range checked cg_fov or forced value
 
 	// zoom key
 	qboolean zoomed;
@@ -1491,6 +1492,9 @@ typedef struct {
 	float screenXScale;                 // derived from glconfig
 	float screenYScale;
 	float screenXBias;
+	float screenYBias;
+	float screenXScaleStretch;
+	float screenYScaleStretch;
 
 	int serverCommandSequence;              // reliable command stream counter
 	int processedSnapshotNum;            // the number of snapshots cgame has requested
@@ -1815,9 +1819,28 @@ void CG_ZoomUp_f( void );
 void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback );
 
 void CG_Concussive( centity_t *cent );
+
 //
 // cg_drawtools.c
 //
+typedef enum {
+	PLACE_STRETCH,
+	PLACE_CENTER,
+
+	// horizontal only
+	PLACE_LEFT,
+	PLACE_RIGHT,
+
+	// vertical only
+	PLACE_TOP,
+	PLACE_BOTTOM
+} screenPlacement_e;
+
+void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos);
+void CG_PopScreenPlacement(void);
+screenPlacement_e CG_GetScreenHorizontalPlacement(void);
+screenPlacement_e CG_GetScreenVerticalPlacement(void);
+
 void CG_AdjustFrom640( float *x, float *y, float *w, float *h );
 void CG_FillRect( float x, float y, float width, float height, const float *color );
 void CG_HorizontalPercentBar( float x, float y, float width, float height, float percent );

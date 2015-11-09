@@ -195,6 +195,7 @@ static void CG_CalcVrect( void ) {
 	int xsize, ysize;
 	float lbheight;
 
+/*
 	// NERVE - SMF
 	if ( cg.limboMenu ) {
 		float x, y, w, h;
@@ -213,6 +214,7 @@ static void CG_CalcVrect( void ) {
 		return;
 	}
 	// -NERVE - SMF
+*/
 
 	// the intermission should allways be full screen
 	if ( cg.snap->ps.pm_type == PM_INTERMISSION ) {
