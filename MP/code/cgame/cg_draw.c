@@ -872,10 +872,8 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	y = 0; // JPW NERVE move team overlay below obits, even with timer on left
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {
@@ -1225,8 +1223,10 @@ static void CG_DrawLagometer( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
 	//
@@ -3210,7 +3210,7 @@ void CG_DrawObjectiveIcons( void ) {
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 // JPW NERVE added round timer
@@ -3458,10 +3458,10 @@ void CG_Draw2D2( void ) {
 	trap_R_SetColor( hcolor );
 
 	if ( cg_fixedAspect.integer ) {
-		trap_R_DrawStretchPic( 0, 480, 640, -70, 0, 0, 1, 1, cgs.media.hud1Shader );
-	} else {
-		CG_DrawPic( 0, 480, 640, -70, cgs.media.hud1Shader );
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
+
+	CG_DrawPic( 0, 480, 640, -70, cgs.media.hud1Shader );
 
 	if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 		switch ( cg.snap->ps.weapon ) {

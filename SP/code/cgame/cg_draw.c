@@ -1839,8 +1839,10 @@ static void CG_DrawLagometer( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
 	//
