@@ -882,10 +882,11 @@ void ReadEntity( fileHandle_t f, gentity_t *ent, int size ) {
 			}
 		}
 
+/*
 		// set up current episode (for notebook de-briefing tabs)
 		trap_Cvar_Register( &cvar, "g_episode", "0", CVAR_ROM );
 		trap_Cvar_Set( "g_episode", va( "%d", ent->missionLevel ) );
-
+*/
 	}
 
 }
@@ -1380,6 +1381,7 @@ void G_LoadGame( char *filename ) {
 	cast_state_t    *cs;
 	qtime_t tm;
 	qboolean serverEntityUpdate = qfalse;
+	vmCvar_t episode;
 
 	if ( g_gametype.integer != GT_SINGLE_PLAYER ) {    // don't allow loads in MP
 		return;
@@ -1434,6 +1436,7 @@ void G_LoadGame( char *filename ) {
 	// read the 'episode'
 	if ( ver >= 13 ) {
 		trap_FS_Read( &i, sizeof( i ), f );
+		trap_Cvar_Register( &episode, "g_episode", "0", CVAR_ROM );
 		trap_Cvar_Set( "g_episode", va( "%i", i ) );
 	}
 //----(SA)	end
