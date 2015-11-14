@@ -696,13 +696,8 @@ static void CG_DrawStatusBar( void ) {
 		origin[2] = 0;
 		angles[YAW] = 90 + 20 * sin( cg.time / 1000.0 );;
 //----(SA) Wolf statusbar change
-		if ( cg_fixedAspect.integer ) {
-			CG_Draw3DModel( CHAR_WIDTH*3 + TEXT_ICON_SPACE, 480-iconSize, iconSize, iconSize,
-					cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
-		} else {
-			CG_Draw3DModel( CHAR_WIDTH*3 + TEXT_ICON_SPACE, STATUSBARHEIGHT -20, ICON_SIZE, ICON_SIZE,
-					cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
-		}
+//			CG_Draw3DModel( CHAR_WIDTH*3 + TEXT_ICON_SPACE, STATUSBARHEIGHT -20, ICON_SIZE, ICON_SIZE,
+//					cg_weapons[ cent->currentState.weapon ].ammoModel, 0, origin, angles );
 //----(SA) end
 	}
 */
@@ -728,13 +723,8 @@ static void CG_DrawStatusBar( void ) {
 		origin[2] = -10;
 		angles[YAW] = ( cg.time & 2047 ) * 360 / 2048.0;
 //----(SA) Wolf statusbar change
-		if ( cg_fixedAspect.integer ) {
-			CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 480 - iconSize, iconSize, iconSize,
-					cgs.media.armorModel, 0, origin, angles );
-		} else {
-			CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, STATUSBARHEIGHT -20, ICON_SIZE, ICON_SIZE,
-					cgs.media.armorModel, 0, origin, angles );
-		}
+//			CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, STATUSBARHEIGHT -20, ICON_SIZE, ICON_SIZE,
+//					cgs.media.armorModel, 0, origin, angles );
 //----(SA) end
 	}
 */
