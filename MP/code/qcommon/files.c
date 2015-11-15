@@ -724,7 +724,7 @@ long FS_SV_FOpenFileRead( const char *filename, fileHandle_t *fp ) {
 	Q_strncpyz( fsh[f].name, filename, sizeof( fsh[f].name ) );
 
 	// don't let sound stutter
-	S_ClearSoundBuffer();
+//	S_ClearSoundBuffer();
 
 	// search homepath
 	ospath = FS_BuildOSPath( fs_homepath->string, filename, "" );
@@ -801,7 +801,7 @@ void FS_SV_Rename( const char *from, const char *to, qboolean safe ) {
 	}
 
 	// don't let sound stutter
-	S_ClearSoundBuffer();
+//	S_ClearSoundBuffer();
 
 	from_ospath = FS_BuildOSPath( fs_homepath->string, from, "" );
 	to_ospath = FS_BuildOSPath( fs_homepath->string, to, "" );
@@ -836,7 +836,7 @@ void FS_Rename( const char *from, const char *to ) {
 	}
 
 	// don't let sound stutter
-	S_ClearSoundBuffer();
+//	S_ClearSoundBuffer();
 
 	from_ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, from );
 	to_ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, to );
@@ -944,7 +944,7 @@ fileHandle_t FS_FOpenFileAppend( const char *filename ) {
 	Q_strncpyz( fsh[f].name, filename, sizeof( fsh[f].name ) );
 
 	// don't let sound stutter
-	S_ClearSoundBuffer();
+//	S_ClearSoundBuffer();
 
 	ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, filename );
 
@@ -987,7 +987,7 @@ fileHandle_t FS_FCreateOpenPipeFile( const char *filename ) {
 	Q_strncpyz( fsh[f].name, filename, sizeof( fsh[f].name ) );
 
 	// don't let sound stutter
-	S_ClearSoundBuffer();
+//	S_ClearSoundBuffer();
 
 	ospath = FS_BuildOSPath( fs_homepath->string, fs_gamedir, filename );
 
