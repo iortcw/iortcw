@@ -429,13 +429,16 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		else
 			perChannelColorBits = 4;
 
-#ifndef USE_OPENGLES
 #ifdef __sgi /* Fix for SGIs grabbing too many bits of color */
 		if (perChannelColorBits == 4)
 			perChannelColorBits = 0; /* Use minimum size for 16-bit color */
 
 		/* Need alpha or else SGIs choose 36+ bit RGB mode */
-		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 1);
+		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 1 );
+#endif
+
+#ifdef USE_OPENGLES
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 1 );
 #endif
 
 		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, perChannelColorBits );
@@ -450,12 +453,12 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		if(r_stereoEnabled->integer)
 		{
 			glConfig.stereoEnabled = qtrue;
-			SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
+			SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
 		}
 		else
 		{
 			glConfig.stereoEnabled = qfalse;
-			SDL_GL_SetAttribute(SDL_GL_STEREO, 0);
+			SDL_GL_SetAttribute( SDL_GL_STEREO, 0 );
 		}
 		
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
@@ -522,16 +525,6 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 				continue;
 			}
 		}
-#else
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-
-		if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
-			glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
-		{
-			ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-			continue;
-		}
-#endif // USE_OPENGLES
 
 		SDL_SetWindowIcon( SDL_window, icon );
 
