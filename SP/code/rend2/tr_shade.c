@@ -1381,13 +1381,62 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			GLSL_SetUniformFloat(sp, UNIFORM_FOGEYET, eyeT);
 		}
 
-		GL_State( pStage->stateBits );
-
 		{
 			vec4_t baseColor;
 			vec4_t vertColor;
+			int fadeStart, fadeEnd;
 
 			ComputeShaderColors(pStage, baseColor, vertColor, pStage->stateBits);
+
+			//----(SA)	fading model stuff
+			if ( backEnd.currentEntity )
+			{
+				fadeStart = backEnd.currentEntity->e.fadeStartTime;
+			}
+			else
+			{
+				fadeStart = 0;
+			}
+
+			if ( fadeStart )
+			{
+				fadeEnd = backEnd.currentEntity->e.fadeEndTime;
+
+				if ( fadeStart > tr.refdef.time )
+				{
+					// has not started to fade yet
+					GL_State( pStage->stateBits );
+				}
+				else
+				{
+					unsigned int tempState;
+					float alphaval;
+
+					if ( fadeEnd < tr.refdef.time )
+					{
+						// entity faded out completely
+						continue;
+					}
+
+					alphaval = (float)( fadeEnd - tr.refdef.time ) / (float)( fadeEnd - fadeStart );
+
+					tempState = pStage->stateBits;
+					// remove the current blend, and don't write to Z buffer
+					tempState &= ~( GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS | GLS_DEPTHMASK_TRUE );
+					// set the blend to src_alpha, dst_one_minus_src_alpha
+					tempState |= ( GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA );
+					GL_State( tempState );
+					GL_Cull( CT_FRONT_SIDED );
+					// modulate the alpha component of each vertex in the render list
+					baseColor[3] *= alphaval;
+					vertColor[3] *= alphaval;
+				}
+			}
+			else
+			{
+				GL_State( pStage->stateBits );
+			}
+			//----(SA)	end
 
 			if ((backEnd.refdef.colorScale != 1.0f) && !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL))
 			{
