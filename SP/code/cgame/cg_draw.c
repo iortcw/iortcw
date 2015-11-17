@@ -553,7 +553,7 @@ static void CG_DrawStatusBarKeys() {
 
 	// (SA) just don't draw this stuff for now.  It's got fog issues I need to clean up
 
-	return;
+//	return;
 
 
 
@@ -867,7 +867,7 @@ static void CG_DrawStatusBar( void ) {
 //	CG_DrawField ( 185, STATUSBARHEIGHT, 3, value);
 	{
 		char printme[16];
-		sprintf( printme, "%d", value );
+		Com_sprintf( printme, sizeof( printme ), "%d", value );
 		//CG_DrawBigString( 185, STATUSBARHEIGHT, printme, cg_hudAlpha.value );
 		CG_DrawBigString2( 16 + 23 + 43, STATUSBARHEIGHT, printme, cg_hudAlpha.value );
 	}
@@ -886,7 +886,7 @@ static void CG_DrawStatusBar( void ) {
 //		CG_DrawField (370, STATUSBARHEIGHT, 3, value);
 		{
 			char printme[16];
-			sprintf( printme, "%d", value );
+			Com_sprintf( printme, sizeof( printme ), "%d", value );
 			//CG_DrawBigString( 370, STATUSBARHEIGHT, printme, cg_hudAlpha.value );
 			CG_DrawBigString2( 200, STATUSBARHEIGHT, printme, cg_hudAlpha.value );
 		}
@@ -1452,7 +1452,7 @@ static float CG_DrawPowerups( float y ) {
 	x = 640 - ICON_SIZE - CHAR_WIDTH * 2;
 	for ( i = 0 ; i < active ; i++ ) {
 
-		continue;   // (SA) FIXME: TEMP: as I'm getting powerup business going
+//		continue;   // (SA) FIXME: TEMP: as I'm getting powerup business going
 
 		item = BG_FindItemForPowerup( sorted[i] );
 
