@@ -1345,7 +1345,7 @@ targets: makedirs
 	@echo "  VERSION: $(VERSION)"
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
-	@echo "  HAVE_VM_COMPILED: $(HAVE_VM_COMPILED) "
+	@echo "  HAVE_VM_COMPILED: $(HAVE_VM_COMPILED)"
 	@echo "  CC: $(CC)"
 	@echo "  CXX: $(CXX)"
 ifdef MINGW
@@ -2311,8 +2311,8 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifeq ($(ARCH),sparc)
     Q3DOBJ += $(B)/ded/vm_sparc.o
   endif
-  ifeq ($ARM_VER_CHECK),armv7l)
-    Q#DOBJ += $(B)/ded/vm_armv7l.o
+  ifeq ($(ARM_VER_CHECK),armv7l)
+    Q3DOBJ += $(B)/client/vm_armv7l.o
   endif
 endif
 
