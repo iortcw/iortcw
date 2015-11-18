@@ -370,35 +370,29 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED = true
-  else
+  endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED=true
-  else
+  endif
   ifeq ($(ARCH),ppc)
     BASE_CFLAGS += -maltivec
-    HAVE_VM_COMPILED=true
   endif
   ifeq ($(ARCH),ppc64)
     BASE_CFLAGS += -maltivec
-    HAVE_VM_COMPILED=true
   endif
   ifeq ($(ARCH),sparc)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
     OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
-    HAVE_VM_COMPILED=true
   endif
-  ifeq ($(ARM_VER_CHECK),armv7l)
-    HAVE_VM_COMPILED=true
+  ifeq ($(ARCH),sparc64)
+    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
   endif
   ifeq ($(ARCH),alpha)
     # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
     # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
-  endif
-  endif
   endif
 
   SHLIBEXT=so
@@ -461,7 +455,6 @@ else # ifeq Linux
 #############################################################################
 
 ifeq ($(PLATFORM),darwin)
-  HAVE_VM_COMPILED=true
   LIBS = -framework Cocoa
   CLIENT_LIBS=
   RENDERER_LIBS=
@@ -641,13 +634,11 @@ ifdef MINGW
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED = true
     FILE_ARCH=x64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED = true
   endif
 
   SHLIBEXT=dll
@@ -743,7 +734,6 @@ ifeq ($(PLATFORM),freebsd)
     -Wall -fno-strict-aliasing \
     -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
-  HAVE_VM_COMPILED = true
 
   OPTIMIZEVM = -O3
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -804,32 +794,29 @@ ifeq ($(PLATFORM),openbsd)
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED = true
-  else
+  endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    HAVE_VM_COMPILED=true
-  else
+  endif
   ifeq ($(ARCH),ppc)
     BASE_CFLAGS += -maltivec
-    HAVE_VM_COMPILED=true
   endif
   ifeq ($(ARCH),ppc64)
     BASE_CFLAGS += -maltivec
-    HAVE_VM_COMPILED=true
+  endif
+  ifeq ($(ARCH),sparc)
+    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
   endif
   ifeq ($(ARCH),sparc64)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
     OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
-    HAVE_VM_COMPILED=true
   endif
   ifeq ($(ARCH),alpha)
     # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
     # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
-  endif
-  endif
   endif
 
   ifeq ($(USE_CURL),1)
@@ -878,10 +865,6 @@ ifeq ($(PLATFORM),netbsd)
   THREAD_LIBS=-lpthread
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing
-
-  ifeq ($(ARCH),x86)
-    HAVE_VM_COMPILED=true
-  endif
 
   BUILD_CLIENT = 0
 else # ifeq netbsd
@@ -940,15 +923,12 @@ ifeq ($(PLATFORM),sunos)
 
   ifeq ($(ARCH),sparc)
     OPTIMIZEVM += -O3 -mtune=ultrasparc3 -mv8plus -mno-faster-structs
-    HAVE_VM_COMPILED=true
-  else
+  endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=i586
-    HAVE_VM_COMPILED=true
     BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
-  endif
   endif
 
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -992,6 +972,18 @@ endif
 
 ifndef RANLIB
   RANLIB=ranlib
+endif
+
+ifndef HAVE_VM_COMPILED
+HAVE_VM_COMPILED = false
+endif
+
+ifneq ($(findstring $(ARCH),x86 x86_64 ppc ppc64 sparc sparc64),)
+  HAVE_VM_COMPILED = true
+endif
+
+ifeq ($(ARM_VER_CHECK),armv7l)
+  HAVE_VM_COMPILED = true
 endif
 
 ifneq ($(HAVE_VM_COMPILED),true)
@@ -2130,13 +2122,12 @@ endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),x86 x86_64),)
-    Q3OBJ += \
-      $(B)/client/vm_x86.o
+    Q3OBJ += $(B)/client/vm_x86.o
   endif
   ifneq ($(findstring $(ARCH),ppc ppc64),)
     Q3OBJ += $(B)/client/vm_powerpc.o $(B)/client/vm_powerpc_asm.o
   endif
-  ifeq ($(ARCH),sparc)
+  ifneq ($(findstring $(ARCH),sparc sparc64),)
     Q3OBJ += $(B)/client/vm_sparc.o
   endif
   ifeq ($(ARM_VER_CHECK),armv7l)
@@ -2302,13 +2293,12 @@ endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),x86 x86_64),)
-    Q3DOBJ += \
-      $(B)/ded/vm_x86.o
+    Q3DOBJ += $(B)/ded/vm_x86.o
   endif
   ifneq ($(findstring $(ARCH),ppc ppc64),)
     Q3DOBJ += $(B)/ded/vm_powerpc.o $(B)/ded/vm_powerpc_asm.o
   endif
-  ifeq ($(ARCH),sparc)
+  ifneq ($(findstring $(ARCH),sparc sparc64),)
     Q3DOBJ += $(B)/ded/vm_sparc.o
   endif
   ifeq ($(ARM_VER_CHECK),armv7l)
