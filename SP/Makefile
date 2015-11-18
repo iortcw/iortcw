@@ -975,15 +975,15 @@ ifndef RANLIB
 endif
 
 ifndef HAVE_VM_COMPILED
-HAVE_VM_COMPILED = false
+  HAVE_VM_COMPILED=false
 endif
 
 ifneq ($(findstring $(ARCH),x86 x86_64 ppc ppc64 sparc sparc64),)
-  HAVE_VM_COMPILED = true
+  HAVE_VM_COMPILED=true
 endif
 
 ifeq ($(ARM_VER_CHECK),armv7l)
-  HAVE_VM_COMPILED = true
+  HAVE_VM_COMPILED=true
 endif
 
 ifneq ($(HAVE_VM_COMPILED),true)
