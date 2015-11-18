@@ -189,7 +189,7 @@ USE_OPENAL_DLOPEN=1
 endif
 
 ifndef USE_CURL
-USE_CURL=1
+USE_CURL=0
 endif
 
 ifndef USE_CURL_DLOPEN
