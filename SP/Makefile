@@ -8,6 +8,8 @@ COMPILE_PLATFORM=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'|sed -e 
 
 COMPILE_ARCH=$(shell uname -m | sed -e s/i.86/i386/ | sed -e 's/^arm.*/arm/')
 
+ARM_VER_CHECK=$(shell uname -m)
+
 ifeq ($(COMPILE_PLATFORM),sunos)
   # Solaris uname and GNU uname differ
   COMPILE_ARCH=$(shell uname -p | sed -e s/i.86/i386/)
@@ -386,6 +388,9 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   ifeq ($(ARCH),sparc)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
     OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
+    HAVE_VM_COMPILED=true
+  endif
+  ifeq ($(ARM_VER_CHECK),armv7l)
     HAVE_VM_COMPILED=true
   endif
   ifeq ($(ARCH),alpha)
@@ -1340,6 +1345,7 @@ targets: makedirs
 	@echo "  VERSION: $(VERSION)"
 	@echo "  COMPILE_PLATFORM: $(COMPILE_PLATFORM)"
 	@echo "  COMPILE_ARCH: $(COMPILE_ARCH)"
+	@echo "  HAVE_VM_COMPILED: $(HAVE_VM_COMPILED) "
 	@echo "  CC: $(CC)"
 	@echo "  CXX: $(CXX)"
 ifdef MINGW
@@ -2133,6 +2139,9 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifeq ($(ARCH),sparc)
     Q3OBJ += $(B)/client/vm_sparc.o
   endif
+  ifeq ($(ARM_VER_CHECK),armv7l)
+    Q3OBJ += $(B)/client/vm_armv7l.o
+  endif
 endif
 
 ifdef MINGW
@@ -2301,6 +2310,9 @@ ifeq ($(HAVE_VM_COMPILED),true)
   endif
   ifeq ($(ARCH),sparc)
     Q3DOBJ += $(B)/ded/vm_sparc.o
+  endif
+  ifeq ($ARM_VER_CHECK),armv7l)
+    Q#DOBJ += $(B)/ded/vm_armv7l.o
   endif
 endif
 
