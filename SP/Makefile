@@ -2302,7 +2302,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
     Q3DOBJ += $(B)/ded/vm_sparc.o
   endif
   ifeq ($(ARM_VER_CHECK),armv7l)
-    Q3DOBJ += $(B)/client/vm_armv7l.o
+    Q3DOBJ += $(B)/ded/vm_armv7l.o
   endif
 endif
 
