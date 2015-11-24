@@ -1227,9 +1227,9 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 	y = 0;
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
 	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {

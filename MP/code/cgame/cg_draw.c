@@ -534,6 +534,7 @@ void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team ) 
 */
 
 #define UPPERRIGHT_X 500
+
 /*
 ==================
 CG_DrawSnapshot
@@ -708,6 +709,7 @@ static float CG_DrawTeamOverlay( float y ) {
 		pwidth = TEAM_OVERLAY_MAXNAME_WIDTH;
 	}
 
+
 #if 1
 	// max location name width
 	lwidth = 0;
@@ -872,8 +874,10 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	y = 0; // JPW NERVE move team overlay below obits, even with timer on left
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
+	} else if ( cg_fixedAspect.integer == 1 ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {
