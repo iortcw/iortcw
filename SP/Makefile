@@ -440,14 +440,6 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     CLIENT_LIBS += -lrt
   endif
 
-  ifeq ($(ARCH),x86)
-    # linux32 make ...
-    BASE_CFLAGS += -m32
-  else
-  ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -m64
-  endif
-  endif
 else # ifeq Linux
 
 #############################################################################
@@ -474,7 +466,7 @@ ifeq ($(PLATFORM),darwin)
     OPTIMIZEVM += -march=prescott -mfpmath=sse
     # x86 vm will crash without -mstackrealign since MMX instructions will be
     # used no matter what and they corrupt the frame pointer in VM calls
-    BASE_CFLAGS += -arch i386 -m32 -mstackrealign
+    BASE_CFLAGS += -arch i386 -mstackrealign
   endif
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM += -arch x86_64 -mfpmath=sse
@@ -686,13 +678,6 @@ ifdef MINGW
     endif
   endif
 
-  ifeq ($(ARCH),x86)
-    # build 32bit
-    BASE_CFLAGS += -m32
-  else
-    BASE_CFLAGS += -m64
-  endif
-
   # libmingw32 must be linked before libSDLmain
   CLIENT_LIBS += -lmingw32
   RENDERER_LIBS += -lmingw32
@@ -765,17 +750,6 @@ ifeq ($(PLATFORM),freebsd)
     endif
   endif
 
-  # cross-compiling tweaks
-  ifeq ($(ARCH),x86)
-    ifeq ($(CROSS_COMPILING),1)
-      BASE_CFLAGS += -m32
-    endif
-  endif
-  ifeq ($(ARCH),x86_64)
-    ifeq ($(CROSS_COMPILING),1)
-      BASE_CFLAGS += -m64
-    endif
-  endif
 else # ifeq freebsd
 
 #############################################################################
@@ -926,7 +900,6 @@ ifeq ($(PLATFORM),sunos)
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=i586
-    BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
   endif
@@ -950,7 +923,7 @@ else # ifeq sunos
 #############################################################################
 # SETUP AND BUILD -- GENERIC
 #############################################################################
-  BASE_CFLAGS=
+  BASE_CFLAGS =
   OPTIMIZE = -O3
 
   SHLIBEXT=so
@@ -970,8 +943,31 @@ ifndef CC
   CC=gcc
 endif
 
+ifndef CXX
+  CC=g++
+endif
+
 ifndef RANLIB
   RANLIB=ranlib
+endif
+
+ifeq ($(ARCH),x86)
+  BASE_CFLAGS += -m32
+endif
+ifeq ($(ARCH),x86_64)
+  BASE_CFLAGS += -m64
+endif
+ifeq ($(ARCH),ppc)
+  BASE_CFLAGS += -m32
+endif
+ifeq ($(ARCH),ppc64)
+  BASE_CFLAGS += -m64
+endif
+ifeq ($(ARCH),sparc)
+  BASE_CFLAGS += -m32
+endif
+ifeq ($(ARCH),sparc64)
+  BASE_CFLAGS += -m64
 endif
 
 ifndef HAVE_VM_COMPILED
