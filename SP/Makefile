@@ -402,6 +402,21 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   THREAD_LIBS=-lpthread
   LIBS=-ldl -lm
 
+  ifeq ($(USE_LOCAL_HEADERS),1)
+    CLIENT_CFLAGS += -I$(SDLHDIR)/include
+  endif
+
+  ifeq ($(USE_INTERNAL_LIBS),1)
+    ifeq ($(ARCH),x86)
+    SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
+               $(LIBSDIR)/linux32/libSDL2.so
+    endif
+    ifeq ($(ARCH),x86_64)
+    SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
+               $(LIBSDIR)/linux64/libSDL2.so
+    endif
+  endif
+
   ifeq ($(USE_OPENGLES),1)
     ifeq ($(RASPBERRY_PI),1)
       BUILD_RENDERER_REND2 = 0
@@ -418,8 +433,9 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
       SERVER_LIBS =
     endif
   else
-    CLIENT_LIBS = $(SDL_LIBS)
-    RENDERER_LIBS = $(SDL_LIBS) -lGL
+    CLIENT_CFLAGS += $(SDL_CFLAGS)
+    CLIENT_LIBS += $(SDL_LIBS)
+    RENDERER_LIBS += $(SDL_LIBS) -lGL
     SERVER_LIBS =
   endif
 
@@ -518,9 +534,9 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    BASE_CFLAGS += -I$(SDLHDIR)/include
+    CLIENT_CFLAGS += -I$(SDLHDIR)/include
   else
-    BASE_CFLAGS += $(SDL_CFLAGS)
+    CLIENT_CFLAGS += $(SDL_CFLAGS)
   endif
 
   # We copy sdlmain before ranlib'ing it so that subversion doesn't think
@@ -684,18 +700,22 @@ ifdef MINGW
 
   ifeq ($(USE_LOCAL_HEADERS),1)
     CLIENT_CFLAGS += -I$(SDLHDIR)/include
+  endif
+
+  ifeq ($(USE_INTERNAL_LIBS),1)
     ifeq ($(ARCH),x86)
     CLIENT_LIBS += $(LIBSDIR)/win32/libSDL2main.a \
-                      $(LIBSDIR)/win32/libSDL2.dll.a
+                   $(LIBSDIR)/win32/libSDL2.dll.a
     RENDERER_LIBS += $(LIBSDIR)/win32/libSDL2main.a \
-                      $(LIBSDIR)/win32/libSDL2.dll.a
+                     $(LIBSDIR)/win32/libSDL2.dll.a
     SDLDLL=SDL2.dll
     CLIENT_EXTRA_FILES += $(LIBSDIR)/win32/SDL2.dll $(LIBSDIR)/win32/OpenAL32.dll
-    else
+    endif
+    ifeq ($(ARCH),x86_64)
     CLIENT_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
-                      $(LIBSDIR)/win64/libSDL264.dll.a
+                   $(LIBSDIR)/win64/libSDL264.dll.a
     RENDERER_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
-                      $(LIBSDIR)/win64/libSDL264.dll.a
+                     $(LIBSDIR)/win64/libSDL264.dll.a
     SDLDLL=SDL264.dll
     CLIENT_EXTRA_FILES += $(LIBSDIR)/win64/SDL264.dll $(LIBSDIR)/win64/OpenAL64.dll
     endif
