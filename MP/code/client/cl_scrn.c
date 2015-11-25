@@ -391,6 +391,33 @@ void SCR_DrawVoipMeter( void ) {
 }
 #endif
 
+/*
+=================
+SCR_ShowPing
+=================
+*/
+void SCR_ShowPing( void ) {
+	char	string[11];
+	int	ping, w, x;
+
+	if (!cl_showPing->integer)
+		return;
+
+	if ( Cvar_VariableIntegerValue( "ui_limboMode" ) )
+		return;
+
+	ping = cl.snap.ping;
+
+	Com_sprintf( string, sizeof( string ), "ping: %i", ping );
+
+	w = strlen( string ) * TINYCHAR_WIDTH;
+	x = 320 - ( w * 0.5 );
+
+	if ( ping < 999 )
+		SCR_DrawStringExt( x, 386, TINYCHAR_HEIGHT, string, g_color_table[7], qtrue, qfalse );
+	else
+		return;
+}
 
 /*
 ===============================================================================
@@ -534,6 +561,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 		case CA_ACTIVE:
 			// always supply STEREO_CENTER as vieworg offset is now done by the engine.
 			CL_CGameRendering( stereoFrame );
+			SCR_ShowPing();
 			SCR_DrawDemoRecording();
 #ifdef USE_VOIP
 			SCR_DrawVoipMeter();

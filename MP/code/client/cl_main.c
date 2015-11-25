@@ -83,6 +83,8 @@ cvar_t  *cl_timeNudge;
 cvar_t  *cl_showTimeDelta;
 cvar_t  *cl_freezeDemo;
 
+cvar_t  *cl_showPing;
+
 cvar_t  *cl_shownet = NULL;     // NERVE - SMF - This is referenced in msg.c and we need to make sure it is NULL
 cvar_t  *cl_shownuments;        // DHM - Nerve
 cvar_t  *cl_visibleClients;     // DHM - Nerve
@@ -4021,6 +4023,8 @@ void CL_Init( void ) {
 
 	cl_maxpackets = Cvar_Get( "cl_maxpackets", "38", CVAR_ARCHIVE );
 	cl_packetdup = Cvar_Get( "cl_packetdup", "1", CVAR_ARCHIVE );
+
+	cl_showPing = Cvar_Get( "cl_showPing", "0", CVAR_ARCHIVE );
 
 	cl_run = Cvar_Get( "cl_run", "1", CVAR_ARCHIVE );
 	cl_sensitivity = Cvar_Get( "sensitivity", "5", CVAR_ARCHIVE );
