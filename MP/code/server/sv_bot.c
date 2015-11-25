@@ -561,7 +561,7 @@ void SV_BotInitCvars( void ) {
 	Cvar_Get( "bot_nochat", "0", 0 );               //disable chats
 	Cvar_Get( "bot_grapple", "0", 0 );          //enable grapple
 	Cvar_Get( "bot_rocketjump", "1", 0 );           //enable rocket jumping
-	Cvar_Get( "bot_miniplayers", "0", 0 );      //minimum players in a team or the game
+	Cvar_Get( "bot_minplayers", "0", 0 );      //minimum players in a team or the game
 }
 
 // Ridah, Cast AI
