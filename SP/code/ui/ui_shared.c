@@ -90,7 +90,6 @@ static qboolean Menu_OverActiveItem( menuDef_t *menu, float x, float y );
 static char memoryPool[MEM_POOL_SIZE];
 static int allocPoint, outOfMemory;
 
-
 // these are expected to be translated by the strings.txt file
 translateString_t translateStrings[] = {
 	{"end_time"},                //	"Time"
@@ -146,6 +145,114 @@ translateString_t translateStrings[] = {
 	{"years"},                   //
 	{"or"}                       //
 };
+
+
+static screenPlacement_e ui_horizontalPlacement = PLACE_CENTER;
+static screenPlacement_e ui_verticalPlacement = PLACE_CENTER;
+static screenPlacement_e ui_lastHorizontalPlacement = PLACE_CENTER;
+static screenPlacement_e ui_lastVerticalPlacement = PLACE_CENTER;
+
+/*
+================
+UI_SetScreenPlacement
+================
+*/
+void UI_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos)
+{
+	ui_lastHorizontalPlacement = ui_horizontalPlacement;
+	ui_lastVerticalPlacement = ui_verticalPlacement;
+
+	ui_horizontalPlacement = hpos;
+	ui_verticalPlacement = vpos;
+}
+
+/*
+================
+UI_PopScreenPlacement
+================
+*/
+void UI_PopScreenPlacement(void)
+{
+	ui_horizontalPlacement = ui_lastHorizontalPlacement;
+	ui_verticalPlacement = ui_lastVerticalPlacement;
+}
+
+/*
+================
+UI_GetScreenHorizontalPlacement
+================
+*/
+screenPlacement_e UI_GetScreenHorizontalPlacement(void)
+{
+	return ui_horizontalPlacement;
+}
+
+/*
+================
+UI_GetScreenVerticalPlacement
+================
+*/
+screenPlacement_e UI_GetScreenVerticalPlacement(void)
+{
+	return ui_verticalPlacement;
+}
+
+vmCvar_t ui_fixedAspect;
+
+/*
+================
+UI_AdjustFrom640
+
+Adjusted for resolution and screen aspect ratio
+================
+*/
+void UI_AdjustFrom640( float *x, float *y, float *w, float *h ) {
+	// expect valid pointers
+#if 0
+	*x = *x * DC->scale + DC->bias;
+	*y *= DC->scale;
+	*w *= DC->scale;
+	*h *= DC->scale;
+#endif
+
+	if ( ui_fixedAspect.integer ) {
+		if (ui_horizontalPlacement == PLACE_STRETCH) {
+			// scale for screen sizes (not aspect correct in wide screen)
+			*w *= DC->xscaleStretch;
+			*x *= DC->xscaleStretch;
+		} else {
+			// scale for screen sizes
+			*w *= DC->xscale;
+			*x *= DC->xscale;
+	
+			if (ui_horizontalPlacement == PLACE_CENTER) {
+				*x += DC->xBias;
+			} else if (ui_horizontalPlacement == PLACE_RIGHT) {
+				*x += DC->xBias*2;
+			}
+		}
+
+		if (ui_verticalPlacement == PLACE_STRETCH) {
+			*h *= DC->yscaleStretch;
+			*y *= DC->yscaleStretch;
+		} else {
+			*h *= DC->yscale;
+			*y *= DC->yscale;
+	
+			if (ui_verticalPlacement == PLACE_CENTER) {
+				*y += DC->yBias;
+			} else if (ui_verticalPlacement == PLACE_BOTTOM) {
+				*y += DC->yBias*2;
+			}
+		}
+	} else {
+		*x *= DC->xscale;
+		*y *= DC->yscale;
+		*w *= DC->xscale;
+		*h *= DC->yscale;
+	}
+}
+
 
 //----(SA)	added
 /*
@@ -712,8 +819,6 @@ void Fade( int *flags, float *f, float clamp, int *nextTime, int offsetTime, qbo
 	}
 }
 
-
-
 void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle ) {
 	//float bordersize = 0;
 	vec4_t color = {0};
@@ -741,6 +846,17 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		fillRect.h -= w->borderSize + 1;
 	}
 
+	// Make pillarbox for 4:3 UI
+	if ( ui_fixedAspect.integer == 1 ) {
+		if ( DC->glconfig.vidWidth * 480 > DC->glconfig.vidHeight * 640 ) {
+			vec4_t col = {0, 0, 0, 1};
+			UI_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			DC->drawRect( 0, 0, DC->xBias, 480, DC->xBias + 1, col );
+			DC->drawRect( 640 + DC->xBias, 0, DC->xBias, 480, DC->xBias + 1, col );
+			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
+	}
+
 	if ( w->style == WINDOW_STYLE_FILLED ) {
 		// box, but possible a shader that needs filled
 		if ( w->background ) {
@@ -758,8 +874,15 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		if ( w->flags & WINDOW_FORECOLORSET ) {
 			DC->setColor( w->foreColor );
 		}
-		DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
-		DC->setColor( NULL );
+		if ( ui_fixedAspect.integer == 2 && ( Q_stricmpn( w->name, "FLA", 3 ) ) && ( Q_stricmpn( w->name, "WOLF", 4 ) ) ) { // HACK to widen menu items
+			UI_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+			DC->setColor( NULL );
+		} else {
+			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+			DC->setColor( NULL );
+		}
 	} else if ( w->style == WINDOW_STYLE_TEAMCOLOR ) {
 		if ( DC->getTeamColor ) {
 			DC->getTeamColor( &color );
@@ -3855,14 +3978,19 @@ qboolean Item_Bind_HandleKey( itemDef_t *item, int key, qboolean down ) {
 	return qtrue;
 }
 
-
-
 void AdjustFrom640( float *x, float *y, float *w, float *h ) {
 	//*x = *x * DC->scale + DC->bias;
-	*x *= DC->xscale;
-	*y *= DC->yscale;
-	*w *= DC->xscale;
-	*h *= DC->yscale;
+	if ( ui_fixedAspect.integer ) {
+		*w *= DC->xscale;
+		*x = *x * DC->xscale + DC->xBias;
+		*h *= DC->yscale;
+		*y = *y * DC->yscale + DC->yBias;
+	} else {
+		*x *= DC->xscale;
+		*y *= DC->yscale;
+		*w *= DC->xscale;
+		*h *= DC->yscale;
+	}
 }
 
 void Item_Model_Paint( itemDef_t *item ) {

@@ -1831,19 +1831,6 @@ void CG_Concussive( centity_t *cent );
 //
 // cg_drawtools.c
 //
-typedef enum {
-	PLACE_STRETCH,
-	PLACE_CENTER,
-
-	// horizontal only
-	PLACE_LEFT,
-	PLACE_RIGHT,
-
-	// vertical only
-	PLACE_TOP,
-	PLACE_BOTTOM
-} screenPlacement_e;
-
 void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos);
 void CG_PopScreenPlacement(void);
 screenPlacement_e CG_GetScreenHorizontalPlacement(void);

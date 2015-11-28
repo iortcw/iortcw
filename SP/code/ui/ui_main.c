@@ -6587,14 +6587,36 @@ void _UI_Init( qboolean inGameLoad ) {
 	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
 
 	// for 640x480 virtualized screen
-	uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * ( 1.0 / 480.0 );
-	uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * ( 1.0 / 640.0 );
-	if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
-		// wide screen
-		uiInfo.uiDC.bias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * ( 640.0 / 480.0 ) ) );
+	if ( ui_fixedAspect.integer ) {
+		uiInfo.uiDC.xscaleStretch = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+		uiInfo.uiDC.yscaleStretch = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+		if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
+			uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+			uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+			// wide screen
+			uiInfo.uiDC.xBias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * (640.0/480.0) ) );
+			uiInfo.uiDC.xscale = uiInfo.uiDC.yscale;
+			// no narrow screen
+			uiInfo.uiDC.yBias = 0;
+		} else {
+			uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+			uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+			// narrow screen
+			uiInfo.uiDC.yBias = 0.5 * ( uiInfo.uiDC.glconfig.vidHeight - ( uiInfo.uiDC.glconfig.vidWidth * (480.0/640.0) ) );
+			uiInfo.uiDC.yscale = uiInfo.uiDC.xscale;
+			// no wide screen
+			uiInfo.uiDC.xBias = 0;
+		}
 	} else {
-		// no wide screen
-		uiInfo.uiDC.bias = 0;
+		uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * ( 1.0 / 480.0 );
+		uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * ( 1.0 / 640.0 );
+		if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
+			// wide screen
+			uiInfo.uiDC.bias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * ( 640.0 / 480.0 ) ) );
+		} else {
+			// no wide screen
+			uiInfo.uiDC.bias = 0;
+		}
 	}
 
 
@@ -7247,6 +7269,8 @@ vmCvar_t ui_autoactivate;
 vmCvar_t ui_emptyswitch;        //----(SA)	added
 // END JOSEPH
 
+vmCvar_t ui_fixedAspect;
+
 vmCvar_t ui_server1;
 vmCvar_t ui_server2;
 vmCvar_t ui_server3;
@@ -7356,6 +7380,9 @@ cvarTable_t cvarTable[] = {
 	{ &ui_autoactivate, "cg_autoactivate", "1", CVAR_ARCHIVE },
 	{ &ui_useSuggestedWeapons, "cg_useSuggestedWeapons", "1", CVAR_ARCHIVE }, //----(SA)	added
 	{ &ui_emptyswitch, "cg_emptyswitch", "0", CVAR_ARCHIVE }, //----(SA)	added
+
+	{ &ui_fixedAspect, "cg_fixedAspect", "0", CVAR_ARCHIVE | CVAR_LATCH },
+
 	{ &ui_server1, "server1", "", CVAR_ARCHIVE },
 	{ &ui_server2, "server2", "", CVAR_ARCHIVE },
 	{ &ui_server3, "server3", "", CVAR_ARCHIVE },
