@@ -821,8 +821,8 @@ void SetWolfSpawnWeapons( gclient_t *client ) {
 	// Abuse teamNum to store player class as well (can't see stats for all clients in cgame)
 	client->ps.teamNum = pc;
 
-// JPW NERVE -- zero out all ammo counts
-	memset( client->ps.ammo,MAX_WEAPONS,sizeof( int ) );
+	// JPW NERVE -- zero out all ammo counts
+	memset( client->ps.ammo, 0, MAX_WEAPONS * sizeof( int ) );
 
 	// All players start with a knife (not OR-ing so that it clears previous weapons)
 	client->ps.weapons[0] = 0;
