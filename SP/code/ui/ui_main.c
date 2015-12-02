@@ -7269,8 +7269,6 @@ vmCvar_t ui_autoactivate;
 vmCvar_t ui_emptyswitch;        //----(SA)	added
 // END JOSEPH
 
-vmCvar_t ui_fixedAspect;
-
 vmCvar_t ui_server1;
 vmCvar_t ui_server2;
 vmCvar_t ui_server3;

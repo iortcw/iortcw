@@ -2927,10 +2927,7 @@ void CG_DrawWeaponSelect( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
-
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay
 	// showing weapon select clears pickup item display, but not the blend blob

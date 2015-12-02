@@ -650,10 +650,6 @@ qboolean CG_DrawScoreboard( void ) {
 	float   *fadeColor;
 	char    *s;
 
-	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
-	}
-
 	// don't draw anything if the menu or console is up
 	if ( cg_paused.integer ) {
 		cg.deferredPlayerLoading = 0;
@@ -668,6 +664,10 @@ qboolean CG_DrawScoreboard( void ) {
 	// don't draw scoreboard during death while warmup up
 	if ( cg.warmup && !cg.showScores ) {
 		return qfalse;
+	}
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	// NERVE - SMF - added mp wolf check
@@ -864,7 +864,7 @@ void CG_DrawTourneyScoreboard( void ) {
 	 	color[3] = 1;
 		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, color );
-		CG_PopScreenPlacement();
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	} else {
 		color[0] = color[1] = color[2] = 0;
 		color[3] = 1;

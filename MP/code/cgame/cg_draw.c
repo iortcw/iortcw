@@ -511,18 +511,9 @@ void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team ) 
 	} else {
 		return;
 	}
-
-	if ( cg_fixedAspect.integer ) {
-		trap_R_SetColor( hcolor );
-		CG_SetScreenPlacement(PLACE_STRETCH, CG_GetScreenVerticalPlacement());
- 		CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
-		CG_PopScreenPlacement();
-		trap_R_SetColor( NULL );
-	} else {
-		trap_R_SetColor( hcolor );
-		CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
-		trap_R_SetColor( NULL );
-	}
+	trap_R_SetColor( hcolor );
+	CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
+	trap_R_SetColor( NULL );
 }
 
 /*
@@ -876,8 +867,6 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {
@@ -932,9 +921,7 @@ static void CG_DrawTeamInfo( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement( PLACE_CENTER, PLACE_BOTTOM );
- 	}
+	}
 
 	if ( cgs.teamLastChatPos != cgs.teamChatPos ) {
 		if ( cg.time - cgs.teamChatMsgTimes[cgs.teamLastChatPos % chatHeight] > cg_teamChatTime.integer ) {
@@ -967,8 +954,11 @@ static void CG_DrawTeamInfo( void ) {
 			hcolor[3] = 0.33f * alphapercent;
 
 			trap_R_SetColor( hcolor );
-			CG_DrawPic( CHATLOC_X, CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT, 640, TINYCHAR_HEIGHT, cgs.media.teamStatusBar );
-
+			if ( cg_fixedAspect.integer == 2 ) {
+				CG_DrawPic( CHATLOC_X, CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT, cgs.glconfig.vidWidth, TINYCHAR_HEIGHT, cgs.media.teamStatusBar );
+			} else {
+				CG_DrawPic( CHATLOC_X, CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT, 640, TINYCHAR_HEIGHT, cgs.media.teamStatusBar );
+			}
 			hcolor[0] = hcolor[1] = hcolor[2] = 1.0;
 			hcolor[3] = alphapercent;
 			trap_R_SetColor( hcolor );
@@ -997,8 +987,6 @@ static void CG_DrawPickupItem( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	value = cg.itemPickup;
@@ -1053,8 +1041,6 @@ static void CG_DrawNotify( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	trap_Cvar_VariableStringBuffer( "con_notifytime", var, sizeof( var ) );
@@ -1195,12 +1181,12 @@ static void CG_DrawDisconnect( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
-	x = 640 - 72;
-	y = 480 - 52;
+	x = 640 - 52;
+	y = 480 - 140;
 
 	CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader( "gfx/2d/net.tga" ) );
 }
@@ -1229,14 +1215,12 @@ static void CG_DrawLagometer( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
 	//
 	// draw the graph
 	//
-	x = 640 - 55;
+	x = 640 - 52;
 	y = 480 - 140;
 
 	trap_R_SetColor( NULL );
@@ -1522,7 +1506,6 @@ CG_DrawWeapReticle
 static void CG_DrawWeapReticle( void ) {
 	qboolean snooper, sniper;
 	vec4_t color = {0, 0, 0, 1};
-	float width = 80.0;
 
 	// DHM - Nerve :: So that we will draw reticle
 	if ( cgs.gametype >= GT_WOLF && ( ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg.demoPlayback ) ) {
@@ -1538,14 +1521,29 @@ static void CG_DrawWeapReticle( void ) {
 
 			// sides
 			if ( cg_fixedAspect.integer ) {
-				if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-					width = 0.5 * ( ( cgs.glconfig.vidWidth - ( min( cgs.screenXScale, cgs.screenYScale ) * 480 ) ) / min( cgs.screenXScale, cgs.screenYScale ) );
+				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+					float mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, mask, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 640 - mask, 0, mask, 480, color );
 				}
 
-				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-				CG_FillRect( 0, 0, width, 480, color );
-				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-				CG_FillRect( 640-width, 0, width, 480, color );
+				// sides with letterbox
+				if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+					float lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, 80, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 560, 0, 80, 480, color );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+					CG_FillRect( 0, 480 - lb, 640, lb, color );
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+					CG_FillRect( 0, 0, 640, lb, color );
+				}
 			} else {
 				CG_FillRect( 0, 0, 80, 480, color );
 				CG_FillRect( 560, 0, 80, 480, color );
@@ -1571,14 +1569,29 @@ static void CG_DrawWeapReticle( void ) {
 
 			// sides
 			if ( cg_fixedAspect.integer ) {
-				if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-					width = 0.5 * ( ( cgs.glconfig.vidWidth - ( min( cgs.screenXScale, cgs.screenYScale ) * 480 ) ) / min( cgs.screenXScale, cgs.screenYScale ) );
+				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+					float mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, mask, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 640 - mask, 0, mask, 480, color );
 				}
 
-				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-				CG_FillRect( 0, 0, width, 480, color );
-				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-				CG_FillRect( 640-width, 0, width, 480, color );
+				// sides with letterbox
+				if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+					float lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, 80, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 560, 0, 80, 480, color );
+
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+					CG_FillRect( 0, 480 - lb, 640, lb, color );
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+					CG_FillRect( 0, 0, 640, lb, color );
+				}
 			} else {
 				CG_FillRect( 0, 0, 80, 480, color );
 				CG_FillRect( 560, 0, 80, 480, color );
@@ -2292,9 +2305,10 @@ CG_DrawSpectator
 =================
 */
 static void CG_DrawSpectator( void ) {
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
+
 	CG_DrawBigString( 320 - 9 * 8, 440, CG_TranslateString( "SPECTATOR" ), 1.0F );
 	if ( cgs.gametype == GT_TOURNAMENT ) {
 		CG_DrawBigString( 320 - 15 * 8, 460, "waiting to play", 1.0F );
@@ -2314,6 +2328,10 @@ static void CG_DrawVote( void ) {
 	char str1[32], str2[32];
 	float color[4] = { 1, 1, 0, 1 };
 	int sec;
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+	}
 
 	if ( cgs.complaintEndTime > cg.time ) {
 
@@ -2366,10 +2384,6 @@ static void CG_DrawVote( void ) {
 	Q_strncpyz( str2, BindingFromName( "vote no" ), 32 );
 	if ( !Q_stricmp( str2, "???" ) ) {
 		Q_strncpyz( str2, "vote no", 32 );
-	}
-
-	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	}
 
 	// play a talk beep whenever it is modified
@@ -2596,8 +2610,6 @@ static qboolean CG_DrawFollow( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	color[0] = 1;
@@ -2653,7 +2665,7 @@ static void CG_DrawWarmup( void ) {
 		return;     // (SA) don't bother with this stuff in sp
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
@@ -2953,7 +2965,8 @@ static void CG_DrawFlashFire( void ) {
 		col[3] = alpha;
 		trap_R_SetColor( col );
 		if ( cg_fixedAspect.integer ) {
-			trap_R_DrawStretchPic( -10, -10, 650, 490, 0, 0, 1, 1, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
+			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		} else {
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		}
@@ -2996,13 +3009,12 @@ static void CG_DrawFlashLightning( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		trap_R_DrawStretchPic( -10, -10, 650, 490, 0, 0, 1, 1, shader );
+		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		CG_DrawPic( -10, -10, 650, 490, shader );
 	} else {
 		CG_DrawPic( -10, -10, 650, 490, shader );
 	}
 }
-
-
 
 /*
 ==============
@@ -3213,8 +3225,6 @@ void CG_DrawObjectiveIcons( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 // JPW NERVE added round timer
@@ -3461,7 +3471,7 @@ void CG_Draw2D2( void ) {
 	hcolor[3] = cg_hudAlpha.value;
 	trap_R_SetColor( hcolor );
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
@@ -3552,7 +3562,7 @@ static void CG_DrawCompass( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
@@ -3709,8 +3719,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 		if ( cg_drawStatus.integer ) {
 			if ( cg_fixedAspect.integer == 2 ) {
 				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-			} else if ( cg_fixedAspect.integer == 1 ) {
-				CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 			}
 
 			Menu_PaintAll();
@@ -3836,7 +3844,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 		h = LIMBO_3D_H;
 
 		cg.refdef.width = 0;
-		if ( cg_fixedAspect.integer ) {
+		if ( cg_fixedAspect.integer == 2 ) { //FIXME:MAN-AT-ARMS...Use correct view
 			cg.refdef.x = LIMBO_3D_X * cgs.screenXScaleStretch;
 			cg.refdef.y = LIMBO_3D_Y * cgs.screenYScaleStretch;
 			cg.refdef.width = LIMBO_3D_W * cgs.screenXScaleStretch;

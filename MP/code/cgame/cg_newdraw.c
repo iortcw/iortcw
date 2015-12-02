@@ -290,8 +290,6 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t *rect, qboolean drawHighlighted, 
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	realweap = cg.predictedPlayerState.weapon;
@@ -659,8 +657,6 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, 
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	switch ( weap ) {      // some weapons don't draw ammo count text
@@ -1109,8 +1105,6 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, float scale, vec4_t color, qha
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( shader ) {
@@ -2223,8 +2217,6 @@ void CG_DrawWeapHeat( rectDef_t *rect, int align ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( align != HUD_HORIZONTAL ) {
@@ -2252,8 +2244,6 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( align != HUD_HORIZONTAL ) {

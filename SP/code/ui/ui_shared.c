@@ -214,7 +214,6 @@ void UI_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 	*w *= DC->scale;
 	*h *= DC->scale;
 #endif
-
 	if ( ui_fixedAspect.integer ) {
 		if (ui_horizontalPlacement == PLACE_STRETCH) {
 			// scale for screen sizes (not aspect correct in wide screen)
