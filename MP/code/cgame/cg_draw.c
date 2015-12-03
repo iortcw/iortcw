@@ -1506,6 +1506,7 @@ CG_DrawWeapReticle
 static void CG_DrawWeapReticle( void ) {
 	qboolean snooper, sniper;
 	vec4_t color = {0, 0, 0, 1};
+	float mask = 0, lb = 0;
 
 	// DHM - Nerve :: So that we will draw reticle
 	if ( cgs.gametype >= GT_WOLF && ( ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg.demoPlayback ) ) {
@@ -1522,17 +1523,15 @@ static void CG_DrawWeapReticle( void ) {
 			// sides
 			if ( cg_fixedAspect.integer ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
-					float mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 					CG_FillRect( 0, 0, mask, 480, color );
 					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
 					CG_FillRect( 640 - mask, 0, mask, 480, color );
-				}
-
-				// sides with letterbox
-				if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
-					float lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+				} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+					// sides with letterbox
+					lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
 
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 					CG_FillRect( 0, 0, 80, 480, color );
@@ -1543,6 +1542,12 @@ static void CG_DrawWeapReticle( void ) {
 					CG_FillRect( 0, 480 - lb, 640, lb, color );
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 					CG_FillRect( 0, 0, 640, lb, color );
+				} else {
+					// resolution is 4:3
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, 80, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 560, 0, 80, 480, color );
 				}
 			} else {
 				CG_FillRect( 0, 0, 80, 480, color );
@@ -1570,17 +1575,15 @@ static void CG_DrawWeapReticle( void ) {
 			// sides
 			if ( cg_fixedAspect.integer ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
-					float mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 					CG_FillRect( 0, 0, mask, 480, color );
 					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
 					CG_FillRect( 640 - mask, 0, mask, 480, color );
-				}
-
-				// sides with letterbox
-				if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
-					float lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+				} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+					// sides with letterbox
+					lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
 
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 					CG_FillRect( 0, 0, 80, 480, color );
@@ -1591,6 +1594,12 @@ static void CG_DrawWeapReticle( void ) {
 					CG_FillRect( 0, 480 - lb, 640, lb, color );
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 					CG_FillRect( 0, 0, 640, lb, color );
+				} else {
+					// resolution is 4:3
+					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_FillRect( 0, 0, 80, 480, color );
+					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_FillRect( 560, 0, 80, 480, color );
 				}
 			} else {
 				CG_FillRect( 0, 0, 80, 480, color );
