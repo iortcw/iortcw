@@ -1659,8 +1659,29 @@ CG_DrawBinocReticle
 ==============
 */
 static void CG_DrawBinocReticle( void ) {
+	vec4_t color = {0, 0, 0, 1};
+	float mask = 0, lb = 0;
+
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+			mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 640.0 ) ) / cgs.screenXScale );
+
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			CG_FillRect( 0, 0, mask, 480, color );
+			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			CG_FillRect( 640 - mask, 0, mask, 480, color );
+		} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+			lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+			CG_FillRect( 0, 480 - lb, 640, lb, color );
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+			CG_FillRect( 0, 0, 640, lb, color );
+		}
+	}
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( cg_reticles.integer ) {
@@ -1670,16 +1691,9 @@ static void CG_DrawBinocReticle( void ) {
 			}
 		} else if ( cg_reticleType.integer == 1 ) {
 			// an alternative.  This gives nice sharp lines at the expense of a few extra polys
-			vec4_t color;
-			color[0] = color[1] = color[2] = 0;
-			color[3] = 1;
 
 			if ( cgs.media.binocShaderSimple ) {
 				CG_DrawPic( 0, 0, 640, 480, cgs.media.binocShaderSimple );
-			}
-
-			if ( cg_fixedAspect.integer ) {
-				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 			}
 
 			CG_FillRect( 146, 239, 348, 1, color );

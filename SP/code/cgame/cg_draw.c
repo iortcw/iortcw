@@ -2310,21 +2310,36 @@ static void CG_DrawBinocReticle( void ) {
 	// an alternative.  This gives nice sharp lines at the expense of a few extra polys
 	vec4_t color = {0, 0, 0, 1};
 	float x, y, w = 320, h = 240;
+	float mask = 0, lb = 0;
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
-	}
+		if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+			mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 640.0 ) ) / cgs.screenXScale );
 
-	if ( cgs.media.binocShaderSimpleQ ) {
-		CG_AdjustFrom640( &x, &y, &w, &h );
-		trap_R_DrawStretchPic( 0, 0, w, h, 0, 0, 1, 1, cgs.media.binocShaderSimpleQ );  // tl
-		trap_R_DrawStretchPic( w, 0, w, h, 1, 0, 0, 1, cgs.media.binocShaderSimpleQ );  // tr
-		trap_R_DrawStretchPic( 0, h, w, h, 0, 1, 1, 0, cgs.media.binocShaderSimpleQ );  // bl
-		trap_R_DrawStretchPic( w, h, w, h, 1, 1, 0, 0, cgs.media.binocShaderSimpleQ );  // br
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			CG_FillRect( 0, 0, mask, 480, color );
+			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			CG_FillRect( 640 - mask, 0, mask, 480, color );
+		} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+			lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+			CG_FillRect( 0, 480 - lb, 640, lb, color );
+			CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+			CG_FillRect( 0, 0, 640, lb, color );
+		}
 	}
 
 	if ( cg_fixedAspect.integer ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
+	if ( cgs.media.binocShaderSimpleQ ) {
+		CG_AdjustFrom640( &x, &y, &w, &h );
+		trap_R_DrawStretchPic( mask * cgs.screenXScale, lb * cgs.screenYScale, w, h, 0, 0, 1, 1, cgs.media.binocShaderSimpleQ );         // tl
+		trap_R_DrawStretchPic( w + mask * cgs.screenXScale, lb * cgs.screenYScale, w, h, 1, 0, 0, 1, cgs.media.binocShaderSimpleQ );     // tr
+		trap_R_DrawStretchPic( mask * cgs.screenXScale, h + lb * cgs.screenYScale, w, h, 0, 1, 1, 0, cgs.media.binocShaderSimpleQ );     // bl
+		trap_R_DrawStretchPic( w + mask * cgs.screenXScale, h + lb * cgs.screenYScale, w, h, 1, 1, 0, 0, cgs.media.binocShaderSimpleQ ); // br
 	}
 
 	CG_FillRect( 146, 239, 348, 1, color );
