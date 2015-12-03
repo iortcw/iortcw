@@ -146,6 +146,7 @@ translateString_t translateStrings[] = {
 	{"or"}                       //
 };
 
+vmCvar_t ui_fixedAspect;
 
 static screenPlacement_e ui_horizontalPlacement = PLACE_CENTER;
 static screenPlacement_e ui_verticalPlacement = PLACE_CENTER;
@@ -197,7 +198,6 @@ screenPlacement_e UI_GetScreenVerticalPlacement(void)
 	return ui_verticalPlacement;
 }
 
-vmCvar_t ui_fixedAspect;
 
 /*
 ================
@@ -845,13 +845,30 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		fillRect.h -= w->borderSize + 1;
 	}
 
-	// Make pillarbox for 4:3 UI
-	if ( ui_fixedAspect.integer == 1 ) {
-		if ( DC->glconfig.vidWidth * 480 > DC->glconfig.vidHeight * 640 ) {
+	// Make menus letterboxed if aspect is < 4:3
+	if ( ui_fixedAspect.integer ) {
+		if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
 			vec4_t col = {0, 0, 0, 1};
+			float lb = 0.5 * ( ( DC->glconfig.vidHeight - ( DC->yscale * 480.0 ) ) / DC->yscale );
+
+			UI_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+			DC->fillRect( 0, 480 - lb, 640, lb + 1, col );
+			UI_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+			DC->fillRect( 0, 0, 640, lb + 1, col );
+			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
+	}
+
+	// Make menus pillarboxed if using 4:3 UI
+	if ( ui_fixedAspect.integer == 1 ) {
+		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+			vec4_t col = {0, 0, 0, 1};
+			float pillar = 0.5 * ( ( DC->glconfig.vidWidth - ( DC->xscale * 640.0 ) ) / DC->xscale );
+
 			UI_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
-			DC->drawRect( 0, 0, DC->xBias, 480, DC->xBias + 1, col );
-			DC->drawRect( 640 + DC->xBias, 0, DC->xBias, 480, DC->xBias + 1, col );
+			DC->fillRect( 0, 0, pillar + 1, 480, col );
+			UI_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			DC->fillRect( 640 - pillar, 0, pillar + 1, 480, col );
 			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		}
 	}
@@ -873,12 +890,29 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		if ( w->flags & WINDOW_FORECOLORSET ) {
 			DC->setColor( w->foreColor );
 		}
-		if ( ui_fixedAspect.integer == 2 && ( Q_stricmpn( w->name, "FLA", 3 ) ) && ( Q_stricmpn( w->name, "WOLF", 4 ) ) ) { // HACK to widen menu items
-			UI_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
-			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
-			DC->setColor( NULL );
-		} else {
+		if ( ui_fixedAspect.integer == 2 ) {
+			if ( DC->glconfig.vidWidth * 480 > DC->glconfig.vidHeight * 640 ) {
+				// HACK ... widen menu without stretching items and models
+				if ( !Q_stricmpn( w->name, "BLACKGRAD", 9 ) ) {
+					UI_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+					DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+					DC->setColor( NULL );
+				} else if ( !Q_stricmpn( w->name, "gold_line", 9 ) ) {
+					UI_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+					DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+					DC->setColor( NULL );
+				} else {
+					UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+					DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+					DC->setColor( NULL );
+				}
+			} else {
+				UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+				DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+				DC->setColor( NULL );
+			}
 			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		} else {
 			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
 			DC->setColor( NULL );
 		}

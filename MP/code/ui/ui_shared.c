@@ -93,6 +93,7 @@ static qboolean Menu_OverActiveItem( menuDef_t *menu, float x, float y );
 static char memoryPool[MEM_POOL_SIZE];
 static int allocPoint, outOfMemory;
 
+vmCvar_t ui_fixedAspect;
 
 static screenPlacement_e ui_horizontalPlacement = PLACE_CENTER;
 static screenPlacement_e ui_verticalPlacement = PLACE_CENTER;
@@ -144,7 +145,6 @@ screenPlacement_e UI_GetScreenVerticalPlacement(void)
 	return ui_verticalPlacement;
 }
 
-vmCvar_t ui_fixedAspect;
 
 /*
 ================
@@ -792,18 +792,10 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		fillRect.h -= w->borderSize + 1;
 	}
 
-	// Make pillarbox/letterbox for 4:3 UI
-	if ( ui_fixedAspect.integer == 1 || !Q_stricmpn( w->name, "wm_limbo", 8 ) ) {
-		vec4_t col = {0, 0, 0, 1};	
-		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
-			float pillar = 0.5 * ( ( DC->glconfig.vidWidth - ( DC->xscale * 640.0 ) ) / DC->xscale );
-
-			UI_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
-			DC->fillRect( 0, 0, pillar + 1, 480, col );
-			UI_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
-			DC->fillRect( 640 - pillar, 0, pillar + 1, 480, col );
-			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
-		} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+	// Make menus letterboxed if aspect is < 4:3
+	if ( ui_fixedAspect.integer ) {
+		if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+			vec4_t col = {0, 0, 0, 1};
 			float lb = 0.5 * ( ( DC->glconfig.vidHeight - ( DC->yscale * 480.0 ) ) / DC->yscale );
 
 			UI_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
@@ -814,22 +806,27 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		}
 	}
 
+	// Make menus pillarboxed if using 4:3 UI
+	if ( ui_fixedAspect.integer == 1 || !Q_stricmpn( w->name, "wm_limbo", 8 ) ) {
+		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+			vec4_t col = {0, 0, 0, 1};
+			float pillar = 0.5 * ( ( DC->glconfig.vidWidth - ( DC->xscale * 640.0 ) ) / DC->xscale );
+
+			UI_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			DC->fillRect( 0, 0, pillar + 1, 480, col );
+			UI_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			DC->fillRect( 640 - pillar, 0, pillar + 1, 480, col );
+			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
+	}
+
 	if ( w->style == WINDOW_STYLE_FILLED ) {
 		// box, but possible a shader that needs filled
 		if ( w->background ) {
-			if ( ui_fixedAspect.integer == 2 ) {
-				UI_SetScreenPlacement(PLACE_CENTER, PLACE_STRETCH);
-				Fade( &w->flags, &w->backColor[3], fadeClamp, &w->nextTime, fadeCycle, qtrue, fadeAmount );
-				DC->setColor( w->backColor );
-				DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
-				DC->setColor( NULL );
-				UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
-			} else {
-				Fade( &w->flags, &w->backColor[3], fadeClamp, &w->nextTime, fadeCycle, qtrue, fadeAmount );
-				DC->setColor( w->backColor );
-				DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
-				DC->setColor( NULL );
-			}
+			Fade( &w->flags, &w->backColor[3], fadeClamp, &w->nextTime, fadeCycle, qtrue, fadeAmount );
+			DC->setColor( w->backColor );
+			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+			DC->setColor( NULL );
 		} else {
 			DC->fillRect( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->backColor );
 		}
@@ -852,7 +849,7 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 					DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
 					DC->setColor( NULL );
 				} else {
-					UI_SetScreenPlacement(PLACE_CENTER, PLACE_STRETCH);
+					UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 					DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
 					DC->setColor( NULL );
 				}

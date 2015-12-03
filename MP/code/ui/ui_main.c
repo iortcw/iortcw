@@ -1745,7 +1745,7 @@ static void UI_DrawMapCinematic( rectDef_t *rect, float scale, vec4_t color, qbo
 		if ( uiInfo.mapList[map].cinematic == -1 ) {
 			uiInfo.mapList[map].cinematic = trap_CIN_PlayCinematic( va( "%s.roq", uiInfo.mapList[map].mapLoadName ), 0, 0, 0, 0, ( CIN_loop | CIN_silent ) );
 		}
-		if ( uiInfo.mapList[map].cinematic >= 0 ) { 
+		if ( uiInfo.mapList[map].cinematic >= 0 ) {
 			trap_CIN_RunCinematic( uiInfo.mapList[map].cinematic );
 			// FIXME:MAN-AT-ARMS Scale this
 			trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );

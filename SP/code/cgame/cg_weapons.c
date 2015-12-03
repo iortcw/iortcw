@@ -3112,12 +3112,6 @@ void CG_DrawWeaponSelect( void ) {
 	int bits[MAX_WEAPONS / ( sizeof( int ) * 8 )];
 	float       *color;
 
-	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
-	}
-
 	// don't display if dead
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
 		return;
@@ -3132,6 +3126,10 @@ void CG_DrawWeaponSelect( void ) {
 		return;
 	}
 	trap_R_SetColor( color );
+
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
+	}
 
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay

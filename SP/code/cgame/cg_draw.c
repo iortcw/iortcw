@@ -476,7 +476,7 @@ static void CG_DrawStatusBarHead( float x ) {
 
 	VectorClear( angles );
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
@@ -601,17 +601,9 @@ void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team ) 
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
-		trap_R_SetColor( hcolor );
-		CG_SetScreenPlacement(PLACE_STRETCH, CG_GetScreenVerticalPlacement());
- 		CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
-		CG_PopScreenPlacement();
- 		trap_R_SetColor( NULL );
-	} else {
-		trap_R_SetColor( hcolor );
-		CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
-		trap_R_SetColor( NULL );
-	}
+	trap_R_SetColor( hcolor );
+	CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
+	trap_R_SetColor( NULL );
 }
 
 //////////////////////
@@ -739,8 +731,6 @@ static void CG_DrawStatusBar( void ) {
 
 		if ( cg_fixedAspect.integer == 2 ) {
 			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-		} else {
-			CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 		}
 
 		value = ps->ammo[BG_FindAmmoForWeapon( cent->currentState.weapon )];
@@ -843,8 +833,6 @@ static void CG_DrawStatusBar( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-	} else {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
 	//
@@ -1228,8 +1216,6 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {
@@ -1503,7 +1489,7 @@ static void CG_DrawLowerRight( void ) {
 
 	y = 480 - ICON_SIZE;
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
@@ -1537,7 +1523,7 @@ static void CG_DrawTeamInfo( void ) {
 		return; // disabled
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 	}
 
@@ -1566,7 +1552,11 @@ static void CG_DrawTeamInfo( void ) {
 		}
 
 		trap_R_SetColor( hcolor );
-		CG_DrawPic( CHATLOC_X, CHATLOC_Y - h, 640, h, cgs.media.teamStatusBar );
+		if ( cg_fixedAspect.integer == 2 ) {
+			CG_DrawPic( CHATLOC_X, CHATLOC_Y - h, cgs.glconfig.vidWidth, h, cgs.media.teamStatusBar );
+		} else {
+			CG_DrawPic( CHATLOC_X, CHATLOC_Y - h, 640, h, cgs.media.teamStatusBar );
+		}
 		trap_R_SetColor( NULL );
 
 		hcolor[0] = hcolor[1] = hcolor[2] = 1.0;
@@ -1598,8 +1588,6 @@ static void CG_DrawPickupItem( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	value = cg.itemPickup;
@@ -1664,8 +1652,6 @@ void CG_DrawHoldableItem_old( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
@@ -1840,7 +1826,7 @@ static void CG_DrawDisconnect( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
@@ -1874,8 +1860,6 @@ static void CG_DrawLagometer( void ) {
 
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-	} else if ( cg_fixedAspect.integer == 1 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
 	//
@@ -2103,7 +2087,7 @@ static void CG_DrawWeapReticle( void ) {
 	vec4_t snoopercolor = {0.7, .8, 0.7, 0};    // greenish
 	float snooperBrightness;
 	float x = 80, y, w = 240, h = 240;
-	float width = 80.0;
+	float mask = 0, lb = 0;
 
 	CG_AdjustFrom640( &x, &y, &w, &h );
 
@@ -2118,14 +2102,29 @@ static void CG_DrawWeapReticle( void ) {
 	if ( weap == WP_SNIPERRIFLE ) {
 		// sides
 		if ( cg_fixedAspect.integer ) {
-			if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-				width = 0.5 * ( ( cgs.glconfig.vidWidth - ( min( cgs.screenXScale, cgs.screenYScale ) * 480 ) ) / min( cgs.screenXScale, cgs.screenYScale ) );
+			if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+				mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, mask, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 640 - mask, 0, mask, 480, color );
 			}
 
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-			CG_FillRect( 0, 0, width, 480, color );
-			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-			CG_FillRect( 640-width, 0, width, 480, color );
+			// sides with letterbox
+			if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+				lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, 80, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 560, 0, 80, 480, color );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+				CG_FillRect( 0, 480 - lb, 640, lb, color );
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+				CG_FillRect( 0, 0, 640, lb, color );
+			}
 		} else {
 			CG_FillRect( 0, 0, 80, 480, color );
 			CG_FillRect( 560, 0, 80, 480, color );
@@ -2137,10 +2136,17 @@ static void CG_DrawWeapReticle( void ) {
 		}
 
 		if ( cgs.media.reticleShaderSimpleQ ) {
-			trap_R_DrawStretchPic( x, 0, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );    // tl
-			trap_R_DrawStretchPic( x + w, 0, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ );  // tr
-			trap_R_DrawStretchPic( x, h, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );    // bl
-			trap_R_DrawStretchPic( x + w, h, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ );  // br
+			if ( cg_fixedAspect.integer ) {
+				trap_R_DrawStretchPic( x, lb, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );         // tl
+				trap_R_DrawStretchPic( x + w, lb, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ );     // tr
+				trap_R_DrawStretchPic( x, h + lb, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );     // bl
+				trap_R_DrawStretchPic( x + w, h + lb, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ ); // br
+			} else {
+				trap_R_DrawStretchPic( x, 0, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );      // tl
+				trap_R_DrawStretchPic( x + w, 0, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ );  // tr
+				trap_R_DrawStretchPic( x, h, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );      // bl
+				trap_R_DrawStretchPic( x + w, h, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ );  // br
+			}
 		}
 
 		// hairs
@@ -2151,14 +2157,29 @@ static void CG_DrawWeapReticle( void ) {
 	} else if ( weap == WP_SNOOPERSCOPE ) {
 		// sides
 		if ( cg_fixedAspect.integer ) {
-			if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-				width = 0.5 * ( ( cgs.glconfig.vidWidth - ( min( cgs.screenXScale, cgs.screenYScale ) * 480 ) ) / min( cgs.screenXScale, cgs.screenYScale ) );
+			if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+				mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, mask, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 640 - mask, 0, mask, 480, color );
 			}
 
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-			CG_FillRect( 0, 0, width, 480, color );
-			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-			CG_FillRect( 640-width, 0, width, 480, color );
+			// sides with letterbox
+			if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+				lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, 80, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 560, 0, 80, 480, color );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+				CG_FillRect( 0, 480 - lb, 640, lb, color );
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+				CG_FillRect( 0, 0, 640, lb, color );
+			}
 		} else {
 			CG_FillRect( 0, 0, 80, 480, color );
 			CG_FillRect( 560, 0, 80, 480, color );
@@ -2204,14 +2225,29 @@ static void CG_DrawWeapReticle( void ) {
 	} else if ( weap == WP_FG42SCOPE ) {
 		// sides
 		if ( cg_fixedAspect.integer ) {
-			if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-				width = 0.5 * ( ( cgs.glconfig.vidWidth - ( min( cgs.screenXScale, cgs.screenYScale ) * 480 ) ) / min( cgs.screenXScale, cgs.screenYScale ) );
+			if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+				mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, mask, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 640 - mask, 0, mask, 480, color );
 			}
 
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-			CG_FillRect( 0, 0, width, 480, color );
-			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
-			CG_FillRect( 640-width, 0, width, 480, color );
+			// sides with letterbox
+			if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
+				lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+				CG_FillRect( 0, 0, 80, 480, color );
+				CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+				CG_FillRect( 560, 0, 80, 480, color );
+
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+				CG_FillRect( 0, 480 - lb, 640, lb, color );
+				CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+				CG_FillRect( 0, 0, 640, lb, color );
+			}
 		} else {
 			CG_FillRect( 0, 0, 80, 480, color );
 			CG_FillRect( 560, 0, 80, 480, color );
@@ -2223,10 +2259,17 @@ static void CG_DrawWeapReticle( void ) {
 		}
 
 		if ( cgs.media.reticleShaderSimpleQ ) {
-			trap_R_DrawStretchPic( x,   0, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );  // tl
-			trap_R_DrawStretchPic( x + w, 0, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ );  // tr
-			trap_R_DrawStretchPic( x,   h, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );  // bl
-			trap_R_DrawStretchPic( x + w, h, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ );  // br
+			if ( cg_fixedAspect.integer ) {
+				trap_R_DrawStretchPic( x, lb, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );         // tl
+				trap_R_DrawStretchPic( x + w, lb, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ );     // tr
+				trap_R_DrawStretchPic( x, h + lb, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );     // bl
+				trap_R_DrawStretchPic( x + w, h + lb, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ ); // br
+			} else {
+				trap_R_DrawStretchPic( x, 0, w, h, 0, 0, 1, 1, cgs.media.reticleShaderSimpleQ );     // tl
+				trap_R_DrawStretchPic( x + w, 0, w, h, 1, 0, 0, 1, cgs.media.reticleShaderSimpleQ ); // tr
+				trap_R_DrawStretchPic( x, h, w, h, 0, 1, 1, 0, cgs.media.reticleShaderSimpleQ );     // bl
+				trap_R_DrawStretchPic( x + w, h, w, h, 1, 1, 0, 0, cgs.media.reticleShaderSimpleQ ); // br
+			}
 		}
 
 		// hairs
@@ -2266,6 +2309,10 @@ static void CG_DrawBinocReticle( void ) {
 		trap_R_DrawStretchPic( w, 0, w, h, 1, 0, 0, 1, cgs.media.binocShaderSimpleQ );  // tr
 		trap_R_DrawStretchPic( 0, h, w, h, 0, 1, 1, 0, cgs.media.binocShaderSimpleQ );  // bl
 		trap_R_DrawStretchPic( w, h, w, h, 1, 1, 0, 0, cgs.media.binocShaderSimpleQ );  // br
+	}
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	CG_FillRect( 146, 239, 348, 1, color );
@@ -2869,7 +2916,7 @@ CG_DrawSpectator
 =================
 */
 static void CG_DrawSpectator( void ) {
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 	CG_DrawBigString( 320 - 9 * 8, 440, "SPECTATOR", 1.0F );
@@ -2894,8 +2941,8 @@ static void CG_DrawVote( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 	}
 
 	// play a talk beep whenever it is modified
@@ -2983,8 +3030,8 @@ static qboolean CG_DrawFollow( void ) {
 		return qfalse;
 	}
 
-	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	}
 
 	color[0] = 1;
@@ -3044,7 +3091,7 @@ static void CG_DrawAmmoWarning( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
@@ -3080,7 +3127,7 @@ static void CG_DrawWarmup( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
@@ -3349,7 +3396,8 @@ static void CG_DrawFlashFire( void ) {
 		col[3] = alpha;
 		trap_R_SetColor( col );
 		if ( cg_fixedAspect.integer ) {
-			trap_R_DrawStretchPic( -10, -10, 650, 490, 0, 0, 1, 1, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
+			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		} else {
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		}
@@ -3391,7 +3439,8 @@ static void CG_DrawFlashLightning( void ) {
 		shader = cgs.media.viewTeslaDamageEffectShader;
 	}
 	if ( cg_fixedAspect.integer ) {
-		trap_R_DrawStretchPic( -10, -10, 650, 490, 0, 0, 1, 1, shader );
+		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		CG_DrawPic( -10, -10, 650, 490, shader );
 	} else {
 		CG_DrawPic( -10, -10, 650, 490, shader );
 	}
@@ -3724,8 +3773,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			if ( cg_drawStatus.integer ) {
 				if ( cg_fixedAspect.integer == 2 ) {
 					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
-				} else if ( cg_fixedAspect.integer == 1 ) {
-					CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 				}
 
 				if ( !cg_oldWolfUI.integer ) {

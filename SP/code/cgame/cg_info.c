@@ -410,7 +410,7 @@ void CG_DrawInformation( void ) {
 	}
 
 	if ( !levelshot ) {
-		trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
+		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
 	}
 
 	trap_R_SetColor( NULL );

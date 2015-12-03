@@ -2926,7 +2926,7 @@ void CG_DrawWeaponSelect( void ) {
 	trap_R_SetColor( color );
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
 	}
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay

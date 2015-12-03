@@ -1484,7 +1484,21 @@ static void UI_DrawMapLevelshot( rectDef_t *rect ) {
 	}
 
 	if ( !levelshot ) {
-		levelshot = trap_R_RegisterShaderNoMip( "menu/art/unknownmap" );
+		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
+	}
+
+	// HACK Pillarboxing...Copied from ui_shared.c 
+	if ( ui_fixedAspect.integer ) {
+		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+			vec4_t col = {0, 0, 0, 1};
+			float pillar = 0.5 * ( ( DC->glconfig.vidWidth - ( DC->xscale * 640.0 ) ) / DC->xscale );
+
+			UI_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			DC->fillRect( 0, 0, pillar + 1, 480, col );
+			UI_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			DC->fillRect( 640 - pillar, 0, pillar + 1, 480, col );
+			UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
 	}
 
 	UI_DrawHandlePic( rect->x, rect->y, rect->w, rect->h, levelshot );

@@ -1669,6 +1669,10 @@ static void CG_DrawBinocReticle( void ) {
 				CG_DrawPic( 0, 0, 640, 480, cgs.media.binocShaderSimple );
 			}
 
+			if ( cg_fixedAspect.integer ) {
+				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+			}
+
 			CG_FillRect( 146, 239, 348, 1, color );
 
 			CG_FillRect( 188, 234, 1, 13, color );   // ll
@@ -3445,7 +3449,12 @@ static void CG_ScreenFade( void ) {
 			return;
 		}
 
-		CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
+		if ( cg_fixedAspect.integer ) {
+			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
+		} else {
+			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
+		}
 
 	} else {
 		t = ( float )msec * cg.fadeRate;
@@ -3456,7 +3465,12 @@ static void CG_ScreenFade( void ) {
 		}
 
 		if ( color[ 3 ] ) {
-			CG_FillRect( 0, 0, 640, 480, color );
+			if ( cg_fixedAspect.integer ) {
+				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+				CG_FillRect( 0, 0, 640, 480, color );
+			} else {
+				CG_FillRect( 0, 0, 640, 480, color );
+			}
 		}
 	}
 }
