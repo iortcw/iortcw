@@ -201,8 +201,8 @@ static const unsigned int fr_sppak_checksums[] = {
 
 static const unsigned int gm_sppak_checksums[] = {
 	3078133571u,
-	285968110,
-	2694180987,
+	285968110u,
+	2694180987u,
 	// sp_pak4.pk3 from GOTY edition
 	4131017020u
 };
