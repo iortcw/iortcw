@@ -1040,9 +1040,6 @@ void GLSL_InitGPUShaders(void)
 
 		extradefines[0] = '\0';
 
-		if (r_deluxeSpecular->value > 0.000001f)
-			Q_strcat(extradefines, 1024, va("#define r_deluxeSpecular %f\n", r_deluxeSpecular->value));
-
 		if (r_specularIsMetallic->value)
 			Q_strcat(extradefines, 1024, "#define SPECULAR_IS_METALLIC\n");
 
@@ -1085,12 +1082,6 @@ void GLSL_InitGPUShaders(void)
 			{
 				Q_strcat(extradefines, 1024, "#define USE_NORMALMAP\n");
 
-				if (r_normalMapping->integer == 2)
-					Q_strcat(extradefines, 1024, "#define USE_OREN_NAYAR\n");
-
-				if (r_normalMapping->integer == 3)
-					Q_strcat(extradefines, 1024, "#define USE_TRIACE_OREN_NAYAR\n");
-
 #ifdef USE_VERT_TANGENT_SPACE
 				Q_strcat(extradefines, 1024, "#define USE_VERT_TANGENT_SPACE\n");
 				attribs |= ATTR_TANGENT;
@@ -1105,33 +1096,7 @@ void GLSL_InitGPUShaders(void)
 			}
 
 			if (r_specularMapping->integer)
-			{
 				Q_strcat(extradefines, 1024, "#define USE_SPECULARMAP\n");
-
-				switch (r_specularMapping->integer)
-				{
-					case 1:
-					default:
-						Q_strcat(extradefines, 1024, "#define USE_BLINN\n");
-						break;
-
-					case 2:
-						Q_strcat(extradefines, 1024, "#define USE_BLINN_FRESNEL\n");
-						break;
-
-					case 3:
-						Q_strcat(extradefines, 1024, "#define USE_MCAULEY\n");
-						break;
-
-					case 4:
-						Q_strcat(extradefines, 1024, "#define USE_GOTANDA\n");
-						break;
-
-					case 5:
-						Q_strcat(extradefines, 1024, "#define USE_LAZAROV\n");
-						break;
-				}
-			}
 
 			if (r_cubeMapping->integer)
 				Q_strcat(extradefines, 1024, "#define USE_CUBEMAP\n");
