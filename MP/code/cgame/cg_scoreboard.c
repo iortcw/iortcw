@@ -666,7 +666,9 @@ qboolean CG_DrawScoreboard( void ) {
 		return qfalse;
 	}
 
-	if ( cg_fixedAspect.integer ) {
+	if ( cg_fixedAspect.integer && cg.limboMenu ) {
+		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+	} else if ( cg_fixedAspect.integer && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
@@ -808,6 +810,10 @@ qboolean CG_DrawScoreboard( void ) {
 	// load any models that have been deferred
 	if ( ++cg.deferredPlayerLoading > 1 ) {
 		CG_LoadDeferredPlayers();
+	}
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	return qtrue;

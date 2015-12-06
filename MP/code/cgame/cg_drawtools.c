@@ -96,21 +96,28 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 
 	if ( cg_fixedAspect.integer ) {
 		if (cg_horizontalPlacement == PLACE_STRETCH) {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
+
+				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
+				( *w ) *= xscale;
+			}
+			// -NERVE - SMF
+
 			// scale for screen sizes (not aspect correct in wide screen)
 			*w *= cgs.screenXScaleStretch;
 			*x *= cgs.screenXScaleStretch;
-		} else if ( cg.limboMenu && cg.refdef.width ) {
-			// NERVE - SMF - hack to make images display properly in small view / limbo mode
-			float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / 640.f );
-
-			( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale );
-			( *w ) *= xscale;
-			// -NERVE - SMF
-	
-			// scale for screen sizes
-			*w *= cgs.screenXScale;
-			*x *= cgs.screenXScale;
 		} else {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
+
+				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
+				( *w ) *= xscale;
+			}
+			// -NERVE - SMF
+
 			// scale for screen sizes
 			*w *= cgs.screenXScale;
 			*x *= cgs.screenXScale;
@@ -123,19 +130,27 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		}
 
 		if (cg_verticalPlacement == PLACE_STRETCH) {
-			*h *= cgs.screenYScaleStretch;
-			*y *= cgs.screenYScaleStretch;
-		} else if ( cg.limboMenu && cg.refdef.width ) {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
-			float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / 480.f );
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
 
-			( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale );
-			( *h ) *= yscale;
+				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
+				( *h ) *= yscale;
+			}
 			// -NERVE - SMF
 
-			*h *= cgs.screenYScale;
-			*y *= cgs.screenYScale;
+			*h *= cgs.screenYScaleStretch;
+			*y *= cgs.screenYScaleStretch;
 		} else {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
+
+				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
+				( *h ) *= yscale;
+			}
+			// -NERVE - SMF
+
 			*h *= cgs.screenYScale;
 			*y *= cgs.screenYScale;
 	

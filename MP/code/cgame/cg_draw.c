@@ -3880,20 +3880,17 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 		w = LIMBO_3D_W;
 		h = LIMBO_3D_H;
 
-		cg.refdef.width = 0;
-		if ( cg_fixedAspect.integer == 2 ) { //FIXME:MAN-AT-ARMS...Use correct view
-			cg.refdef.x = LIMBO_3D_X * cgs.screenXScaleStretch;
-			cg.refdef.y = LIMBO_3D_Y * cgs.screenYScaleStretch;
-			cg.refdef.width = LIMBO_3D_W * cgs.screenXScaleStretch;
-			cg.refdef.height = LIMBO_3D_H * cgs.screenYScaleStretch;
-		} else {
-			CG_AdjustFrom640( &x, &y, &w, &h );
-
-			cg.refdef.x = x;
-			cg.refdef.y = y;
-			cg.refdef.width = w;
-			cg.refdef.height = h;
+		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		}
+
+		cg.refdef.width = 0;
+		CG_AdjustFrom640( &x, &y, &w, &h );
+
+		cg.refdef.x = x;
+		cg.refdef.y = y;
+		cg.refdef.width = w;
+		cg.refdef.height = h;
 	}
 	// -NERVE - SMF
 

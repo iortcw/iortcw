@@ -1747,8 +1747,24 @@ static void UI_DrawMapCinematic( rectDef_t *rect, float scale, vec4_t color, qbo
 		}
 		if ( uiInfo.mapList[map].cinematic >= 0 ) {
 			trap_CIN_RunCinematic( uiInfo.mapList[map].cinematic );
-			// FIXME:MAN-AT-ARMS Scale this
-			trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+
+			if ( ui_fixedAspect.integer ) {
+				// HACK HACK HACK - FIXME: x,y scaling
+				if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+					float scaledw = rect->w * ( 480.0 / 640.0 );
+
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, 103, rect->y, scaledw, rect->h );
+				} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+					float scaledh = rect->h * ( 480.0 / 640.0 );
+
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, 163, rect->w, scaledh );
+				} else {
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+				}
+			} else {
+				trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+			}
+
 			trap_CIN_DrawCinematic( uiInfo.mapList[map].cinematic );
 		} else {
 			uiInfo.mapList[map].cinematic = -2;
@@ -1875,8 +1891,24 @@ static void UI_DrawNetMapCinematic( rectDef_t *rect, float scale, vec4_t color )
 
 	if ( uiInfo.serverStatus.currentServerCinematic >= 0 ) {
 		trap_CIN_RunCinematic( uiInfo.serverStatus.currentServerCinematic );
-		// FIXME:MAN-AT-ARMS Scale this
-		trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+
+		if ( ui_fixedAspect.integer ) {
+			// HACK HACK HACK - FIXME: x,y scaling
+			if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+				float scaledw = rect->w * ( 480.0 / 640.0 );
+
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, 469, rect->y, scaledw, rect->h );
+			} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+				float scaledh = rect->h * ( 480.0 / 640.0 );
+
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, 150, rect->w, scaledh );
+			} else {
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+			}
+		} else {
+			trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+		}
+
 		trap_CIN_DrawCinematic( uiInfo.serverStatus.currentServerCinematic );
 	} else {
 		UI_DrawNetMapPreview( rect, scale, color );
@@ -6738,8 +6770,21 @@ static void UI_StopCinematic( int handle ) {
 }
 
 static void UI_DrawCinematic( int handle, float x, float y, float w, float h ) {
-	//FIXME:MAN-AT-ARMS Scale this
-	trap_CIN_SetExtents( handle, x, y, w, h );
+	if ( ui_fixedAspect.integer ) {
+		// HACK HACK HACK - FIXME: x,y scaling
+		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+			float scaledw = w * ( 480.0 / 640.0 );
+
+			trap_CIN_SetExtents( handle, 202, y, scaledw, h );
+		} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+			float scaledh = h * ( 480.0 / 640.0 );
+
+			trap_CIN_SetExtents( handle, x, 190, w, scaledh );
+		} else {
+			trap_CIN_SetExtents( handle, x, y, w, h );
+		}
+	}
+	//trap_CIN_SetExtents( handle, x, y, w, h );
 	trap_CIN_DrawCinematic( handle );
 }
 

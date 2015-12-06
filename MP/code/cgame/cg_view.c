@@ -202,6 +202,10 @@ static void CG_CalcVrect( void ) {
 		w = LIMBO_3D_W;
 		h = LIMBO_3D_H;
 
+		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
+
 		cg.refdef.width = 0;
 		CG_AdjustFrom640( &x, &y, &w, &h );
 

@@ -1830,8 +1830,8 @@ static void CG_DrawDisconnect( void ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
-	x = 640 - 48;
-	y = 480 - 48;
+	x = 640 - 52;
+	y = 480 - 240;
 
 	CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader( "gfx/2d/net.tga" ) );
 }
@@ -1865,8 +1865,8 @@ static void CG_DrawLagometer( void ) {
 	//
 	// draw the graph
 	//
-	x = 640 - 48;
-	y = 480 - 48;
+	x = 640 - 52;
+	y = 480 - 240;
 
 	trap_R_SetColor( NULL );
 	CG_DrawPic( x, y, 48, 48, cgs.media.lagometerShader );
