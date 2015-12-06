@@ -3730,12 +3730,20 @@ static void FS_CheckSPPaks( void )
 	if(!com_standalone->integer && (foundPak & 0xf) != 0xf)
 	{
 		char errorText[MAX_STRING_CHARS] = "";
+		char missingPaks[MAX_STRING_CHARS] = "";
+		int i = 0;
 
 		if((foundPak & 0xf) != 0xf)
 		{
-			Q_strcat(errorText, sizeof(errorText),
-				"\n\nPoint Release files are missing. Please\n"
-				"re-install the 1.41 point release.\n\n");
+			for( i = 0; i < NUM_SP_PAKS; i++ ) {
+				if ( !( foundPak & ( 1 << i ) ) ) {
+					Q_strcat( missingPaks, sizeof( missingPaks ), va( "sp_pak%d.pk3 ", i + 1 ) );
+				}
+			}
+
+			Q_strcat( errorText, sizeof( errorText ),
+				va( "\n\nPoint Release files are missing: %s \n"
+				"Please re-install the 1.41 point release.\n\n", missingPaks ) );
 		}
 
 		Com_Error(ERR_FATAL, "%s", errorText);

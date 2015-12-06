@@ -3700,12 +3700,20 @@ static void FS_CheckMPPaks( void )
 	if(!com_standalone->integer && (foundPak & 0x3f) != 0x3f)
 	{
 		char errorText[MAX_STRING_CHARS] = "";
+		char missingPaks[MAX_STRING_CHARS] = "";
+		int i = 0;
 
 		if((foundPak & 0x3f) != 0x3f)
 		{
-			Q_strcat(errorText, sizeof(errorText),
-				"\n\nPoint Release files are missing. Please\n"
-				"re-install the 1.41 point release.\n\n");
+			for( i = 0; i < NUM_MP_PAKS; i++ ) {
+				if ( !( foundPak & ( 1 << i ) ) ) {
+					Q_strcat( missingPaks, sizeof( missingPaks ), va( "mp_pak%d.pk3 ", i ) );
+				}
+			}
+
+			Q_strcat( errorText, sizeof( errorText ),
+				va( "\n\nPoint Release files are missing: %s \n"
+				"Please re-install the 1.41 point release.\n\n", missingPaks ) );
 		}
 
 		Com_Error(ERR_FATAL, "%s", errorText);
