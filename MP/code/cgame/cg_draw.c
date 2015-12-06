@@ -3754,7 +3754,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			CG_DrawTeamInfo();
 		}
 		if ( cg_drawStatus.integer ) {
-			if ( cg_fixedAspect.integer == 2 ) {
+			if ( cg_fixedAspect.integer == 2 && cg.limboMenu ) {
+				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			} else if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
 			}
 

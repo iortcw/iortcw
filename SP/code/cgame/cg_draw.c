@@ -649,28 +649,16 @@ static void CG_DrawStatusBar( void ) {
 		hcolor[2] = 0;
 		hcolor[3] = 0.33;
 		trap_R_SetColor( hcolor );
-		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, CG_GetScreenVerticalPlacement());
-			CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
-			CG_PopScreenPlacement();
-		} else {
-			CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
-			trap_R_SetColor( NULL );
-		}
+		CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
+		trap_R_SetColor( NULL );
 	} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
 		hcolor[0] = 0;
 		hcolor[1] = 0;
 		hcolor[2] = 1;
 		hcolor[3] = 0.33;
 		trap_R_SetColor( hcolor );
-		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, CG_GetScreenVerticalPlacement());
-			CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
-			CG_PopScreenPlacement();
-		} else {
-			CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
-			trap_R_SetColor( NULL );
-		}
+		CG_DrawPic( 0, 420, 640, 60, cgs.media.teamStatusBar );
+		trap_R_SetColor( NULL );
 	}
 
 	cent = &cg_entities[cg.snap->ps.clientNum];

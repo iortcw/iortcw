@@ -496,8 +496,5 @@ int         trap_PC_ReadToken( int handle, pc_token_t *pc_token );
 int         trap_PC_SourceFileAndLine( int handle, char *filename, int *line );
 
 void UI_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos);
-void UI_PopScreenPlacement(void);
-screenPlacement_e UI_GetScreenHorizontalPlacement(void);
-screenPlacement_e UI_GetScreenVerticalPlacement(void);
 
 #endif

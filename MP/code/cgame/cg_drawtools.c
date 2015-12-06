@@ -50,37 +50,6 @@ void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos)
 
 /*
 ================
-CG_PopScreenPlacement
-================
-*/
-void CG_PopScreenPlacement(void)
-{
-	cg_horizontalPlacement = cg_lastHorizontalPlacement;
-	cg_verticalPlacement = cg_lastVerticalPlacement;
-}
-
-/*
-================
-CG_GetScreenHorizontalPlacement
-================
-*/
-screenPlacement_e CG_GetScreenHorizontalPlacement(void)
-{
-	return cg_horizontalPlacement;
-}
-
-/*
-================
-CG_GetScreenVerticalPlacement
-================
-*/
-screenPlacement_e CG_GetScreenVerticalPlacement(void)
-{
-	return cg_verticalPlacement;
-}
-
-/*
-================
 CG_AdjustFrom640
 
 Adjusted for resolution and screen aspect ratio

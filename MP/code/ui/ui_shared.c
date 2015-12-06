@@ -116,38 +116,6 @@ void UI_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos)
 
 /*
 ================
-UI_PopScreenPlacement
-================
-*/
-void UI_PopScreenPlacement(void)
-{
-	ui_horizontalPlacement = ui_lastHorizontalPlacement;
-	ui_verticalPlacement = ui_lastVerticalPlacement;
-}
-
-/*
-================
-UI_GetScreenHorizontalPlacement
-================
-*/
-screenPlacement_e UI_GetScreenHorizontalPlacement(void)
-{
-	return ui_horizontalPlacement;
-}
-
-/*
-================
-UI_GetScreenVerticalPlacement
-================
-*/
-screenPlacement_e UI_GetScreenVerticalPlacement(void)
-{
-	return ui_verticalPlacement;
-}
-
-
-/*
-================
 UI_AdjustFrom640
 
 Adjusted for resolution and screen aspect ratio

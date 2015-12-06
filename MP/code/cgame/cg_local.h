@@ -1824,9 +1824,6 @@ void CG_Concussive( centity_t *cent );
 // cg_drawtools.c
 //
 void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos);
-void CG_PopScreenPlacement(void);
-screenPlacement_e CG_GetScreenHorizontalPlacement(void);
-screenPlacement_e CG_GetScreenVerticalPlacement(void);
 
 void CG_AdjustFrom640( float *x, float *y, float *w, float *h );
 void CG_FillRect( float x, float y, float width, float height, const float *color );
