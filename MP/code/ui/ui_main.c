@@ -1600,6 +1600,7 @@ static void UI_DrawClanCinematic( rectDef_t *rect, float scale, vec4_t color ) {
 			}
 			if ( uiInfo.teamList[i].cinematic >= 0 ) {
 				trap_CIN_RunCinematic( uiInfo.teamList[i].cinematic );
+				//FIXME:MAN-AT-ARMS Scale this
 				trap_CIN_SetExtents( uiInfo.teamList[i].cinematic, rect->x, rect->y, rect->w, rect->h );
 				trap_CIN_DrawCinematic( uiInfo.teamList[i].cinematic );
 			} else {
@@ -1619,6 +1620,7 @@ static void UI_DrawPreviewCinematic( rectDef_t *rect, float scale, vec4_t color 
 		uiInfo.previewMovie = trap_CIN_PlayCinematic( va( "%s.roq", uiInfo.movieList[uiInfo.movieIndex] ), 0, 0, 0, 0, ( CIN_loop | CIN_silent ) );
 		if ( uiInfo.previewMovie >= 0 ) {
 			trap_CIN_RunCinematic( uiInfo.previewMovie );
+			//FIXME:MAN-AT-ARMS Scale this
 			trap_CIN_SetExtents( uiInfo.previewMovie, rect->x, rect->y, rect->w, rect->h );
 			trap_CIN_DrawCinematic( uiInfo.previewMovie );
 		} else {
@@ -1745,7 +1747,24 @@ static void UI_DrawMapCinematic( rectDef_t *rect, float scale, vec4_t color, qbo
 		}
 		if ( uiInfo.mapList[map].cinematic >= 0 ) {
 			trap_CIN_RunCinematic( uiInfo.mapList[map].cinematic );
-			trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+
+			if ( ui_fixedAspect.integer ) {
+				// HACK HACK HACK - FIXME: x,y scaling
+				if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+					float scaledw = rect->w * ( 480.0 / 640.0 );
+
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, 103, rect->y, scaledw, rect->h );
+				} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+					float scaledh = rect->h * ( 480.0 / 640.0 );
+
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, 163, rect->w, scaledh );
+				} else {
+					trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+				}
+			} else {
+				trap_CIN_SetExtents( uiInfo.mapList[map].cinematic, rect->x, rect->y, rect->w, rect->h );
+			}
+
 			trap_CIN_DrawCinematic( uiInfo.mapList[map].cinematic );
 		} else {
 			uiInfo.mapList[map].cinematic = -2;
@@ -1872,7 +1891,24 @@ static void UI_DrawNetMapCinematic( rectDef_t *rect, float scale, vec4_t color )
 
 	if ( uiInfo.serverStatus.currentServerCinematic >= 0 ) {
 		trap_CIN_RunCinematic( uiInfo.serverStatus.currentServerCinematic );
-		trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+
+		if ( ui_fixedAspect.integer ) {
+			// HACK HACK HACK - FIXME: x,y scaling
+			if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+				float scaledw = rect->w * ( 480.0 / 640.0 );
+
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, 469, rect->y, scaledw, rect->h );
+			} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+				float scaledh = rect->h * ( 480.0 / 640.0 );
+
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, 150, rect->w, scaledh );
+			} else {
+				trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+			}
+		} else {
+			trap_CIN_SetExtents( uiInfo.serverStatus.currentServerCinematic, rect->x, rect->y, rect->w, rect->h );
+		}
+
 		trap_CIN_DrawCinematic( uiInfo.serverStatus.currentServerCinematic );
 	} else {
 		UI_DrawNetMapPreview( rect, scale, color );
@@ -6734,7 +6770,21 @@ static void UI_StopCinematic( int handle ) {
 }
 
 static void UI_DrawCinematic( int handle, float x, float y, float w, float h ) {
-	trap_CIN_SetExtents( handle, x, y, w, h );
+	if ( ui_fixedAspect.integer ) {
+		// HACK HACK HACK - FIXME: x,y scaling
+		if ( DC->glconfig.vidWidth * 480.0 > DC->glconfig.vidHeight * 640.0 ) {
+			float scaledw = w * ( 480.0 / 640.0 );
+
+			trap_CIN_SetExtents( handle, 202, y, scaledw, h );
+		} else if ( DC->glconfig.vidWidth * 480.0 < DC->glconfig.vidHeight * 640.0 ) {
+			float scaledh = h * ( 480.0 / 640.0 );
+
+			trap_CIN_SetExtents( handle, x, 190, w, scaledh );
+		} else {
+			trap_CIN_SetExtents( handle, x, y, w, h );
+		}
+	}
+	//trap_CIN_SetExtents( handle, x, y, w, h );
 	trap_CIN_DrawCinematic( handle );
 }
 
@@ -6823,14 +6873,36 @@ void _UI_Init( qboolean inGameLoad ) {
 	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
 
 	// for 640x480 virtualized screen
-	uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * ( 1.0 / 480.0 );
-	uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * ( 1.0 / 640.0 );
-	if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
-		// wide screen
-		uiInfo.uiDC.bias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * ( 640.0 / 480.0 ) ) );
+	if ( ui_fixedAspect.integer ) {
+		uiInfo.uiDC.xscaleStretch = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+		uiInfo.uiDC.yscaleStretch = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+		if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
+			uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+			uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+			// wide screen
+			uiInfo.uiDC.xBias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * (640.0/480.0) ) );
+			uiInfo.uiDC.xscale = uiInfo.uiDC.yscale;
+			// no narrow screen
+			uiInfo.uiDC.yBias = 0;
+		} else {
+			uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
+			uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
+			// narrow screen
+			uiInfo.uiDC.yBias = 0.5 * ( uiInfo.uiDC.glconfig.vidHeight - ( uiInfo.uiDC.glconfig.vidWidth * (480.0/640.0) ) );
+			uiInfo.uiDC.yscale = uiInfo.uiDC.xscale;
+			// no wide screen
+			uiInfo.uiDC.xBias = 0;
+		}
 	} else {
-		// no wide screen
-		uiInfo.uiDC.bias = 0;
+		uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * ( 1.0 / 480.0 );
+		uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * ( 1.0 / 640.0 );
+		if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
+			// wide screen
+			uiInfo.uiDC.bias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * ( 640.0 / 480.0 ) ) );
+		} else {
+			// no wide screen
+			uiInfo.uiDC.bias = 0;
+		}
 	}
 
 
@@ -7582,6 +7654,8 @@ cvarTable_t cvarTable[] = {
 	// JOSEPH 12-2-99
 	{ &ui_autoactivate, "cg_autoactivate", "1", CVAR_ARCHIVE },
 	// END JOSEPH
+
+	{ &ui_fixedAspect, "cg_fixedAspect", "0", CVAR_ARCHIVE | CVAR_LATCH },
 
 	{ &ui_server1, "server1", "", CVAR_ARCHIVE },
 	{ &ui_server2, "server2", "", CVAR_ARCHIVE },

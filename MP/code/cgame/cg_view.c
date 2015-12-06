@@ -202,6 +202,10 @@ static void CG_CalcVrect( void ) {
 		w = LIMBO_3D_W;
 		h = LIMBO_3D_H;
 
+		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		}
+
 		cg.refdef.width = 0;
 		CG_AdjustFrom640( &x, &y, &w, &h );
 
@@ -805,7 +809,6 @@ Fixed fov at intermissions, otherwise account for fov variable and zooms.
 */
 #define WAVE_AMPLITUDE  1
 #define WAVE_FREQUENCY  0.4
-#define STANDARD_ASPECT_RATIO  ( (float)640 / (float)480 )
 
 static int CG_CalcFov( void ) {
 	static float lastfov = 90;      // for transitions back from zoomed in modes
@@ -828,10 +831,10 @@ static int CG_CalcFov( void ) {
 
 	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 		// if in intermission, use a fixed value
-		fov_x = 90;
+		cg.fov = fov_x = 90;
 	} else {
 		// user selectable
-		if ( ( cgs.dmflags & DF_FIXED_FOV ) || cg_fixedAspect.value ) {
+		if ( ( cgs.dmflags & DF_FIXED_FOV ) || cg_fixedAspect.integer ) {
 			// dmflag to prevent wide fov for all clients
 			fov_x = 90;
 		} else {
@@ -850,6 +853,8 @@ static int CG_CalcFov( void ) {
 				}
 			}
 		}
+
+		cg.fov = fov_x;
 
 		// account for zooms
 		if ( cg.zoomval ) {
@@ -894,12 +899,14 @@ static int CG_CalcFov( void ) {
 		fov_x = 55;
 	}
 
-	if ( cg_fixedAspect.value ) {
-		float aspectRatio = (float)cg.refdef.width / (float)cg.refdef.height;
+	if ( cg_fixedAspect.integer ) {
+		// Based on LordHavoc's code for Darkplaces
+		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
+		const float baseAspect = 0.75f; // 3/4
+		const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+		const float desiredFov = fov_x;
 
-		if ( aspectRatio > STANDARD_ASPECT_RATIO )
-			fov_x = RAD2DEG( 2 * atan2( ( aspectRatio / STANDARD_ASPECT_RATIO ) * tan( DEG2RAD( fov_x ) * 0.5 ), 1 ) );
-		fov_x = min( fov_x, 160 );
+		fov_x = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
 	}
 
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );
@@ -1133,12 +1140,14 @@ static int CG_CalcViewValues( void ) {
 			VectorCopy( angles, cg.refdefViewAngles );
 			AnglesToAxis( cg.refdefViewAngles, cg.refdef.viewaxis );
 
-			if ( cg_fixedAspect.value ) {
-				float aspectRatio = (float)cg.refdef.width / (float)cg.refdef.height;
-
-				if ( aspectRatio > STANDARD_ASPECT_RATIO )
-					fov = RAD2DEG( 2 * atan2( ( aspectRatio / STANDARD_ASPECT_RATIO ) * tan( DEG2RAD( fov ) * 0.5 ), 1 ) );
-				fov = min( fov, 160 );
+			if ( cg_fixedAspect.integer ) {
+				// Based on LordHavoc's code for Darkplaces
+				// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
+				const float baseAspect = 0.75f; // 3/4
+				const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+				const float desiredFov = fov;
+		
+				fov = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
 			}
 
 			x = cg.refdef.width / tan( fov / 360 * M_PI );
@@ -1420,7 +1429,7 @@ void CG_DrawSkyBoxPortal( void ) {
 		fov_x = 90;
 	} else {
 		// user selectable
-		if ( ( cgs.dmflags & DF_FIXED_FOV ) || cg_fixedAspect.value ) {
+		if ( ( cgs.dmflags & DF_FIXED_FOV ) || cg_fixedAspect.integer ) {
 			// dmflag to prevent wide fov for all clients
 			fov_x = 90;
 		} else {
@@ -1475,12 +1484,14 @@ void CG_DrawSkyBoxPortal( void ) {
 		fov_x = 55;
 	}
 
-	if ( cg_fixedAspect.value ) {
-		float aspectRatio = (float)cg.refdef.width / (float)cg.refdef.height;
+	if ( cg_fixedAspect.integer ) {
+		// Based on LordHavoc's code for Darkplaces
+		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
+		const float baseAspect = 0.75f; // 3/4
+		const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+		const float desiredFov = fov_x;
 
-		if ( aspectRatio > STANDARD_ASPECT_RATIO )
-			fov_x = RAD2DEG( 2 * atan2( ( aspectRatio / STANDARD_ASPECT_RATIO ) * tan( DEG2RAD( fov_x ) * 0.5 ), 1 ) );
-		fov_x = min( fov_x, 160 );
+		fov_x = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
 	}
 
 	cg.refdef.time = cg.time;

@@ -165,6 +165,8 @@ vmCvar_t cg_ignore;
 vmCvar_t cg_simpleItems;
 vmCvar_t cg_fov;
 vmCvar_t cg_fixedAspect;
+vmCvar_t cg_oldWolfUI;
+vmCvar_t cg_drawStatusHead;
 vmCvar_t cg_zoomFov;
 vmCvar_t cg_zoomStepBinoc;
 vmCvar_t cg_zoomStepSniper;
@@ -296,7 +298,9 @@ cvarTable_t cvarTable[] = {
 	{ &cg_zoomStepSnooper, "cg_zoomStepSnooper", "5", CVAR_ARCHIVE },
 	{ &cg_zoomStepFG, "cg_zoomStepFG", "10", CVAR_ARCHIVE },          //----(SA)	added
 	{ &cg_fov, "cg_fov", "90", CVAR_ARCHIVE },	// NOTE: there is already a dmflag (DF_FIXED_FOV) to allow server control of this cheat
-	{ &cg_fixedAspect, "cg_fixedAspect", "0", CVAR_ARCHIVE }, // Essentially the same as setting DF_FIXED_FOV for widescreen aspects
+	{ &cg_fixedAspect, "cg_fixedAspect", "0", CVAR_ARCHIVE | CVAR_LATCH }, // Essentially the same as setting DF_FIXED_FOV for widescreen aspects
+	{ &cg_oldWolfUI, "cg_oldWolfUI", "0", CVAR_ARCHIVE },
+	{ &cg_drawStatusHead, "cg_drawStatusHead", "0", CVAR_ARCHIVE },
 	{ &cg_viewsize, "cg_viewsize", "100", CVAR_ARCHIVE },
 	{ &cg_letterbox, "cg_letterbox", "0", CVAR_TEMP },    //----(SA)	added
 	{ &cg_shadows, "cg_shadows", "1", CVAR_ARCHIVE  },
@@ -2317,8 +2321,30 @@ void CG_Init( int serverMessageNum, int serverCommandSequence ) {
 
 	// get the rendering configuration from the client system
 	trap_GetGlconfig( &cgs.glconfig );
-	cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
-	cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
+	if ( cg_fixedAspect.integer ) {
+		cgs.screenXScaleStretch = cgs.glconfig.vidWidth * (1.0/640.0);
+		cgs.screenYScaleStretch = cgs.glconfig.vidHeight * (1.0/480.0);
+		if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
+			cgs.screenXScale = cgs.glconfig.vidWidth * (1.0/640.0);
+			cgs.screenYScale = cgs.glconfig.vidHeight * (1.0/480.0);
+			// wide screen
+			cgs.screenXBias = 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * (640.0/480.0) ) );
+			cgs.screenXScale = cgs.screenYScale;
+			// no narrow screen
+			cgs.screenYBias = 0;
+		} else {
+			cgs.screenXScale = cgs.glconfig.vidWidth * (1.0/640.0);
+			cgs.screenYScale = cgs.glconfig.vidHeight * (1.0/480.0);
+			// narrow screen
+			cgs.screenYBias = 0.5 * ( cgs.glconfig.vidHeight - ( cgs.glconfig.vidWidth * (480.0/640.0) ) );
+			cgs.screenYScale = cgs.screenXScale;
+			// no wide screen
+			cgs.screenXBias = 0;
+		}
+	} else {
+		cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
+		cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
+	}
 
 	// get the gamestate from the client system
 	trap_GetGameState( &cgs.gameState );

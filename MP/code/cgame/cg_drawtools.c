@@ -29,6 +29,25 @@ If you have questions concerning this license or the applicable additional terms
 // cg_drawtools.c -- helper functions called by cg_draw, cg_scoreboard, cg_info, etc
 #include "cg_local.h"
 
+static screenPlacement_e cg_horizontalPlacement = PLACE_CENTER;
+static screenPlacement_e cg_verticalPlacement = PLACE_CENTER;
+static screenPlacement_e cg_lastHorizontalPlacement = PLACE_CENTER;
+static screenPlacement_e cg_lastVerticalPlacement = PLACE_CENTER;
+
+/*
+================
+CG_SetScreenPlacement
+================
+*/
+void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos)
+{
+	cg_lastHorizontalPlacement = cg_horizontalPlacement;
+	cg_lastVerticalPlacement = cg_verticalPlacement;
+
+	cg_horizontalPlacement = hpos;
+	cg_verticalPlacement = vpos;
+}
+
 /*
 ================
 CG_AdjustFrom640
@@ -44,23 +63,91 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 	}
 #endif
 
-	// NERVE - SMF - hack to make images display properly in small view / limbo mode
-	if ( cg.limboMenu && cg.refdef.width ) {
-		float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / 640.f );
-		float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / 480.f );
+	if ( cg_fixedAspect.integer ) {
+		if (cg_horizontalPlacement == PLACE_STRETCH) {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
 
-		( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale );
-		( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale );
-		( *w ) *= xscale;
-		( *h ) *= yscale;
+				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
+				( *w ) *= xscale;
+			}
+			// -NERVE - SMF
+
+			// scale for screen sizes (not aspect correct in wide screen)
+			*w *= cgs.screenXScaleStretch;
+			*x *= cgs.screenXScaleStretch;
+		} else {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
+
+				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
+				( *w ) *= xscale;
+			}
+			// -NERVE - SMF
+
+			// scale for screen sizes
+			*w *= cgs.screenXScale;
+			*x *= cgs.screenXScale;
+	
+			if (cg_horizontalPlacement == PLACE_CENTER) {
+				*x += cgs.screenXBias;
+			} else if (cg_horizontalPlacement == PLACE_RIGHT) {
+				*x += cgs.screenXBias*2;
+			}
+		}
+
+		if (cg_verticalPlacement == PLACE_STRETCH) {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
+
+				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
+				( *h ) *= yscale;
+			}
+			// -NERVE - SMF
+
+			*h *= cgs.screenYScaleStretch;
+			*y *= cgs.screenYScaleStretch;
+		} else {
+			// NERVE - SMF - hack to make images display properly in small view / limbo mode
+			if ( cg.limboMenu && cg.refdef.width ) {
+				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
+
+				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
+				( *h ) *= yscale;
+			}
+			// -NERVE - SMF
+
+			*h *= cgs.screenYScale;
+			*y *= cgs.screenYScale;
+	
+			if (cg_verticalPlacement == PLACE_CENTER) {
+				*y += cgs.screenYBias;
+			} else if (cg_verticalPlacement == PLACE_BOTTOM) {
+				*y += cgs.screenYBias*2;
+			}
+		}
+	} else {
+		// NERVE - SMF - hack to make images display properly in small view / limbo mode
+		if ( cg.limboMenu && cg.refdef.width ) {
+			float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / 640.f );
+			float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / 480.f );
+
+			( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale );
+			( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale );
+			( *w ) *= xscale;
+			( *h ) *= yscale;
+		}
+		// -NERVE - SMF
+
+		// scale for screen sizes
+		*x *= cgs.screenXScale;
+		*y *= cgs.screenYScale;
+		*w *= cgs.screenXScale;
+		*h *= cgs.screenYScale;
 	}
-	// -NERVE - SMF
-
-	// scale for screen sizes
-	*x *= cgs.screenXScale;
-	*y *= cgs.screenYScale;
-	*w *= cgs.screenXScale;
-	*h *= cgs.screenYScale;
 }
 
 /*
@@ -98,7 +185,7 @@ void CG_FillRectGradient( float x, float y, float width, float height, const flo
 ==============
 CG_HorizontalPercentBar
 	Generic routine for pretty much all status indicators that show a fractional
-	value to the palyer by virtue of how full a drawn box is.
+	value to the player by virtue of how full a drawn box is.
 
 flags:
 	left		- 1
@@ -1091,7 +1178,11 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color ) 
 	trap_R_SetColor( color );
 
 	ax = x * cgs.screenXScale + cgs.screenXBias;
-	ay = y * cgs.screenYScale;
+	if ( cg_fixedAspect.integer ) {
+		ay = y * cgs.screenYScale + cgs.screenYBias;
+	} else {
+		ay = y * cgs.screenYScale;
+	}
 
 	s = str;
 	while ( *s )
@@ -1198,7 +1289,11 @@ static void UI_DrawProportionalString2( int x, int y, const char* str, vec4_t co
 	trap_R_SetColor( color );
 
 	ax = x * cgs.screenXScale + cgs.screenXBias;
-	ay = y * cgs.screenYScale;
+	if ( cg_fixedAspect.integer ) {
+		ay = y * cgs.screenYScale + cgs.screenYBias;
+	} else {
+		ay = y * cgs.screenYScale;
+	}
 
 	s = str;
 	while ( *s )

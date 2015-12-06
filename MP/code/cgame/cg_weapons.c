@@ -2771,7 +2771,7 @@ Add the weapon, and flash for the player's view
 */
 void CG_AddViewWeapon( playerState_t *ps ) {
 	refEntity_t hand;
-	float fovOffset;
+	vec3_t fovOffset;
 	vec3_t angles;
 	vec3_t gunoff;
 	weaponInfo_t    *weapon;
@@ -2816,12 +2816,20 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		return;
 	}
 
-	// drop gun lower at higher fov
-	if ( cg_fov.integer > 90 && !cg_fixedAspect.value ) {
-		fovOffset = -0.2 * ( cg_fov.integer - 90 );
-	} else {
-		fovOffset = 0;
-	}
+	VectorClear(fovOffset);
+
+	if ( cg_fixedAspect.integer ) {
+		fovOffset[2] = 0;
+	} else if ( cg.fov > 90 ) {
+		// drop gun lower at higher fov
+		fovOffset[2] = -0.2 * ( cg.fov - 90 ) * cg.refdef.fov_x / cg.fov;
+	} else if ( cg.fov < 90 ) {
+		// move gun forward at lower fov
+		fovOffset[0] = -0.2 * ( cg.fov - 90 ) * cg.refdef.fov_x / cg.fov;
+	} else if ( cg_fov.integer > 90 ) {
+		// old auto adjust
+		fovOffset[2] = -0.2 * ( cg_fov.integer - 90 );
+ 	}
 
 	if ( ps->weapon > WP_NONE ) {
 		CG_RegisterWeapon( ps->weapon );
@@ -2838,9 +2846,9 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 //----(SA)	removed
 
-		VectorMA( hand.origin, gunoff[0], cg.refdef.viewaxis[0], hand.origin );
-		VectorMA( hand.origin, gunoff[1], cg.refdef.viewaxis[1], hand.origin );
-		VectorMA( hand.origin, ( gunoff[2] + fovOffset ), cg.refdef.viewaxis[2], hand.origin );
+		VectorMA( hand.origin, ( gunoff[0] + fovOffset[0] ), cg.refdef.viewaxis[0], hand.origin );
+		VectorMA( hand.origin, ( gunoff[1] + fovOffset[1] ), cg.refdef.viewaxis[1], hand.origin );
+		VectorMA( hand.origin, ( gunoff[2] + fovOffset[2] ), cg.refdef.viewaxis[2], hand.origin );
 
 		AnglesToAxis( angles, hand.axis );
 
@@ -2917,6 +2925,9 @@ void CG_DrawWeaponSelect( void ) {
 	}
 	trap_R_SetColor( color );
 
+	if ( cg_fixedAspect.integer == 2 ) {
+		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
+	}
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay
 	// showing weapon select clears pickup item display, but not the blend blob
