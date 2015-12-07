@@ -821,10 +821,6 @@ extern int cl_connectedToPureServer;
 qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const char *filename, const char *cvar_lastVersion );
 #endif
 
-#if defined( DO_LIGHT_DEDICATED )
-int FS_RandChecksumFeed( void );
-#endif
-
 char *FS_ShiftedStrStr( const char *string, const char *substring, int shift );
 char *FS_ShiftStr( const char *string, int shift );
 

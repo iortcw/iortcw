@@ -591,20 +591,9 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// make sure we are not paused
 	Cvar_Set( "cl_paused", "0" );
 
-#if !defined( DO_LIGHT_DEDICATED )
 	// get a new checksum feed and restart the file system
 	sv.checksumFeed = ( ((int) rand() << 16) ^ rand() ) ^ Com_Milliseconds();
 
-	// DO_LIGHT_DEDICATED
-	// only comment out when you need a new pure checksum string and it's associated random feed
-	//Com_DPrintf("SV_SpawnServer checksum feed: %p\n", sv.checksumFeed);
-
-#else // DO_LIGHT_DEDICATED implementation below
-	// we are not able to randomize the checksum feed since the feed is used as key for pure_checksum computations
-	// files.c 1776 : pack->pure_checksum = Com_BlockChecksumKey( fs_headerLongs, 4 * fs_numHeaderLongs, LittleLong(fs_checksumFeed) );
-	// we request a fake randomized feed, files.c knows the answer
-	sv.checksumFeed = FS_RandChecksumFeed();
-#endif
 	FS_Restart( sv.checksumFeed );
 
 	// Load map config if present
