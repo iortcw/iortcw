@@ -2357,6 +2357,8 @@ For controlling environment variables
 
 void Com_ExecuteCfg(void)
 {
+// DHM - Nerve
+#ifndef UPDATE_SERVER
 	Cbuf_ExecuteText(EXEC_NOW, "exec default.cfg\n");
 	if ( FS_ReadFile( "language.cfg", NULL ) > 0 ) {
 		Cbuf_ExecuteText(EXEC_APPEND, "exec language.cfg\n");
@@ -2373,6 +2375,7 @@ void Com_ExecuteCfg(void)
 		Cbuf_ExecuteText(EXEC_NOW, "exec autoexec.cfg\n");
 		Cbuf_Execute();
 	}
+#endif
 }
 
 /*
@@ -2748,8 +2751,6 @@ void Com_Init( char *commandLine ) {
 
 	Com_InitJournaling();
 
-	// DHM - Nerve
-#ifndef UPDATE_SERVER
 	// Add some commands here already so users can use them from config files
 	Cmd_AddCommand ("setenv", Com_Setenv_f);
 	if (com_developer && com_developer->integer)
@@ -2763,7 +2764,6 @@ void Com_Init( char *commandLine ) {
 	Cmd_AddCommand ("writeconfig", Com_WriteConfig_f );
 	Cmd_SetCommandCompletionFunc( "writeconfig", Cmd_CompleteCfgName );
 	Cmd_AddCommand("game_restart", Com_GameRestart_f);
-#endif
 
 	Com_ExecuteCfg();
 

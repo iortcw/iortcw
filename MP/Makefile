@@ -28,6 +28,9 @@ endif
 ifndef BUILD_SERVER
   BUILD_SERVER     =
 endif
+ifndef BUILD_UPDATE_SERVER
+  BUILD_UPDATE_SERVER     = 0
+endif
 ifndef BUILD_GAME_SO
   BUILD_GAME_SO    =
 endif
@@ -1027,6 +1030,10 @@ endif
 
 ifneq ($(BUILD_SERVER),0)
   TARGETS += $(B)/$(SERVERBIN)$(FULLBINEXT)
+endif
+
+ifneq ($(BUILD_UPDATE_SERVER),0)
+  SERVER_CFLAGS += -DUPDATE_SERVER
 endif
 
 ifneq ($(BUILD_CLIENT),0)

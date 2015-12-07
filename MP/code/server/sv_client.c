@@ -973,7 +973,7 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 		// Chop off filename extension.
 		Com_sprintf(pakbuf, sizeof(pakbuf), "%s", cl->downloadName);
 		pakptr = strrchr(pakbuf, '.');
-		
+
 		if(pakptr)
 		{
 			*pakptr = '\0';
@@ -1029,7 +1029,7 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 			*cl->downloadName = 0;
 
 			SV_DropClient( cl, "Invalid download from update server" );
-			return;
+			return 0;
 		}
 #endif
 		// DHM - Nerve
