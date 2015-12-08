@@ -515,8 +515,8 @@ void CG_Concussive( centity_t *cent ) {
 /*
 ==============
 CG_ZoomSway
-    sway for scoped weapons.
-    this takes aimspread into account so the view settles after a bit
+sway for scoped weapons.
+this takes aimspread into account so the view settles after a bit
 ==============
 */
 static void CG_ZoomSway( void ) {
@@ -1040,27 +1040,6 @@ static void CG_DamageBlendBlob( void ) {
 
 		redFlash += ent.radius;
 	}
-
-	/* moved over to cg_draw.c
-	if (cg.v_dmg_time > cg.time) {
-	    redFlash = fabs(cg.v_dmg_pitch * ((cg.v_dmg_time - cg.time) / DAMAGE_TIME));
-
-	    // blend the entire screen red
-	    if (redFlash > 5)
-	        redFlash = 5;
-
-	    memset( &ent, 0, sizeof( ent ) );
-	    ent.reType = RT_SPRITE;
-	    ent.renderfx = RF_FIRST_PERSON;
-
-	    VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
-	    ent.radius = 80;	// occupy entire screen
-	    ent.customShader = cgs.media.viewFlashBlood;
-	    ent.shaderRGBA[3] = (int)(180.0 * redFlash/5.0);
-
-	    trap_R_AddRefEntityToScene( &ent );
-	}
-	*/
 }
 
 /*
@@ -1069,42 +1048,6 @@ CG_DrawScreenFade
 ===============
 */
 static void CG_DrawScreenFade( void ) {
-/* moved over to cg_draw.c
-    static int lastTime;
-    int elapsed, time;
-    refEntity_t		ent;
-
-    if (cgs.fadeStartTime + cgs.fadeDuration < cg.time) {
-        cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-    } else if (cgs.fadeAlphaCurrent != cgs.fadeAlpha) {
-        elapsed = (time = trap_Milliseconds()) - lastTime;	// we need to use trap_Milliseconds() here since the cg.time gets modified upon reloading
-        lastTime = time;
-        if (elapsed < 500 && elapsed > 0) {
-            if (cgs.fadeAlphaCurrent > cgs.fadeAlpha) {
-                cgs.fadeAlphaCurrent -= ((float)elapsed/(float)cgs.fadeDuration);
-                if (cgs.fadeAlphaCurrent < cgs.fadeAlpha)
-                    cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-            } else {
-                cgs.fadeAlphaCurrent += ((float)elapsed/(float)cgs.fadeDuration);
-                if (cgs.fadeAlphaCurrent > cgs.fadeAlpha)
-                    cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-            }
-        }
-    }
-    // now draw the fade
-    if (cgs.fadeAlphaCurrent > 0.0) {
-        memset( &ent, 0, sizeof( ent ) );
-        ent.reType = RT_SPRITE;
-        ent.renderfx = RF_FIRST_PERSON;
-
-        VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
-        ent.radius = 80;	// occupy entire screen
-        ent.customShader = cgs.media.viewFadeBlack;
-        ent.shaderRGBA[3] = (int)(255.0 * cgs.fadeAlphaCurrent);
-
-        trap_R_AddRefEntityToScene( &ent );
-    }
-*/
 }
 
 /*
@@ -1211,16 +1154,6 @@ static int CG_CalcViewValues( void ) {
 
 	// Ridah, lock the viewangles if the game has told us to
 	if ( ps->viewlocked ) {
-
-		/*
-		if (ps->viewlocked == 4)
-		{
-		    centity_t *tent;
-		    tent = &cg_entities[ps->viewlocked_entNum];
-		    VectorCopy (tent->currentState.apos.trBase, cg.refdefViewAngles);
-		}
-		else
-		*/
 		// DHM - Nerve :: don't bother evaluating if set to 7 (look at medic)
 		if ( ps->viewlocked != 7 && ps->viewlocked != 3 && ps->viewlocked != 2 ) {
 			BG_EvaluateTrajectory( &cg_entities[ps->viewlocked_entNum].currentState.apos, cg.time, cg.refdefViewAngles );
@@ -1280,33 +1213,6 @@ static int CG_CalcViewValues( void ) {
 	return CG_CalcFov();
 }
 
-
-/*
-=====================
-CG_PowerupTimerSounds
-=====================
-*/
-/*
-// TTimo: unused
-static void CG_PowerupTimerSounds( void ) {
-    int		i;
-    int		t;
-
-    // powerup timers going away
-    for ( i = 0 ; i < MAX_POWERUPS ; i++ ) {
-        t = cg.snap->ps.powerups[i];
-        if ( t <= cg.time ) {
-            continue;
-        }
-        if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
-            continue;
-        }
-        if ( ( t - cg.time ) / POWERUP_BLINK_TIME != ( t - cg.oldTime ) / POWERUP_BLINK_TIME ) {
-            trap_S_StartSound( NULL, cg.snap->ps.clientNum, CHAN_ITEM, cgs.media.wearOffSound );
-        }
-    }
-}
-*/
 
 //=========================================================================
 
@@ -1700,13 +1606,6 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	CG_PlayBufferedVoiceChats();
 
 	DEBUGTIME
-/*
-    if (cg_notebook.integer)
-    {
-        CG_DrawNotebook ();
-    }
-*/
-		DEBUGTIME
 
 	// Ridah, trails
 	if ( !cg.hyperspace ) {
@@ -1746,7 +1645,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	DEBUGTIME
 
-		mpSetup = CG_GetMPSetupValue(); // NERVE - SMF - setup mpSetup values
+	mpSetup = CG_GetMPSetupValue(); // NERVE - SMF - setup mpSetup values
 
 	// let the client system know what our weapon, holdable item and zoom settings are
 	trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, mpSetup, cg.identifyClientRequest );

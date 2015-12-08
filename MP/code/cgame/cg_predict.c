@@ -449,35 +449,7 @@ static void CG_TouchTriggerPrediction( void ) {
 		if ( !trace.startsolid ) {
 			continue;
 		}
-/*
-// JPW NERVE
-        if (ent->eType == ET_CONCUSSIVE_TRIGGER) {
-            vec3_t dir,center;
-            dir[0] = 0;
-            dir[1] = 0;
-            dir[2] = -1;
-            CG_Printf("in concussive trigger\n");
-            trap_R_ModelBounds(cmodel,mins,maxs);
-            VectorAdd(mins,maxs,center);
-            VectorScale(center,0.5,center);
-            CG_Printf("cmodel=%d mins=%f,%f,%f maxs=%f,%f,%f\n",cmodel,
-                mins[0],mins[1],mins[2],maxs[0],maxs[1],maxs[2]);
 
-            CG_AddDirtBulletParticles( mins, dir,
-                                    190,	// speed
-                                    900,	// duration
-                                    1,	// count
-                                    0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-            CG_AddDirtBulletParticles( maxs, dir,
-                                    190,	// speed
-                                    900,	// duration
-                                    1,	// count
-                                    0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-        }
-        else
-// jpw
-
-*/
 		if ( ent->eType == ET_OID_TRIGGER ) {
 			cs = CG_ConfigString( CS_OID_TRIGGERS + ent->teamNum );
 
@@ -709,7 +681,7 @@ void CG_PredictPlayerState( void ) {
 			} else {
 				vec3_t adjusted, new_angles;
 				CG_AdjustPositionForMover( cg.predictedPlayerState.origin,
-										   cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles );
+								cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles );
 				// RF, add the deltaAngles (fixes jittery view while riding trains)
 				cg.predictedPlayerState.delta_angles[YAW] += ANGLE2SHORT( deltaAngles[YAW] );
 
@@ -796,8 +768,8 @@ void CG_PredictPlayerState( void ) {
 
 	// adjust for the movement of the groundentity
 	CG_AdjustPositionForMover( cg.predictedPlayerState.origin,
-							   cg.predictedPlayerState.groundEntityNum,
-							   cg.physicsTime, cg.time, cg.predictedPlayerState.origin, cg.predictedPlayerState.viewangles, cg.predictedPlayerState.viewangles );
+					cg.predictedPlayerState.groundEntityNum,
+					cg.physicsTime, cg.time, cg.predictedPlayerState.origin, cg.predictedPlayerState.viewangles, cg.predictedPlayerState.viewangles );
 
 	// fire events and other transition triggered things
 	CG_TransitionPlayerState( &cg.predictedPlayerState, &oldPlayerState );

@@ -141,55 +141,6 @@ static void CG_LoadHud_f( void ) {
 	menuScoreboard = NULL;
 }
 
-/*
-// TTimo: defined but not used
-static void CG_scrollScoresDown_f( void) {
-    if (menuScoreboard && cg.scoreBoardShowing) {
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
-    }
-}
-*/
-
-/*
-// TTimo: defined but not used
-static void CG_scrollScoresUp_f( void) {
-    if (menuScoreboard && cg.scoreBoardShowing) {
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
-        Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
-    }
-}
-*/
-
-/*
-// TTimo: defined but not used
-static void CG_spWin_f( void) {
-    trap_Cvar_Set("cg_cameraOrbit", "2");
-    trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-    trap_Cvar_Set("cg_thirdPerson", "1");
-    trap_Cvar_Set("cg_thirdPersonAngle", "0");
-    trap_Cvar_Set("cg_thirdPersonRange", "100");
-//	CG_AddBufferedSound(cgs.media.winnerSound);
-    //trap_S_StartLocalSound(cgs.media.winnerSound, CHAN_ANNOUNCER);
-    CG_CenterPrint("YOU WIN!", SCREEN_HEIGHT * .30, 0);
-}
-*/
-
-/*
-// TTimo: defined but not used
-static void CG_spLose_f( void) {
-    trap_Cvar_Set("cg_cameraOrbit", "2");
-    trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-    trap_Cvar_Set("cg_thirdPerson", "1");
-    trap_Cvar_Set("cg_thirdPersonAngle", "0");
-    trap_Cvar_Set("cg_thirdPersonRange", "100");
-//	CG_AddBufferedSound(cgs.media.loserSound);
-    //trap_S_StartLocalSound(cgs.media.loserSound, CHAN_ANNOUNCER);
-    CG_CenterPrint("YOU LOSE...", SCREEN_HEIGHT * .30, 0);
-}
-*/
 
 //----(SA)	item (key/pickup) drawing
 static void CG_InventoryDown_f( void ) {
@@ -312,19 +263,6 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 	}
 }
 
-/*
-// TTimo: defined but not used
-static void CG_Camera_f( void ) {
-    char name[MAX_QPATH];
-
-    if ( cgs.gametype != GT_SINGLE_PLAYER )
-        return;
-
-    trap_Argv( 1, name, sizeof(name));
-
-    CG_StartCamera(name, qfalse );
-}
-*/
 
 static void CG_Fade_f( void ) {
 	int r, g, b, a;

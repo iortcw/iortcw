@@ -109,7 +109,7 @@ static void CG_ParseTeamInfo( void ) {
 	numSortedTeamPlayers = atoi( CG_Argv( 3 ) );
 	if ( numSortedTeamPlayers < 0 || numSortedTeamPlayers > TEAM_MAXOVERLAY ) {
 		CG_Error( "CG_ParseTeamInfo: numSortedTeamPlayers out of range (%d)",
-				  numSortedTeamPlayers );
+				numSortedTeamPlayers );
 		return;
 	}
 
@@ -249,11 +249,11 @@ static void CG_ParseScreenFade( void ) {
 /*
 ==============
 CG_ParseFog
-    float near dist
-    float far dist
-    float density
-    float[3] r,g,b
-    int		time
+float near dist
+float far dist
+float density
+float[3] r,g,b
+int time
 ==============
 */
 static void CG_ParseFog( void ) {
@@ -1133,13 +1133,6 @@ CG_PlayVoiceChat
 =================
 */
 void CG_PlayVoiceChat( bufferedVoiceChat_t *vchat ) {
-	// if we are going into the intermission, don't start any voices
-/*	// NERVE - SMF - don't do this in wolfMP
-    if ( cg.intermissionStarted ) {
-        return;
-    }
-*/
-
 	if ( !cg_noVoiceChats.integer ) {
 		trap_S_StartLocalSound( vchat->snd, CHAN_VOICE );
 
@@ -1206,26 +1199,10 @@ CG_AddBufferedVoiceChat
 =====================
 */
 void CG_AddBufferedVoiceChat( bufferedVoiceChat_t *vchat ) {
-	// if we are going into the intermission, don't start any voices
-/*	// NERVE - SMF - don't do this in wolfMP
-    if ( cg.intermissionStarted ) {
-        return;
-    }
-*/
-
-// JPW NERVE new system doesn't buffer but overwrites vchats FIXME put this on a cvar to choose which to use
+	// JPW NERVE new system doesn't buffer but overwrites vchats FIXME put this on a cvar to choose which to use
 	memcpy( &voiceChatBuffer[0],vchat,sizeof( bufferedVoiceChat_t ) );
 	cg.voiceChatBufferIn = 0;
 	CG_PlayVoiceChat( &voiceChatBuffer[0] );
-
-/* JPW NERVE pulled this
-    memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
-    cg.voiceChatBufferIn = (cg.voiceChatBufferIn + 1) % MAX_VOICECHATBUFFER;
-    if (cg.voiceChatBufferIn == cg.voiceChatBufferOut) {
-        CG_PlayVoiceChat( &voiceChatBuffer[cg.voiceChatBufferOut] );
-        cg.voiceChatBufferOut++;
-    }
-*/
 }
 
 /*
@@ -1241,13 +1218,6 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 	qhandle_t sprite;
 	bufferedVoiceChat_t vchat;
 	const char *loc;            // NERVE - SMF
-
-/*	// NERVE - SMF - don't do this in wolfMP
-    // if we are going into the intermission, don't start any voices
-    if ( cg.intermissionStarted ) {
-        return;
-    }
-*/
 
 	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
 		clientNum = 0;

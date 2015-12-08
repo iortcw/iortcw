@@ -792,18 +792,6 @@ static void CG_RegisterSounds( void ) {
 // JPW NERVE
 	if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
 		cgs.media.wearOffSound = trap_S_RegisterSound( "sound/multiplayer/respawn.wav" );
-		/*	cgs.media.twoMinuteSound_g = trap_S_RegisterSound("sound/multiplayer/axis/g-twominutes1.wav");
-		   cgs.media.twoMinuteSound_a = trap_S_RegisterSound("sound/multiplayer/allies/a-twominutes1.wav");
-		   cgs.media.thirtySecondSound_g = trap_S_RegisterSound("sound/multiplayer/axis/g-thirtyseconds1.wav");
-		   cgs.media.thirtySecondSound_a = trap_S_RegisterSound("sound/multiplayer/allies/a-thirtyseconds1.wav");*/
-/*		if( cg.twoMinuteSound_g[0] != '0' )
-            cgs.media.twoMinuteSound_g = trap_S_RegisterSound(cg.twoMinuteSound_g);
-        if( cg.twoMinuteSound_a[0] != '0' )
-            cgs.media.twoMinuteSound_a = trap_S_RegisterSound(cg.twoMinuteSound_a);
-        if( cg.thirtySecondSound_g[0] != '0' )
-            cgs.media.thirtySecondSound_g = trap_S_RegisterSound(cg.thirtySecondSound_g);
-        if( cg.thirtySecondSound_a[0] != '0' )
-            cgs.media.thirtySecondSound_a = trap_S_RegisterSound(cg.thirtySecondSound_a);*/
 		trap_S_RegisterSound( "sound/multiplayer/land_hurt.wav" );
 	} else {
 		cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav" );
@@ -811,9 +799,9 @@ static void CG_RegisterSounds( void ) {
 // jpw
 	cgs.media.useNothingSound = trap_S_RegisterSound( "sound/items/use_nothing.wav" );
 	cgs.media.gibSound = trap_S_RegisterSound( "sound/player/gibsplt1.wav" );
-	//cgs.media.gibBounce1Sound = trap_S_RegisterSound( "sound/player/gibimp1.wav" );
+//	cgs.media.gibBounce1Sound = trap_S_RegisterSound( "sound/player/gibimp1.wav" );
 	cgs.media.gibBounce2Sound = trap_S_RegisterSound( "sound/player/gibimp2.wav" );
-	//cgs.media.gibBounce3Sound = trap_S_RegisterSound( "sound/player/gibimp3.wav" );
+//	cgs.media.gibBounce3Sound = trap_S_RegisterSound( "sound/player/gibimp3.wav" );
 
 //	cgs.media.teleInSound = trap_S_RegisterSound( "sound/world/telein.wav" );
 //	cgs.media.teleOutSound = trap_S_RegisterSound( "sound/world/teleout.wav" );
@@ -826,12 +814,6 @@ static void CG_RegisterSounds( void ) {
 
 	cgs.media.fbarrelexp1 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrela.wav" );
 	cgs.media.fbarrelexp2 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrelb.wav" );
-
-/* JPW NERVE kick pulled from MP to prevent bind cheats
-    cgs.media.fkickwall = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-    cgs.media.fkickflesh = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-    cgs.media.fkickmiss = trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
-*/
 
 	cgs.media.noAmmoSound = trap_S_RegisterSound( "sound/weapons/noammo.wav" );
 
@@ -933,31 +915,9 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.flameCrackSound = trap_S_RegisterSound( "sound/world/firecrack1.wav" );
 	cgs.media.boneBounceSound = trap_S_RegisterSound( "sound/world/boardbreak.wav" );    // TODO: need a real sound for this
 
-/* JPW NERVE not in MP
-    cgs.media.lightningSounds[0] = trap_S_RegisterSound( "sound/world/electzap1.wav" );
-    cgs.media.lightningSounds[1] = trap_S_RegisterSound( "sound/world/electzap2.wav" );
-    cgs.media.lightningSounds[2] = trap_S_RegisterSound( "sound/world/electzap3.wav" );
-    cgs.media.lightningZap = trap_S_RegisterSound( "sound/world/electrocute.wav" );
-*/
 	// precache sound scripts that get called from the cgame
 	cgs.media.bulletHitFleshScript = CG_SoundScriptPrecache( "bulletHitFlesh" );
 
-/* JPW NERVE not in MP
-    cgs.media.teslaZapScript = CG_SoundScriptPrecache( "teslaZap" );
-    cgs.media.teslaLoopSound = trap_S_RegisterSound ( "sound/weapons/tesla/loop.wav" );
-*/
-//	cgs.media.batsFlyingLoopSound = trap_S_RegisterSound( "sound/world/bats_flying.wav" );
-
-	// FIXME: only needed with item
-//	cgs.media.flightSound = trap_S_RegisterSound( "sound/items/flight.wav" );
-//	cgs.media.medkitSound = trap_S_RegisterSound ("sound/items/use_medkit.wav");
-/* JPW NERVE -- not in MP
-    cgs.media.elecSound = trap_S_RegisterSound ("sound/items/use_elec.wav");
-    cgs.media.fireSound = trap_S_RegisterSound ("sound/items/use_fire.wav");
-    cgs.media.waterSound = trap_S_RegisterSound ("sound/items/use_water.wav");
-    cgs.media.wineSound = trap_S_RegisterSound ("sound/items/use_wine.wav");
-    cgs.media.quadSound = trap_S_RegisterSound("sound/items/damage3.wav");
-*/
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );
 	cgs.media.sfx_ric3 = trap_S_RegisterSound( "sound/weapons/machinegun/ric3.wav" );
@@ -1011,16 +971,6 @@ static void CG_RegisterSounds( void ) {
 		trap_S_RegisterSound( "sound/multiplayer/artillery_01.wav" );
 		trap_S_RegisterSound( "sound/multiplayer/airstrike_01.wav" );
 	}
-
-	//----(SA)	removed some unnecessary stuff
-
-/* JPW NERVE -- kick pulled from MP (cheat issues)
-    trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-    trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
-
-    trap_S_RegisterSound( "sound/Loogie/spit.wav" );
-    trap_S_RegisterSound( "sound/Loogie/sizzle.wav" );
-*/
 }
 
 
@@ -1270,20 +1220,6 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.smallgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/sm_shell.md3" );
 
 //	cgs.media.shotgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/s_shell.md3" );
-
-// RF: old style gibs not needed anymore (changed over to using gibs.cfg)
-/*
-    cgs.media.gibAbdomen = trap_R_RegisterModel( "models/gibs/abdomen.md3" );
-    cgs.media.gibArm = trap_R_RegisterModel( "models/gibs/arm.md3" );
-    cgs.media.gibChest = trap_R_RegisterModel( "models/gibs/chest.md3" );
-    cgs.media.gibFist = trap_R_RegisterModel( "models/gibs/fist.md3" );
-    cgs.media.gibFoot = trap_R_RegisterModel( "models/gibs/foot.md3" );
-    cgs.media.gibForearm = trap_R_RegisterModel( "models/gibs/forearm.md3" );
-    cgs.media.gibIntestine = trap_R_RegisterModel( "models/gibs/intestine.md3" );
-    cgs.media.gibLeg = trap_R_RegisterModel( "models/gibs/leg.md3" );
-    cgs.media.gibSkull = trap_R_RegisterModel( "models/gibs/skull.md3" );
-    cgs.media.gibBrain = trap_R_RegisterModel( "models/gibs/brain.md3" );
-*/
 
 	//----(SA) wolf debris
 	cgs.media.debBlock[0] = trap_R_RegisterModel( "models/mapobjects/debris/brick1.md3" );

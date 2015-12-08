@@ -822,28 +822,6 @@ qboolean CG_DrawScoreboard( void ) {
 //================================================================================
 
 /*
-================
-CG_CenterGiantLine
-================
-*/
-/*
-// TTimo: unused
-static void CG_CenterGiantLine( float y, const char *string ) {
-    float		x;
-    vec4_t		color;
-
-    color[0] = 1;
-    color[1] = 1;
-    color[2] = 1;
-    color[3] = 1;
-
-    x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( string ) );
-
-    CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
-}
-*/
-
-/*
 =================
 CG_DrawTourneyScoreboard
 

@@ -111,7 +111,7 @@ void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 /*
 ==============
 CG_LoseArmor
-    maybe better in cg_localents.c
+maybe better in cg_localents.c
 ==============
 */
 void CG_LoseArmor( centity_t *cent, int index ) {
@@ -256,10 +256,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 		//			Or have they always been broken and we just never used them?
 
 		if ( cent->currentState.eType == ET_SPEAKER ) {
-			/*if(cent->currentState.density == 1) {	// NO_PVS
-			    CG_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ] );
-			}
-			else*/if ( cent->currentState.dmgFlags ) { // range is set
+			if ( cent->currentState.dmgFlags ) { // range is set
 				CG_S_AddRangedLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], cent->currentState.dmgFlags );
 			} else {
 				CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
@@ -274,14 +271,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 		} else {
 			CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 		}
-	} /*else {
-	    // stop NO_PVS speakers if they've been turned off
-	    if(cent->currentState.eType == ET_SPEAKER) {
-	        if(cent->currentState.density == 1) {
-	            trap_S_StopLoopingSound(cent->currentState.number);
-	        }
-	    }
-	}*/
+	}
 
 
 	// constant light glow
@@ -292,8 +282,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 		if ( cent->dl_stylestring[0] != 0 ) {  // it's probably a dlight
 			CG_AddLightstyle( cent );
-		} else
-		{
+		} else {
 			cl = cent->currentState.constantLight;
 			r = (float) ( cl & 0xFF ) / 255.0;
 			g = (float) ( ( cl >> 8 ) & 0xFF ) / 255.0;
@@ -468,107 +457,10 @@ static void CG_Speaker( centity_t *cent ) {
 ==============
 CG_DrawHoldableSelect
 
-  This, of course, will all change when we've got a hud, but for now it makes the holdable items usable and not bad looking
+This, of course, will all change when we've got a hud, but for now it makes the holdable items usable and not bad looking
 ==============
 */
 void CG_DrawHoldableSelect( void ) {
-/*
-    int		bits;
-    int		count;
-    int		amount;
-    int		i, x, y, w;
-    float	*color;
-    char	*name;
-    gitem_t		*item;
-
-    // don't display if dead
-    if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
-        return;
-    }
-
-    color = CG_FadeColor( cg.holdableSelectTime, HOLDABLE_SELECT_TIME );
-    if ( !color ) {
-        return;
-    }
-    trap_R_SetColor( color );
-
-    // showing select clears pickup item display, but not the blend blob
-    cg.itemPickupTime = 0;
-
-    //----(SA)	removed
-
-    // count the number of weapons owned
-    bits = cg.snap->ps.stats[ STAT_HOLDABLE_ITEM ];
-    count = 0;
-
-    for ( i = 1 ; i <= HI_BOOK3; i++ ) {
-        if ( bits & ( 1 << i ) ) {
-            if(cg.predictedPlayerState.holdable[i])		// don't show ones we're out of
-                count++;
-        }
-    }
-
-    x = 320 - count * 20;
-    y = 380;
-
-
-    for ( i = 1 ; i <= HI_BOOK3 ; i++ ) {
-        if ( !( bits & ( 1 << i ) ) ) {
-            continue;
-        }
-
-        amount = cg.predictedPlayerState.holdable[i];
-
-        if(!amount)
-            continue;
-
-        item = BG_FindItemForHoldable(i);
-        if(!item)
-            continue;
-
-        CG_RegisterItemVisuals(item - bg_itemlist);
-
-        // draw icon
-        if(i == HI_WINE) {
-            // wine icons have three stages since each bottle has three uses (as opposed to others so far where there's only 1 use)
-            int wine = amount;
-            if(wine > 3) wine = 3;
-            CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[ 2 - (wine - 1) ] ) ;
-        }
-        else {
-            CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[0]);
-        }
-
-        // draw remaining uses if there's more than one
-        if(amount > 1)
-            CG_DrawBigStringColor(x, y + 34, va("%d", amount), color);
-
-        // draw selection marker
-        if ( i == cg.holdableSelect) {
-            CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
-        }
-
-        x += 40;
-    }
-
-    // draw the selected name
-    if(cg.holdableSelect) {
-        item = BG_FindItemForHoldable(cg.holdableSelect);
-        if(item) {
-            name = item->pickup_name;
-            if ( name ) {
-        //----(SA)	trying smaller text
-//				w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
-                w = CG_DrawStrlen( name ) * 10;
-                x = ( SCREEN_WIDTH - w ) / 2;
-//				CG_DrawBigStringColor(x, y - 22, name, color);
-                CG_DrawStringExt2( x, y + 60, name, color, qfalse, qtrue, 10, 10, 0 );
-            }
-        }
-    }
-
-    trap_R_SetColor( NULL );
-*/
 }
 
 
@@ -577,42 +469,7 @@ void CG_DrawHoldableSelect( void ) {
 CG_NextItem_f
 ==============
 */
-
 void CG_NextItem_f( void ) {
-/*
-    int		i;
-    int		original, next;
-
-    if ( !cg.snap ) {
-        return;
-    }
-
-    if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
-        return;
-    }
-
-    cg.holdableSelectTime = cg.time;
-    cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
-
-    next = original = cg.holdableSelect;
-
-    for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
-        next++;
-
-        if(next == HI_NUM_HOLDABLE)
-            next = 0;
-
-        if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
-            break;
-        }
-    }
-
-    if ( i == HI_NUM_HOLDABLE ) {
-        next = original;
-    }
-
-    cg.holdableSelect = next;
-*/
 }
 
 /*
@@ -621,40 +478,6 @@ CG_PrevItem_f
 ==============
 */
 void CG_PrevItem_f( void ) {
-/*
-    int		i;
-    int		original, next;
-
-    if ( !cg.snap ) {
-        return;
-    }
-
-    if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
-        return;
-    }
-
-    cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
-    cg.holdableSelectTime = cg.time;
-
-    next = original = cg.holdableSelect;
-
-    for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
-        next--;
-
-        if(next == -1)
-            next = HI_NUM_HOLDABLE - 1;
-
-        if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
-            break;
-        }
-    }
-
-    if ( i == HI_NUM_HOLDABLE ) {
-        next = original;
-    }
-
-    cg.holdableSelect = next;
-*/
 }
 
 /*
@@ -663,15 +486,7 @@ CG_Item_f
 ==============
 */
 void CG_Item_f( void ) {
-	//int		num;
-	//num = atoi( CG_Argv( 1 ) );
-
-	//cg.holdableSelectTime = cg.time;
-
-	//CG_Printf ("Item set to: d\n", num);
 }
-
-
 
 //----(SA)	added
 /*
@@ -876,8 +691,9 @@ static void CG_Item( centity_t *cent ) {
 	}
 
 
-	if ( es->modelindex2 ) {   // modelindex2 was specified for the ent, meaning it probably has an alternate model (as opposed to the one in the itemlist)
-		                       // try to load it first, and if it fails, default to the itemlist model
+	if ( es->modelindex2 ) {
+		// modelindex2 was specified for the ent, meaning it probably has an alternate model (as opposed to the one in the itemlist)
+		// try to load it first, and if it fails, default to the itemlist model
 		ent.hModel = cgs.gameModels[ es->modelindex2 ];
 	} else {
 		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) { // check if there's a specific model for weapon pickup placement
@@ -1245,7 +1061,7 @@ static void CG_TrapSetAnim( centity_t *cent, lerpFrame_t *lf, int newAnim ) {
 /*
 ==============
 CG_Trap
-    // TODO: change from 'trap' to something else.  'trap' is a misnomer.  it's actually used for other stuff too
+TODO: change from 'trap' to something else. 'trap' is a misnomer. it's actually used for other stuff too
 ==============
 */
 static void CG_Trap( centity_t *cent ) {
@@ -1493,9 +1309,9 @@ static void CG_Efx( centity_t *cent ) {
 /*
 ===============
 CG_Explosive
-    This is currently almost exactly the same as CG_Mover
-    It's split out so that any changes or experiments are
-    unattached to anything else.
+This is currently almost exactly the same as CG_Mover
+It's split out so that any changes or experiments are
+unattached to anything else.
 ===============
 */
 static void CG_Explosive( centity_t *cent ) {
@@ -1936,7 +1752,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	// player state
 	if ( cent != &cg.predictedPlayerEntity ) {
 		CG_AdjustPositionForMover( cent->lerpOrigin, cent->currentState.groundEntityNum,
-								   cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles );
+						cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles );
 	}
 }
 
@@ -2177,8 +1993,8 @@ void CG_AddPacketEntities( void ) {
 			cg.frameInterpolation = (float)( cg.time - cg.snap->serverTime ) / delta;
 		}
 	} else {
-		cg.frameInterpolation = 0;  // actually, it should never be used, because
-		                            // no entities should be marked as interpolating
+		cg.frameInterpolation = 0;	// actually, it should never be used, because
+						// no entities should be marked as interpolating
 	}
 
 	// the auto-rotating items will all have the same axis

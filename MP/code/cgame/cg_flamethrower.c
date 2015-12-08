@@ -371,25 +371,6 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 	}
 
 	// push them along
-	/*
-	f = centInfo->lastFlameChunk;
-	while (f) {
-
-	    if (f->lastFriction < cg.time - 50) {
-	        frametime = (float)(cg.time - f->lastFriction) / 1000.0;
-	        f->lastFriction = cg.time;
-	        dot = DotProduct(parentFwd, f->parentFwd);
-	        if (dot >= 0.99) {
-	            dot -= 0.99;
-	            dot *= (1.0/(1.0-0.99));
-	            CG_FlameAdjustSpeed( f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot,4) );
-	        }
-	    }
-
-	    f = f->nextFlameChunk;
-	}
-	*/
-
 	VectorCopy( angles, centInfo->lastAngles );
 	VectorCopy( origin, centInfo->lastOrigin );
 	centInfo->lastClientFrame = cent->currentState.frame;
@@ -897,11 +878,6 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 
 // JPW NERVE alternate FT shaders
 	if ( cg_fxflags & 1 ) {
-/*
-        p->roll = 0;
-        p->pshader = getTestShader();
-        rotate_ang[ROLL]=90;
-*/
 		trap_R_AddPolyToScene( getTestShader(),4,verts );
 	} else {
 		trap_R_AddPolyToScene( flameShaders[frameNum], 4, verts );
@@ -1255,16 +1231,6 @@ void CG_InitFlameChunks( void ) {
 						"GL_ONE_MINUS_SRC_COLOR",
 						"",
 						qtrue, qfalse );
-/*
-    CG_GenerateShaders( "scripts/expblue.shader",
-                        "expblue",
-                        "expblue",
-                        25,
-                        "GL_ONE",
-                        "GL_ONE_MINUS_SRC_COLOR",
-                        "",
-                        qfalse, qfalse );
-*/
 	CG_GenerateShaders( "scripts/firest.shader",
 						"firest",
 						"firest",
@@ -1396,19 +1362,4 @@ void CG_UpdateFlamethrowerSounds( void ) {
 
 		f = f->nextHead;
 	}
-
-	// DHM - Nerve :: No more client side damage
-	// send client damage updates if required
-	/*
-	for (cent=cg_entities, i=0; i<cgs.maxclients; cent++, i++) {
-	    if (centFlameInfo[i].lastDmgCheck > centFlameInfo[i].lastDmgUpdate &&
-	        centFlameInfo[i].lastDmgUpdate < cg.time - 50 ) // JPW NERVE (cgs.gametype == GT_SINGLE_PLAYER ? 50 : 50)) -- sean changed clientdamage so this isn't a saturation issue any longer
-	    {
-	        if ((cg.snap->ps.pm_flags & PMF_LIMBO) || ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR )) // JPW NERVE
-	            return; // JPW NERVE don't do flame damage to guys in limbo or spectator, they drop out of the game
-	        CG_ClientDamage( i, centFlameInfo[i].lastDmgEnemy, CLDMG_FLAMETHROWER );
-	        centFlameInfo[i].lastDmgUpdate = cg.time;
-	    }
-	}
-	*/
 }

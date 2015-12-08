@@ -218,15 +218,6 @@ static void CG_DrawPlayerArmorValue( rectDef_t *rect, float scale, vec4_t color,
 	}
 }
 
-/*
-// TTimo: unused
-static float healthColors[4][4] = {
-//		{ 0.2, 1.0, 0.2, 1.0 } , { 1.0, 0.2, 0.2, 1.0 }, {0.5, 0.5, 0.5, 1} };
-        { 1, 0.69f, 0, 1.0f } ,		// normal
-        { 1.0f, 0.2f, 0.2f, 1.0f },		// low health
-        {0.5f, 0.5f, 0.5f, 1},			// weapon firing
-        { 1, 1, 1, 1 } };			// health > 100
-*/
 
 /*
 ==============
@@ -418,12 +409,12 @@ extern void CG_CheckForCursorHints( void );
 ==============
 CG_DrawCursorHints
 
-  cg_cursorHints.integer ==
-    0:	no hints
-    1:	sin size pulse
-    2:	one way size pulse
-    3:	alpha pulse
-    4+:	static image
+cg_cursorHints.integer ==
+0:	no hints
+1:	sin size pulse
+2:	one way size pulse
+3:	alpha pulse
+4+:	static image
 
 ==============
 */
@@ -632,8 +623,8 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 /*
 ==============
 CG_DrawPlayerAmmoValue
-    0 - ammo
-    1 - clip
+0 - ammo
+1 - clip
 ==============
 */
 int CG_DrawFieldWidth( int x, int y, int width, int value, int charWidth, int charHeight );
@@ -963,29 +954,6 @@ static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhan
 
 
 static void CG_DrawHoldableItem( rectDef_t *rect, float scale, qboolean draw2D ) {
-/*
-    int		value;
-    gitem_t	*item;
-
-    item	= BG_FindItemForHoldable(cg.holdableSelect);
-
-    if(!item)
-        return;
-
-    value	= cg.predictedPlayerState.holdable[cg.holdableSelect];
-
-    if ( value ) {
-        CG_RegisterItemVisuals( item - bg_itemlist );
-
-        if(cg.holdableSelect == HI_WINE) {
-            if(value > 3)
-                value = 3;	// 3 stages to icon, just draw full if beyond 'full'
-            CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2-(value-1)] );
-        } else {
-            CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[0] );
-        }
-    }
-*/
 }
 
 static void CG_DrawPlayerItem( rectDef_t *rect, float scale, qboolean draw2D ) {
@@ -2177,9 +2145,9 @@ void CG_DrawMedal( int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qh
 /*
 ==============
 CG_DrawWeapStability
-    draw a bar showing current stability level (0-255), max at current weapon/ability, and 'perfect' reference mark
+draw a bar showing current stability level (0-255), max at current weapon/ability, and 'perfect' reference mark
 
-    probably only drawn for scoped weapons
+probably only drawn for scoped weapons
 ==============
 */
 void CG_DrawWeapStability( rectDef_t *rect, vec4_t color, int align ) {
@@ -2617,10 +2585,9 @@ void CG_ShowTeamMenu( void ) {
 ==================
 CG_EventHandling
 ==================
- type 0 - no event handling
-      1 - team menu
-      2 - hud editor
-
+type 0 - no event handling
+     1 - team menu
+     2 - hud editor
 */
 void CG_EventHandling( int type ) {
 	cgs.eventHandling = type;

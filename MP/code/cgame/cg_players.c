@@ -1794,8 +1794,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	// --------- yaw -------------
 
 	// allow yaw to drift a bit, unless these conditions don't allow them
-	if (    !( BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ( ( 1 << ANIM_MT_IDLE ) | ( 1 << ANIM_MT_IDLECR ) ) )/*
-	    ||	 (BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ((1<<ANIM_MT_STRAFELEFT) | (1<<ANIM_MT_STRAFERIGHT)) )*/) {
+	if ( !( BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ( ( 1 << ANIM_MT_IDLE ) | ( 1 << ANIM_MT_IDLECR ) ) ) ) {
 
 		// always point all in the same direction
 		cent->pe.torso.yawing = qtrue;  // always center
@@ -2500,7 +2499,7 @@ char    *vtosf( const vec3_t v ) {
 ===============
 CG_AnimPlayerConditions
 
-    predict, or calculate condition for this entity, if it is not the local client
+predict, or calculate condition for this entity, if it is not the local client
 ===============
 */
 void CG_AnimPlayerConditions( centity_t *cent ) {

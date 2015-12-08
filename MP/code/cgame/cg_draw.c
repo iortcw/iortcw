@@ -1818,16 +1818,16 @@ static void CG_DrawCrosshair( void ) {
 			CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, hShader );
 		} else {
 			trap_R_DrawStretchPic( x /*+ cg.refdef.x*/ + 0.5 * ( cg.refdef.width - w ),
-								   y /*+ cg.refdef.y*/ + 0.5 * ( cg.refdef.height - h ),
-								   w, h, 0, 0, 1, 1, hShader );
+							y /*+ cg.refdef.y*/ + 0.5 * ( cg.refdef.height - h ),
+							w, h, 0, 0, 1, 1, hShader );
 		}
 	} else {
 		if ( cg_fixedAspect.integer ) {
 			CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, hShader );
 		} else {
 			trap_R_DrawStretchPic( x + 0.5 * ( cgs.glconfig.vidWidth - w ), // JPW NERVE for scaled-down main windows
-								   y + 0.5 * ( cgs.glconfig.vidHeight - h ),
-								   w, h, 0, 0, 1, 1, hShader );
+							y + 0.5 * ( cgs.glconfig.vidHeight - h ),
+							w, h, 0, 0, 1, 1, hShader );
 		}
 	}
 	// NERVE - SMF
@@ -1844,14 +1844,14 @@ static void CG_DrawCrosshair( void ) {
 				CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			} else {
 				trap_R_DrawStretchPic( x + 0.5 * ( cg.refdef.width - w ), y + 0.5 * ( cg.refdef.height - h ),
-									   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
+							w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			}
 		} else {
 			if ( cg_fixedAspect.integer ) {
 				CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			} else {
 				trap_R_DrawStretchPic( x + 0.5 * ( cgs.glconfig.vidWidth - w ), y + 0.5 * ( cgs.glconfig.vidHeight - h ), // JPW NERVE fix for small main windows (dunno why people still do this, but it's supported)
-									   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
+							w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			}
 		}
 	}
@@ -2084,7 +2084,7 @@ static void CG_DrawDynamiteStatus( void ) {
 /*
 ==============
 CG_CheckForCursorHints
-    concept in progress...
+concept in progress...
 ==============
 */
 void CG_CheckForCursorHints( void ) {
@@ -2183,7 +2183,7 @@ void CG_CheckForCursorHints( void ) {
 					cg.cursorHintFade = 500;
 				}
 				break;
-			//case HINT_CHAIR:
+//			case HINT_CHAIR:
 			case HINT_MG42:
 				if ( dist < CH_DOOR_DIST && !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 					cg.cursorHintIcon = HINT_ACTIVATE;
@@ -2648,10 +2648,10 @@ static qboolean CG_DrawFollow( void ) {
 			Q_strncpyz( deploytime, CG_TranslateString( "No more deployments this round" ), sizeof( deploytime ) );
 		} else if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_RED ) {
 			Com_sprintf( deploytime, sizeof( deploytime ), CG_TranslateString( "Deploying in %d seconds" ),
-						 (int)( 1 + (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
+					(int)( 1 + (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
 		} else {
 			Com_sprintf( deploytime, sizeof( deploytime ), CG_TranslateString( "Deploying in %d seconds" ),
-						 (int)( 1 + (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
+					(int)( 1 + (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
 		}
 
 		CG_DrawStringExt( INFOTEXT_STARTX, 68, deploytime, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 80 );
@@ -2854,9 +2854,9 @@ static void CG_DrawFlashFade( void ) {
 /*
 ==============
 CG_DrawFlashZoomTransition
-    hide the snap transition from regular view to/from zoomed
+hide the snap transition from regular view to/from zoomed
 
-  FIXME: TODO: use cg_fade?
+FIXME: TODO: use cg_fade?
 ==============
 */
 static void CG_DrawFlashZoomTransition( void ) {
@@ -3042,7 +3042,7 @@ static void CG_DrawFlashLightning( void ) {
 /*
 ==============
 CG_DrawFlashBlendBehindHUD
-    screen flash stuff drawn first (on top of world, behind HUD)
+screen flash stuff drawn first (on top of world, behind HUD)
 ==============
 */
 static void CG_DrawFlashBlendBehindHUD( void ) {
@@ -3053,7 +3053,7 @@ static void CG_DrawFlashBlendBehindHUD( void ) {
 /*
 =================
 CG_DrawFlashBlend
-    screen flash stuff drawn last (on top of everything)
+screen flash stuff drawn last (on top of everything)
 =================
 */
 static void CG_DrawFlashBlend( void ) {
@@ -3164,11 +3164,6 @@ static void CG_DrawObjectiveInfo( void ) {
 			x1 = 320 - w / 2;
 			x2 = 320 + w / 2;
 		}
-
-/*
-        if ( x1 + w > x2 )
-            x2 = x1 + w;
-*/
 // jpw
 		y += cg.oidPrintCharWidth * 1.5;
 

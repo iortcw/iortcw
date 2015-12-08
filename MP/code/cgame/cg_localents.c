@@ -678,15 +678,7 @@ void CG_AddSparkElements( localEntity_t *le ) {
 
 		// moved some distance
 		VectorCopy( trace.endpos, le->refEntity.origin );
-/*
-        } else
-        {	// just move it there
 
-            VectorCopy( newOrigin, le->refEntity.origin );
-            trace.fraction = 1.0;
-
-        }
-*/
 		time += cg.frametime * trace.fraction;
 
 		lifeFrac = (float)( cg.time - le->startTime ) / (float)( le->endTime - le->startTime );
@@ -701,10 +693,10 @@ void CG_AddSparkElements( localEntity_t *le ) {
 											 lifeFrac * 2.0 * ( ( ( le->endTime - le->startTime ) > 400 ) + 1 ) * 1.5,
 											 lifeFrac * 2.0 * ( ( ( le->endTime - le->startTime ) > 400 ) + 1 ) * 1.5 );
 
-		// if it is in a nodrop zone, remove it
-		// this keeps gibs from waiting at the bottom of pits of death
-		// and floating levels
-// for some reason SFM1.BSP is one big NODROP zone
+//		if it is in a nodrop zone, remove it
+//		this keeps gibs from waiting at the bottom of pits of death
+//		and floating levels
+//		for some reason SFM1.BSP is one big NODROP zone
 //		if ( trap_CM_PointContents( le->refEntity.origin, 0 ) & CONTENTS_NODROP ) {
 //			CG_FreeLocalEntity( le );
 //			return;
@@ -714,12 +706,6 @@ void CG_AddSparkElements( localEntity_t *le ) {
 			// just kill it
 			CG_FreeLocalEntity( le );
 			return;
-/*
-            // reflect the velocity on the trace plane
-            CG_ReflectVelocity( le, &trace );
-            // the intersection is a fraction of the frametime
-            le->pos.trTime = (int)time;
-*/
 		}
 
 		if ( trace.fraction == 1.0 || time >= (float)cg.time ) {
@@ -991,7 +977,9 @@ void CG_AddClientCritter( localEntity_t *le ) {
 			if ( fabs( ang[ROLL] ) > 80 ) {
 				if ( ang[ROLL] > 80 ) {
 					ang[ROLL] = 80;
-				} else { ang[ROLL] = -80; }
+				} else {
+					ang[ROLL] = -80;
+				}
 			}
 		}
 		AnglesToAxis( ang, le->refEntity.axis );
@@ -1028,15 +1016,7 @@ void CG_AddClientCritter( localEntity_t *le ) {
 	}
 
 	trap_R_AddRefEntityToScene( &le->refEntity );
-/*
-    // HACK: the skull is slightly higher than the origin
-    if (le->leType == LE_ZOMBIE_SPIRIT) {
-        // set the size scale
-        for (i=0; i<3; i++)
-            VectorScale( le->refEntity.axis[i], 1.0/0.35, le->refEntity.axis[i] );
-        VectorMA( le->refEntity.origin,  10, le->refEntity.axis[2], le->refEntity.origin );
-    }
-*/
+
 	// Bats, add the flame
 	if ( le->leType == LE_ZOMBIE_BAT ) {
 //		float lightSize, alpha;
@@ -1057,15 +1037,6 @@ void CG_AddClientCritter( localEntity_t *le ) {
 
 		le->refEntity.customShader = 0;
 		le->refEntity.shaderTime = 0;
-/*
-        // drop a dlight
-        lightSize = 1.0 + 0.2*(sin(1.0*cg.time/50.0) * cos(1.0*cg.time/43.0));
-        alpha = 0.2 * (lightSize / 1.2);
-        trap_R_AddLightToScene( le->refEntity.origin, 150.0 + 80.0*lightSize, 1.000000*alpha, 0.603922*alpha, 0.207843*alpha, 0 );
-        // add some sound
-        CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameSound, 100 );
-        CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameBlowSound, 100 );
-*/
 	}
 }
 

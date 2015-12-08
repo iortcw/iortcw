@@ -100,9 +100,9 @@ CG_SmokePuff
 Adds a smoke puff or blood trail localEntity.
 
 (SA) boy, it would be nice to have an acceleration vector for this as well.
-        big velocity vector with a negative acceleration for deceleration, etc.
-        (breath could then come out of a guys mouth at the rate he's walking/running and it
-        would slow down once it's created)
+big velocity vector with a negative acceleration for deceleration, etc.
+(breath could then come out of a guys mouth at the rate he's walking/running and it
+would slow down once it's created)
 =====================
 */
 
@@ -1007,7 +1007,9 @@ void CG_DynamicLightningBolt( qhandle_t shader, vec3_t start, vec3_t pend, int n
 					if ( fabs( viewDist ) < 0.5 ) {
 						if ( viewDist > 0 ) {
 							viewDist = 0.5;
-						} else { viewDist = -0.5; }
+						} else {
+							viewDist = -0.5;
+						}
 					}
 					pos[j] += viewDist * thisSeg;
 				}
@@ -1025,7 +1027,9 @@ void CG_DynamicLightningBolt( qhandle_t shader, vec3_t start, vec3_t pend, int n
 					if ( fabs( viewDist ) < 0.5 ) {
 						if ( viewDist > 0 ) {
 							viewDist = 0.5;
-						} else { viewDist = -0.5; }
+						} else {
+							viewDist = -0.5;
+						}
 					}
 					pos[j] += viewDist * thisSeg;
 				}
@@ -1129,29 +1133,23 @@ void CG_ProjectedSpotLight( vec3_t start, vec3_t dir ) {
 /*
 ==============
 CG_Spotlight
-    segs:	number of sides on tube. - 999 is a valid value and just means, 'cap to max' (MAX_SPOT_SEGS) or use lod scheme
-    range:	effective range of beam
-    startWidth: will be optimized for '0' as a value (true cone) to not use quads and not cap the start circle
+segs:		number of sides on tube. - 999 is a valid value and just means, 'cap to max' (MAX_SPOT_SEGS) or use lod scheme
+range:		effective range of beam
+startWidth: 	will be optimized for '0' as a value (true cone) to not use quads and not cap the start circle
 
-    -- flags --
-    SL_NOTRACE			- don't do a trace check for shortening the beam, always draw at full 'range' length
-    SL_TRACEWORLDONLY	- go through everything but the world
-    SL_NODLIGHT			- don't put a dlight at the end
-    SL_NOSTARTCAP		- dont' cap the start circle
-    SL_LOCKTRACETORANGE	- only trace out as far as the specified range (rather than to max spot range)
-    SL_NOFLARE			- don't draw a flare when the light is pointing at the camera
-    SL_NOIMPACT			- don't draw the impact mark on hit surfaces
-    SL_LOCKUV			- lock the texture coordinates at the 'true' length of the requested beam.
-    SL_NOCORE			- don't draw the center 'core' beam
+-- flags --
+SL_NOTRACE		- don't do a trace check for shortening the beam, always draw at full 'range' length
+SL_TRACEWORLDONLY	- go through everything but the world
+SL_NODLIGHT		- don't put a dlight at the end
+SL_NOSTARTCAP		- dont' cap the start circle
+SL_LOCKTRACETORANGE	- only trace out as far as the specified range (rather than to max spot range)
+SL_NOFLARE		- don't draw a flare when the light is pointing at the camera
+SL_NOIMPACT		- don't draw the impact mark on hit surfaces
+SL_LOCKUV		- lock the texture coordinates at the 'true' length of the requested beam.
+SL_NOCORE		- don't draw the center 'core' beam
 
-
-
-
-
-
-  I know, this is a bit kooky right now.  It evolved big, but now that I know what it should do, it'll get
-  crunched down to a bunch of table driven stuff.  once it works, I'll make it work well...
-
+I know, this is a bit kooky right now.  It evolved big, but now that I know what it should do, it'll get
+crunched down to a bunch of table driven stuff.  once it works, I'll make it work well...
 ==============
 */
 

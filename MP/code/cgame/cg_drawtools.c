@@ -183,18 +183,18 @@ void CG_FillRectGradient( float x, float y, float width, float height, const flo
 /*
 ==============
 CG_HorizontalPercentBar
-    Generic routine for pretty much all status indicators that show a fractional
-    value to the player by virtue of how full a drawn box is.
+Generic routine for pretty much all status indicators that show a fractional
+value to the player by virtue of how full a drawn box is.
 
 flags:
     left		- 1
-    center		- 2		// direction is 'right' by default and orientation is 'horizontal'
+    center		- 2	// direction is 'right' by default and orientation is 'horizontal'
     vert		- 4
-    nohudalpha	- 8		// don't adjust bar's alpha value by the cg_hudalpha value
+    nohudalpha		- 8	// don't adjust bar's alpha value by the cg_hudalpha value
     bg			- 16	// background contrast box (bg set with bgColor of 'NULL' means use default bg color (1,1,1,0.25)
     spacing		- 32	// some bars use different sorts of spacing when drawing both an inner and outer box
 
-    lerp color	- 256	// use an average of the start and end colors to set the fill color
+    lerp color		- 256	// use an average of the start and end colors to set the fill color
 ==============
 */
 
@@ -535,7 +535,8 @@ void CG_DrawStringExt( int x, int y, const char *string, const float *setColor,
 	trap_R_SetColor( NULL );
 }
 
-/*==================
+/*
+==================
 CG_DrawStringExt2
 
 Draws a multi-colored string with a drop shadow, optionally forcing
@@ -545,7 +546,7 @@ Coordinates are at 640 by 480 virtual resolution
 ==================
 */
 void CG_DrawStringExt2( int x, int y, const char *string, const float *setColor,
-						qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
+				qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -598,7 +599,8 @@ void CG_DrawStringExt2( int x, int y, const char *string, const float *setColor,
 	trap_R_SetColor( NULL );
 }
 
-/*==================
+/*
+==================
 CG_DrawStringExt3
 
 Draws a multi-colored string with a drop shadow, optionally forcing
@@ -608,7 +610,7 @@ Coordinates are at 640 by 480 virtual resolution
 ==================
 */
 void CG_DrawStringExt3( int x, int y, const char *string, const float *setColor,
-						qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
+				qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -670,69 +672,6 @@ void CG_DrawStringExt3( int x, int y, const char *string, const float *setColor,
 	}
 	trap_R_SetColor( NULL );
 }
-
-/*
-==================
-CG_DrawStringExt2
-
-Draws a multi-colored string with a drop shadow, optionally forcing
-to a fixed color.
-
-Coordinates are at 640 by 480 virtual resolution
-==================
-*/
-/*void CG_DrawStringExt2( int x, int y, const char *string, const float *setColor,
-        qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
-    vec4_t		color;
-    const char	*s;
-    int			xx;
-    int			cnt;
-
-    if (maxChars <= 0)
-        maxChars = 32767; // do them all!
-
-    // draw the drop shadow
-    if (shadow) {
-        color[0] = color[1] = color[2] = 0;
-        color[3] = setColor[3];
-        trap_R_SetColor( color );
-        s = string;
-        xx = x;
-        cnt = 0;
-        while ( *s && cnt < maxChars) {
-            if ( Q_IsColorString( s ) ) {
-                s += 2;
-                continue;
-            }
-            CG_DrawChar2( xx + 2, y + 2, charWidth, charHeight, *s );
-            cnt++;
-            xx += charWidth;
-            s++;
-        }
-    }
-
-    // draw the colored text
-    s = string;
-    xx = x;
-    cnt = 0;
-    trap_R_SetColor( setColor );
-    while ( *s && cnt < maxChars) {
-        if ( Q_IsColorString( s ) ) {
-            if ( !forceColor ) {
-                memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
-                color[3] = setColor[3];
-                trap_R_SetColor( color );
-            }
-            s += 2;
-            continue;
-        }
-        CG_DrawChar2( xx, y, charWidth, charHeight, *s );
-        xx += charWidth;
-        cnt++;
-        s++;
-    }
-    trap_R_SetColor( NULL );
-}*/
 
 void CG_DrawBigString( int x, int y, const char *s, float alpha ) {
 	float color[4];

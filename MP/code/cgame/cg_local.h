@@ -510,14 +510,12 @@ typedef enum {
 	ACC_HAT,        // hat (head)
 	ACC_MOUTH2,     //
 	ACC_MOUTH3,     //
-	//
-	ACC_MAX     // this is bound by network limits, must change network stream to increase this
-	            // (SA) No, really?  that's not true is it?  isn't this client-side only?
+			//
+	ACC_MAX		// this is bound by network limits, must change network stream to increase this
+			// (SA) No, really?  that's not true is it?  isn't this client-side only?
 } accType_t;
 
 #define ACC_NUM_MOUTH 3 // matches the above count
-
-
 
 
 // each client has an associated clientInfo_t
@@ -784,8 +782,8 @@ typedef struct {
 
 	// view rendering
 	refdef_t refdef;
-	vec3_t refdefViewAngles;    // will be converted to refdef.viewaxis
-	float fov;          // either range checked cg_fov or forced value
+	vec3_t refdefViewAngles;	// will be converted to refdef.viewaxis
+	float fov;			// either range checked cg_fov or forced value
 
 	// zoom key
 	qboolean zoomed;

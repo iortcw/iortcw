@@ -159,12 +159,12 @@ static void CG_Obituary( entityState_t *ent ) {
 	case MOD_SLIME:
 		message = "died by toxic materials";
 		break;
-	//case MOD_LAVA:
-	//message = "does a back flip into the lava";
-	//break;
-	//case MOD_TARGET_LASER:
-	//message = "saw the light";
-	//break;
+//	case MOD_LAVA:
+//		message = "does a back flip into the lava";
+//		break;
+//	case MOD_TARGET_LASER:
+//		message = "saw the light";
+//		break;
 	case MOD_TRIGGER_HURT:
 		message = "was killed";
 		break;
@@ -207,9 +207,9 @@ static void CG_Obituary( entityState_t *ent ) {
 				message = "obliterated himself";
 			}
 			break;
-		//case MOD_BFG_SPLASH:
-		//message = "should have used a smaller gun";
-		//break;
+//		case MOD_BFG_SPLASH:
+//			message = "should have used a smaller gun";
+//			break;
 		case MOD_EXPLOSIVE:
 			if ( gender == GENDER_FEMALE ) {
 				message = "died in her own explosion";
@@ -438,67 +438,10 @@ CG_UseItem
 ===============
 */
 static void CG_UseItem( centity_t *cent ) {
-/*
-    int			itemNum;
-    gitem_t		*item;
-    entityState_t *es;
-
-    es = &cent->currentState;
-
-    // itemNum = es->event - EV_USE_ITEM0;
-    // JCash bluesnews reported fix
-    itemNum = (es->event &~EV_EVENT_BITS) - EV_USE_ITEM0;
-
-    if ( itemNum < 0 || itemNum > HI_NUM_HOLDABLE ) {
-        itemNum = 0;
-    }
-
-    // print a message if the local player
-    if ( es->number == cg.snap->ps.clientNum ) {
-        if ( !itemNum ) {
-            CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-        } else {
-            item = BG_FindItemForHoldable( itemNum );
-
-            if(item) {
-                cg.holdableSelectTime = cg.time;	// show remaining items
-
-                switch(itemNum) {
-                    case HI_BOOK1:
-                    case HI_BOOK2:
-                    case HI_BOOK3:
-                        break;
-                    case HI_WINE:
-                        CG_CenterPrint( "You drank the wine", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-                        break;
-                    default:
-                        CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-                        break;
-                }
-            }
-        }
-    }
-
-    switch ( itemNum ) {
-    default:
-    case HI_NONE:
-        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
-        break;
-
-    case HI_MEDKIT:
-        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
-        break;
-
-    case HI_WINE:
-        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.wineSound );
-        break;
-    }
-*/
 }
 
 // from cg_weapons.c
 extern int CG_WeaponIndex( int weapnum, int *bank, int *cycle );
-
 
 /*
 ================
@@ -779,22 +722,19 @@ void CG_PainEvent( centity_t *cent, int health, qboolean crouching ) {
 CG_Explode
 
 
-    if (cent->currentState.angles2[0] || cent->currentState.angles2[1] || cent->currentState.angles2[2])
+if (cent->currentState.angles2[0] || cent->currentState.angles2[1] || cent->currentState.angles2[2])
 
 ==============
 */
 
 #define POSSIBLE_PIECES 6
 
-
-
-
 void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader );
 
 /*
 ==============
 CG_Explode
-    the old cent-based explode calls will still work with this pass-through
+the old cent-based explode calls will still work with this pass-through
 ==============
 */
 void CG_Explode( centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader ) {
@@ -924,7 +864,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 				} else if ( i == 1 ) {
 					hmodel = cgs.media.shardGlass2;
 					scale = 0.5f;
-				} else {goto pass; }
+				} else {
+					goto pass;
+				}
 				break;
 
 			case 2: // "metal"
@@ -938,7 +880,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 				} else if ( i == 1 ) {
 					hmodel = cgs.media.shardMetal2;
 					scale = 0.5f;
-				} else {goto pass; }
+				} else {
+					goto pass;
+				}
 				break;
 
 			case 3: // "gibs"
@@ -949,7 +893,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					hmodel = cgs.media.gibLeg;
 				} else if ( i == 2 ) {
 					hmodel = cgs.media.gibChest;
-				} else { goto pass; }
+				} else {
+					goto pass;
+				}
 				break;
 
 			case 4: // "brick"
@@ -1111,7 +1057,7 @@ pass:
 /*
 ==============
 CG_Effect
-    Quake ed -> target_effect (0 .5 .8) (-6 -6 -6) (6 6 6) fire explode smoke debris gore lowgrav
+Quake ed -> target_effect (0 .5 .8) (-6 -6 -6) (6 6 6) fire explode smoke debris gore lowgrav
 ==============
 */
 void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
@@ -1204,12 +1150,12 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	}
 
 
-	if ( cent->currentState.eventParm & 64 ) { // debris trails (the black strip that Ryan did)
+	if ( cent->currentState.eventParm & 64 ) {		// debris trails (the black strip that Ryan did)
 		CG_AddDebris( origin, dir,
-					  280,      // speed
-					  1400,     // duration
-		              // 15 + rand()%5 );	// count
-					  7 + rand() % 2 ); // count
+					280,			// speed
+					1400,			// duration
+//					15 + rand()%5 );	// count
+					7 + rand() % 2 );	// count
 	}
 }
 
@@ -1221,12 +1167,12 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 /*
 CG_Shard
 
-    We should keep this separate since there will be considerable differences
-    in the physical properties of shard vrs debris. not to mention the fact
-    there is no way we can quantify what type of effects the designers will
-    potentially desire. If it is still possible to merge the functionality of
-    cg_shard into cg_explode at a latter time I would have no problem with that
-    but for now I want to keep it separate
+We should keep this separate since there will be considerable differences
+in the physical properties of shard vrs debris. not to mention the fact
+there is no way we can quantify what type of effects the designers will
+potentially desire. If it is still possible to merge the functionality of
+cg_shard into cg_explode at a latter time I would have no problem with that
+but for now I want to keep it separate
 */
 void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	localEntity_t   *le;
@@ -1416,7 +1362,7 @@ extern void CG_AddBulletParticles( vec3_t origin, vec3_t dir, int speed, int dur
 void CG_MachineGunEjectBrass( centity_t *cent );
 void CG_MachineGunEjectBrassNew( centity_t *cent );
 // jpw
-#define DEBUGNAME( x ) if ( cg_debugEvents.integer ) {CG_Printf( x "\n" ); }
+#define DEBUGNAME( x ) if ( cg_debugEvents.integer ) { CG_Printf( x "\n" ); }
 void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	entityState_t   *es;
 	int event;
@@ -1622,27 +1568,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-    /*
-        case EV_FALL_MEDIUM:
-            DEBUGNAME("EV_FALL_MEDIUM");
-            // use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
-            if ( clientNum == cg.predictedPlayerState.clientNum ) {
-                // smooth landing z changes
-                cg.landChange = -16;
-                cg.landTime = cg.time;
-            }
-            break;
-        case EV_FALL_FAR:
-            DEBUGNAME("EV_FALL_FAR");
-            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-            if ( clientNum == cg.predictedPlayerState.clientNum ) {
-                // smooth landing z changes
-                cg.landChange = -24;
-                cg.landTime = cg.time;
-            }
-            break;
-    */
 	case EV_FALL_DMG_10:
 		DEBUGNAME( "EV_FALL_DMG_10" );
 		// use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
@@ -1675,18 +1600,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-    /*
-        case EV_FALL_DMG_30:
-            DEBUGNAME("EV_FALL_DMG_30");
-            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-            if ( clientNum == cg.predictedPlayerState.clientNum ) {
-                // smooth landing z changes
-                cg.landChange = -24;
-                cg.landTime = cg.time;
-            }
-            break;
-    */
 	case EV_FALL_DMG_50:
 		DEBUGNAME( "EV_FALL_DMG_50" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -1697,18 +1610,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-    /*
-        case EV_FALL_DMG_75:
-            DEBUGNAME("EV_FALL_DMG_75");
-            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-            if ( clientNum == cg.predictedPlayerState.clientNum ) {
-                // smooth landing z changes
-                cg.landChange = -24;
-                cg.landTime = cg.time;
-            }
-            break;
-    */
 	case EV_FALL_NDIE:
 		DEBUGNAME( "EV_FALL_NDIE" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -2086,7 +1987,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 
 	//=================================================================
-
 	//
 	// other events
 	//
@@ -2704,20 +2604,7 @@ void CG_CheckEvents( centity_t *cent ) {
 		//		circular 'events' list contains the valid events.  So we
 		//		skip processing the single 'event' field and go straight
 		//		to the circular list.
-
 		goto skipEvent;
-		/*
-		// check for events riding with another entity
-		if ( cent->currentState.event == cent->previousEvent ) {
-		    goto skipEvent;
-		    //return;
-		}
-		cent->previousEvent = cent->currentState.event;
-		if ( ( cent->currentState.event & ~EV_EVENT_BITS ) == 0 ) {
-		    goto skipEvent;
-		    //return;
-		}
-		*/
 		// dhm - end
 	}
 
@@ -2748,50 +2635,3 @@ skipEvent:
 	cent->currentState.event = cent->previousEvent;
 }
 
-
-/*
-void CG_CheckEvents( centity_t *cent ) {
-    int i, event;
-
-    // calculate the position at exactly the frame time
-    BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
-    CG_SetEntitySoundPosition( cent );
-
-    // check for event-only entities
-    if ( cent->currentState.eType > ET_EVENTS ) {
-        if ( !cent->previousEvent ) {
-            cent->previousEvent = 1;
-            cent->currentState.event = cent->currentState.eType - ET_EVENTS;
-            CG_EntityEvent( cent, cent->lerpOrigin );
-        }
-    } else {
-        // check for events riding with another entity
-        if ( cent->currentState.event != cent->previousEvent ) {
-            cent->previousEvent = cent->currentState.event;
-            if ( cent->currentState.event & ~EV_EVENT_BITS ) {
-                CG_EntityEvent( cent, cent->lerpOrigin );
-            }
-        }
-    }
-
-    // check the sequencial list
-    // if we've added more events than can fit into the list, make sure we only add them once
-    if (cent->currentState.eventSequence < cent->previousEventSequence) {
-        cent->previousEventSequence -= (1 << 8);	// eventSequence is sent as an 8-bit through network stream
-    }
-    if (cent->currentState.eventSequence - cent->previousEventSequence > MAX_EVENTS) {
-        cent->previousEventSequence = cent->currentState.eventSequence - MAX_EVENTS;
-    }
-    for ( i = cent->previousEventSequence ; i != cent->currentState.eventSequence; i++ ) {
-        event = cent->currentState.events[ i & (MAX_EVENTS-1) ];
-
-        cent->currentState.event = event;
-        cent->currentState.eventParm = cent->currentState.eventParms[ i & (MAX_EVENTS-1) ];
-        CG_EntityEvent( cent, cent->lerpOrigin );
-    }
-    cent->previousEventSequence = cent->currentState.eventSequence;
-
-    // set the event back so we don't think it's changed next frame (unless it really has)
-    cent->currentState.event = cent->previousEvent;
-}
-*/
