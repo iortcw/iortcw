@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -512,7 +512,7 @@ typedef enum {
 	ACC_MOUTH3,     //
 	//
 	ACC_MAX     // this is bound by network limits, must change network stream to increase this
-				// (SA) No, really?  that's not true is it?  isn't this client-side only?
+	            // (SA) No, really?  that's not true is it?  isn't this client-side only?
 } accType_t;
 
 #define ACC_NUM_MOUTH 3 // matches the above count
@@ -738,7 +738,7 @@ typedef struct {
 	int frametime;              // cg.time - cg.oldTime
 
 	int time;                   // this is the time value that the client
-								// is rendering at.
+	                            // is rendering at.
 	int oldTime;                // time at last frame, used for missile trails and prediction checking
 
 	int physicsTime;            // either cg.snap->time or cg.nextSnap->time
@@ -784,8 +784,8 @@ typedef struct {
 
 	// view rendering
 	refdef_t refdef;
-	vec3_t refdefViewAngles;	// will be converted to refdef.viewaxis
-	float fov;			// either range checked cg_fov or forced value
+	vec3_t refdefViewAngles;    // will be converted to refdef.viewaxis
+	float fov;          // either range checked cg_fov or forced value
 
 	// zoom key
 	qboolean zoomed;
@@ -934,12 +934,12 @@ typedef struct {
 
 	// RF, new kick angles
 	vec3_t kickAVel;            // for damage feedback, weapon recoil, etc
-								// This is the angular velocity, to give a smooth
-								// rotational feedback, rather than sudden jerks
+	                            // This is the angular velocity, to give a smooth
+	                            // rotational feedback, rather than sudden jerks
 	vec3_t kickAngles;          // for damage feedback, weapon recoil, etc
-								// NOTE: this is not transmitted through MSG.C stream
-								// since weapon kicks are client-side, and damage feedback
-								// is rare enough that we can transmit that as an event
+	                            // NOTE: this is not transmitted through MSG.C stream
+	                            // since weapon kicks are client-side, and damage feedback
+	                            // is rare enough that we can transmit that as an event
 	float recoilPitch, recoilPitchAngle;
 
 	// Duffy
@@ -1783,8 +1783,8 @@ const char *CG_Argv( int arg );
 
 float CG_Cvar_Get( const char *cvar );
 
-void QDECL CG_Printf( const char *msg, ... ) __attribute__ ((format (printf, 1, 2)));
-void QDECL CG_Error( const char *msg, ... ) __attribute__ ((noreturn, format (printf, 1, 2)));
+void QDECL CG_Printf( const char *msg, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
+void QDECL CG_Error( const char *msg, ... ) __attribute__ ( ( noreturn, format( printf, 1, 2 ) ) );
 
 void CG_StartMusic( void );
 
@@ -1823,7 +1823,7 @@ void CG_Concussive( centity_t *cent );
 //
 // cg_drawtools.c
 //
-void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos);
+void CG_SetScreenPlacement( screenPlacement_e hpos, screenPlacement_e vpos );
 
 void CG_AdjustFrom640( float *x, float *y, float *w, float *h );
 void CG_FillRect( float x, float y, float width, float height, const float *color );
@@ -1965,7 +1965,7 @@ void CG_PainEvent( centity_t *cent, int health, qboolean crouching );
 void CG_SetEntitySoundPosition( centity_t *cent );
 void CG_AddPacketEntities( void );
 void CG_Beam( centity_t *cent );
-void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t angles_in, vec3_t angles_out);
+void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t angles_in, vec3_t angles_out );
 
 void CG_PositionEntityOnTag( refEntity_t *entity, const refEntity_t *parent,
 							 char *tagName, int startIndex, vec3_t *offset );
@@ -2236,10 +2236,10 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops );
 //
 
 // print message on the local console
-void	trap_Print( const char *fmt );
+void    trap_Print( const char *fmt );
 
 // abort the game
-void	trap_Error(const char *fmt) __attribute__((noreturn));
+void    trap_Error( const char *fmt ) __attribute__( ( noreturn ) );
 
 // milliseconds should only be used for performance tuning, never
 // for anything game related.  Get time from the CG_DrawActiveFrame parameter
@@ -2271,8 +2271,8 @@ void        trap_SendConsoleCommand( const char *text );
 
 // register a command name so the console can perform command completion.
 // FIXME: replace this with a normal console command "defineCommand"?
-void	trap_AddCommand( const char *cmdName );
-void	trap_RemoveCommand( const char *cmdName );
+void    trap_AddCommand( const char *cmdName );
+void    trap_RemoveCommand( const char *cmdName );
 
 // send a string to the server over the network
 void        trap_SendClientCommand( const char *s );
@@ -2359,7 +2359,7 @@ void        trap_R_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVe
 void        trap_R_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts, int numPolys );
 // done.
 void        trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
-void	    trap_R_AddAdditiveLightToScene( const vec3_t org, float intensity, float r, float g, float b );
+void        trap_R_AddAdditiveLightToScene( const vec3_t org, float intensity, float r, float g, float b );
 void        trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, qboolean visible );
 void        trap_R_RenderScene( const refdef_t *fd );
 void        trap_R_SetColor( const float *rgba );   // NULL = 1,1,1,1
@@ -2459,7 +2459,7 @@ e_status trap_CIN_RunCinematic( int handle );
 void trap_CIN_DrawCinematic( int handle );
 void trap_CIN_SetExtents( int handle, int x, int y, int w, int h );
 
-int trap_RealTime(qtime_t *qtime);
+int trap_RealTime( qtime_t *qtime );
 void trap_SnapVector( float *v );
 
 qboolean    trap_GetEntityToken( char *buffer, int bufferSize );

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
-static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
+static intptr_t( QDECL * syscall )( intptr_t arg, ... ) = ( intptr_t( QDECL * )( intptr_t, ... ) ) - 1;
 
-Q_EXPORT void dllEntry( intptr_t (QDECL  *syscallptr)( intptr_t arg,... ) ) {
+Q_EXPORT void dllEntry( intptr_t( QDECL  * syscallptr )( intptr_t arg,... ) ) {
 	syscall = syscallptr;
 }
 
@@ -50,11 +50,10 @@ void    trap_Print( const char *fmt ) {
 	syscall( CG_PRINT, fmt );
 }
 
-void trap_Error(const char *fmt)
-{
-	syscall(CG_ERROR, fmt);
+void trap_Error( const char *fmt ) {
+	syscall( CG_ERROR, fmt );
 	// shut up GCC warning about returning functions, because we know better
-	exit(1);
+	exit( 1 );
 }
 
 int     trap_Milliseconds( void ) {

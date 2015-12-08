@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -483,7 +483,7 @@ cvarTable_t cvarTable[] = {
 	{ &cg_antilag, "g_antilag", "0", 0 }
 };
 
-static int  cvarTableSize = ARRAY_LEN( cvarTable );
+static int cvarTableSize = ARRAY_LEN( cvarTable );
 
 /*
 =================
@@ -797,13 +797,13 @@ static void CG_RegisterSounds( void ) {
 		   cgs.media.thirtySecondSound_g = trap_S_RegisterSound("sound/multiplayer/axis/g-thirtyseconds1.wav");
 		   cgs.media.thirtySecondSound_a = trap_S_RegisterSound("sound/multiplayer/allies/a-thirtyseconds1.wav");*/
 /*		if( cg.twoMinuteSound_g[0] != '0' )
-			cgs.media.twoMinuteSound_g = trap_S_RegisterSound(cg.twoMinuteSound_g);
-		if( cg.twoMinuteSound_a[0] != '0' )
-			cgs.media.twoMinuteSound_a = trap_S_RegisterSound(cg.twoMinuteSound_a);
-		if( cg.thirtySecondSound_g[0] != '0' )
-			cgs.media.thirtySecondSound_g = trap_S_RegisterSound(cg.thirtySecondSound_g);
-		if( cg.thirtySecondSound_a[0] != '0' )
-			cgs.media.thirtySecondSound_a = trap_S_RegisterSound(cg.thirtySecondSound_a);*/
+            cgs.media.twoMinuteSound_g = trap_S_RegisterSound(cg.twoMinuteSound_g);
+        if( cg.twoMinuteSound_a[0] != '0' )
+            cgs.media.twoMinuteSound_a = trap_S_RegisterSound(cg.twoMinuteSound_a);
+        if( cg.thirtySecondSound_g[0] != '0' )
+            cgs.media.thirtySecondSound_g = trap_S_RegisterSound(cg.thirtySecondSound_g);
+        if( cg.thirtySecondSound_a[0] != '0' )
+            cgs.media.thirtySecondSound_a = trap_S_RegisterSound(cg.thirtySecondSound_a);*/
 		trap_S_RegisterSound( "sound/multiplayer/land_hurt.wav" );
 	} else {
 		cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav" );
@@ -828,9 +828,9 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.fbarrelexp2 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrelb.wav" );
 
 /* JPW NERVE kick pulled from MP to prevent bind cheats
-	cgs.media.fkickwall = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-	cgs.media.fkickflesh = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-	cgs.media.fkickmiss = trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
+    cgs.media.fkickwall = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
+    cgs.media.fkickflesh = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
+    cgs.media.fkickmiss = trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
 */
 
 	cgs.media.noAmmoSound = trap_S_RegisterSound( "sound/weapons/noammo.wav" );
@@ -888,7 +888,7 @@ static void CG_RegisterSounds( void ) {
 	}
 
 	// only register the items that the server says we need
-	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
+	Q_strncpyz( items, CG_ConfigString( CS_ITEMS ), sizeof( items ) );
 
 	for ( i = 1 ; i < bg_numItems ; i++ ) {
 		if ( items[ i ] == '1' || cg_buildScript.integer ) {
@@ -934,17 +934,17 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.boneBounceSound = trap_S_RegisterSound( "sound/world/boardbreak.wav" );    // TODO: need a real sound for this
 
 /* JPW NERVE not in MP
-	cgs.media.lightningSounds[0] = trap_S_RegisterSound( "sound/world/electzap1.wav" );
-	cgs.media.lightningSounds[1] = trap_S_RegisterSound( "sound/world/electzap2.wav" );
-	cgs.media.lightningSounds[2] = trap_S_RegisterSound( "sound/world/electzap3.wav" );
-	cgs.media.lightningZap = trap_S_RegisterSound( "sound/world/electrocute.wav" );
+    cgs.media.lightningSounds[0] = trap_S_RegisterSound( "sound/world/electzap1.wav" );
+    cgs.media.lightningSounds[1] = trap_S_RegisterSound( "sound/world/electzap2.wav" );
+    cgs.media.lightningSounds[2] = trap_S_RegisterSound( "sound/world/electzap3.wav" );
+    cgs.media.lightningZap = trap_S_RegisterSound( "sound/world/electrocute.wav" );
 */
 	// precache sound scripts that get called from the cgame
 	cgs.media.bulletHitFleshScript = CG_SoundScriptPrecache( "bulletHitFlesh" );
 
 /* JPW NERVE not in MP
-	cgs.media.teslaZapScript = CG_SoundScriptPrecache( "teslaZap" );
-	cgs.media.teslaLoopSound = trap_S_RegisterSound ( "sound/weapons/tesla/loop.wav" );
+    cgs.media.teslaZapScript = CG_SoundScriptPrecache( "teslaZap" );
+    cgs.media.teslaLoopSound = trap_S_RegisterSound ( "sound/weapons/tesla/loop.wav" );
 */
 //	cgs.media.batsFlyingLoopSound = trap_S_RegisterSound( "sound/world/bats_flying.wav" );
 
@@ -952,11 +952,11 @@ static void CG_RegisterSounds( void ) {
 //	cgs.media.flightSound = trap_S_RegisterSound( "sound/items/flight.wav" );
 //	cgs.media.medkitSound = trap_S_RegisterSound ("sound/items/use_medkit.wav");
 /* JPW NERVE -- not in MP
-	cgs.media.elecSound = trap_S_RegisterSound ("sound/items/use_elec.wav");
-	cgs.media.fireSound = trap_S_RegisterSound ("sound/items/use_fire.wav");
-	cgs.media.waterSound = trap_S_RegisterSound ("sound/items/use_water.wav");
-	cgs.media.wineSound = trap_S_RegisterSound ("sound/items/use_wine.wav");
-	cgs.media.quadSound = trap_S_RegisterSound("sound/items/damage3.wav");
+    cgs.media.elecSound = trap_S_RegisterSound ("sound/items/use_elec.wav");
+    cgs.media.fireSound = trap_S_RegisterSound ("sound/items/use_fire.wav");
+    cgs.media.waterSound = trap_S_RegisterSound ("sound/items/use_water.wav");
+    cgs.media.wineSound = trap_S_RegisterSound ("sound/items/use_wine.wav");
+    cgs.media.quadSound = trap_S_RegisterSound("sound/items/damage3.wav");
 */
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );
@@ -1015,11 +1015,11 @@ static void CG_RegisterSounds( void ) {
 	//----(SA)	removed some unnecessary stuff
 
 /* JPW NERVE -- kick pulled from MP (cheat issues)
-	trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
-	trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
+    trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
+    trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
 
-	trap_S_RegisterSound( "sound/Loogie/spit.wav" );
-	trap_S_RegisterSound( "sound/Loogie/sizzle.wav" );
+    trap_S_RegisterSound( "sound/Loogie/spit.wav" );
+    trap_S_RegisterSound( "sound/Loogie/sizzle.wav" );
 */
 }
 
@@ -1273,16 +1273,16 @@ static void CG_RegisterGraphics( void ) {
 
 // RF: old style gibs not needed anymore (changed over to using gibs.cfg)
 /*
-	cgs.media.gibAbdomen = trap_R_RegisterModel( "models/gibs/abdomen.md3" );
-	cgs.media.gibArm = trap_R_RegisterModel( "models/gibs/arm.md3" );
-	cgs.media.gibChest = trap_R_RegisterModel( "models/gibs/chest.md3" );
-	cgs.media.gibFist = trap_R_RegisterModel( "models/gibs/fist.md3" );
-	cgs.media.gibFoot = trap_R_RegisterModel( "models/gibs/foot.md3" );
-	cgs.media.gibForearm = trap_R_RegisterModel( "models/gibs/forearm.md3" );
-	cgs.media.gibIntestine = trap_R_RegisterModel( "models/gibs/intestine.md3" );
-	cgs.media.gibLeg = trap_R_RegisterModel( "models/gibs/leg.md3" );
-	cgs.media.gibSkull = trap_R_RegisterModel( "models/gibs/skull.md3" );
-	cgs.media.gibBrain = trap_R_RegisterModel( "models/gibs/brain.md3" );
+    cgs.media.gibAbdomen = trap_R_RegisterModel( "models/gibs/abdomen.md3" );
+    cgs.media.gibArm = trap_R_RegisterModel( "models/gibs/arm.md3" );
+    cgs.media.gibChest = trap_R_RegisterModel( "models/gibs/chest.md3" );
+    cgs.media.gibFist = trap_R_RegisterModel( "models/gibs/fist.md3" );
+    cgs.media.gibFoot = trap_R_RegisterModel( "models/gibs/foot.md3" );
+    cgs.media.gibForearm = trap_R_RegisterModel( "models/gibs/forearm.md3" );
+    cgs.media.gibIntestine = trap_R_RegisterModel( "models/gibs/intestine.md3" );
+    cgs.media.gibLeg = trap_R_RegisterModel( "models/gibs/leg.md3" );
+    cgs.media.gibSkull = trap_R_RegisterModel( "models/gibs/skull.md3" );
+    cgs.media.gibBrain = trap_R_RegisterModel( "models/gibs/brain.md3" );
 */
 
 	//----(SA) wolf debris
@@ -1450,7 +1450,7 @@ static void CG_RegisterGraphics( void ) {
 
 
 	// only register the items that the server says we need
-	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
+	Q_strncpyz( items, CG_ConfigString( CS_ITEMS ), sizeof( items ) );
 
 	CG_LoadingString( " - items" );
 	for ( i = 1 ; i < bg_numItems ; i++ ) {
@@ -2305,21 +2305,21 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	// get the rendering configuration from the client system
 	trap_GetGlconfig( &cgs.glconfig );
 	if ( cg_fixedAspect.integer ) {
-		cgs.screenXScaleStretch = cgs.glconfig.vidWidth * (1.0/640.0);
-		cgs.screenYScaleStretch = cgs.glconfig.vidHeight * (1.0/480.0);
+		cgs.screenXScaleStretch = cgs.glconfig.vidWidth * ( 1.0 / 640.0 );
+		cgs.screenYScaleStretch = cgs.glconfig.vidHeight * ( 1.0 / 480.0 );
 		if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
-			cgs.screenXScale = cgs.glconfig.vidWidth * (1.0/640.0);
-			cgs.screenYScale = cgs.glconfig.vidHeight * (1.0/480.0);
+			cgs.screenXScale = cgs.glconfig.vidWidth * ( 1.0 / 640.0 );
+			cgs.screenYScale = cgs.glconfig.vidHeight * ( 1.0 / 480.0 );
 			// wide screen
-			cgs.screenXBias = 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * (640.0/480.0) ) );
+			cgs.screenXBias = 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * ( 640.0 / 480.0 ) ) );
 			cgs.screenXScale = cgs.screenYScale;
 			// no narrow screen
 			cgs.screenYBias = 0;
 		} else {
-			cgs.screenXScale = cgs.glconfig.vidWidth * (1.0/640.0);
-			cgs.screenYScale = cgs.glconfig.vidHeight * (1.0/480.0);
+			cgs.screenXScale = cgs.glconfig.vidWidth * ( 1.0 / 640.0 );
+			cgs.screenYScale = cgs.glconfig.vidHeight * ( 1.0 / 480.0 );
 			// narrow screen
-			cgs.screenYBias = 0.5 * ( cgs.glconfig.vidHeight - ( cgs.glconfig.vidWidth * (480.0/640.0) ) );
+			cgs.screenYBias = 0.5 * ( cgs.glconfig.vidHeight - ( cgs.glconfig.vidWidth * ( 480.0 / 640.0 ) ) );
 			cgs.screenYScale = cgs.screenXScale;
 			// no wide screen
 			cgs.screenXBias = 0;

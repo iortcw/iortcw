@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -144,50 +144,50 @@ static void CG_LoadHud_f( void ) {
 /*
 // TTimo: defined but not used
 static void CG_scrollScoresDown_f( void) {
-	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
-	}
+    if (menuScoreboard && cg.scoreBoardShowing) {
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
+    }
 }
 */
 
 /*
 // TTimo: defined but not used
 static void CG_scrollScoresUp_f( void) {
-	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
-	}
+    if (menuScoreboard && cg.scoreBoardShowing) {
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
+        Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
+    }
 }
 */
 
 /*
 // TTimo: defined but not used
 static void CG_spWin_f( void) {
-	trap_Cvar_Set("cg_cameraOrbit", "2");
-	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-	trap_Cvar_Set("cg_thirdPerson", "1");
-	trap_Cvar_Set("cg_thirdPersonAngle", "0");
-	trap_Cvar_Set("cg_thirdPersonRange", "100");
+    trap_Cvar_Set("cg_cameraOrbit", "2");
+    trap_Cvar_Set("cg_cameraOrbitDelay", "35");
+    trap_Cvar_Set("cg_thirdPerson", "1");
+    trap_Cvar_Set("cg_thirdPersonAngle", "0");
+    trap_Cvar_Set("cg_thirdPersonRange", "100");
 //	CG_AddBufferedSound(cgs.media.winnerSound);
-	//trap_S_StartLocalSound(cgs.media.winnerSound, CHAN_ANNOUNCER);
-	CG_CenterPrint("YOU WIN!", SCREEN_HEIGHT * .30, 0);
+    //trap_S_StartLocalSound(cgs.media.winnerSound, CHAN_ANNOUNCER);
+    CG_CenterPrint("YOU WIN!", SCREEN_HEIGHT * .30, 0);
 }
 */
 
 /*
 // TTimo: defined but not used
 static void CG_spLose_f( void) {
-	trap_Cvar_Set("cg_cameraOrbit", "2");
-	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
-	trap_Cvar_Set("cg_thirdPerson", "1");
-	trap_Cvar_Set("cg_thirdPersonAngle", "0");
-	trap_Cvar_Set("cg_thirdPersonRange", "100");
+    trap_Cvar_Set("cg_cameraOrbit", "2");
+    trap_Cvar_Set("cg_cameraOrbitDelay", "35");
+    trap_Cvar_Set("cg_thirdPerson", "1");
+    trap_Cvar_Set("cg_thirdPersonAngle", "0");
+    trap_Cvar_Set("cg_thirdPersonRange", "100");
 //	CG_AddBufferedSound(cgs.media.loserSound);
-	//trap_S_StartLocalSound(cgs.media.loserSound, CHAN_ANNOUNCER);
-	CG_CenterPrint("YOU LOSE...", SCREEN_HEIGHT * .30, 0);
+    //trap_S_StartLocalSound(cgs.media.loserSound, CHAN_ANNOUNCER);
+    CG_CenterPrint("YOU LOSE...", SCREEN_HEIGHT * .30, 0);
 }
 */
 
@@ -315,14 +315,14 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 /*
 // TTimo: defined but not used
 static void CG_Camera_f( void ) {
-	char name[MAX_QPATH];
+    char name[MAX_QPATH];
 
-	if ( cgs.gametype != GT_SINGLE_PLAYER )
-		return;
+    if ( cgs.gametype != GT_SINGLE_PLAYER )
+        return;
 
-	trap_Argv( 1, name, sizeof(name));
+    trap_Argv( 1, name, sizeof(name));
 
-	CG_StartCamera(name, qfalse );
+    CG_StartCamera(name, qfalse );
 }
 */
 

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -322,7 +322,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 			TRIverts[2].modulate[3] = 255 * p->alpha;
 		}
 
-	} else if ( p->type == P_SPRITE )     {
+	} else if ( p->type == P_SPRITE ) {
 		vec3_t rr, ru;
 		vec3_t rotate_ang;
 
@@ -393,7 +393,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 		verts[3].modulate[1] = 255;
 		verts[3].modulate[2] = 255;
 		verts[3].modulate[3] = 255;
-	} else if ( p->type == P_SMOKE || p->type == P_SMOKE_IMPACT )     { // create a front rotating facing polygon
+	} else if ( p->type == P_SMOKE || p->type == P_SMOKE_IMPACT ) {     // create a front rotating facing polygon
 
 		if ( p->type == P_SMOKE_IMPACT && Distance( cg.snap->ps.origin, org ) > 1024 ) {
 			return;
@@ -536,7 +536,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 		verts[3].modulate[2] = 255 * color[2];
 		verts[3].modulate[3] = 255  * invratio;
 
-	} else if ( p->type == P_BAT )     {
+	} else if ( p->type == P_BAT ) {
 		p->pshader = cgs.media.bats[( cg.time / 50 + (int)( p - particles ) ) % 10];
 
 		VectorMA( org, -p->height, vup, point );
@@ -579,7 +579,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 		verts[3].modulate[2] = 255;
 		verts[3].modulate[3] = 255;
 
-	} else if ( p->type == P_BLEED )     {
+	} else if ( p->type == P_BLEED ) {
 		vec3_t rr, ru;
 		vec3_t rotate_ang;
 		float alpha;
@@ -640,7 +640,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 		verts[3].modulate[2] = 9;
 		verts[3].modulate[3] = 255 * alpha;
 
-	} else if ( p->type == P_FLAT_SCALEUP )     {
+	} else if ( p->type == P_FLAT_SCALEUP ) {
 		float sinR, cosR;
 
 		if ( p->color == BLOODRED ) {
@@ -706,7 +706,7 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 		verts[3].modulate[1] = 255 * color[1];
 		verts[3].modulate[2] = 255 * color[2];
 		verts[3].modulate[3] = 255;
-	} else if ( p->type == P_FLAT )     {
+	} else if ( p->type == P_FLAT ) {
 
 		VectorCopy( org, verts[0].xyz );
 		verts[0].xyz[0] -= p->height;
@@ -1207,13 +1207,13 @@ void CG_ParticleSmoke( qhandle_t pshader, centity_t *cent ) {
 		p->width = 8;
 		p->endheight = 32;
 		p->endwidth = 32;
-	} else if ( cent->currentState.density == 2 )     {
+	} else if ( cent->currentState.density == 2 ) {
 		p->rotate = qtrue;
 		p->height = 4;
 		p->width = 4;
 		p->endheight = 8;
 		p->endwidth = 8;
-	} else if ( cent->currentState.density == 3 )     {
+	} else if ( cent->currentState.density == 3 ) {
 		p->rotate = qfalse;
 		{
 			float scale;
@@ -1224,14 +1224,14 @@ void CG_ParticleSmoke( qhandle_t pshader, centity_t *cent ) {
 			p->endheight = 64 + scale;
 			p->endwidth = 64 + scale;
 		}
-	} else if ( cent->currentState.density == 4 )     { // white smoke
+	} else if ( cent->currentState.density == 4 ) {     // white smoke
 		p->rotate = qtrue;
 		p->height = cent->currentState.angles2[0];
 		p->width = cent->currentState.angles2[0];
 		p->endheight = cent->currentState.angles2[1];
 		p->endwidth = cent->currentState.angles2[1];
 		p->color = GREY75;
-	} else if ( cent->currentState.density == 5 )     { // mustard gas
+	} else if ( cent->currentState.density == 5 ) {     // mustard gas
 		p->rotate = qtrue;
 		p->height = cent->currentState.angles2[0];
 		p->width = cent->currentState.angles2[0];
@@ -1281,7 +1281,7 @@ void CG_ParticleSmoke( qhandle_t pshader, centity_t *cent ) {
 		p->vel[0] = dir[0] * 128 + ( crandom() * 64 );
 		p->vel[1] = dir[1] * 128 + ( crandom() * 64 );
 		p->vel[2] = 15 + ( crandom() * 16 );
-	} else if ( cent->currentState.density == 5 )     { // gas or cover smoke
+	} else if ( cent->currentState.density == 5 ) {     // gas or cover smoke
 		VectorCopy( cent->currentState.origin2, dir );
 		p->vel[0] = dir[0] * 32 + ( crandom() * 16 );
 		p->vel[1] = dir[1] * 32 + ( crandom() * 16 );
@@ -1463,7 +1463,7 @@ void CG_ParticleExplosion( char *animStr, vec3_t origin, vec3_t vel, int duratio
 
 	// find the animation string
 	for ( anim = 0; shaderAnimNames[anim]; anim++ ) {
-		if (!Q_stricmp( animStr, shaderAnimNames[anim] )) {
+		if ( !Q_stricmp( animStr, shaderAnimNames[anim] ) ) {
 			break;
 		}
 	}

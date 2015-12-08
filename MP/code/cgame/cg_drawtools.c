@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,8 +39,7 @@ static screenPlacement_e cg_lastVerticalPlacement = PLACE_CENTER;
 CG_SetScreenPlacement
 ================
 */
-void CG_SetScreenPlacement(screenPlacement_e hpos, screenPlacement_e vpos)
-{
+void CG_SetScreenPlacement( screenPlacement_e hpos, screenPlacement_e vpos ) {
 	cg_lastHorizontalPlacement = cg_horizontalPlacement;
 	cg_lastVerticalPlacement = cg_verticalPlacement;
 
@@ -64,7 +63,7 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 #endif
 
 	if ( cg_fixedAspect.integer ) {
-		if (cg_horizontalPlacement == PLACE_STRETCH) {
+		if ( cg_horizontalPlacement == PLACE_STRETCH ) {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
 				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
@@ -90,15 +89,15 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 			// scale for screen sizes
 			*w *= cgs.screenXScale;
 			*x *= cgs.screenXScale;
-	
-			if (cg_horizontalPlacement == PLACE_CENTER) {
+
+			if ( cg_horizontalPlacement == PLACE_CENTER ) {
 				*x += cgs.screenXBias;
-			} else if (cg_horizontalPlacement == PLACE_RIGHT) {
-				*x += cgs.screenXBias*2;
+			} else if ( cg_horizontalPlacement == PLACE_RIGHT ) {
+				*x += cgs.screenXBias * 2;
 			}
 		}
 
-		if (cg_verticalPlacement == PLACE_STRETCH) {
+		if ( cg_verticalPlacement == PLACE_STRETCH ) {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
 				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
@@ -122,11 +121,11 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 
 			*h *= cgs.screenYScale;
 			*y *= cgs.screenYScale;
-	
-			if (cg_verticalPlacement == PLACE_CENTER) {
+
+			if ( cg_verticalPlacement == PLACE_CENTER ) {
 				*y += cgs.screenYBias;
-			} else if (cg_verticalPlacement == PLACE_BOTTOM) {
-				*y += cgs.screenYBias*2;
+			} else if ( cg_verticalPlacement == PLACE_BOTTOM ) {
+				*y += cgs.screenYBias * 2;
 			}
 		}
 	} else {
@@ -184,18 +183,18 @@ void CG_FillRectGradient( float x, float y, float width, float height, const flo
 /*
 ==============
 CG_HorizontalPercentBar
-	Generic routine for pretty much all status indicators that show a fractional
-	value to the player by virtue of how full a drawn box is.
+    Generic routine for pretty much all status indicators that show a fractional
+    value to the player by virtue of how full a drawn box is.
 
 flags:
-	left		- 1
-	center		- 2		// direction is 'right' by default and orientation is 'horizontal'
-	vert		- 4
-	nohudalpha	- 8		// don't adjust bar's alpha value by the cg_hudalpha value
-	bg			- 16	// background contrast box (bg set with bgColor of 'NULL' means use default bg color (1,1,1,0.25)
-	spacing		- 32	// some bars use different sorts of spacing when drawing both an inner and outer box
+    left		- 1
+    center		- 2		// direction is 'right' by default and orientation is 'horizontal'
+    vert		- 4
+    nohudalpha	- 8		// don't adjust bar's alpha value by the cg_hudalpha value
+    bg			- 16	// background contrast box (bg set with bgColor of 'NULL' means use default bg color (1,1,1,0.25)
+    spacing		- 32	// some bars use different sorts of spacing when drawing both an inner and outer box
 
-	lerp color	- 256	// use an average of the start and end colors to set the fill color
+    lerp color	- 256	// use an average of the start and end colors to set the fill color
 ==============
 */
 
@@ -228,7 +227,7 @@ void CG_FilledBar( float x, float y, float w, float h, float *startColor, float 
 		if ( endColor ) {
 			endColor[3] *= cg_hudAlpha.value;
 		}
-			backgroundcolor[3] *= cg_hudAlpha.value;
+		backgroundcolor[3] *= cg_hudAlpha.value;
 	}
 
 	if ( flags & BAR_LERP_COLOR ) {
@@ -683,56 +682,56 @@ Coordinates are at 640 by 480 virtual resolution
 ==================
 */
 /*void CG_DrawStringExt2( int x, int y, const char *string, const float *setColor,
-		qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
-	vec4_t		color;
-	const char	*s;
-	int			xx;
-	int			cnt;
+        qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars ) {
+    vec4_t		color;
+    const char	*s;
+    int			xx;
+    int			cnt;
 
-	if (maxChars <= 0)
-		maxChars = 32767; // do them all!
+    if (maxChars <= 0)
+        maxChars = 32767; // do them all!
 
-	// draw the drop shadow
-	if (shadow) {
-		color[0] = color[1] = color[2] = 0;
-		color[3] = setColor[3];
-		trap_R_SetColor( color );
-		s = string;
-		xx = x;
-		cnt = 0;
-		while ( *s && cnt < maxChars) {
-			if ( Q_IsColorString( s ) ) {
-				s += 2;
-				continue;
-			}
-			CG_DrawChar2( xx + 2, y + 2, charWidth, charHeight, *s );
-			cnt++;
-			xx += charWidth;
-			s++;
-		}
-	}
+    // draw the drop shadow
+    if (shadow) {
+        color[0] = color[1] = color[2] = 0;
+        color[3] = setColor[3];
+        trap_R_SetColor( color );
+        s = string;
+        xx = x;
+        cnt = 0;
+        while ( *s && cnt < maxChars) {
+            if ( Q_IsColorString( s ) ) {
+                s += 2;
+                continue;
+            }
+            CG_DrawChar2( xx + 2, y + 2, charWidth, charHeight, *s );
+            cnt++;
+            xx += charWidth;
+            s++;
+        }
+    }
 
-	// draw the colored text
-	s = string;
-	xx = x;
-	cnt = 0;
-	trap_R_SetColor( setColor );
-	while ( *s && cnt < maxChars) {
-		if ( Q_IsColorString( s ) ) {
-			if ( !forceColor ) {
-				memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
-				color[3] = setColor[3];
-				trap_R_SetColor( color );
-			}
-			s += 2;
-			continue;
-		}
-		CG_DrawChar2( xx, y, charWidth, charHeight, *s );
-		xx += charWidth;
-		cnt++;
-		s++;
-	}
-	trap_R_SetColor( NULL );
+    // draw the colored text
+    s = string;
+    xx = x;
+    cnt = 0;
+    trap_R_SetColor( setColor );
+    while ( *s && cnt < maxChars) {
+        if ( Q_IsColorString( s ) ) {
+            if ( !forceColor ) {
+                memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
+                color[3] = setColor[3];
+                trap_R_SetColor( color );
+            }
+            s += 2;
+            continue;
+        }
+        CG_DrawChar2( xx, y, charWidth, charHeight, *s );
+        xx += charWidth;
+        cnt++;
+        s++;
+    }
+    trap_R_SetColor( NULL );
 }*/
 
 void CG_DrawBigString( int x, int y, const char *s, float alpha ) {
@@ -1190,7 +1189,7 @@ static void UI_DrawBannerString2( int x, int y, const char* str, vec4_t color ) 
 		ch = *s & 127;
 		if ( ch == ' ' ) {
 			ax += ( (float)PROPB_SPACE_WIDTH + (float)PROPB_GAP_WIDTH ) * cgs.screenXScale;
-		} else if ( ch >= 'A' && ch <= 'Z' )     {
+		} else if ( ch >= 'A' && ch <= 'Z' ) {
 			ch -= 'A';
 			fcol = (float)propMapB[ch][0] / 256.0f;
 			frow = (float)propMapB[ch][1] / 256.0f;
@@ -1220,7 +1219,7 @@ void UI_DrawBannerString( int x, int y, const char* str, int style, vec4_t color
 		ch = *s;
 		if ( ch == ' ' ) {
 			width += PROPB_SPACE_WIDTH;
-		} else if ( ch >= 'A' && ch <= 'Z' )     {
+		} else if ( ch >= 'A' && ch <= 'Z' ) {
 			width += propMapB[ch - 'A'][2] + PROPB_GAP_WIDTH;
 		}
 		s++;

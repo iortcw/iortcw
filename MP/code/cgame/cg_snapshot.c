@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -367,22 +367,22 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 				cg.stepTime = -1;
 				// go through an reset the cent's
 /* // JPW NERVE -- return NULL mighta been bad, q3ta doesn't include this stuff
-				for (i=0; i<MAX_GENTITIES; i++) {
-					backupCent = cg_entities[i];
-					memset( &cg_entities[i], 0, sizeof(centity_t) );
-					cg_entities[i].currentState = backupCent.currentState;
-					cg_entities[i].nextState = backupCent.nextState;
-					cg_entities[i].currentValid = backupCent.currentValid;
-					cg_entities[i].interpolate = backupCent.interpolate;
-				}
-				// reset the predicted cent
-				backupCent = cg.predictedPlayerEntity;				// NERVE - SMF
-				memset( &cg.predictedPlayerEntity, 0, sizeof(centity_t) );
-				cg.predictedPlayerEntity.currentState = backupCent.currentState;
-				cg.predictedPlayerEntity.nextState = backupCent.nextState;
-				cg.predictedPlayerEntity.currentValid = backupCent.currentValid;
-				cg.predictedPlayerEntity.interpolate = backupCent.interpolate;
-				return NULL;
+                for (i=0; i<MAX_GENTITIES; i++) {
+                    backupCent = cg_entities[i];
+                    memset( &cg_entities[i], 0, sizeof(centity_t) );
+                    cg_entities[i].currentState = backupCent.currentState;
+                    cg_entities[i].nextState = backupCent.nextState;
+                    cg_entities[i].currentValid = backupCent.currentValid;
+                    cg_entities[i].interpolate = backupCent.interpolate;
+                }
+                // reset the predicted cent
+                backupCent = cg.predictedPlayerEntity;				// NERVE - SMF
+                memset( &cg.predictedPlayerEntity, 0, sizeof(centity_t) );
+                cg.predictedPlayerEntity.currentState = backupCent.currentState;
+                cg.predictedPlayerEntity.nextState = backupCent.nextState;
+                cg.predictedPlayerEntity.currentValid = backupCent.currentValid;
+                cg.predictedPlayerEntity.interpolate = backupCent.interpolate;
+                return NULL;
 // jpw */
 			}
 //

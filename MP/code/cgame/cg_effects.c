@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -100,9 +100,9 @@ CG_SmokePuff
 Adds a smoke puff or blood trail localEntity.
 
 (SA) boy, it would be nice to have an acceleration vector for this as well.
-		big velocity vector with a negative acceleration for deceleration, etc.
-		(breath could then come out of a guys mouth at the rate he's walking/running and it
-		would slow down once it's created)
+        big velocity vector with a negative acceleration for deceleration, etc.
+        (breath could then come out of a guys mouth at the rate he's walking/running and it
+        would slow down once it's created)
 =====================
 */
 
@@ -280,8 +280,7 @@ localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 	VectorCopy( newOrigin, ex->refEntity.oldorigin );
 
 	// Ridah, move away from the wall as the sprite expands
-	if ( dir )
-	{
+	if ( dir ) {
 		ex->pos.trType = TR_LINEAR;
 		ex->pos.trTime = cg.time;
 		VectorCopy( newOrigin, ex->pos.trBase );
@@ -561,9 +560,9 @@ void CG_LoseHat( centity_t *cent, vec3_t dir ) {
 		le->angles.trDelta[1]   = ( 100 + ( rand() & 500 ) ) - 300;
 //		le->angles.trDelta[2]	= 0;
 		le->angles.trDelta[2]   = 400;  // (SA) this is set with a very particular value to try to get it
-										// to flip exactly once before landing (based on player alive
-										// (standing) and on level ground) and will be unnecessary when
-										// I have things landing properly on their own
+		                                // to flip exactly once before landing (based on player alive
+		                                // (standing) and on level ground) and will be unnecessary when
+		                                // I have things landing properly on their own
 
 		le->angles.trTime       = cg.time;
 
@@ -1008,7 +1007,7 @@ void CG_DynamicLightningBolt( qhandle_t shader, vec3_t start, vec3_t pend, int n
 					if ( fabs( viewDist ) < 0.5 ) {
 						if ( viewDist > 0 ) {
 							viewDist = 0.5;
-						} else { viewDist = -0.5;}
+						} else { viewDist = -0.5; }
 					}
 					pos[j] += viewDist * thisSeg;
 				}
@@ -1026,7 +1025,7 @@ void CG_DynamicLightningBolt( qhandle_t shader, vec3_t start, vec3_t pend, int n
 					if ( fabs( viewDist ) < 0.5 ) {
 						if ( viewDist > 0 ) {
 							viewDist = 0.5;
-						} else { viewDist = -0.5;}
+						} else { viewDist = -0.5; }
 					}
 					pos[j] += viewDist * thisSeg;
 				}
@@ -1130,20 +1129,20 @@ void CG_ProjectedSpotLight( vec3_t start, vec3_t dir ) {
 /*
 ==============
 CG_Spotlight
-	segs:	number of sides on tube. - 999 is a valid value and just means, 'cap to max' (MAX_SPOT_SEGS) or use lod scheme
-	range:	effective range of beam
-	startWidth: will be optimized for '0' as a value (true cone) to not use quads and not cap the start circle
+    segs:	number of sides on tube. - 999 is a valid value and just means, 'cap to max' (MAX_SPOT_SEGS) or use lod scheme
+    range:	effective range of beam
+    startWidth: will be optimized for '0' as a value (true cone) to not use quads and not cap the start circle
 
-	-- flags --
-	SL_NOTRACE			- don't do a trace check for shortening the beam, always draw at full 'range' length
-	SL_TRACEWORLDONLY	- go through everything but the world
-	SL_NODLIGHT			- don't put a dlight at the end
-	SL_NOSTARTCAP		- dont' cap the start circle
-	SL_LOCKTRACETORANGE	- only trace out as far as the specified range (rather than to max spot range)
-	SL_NOFLARE			- don't draw a flare when the light is pointing at the camera
-	SL_NOIMPACT			- don't draw the impact mark on hit surfaces
-	SL_LOCKUV			- lock the texture coordinates at the 'true' length of the requested beam.
-	SL_NOCORE			- don't draw the center 'core' beam
+    -- flags --
+    SL_NOTRACE			- don't do a trace check for shortening the beam, always draw at full 'range' length
+    SL_TRACEWORLDONLY	- go through everything but the world
+    SL_NODLIGHT			- don't put a dlight at the end
+    SL_NOSTARTCAP		- dont' cap the start circle
+    SL_LOCKTRACETORANGE	- only trace out as far as the specified range (rather than to max spot range)
+    SL_NOFLARE			- don't draw a flare when the light is pointing at the camera
+    SL_NOIMPACT			- don't draw the impact mark on hit surfaces
+    SL_LOCKUV			- lock the texture coordinates at the 'true' length of the requested beam.
+    SL_NOCORE			- don't draw the center 'core' beam
 
 
 
@@ -1216,7 +1215,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	// first trace to see if anything is hit
 	if ( flags & SL_NOTRACE ) {
 		tr.fraction = 1.0;  // force no hit
-		VectorCopy(traceEnd, tr.endpos);
+		VectorCopy( traceEnd, tr.endpos );
 	} else {
 		if ( flags & SL_TRACEWORLDONLY ) {
 			CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, CONTENTS_SOLID );
@@ -1504,4 +1503,3 @@ void CG_RumbleEfx( float pitch, float yaw ) {
 	// set the recoil
 	cg.recoilPitch -= pitchRecoilAdd;
 }
-

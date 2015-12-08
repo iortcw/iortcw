@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 // Ridah, increased this
 //#define	MAX_LOCAL_ENTITIES	512
 #define MAX_LOCAL_ENTITIES  768     // renderer can only handle 1024 entities max, so we should avoid
-									// overwriting game entities
+                                    // overwriting game entities
 // done.
 
 localEntity_t cg_localEntities[MAX_LOCAL_ENTITIES];
@@ -679,13 +679,13 @@ void CG_AddSparkElements( localEntity_t *le ) {
 		// moved some distance
 		VectorCopy( trace.endpos, le->refEntity.origin );
 /*
-		} else
-		{	// just move it there
+        } else
+        {	// just move it there
 
-			VectorCopy( newOrigin, le->refEntity.origin );
-			trace.fraction = 1.0;
+            VectorCopy( newOrigin, le->refEntity.origin );
+            trace.fraction = 1.0;
 
-		}
+        }
 */
 		time += cg.frametime * trace.fraction;
 
@@ -715,10 +715,10 @@ void CG_AddSparkElements( localEntity_t *le ) {
 			CG_FreeLocalEntity( le );
 			return;
 /*
-			// reflect the velocity on the trace plane
-			CG_ReflectVelocity( le, &trace );
-			// the intersection is a fraction of the frametime
-			le->pos.trTime = (int)time;
+            // reflect the velocity on the trace plane
+            CG_ReflectVelocity( le, &trace );
+            // the intersection is a fraction of the frametime
+            le->pos.trTime = (int)time;
 */
 		}
 
@@ -991,7 +991,7 @@ void CG_AddClientCritter( localEntity_t *le ) {
 			if ( fabs( ang[ROLL] ) > 80 ) {
 				if ( ang[ROLL] > 80 ) {
 					ang[ROLL] = 80;
-				} else { ang[ROLL] = -80;}
+				} else { ang[ROLL] = -80; }
 			}
 		}
 		AnglesToAxis( ang, le->refEntity.axis );
@@ -1029,13 +1029,13 @@ void CG_AddClientCritter( localEntity_t *le ) {
 
 	trap_R_AddRefEntityToScene( &le->refEntity );
 /*
-	// HACK: the skull is slightly higher than the origin
-	if (le->leType == LE_ZOMBIE_SPIRIT) {
-		// set the size scale
-		for (i=0; i<3; i++)
-			VectorScale( le->refEntity.axis[i], 1.0/0.35, le->refEntity.axis[i] );
-		VectorMA( le->refEntity.origin,  10, le->refEntity.axis[2], le->refEntity.origin );
-	}
+    // HACK: the skull is slightly higher than the origin
+    if (le->leType == LE_ZOMBIE_SPIRIT) {
+        // set the size scale
+        for (i=0; i<3; i++)
+            VectorScale( le->refEntity.axis[i], 1.0/0.35, le->refEntity.axis[i] );
+        VectorMA( le->refEntity.origin,  10, le->refEntity.axis[2], le->refEntity.origin );
+    }
 */
 	// Bats, add the flame
 	if ( le->leType == LE_ZOMBIE_BAT ) {
@@ -1058,13 +1058,13 @@ void CG_AddClientCritter( localEntity_t *le ) {
 		le->refEntity.customShader = 0;
 		le->refEntity.shaderTime = 0;
 /*
-		// drop a dlight
-		lightSize = 1.0 + 0.2*(sin(1.0*cg.time/50.0) * cos(1.0*cg.time/43.0));
-		alpha = 0.2 * (lightSize / 1.2);
-		trap_R_AddLightToScene( le->refEntity.origin, 150.0 + 80.0*lightSize, 1.000000*alpha, 0.603922*alpha, 0.207843*alpha, 0 );
-		// add some sound
-		CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameSound, 100 );
-		CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameBlowSound, 100 );
+        // drop a dlight
+        lightSize = 1.0 + 0.2*(sin(1.0*cg.time/50.0) * cos(1.0*cg.time/43.0));
+        alpha = 0.2 * (lightSize / 1.2);
+        trap_R_AddLightToScene( le->refEntity.origin, 150.0 + 80.0*lightSize, 1.000000*alpha, 0.603922*alpha, 0.207843*alpha, 0 );
+        // add some sound
+        CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameSound, 100 );
+        CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameBlowSound, 100 );
 */
 	}
 }
@@ -1469,9 +1469,9 @@ static void CG_AddSpriteExplosion( localEntity_t *le ) {
 		/*
 		light = (float)( cg.time - le->startTime ) / ( le->endTime - le->startTime );
 		if ( light < 0.5 ) {
-			light = 1.0;
+		    light = 1.0;
 		} else {
-			light = 1.0 - ( light - 0.5 ) * 2;
+		    light = 1.0 - ( light - 0.5 ) * 2;
 		}
 		light = le->light * light;
 		trap_R_AddLightToScene(re.origin, light, le->lightColor[0], le->lightColor[1], le->lightColor[2], 0 );
@@ -1516,7 +1516,7 @@ void CG_AddLocalEntities( void ) {
 			CG_Error( "Bad leType: %i", le->leType );
 			break;
 
-			// Ridah
+		// Ridah
 		case LE_MOVING_TRACER:
 			CG_AddMovingTracer( le );
 			break;
@@ -1536,7 +1536,7 @@ void CG_AddLocalEntities( void ) {
 		case LE_ZOMBIE_BAT:
 			CG_AddClientCritter( le );
 			break;
-			// done.
+		// done.
 
 		case LE_MARK:
 			break;
@@ -1576,4 +1576,3 @@ void CG_AddLocalEntities( void ) {
 		}
 	}
 }
-

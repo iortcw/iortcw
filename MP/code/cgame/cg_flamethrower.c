@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -375,18 +375,18 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 	f = centInfo->lastFlameChunk;
 	while (f) {
 
-		if (f->lastFriction < cg.time - 50) {
-			frametime = (float)(cg.time - f->lastFriction) / 1000.0;
-			f->lastFriction = cg.time;
-			dot = DotProduct(parentFwd, f->parentFwd);
-			if (dot >= 0.99) {
-				dot -= 0.99;
-				dot *= (1.0/(1.0-0.99));
-				CG_FlameAdjustSpeed( f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot,4) );
-			}
-		}
+	    if (f->lastFriction < cg.time - 50) {
+	        frametime = (float)(cg.time - f->lastFriction) / 1000.0;
+	        f->lastFriction = cg.time;
+	        dot = DotProduct(parentFwd, f->parentFwd);
+	        if (dot >= 0.99) {
+	            dot -= 0.99;
+	            dot *= (1.0/(1.0-0.99));
+	            CG_FlameAdjustSpeed( f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot,4) );
+	        }
+	    }
 
-		f = f->nextFlameChunk;
+	    f = f->nextFlameChunk;
 	}
 	*/
 
@@ -890,7 +890,7 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 	frameNum = (int)floor( lifeFrac * NUM_FLAME_SPRITES );
 	if ( frameNum < 0 ) {
 		frameNum = 0;
-	} else if ( frameNum > NUM_FLAME_SPRITES - 1 )  {
+	} else if ( frameNum > NUM_FLAME_SPRITES - 1 ) {
 		frameNum = NUM_FLAME_SPRITES - 1;
 	}
 
@@ -898,9 +898,9 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 // JPW NERVE alternate FT shaders
 	if ( cg_fxflags & 1 ) {
 /*
-		p->roll = 0;
-		p->pshader = getTestShader();
-		rotate_ang[ROLL]=90;
+        p->roll = 0;
+        p->pshader = getTestShader();
+        rotate_ang[ROLL]=90;
 */
 		trap_R_AddPolyToScene( getTestShader(),4,verts );
 	} else {
@@ -1256,14 +1256,14 @@ void CG_InitFlameChunks( void ) {
 						"",
 						qtrue, qfalse );
 /*
-	CG_GenerateShaders( "scripts/expblue.shader",
-						"expblue",
-						"expblue",
-						25,
-						"GL_ONE",
-						"GL_ONE_MINUS_SRC_COLOR",
-						"",
-						qfalse, qfalse );
+    CG_GenerateShaders( "scripts/expblue.shader",
+                        "expblue",
+                        "expblue",
+                        25,
+                        "GL_ONE",
+                        "GL_ONE_MINUS_SRC_COLOR",
+                        "",
+                        qfalse, qfalse );
 */
 	CG_GenerateShaders( "scripts/firest.shader",
 						"firest",
@@ -1388,7 +1388,7 @@ void CG_UpdateFlamethrowerSounds( void ) {
 
 		// traverse the chunks, spawning flame sound sources as we go
 //		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
-			// update the sound volume
+		// update the sound volume
 //			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
 //				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
 //			}
@@ -1401,14 +1401,14 @@ void CG_UpdateFlamethrowerSounds( void ) {
 	// send client damage updates if required
 	/*
 	for (cent=cg_entities, i=0; i<cgs.maxclients; cent++, i++) {
-		if (centFlameInfo[i].lastDmgCheck > centFlameInfo[i].lastDmgUpdate &&
-			centFlameInfo[i].lastDmgUpdate < cg.time - 50 ) // JPW NERVE (cgs.gametype == GT_SINGLE_PLAYER ? 50 : 50)) -- sean changed clientdamage so this isn't a saturation issue any longer
-		{
-			if ((cg.snap->ps.pm_flags & PMF_LIMBO) || ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR )) // JPW NERVE
-				return; // JPW NERVE don't do flame damage to guys in limbo or spectator, they drop out of the game
-			CG_ClientDamage( i, centFlameInfo[i].lastDmgEnemy, CLDMG_FLAMETHROWER );
-			centFlameInfo[i].lastDmgUpdate = cg.time;
-		}
+	    if (centFlameInfo[i].lastDmgCheck > centFlameInfo[i].lastDmgUpdate &&
+	        centFlameInfo[i].lastDmgUpdate < cg.time - 50 ) // JPW NERVE (cgs.gametype == GT_SINGLE_PLAYER ? 50 : 50)) -- sean changed clientdamage so this isn't a saturation issue any longer
+	    {
+	        if ((cg.snap->ps.pm_flags & PMF_LIMBO) || ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR )) // JPW NERVE
+	            return; // JPW NERVE don't do flame damage to guys in limbo or spectator, they drop out of the game
+	        CG_ClientDamage( i, centFlameInfo[i].lastDmgEnemy, CLDMG_FLAMETHROWER );
+	        centFlameInfo[i].lastDmgUpdate = cg.time;
+	    }
 	}
 	*/
 }

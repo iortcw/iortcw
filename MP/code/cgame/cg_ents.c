@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ void CG_PositionRotatedEntityOnTag( refEntity_t *entity, const refEntity_t *pare
 /*
 ==============
 CG_LoseArmor
-	maybe better in cg_localents.c
+    maybe better in cg_localents.c
 ==============
 */
 void CG_LoseArmor( centity_t *cent, int index ) {
@@ -257,14 +257,14 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 		if ( cent->currentState.eType == ET_SPEAKER ) {
 			/*if(cent->currentState.density == 1) {	// NO_PVS
-				CG_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ] );
+			    CG_S_AddRealLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ] );
 			}
 			else*/if ( cent->currentState.dmgFlags ) { // range is set
 				CG_S_AddRangedLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], cent->currentState.dmgFlags );
 			} else {
 				CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 			}
-		} else if ( cent->currentState.solid == SOLID_BMODEL )   {
+		} else if ( cent->currentState.solid == SOLID_BMODEL ) {
 			vec3_t origin;
 			float   *v;
 
@@ -275,12 +275,12 @@ static void CG_EntityEffects( centity_t *cent ) {
 			CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 		}
 	} /*else {
-		// stop NO_PVS speakers if they've been turned off
-		if(cent->currentState.eType == ET_SPEAKER) {
-			if(cent->currentState.density == 1) {
-				trap_S_StopLoopingSound(cent->currentState.number);
-			}
-		}
+	    // stop NO_PVS speakers if they've been turned off
+	    if(cent->currentState.eType == ET_SPEAKER) {
+	        if(cent->currentState.density == 1) {
+	            trap_S_StopLoopingSound(cent->currentState.number);
+	        }
+	    }
 	}*/
 
 
@@ -295,11 +295,11 @@ static void CG_EntityEffects( centity_t *cent ) {
 		} else
 		{
 			cl = cent->currentState.constantLight;
-			r = (float) (cl & 0xFF) / 255.0;
-			g = (float) ((cl >> 8) & 0xFF) / 255.0;
-			b = (float) ((cl >> 16) & 0xFF) / 255.0;
-			i = (float) ((cl >> 24) & 0xFF) * 4.0;
-			trap_R_AddLightToScene(cent->lerpOrigin, i, r, g, b, 0);
+			r = (float) ( cl & 0xFF ) / 255.0;
+			g = (float) ( ( cl >> 8 ) & 0xFF ) / 255.0;
+			b = (float) ( ( cl >> 16 ) & 0xFF ) / 255.0;
+			i = (float) ( ( cl >> 24 ) & 0xFF ) * 4.0;
+			trap_R_AddLightToScene( cent->lerpOrigin, i, r, g, b, 0 );
 		}
 	}
 
@@ -473,101 +473,101 @@ CG_DrawHoldableSelect
 */
 void CG_DrawHoldableSelect( void ) {
 /*
-	int		bits;
-	int		count;
-	int		amount;
-	int		i, x, y, w;
-	float	*color;
-	char	*name;
-	gitem_t		*item;
+    int		bits;
+    int		count;
+    int		amount;
+    int		i, x, y, w;
+    float	*color;
+    char	*name;
+    gitem_t		*item;
 
-	// don't display if dead
-	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
-		return;
-	}
+    // don't display if dead
+    if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
+        return;
+    }
 
-	color = CG_FadeColor( cg.holdableSelectTime, HOLDABLE_SELECT_TIME );
-	if ( !color ) {
-		return;
-	}
-	trap_R_SetColor( color );
+    color = CG_FadeColor( cg.holdableSelectTime, HOLDABLE_SELECT_TIME );
+    if ( !color ) {
+        return;
+    }
+    trap_R_SetColor( color );
 
-	// showing select clears pickup item display, but not the blend blob
-	cg.itemPickupTime = 0;
+    // showing select clears pickup item display, but not the blend blob
+    cg.itemPickupTime = 0;
 
-	//----(SA)	removed
+    //----(SA)	removed
 
-	// count the number of weapons owned
-	bits = cg.snap->ps.stats[ STAT_HOLDABLE_ITEM ];
-	count = 0;
+    // count the number of weapons owned
+    bits = cg.snap->ps.stats[ STAT_HOLDABLE_ITEM ];
+    count = 0;
 
-	for ( i = 1 ; i <= HI_BOOK3; i++ ) {
-		if ( bits & ( 1 << i ) ) {
-			if(cg.predictedPlayerState.holdable[i])		// don't show ones we're out of
-				count++;
-		}
-	}
+    for ( i = 1 ; i <= HI_BOOK3; i++ ) {
+        if ( bits & ( 1 << i ) ) {
+            if(cg.predictedPlayerState.holdable[i])		// don't show ones we're out of
+                count++;
+        }
+    }
 
-	x = 320 - count * 20;
-	y = 380;
+    x = 320 - count * 20;
+    y = 380;
 
 
-	for ( i = 1 ; i <= HI_BOOK3 ; i++ ) {
-		if ( !( bits & ( 1 << i ) ) ) {
-			continue;
-		}
+    for ( i = 1 ; i <= HI_BOOK3 ; i++ ) {
+        if ( !( bits & ( 1 << i ) ) ) {
+            continue;
+        }
 
-		amount = cg.predictedPlayerState.holdable[i];
+        amount = cg.predictedPlayerState.holdable[i];
 
-		if(!amount)
-			continue;
+        if(!amount)
+            continue;
 
-		item = BG_FindItemForHoldable(i);
-		if(!item)
-			continue;
+        item = BG_FindItemForHoldable(i);
+        if(!item)
+            continue;
 
-		CG_RegisterItemVisuals(item - bg_itemlist);
+        CG_RegisterItemVisuals(item - bg_itemlist);
 
-		// draw icon
-		if(i == HI_WINE) {
-			// wine icons have three stages since each bottle has three uses (as opposed to others so far where there's only 1 use)
-			int wine = amount;
-			if(wine > 3) wine = 3;
-			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[ 2 - (wine - 1) ] ) ;
-		}
-		else {
-			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[0]);
-		}
+        // draw icon
+        if(i == HI_WINE) {
+            // wine icons have three stages since each bottle has three uses (as opposed to others so far where there's only 1 use)
+            int wine = amount;
+            if(wine > 3) wine = 3;
+            CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[ 2 - (wine - 1) ] ) ;
+        }
+        else {
+            CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[0]);
+        }
 
-		// draw remaining uses if there's more than one
-		if(amount > 1)
-			CG_DrawBigStringColor(x, y + 34, va("%d", amount), color);
+        // draw remaining uses if there's more than one
+        if(amount > 1)
+            CG_DrawBigStringColor(x, y + 34, va("%d", amount), color);
 
-		// draw selection marker
-		if ( i == cg.holdableSelect) {
-			CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
-		}
+        // draw selection marker
+        if ( i == cg.holdableSelect) {
+            CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
+        }
 
-		x += 40;
-	}
+        x += 40;
+    }
 
-	// draw the selected name
-	if(cg.holdableSelect) {
-		item = BG_FindItemForHoldable(cg.holdableSelect);
-		if(item) {
-			name = item->pickup_name;
-			if ( name ) {
-		//----(SA)	trying smaller text
+    // draw the selected name
+    if(cg.holdableSelect) {
+        item = BG_FindItemForHoldable(cg.holdableSelect);
+        if(item) {
+            name = item->pickup_name;
+            if ( name ) {
+        //----(SA)	trying smaller text
 //				w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
-				w = CG_DrawStrlen( name ) * 10;
-				x = ( SCREEN_WIDTH - w ) / 2;
+                w = CG_DrawStrlen( name ) * 10;
+                x = ( SCREEN_WIDTH - w ) / 2;
 //				CG_DrawBigStringColor(x, y - 22, name, color);
-				CG_DrawStringExt2( x, y + 60, name, color, qfalse, qtrue, 10, 10, 0 );
-			}
-		}
-	}
+                CG_DrawStringExt2( x, y + 60, name, color, qfalse, qtrue, 10, 10, 0 );
+            }
+        }
+    }
 
-	trap_R_SetColor( NULL );
+    trap_R_SetColor( NULL );
 */
 }
 
@@ -580,38 +580,38 @@ CG_NextItem_f
 
 void CG_NextItem_f( void ) {
 /*
-	int		i;
-	int		original, next;
+    int		i;
+    int		original, next;
 
-	if ( !cg.snap ) {
-		return;
-	}
+    if ( !cg.snap ) {
+        return;
+    }
 
-	if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
-		return;
-	}
+    if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
+        return;
+    }
 
-	cg.holdableSelectTime = cg.time;
-	cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
+    cg.holdableSelectTime = cg.time;
+    cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
 
-	next = original = cg.holdableSelect;
+    next = original = cg.holdableSelect;
 
-	for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
-		next++;
+    for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
+        next++;
 
-		if(next == HI_NUM_HOLDABLE)
-			next = 0;
+        if(next == HI_NUM_HOLDABLE)
+            next = 0;
 
-		if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
-			break;
-		}
-	}
+        if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
+            break;
+        }
+    }
 
-	if ( i == HI_NUM_HOLDABLE ) {
-		next = original;
-	}
+    if ( i == HI_NUM_HOLDABLE ) {
+        next = original;
+    }
 
-	cg.holdableSelect = next;
+    cg.holdableSelect = next;
 */
 }
 
@@ -622,38 +622,38 @@ CG_PrevItem_f
 */
 void CG_PrevItem_f( void ) {
 /*
-	int		i;
-	int		original, next;
+    int		i;
+    int		original, next;
 
-	if ( !cg.snap ) {
-		return;
-	}
+    if ( !cg.snap ) {
+        return;
+    }
 
-	if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
-		return;
-	}
+    if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
+        return;
+    }
 
-	cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
-	cg.holdableSelectTime = cg.time;
+    cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
+    cg.holdableSelectTime = cg.time;
 
-	next = original = cg.holdableSelect;
+    next = original = cg.holdableSelect;
 
-	for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
-		next--;
+    for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
+        next--;
 
-		if(next == -1)
-			next = HI_NUM_HOLDABLE - 1;
+        if(next == -1)
+            next = HI_NUM_HOLDABLE - 1;
 
-		if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
-			break;
-		}
-	}
+        if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
+            break;
+        }
+    }
 
-	if ( i == HI_NUM_HOLDABLE ) {
-		next = original;
-	}
+    if ( i == HI_NUM_HOLDABLE ) {
+        next = original;
+    }
 
-	cg.holdableSelect = next;
+    cg.holdableSelect = next;
 */
 }
 
@@ -877,7 +877,7 @@ static void CG_Item( centity_t *cent ) {
 
 
 	if ( es->modelindex2 ) {   // modelindex2 was specified for the ent, meaning it probably has an alternate model (as opposed to the one in the itemlist)
-							   // try to load it first, and if it fails, default to the itemlist model
+		                       // try to load it first, and if it fails, default to the itemlist model
 		ent.hModel = cgs.gameModels[ es->modelindex2 ];
 	} else {
 		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) { // check if there's a specific model for weapon pickup placement
@@ -1075,7 +1075,7 @@ static void CG_Missile( centity_t *cent ) {
 
 	if ( cent->currentState.eType == ET_FP_PARTS ) {
 		ent.hModel = cgs.gameModels[cent->currentState.modelindex];
-	} else if ( cent->currentState.eType == ET_EXPLO_PART )     {
+	} else if ( cent->currentState.eType == ET_EXPLO_PART ) {
 		ent.hModel = cgs.gameModels[cent->currentState.modelindex];
 	} else if ( cent->currentState.eType == ET_FLAMEBARREL ) {
 		ent.hModel = cgs.media.flamebarrel;
@@ -1145,7 +1145,7 @@ typedef struct {
 } animationInline_t;
 
 static void CG_InlineAnimToFullAnim( const animationInline_t *inl, animation_t *anim ) {
-	Com_Memset( anim, 0, sizeof ( animation_t ) );
+	Com_Memset( anim, 0, sizeof( animation_t ) );
 	anim->firstFrame = inl->firstFrame;
 	anim->numFrames = inl->numFrames;
 	anim->loopFrames = inl->loopFrames;
@@ -1196,13 +1196,13 @@ CG_InitTrapAnimations
 void CG_InitTrapAnimations( void ) {
 	int i;
 
-	for ( i = 0; i < ARRAY_LEN(grabberAnims); i++ ) {
+	for ( i = 0; i < ARRAY_LEN( grabberAnims ); i++ ) {
 		CG_InlineAnimToFullAnim( &grabberAnimsInline[i], &grabberAnims[i] );
 	}
-	for ( i = 0; i < ARRAY_LEN(footlockerAnims); i++ ) {
+	for ( i = 0; i < ARRAY_LEN( footlockerAnims ); i++ ) {
 		CG_InlineAnimToFullAnim( &footlockerAnimsInline[i], &footlockerAnims[i] );
 	}
-	for ( i = 0; i < ARRAY_LEN(multi_flagpoleAnims); i++ ) {
+	for ( i = 0; i < ARRAY_LEN( multi_flagpoleAnims ); i++ ) {
 		CG_InlineAnimToFullAnim( &multi_flagpoleAnimsInline[i], &multi_flagpoleAnims[i] );
 	}
 }
@@ -1245,7 +1245,7 @@ static void CG_TrapSetAnim( centity_t *cent, lerpFrame_t *lf, int newAnim ) {
 /*
 ==============
 CG_Trap
-	// TODO: change from 'trap' to something else.  'trap' is a misnomer.  it's actually used for other stuff too
+    // TODO: change from 'trap' to something else.  'trap' is a misnomer.  it's actually used for other stuff too
 ==============
 */
 static void CG_Trap( centity_t *cent ) {
@@ -1442,7 +1442,7 @@ static void CG_Efx( centity_t *cent ) {
 				trap_R_AddLightToScene( cent->currentState.origin, cent->currentState.time, (float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 0 );
 			}
 		}
-	} else if ( cent->currentState.eType == ET_EF_SPOTLIGHT )     {
+	} else if ( cent->currentState.eType == ET_EF_SPOTLIGHT ) {
 
 		vec3_t targetpos, normalized_direction, direction;
 		float dist, fov = 90;
@@ -1493,9 +1493,9 @@ static void CG_Efx( centity_t *cent ) {
 /*
 ===============
 CG_Explosive
-	This is currently almost exactly the same as CG_Mover
-	It's split out so that any changes or experiments are
-	unattached to anything else.
+    This is currently almost exactly the same as CG_Mover
+    It's split out so that any changes or experiments are
+    unattached to anything else.
 ===============
 */
 static void CG_Explosive( centity_t *cent ) {
@@ -1776,7 +1776,7 @@ static void CG_Prop( centity_t *cent ) {
 			ent.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;
 
 			//CG_Printf ("frame %d oldframe %d\n", ent.frame, ent.oldframe);
-		} else if ( ent.frame )     {
+		} else if ( ent.frame ) {
 			ent.oldframe -= 1;
 			ent.backlerp = 1 - cg.frameInterpolation;
 		} else
@@ -1821,7 +1821,7 @@ Also called by client movement prediction code
 =========================
 */
 //void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t outDeltaAngles ) {
-void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t angles_in, vec3_t angles_out) {
+void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t angles_in, vec3_t angles_out ) {
 	centity_t   *cent;
 	vec3_t oldOrigin, origin, deltaOrigin;
 	vec3_t oldAngles, angles, deltaAngles;
@@ -1832,7 +1832,7 @@ void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int 
 
 	if ( moverNum <= 0 || moverNum >= ENTITYNUM_MAX_NORMAL ) {
 		VectorCopy( in, out );
-		VectorCopy(angles_in, angles_out);
+		VectorCopy( angles_in, angles_out );
 		return;
 	}
 
@@ -1840,7 +1840,7 @@ void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int 
 
 	if ( cent->currentState.eType != ET_MOVER ) {
 		VectorCopy( in, out );
-		VectorCopy(angles_in, angles_out);
+		VectorCopy( angles_in, angles_out );
 		return;
 	}
 
@@ -1936,7 +1936,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	// player state
 	if ( cent != &cg.predictedPlayerEntity ) {
 		CG_AdjustPositionForMover( cent->lerpOrigin, cent->currentState.groundEntityNum,
-		cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles);
+								   cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles );
 	}
 }
 
@@ -2178,7 +2178,7 @@ void CG_AddPacketEntities( void ) {
 		}
 	} else {
 		cg.frameInterpolation = 0;  // actually, it should never be used, because
-									// no entities should be marked as interpolating
+		                            // no entities should be marked as interpolating
 	}
 
 	// the auto-rotating items will all have the same axis

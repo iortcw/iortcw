@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -131,9 +131,9 @@ static void CG_Obituary( entityState_t *ent ) {
 
 	message2 = "";
 
-	trap_Cvar_VariableStringBuffer("sex", buf, sizeof(buf));
+	trap_Cvar_VariableStringBuffer( "sex", buf, sizeof( buf ) );
 
-	switch (tolower(buf[0])) {
+	switch ( tolower( buf[0] ) ) {
 	case 'f':
 		ci->gender = GENDER_FEMALE;
 		break;
@@ -159,12 +159,12 @@ static void CG_Obituary( entityState_t *ent ) {
 	case MOD_SLIME:
 		message = "died by toxic materials";
 		break;
-		//case MOD_LAVA:
-		//message = "does a back flip into the lava";
-		//break;
-		//case MOD_TARGET_LASER:
-		//message = "saw the light";
-		//break;
+	//case MOD_LAVA:
+	//message = "does a back flip into the lava";
+	//break;
+	//case MOD_TARGET_LASER:
+	//message = "saw the light";
+	//break;
 	case MOD_TRIGGER_HURT:
 		message = "was killed";
 		break;
@@ -179,44 +179,50 @@ static void CG_Obituary( entityState_t *ent ) {
 // JPW NERVE per atvi req
 		case MOD_DYNAMITE:
 		case MOD_DYNAMITE_SPLASH:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "dynamited herself to pieces";
-			else
+			} else {
 				message = "dynamited himself to pieces";
+			}
 			break;
 // jpw
 		case MOD_GRENADE_SPLASH:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "dove on her own grenade";
-			else
+			} else {
 				message = "dove on his own grenade";
+			}
 			break;
 		case MOD_ROCKET_SPLASH:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "vaporized herself";
-			else
+			} else {
 				message = "vaporized himself";
+			}
 			break;
 		case MOD_AIRSTRIKE:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "obliterated herself";
-			else
+			} else {
 				message = "obliterated himself";
+			}
 			break;
-			//case MOD_BFG_SPLASH:
-			//message = "should have used a smaller gun";
-			//break;
+		//case MOD_BFG_SPLASH:
+		//message = "should have used a smaller gun";
+		//break;
 		case MOD_EXPLOSIVE:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "died in her own explosion";
-			else
+			} else {
 				message = "died in his own explosion";
+			}
 			break;
 		default:
-			if ( gender == GENDER_FEMALE )
+			if ( gender == GENDER_FEMALE ) {
 				message = "killed herself";
-			else
+			} else {
 				message = "killed himself";
+			}
 			break;
 		}
 	}
@@ -261,7 +267,7 @@ static void CG_Obituary( entityState_t *ent ) {
 	if ( attacker != ENTITYNUM_WORLD ) {
 		switch ( mod ) {
 
-			// TODO: put real text here.  these are just placeholders
+		// TODO: put real text here.  these are just placeholders
 
 		case MOD_KNIFE_STEALTH:
 		case MOD_KNIFE:
@@ -433,60 +439,60 @@ CG_UseItem
 */
 static void CG_UseItem( centity_t *cent ) {
 /*
-	int			itemNum;
-	gitem_t		*item;
-	entityState_t *es;
+    int			itemNum;
+    gitem_t		*item;
+    entityState_t *es;
 
-	es = &cent->currentState;
+    es = &cent->currentState;
 
-	// itemNum = es->event - EV_USE_ITEM0;
-	// JCash bluesnews reported fix
-	itemNum = (es->event &~EV_EVENT_BITS) - EV_USE_ITEM0;
+    // itemNum = es->event - EV_USE_ITEM0;
+    // JCash bluesnews reported fix
+    itemNum = (es->event &~EV_EVENT_BITS) - EV_USE_ITEM0;
 
-	if ( itemNum < 0 || itemNum > HI_NUM_HOLDABLE ) {
-		itemNum = 0;
-	}
+    if ( itemNum < 0 || itemNum > HI_NUM_HOLDABLE ) {
+        itemNum = 0;
+    }
 
-	// print a message if the local player
-	if ( es->number == cg.snap->ps.clientNum ) {
-		if ( !itemNum ) {
-			CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-		} else {
-			item = BG_FindItemForHoldable( itemNum );
+    // print a message if the local player
+    if ( es->number == cg.snap->ps.clientNum ) {
+        if ( !itemNum ) {
+            CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
+        } else {
+            item = BG_FindItemForHoldable( itemNum );
 
-			if(item) {
-				cg.holdableSelectTime = cg.time;	// show remaining items
+            if(item) {
+                cg.holdableSelectTime = cg.time;	// show remaining items
 
-				switch(itemNum) {
-					case HI_BOOK1:
-					case HI_BOOK2:
-					case HI_BOOK3:
-						break;
-					case HI_WINE:
-						CG_CenterPrint( "You drank the wine", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-						break;
-					default:
-						CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-						break;
-				}
-			}
-		}
-	}
+                switch(itemNum) {
+                    case HI_BOOK1:
+                    case HI_BOOK2:
+                    case HI_BOOK3:
+                        break;
+                    case HI_WINE:
+                        CG_CenterPrint( "You drank the wine", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
+                        break;
+                    default:
+                        CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
+                        break;
+                }
+            }
+        }
+    }
 
-	switch ( itemNum ) {
-	default:
-	case HI_NONE:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
-		break;
+    switch ( itemNum ) {
+    default:
+    case HI_NONE:
+        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
+        break;
 
-	case HI_MEDKIT:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
-		break;
+    case HI_MEDKIT:
+        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
+        break;
 
-	case HI_WINE:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.wineSound );
-		break;
-	}
+    case HI_WINE:
+        trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.wineSound );
+        break;
+    }
 */
 }
 
@@ -585,14 +591,14 @@ CG_WaterLevel
 Returns waterlevel for entity origin
 ================
 */
-int CG_WaterLevel(centity_t *cent) {
+int CG_WaterLevel( centity_t *cent ) {
 	vec3_t point;
 	int contents, sample1, sample2, anim, waterlevel;
 	int viewheight;
 
 	anim = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
 
-	if (anim == LEGS_WALKCR || anim == LEGS_IDLECR) {
+	if ( anim == LEGS_WALKCR || anim == LEGS_IDLECR ) {
 		viewheight = CROUCH_VIEWHEIGHT;
 	} else {
 		viewheight = DEFAULT_VIEWHEIGHT;
@@ -606,21 +612,21 @@ int CG_WaterLevel(centity_t *cent) {
 	point[0] = cent->lerpOrigin[0];
 	point[1] = cent->lerpOrigin[1];
 	point[2] = cent->lerpOrigin[2] + MINS_Z + 1;
-	contents = CG_PointContents(point, -1);
+	contents = CG_PointContents( point, -1 );
 
-	if (contents & MASK_WATER) {
+	if ( contents & MASK_WATER ) {
 		sample2 = viewheight - MINS_Z;
 		sample1 = sample2 / 2;
 		waterlevel = 1;
 		point[2] = cent->lerpOrigin[2] + MINS_Z + sample1;
-		contents = CG_PointContents(point, -1);
+		contents = CG_PointContents( point, -1 );
 
-		if (contents & MASK_WATER) {
+		if ( contents & MASK_WATER ) {
 			waterlevel = 2;
 			point[2] = cent->lerpOrigin[2] + MINS_Z + sample2;
-			contents = CG_PointContents(point, -1);
+			contents = CG_PointContents( point, -1 );
 
-			if (contents & MASK_WATER) {
+			if ( contents & MASK_WATER ) {
 				waterlevel = 3;
 			}
 		}
@@ -749,14 +755,14 @@ void CG_PainEvent( centity_t *cent, int health, qboolean crouching ) {
 	}
 
 	// play a gurp sound instead of a normal pain sound
-	if (CG_WaterLevel(cent) == 3) {
-		if (rand()&1) {
-			trap_S_StartSound(NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound(cent->currentState.number, "sound/player/gurp1.wav"));
+	if ( CG_WaterLevel( cent ) == 3 ) {
+		if ( rand() & 1 ) {
+			trap_S_StartSound( NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound( cent->currentState.number, "sound/player/gurp1.wav" ) );
 		} else {
-			trap_S_StartSound(NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound(cent->currentState.number, "sound/player/gurp2.wav"));
+			trap_S_StartSound( NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound( cent->currentState.number, "sound/player/gurp2.wav" ) );
 		}
 	} else {
-		trap_S_StartSound(NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound(cent->currentState.number, snd));
+		trap_S_StartSound( NULL, cent->currentState.number, CHAN_VOICE, CG_CustomSound( cent->currentState.number, snd ) );
 	}
 
 	// save pain time for programitic twitch animation
@@ -773,7 +779,7 @@ void CG_PainEvent( centity_t *cent, int health, qboolean crouching ) {
 CG_Explode
 
 
-	if (cent->currentState.angles2[0] || cent->currentState.angles2[1] || cent->currentState.angles2[2])
+    if (cent->currentState.angles2[0] || cent->currentState.angles2[1] || cent->currentState.angles2[2])
 
 ==============
 */
@@ -788,7 +794,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 /*
 ==============
 CG_Explode
-	the old cent-based explode calls will still work with this pass-through
+    the old cent-based explode calls will still work with this pass-through
 ==============
 */
 void CG_Explode( centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader ) {
@@ -823,7 +829,7 @@ void CG_Explode( centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader ) 
 /*
 ==============
 CG_Explodef
-	made this more generic for spawning hits and breaks without needing a *cent
+    made this more generic for spawning hits and breaks without needing a *cent
 ==============
 */
 void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound, int forceLowGrav, qhandle_t shader ) {
@@ -893,9 +899,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					scale = 0.5f;
 				} else if ( i == 1 ) {
 					scale = 0.6f;
-				} else if ( i == 2 )                           {
+				} else if ( i == 2 ) {
 					scale = 0.7f;
-				} else if ( i == 3 )                                                               {
+				} else if ( i == 3 ) {
 					scale = 0.5f;
 				}
 				//					else
@@ -913,12 +919,12 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					hmodel = cgs.media.shardGlass1;
 				} else if ( i == 4 ) {
 					hmodel = cgs.media.shardGlass2;
-				} else if ( i == 2 )                                             {
+				} else if ( i == 2 ) {
 					hmodel = cgs.media.shardGlass2;
-				} else if ( i == 1 )                                                                                                   {
+				} else if ( i == 1 ) {
 					hmodel = cgs.media.shardGlass2;
 					scale = 0.5f;
-				} else {goto pass;}
+				} else {goto pass; }
 				break;
 
 			case 2: // "metal"
@@ -927,12 +933,12 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					hmodel = cgs.media.shardMetal1;
 				} else if ( i == 4 ) {
 					hmodel = cgs.media.shardMetal2;
-				} else if ( i == 2 )                                             {
+				} else if ( i == 2 ) {
 					hmodel = cgs.media.shardMetal2;
-				} else if ( i == 1 )                                                                                                   {
+				} else if ( i == 1 ) {
 					hmodel = cgs.media.shardMetal2;
 					scale = 0.5f;
-				} else {goto pass;}
+				} else {goto pass; }
 				break;
 
 			case 3: // "gibs"
@@ -941,9 +947,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					hmodel = cgs.media.gibIntestine;
 				} else if ( i == 4 ) {
 					hmodel = cgs.media.gibLeg;
-				} else if ( i == 2 )                                        {
+				} else if ( i == 2 ) {
 					hmodel = cgs.media.gibChest;
-				} else { goto pass;}
+				} else { goto pass; }
 				break;
 
 			case 4: // "brick"
@@ -955,13 +961,13 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 				snd = LEBS_ROCK;
 				if ( i == 5 ) {
 					hmodel = cgs.media.debRock[2];                  // temporarily use the next smallest rock piece
-				} else if ( i == 4 )                                                              {
+				} else if ( i == 4 ) {
 					hmodel = cgs.media.debRock[2];
-				} else if ( i == 3 )                                                                                                                   {
+				} else if ( i == 3 ) {
 					hmodel = cgs.media.debRock[1];
-				} else if ( i == 2 )                                                                                                                                                                        {
+				} else if ( i == 2 ) {
 					hmodel = cgs.media.debRock[0];
-				} else if ( i == 1 )                                                                                                                                                                                                                             {
+				} else if ( i == 1 ) {
 					hmodel = cgs.media.debBlock[1];                 // temporarily use the small block pieces
 				} else { hmodel = cgs.media.debBlock[0];            // temporarily use the small block pieces
 				}
@@ -975,9 +981,9 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 					hmodel = cgs.media.debFabric[0];
 				} else if ( i == 4 ) {
 					hmodel = cgs.media.debFabric[1];
-				} else if ( i == 2 )                                              {
+				} else if ( i == 2 ) {
 					hmodel = cgs.media.debFabric[2];
-				} else if ( i == 1 )                                                                                                     {
+				} else if ( i == 1 ) {
 					hmodel = cgs.media.debFabric[2];
 					scale = 0.5;
 				} else {goto pass;  // (only do 5, 4, 2 and 1)
@@ -1105,7 +1111,7 @@ pass:
 /*
 ==============
 CG_Effect
-	Quake ed -> target_effect (0 .5 .8) (-6 -6 -6) (6 6 6) fire explode smoke debris gore lowgrav
+    Quake ed -> target_effect (0 .5 .8) (-6 -6 -6) (6 6 6) fire explode smoke debris gore lowgrav
 ==============
 */
 void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
@@ -1202,7 +1208,7 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		CG_AddDebris( origin, dir,
 					  280,      // speed
 					  1400,     // duration
-					  // 15 + rand()%5 );	// count
+		              // 15 + rand()%5 );	// count
 					  7 + rand() % 2 ); // count
 	}
 }
@@ -1215,12 +1221,12 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 /*
 CG_Shard
 
-	We should keep this separate since there will be considerable differences
-	in the physical properties of shard vrs debris. not to mention the fact
-	there is no way we can quantify what type of effects the designers will
-	potentially desire. If it is still possible to merge the functionality of
-	cg_shard into cg_explode at a latter time I would have no problem with that
-	but for now I want to keep it separate
+    We should keep this separate since there will be considerable differences
+    in the physical properties of shard vrs debris. not to mention the fact
+    there is no way we can quantify what type of effects the designers will
+    potentially desire. If it is still possible to merge the functionality of
+    cg_shard into cg_explode at a latter time I would have no problem with that
+    but for now I want to keep it separate
 */
 void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 	localEntity_t   *le;
@@ -1277,25 +1283,25 @@ void CG_Shard( centity_t *cent, vec3_t origin, vec3_t dir ) {
 			} else {
 				re->hModel = cgs.media.shardGlass2;
 			}
-		} else if ( type == 1 )     { // wood
+		} else if ( type == 1 ) {     // wood
 			if ( rval ) {
 				re->hModel = cgs.media.shardWood1;
 			} else {
 				re->hModel = cgs.media.shardWood2;
 			}
-		} else if ( type == 2 )     { // metal
+		} else if ( type == 2 ) {     // metal
 			if ( rval ) {
 				re->hModel = cgs.media.shardMetal1;
 			} else {
 				re->hModel = cgs.media.shardMetal2;
 			}
-		} else if ( type == 3 )     { // ceramic
+		} else if ( type == 3 ) {     // ceramic
 			if ( rval ) {
 				re->hModel = cgs.media.shardCeramic1;
 			} else {
 				re->hModel = cgs.media.shardCeramic2;
 			}
-		} else if ( type == 4 )     { // rubble
+		} else if ( type == 4 ) {     // rubble
 			rval = rand() % 3;
 
 			if ( rval == 1 ) {
@@ -1410,7 +1416,7 @@ extern void CG_AddBulletParticles( vec3_t origin, vec3_t dir, int speed, int dur
 void CG_MachineGunEjectBrass( centity_t *cent );
 void CG_MachineGunEjectBrassNew( centity_t *cent );
 // jpw
-#define DEBUGNAME( x ) if ( cg_debugEvents.integer ) {CG_Printf( x "\n" );}
+#define DEBUGNAME( x ) if ( cg_debugEvents.integer ) {CG_Printf( x "\n" ); }
 void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	entityState_t   *es;
 	int event;
@@ -1451,9 +1457,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	}
 
 	switch ( event ) {
-		//
-		// movement generated events
-		//
+	//
+	// movement generated events
+	//
 	case EV_FOOTSTEP:
 		DEBUGNAME( "EV_FOOTSTEP" );
 		if ( cg_footsteps.integer ) {
@@ -1616,27 +1622,27 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_MEDIUM:
-		DEBUGNAME("EV_FALL_MEDIUM");
-		// use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -16;
-			cg.landTime = cg.time;
-		}
-		break;
-	case EV_FALL_FAR:
-		DEBUGNAME("EV_FALL_FAR");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
+    /*
+        case EV_FALL_MEDIUM:
+            DEBUGNAME("EV_FALL_MEDIUM");
+            // use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
+            if ( clientNum == cg.predictedPlayerState.clientNum ) {
+                // smooth landing z changes
+                cg.landChange = -16;
+                cg.landTime = cg.time;
+            }
+            break;
+        case EV_FALL_FAR:
+            DEBUGNAME("EV_FALL_FAR");
+            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
+            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
+            if ( clientNum == cg.predictedPlayerState.clientNum ) {
+                // smooth landing z changes
+                cg.landChange = -24;
+                cg.landTime = cg.time;
+            }
+            break;
+    */
 	case EV_FALL_DMG_10:
 		DEBUGNAME( "EV_FALL_DMG_10" );
 		// use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
@@ -1669,18 +1675,18 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_DMG_30:
-		DEBUGNAME("EV_FALL_DMG_30");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
+    /*
+        case EV_FALL_DMG_30:
+            DEBUGNAME("EV_FALL_DMG_30");
+            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
+            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
+            if ( clientNum == cg.predictedPlayerState.clientNum ) {
+                // smooth landing z changes
+                cg.landChange = -24;
+                cg.landTime = cg.time;
+            }
+            break;
+    */
 	case EV_FALL_DMG_50:
 		DEBUGNAME( "EV_FALL_DMG_50" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -1691,18 +1697,18 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_DMG_75:
-		DEBUGNAME("EV_FALL_DMG_75");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
+    /*
+        case EV_FALL_DMG_75:
+            DEBUGNAME("EV_FALL_DMG_75");
+            trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
+            cent->pe.painTime = cg.time;	// don't play a pain sound right after this
+            if ( clientNum == cg.predictedPlayerState.clientNum ) {
+                // smooth landing z changes
+                cg.landChange = -24;
+                cg.landTime = cg.time;
+            }
+            break;
+    */
 	case EV_FALL_NDIE:
 		DEBUGNAME( "EV_FALL_NDIE" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -1865,9 +1871,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		break;
 
-		//
-		// weapon events
-		//
+	//
+	// weapon events
+	//
 	case EV_VENOM:
 		DEBUGNAME( "EV_VENOM" );
 		CG_VenomFire( es, qfalse );
@@ -2079,11 +2085,11 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_UseItem( cent );
 		break;
 
-		//=================================================================
+	//=================================================================
 
-		//
-		// other events
-		//
+	//
+	// other events
+	//
 	case EV_PLAYER_TELEPORT_IN:
 		DEBUGNAME( "EV_PLAYER_TELEPORT_IN" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.teleInSound );
@@ -2135,9 +2141,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// ev_railtrail is now sent standalone rather than by a player entity
 		CG_RailTrail( &cgs.clientinfo[ es->otherEntityNum2 ], es->origin2, es->pos.trBase, es->dmgFlags );   //----(SA)	added 'type' field
 		break;
-		//
-		// missile impacts
-		//
+	//
+	// missile impacts
+	//
 	case EV_MISSILE_HIT:
 		DEBUGNAME( "EV_MISSILE_HIT" );
 		ByteToDir( es->eventParm, dir );
@@ -2271,7 +2277,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		break;
 
-		// DHM - Nerve
+	// DHM - Nerve
 	case EV_GLOBAL_CLIENT_SOUND:
 		DEBUGNAME( "EV_GLOBAL_CLIENT_SOUND" );
 
@@ -2282,7 +2288,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 
 		break;
-		// dhm - end
+	// dhm - end
 
 	case EV_PAIN:
 		// local player sounds are triggered in CG_CheckLocalSounds,
@@ -2307,10 +2313,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_DEATH3:
 		DEBUGNAME( "EV_DEATHx" );
 
-		if (CG_WaterLevel(cent) == 3) {
-			trap_S_StartSound(NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "*drown.wav"));
+		if ( CG_WaterLevel( cent ) == 3 ) {
+			trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*drown.wav" ) );
 		} else {
-			trap_S_StartSound(NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, va("*death%i.wav", event - EV_DEATH1 + 1)));
+			trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, va( "*death%i.wav", event - EV_DEATH1 + 1 ) ) );
 		}
 
 		break;
@@ -2329,9 +2335,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 // jpw
 
-		//
-		// powerup events
-		//
+	//
+	// powerup events
+	//
 	case EV_POWERUP_QUAD:
 		DEBUGNAME( "EV_POWERUP_QUAD" );
 		if ( es->number == cg.snap->ps.clientNum ) {
@@ -2397,7 +2403,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_Beam( cent );
 		break;
 
-		// Rafael particles
+	// Rafael particles
 	case EV_SMOKE:
 		DEBUGNAME( "EV_SMOKE" );
 		if ( cent->currentState.density == 3 ) { // cannon
@@ -2408,7 +2414,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			CG_ParticleSmoke( cgs.media.smokePuffShader, cent );
 		}
 		break;
-		// done.
+	// done.
 
 	case EV_FLAMETHROWER_EFFECT:
 	{
@@ -2549,7 +2555,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	}
 	break;
 
-		// Rafael bats
+	// Rafael bats
 	case EV_BATS:
 	{
 		int i;
@@ -2566,7 +2572,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_BatDeath( cent );
 		break;
 
-		// Rafael snow pvs check
+	// Rafael snow pvs check
 	case EV_SNOW_ON:
 		CG_SnowLink( cent, qtrue );
 		break;
@@ -2580,23 +2586,23 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_ParticleSnowFlurry( cgs.media.snowShader, cent );
 		break;
 
-		//----(SA)
+	//----(SA)
 
-		// for func_exploding
+	// for func_exploding
 	case EV_EXPLODE:
 		DEBUGNAME( "EV_EXPLODE" );
 		ByteToDir( es->eventParm, dir );
 		CG_Explode( cent, position, dir, 0 );
 		break;
 
-		// for target_effect
+	// for target_effect
 	case EV_EFFECT:
 		DEBUGNAME( "EV_EFFECT" );
 //		ByteToDir( es->eventParm, dir );
 		CG_Effect( cent, position, dir );
 		break;
 
-		//----(SA) done
+	//----(SA) done
 
 	case EV_MORTAREFX:  // mortar firing
 		DEBUGNAME( "EV_MORTAREFX" );
@@ -2703,13 +2709,13 @@ void CG_CheckEvents( centity_t *cent ) {
 		/*
 		// check for events riding with another entity
 		if ( cent->currentState.event == cent->previousEvent ) {
-			goto skipEvent;
-			//return;
+		    goto skipEvent;
+		    //return;
 		}
 		cent->previousEvent = cent->currentState.event;
 		if ( ( cent->currentState.event & ~EV_EVENT_BITS ) == 0 ) {
-			goto skipEvent;
-			//return;
+		    goto skipEvent;
+		    //return;
 		}
 		*/
 		// dhm - end
@@ -2745,47 +2751,47 @@ skipEvent:
 
 /*
 void CG_CheckEvents( centity_t *cent ) {
-	int i, event;
+    int i, event;
 
-	// calculate the position at exactly the frame time
-	BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
-	CG_SetEntitySoundPosition( cent );
+    // calculate the position at exactly the frame time
+    BG_EvaluateTrajectory( &cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin );
+    CG_SetEntitySoundPosition( cent );
 
-	// check for event-only entities
-	if ( cent->currentState.eType > ET_EVENTS ) {
-		if ( !cent->previousEvent ) {
-			cent->previousEvent = 1;
-			cent->currentState.event = cent->currentState.eType - ET_EVENTS;
-			CG_EntityEvent( cent, cent->lerpOrigin );
-		}
-	} else {
-		// check for events riding with another entity
-		if ( cent->currentState.event != cent->previousEvent ) {
-			cent->previousEvent = cent->currentState.event;
-			if ( cent->currentState.event & ~EV_EVENT_BITS ) {
-				CG_EntityEvent( cent, cent->lerpOrigin );
-			}
-		}
-	}
+    // check for event-only entities
+    if ( cent->currentState.eType > ET_EVENTS ) {
+        if ( !cent->previousEvent ) {
+            cent->previousEvent = 1;
+            cent->currentState.event = cent->currentState.eType - ET_EVENTS;
+            CG_EntityEvent( cent, cent->lerpOrigin );
+        }
+    } else {
+        // check for events riding with another entity
+        if ( cent->currentState.event != cent->previousEvent ) {
+            cent->previousEvent = cent->currentState.event;
+            if ( cent->currentState.event & ~EV_EVENT_BITS ) {
+                CG_EntityEvent( cent, cent->lerpOrigin );
+            }
+        }
+    }
 
-	// check the sequencial list
-	// if we've added more events than can fit into the list, make sure we only add them once
-	if (cent->currentState.eventSequence < cent->previousEventSequence) {
-		cent->previousEventSequence -= (1 << 8);	// eventSequence is sent as an 8-bit through network stream
-	}
-	if (cent->currentState.eventSequence - cent->previousEventSequence > MAX_EVENTS) {
-		cent->previousEventSequence = cent->currentState.eventSequence - MAX_EVENTS;
-	}
-	for ( i = cent->previousEventSequence ; i != cent->currentState.eventSequence; i++ ) {
-		event = cent->currentState.events[ i & (MAX_EVENTS-1) ];
+    // check the sequencial list
+    // if we've added more events than can fit into the list, make sure we only add them once
+    if (cent->currentState.eventSequence < cent->previousEventSequence) {
+        cent->previousEventSequence -= (1 << 8);	// eventSequence is sent as an 8-bit through network stream
+    }
+    if (cent->currentState.eventSequence - cent->previousEventSequence > MAX_EVENTS) {
+        cent->previousEventSequence = cent->currentState.eventSequence - MAX_EVENTS;
+    }
+    for ( i = cent->previousEventSequence ; i != cent->currentState.eventSequence; i++ ) {
+        event = cent->currentState.events[ i & (MAX_EVENTS-1) ];
 
-		cent->currentState.event = event;
-		cent->currentState.eventParm = cent->currentState.eventParms[ i & (MAX_EVENTS-1) ];
-		CG_EntityEvent( cent, cent->lerpOrigin );
-	}
-	cent->previousEventSequence = cent->currentState.eventSequence;
+        cent->currentState.event = event;
+        cent->currentState.eventParm = cent->currentState.eventParms[ i & (MAX_EVENTS-1) ];
+        CG_EntityEvent( cent, cent->lerpOrigin );
+    }
+    cent->previousEventSequence = cent->currentState.eventSequence;
 
-	// set the event back so we don't think it's changed next frame (unless it really has)
-	cent->currentState.event = cent->previousEvent;
+    // set the event back so we don't think it's changed next frame (unless it really has)
+    cent->currentState.event = cent->previousEvent;
 }
 */

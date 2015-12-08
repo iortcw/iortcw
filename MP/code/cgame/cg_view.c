@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -203,7 +203,7 @@ static void CG_CalcVrect( void ) {
 		h = LIMBO_3D_H;
 
 		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
-			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+			CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 		}
 
 		cg.refdef.width = 0;
@@ -515,8 +515,8 @@ void CG_Concussive( centity_t *cent ) {
 /*
 ==============
 CG_ZoomSway
-	sway for scoped weapons.
-	this takes aimspread into account so the view settles after a bit
+    sway for scoped weapons.
+    this takes aimspread into account so the view settles after a bit
 ==============
 */
 static void CG_ZoomSway( void ) {
@@ -733,9 +733,9 @@ void CG_AdjustZoomVal( float val, int type ) {
 void CG_ZoomIn_f( void ) {
 	if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNIPERRIFLE ) {
 		CG_AdjustZoomVal( -( cg_zoomStepSniper.value ), ZOOM_SNIPER );
-	} else if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNOOPERSCOPE )      {
+	} else if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNOOPERSCOPE ) {
 		CG_AdjustZoomVal( -( cg_zoomStepSniper.value ), ZOOM_SNIPER ); // JPW NERVE per atvi request ZOOM_SNOOPER);
-	} else if ( cg.zoomedBinoc )      {
+	} else if ( cg.zoomedBinoc ) {
 		CG_AdjustZoomVal( -( cg_zoomStepSniper.value ), ZOOM_SNIPER ); // JPW NERVE per atvi request all use same vals to match menu (was zoomStepBinoc, ZOOM_BINOC);
 	}
 }
@@ -743,9 +743,9 @@ void CG_ZoomIn_f( void ) {
 void CG_ZoomOut_f( void ) {
 	if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNIPERRIFLE ) {
 		CG_AdjustZoomVal( cg_zoomStepSniper.value, ZOOM_SNIPER );
-	} else if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNOOPERSCOPE )      {
+	} else if ( cg_entities[cg.snap->ps.clientNum].currentState.weapon == WP_SNOOPERSCOPE ) {
 		CG_AdjustZoomVal( cg_zoomStepSniper.value, ZOOM_SNIPER ); // JPW NERVE per atvi requestSNOOPER);
-	} else if ( cg.zoomedBinoc )      {
+	} else if ( cg.zoomedBinoc ) {
 		CG_AdjustZoomVal( cg_zoomStepSniper.value, ZOOM_SNIPER ); // JPW NERVE per atvi request BINOC);
 	}
 }
@@ -764,11 +764,11 @@ void CG_Zoom( void ) {
 		// check for scope wepon in use, and switch to if necessary
 		if ( cg.predictedPlayerState.weapon == WP_SNOOPERSCOPE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value; // JPW NERVE was DefaultSnooper, changed per atvi req
-		} else if ( cg.predictedPlayerState.weapon == WP_SNIPERRIFLE )                                                     {
+		} else if ( cg.predictedPlayerState.weapon == WP_SNIPERRIFLE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value;
 		} else if ( cg.predictedPlayerState.weapon == WP_FG42SCOPE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value; // JPW NERVE was DefaultFG, changed per atvi req
-		} else if ( !( cg.predictedPlayerState.eFlags & EF_ZOOMING ) )                                                       {
+		} else if ( !( cg.predictedPlayerState.eFlags & EF_ZOOMING ) ) {
 			cg.zoomval = 0;
 		}
 	}
@@ -789,7 +789,7 @@ void CG_Zoom( void ) {
 		// check for scope wepon in use, and switch to if necessary
 		if ( cg.predictedPlayerState.weapon == WP_SNOOPERSCOPE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value; // JPW NERVE was DefaultSnooper, changed per atvi req
-		} else if ( cg.predictedPlayerState.weapon == WP_SNIPERRIFLE )                                                     {
+		} else if ( cg.predictedPlayerState.weapon == WP_SNIPERRIFLE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value;
 		} else if ( cg.predictedPlayerState.weapon == WP_FG42SCOPE ) {
 			cg.zoomval = cg_zoomDefaultSniper.value; // JPW NERVE was DefaultFG, changed per atvi req
@@ -903,10 +903,10 @@ static int CG_CalcFov( void ) {
 		// Based on LordHavoc's code for Darkplaces
 		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
 		const float baseAspect = 0.75f; // 3/4
-		const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+		const float aspect = (float)cg.refdef.width / (float)cg.refdef.height;
 		const float desiredFov = fov_x;
 
-		fov_x = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
+		fov_x = atan2( tan( desiredFov * M_PI / 360.0f ) * baseAspect * aspect, 1 ) * 360.0f / M_PI;
 	}
 
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );
@@ -987,7 +987,7 @@ static void CG_DamageBlendBlob( void ) {
 	viewDamage_t *vd;
 	float redFlash;
 
-	if (!cg_blood.integer) {
+	if ( !cg_blood.integer ) {
 		return;
 	}
 
@@ -1043,22 +1043,22 @@ static void CG_DamageBlendBlob( void ) {
 
 	/* moved over to cg_draw.c
 	if (cg.v_dmg_time > cg.time) {
-		redFlash = fabs(cg.v_dmg_pitch * ((cg.v_dmg_time - cg.time) / DAMAGE_TIME));
+	    redFlash = fabs(cg.v_dmg_pitch * ((cg.v_dmg_time - cg.time) / DAMAGE_TIME));
 
-		// blend the entire screen red
-		if (redFlash > 5)
-			redFlash = 5;
+	    // blend the entire screen red
+	    if (redFlash > 5)
+	        redFlash = 5;
 
-		memset( &ent, 0, sizeof( ent ) );
-		ent.reType = RT_SPRITE;
-		ent.renderfx = RF_FIRST_PERSON;
+	    memset( &ent, 0, sizeof( ent ) );
+	    ent.reType = RT_SPRITE;
+	    ent.renderfx = RF_FIRST_PERSON;
 
-		VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
-		ent.radius = 80;	// occupy entire screen
-		ent.customShader = cgs.media.viewFlashBlood;
-		ent.shaderRGBA[3] = (int)(180.0 * redFlash/5.0);
+	    VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
+	    ent.radius = 80;	// occupy entire screen
+	    ent.customShader = cgs.media.viewFlashBlood;
+	    ent.shaderRGBA[3] = (int)(180.0 * redFlash/5.0);
 
-		trap_R_AddRefEntityToScene( &ent );
+	    trap_R_AddRefEntityToScene( &ent );
 	}
 	*/
 }
@@ -1070,40 +1070,40 @@ CG_DrawScreenFade
 */
 static void CG_DrawScreenFade( void ) {
 /* moved over to cg_draw.c
-	static int lastTime;
-	int elapsed, time;
-	refEntity_t		ent;
+    static int lastTime;
+    int elapsed, time;
+    refEntity_t		ent;
 
-	if (cgs.fadeStartTime + cgs.fadeDuration < cg.time) {
-		cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-	} else if (cgs.fadeAlphaCurrent != cgs.fadeAlpha) {
-		elapsed = (time = trap_Milliseconds()) - lastTime;	// we need to use trap_Milliseconds() here since the cg.time gets modified upon reloading
-		lastTime = time;
-		if (elapsed < 500 && elapsed > 0) {
-			if (cgs.fadeAlphaCurrent > cgs.fadeAlpha) {
-				cgs.fadeAlphaCurrent -= ((float)elapsed/(float)cgs.fadeDuration);
-				if (cgs.fadeAlphaCurrent < cgs.fadeAlpha)
-					cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-			} else {
-				cgs.fadeAlphaCurrent += ((float)elapsed/(float)cgs.fadeDuration);
-				if (cgs.fadeAlphaCurrent > cgs.fadeAlpha)
-					cgs.fadeAlphaCurrent = cgs.fadeAlpha;
-			}
-		}
-	}
-	// now draw the fade
-	if (cgs.fadeAlphaCurrent > 0.0) {
-		memset( &ent, 0, sizeof( ent ) );
-		ent.reType = RT_SPRITE;
-		ent.renderfx = RF_FIRST_PERSON;
+    if (cgs.fadeStartTime + cgs.fadeDuration < cg.time) {
+        cgs.fadeAlphaCurrent = cgs.fadeAlpha;
+    } else if (cgs.fadeAlphaCurrent != cgs.fadeAlpha) {
+        elapsed = (time = trap_Milliseconds()) - lastTime;	// we need to use trap_Milliseconds() here since the cg.time gets modified upon reloading
+        lastTime = time;
+        if (elapsed < 500 && elapsed > 0) {
+            if (cgs.fadeAlphaCurrent > cgs.fadeAlpha) {
+                cgs.fadeAlphaCurrent -= ((float)elapsed/(float)cgs.fadeDuration);
+                if (cgs.fadeAlphaCurrent < cgs.fadeAlpha)
+                    cgs.fadeAlphaCurrent = cgs.fadeAlpha;
+            } else {
+                cgs.fadeAlphaCurrent += ((float)elapsed/(float)cgs.fadeDuration);
+                if (cgs.fadeAlphaCurrent > cgs.fadeAlpha)
+                    cgs.fadeAlphaCurrent = cgs.fadeAlpha;
+            }
+        }
+    }
+    // now draw the fade
+    if (cgs.fadeAlphaCurrent > 0.0) {
+        memset( &ent, 0, sizeof( ent ) );
+        ent.reType = RT_SPRITE;
+        ent.renderfx = RF_FIRST_PERSON;
 
-		VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
-		ent.radius = 80;	// occupy entire screen
-		ent.customShader = cgs.media.viewFadeBlack;
-		ent.shaderRGBA[3] = (int)(255.0 * cgs.fadeAlphaCurrent);
+        VectorMA( cg.refdef.vieworg, 8, cg.refdef.viewaxis[0], ent.origin );
+        ent.radius = 80;	// occupy entire screen
+        ent.customShader = cgs.media.viewFadeBlack;
+        ent.shaderRGBA[3] = (int)(255.0 * cgs.fadeAlphaCurrent);
 
-		trap_R_AddRefEntityToScene( &ent );
-	}
+        trap_R_AddRefEntityToScene( &ent );
+    }
 */
 }
 
@@ -1144,10 +1144,10 @@ static int CG_CalcViewValues( void ) {
 				// Based on LordHavoc's code for Darkplaces
 				// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
 				const float baseAspect = 0.75f; // 3/4
-				const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+				const float aspect = (float)cg.refdef.width / (float)cg.refdef.height;
 				const float desiredFov = fov;
-		
-				fov = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
+
+				fov = atan2( tan( desiredFov * M_PI / 360.0f ) * baseAspect * aspect, 1 ) * 360.0f / M_PI;
 			}
 
 			x = cg.refdef.width / tan( fov / 360 * M_PI );
@@ -1215,9 +1215,9 @@ static int CG_CalcViewValues( void ) {
 		/*
 		if (ps->viewlocked == 4)
 		{
-			centity_t *tent;
-			tent = &cg_entities[ps->viewlocked_entNum];
-			VectorCopy (tent->currentState.apos.trBase, cg.refdefViewAngles);
+		    centity_t *tent;
+		    tent = &cg_entities[ps->viewlocked_entNum];
+		    VectorCopy (tent->currentState.apos.trBase, cg.refdefViewAngles);
 		}
 		else
 		*/
@@ -1249,11 +1249,11 @@ static int CG_CalcViewValues( void ) {
 			VectorCopy( tent->lerpOrigin, vec );
 			VectorSubtract( vec, cg.refdef.vieworg, vec );
 			vectoangles( vec, cg.refdefViewAngles );
-		} else if ( ps->viewlocked == 4 )     {
+		} else if ( ps->viewlocked == 4 ) {
 			vec3_t fwd;
 			AngleVectors( cg.refdefViewAngles, fwd, NULL, NULL );
 			VectorMA( cg_entities[ps->viewlocked_entNum].currentState.pos.trBase, 16, fwd, cg.refdef.vieworg );
-		} else if ( ps->viewlocked )     {
+		} else if ( ps->viewlocked ) {
 			vec3_t fwd;
 			float oldZ;
 			// set our position to be behind it
@@ -1289,22 +1289,22 @@ CG_PowerupTimerSounds
 /*
 // TTimo: unused
 static void CG_PowerupTimerSounds( void ) {
-	int		i;
-	int		t;
+    int		i;
+    int		t;
 
-	// powerup timers going away
-	for ( i = 0 ; i < MAX_POWERUPS ; i++ ) {
-		t = cg.snap->ps.powerups[i];
-		if ( t <= cg.time ) {
-			continue;
-		}
-		if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
-			continue;
-		}
-		if ( ( t - cg.time ) / POWERUP_BLINK_TIME != ( t - cg.oldTime ) / POWERUP_BLINK_TIME ) {
-			trap_S_StartSound( NULL, cg.snap->ps.clientNum, CHAN_ITEM, cgs.media.wearOffSound );
-		}
-	}
+    // powerup timers going away
+    for ( i = 0 ; i < MAX_POWERUPS ; i++ ) {
+        t = cg.snap->ps.powerups[i];
+        if ( t <= cg.time ) {
+            continue;
+        }
+        if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
+            continue;
+        }
+        if ( ( t - cg.time ) / POWERUP_BLINK_TIME != ( t - cg.oldTime ) / POWERUP_BLINK_TIME ) {
+            trap_S_StartSound( NULL, cg.snap->ps.clientNum, CHAN_ITEM, cgs.media.wearOffSound );
+        }
+    }
 }
 */
 
@@ -1488,10 +1488,10 @@ void CG_DrawSkyBoxPortal( void ) {
 		// Based on LordHavoc's code for Darkplaces
 		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
 		const float baseAspect = 0.75f; // 3/4
-		const float aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+		const float aspect = (float)cg.refdef.width / (float)cg.refdef.height;
 		const float desiredFov = fov_x;
 
-		fov_x = atan2( tan( desiredFov*M_PI / 360.0f ) * baseAspect*aspect, 1 )*360.0f / M_PI;
+		fov_x = atan2( tan( desiredFov * M_PI / 360.0f ) * baseAspect * aspect, 1 ) * 360.0f / M_PI;
 	}
 
 	cg.refdef.time = cg.time;
@@ -1701,12 +1701,12 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	DEBUGTIME
 /*
-	if (cg_notebook.integer)
-	{
-		CG_DrawNotebook ();
-	}
+    if (cg_notebook.integer)
+    {
+        CG_DrawNotebook ();
+    }
 */
-	DEBUGTIME
+		DEBUGTIME
 
 	// Ridah, trails
 	if ( !cg.hyperspace ) {
@@ -1746,7 +1746,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	DEBUGTIME
 
-	mpSetup = CG_GetMPSetupValue();     // NERVE - SMF - setup mpSetup values
+		mpSetup = CG_GetMPSetupValue(); // NERVE - SMF - setup mpSetup values
 
 	// let the client system know what our weapon, holdable item and zoom settings are
 	trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, mpSetup, cg.identifyClientRequest );
@@ -1768,4 +1768,3 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	DEBUGTIME
 }
-

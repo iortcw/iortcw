@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ int drawTeamOverlayModificationCount = -1;
 
 int CG_DrawField( int x, int y, int width, int value, int charWidth, int charHeight, qboolean dodrawpic, qboolean leftAlign );      // NERVE - SMF
 
-void CG_InitTeamChat(void) {
+void CG_InitTeamChat( void ) {
 #ifdef MISSIONPACK
 	memset( teamChat1, 0, sizeof( teamChat1 ) );
 	memset( teamChat2, 0, sizeof( teamChat2 ) );
@@ -62,7 +62,7 @@ void CG_SetPrintString( int type, const char *p ) {
 	}
 }
 
-void CG_CheckOrderPending(void) {
+void CG_CheckOrderPending( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype < GT_CTF ) {
 		return;
@@ -222,10 +222,10 @@ static void CG_DrawPlayerArmorValue( rectDef_t *rect, float scale, vec4_t color,
 // TTimo: unused
 static float healthColors[4][4] = {
 //		{ 0.2, 1.0, 0.2, 1.0 } , { 1.0, 0.2, 0.2, 1.0 }, {0.5, 0.5, 0.5, 1} };
-		{ 1, 0.69f, 0, 1.0f } ,		// normal
-		{ 1.0f, 0.2f, 0.2f, 1.0f },		// low health
-		{0.5f, 0.5f, 0.5f, 1},			// weapon firing
-		{ 1, 1, 1, 1 } };			// health > 100
+        { 1, 0.69f, 0, 1.0f } ,		// normal
+        { 1.0f, 0.2f, 0.2f, 1.0f },		// low health
+        {0.5f, 0.5f, 0.5f, 1},			// weapon firing
+        { 1, 1, 1, 1 } };			// health > 100
 */
 
 /*
@@ -236,12 +236,12 @@ weapIconDrawSize
 static int weapIconDrawSize( int weap ) {
 	switch ( weap ) {
 
-		// weapons to not draw
+	// weapons to not draw
 	case WP_KNIFE:
 	case WP_KNIFE2:
 		return 0;
 
-		// weapons with 'wide' icons
+	// weapons with 'wide' icons
 	case WP_THOMPSON:
 	case WP_MP40:
 	case WP_STEN:
@@ -289,7 +289,7 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t *rect, qboolean drawHighlighted, 
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_BOTTOM );
 	}
 
 	realweap = cg.predictedPlayerState.weapon;
@@ -419,11 +419,11 @@ extern void CG_CheckForCursorHints( void );
 CG_DrawCursorHints
 
   cg_cursorHints.integer ==
-	0:	no hints
-	1:	sin size pulse
-	2:	one way size pulse
-	3:	alpha pulse
-	4+:	static image
+    0:	no hints
+    1:	sin size pulse
+    2:	one way size pulse
+    3:	alpha pulse
+    4+:	static image
 
 ==============
 */
@@ -439,7 +439,7 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 	CG_CheckForCursorHints();
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	switch ( cg.cursorHintIcon ) {
@@ -557,7 +557,7 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 		icon = cgs.media.hintPlrUnknownShader;
 		break;
 
-		// DHM - Nerve :: multiplayer hints
+	// DHM - Nerve :: multiplayer hints
 	case HINT_BUILD:
 		icon = cgs.media.buildHintShader;
 		break;
@@ -570,7 +570,7 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 	case HINT_DYNAMITE:
 		icon = cgs.media.dynamiteHintShader;
 		break;
-		// dhm - end
+	// dhm - end
 
 	case HINT_ACTIVATE:
 	case HINT_PLAYER:
@@ -632,8 +632,8 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 /*
 ==============
 CG_DrawPlayerAmmoValue
-	0 - ammo
-	1 - clip
+    0 - ammo
+    1 - clip
 ==============
 */
 int CG_DrawFieldWidth( int x, int y, int width, int value, int charWidth, int charHeight );
@@ -656,7 +656,7 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, 
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_BOTTOM );
 	}
 
 	switch ( weap ) {      // some weapons don't draw ammo count text
@@ -964,27 +964,27 @@ static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhan
 
 static void CG_DrawHoldableItem( rectDef_t *rect, float scale, qboolean draw2D ) {
 /*
-	int		value;
-	gitem_t	*item;
+    int		value;
+    gitem_t	*item;
 
-	item	= BG_FindItemForHoldable(cg.holdableSelect);
+    item	= BG_FindItemForHoldable(cg.holdableSelect);
 
-	if(!item)
-		return;
+    if(!item)
+        return;
 
-	value	= cg.predictedPlayerState.holdable[cg.holdableSelect];
+    value	= cg.predictedPlayerState.holdable[cg.holdableSelect];
 
-	if ( value ) {
-		CG_RegisterItemVisuals( item - bg_itemlist );
+    if ( value ) {
+        CG_RegisterItemVisuals( item - bg_itemlist );
 
-		if(cg.holdableSelect == HI_WINE) {
-			if(value > 3)
-				value = 3;	// 3 stages to icon, just draw full if beyond 'full'
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2-(value-1)] );
-		} else {
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[0] );
-		}
-	}
+        if(cg.holdableSelect == HI_WINE) {
+            if(value > 3)
+                value = 3;	// 3 stages to icon, just draw full if beyond 'full'
+            CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2-(value-1)] );
+        } else {
+            CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[0] );
+        }
+    }
 */
 }
 
@@ -1104,7 +1104,7 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, float scale, vec4_t color, qha
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 	}
 
 	if ( shader ) {
@@ -1548,7 +1548,7 @@ float CG_GetValue( int ownerDraw, int type ) {
 	return -1;
 }
 
-qboolean CG_OtherTeamHasFlag(void) {
+qboolean CG_OtherTeamHasFlag( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF ) {
 		int team = cg.snap->ps.persistant[PERS_TEAM];
@@ -1574,7 +1574,7 @@ qboolean CG_OtherTeamHasFlag(void) {
 	return qfalse;
 }
 
-qboolean CG_YourTeamHasFlag(void) {
+qboolean CG_YourTeamHasFlag( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF ) {
 		int team = cg.snap->ps.persistant[PERS_TEAM];
@@ -1788,7 +1788,7 @@ static void CG_DrawAreaChat( rectDef_t *rect, float scale, vec4_t color, qhandle
 	CG_Text_Paint( rect->x, rect->y + rect->h, scale, color, teamChat2, 0, 0, 0 );
 }
 
-const char *CG_GetKillerText(void) {
+const char *CG_GetKillerText( void ) {
 	const char *s = "";
 	if ( cg.killerName[0] ) {
 		s = va( "Fragged by %s", cg.killerName );
@@ -1824,7 +1824,7 @@ static void CG_Draw2ndPlace( rectDef_t *rect, float scale, vec4_t color, qhandle
 	}
 }
 
-const char *CG_GetGameStatusText(void) {
+const char *CG_GetGameStatusText( void ) {
 	const char *s = "";
 	if ( cgs.gametype < GT_TEAM ) {
 		if ( cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
@@ -1846,7 +1846,7 @@ static void CG_DrawGameStatus( rectDef_t *rect, float scale, vec4_t color, qhand
 	CG_Text_Paint( rect->x, rect->y + rect->h, scale, color, CG_GetGameStatusText(), 0, 0, textStyle );
 }
 
-const char *CG_GameTypeString(void) {
+const char *CG_GameTypeString( void ) {
 	if ( cgs.gametype == GT_FFA ) {
 		return "Free For All";
 	} else if ( cgs.gametype == GT_TEAM ) {
@@ -2177,9 +2177,9 @@ void CG_DrawMedal( int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qh
 /*
 ==============
 CG_DrawWeapStability
-	draw a bar showing current stability level (0-255), max at current weapon/ability, and 'perfect' reference mark
+    draw a bar showing current stability level (0-255), max at current weapon/ability, and 'perfect' reference mark
 
-	probably only drawn for scoped weapons
+    probably only drawn for scoped weapons
 ==============
 */
 void CG_DrawWeapStability( rectDef_t *rect, vec4_t color, int align ) {
@@ -2216,7 +2216,7 @@ void CG_DrawWeapHeat( rectDef_t *rect, int align ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_BOTTOM );
 	}
 
 	if ( align != HUD_HORIZONTAL ) {
@@ -2243,7 +2243,7 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 	int flags = 0;
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 	}
 
 	if ( align != HUD_HORIZONTAL ) {
@@ -2415,11 +2415,11 @@ void CG_OwnerDraw( float x, float y, float w, float h, float text_x, float text_
 	case CG_STAMINA:
 		CG_DrawFatigue( &rect, color, align );
 		break;
-		// DHM - Nerve
+	// DHM - Nerve
 	case CG_PLAYER_WEAPON_RECHARGE:
 		CG_DrawWeapRecharge( &rect, color, align );
 		break;
-		// dhm - end
+	// dhm - end
 	case CG_PLAYER_HEAD:
 		CG_DrawPlayerHead( &rect, ownerDrawFlags & CG_SHOW_2DONLY );
 		break;
@@ -2618,8 +2618,8 @@ void CG_ShowTeamMenu( void ) {
 CG_EventHandling
 ==================
  type 0 - no event handling
-	  1 - team menu
-	  2 - hud editor
+      1 - team menu
+      2 - hud editor
 
 */
 void CG_EventHandling( int type ) {
@@ -2680,7 +2680,7 @@ int CG_ClientNumFromName( const char *p ) {
 	return -1;
 }
 
-void CG_ShowResponseHead(void) {
+void CG_ShowResponseHead( void ) {
 	Menus_OpenByName( "voiceMenu" );
 	trap_Cvar_Set( "cl_conXOffset", "72" );
 	cg.voiceTime = cg.time;
@@ -2705,4 +2705,3 @@ void CG_GetTeamColor( vec4_t *color ) {
 		( *color )[3] = .25f;
 	}
 }
-

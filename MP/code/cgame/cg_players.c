@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -1178,8 +1178,9 @@ void CG_RunLerpFrame( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, float
 		// get the next frame based on the animation
 		anim = lf->animation;
 
-		if ( !anim )
+		if ( !anim ) {
 			return;
+		}
 
 		if ( !anim->frameLerp ) {
 			return;     // shouldn't happen
@@ -1794,7 +1795,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 
 	// allow yaw to drift a bit, unless these conditions don't allow them
 	if (    !( BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ( ( 1 << ANIM_MT_IDLE ) | ( 1 << ANIM_MT_IDLECR ) ) )/*
-		||	 (BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ((1<<ANIM_MT_STRAFELEFT) | (1<<ANIM_MT_STRAFERIGHT)) )*/) {
+	    ||	 (BG_GetConditionValue( cent->currentState.number, ANIM_COND_MOVETYPE, qfalse ) & ((1<<ANIM_MT_STRAFELEFT) | (1<<ANIM_MT_STRAFERIGHT)) )*/) {
 
 		// always point all in the same direction
 		cent->pe.torso.yawing = qtrue;  // always center
@@ -2499,7 +2500,7 @@ char    *vtosf( const vec3_t v ) {
 ===============
 CG_AnimPlayerConditions
 
-	predict, or calculate condition for this entity, if it is not the local client
+    predict, or calculate condition for this entity, if it is not the local client
 ===============
 */
 void CG_AnimPlayerConditions( centity_t *cent ) {
@@ -2884,8 +2885,8 @@ void CG_Player( centity_t *cent ) {
 			CG_PositionEntityOnTag( &acc,   &head,  "tag_mouth", 0, NULL );
 			break;
 
-			// weapon and weapon2
-			// these are used by characters who have permanent weapons attached to their character in the skin
+		// weapon and weapon2
+		// these are used by characters who have permanent weapons attached to their character in the skin
 		case ACC_WEAPON:        // weap
 			CG_PositionEntityOnTag( &acc,   &torso, "tag_weapon", 0, NULL );
 			break;

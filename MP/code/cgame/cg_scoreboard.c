@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -297,7 +297,7 @@ int WM_DrawObjectives( int x, int y, int width, float fade ) {
 
 		if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_RED ) {
 			msec = cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer );
-		} else if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_BLUE )     {
+		} else if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_BLUE ) {
 			msec = cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer );
 		} else { // no team (spectator mode)
 			msec = 0;
@@ -359,7 +359,7 @@ int WM_DrawObjectives( int x, int y, int width, float fade ) {
 
 			if ( status == 0 ) {
 				CG_DrawPic( x, y + 1, 24, 14, trap_R_RegisterShaderNoMip( "ui_mp/assets/ger_flag.tga" ) );
-			} else if ( status == 1 )   {
+			} else if ( status == 1 ) {
 				CG_DrawPic( x, y + 1, 24, 14, trap_R_RegisterShaderNoMip( "ui_mp/assets/usa_flag.tga" ) );
 			}
 
@@ -449,7 +449,7 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 
 		CG_DrawSmallString( tempx + totalwidth - w, y, s, fade );
 		return;
-	} else if ( cg.snap->ps.persistant[PERS_TEAM] == ci->team )   {
+	} else if ( cg.snap->ps.persistant[PERS_TEAM] == ci->team ) {
 		int val = score->playerClass; // cg_entities[ ci->clientNum ].currentState.teamNum;
 		const char *s;
 
@@ -667,9 +667,9 @@ qboolean CG_DrawScoreboard( void ) {
 	}
 
 	if ( cg_fixedAspect.integer && cg.limboMenu ) {
-		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 	} else if ( cg_fixedAspect.integer && !cg.limboMenu ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	// NERVE - SMF - added mp wolf check
@@ -813,7 +813,7 @@ qboolean CG_DrawScoreboard( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	return qtrue;
@@ -829,17 +829,17 @@ CG_CenterGiantLine
 /*
 // TTimo: unused
 static void CG_CenterGiantLine( float y, const char *string ) {
-	float		x;
-	vec4_t		color;
+    float		x;
+    vec4_t		color;
 
-	color[0] = 1;
-	color[1] = 1;
-	color[2] = 1;
-	color[3] = 1;
+    color[0] = 1;
+    color[1] = 1;
+    color[2] = 1;
+    color[3] = 1;
 
-	x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( string ) );
+    x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( string ) );
 
-	CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+    CG_DrawStringExt( x, y, string, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
 }
 */
 
@@ -855,7 +855,7 @@ void CG_DrawTourneyScoreboard( void ) {
 	int x,y;
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	// request more scores regularly
@@ -867,10 +867,10 @@ void CG_DrawTourneyScoreboard( void ) {
 	// draw the dialog background
 	if ( cg_fixedAspect.integer ) {
 		color[0] = color[1] = color[2] = 0;
-	 	color[3] = 1;
-		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		color[3] = 1;
+		CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, color );
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	} else {
 		color[0] = color[1] = color[2] = 0;
 		color[3] = 1;
@@ -911,4 +911,3 @@ void CG_DrawTourneyScoreboard( void ) {
 		}
 	}
 }
-

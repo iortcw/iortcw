@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -294,7 +294,7 @@ void CG_MachineGunEjectBrass( centity_t *cent ) {
 /*
 ==============
 CG_PanzerFaustEjectBrass
-	toss the 'used' panzerfaust casing (unit is one-shot, disposable)
+    toss the 'used' panzerfaust casing (unit is one-shot, disposable)
 ==============
 */
 static void CG_PanzerFaustEjectBrass( centity_t *cent ) {
@@ -384,7 +384,7 @@ static void CG_PanzerFaustEjectBrass( centity_t *cent ) {
 /*
 ==============
 CG_SpearTrail
-	simple bubble trail behind a missile
+    simple bubble trail behind a missile
 ==============
 */
 void CG_SpearTrail( centity_t *ent, const weaponInfo_t *wi ) {
@@ -450,8 +450,8 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	ent->trailTime = cg.time;
 
 /* smoke pyro works fine in water (well, it's dye in real life, might wanna change this in-game)
-	if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) )
-		return;
+    if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) )
+        return;
 */
 
 	// drop fire trail sprites
@@ -479,22 +479,22 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 
 		if ( !ent->currentState.otherEntityNum2 ) { // axis team, generate red smoke
 			CG_SmokePuff( origin, dir,
-							   25 + rnd * 110, // width
-							   rnd * 0.5 + 0.5, rnd * 0.5 + 0.5, 1, 0.5,
-							   4800 + ( rand() % 2800 ), // duration was 2800+
-							   t,
-							   0,
-							   0,
-							   cgs.media.smokePuffShader );
+						  25 + rnd * 110,      // width
+						  rnd * 0.5 + 0.5, rnd * 0.5 + 0.5, 1, 0.5,
+						  4800 + ( rand() % 2800 ),      // duration was 2800+
+						  t,
+						  0,
+						  0,
+						  cgs.media.smokePuffShader );
 		} else {
 			CG_SmokePuff( origin, dir,
-							   25 + rnd * 110, // width
-							   1.0, rnd * 0.5 + 0.5, rnd * 0.5 + 0.5, 0.5,
-							   4800 + ( rand() % 2800 ), // duration was 2800+
-							   t,
-							   0,
-							   0,
-							   cgs.media.smokePuffShader );
+						  25 + rnd * 110,      // width
+						  1.0, rnd * 0.5 + 0.5, rnd * 0.5 + 0.5, 0.5,
+						  4800 + ( rand() % 2800 ),      // duration was 2800+
+						  t,
+						  0,
+						  0,
+						  cgs.media.smokePuffShader );
 		}
 	}
 }
@@ -558,12 +558,12 @@ void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		BG_EvaluateTrajectory( &es->pos, t, lastPos );
 		/*
 		le = CG_SmokePuff( lastPos, vec3_origin,
-					  5,	// width
-					  1, 1, 1, 0.33,
-					  150 + rand()%350, // duration
-					  t,
-					  0,
-					  cgs.media.flameThrowerhitShader );
+		              5,	// width
+		              1, 1, 1, 0.33,
+		              150 + rand()%350, // duration
+		              t,
+		              0,
+		              cgs.media.flameThrowerhitShader );
 
 		// use the optimized local entity add
 		le->leType = LE_SCALE_FADE;
@@ -575,20 +575,20 @@ void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 
 			}
 			CG_ParticleExplosion( "blacksmokeanim", lastPos, vec3_origin, 800 + (int)( rnd * 1500 ), 5, 12 + (int)( rnd * 30 ) );    // smoke
-		} else if ( ent->currentState.eType == ET_FP_PARTS )     {
+		} else if ( ent->currentState.eType == ET_FP_PARTS ) {
 			if ( ( rand() % 100 ) > 50 ) {
 				CG_ParticleExplosion( "twiltb2", lastPos, vec3_origin, 100 + (int)( rnd * 400 ), 5, 7 + (int)( rnd * 10 ) ); // fire
 
 			}
 			CG_ParticleExplosion( "blacksmokeanim", lastPos, vec3_origin, 800 + (int)( rnd * 1500 ), 5, 12 + (int)( rnd * 30 ) );    // smoke
-		} else if ( ent->currentState.eType == ET_RAMJET )     {
+		} else if ( ent->currentState.eType == ET_RAMJET ) {
 			int duration;
 
 			VectorCopy( ent->lerpOrigin, lastPos );
 			duration = 100;
 			CG_ParticleExplosion( "twiltb2", lastPos, vec3_origin, duration + (int)( rnd * 100 ), 5, 5 + (int)( rnd * 10 ) ); // fire
 			CG_ParticleExplosion( "blacksmokeanim", lastPos, vec3_origin, 400 + (int)( rnd * 750 ), 12, 24 + (int)( rnd * 30 ) );    // smoke
-		} else if ( ent->currentState.eType == ET_FIRE_COLUMN || ent->currentState.eType == ET_FIRE_COLUMN_SMOKE )     {
+		} else if ( ent->currentState.eType == ET_FIRE_COLUMN || ent->currentState.eType == ET_FIRE_COLUMN_SMOKE ) {
 			int duration;
 			int sizeStart;
 			int sizeEnd;
@@ -632,14 +632,14 @@ void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		}
 	}
 /*
-	// spawn a smoke junction
-	if ((cg.time - ent->lastTrailTime) >= 50 + rand()%50) {
-		ent->headJuncIndex = CG_AddSmokeJunc( ent->headJuncIndex,
-												cgs.media.smokeTrailShader,
-												origin,
-												4500, 0.4, 20, 80 );
-		ent->lastTrailTime = cg.time;
-	}
+    // spawn a smoke junction
+    if ((cg.time - ent->lastTrailTime) >= 50 + rand()%50) {
+        ent->headJuncIndex = CG_AddSmokeJunc( ent->headJuncIndex,
+                                                cgs.media.smokeTrailShader,
+                                                origin,
+                                                4500, 0.4, 20, 80 );
+        ent->lastTrailTime = cg.time;
+    }
 */
 // done.
 }
@@ -734,89 +734,89 @@ CG_NailgunEjectBrass
 /*
 // TTimo: defined but not used
 static void CG_NailgunEjectBrass( centity_t *cent ) {
-	localEntity_t	*smoke;
-	vec3_t			origin;
-	vec3_t			v[3];
-	vec3_t			offset;
-	vec3_t			xoffset;
-	vec3_t			up;
+    localEntity_t	*smoke;
+    vec3_t			origin;
+    vec3_t			v[3];
+    vec3_t			offset;
+    vec3_t			xoffset;
+    vec3_t			up;
 
-	AnglesToAxis( cent->lerpAngles, v );
+    AnglesToAxis( cent->lerpAngles, v );
 
-	offset[0] = 0;
-	offset[1] = -12;
-	offset[2] = 24;
+    offset[0] = 0;
+    offset[1] = -12;
+    offset[2] = 24;
 
-	xoffset[0] = offset[0] * v[0][0] + offset[1] * v[1][0] + offset[2] * v[2][0];
-	xoffset[1] = offset[0] * v[0][1] + offset[1] * v[1][1] + offset[2] * v[2][1];
-	xoffset[2] = offset[0] * v[0][2] + offset[1] * v[1][2] + offset[2] * v[2][2];
-	VectorAdd( cent->lerpOrigin, xoffset, origin );
+    xoffset[0] = offset[0] * v[0][0] + offset[1] * v[1][0] + offset[2] * v[2][0];
+    xoffset[1] = offset[0] * v[0][1] + offset[1] * v[1][1] + offset[2] * v[2][1];
+    xoffset[2] = offset[0] * v[0][2] + offset[1] * v[1][2] + offset[2] * v[2][2];
+    VectorAdd( cent->lerpOrigin, xoffset, origin );
 
-	VectorSet( up, 0, 0, 64 );
+    VectorSet( up, 0, 0, 64 );
 
-	smoke = CG_SmokePuff( origin, up, 32, 1, 1, 1, 0.33f, 700, cg.time, 0, 0, cgs.media.smokePuffShader );
-	// use the optimized local entity add
-	smoke->leType = LE_SCALE_FADE;
+    smoke = CG_SmokePuff( origin, up, 32, 1, 1, 1, 0.33f, 700, cg.time, 0, 0, cgs.media.smokePuffShader );
+    // use the optimized local entity add
+    smoke->leType = LE_SCALE_FADE;
 }
 */
 
 /*
 // TTimo: defined but not used
 static void CG_NailTrail( centity_t *ent, const weaponInfo_t *wi ) {
-	int		step;
-	vec3_t	origin, lastPos;
-	int		t;
-	int		startTime, contents;
-	int		lastContents;
-	entityState_t	*es;
-	vec3_t	up;
-	localEntity_t	*smoke;
+    int		step;
+    vec3_t	origin, lastPos;
+    int		t;
+    int		startTime, contents;
+    int		lastContents;
+    entityState_t	*es;
+    vec3_t	up;
+    localEntity_t	*smoke;
 
-	up[0] = 0;
-	up[1] = 0;
-	up[2] = 0;
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 0;
 
-	step = 50;
+    step = 50;
 
-	es = &ent->currentState;
-	startTime = ent->trailTime;
-	t = step * ( (startTime + step) / step );
+    es = &ent->currentState;
+    startTime = ent->trailTime;
+    t = step * ( (startTime + step) / step );
 
-	BG_EvaluateTrajectory( &es->pos, cg.time, origin );
-	contents = CG_PointContents( origin, -1 );
+    BG_EvaluateTrajectory( &es->pos, cg.time, origin );
+    contents = CG_PointContents( origin, -1 );
 
-	// if object (e.g. grenade) is stationary, don't toss up smoke
-	if ( es->pos.trType == TR_STATIONARY ) {
-		ent->trailTime = cg.time;
-		return;
-	}
+    // if object (e.g. grenade) is stationary, don't toss up smoke
+    if ( es->pos.trType == TR_STATIONARY ) {
+        ent->trailTime = cg.time;
+        return;
+    }
 
-	BG_EvaluateTrajectory( &es->pos, ent->trailTime, lastPos );
-	lastContents = CG_PointContents( lastPos, -1 );
+    BG_EvaluateTrajectory( &es->pos, ent->trailTime, lastPos );
+    lastContents = CG_PointContents( lastPos, -1 );
 
-	ent->trailTime = cg.time;
+    ent->trailTime = cg.time;
 
-	if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ) {
-		if ( contents & lastContents & CONTENTS_WATER ) {
-			CG_BubbleTrail( lastPos, origin, 1, 8 );
-		}
-		return;
-	}
+    if ( contents & ( CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA ) ) {
+        if ( contents & lastContents & CONTENTS_WATER ) {
+            CG_BubbleTrail( lastPos, origin, 1, 8 );
+        }
+        return;
+    }
 
-	for ( ; t <= ent->trailTime ; t += step ) {
-		BG_EvaluateTrajectory( &es->pos, t, lastPos );
+    for ( ; t <= ent->trailTime ; t += step ) {
+        BG_EvaluateTrajectory( &es->pos, t, lastPos );
 
-		smoke = CG_SmokePuff( lastPos, up,
-					  wi->trailRadius,
-					  1, 1, 1, 0.33f,
-					  wi->wiTrailTime,
-					  t,
-					  0,
-					  0,
-					  cgs.media.nailPuffShader );
-		// use the optimized local entity add
-		smoke->leType = LE_SCALE_FADE;
-	}
+        smoke = CG_SmokePuff( lastPos, up,
+                      wi->trailRadius,
+                      1, 1, 1, 0.33f,
+                      wi->wiTrailTime,
+                      t,
+                      0,
+                      0,
+                      cgs.media.nailPuffShader );
+        // use the optimized local entity add
+        smoke->leType = LE_SCALE_FADE;
+    }
 
 }
 */
@@ -824,7 +824,7 @@ static void CG_NailTrail( centity_t *ent, const weaponInfo_t *wi ) {
 /*
 ==========================
 CG_RailTrail
-	SA: re-inserted this as a debug mechanism for bullets
+    SA: re-inserted this as a debug mechanism for bullets
 ==========================
 */
 void CG_RailTrail2( clientInfo_t *ci, vec3_t start, vec3_t end ) {
@@ -865,7 +865,7 @@ void CG_RailTrail2( clientInfo_t *ci, vec3_t start, vec3_t end ) {
 /*
 ==============
 CG_RailTrail
-	modified so we could draw boxes for debugging as well
+    modified so we could draw boxes for debugging as well
 ==============
 */
 void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end, int type ) {  //----(SA)	added 'type'
@@ -917,7 +917,7 @@ void CG_RailTrail( clientInfo_t *ci, vec3_t start, vec3_t end, int type ) {  //-
 /*
 ======================
 CG_ParseWeaponConfig
-	read information for weapon animations (first/length/fps)
+    read information for weapon animations (first/length/fps)
 ======================
 */
 static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi ) {
@@ -1157,13 +1157,13 @@ void CG_RegisterWeapon( int weaponNum ) {
 	}
 
 	if ( item->world_model[W_FP_MODEL] ) {
-		Q_strncpyz( comppath, item->world_model[W_FP_MODEL], sizeof(comppath) ); // first try the fp view weap
+		Q_strncpyz( comppath, item->world_model[W_FP_MODEL], sizeof( comppath ) ); // first try the fp view weap
 	} else if ( item->world_model[W_TP_MODEL] ) {
-		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof(comppath) ); // not there, use the standard view hand
+		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof( comppath ) ); // not there, use the standard view hand
 	}
 
 	if ( !cg_drawFPGun.integer && item->world_model[W_TP_MODEL] ) { // then if it didn't find the 1st person one or you are set to not use one
-		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof(comppath) ); // use the standard view hand
+		Q_strncpyz( comppath, item->world_model[W_TP_MODEL], sizeof( comppath ) ); // use the standard view hand
 	}
 
 	for ( i = W_TP_MODEL; i < W_NUM_TYPES; i++ )
@@ -1172,27 +1172,27 @@ void CG_RegisterWeapon( int weaponNum ) {
 		qboolean bail = qfalse;
 
 		if ( !item->world_model[i] ) {
-			Q_strncpyz( path, comppath, sizeof(path) );
+			Q_strncpyz( path, comppath, sizeof( path ) );
 		} else {
-			Q_strncpyz( path, item->world_model[i], sizeof(path) );
+			Q_strncpyz( path, item->world_model[i], sizeof( path ) );
 		}
 
-		COM_StripExtension( path, path, sizeof(path) );
-		Q_strcat( path, sizeof(path), "_flash.md3" );
+		COM_StripExtension( path, path, sizeof( path ) );
+		Q_strcat( path, sizeof( path ), "_flash.md3" );
 		weaponInfo->flashModel[i] = trap_R_RegisterModel( path );
 
 
 		for ( j = 0; j < W_MAX_PARTS; j++ ) {
 			if ( !item->world_model[i] ) {
-				Q_strncpyz( path, comppath, sizeof(path) );
+				Q_strncpyz( path, comppath, sizeof( path ) );
 			} else {
-				Q_strncpyz( path, item->world_model[i], sizeof(path) );
+				Q_strncpyz( path, item->world_model[i], sizeof( path ) );
 			}
-			COM_StripExtension( path, path, sizeof(path) );
+			COM_StripExtension( path, path, sizeof( path ) );
 			if ( j == W_PART_1 ) {
-				Q_strcat( path, sizeof(path), "_barrel.md3" );
+				Q_strcat( path, sizeof( path ), "_barrel.md3" );
 			} else {
-				Q_strcat( path, sizeof(path), va( "_barrel%d.md3", j + 1 ) );
+				Q_strcat( path, sizeof( path ), va( "_barrel%d.md3", j + 1 ) );
 			}
 
 			if ( !bail || weaponNum == WP_MAUSER ) {
@@ -1209,12 +1209,12 @@ void CG_RegisterWeapon( int weaponNum ) {
 		// used for spinning belt on venom
 		if ( i == W_FP_MODEL ) {
 			if ( !item->world_model[2] ) {
-				Q_strncpyz( path, comppath, sizeof(path) );
+				Q_strncpyz( path, comppath, sizeof( path ) );
 			} else {
-				Q_strncpyz( path, item->world_model[2], sizeof(path) );
+				Q_strncpyz( path, item->world_model[2], sizeof( path ) );
 			}
-			COM_StripExtension( path, path, sizeof(path) );
-			Q_strcat( path, sizeof(path), "_barrel6b.md3" );
+			COM_StripExtension( path, path, sizeof( path ) );
+			Q_strcat( path, sizeof( path ), "_barrel6b.md3" );
 			weaponInfo->partModels[i][W_PART_7] = trap_R_RegisterModel( path );
 		}
 	}
@@ -1224,22 +1224,22 @@ void CG_RegisterWeapon( int weaponNum ) {
 	if ( weaponNum == WP_MAUSER || weaponNum == WP_GARAND ) {
 
 		if ( !item->world_model[W_FP_MODEL] ) {
-			Q_strncpyz( path, comppath, sizeof(path) );
+			Q_strncpyz( path, comppath, sizeof( path ) );
 		} else {
-			Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof(path) );
+			Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof( path ) );
 		}
-		COM_StripExtension( path, path, sizeof(path) );
-		Q_strcat( path, sizeof(path), "_scope.md3" );
+		COM_StripExtension( path, path, sizeof( path ) );
+		Q_strcat( path, sizeof( path ), "_scope.md3" );
 		weaponInfo->modModel[0] = trap_R_RegisterModel( path );
 	}
 
 	if ( !item->world_model[W_FP_MODEL] ) {
-		Q_strncpyz( path, comppath, sizeof(path) );
+		Q_strncpyz( path, comppath, sizeof( path ) );
 	} else {
-		Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof(path) );
+		Q_strncpyz( path, item->world_model[W_FP_MODEL], sizeof( path ) );
 	}
-	COM_StripExtension( path, path, sizeof(path) );
-	Q_strcat( path, sizeof(path), "_hand.md3" );
+	COM_StripExtension( path, path, sizeof( path ) );
+	Q_strcat( path, sizeof( path ), "_hand.md3" );
 	weaponInfo->handsModel = trap_R_RegisterModel( path );
 
 	if ( !weaponInfo->handsModel ) {
@@ -1248,12 +1248,12 @@ void CG_RegisterWeapon( int weaponNum ) {
 
 //----(SA)	weapon pickup 'stand'
 	if ( !item->world_model[W_TP_MODEL] ) {
-		Q_strncpyz( path, comppath, sizeof(path) );
+		Q_strncpyz( path, comppath, sizeof( path ) );
 	} else {
-		Q_strncpyz( path, item->world_model[W_TP_MODEL], sizeof(path) );
+		Q_strncpyz( path, item->world_model[W_TP_MODEL], sizeof( path ) );
 	}
-	COM_StripExtension( path, path, sizeof(path) );
-	Q_strcat( path, sizeof(path), "_stand.md3" );
+	COM_StripExtension( path, path, sizeof( path ) );
+	Q_strcat( path, sizeof( path ), "_stand.md3" );
 	weaponInfo->standModel = trap_R_RegisterModel( path );
 //----(SA)	end
 
@@ -1375,7 +1375,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		weaponInfo->trailRadius = 32;
 		MAKERGB( weaponInfo->flashDlightColor, 1, 0.7, 0.5 );
 		break;
-		// JPW NERVE
+	// JPW NERVE
 	case WP_SMOKE_GRENADE:
 		weaponInfo->missileModel = trap_R_RegisterModel( "models/multiplayer/smokegrenade/smokegrenade.md3" );
 		weaponInfo->missileTrailFunc    = CG_PyroSmokeTrail;
@@ -1540,7 +1540,7 @@ VIEW WEAPON
 /*
 ==============
 CG_GetPartFramesFromWeap
-	get animation info from the parent if necessary
+    get animation info from the parent if necessary
 ==============
 */
 qboolean CG_GetPartFramesFromWeap( centity_t *cent, refEntity_t *part, refEntity_t *parent, int partid, weaponInfo_t *wi ) {
@@ -1639,7 +1639,7 @@ static void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t
 	// see if the animation sequence is switching
 	if ( !lf->animation ) {
 		CG_ClearWeapLerpFrame( wi, lf, newAnimation );
-	} else if ( newAnimation != lf->animationNumber )   {
+	} else if ( newAnimation != lf->animationNumber ) {
 		if ( ( newAnimation & ~ANIM_TOGGLEBIT ) == WEAP_RAISE ) {
 			CG_ClearWeapLerpFrame( wi, lf, newAnimation );   // clear when switching to raise (since it should be out of view anyway)
 		} else {
@@ -1861,29 +1861,29 @@ CG_MachinegunSpinAngle
 #define		SPIN_SPEED	1
 #define		COAST_TIME	2000
 static float	CG_MachinegunSpinAngle( centity_t *cent ) {
-	int		delta;
-	float	angle;
-	float	speed;
+    int		delta;
+    float	angle;
+    float	speed;
 
-	delta = cg.time - cent->pe.barrelTime;
-	if ( cent->pe.barrelSpinning ) {
-		angle = cent->pe.barrelAngle + delta * SPIN_SPEED;
-	} else {
-		if ( delta > COAST_TIME ) {
-			delta = COAST_TIME;
-		}
+    delta = cg.time - cent->pe.barrelTime;
+    if ( cent->pe.barrelSpinning ) {
+        angle = cent->pe.barrelAngle + delta * SPIN_SPEED;
+    } else {
+        if ( delta > COAST_TIME ) {
+            delta = COAST_TIME;
+        }
 
-		speed = 0.5 * ( SPIN_SPEED + (float)( COAST_TIME - delta ) / COAST_TIME );
-		angle = cent->pe.barrelAngle + delta * speed;
-	}
+        speed = 0.5 * ( SPIN_SPEED + (float)( COAST_TIME - delta ) / COAST_TIME );
+        angle = cent->pe.barrelAngle + delta * speed;
+    }
 
-	if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
-		cent->pe.barrelTime = cg.time;
-		cent->pe.barrelAngle = AngleMod( angle );
-		cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
-	}
+    if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
+        cent->pe.barrelTime = cg.time;
+        cent->pe.barrelAngle = AngleMod( angle );
+        cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
+    }
 
-	return angle;
+    return angle;
 }
 */
 
@@ -1900,24 +1900,24 @@ CG_TeslaSpinAngle
 /*
 // TTimo: unused
 static float CG_TeslaSpinAngle( centity_t *cent ) {
-	int		delta;
-	float	angle;
-	float	speed;
+    int		delta;
+    float	angle;
+    float	speed;
 
-	delta = cg.time - cent->pe.barrelTime;
+    delta = cg.time - cent->pe.barrelTime;
 
-	angle = cent->pe.barrelAngle;
+    angle = cent->pe.barrelAngle;
 
-	if(cent->currentState.eFlags & EF_FIRING)
-		angle += delta * TESLA_SPINSPEED;
-	else
-		angle += delta * TESLA_IDLESPEED;
+    if(cent->currentState.eFlags & EF_FIRING)
+        angle += delta * TESLA_SPINSPEED;
+    else
+        angle += delta * TESLA_IDLESPEED;
 
-	cent->pe.barrelAngle = AngleMod( angle );
+    cent->pe.barrelAngle = AngleMod( angle );
 
-	cent->pe.barrelTime = cg.time;
+    cent->pe.barrelTime = cg.time;
 
-	return AngleMod(angle);
+    return AngleMod(angle);
 
 //----(SA)	trying new tesla effect scheme for MK
 //	angle = -(cent->pe.barrelAngle + delta * TESLA_SPINSPEED);
@@ -1928,7 +1928,7 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 //	else
 //		cent->pe.barrelAngle += delta * TESLA_IDLESPEED;
 
-	return AngleMod(cent->pe.barrelAngle);
+    return AngleMod(cent->pe.barrelAngle);
 
 
 
@@ -1937,24 +1937,24 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 return angle;
 
 
-	if ( cent->pe.barrelSpinning ) {
-		angle = -(cent->pe.barrelAngle + delta * TESLA_SPINSPEED);
-	} else {
-		if ( delta > TESLA_COASTTIME ) {
-			delta = TESLA_COASTTIME;
-		}
+    if ( cent->pe.barrelSpinning ) {
+        angle = -(cent->pe.barrelAngle + delta * TESLA_SPINSPEED);
+    } else {
+        if ( delta > TESLA_COASTTIME ) {
+            delta = TESLA_COASTTIME;
+        }
 
-		speed = 0.5 * ( TESLA_SPINSPEED + (float)( TESLA_COASTTIME - delta ) / TESLA_COASTTIME );
-		angle = - (cent->pe.barrelAngle + delta * speed);
-	}
+        speed = 0.5 * ( TESLA_SPINSPEED + (float)( TESLA_COASTTIME - delta ) / TESLA_COASTTIME );
+        angle = - (cent->pe.barrelAngle + delta * speed);
+    }
 
-	if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
-		cent->pe.barrelTime = cg.time;
-		cent->pe.barrelAngle = AngleMod( angle );
-		cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
-	}
+    if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
+        cent->pe.barrelTime = cg.time;
+        cent->pe.barrelAngle = AngleMod( angle );
+        cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
+    }
 
-	return angle;
+    return angle;
 }
 */
 
@@ -2039,238 +2039,238 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 #define	TESLA_MAX_POINT_TESTS			10
 #define	TESLA_MAX_POINT_TESTS_PERFRAME	20
 
-	int i, j, pointTests=0;
-	vec3_t	testPos, tagPos, vec;
-	trace_t	tr;
-	float	maxDist;
-	int		numPoints;
-	vec3_t	viewAngles, viewDir;
-	int visEnemies[16];
-	float visDists[16];
-	int visEnemiesSorted[MAX_TESLA_BOLTS];
-	int numEnemies, numSorted, best;
-	float bestDist;
-	centity_t *ctrav;
-	vec3_t	traceOrg;
-	int	playerTeam;
+    int i, j, pointTests=0;
+    vec3_t	testPos, tagPos, vec;
+    trace_t	tr;
+    float	maxDist;
+    int		numPoints;
+    vec3_t	viewAngles, viewDir;
+    int visEnemies[16];
+    float visDists[16];
+    int visEnemiesSorted[MAX_TESLA_BOLTS];
+    int numEnemies, numSorted, best;
+    float bestDist;
+    centity_t *ctrav;
+    vec3_t	traceOrg;
+    int	playerTeam;
 
-	if (cent->currentState.weapon != WP_TESLA)
-		return;
+    if (cent->currentState.weapon != WP_TESLA)
+        return;
 
 // JPW NERVE no tesla in multiplayer
-	if ( cg_gameType.integer != GT_SINGLE_PLAYER )
-		return;
+    if ( cg_gameType.integer != GT_SINGLE_PLAYER )
+        return;
 
-	//if (cent->currentState.number == cg.snap->ps.clientNum)
-	//	VectorCopy( cg.snap->ps.viewangles, viewAngles );
-	//else
-		VectorCopy( cent->lerpAngles, viewAngles );
+    //if (cent->currentState.number == cg.snap->ps.clientNum)
+    //	VectorCopy( cg.snap->ps.viewangles, viewAngles );
+    //else
+        VectorCopy( cent->lerpAngles, viewAngles );
 
-	AngleVectors( viewAngles, viewDir, NULL, NULL );
+    AngleVectors( viewAngles, viewDir, NULL, NULL );
 
-	if (cent->currentState.number == cg.snap->ps.clientNum) {
-		VectorCopy( cg.snap->ps.origin, traceOrg );
-		playerTeam = cg.snap->ps.teamNum;
-	} else {
-		VectorCopy( cent->lerpOrigin, traceOrg );
-		playerTeam = cent->currentState.teamNum;
-	}
+    if (cent->currentState.number == cg.snap->ps.clientNum) {
+        VectorCopy( cg.snap->ps.origin, traceOrg );
+        playerTeam = cg.snap->ps.teamNum;
+    } else {
+        VectorCopy( cent->lerpOrigin, traceOrg );
+        playerTeam = cent->currentState.teamNum;
+    }
 
-	maxDist = TESLA_LIGHTNING_MAX_DIST;
-	numPoints = MAX_TESLA_BOLTS;
+    maxDist = TESLA_LIGHTNING_MAX_DIST;
+    numPoints = MAX_TESLA_BOLTS;
 
-	VectorCopy( flashorigin, tagPos );
+    VectorCopy( flashorigin, tagPos );
 
-	// first, build a list of visible enemies that can be hurt by this tesla, then filter by distance
-	if (!cent->pe.teslaDamageApplyTime || cent->pe.teslaDamageApplyTime < cg.time - 200) {
-		numEnemies = 0;
-		// check the local playing client
-		VectorSubtract( cg.snap->ps.origin, traceOrg, vec );
-		VectorNormalize( vec );
-		if ((cent != &cg_entities[cg.snap->ps.clientNum]) &&
-			(cg.snap->ps.teamNum != playerTeam) &&
-			(Distance( tagPos, cg.snap->ps.origin ) < TESLA_LIGHTNING_MAX_DIST) &&
-			(DotProduct(viewDir, vec) > 0.8)) {
-			CG_Trace( &tr, traceOrg, NULL, NULL, cg.snap->ps.origin, cg.snap->ps.clientNum, MASK_SHOT & ~CONTENTS_BODY );
-			if (tr.fraction == 1 || tr.entityNum == cg.snap->ps.clientNum) {
-				visDists[numEnemies] = Distance( tagPos, cg.snap->ps.origin );
-				visEnemies[numEnemies++] = cg.snap->ps.clientNum;
-			}
-		}
+    // first, build a list of visible enemies that can be hurt by this tesla, then filter by distance
+    if (!cent->pe.teslaDamageApplyTime || cent->pe.teslaDamageApplyTime < cg.time - 200) {
+        numEnemies = 0;
+        // check the local playing client
+        VectorSubtract( cg.snap->ps.origin, traceOrg, vec );
+        VectorNormalize( vec );
+        if ((cent != &cg_entities[cg.snap->ps.clientNum]) &&
+            (cg.snap->ps.teamNum != playerTeam) &&
+            (Distance( tagPos, cg.snap->ps.origin ) < TESLA_LIGHTNING_MAX_DIST) &&
+            (DotProduct(viewDir, vec) > 0.8)) {
+            CG_Trace( &tr, traceOrg, NULL, NULL, cg.snap->ps.origin, cg.snap->ps.clientNum, MASK_SHOT & ~CONTENTS_BODY );
+            if (tr.fraction == 1 || tr.entityNum == cg.snap->ps.clientNum) {
+                visDists[numEnemies] = Distance( tagPos, cg.snap->ps.origin );
+                visEnemies[numEnemies++] = cg.snap->ps.clientNum;
+            }
+        }
 
-		if (cgs.localServer && cgs.gametype == GT_SINGLE_PLAYER) {
-			// check for AI's getting hurt (TODO: bot support?)
-			for (ctrav=cg_entities, i=0; i<cgs.maxclients && numEnemies<16; ctrav++, i++) {
-				// RF, proto and supersoldier are invulnerable to tesla
-				switch (ctrav->currentState.aiChar) {
-				case AICHAR_SUPERSOLDIER:
-				case AICHAR_PROTOSOLDIER:
-					continue;
-				}
+        if (cgs.localServer && cgs.gametype == GT_SINGLE_PLAYER) {
+            // check for AI's getting hurt (TODO: bot support?)
+            for (ctrav=cg_entities, i=0; i<cgs.maxclients && numEnemies<16; ctrav++, i++) {
+                // RF, proto and supersoldier are invulnerable to tesla
+                switch (ctrav->currentState.aiChar) {
+                case AICHAR_SUPERSOLDIER:
+                case AICHAR_PROTOSOLDIER:
+                    continue;
+                }
 
-				if (ctrav->currentState.aiChar &&
-					(ctrav != cent) &&
-					(ctrav->currentState.teamNum != playerTeam) &&
-					!(ctrav->currentState.eFlags & EF_DEAD) &&
-					ctrav->currentValid &&	// is in the visible frame
-					(Distance( tagPos, ctrav->lerpOrigin ) < TESLA_LIGHTNING_MAX_DIST))
-				{
-					VectorSubtract( ctrav->lerpOrigin, traceOrg, vec );
-					VectorNormalize( vec );
+                if (ctrav->currentState.aiChar &&
+                    (ctrav != cent) &&
+                    (ctrav->currentState.teamNum != playerTeam) &&
+                    !(ctrav->currentState.eFlags & EF_DEAD) &&
+                    ctrav->currentValid &&	// is in the visible frame
+                    (Distance( tagPos, ctrav->lerpOrigin ) < TESLA_LIGHTNING_MAX_DIST))
+                {
+                    VectorSubtract( ctrav->lerpOrigin, traceOrg, vec );
+                    VectorNormalize( vec );
 
-					if (DotProduct(viewDir, vec) > 0.8) {
-						CG_Trace( &tr, traceOrg, NULL, NULL, ctrav->lerpOrigin, ctrav->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
-						if (tr.fraction == 1 || tr.entityNum == ctrav->currentState.number) {
-							visDists[numEnemies] = Distance( tagPos, ctrav->lerpOrigin );
-							visEnemies[numEnemies++] = ctrav->currentState.number;
-						}
-					}
-				}
-			}
-		}
+                    if (DotProduct(viewDir, vec) > 0.8) {
+                        CG_Trace( &tr, traceOrg, NULL, NULL, ctrav->lerpOrigin, ctrav->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
+                        if (tr.fraction == 1 || tr.entityNum == ctrav->currentState.number) {
+                            visDists[numEnemies] = Distance( tagPos, ctrav->lerpOrigin );
+                            visEnemies[numEnemies++] = ctrav->currentState.number;
+                        }
+                    }
+                }
+            }
+        }
 
-		// now sort by distance
-		for (j=0; j<MAX_TESLA_BOLTS; j++) {
-			visEnemiesSorted[j] = -1;
+        // now sort by distance
+        for (j=0; j<MAX_TESLA_BOLTS; j++) {
+            visEnemiesSorted[j] = -1;
 
-			bestDist = 99999;
-			best = -1;
-			for (i=0; i<numEnemies; i++) {
-				if (visEnemies[i] < 0)
-					continue;
-				if (visDists[i] < bestDist) {
-					bestDist = visDists[i];
-					visEnemiesSorted[j] = visEnemies[i];
-					best = i;
-				}
-			}
+            bestDist = 99999;
+            best = -1;
+            for (i=0; i<numEnemies; i++) {
+                if (visEnemies[i] < 0)
+                    continue;
+                if (visDists[i] < bestDist) {
+                    bestDist = visDists[i];
+                    visEnemiesSorted[j] = visEnemies[i];
+                    best = i;
+                }
+            }
 
-			if (best >= 0) {
-				visEnemies[best] = -1;
-				numSorted = j+1;
-			}
-		}
+            if (best >= 0) {
+                visEnemies[best] = -1;
+                numSorted = j+1;
+            }
+        }
 
-		// now fill in the teslaEnemy[]'s
-		for (i=0; i<MAX_TESLA_BOLTS; i++) {
-			if (numSorted && i/numSorted < (MAX_TESLA_BOLTS/2)) {	// no more than half the bolts per enemy
-				j = i%numSorted;
-				cent->pe.teslaEnemy[i] = visEnemiesSorted[j];
-				// apply damage
-				CG_ClientDamage( visEnemiesSorted[j], cent->currentState.number, CLDMG_TESLA );
-				// show the effect
-				cg_entities[ visEnemiesSorted[j] ].pe.teslaDamagedTime = cg.time;
-			} else {
-				if (cent->pe.teslaEnemy[i] >= 0) {
-					cent->pe.teslaEndPointTimes[i] = 0;	// make sure we find a new spot
-				}
-				cent->pe.teslaEnemy[i] = -1;
-			}
-		}
-		cent->pe.teslaDamageApplyTime = cg.time;
-	}
+        // now fill in the teslaEnemy[]'s
+        for (i=0; i<MAX_TESLA_BOLTS; i++) {
+            if (numSorted && i/numSorted < (MAX_TESLA_BOLTS/2)) {	// no more than half the bolts per enemy
+                j = i%numSorted;
+                cent->pe.teslaEnemy[i] = visEnemiesSorted[j];
+                // apply damage
+                CG_ClientDamage( visEnemiesSorted[j], cent->currentState.number, CLDMG_TESLA );
+                // show the effect
+                cg_entities[ visEnemiesSorted[j] ].pe.teslaDamagedTime = cg.time;
+            } else {
+                if (cent->pe.teslaEnemy[i] >= 0) {
+                    cent->pe.teslaEndPointTimes[i] = 0;	// make sure we find a new spot
+                }
+                cent->pe.teslaEnemy[i] = -1;
+            }
+        }
+        cent->pe.teslaDamageApplyTime = cg.time;
+    }
 
-	for (i=0; i<numPoints; i++) {
+    for (i=0; i<numPoints; i++) {
 
-		//if (!(rand()%3))
-		//	continue;
+        //if (!(rand()%3))
+        //	continue;
 
-		VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
-		VectorNormalize( vec );
+        VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
+        VectorNormalize( vec );
 
-		// if this point has timed out, find a new spot
-		if (cent->pe.teslaEnemy[i] >= 0)
-		{
-			// attacking the player
-			VectorSet( testPos, 6*crandom(),
-								6*crandom(),
-								20*crandom() - 8 );
-			//VectorClear( testPos );
-			if (cent->pe.teslaEnemy[i] != cg.snap->ps.clientNum) {
-				VectorAdd( testPos, cg_entities[cent->pe.teslaEnemy[i]].lerpOrigin, testPos );
-			} else {
-				VectorAdd( testPos, cg.snap->ps.origin, testPos );
-			}
-			cent->pe.teslaEndPointTimes[i] = cg.time;// - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
-			VectorCopy( testPos, cent->pe.teslaEndPoints[i] );
-		} else if (	(!cent->pe.teslaEndPointTimes[i]) ||
-				(cent->pe.teslaEndPointTimes[i] > cg.time) ||
-				(cent->pe.teslaEndPointTimes[i] < cg.time - TESLA_LIGHTNING_POINT_TIMEOUT) ||
-				(VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) > maxDist) ||
-				(DotProduct(viewDir, vec) < 0.7)) {
+        // if this point has timed out, find a new spot
+        if (cent->pe.teslaEnemy[i] >= 0)
+        {
+            // attacking the player
+            VectorSet( testPos, 6*crandom(),
+                                6*crandom(),
+                                20*crandom() - 8 );
+            //VectorClear( testPos );
+            if (cent->pe.teslaEnemy[i] != cg.snap->ps.clientNum) {
+                VectorAdd( testPos, cg_entities[cent->pe.teslaEnemy[i]].lerpOrigin, testPos );
+            } else {
+                VectorAdd( testPos, cg.snap->ps.origin, testPos );
+            }
+            cent->pe.teslaEndPointTimes[i] = cg.time;// - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
+            VectorCopy( testPos, cent->pe.teslaEndPoints[i] );
+        } else if (	(!cent->pe.teslaEndPointTimes[i]) ||
+                (cent->pe.teslaEndPointTimes[i] > cg.time) ||
+                (cent->pe.teslaEndPointTimes[i] < cg.time - TESLA_LIGHTNING_POINT_TIMEOUT) ||
+                (VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) > maxDist) ||
+                (DotProduct(viewDir, vec) < 0.7)) {
 
-			//if (cent->currentState.groundEntityNum == ENTITYNUM_NONE)
-			//	continue;	// must be on the ground
+            //if (cent->currentState.groundEntityNum == ENTITYNUM_NONE)
+            //	continue;	// must be on the ground
 
-			// find a new spot
-			for (j=0; j<TESLA_MAX_POINT_TESTS; j++) {
-				VectorSet( testPos, cg.refdef.fov_y*crandom()*0.5,
-									cg.refdef.fov_x*crandom()*0.5,
-									0 );
-				VectorAdd( viewAngles, testPos, testPos );
-				AngleVectors( testPos, vec, NULL, NULL );
-				VectorMA( tagPos, maxDist, vec, testPos );
-				// try a trace to find a world collision
-				CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
-				if (tr.fraction < 1 && tr.entityNum == ENTITYNUM_WORLD && !(tr.surfaceFlags & (SURF_NOIMPACT|SURF_SKY))) {
-					// found a valid spot!
-					cent->pe.teslaEndPointTimes[i] = cg.time - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
-					VectorCopy( tr.endpos, cent->pe.teslaEndPoints[i] );
-					break;
-				}
-				if (pointTests++ > TESLA_MAX_POINT_TESTS_PERFRAME) {
-					j=TESLA_MAX_POINT_TESTS;
-					continue;
-				}
-			}
-			if (j==TESLA_MAX_POINT_TESTS) {
-				continue;	// just don't draw this point
-			}
+            // find a new spot
+            for (j=0; j<TESLA_MAX_POINT_TESTS; j++) {
+                VectorSet( testPos, cg.refdef.fov_y*crandom()*0.5,
+                                    cg.refdef.fov_x*crandom()*0.5,
+                                    0 );
+                VectorAdd( viewAngles, testPos, testPos );
+                AngleVectors( testPos, vec, NULL, NULL );
+                VectorMA( tagPos, maxDist, vec, testPos );
+                // try a trace to find a world collision
+                CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
+                if (tr.fraction < 1 && tr.entityNum == ENTITYNUM_WORLD && !(tr.surfaceFlags & (SURF_NOIMPACT|SURF_SKY))) {
+                    // found a valid spot!
+                    cent->pe.teslaEndPointTimes[i] = cg.time - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
+                    VectorCopy( tr.endpos, cent->pe.teslaEndPoints[i] );
+                    break;
+                }
+                if (pointTests++ > TESLA_MAX_POINT_TESTS_PERFRAME) {
+                    j=TESLA_MAX_POINT_TESTS;
+                    continue;
+                }
+            }
+            if (j==TESLA_MAX_POINT_TESTS) {
+                continue;	// just don't draw this point
+            }
 
-			// add an impact mark on the wall
-			VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
-			VectorNormalize( vec );
-			VectorInverse( vec );
-			CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random()*360, 0.2, 0.2, 0.2, 1.0, qtrue, 4, qfalse, 300 );
-		}
-		//
-		// we have a valid lightning point, so draw it
-		// sanity check though to make sure it's valid
-		if (VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) <= maxDist) {
-			CG_DynamicLightningBolt( cgs.media.lightningBoltShader, tagPos, cent->pe.teslaEndPoints[i], 1+((cg.time%((i+2)*(i+3)))+i)%2, 20 + (float)(i%3)*5 + 6.0*random(), qtrue, 1.0, 0, i*i*3 );
+            // add an impact mark on the wall
+            VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
+            VectorNormalize( vec );
+            VectorInverse( vec );
+            CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random()*360, 0.2, 0.2, 0.2, 1.0, qtrue, 4, qfalse, 300 );
+        }
+        //
+        // we have a valid lightning point, so draw it
+        // sanity check though to make sure it's valid
+        if (VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) <= maxDist) {
+            CG_DynamicLightningBolt( cgs.media.lightningBoltShader, tagPos, cent->pe.teslaEndPoints[i], 1+((cg.time%((i+2)*(i+3)))+i)%2, 20 + (float)(i%3)*5 + 6.0*random(), qtrue, 1.0, 0, i*i*3 );
 
-			// play a zap sound
-			if (cent->pe.lightningSoundTime < cg.time - 200) {
-				CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD );
-				CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->lerpOrigin, ENTITYNUM_WORLD );
-				//trap_S_StartSound( cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.lightningSounds[rand()%3] );
-				cent->pe.lightningSoundTime = cg.time + rand()%200;
-			}
-		}
-	}
+            // play a zap sound
+            if (cent->pe.lightningSoundTime < cg.time - 200) {
+                CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD );
+                CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->lerpOrigin, ENTITYNUM_WORLD );
+                //trap_S_StartSound( cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.lightningSounds[rand()%3] );
+                cent->pe.lightningSoundTime = cg.time + rand()%200;
+            }
+        }
+    }
 
-	if (cg.time % 3) {	// break it up a bit
-		// add the looping sound
-		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.teslaLoopSound, 255 );
-	}
+    if (cg.time % 3) {	// break it up a bit
+        // add the looping sound
+        CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.teslaLoopSound, 255 );
+    }
 
-	// drop a dynamic light out infront of us
-	AngleVectors( viewAngles, vec, NULL, NULL );
-	VectorMA( tagPos, 300, vec, testPos );
-	// try a trace to find a world collision
-	CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SOLID );
+    // drop a dynamic light out infront of us
+    AngleVectors( viewAngles, vec, NULL, NULL );
+    VectorMA( tagPos, 300, vec, testPos );
+    // try a trace to find a world collision
+    CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SOLID );
 
-	if ((cg.time/50)%(4+(cg.time%4)) == 0) {
-		// alt light
-		trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 2 );
-	} else if ((cg.time/50)%(4+(cg.time%4)) == 1) {
-		// no light
-		//trap_R_AddLightToScene( tr.endpos, 128 + 500*tr.fraction, 1, 1, 1, 10 );
-	} else {
-		// blue light
-		trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 1 );
-	}
-	*/
+    if ((cg.time/50)%(4+(cg.time%4)) == 0) {
+        // alt light
+        trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 2 );
+    } else if ((cg.time/50)%(4+(cg.time%4)) == 1) {
+        // no light
+        //trap_R_AddLightToScene( tr.endpos, 128 + 500*tr.fraction, 1, 1, 1, 10 );
+    } else {
+        // blue light
+        trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 1 );
+    }
+    */
 }
 
 
@@ -2417,7 +2417,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	playerScaled = (qboolean)( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0 );
 	if ( !ps && playerScaled ) {   // don't "un-scale" weap up in 1st person
 		for ( i = 0; i < 3; i++ ) {  // scale weapon back up so it doesn't pick up the adjusted scale of the character models.
-									 // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
+			                         // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
 			VectorScale( gun.axis[i], 1.0 / ( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[i] ), gun.axis[i] );
 		}
 
@@ -2463,7 +2463,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				if ( i == W_PART_1 ) {
 					angles[ROLL] = CG_VenomSpinAngle( cent );
 					spunpart = qtrue;
-				} else if ( i == W_PART_2 )    {
+				} else if ( i == W_PART_2 ) {
 					angles[ROLL] = -CG_VenomSpinAngle( cent );
 					spunpart = qtrue;
 				}
@@ -2499,11 +2499,11 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				if ( i == W_PART_1 ) {
 					if ( spunpart ) {
 						CG_PositionRotatedEntityOnTag( &barrel, parent, "tag_barrel" );
-					} else { CG_PositionEntityOnTag( &barrel, parent, "tag_barrel", 0, NULL );}
+					} else { CG_PositionEntityOnTag( &barrel, parent, "tag_barrel", 0, NULL ); }
 				} else {
 					if ( spunpart ) {
 						CG_PositionRotatedEntityOnTag( &barrel, parent, va( "tag_barrel%d", i + 1 ) );
-					} else { CG_PositionEntityOnTag( &barrel, parent, va( "tag_barrel%d", i + 1 ), 0, NULL );}
+					} else { CG_PositionEntityOnTag( &barrel, parent, va( "tag_barrel%d", i + 1 ), 0, NULL ); }
 				}
 
 				drawpart = CG_GetPartFramesFromWeap( cent, &barrel, parent, i, weapon );
@@ -2713,52 +2713,52 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 
 void CG_AddPlayerFoot( refEntity_t *parent, playerState_t *ps, centity_t *cent ) {
 /*
-	refEntity_t wolfkick;
-	vec3_t kickangle;
-	int frame;
+    refEntity_t wolfkick;
+    vec3_t kickangle;
+    int frame;
 
-	if ( !( cg.snap->ps.persistant[PERS_WOLFKICK] ) ) {
-		return;
-	}
+    if ( !( cg.snap->ps.persistant[PERS_WOLFKICK] ) ) {
+        return;
+    }
 
-	memset( &wolfkick, 0, sizeof( wolfkick ) );
+    memset( &wolfkick, 0, sizeof( wolfkick ) );
 
-	VectorCopy( parent->lightingOrigin, wolfkick.lightingOrigin );
-	wolfkick.shadowPlane = parent->shadowPlane;
+    VectorCopy( parent->lightingOrigin, wolfkick.lightingOrigin );
+    wolfkick.shadowPlane = parent->shadowPlane;
 
-	// note to self we want this to lerp and advance frame
-	wolfkick.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;;
-	wolfkick.hModel = wolfkickModel;
+    // note to self we want this to lerp and advance frame
+    wolfkick.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;;
+    wolfkick.hModel = wolfkickModel;
 
-	VectorCopy( cg.refdef.vieworg, wolfkick.origin );
-	//----(SA)	allow offsets for testing boot model
-	if ( cg_gun_x.value ) {
-		VectorMA( wolfkick.origin, cg_gun_x.value,  cg.refdef.viewaxis[0], wolfkick.origin );
-	}
-	if ( cg_gun_y.value ) {
-		VectorMA( wolfkick.origin, cg_gun_y.value,  cg.refdef.viewaxis[1], wolfkick.origin );
-	}
-	if ( cg_gun_z.value ) {
-		VectorMA( wolfkick.origin, cg_gun_z.value,  cg.refdef.viewaxis[2], wolfkick.origin );
-	}
-	//----(SA)	end
-
-
-	VectorCopy( cg.refdefViewAngles, kickangle );
-	if ( kickangle[0] < 0 ) {
-		kickangle[0] = 0;                       //----(SA)	avoid "Rockette" syndrome :)
-	}
-	AnglesToAxis( kickangle, wolfkick.axis );
+    VectorCopy( cg.refdef.vieworg, wolfkick.origin );
+    //----(SA)	allow offsets for testing boot model
+    if ( cg_gun_x.value ) {
+        VectorMA( wolfkick.origin, cg_gun_x.value,  cg.refdef.viewaxis[0], wolfkick.origin );
+    }
+    if ( cg_gun_y.value ) {
+        VectorMA( wolfkick.origin, cg_gun_y.value,  cg.refdef.viewaxis[1], wolfkick.origin );
+    }
+    if ( cg_gun_z.value ) {
+        VectorMA( wolfkick.origin, cg_gun_z.value,  cg.refdef.viewaxis[2], wolfkick.origin );
+    }
+    //----(SA)	end
 
 
-	frame = cg.snap->ps.persistant[PERS_WOLFKICK];
+    VectorCopy( cg.refdefViewAngles, kickangle );
+    if ( kickangle[0] < 0 ) {
+        kickangle[0] = 0;                       //----(SA)	avoid "Rockette" syndrome :)
+    }
+    AnglesToAxis( kickangle, wolfkick.axis );
+
+
+    frame = cg.snap->ps.persistant[PERS_WOLFKICK];
 
 //	CG_Printf("frame: %d\n", frame);
 
-	wolfkick.frame = frame;
-	wolfkick.oldframe = frame - 1;
-	wolfkick.backlerp = 1 - cg.frameInterpolation;
-	trap_R_AddRefEntityToScene( &wolfkick );
+    wolfkick.frame = frame;
+    wolfkick.oldframe = frame - 1;
+    wolfkick.backlerp = 1 - cg.frameInterpolation;
+    trap_R_AddRefEntityToScene( &wolfkick );
 */
 }
 
@@ -2816,7 +2816,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		return;
 	}
 
-	VectorClear(fovOffset);
+	VectorClear( fovOffset );
 
 	if ( cg_fixedAspect.integer ) {
 		fovOffset[2] = 0;
@@ -2829,7 +2829,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	} else if ( cg_fov.integer > 90 ) {
 		// old auto adjust
 		fovOffset[2] = -0.2 * ( cg_fov.integer - 90 );
- 	}
+	}
 
 	if ( ps->weapon > WP_NONE ) {
 		CG_RegisterWeapon( ps->weapon );
@@ -2926,7 +2926,7 @@ void CG_DrawWeaponSelect( void ) {
 	trap_R_SetColor( color );
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_TOP );
 	}
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay
@@ -3094,7 +3094,7 @@ void CG_DrawWeaponSelect( void ) {
 /*
 ==============
 CG_WeaponHasAmmo
-	check for ammo
+    check for ammo
 ==============
 */
 static qboolean CG_WeaponHasAmmo( int i ) {
@@ -3210,8 +3210,8 @@ int CG_WeaponIndex( int weapnum, int *bank, int *cycle ) {
 /*
 ==============
 getNextWeapInBank
-	Pass in a bank and cycle and this will return the next valid weapon higher in the cycle.
-	if the weap passed in is above highest in a cycle (maxWeapsInBank), this will safely loop around
+    Pass in a bank and cycle and this will return the next valid weapon higher in the cycle.
+    if the weap passed in is above highest in a cycle (maxWeapsInBank), this will safely loop around
 ==============
 */
 static int getNextWeapInBank( int bank, int cycle ) {
@@ -3252,9 +3252,9 @@ static int getNextWeapInBankBynum( int weapnum ) {
 /*
 ==============
 getPrevWeapInBank
-	Pass in a bank and cycle and this will return the next valid weapon lower in the cycle.
-	if the weap passed in is the lowest in a cycle (0), this will loop around to the
-	top (maxWeapsInBank-1) and start down from there looking for a valid weapon position
+    Pass in a bank and cycle and this will return the next valid weapon lower in the cycle.
+    if the weap passed in is the lowest in a cycle (0), this will loop around to the
+    top (maxWeapsInBank-1) and start down from there looking for a valid weapon position
 ==============
 */
 static int getPrevWeapInBank( int bank, int cycle ) {
@@ -3301,9 +3301,9 @@ static int getPrevWeapInBankBynum( int weapnum ) {
 /*
 ==============
 getNextBankWeap
-	Pass in a bank and cycle and this will return the next valid weapon in a higher bank.
-	sameBankPosition: if there's a weapon in the next bank at the same cycle,
-	return that	(colt returns thompson for example) rather than the lowest weapon
+    Pass in a bank and cycle and this will return the next valid weapon in a higher bank.
+    sameBankPosition: if there's a weapon in the next bank at the same cycle,
+    return that	(colt returns thompson for example) rather than the lowest weapon
 ==============
 */
 static int getNextBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
@@ -3332,9 +3332,9 @@ static int getNextBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
 /*
 ==============
 getPrevBankWeap
-	Pass in a bank and cycle and this will return the next valid weapon in a lower bank.
-	sameBankPosition: if there's a weapon in the prev bank at the same cycle,
-	return that	(thompson returns colt for example) rather than the highest weapon
+    Pass in a bank and cycle and this will return the next valid weapon in a lower bank.
+    sameBankPosition: if there's a weapon in the prev bank at the same cycle,
+    return that	(thompson returns colt for example) rather than the highest weapon
 ==============
 */
 static int getPrevBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
@@ -3402,24 +3402,24 @@ static int getAltWeapon( int weapnum ) {
 /*
 ==============
 getEquivWeapon
-	return the id of the opposite team's weapon.
-	Passing the weapnum of the mp40 returns the id of the thompson, and likewise
-	passing the weapnum of the thompson returns the id of the mp40.
-	No equivalent available will return the weapnum passed in.
+    return the id of the opposite team's weapon.
+    Passing the weapnum of the mp40 returns the id of the thompson, and likewise
+    passing the weapnum of the thompson returns the id of the mp40.
+    No equivalent available will return the weapnum passed in.
 ==============
 */
 int getEquivWeapon( int weapnum ) {
 	int num = weapnum;
 
 	switch ( weapnum ) {
-		// going from german to american
+	// going from german to american
 	case WP_LUGER:              num = WP_COLT;              break;
 	case WP_MAUSER:             num = WP_GARAND;            break;
 	case WP_MP40:               num = WP_THOMPSON;          break;
 	case WP_GRENADE_LAUNCHER:   num = WP_GRENADE_PINEAPPLE; break;
 	case WP_PANZERFAUST:        num = WP_ROCKET_LAUNCHER;   break;
 
-		// going from american to german
+	// going from american to german
 	case WP_COLT:               num = WP_LUGER;             break;
 	case WP_GARAND:             num = WP_MAUSER;            break;
 	case WP_THOMPSON:           num = WP_MP40;              break;
@@ -3553,7 +3553,7 @@ void CG_FinishWeaponChange( int lastweap, int newweap ) {
 /*
 ==============
 CG_AltfireWeapon_f
-	for example, switching between WP_MAUSER and WP_SNIPERRIFLE
+    for example, switching between WP_MAUSER and WP_SNIPERRIFLE
 ==============
 */
 void CG_AltWeapon_f( void ) {
@@ -3723,8 +3723,8 @@ void CG_NextWeap( qboolean switchBanks ) {
 CG_PrevWeap
 
   switchBanks - curweap is the last in a bank
-		'qtrue'  - go to the next available bank
-		'qfalse' - loop to the head of the bank
+        'qtrue'  - go to the next available bank
+        'qfalse' - loop to the head of the bank
 ==============
 */
 void CG_PrevWeap( qboolean switchBanks ) {
@@ -4000,8 +4000,8 @@ void CG_PrevWeapon_f( void ) {
 /*
 ==============
 CG_WeaponBank_f
-	weapon keys are not generally bound directly('bind 1 weapon 1'),
-	rather the key is bound to a given bank ('bind 1 weaponbank 1')
+    weapon keys are not generally bound directly('bind 1 weapon 1'),
+    rather the key is bound to a given bank ('bind 1 weaponbank 1')
 ==============
 */
 void CG_WeaponBank_f( void ) {
@@ -4319,15 +4319,15 @@ void CG_FLAKEFX( centity_t *cent, int whichgun ) {
 		VectorMA( point, 136, forward, point );
 		VectorMA( point, 31, up, point );
 		VectorMA( point, 22, right, point );
-	} else if ( whichgun == 1 )     {
+	} else if ( whichgun == 1 ) {
 		VectorMA( point, 136, forward, point );
 		VectorMA( point, 31, up, point );
 		VectorMA( point, -22, right, point );
-	} else if ( whichgun == 3 )     {
+	} else if ( whichgun == 3 ) {
 		VectorMA( point, 136, forward, point );
 		VectorMA( point, 10, up, point );
 		VectorMA( point, 22, right, point );
-	} else if ( whichgun == 4 )     {
+	} else if ( whichgun == 4 ) {
 		VectorMA( point, 136, forward, point );
 		VectorMA( point, 10, up, point );
 		VectorMA( point, -22, right, point );
@@ -4352,7 +4352,7 @@ void CG_FLAKEFX( centity_t *cent, int whichgun ) {
 /*
 ==============
 CG_MortarEFX
-	Right now mostly copied directly from Raf's MG42 FX, but with the optional addtion of smoke
+    Right now mostly copied directly from Raf's MG42 FX, but with the optional addtion of smoke
 ==============
 */
 void CG_MortarEFX( centity_t *cent ) {
@@ -4663,36 +4663,36 @@ void CG_AddBulletParticles( vec3_t origin, vec3_t dir, int speed, int duration, 
 	vec3_t velocity, pos;
 	int i;
 /*
-	// add the falling streaks
-	for (i=0; i<count/3; i++) {
-		le = CG_AllocLocalEntity();
-		re = &le->refEntity;
+    // add the falling streaks
+    for (i=0; i<count/3; i++) {
+        le = CG_AllocLocalEntity();
+        re = &le->refEntity;
 
-		VectorSet( velocity, dir[0] + crandom()*randScale, dir[1] + crandom()*randScale, dir[2] + crandom()*randScale );
-		VectorScale( velocity, (float)speed*3, velocity );
+        VectorSet( velocity, dir[0] + crandom()*randScale, dir[1] + crandom()*randScale, dir[2] + crandom()*randScale );
+        VectorScale( velocity, (float)speed*3, velocity );
 
-		le->leType = LE_SPARK;
-		le->startTime = cg.time;
-		le->endTime = le->startTime + duration - (int)(0.5 * random() * duration);
-		le->lastTrailTime = cg.time;
+        le->leType = LE_SPARK;
+        le->startTime = cg.time;
+        le->endTime = le->startTime + duration - (int)(0.5 * random() * duration);
+        le->lastTrailTime = cg.time;
 
-		VectorCopy( origin, re->origin );
-		AxisCopy( axisDefault, re->axis );
+        VectorCopy( origin, re->origin );
+        AxisCopy( axisDefault, re->axis );
 
-		le->pos.trType = TR_GRAVITY;
-		VectorCopy( origin, le->pos.trBase );
-		VectorMA( le->pos.trBase, 2 + random()*4, dir, le->pos.trBase );
-		VectorCopy( velocity, le->pos.trDelta );
-		le->pos.trTime = cg.time;
+        le->pos.trType = TR_GRAVITY;
+        VectorCopy( origin, le->pos.trBase );
+        VectorMA( le->pos.trBase, 2 + random()*4, dir, le->pos.trBase );
+        VectorCopy( velocity, le->pos.trDelta );
+        le->pos.trTime = cg.time;
 
-		le->refEntity.customShader = cgs.media.bulletParticleTrailShader;
+        le->refEntity.customShader = cgs.media.bulletParticleTrailShader;
 //		le->refEntity.customShader = cgs.media.sparkParticleShader;
 
-		le->bounceFactor = 0.9;
+        le->bounceFactor = 0.9;
 
 //		le->leBounceSoundType = LEBS_BLOOD;
 //		le->leMarkType = LEMT_BLOOD;
-	}
+    }
 */
 	// add the falling particles
 	for ( i = 0; i < count; i++ ) {
@@ -4734,20 +4734,20 @@ void CG_AddDirtBulletParticles( vec3_t origin, vec3_t dir, int speed, int durati
 	}
 // jpw
 /* old one (this one works)
-	CG_ParticleDirtBulletDebris_Core( pos, velocity, 600 + rand()%300 );
+    CG_ParticleDirtBulletDebris_Core( pos, velocity, 600 + rand()%300 );
 
-	// add the falling particles
-	for (i=0; i<count; i++) {
+    // add the falling particles
+    for (i=0; i<count; i++) {
 
-		VectorSet( velocity, dir[0] + crandom()*randScale * 0.3, dir[1] + crandom()*randScale * 0.3, dir[2] + random()*randScale * 3.f );
-		VectorScale( velocity, (float)speed, velocity );
+        VectorSet( velocity, dir[0] + crandom()*randScale * 0.3, dir[1] + crandom()*randScale * 0.3, dir[2] + random()*randScale * 3.f );
+        VectorScale( velocity, (float)speed, velocity );
 
-		VectorCopy( origin, pos );
-		VectorMA( pos, 2 + random()*4, dir, pos );
+        VectorCopy( origin, pos );
+        VectorMA( pos, 2 + random()*4, dir, pos );
 
-		CG_ParticleDirtBulletDebris( pos, velocity, 600 + rand()%300 );
+        CG_ParticleDirtBulletDebris( pos, velocity, 600 + rand()%300 );
 
-	}
+    }
 */
 }
 // DHM - Nerve :: end
@@ -4956,7 +4956,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 						  200,      // duration
 						  15 + rand() % 7,  // count
 						  0.2 );    // rand scale
-		} else if ( clientNum == 1 )      { // just do a little smoke puff
+		} else if ( clientNum == 1 ) {      // just do a little smoke puff
 			vec3_t d, o;
 			VectorMA( origin, 12, dir, o );
 			VectorScale( dir, 7, d );
@@ -4999,7 +4999,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 								  0.5 );    // rand scale
 				}
 			}
-		} else if ( clientNum == 2 )      {
+		} else if ( clientNum == 2 ) {
 			sfx = 0;
 			mark = 0;
 
@@ -5049,38 +5049,38 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 					radius += 1;    // experimenting with different mark sizes per surface
 
 /*
-					if (rand()%100 > 75)
-					{
-						gentity_t	*sfx;
-						vec3_t		start;
-						vec3_t		dir;
+                    if (rand()%100 > 75)
+                    {
+                        gentity_t	*sfx;
+                        vec3_t		start;
+                        vec3_t		dir;
 
-						sfx = G_Spawn ();
+                        sfx = G_Spawn ();
 
-						sfx->s.density = type;
+                        sfx->s.density = type;
 
-						VectorCopy (tr.endpos, start);
+                        VectorCopy (tr.endpos, start);
 
-						VectorCopy (muzzleTrace, dir);
-						VectorNegate (dir, dir);
+                        VectorCopy (muzzleTrace, dir);
+                        VectorNegate (dir, dir);
 
-						G_SetOrigin (sfx, start);
-						G_SetAngle (sfx, dir);
+                        G_SetOrigin (sfx, start);
+                        G_SetAngle (sfx, dir);
 
-						G_AddEvent( sfx, EV_SHARD, DirToByte( dir ));
+                        G_AddEvent( sfx, EV_SHARD, DirToByte( dir ));
 
-						sfx->think = G_FreeEntity;
-						sfx->nextthink = level.time + 1000;
+                        sfx->think = G_FreeEntity;
+                        sfx->nextthink = level.time + 1000;
 
-						sfx->s.frame = 3 + (rand()%3) ;
+                        sfx->s.frame = 3 + (rand()%3) ;
 
-						trap_LinkEntity (sfx);
+                        trap_LinkEntity (sfx);
 
 
 void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
-						CG_Shard
+                        CG_Shard
 
-					}
+                    }
 
 */
 
@@ -5266,7 +5266,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			CG_AddDebris( origin, dir,
 						  400 + random() * 200, // speed
 						  rand() % 2000 + 1400, //350,	// duration
-						  // 15 + rand()%5 );	// count
+			              // 15 + rand()%5 );	// count
 						  12 + rand() % 12 );   // count
 
 		}
@@ -5302,17 +5302,17 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			//CG_ParticleExplosion( "twiltb", sprOrg, sprVel, 600, 9, 100 );
 			//CG_ParticleExplosion( 3, sprOrg, sprVel, 900, 9, 250 );
 			/*
-					r = 2 + rand()%3;
-					for (i=0; i<3; i++) {
-						for (j=0;j<3;j++) sprOrg[j] = origin[j] + 14*dir[j] + 14*crandom();
-						CG_ParticleExplosion( 3, sprOrg, sprVel, 800+rand()%250, 9, 60+rand()%200 );
-					}
+			        r = 2 + rand()%3;
+			        for (i=0; i<3; i++) {
+			            for (j=0;j<3;j++) sprOrg[j] = origin[j] + 14*dir[j] + 14*crandom();
+			            CG_ParticleExplosion( 3, sprOrg, sprVel, 800+rand()%250, 9, 60+rand()%200 );
+			        }
 			*/
 			// Ridah, throw some debris
 			CG_AddDebris( origin, dir,
 						  280,      // speed
 						  1400,     // duration
-						  // 15 + rand()%5 );	// count
+			              // 15 + rand()%5 );	// count
 						  7 + rand() % 2 ); // count
 		}
 // JPW NERVE
@@ -5400,7 +5400,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			CG_AddDebris( origin, dir,
 						  120,      // speed
 						  2000,  //350,	// duration
-						  // 15 + rand()%5 );	// count
+			              // 15 + rand()%5 );	// count
 						  7 + rand() % 2 ); // count
 		}
 // JPW NERVE -- multiplayer explosions over the top due to large damage radiusesesizes
@@ -5408,17 +5408,17 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 // check for water/dirt spurt
 			if ( trap_CM_PointContents( origin, 0 ) & CONTENTS_WATER ) {
 /*
-				VectorCopy(origin,tmpv);
-				tmpv[2] += 10000;
+                VectorCopy(origin,tmpv);
+                tmpv[2] += 10000;
 
-				trap_CM_BoxTrace( &trace, tmpv,origin, NULL, NULL, 0, MASK_WATER );
-				CG_WaterRipple(cgs.media.wakeMarkShaderAnim, trace.endpos, dir, 300, 2000);
+                trap_CM_BoxTrace( &trace, tmpv,origin, NULL, NULL, 0, MASK_WATER );
+                CG_WaterRipple(cgs.media.wakeMarkShaderAnim, trace.endpos, dir, 300, 2000);
 
-				CG_AddDirtBulletParticles( trace.endpos, dir,
-								400+random()*200,	// speed
-								900,	// duration
-								15,	// count
-								0.5, 512,128, 0.125, "water_splash" );
+                CG_AddDirtBulletParticles( trace.endpos, dir,
+                                400+random()*200,	// speed
+                                900,	// duration
+                                15,	// count
+                                0.5, 512,128, 0.125, "water_splash" );
 */
 				VectorCopy( origin,tmpv );
 				tmpv[2] += 10000;
@@ -5463,19 +5463,19 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 				CG_AddDebris( origin, dir,
 							  400 + random() * 200, // speed
 							  rand() % 2000 + 1000, //350,	// duration
-							  // 15 + rand()%5 );	// count
+				              // 15 + rand()%5 );	// count
 							  5 + rand() % 5 ); // count
 
 			}
 		}
 // jpw
 /*
-		// some sparks
-		CG_AddSparks( origin, dir,
-						200,	// speed
-						800,	// duration
-						5 + rand()%10,	// count
-						0.8 );	// rand scale
+        // some sparks
+        CG_AddSparks( origin, dir,
+                        200,	// speed
+                        800,	// duration
+                        5 + rand()%10,	// count
+                        0.8 );	// rand scale
 */
 		// done.
 
@@ -5517,7 +5517,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 			if ( gdist > 1200 && gdist < 8000 ) {  // 1200 is max cam shakey dist (2*600)
 				// use gorg as the new sound origin
 				VectorMA( cg.refdef.vieworg, sfx2range, norm, gorg ); // JPW NERVE non-distance falloff makes more sense; sfx2range was gdist*0.2
-																	  // sfx2range is variable to give us minimum volume control different explosion sizes (see mortar, panzerfaust, and grenade)
+				                                                      // sfx2range is variable to give us minimum volume control different explosion sizes (see mortar, panzerfaust, and grenade)
 //				CG_Printf("d=%f\n",(gdist-1200)*3);
 				trap_S_StartSound( gorg, ENTITYNUM_WORLD, CHAN_WEAPON, sfx2 );
 			}
@@ -5599,7 +5599,7 @@ void CG_MissileHitWallSmall( int weapon, int clientNum, vec3_t origin, vec3_t di
 	CG_AddDebris( origin, dir,
 				  280,          // speed
 				  1400,         // duration
-				  // 15 + rand()%5 );	// count
+	              // 15 + rand()%5 );	// count
 				  7 + rand() % 2 );     // count
 
 	if ( sfx ) {
@@ -5727,7 +5727,7 @@ Perform the same traces the server did to locate the
 hit splashes (FIXME: random seed isn't synced anymore)
 
   (SA)	right now this is random like a shotgun.  I want to make it more
-		organized so that the pattern is more of a circle (with some degree of randomness)
+        organized so that the pattern is more of a circle (with some degree of randomness)
 ================
 */
 static void CG_VenomPattern( vec3_t origin, vec3_t origin2, int otherEntNum ) {
@@ -6101,13 +6101,13 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 				tmpv2[2] = 0;
 				VectorAdd( tmpv,tmpv2,tmpv );
 				CG_SmokePuff( origin, tmpv,
-								   5 + rnd * 10, // width
-								   1, rnd * 0.8, rnd * 0.8, 0.5,
-								   500 + ( rand() % 800 ), // duration was 2800+
-								   cg.time,
-								   0,
-								   0,
-								   cgs.media.fleshSmokePuffShader );
+							  5 + rnd * 10,      // width
+							  1, rnd * 0.8, rnd * 0.8, 0.5,
+							  500 + ( rand() % 800 ),      // duration was 2800+
+							  cg.time,
+							  0,
+							  0,
+							  cgs.media.fleshSmokePuffShader );
 			}
 		} else {
 			// puff out the front (more dust no blood)
@@ -6122,13 +6122,13 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 				tmpv2[2] = 0;
 				VectorAdd( tmpv,tmpv2,tmpv );
 				CG_SmokePuff( origin, tmpv,
-								   5 + rnd * 10, // width
-								   rnd * 0.3f + 0.5f, rnd * 0.3f + 0.5f, rnd * 0.3f + 0.5f, 0.125f,
-								   500 + ( rand() % 300 ), // duration was 2800+
-								   cg.time,
-								   0,
-								   0,
-								   cgs.media.smokePuffShader );
+							  5 + rnd * 10,      // width
+							  rnd * 0.3f + 0.5f, rnd * 0.3f + 0.5f, rnd * 0.3f + 0.5f, 0.125f,
+							  500 + ( rand() % 300 ),      // duration was 2800+
+							  cg.time,
+							  0,
+							  0,
+							  cgs.media.smokePuffShader );
 			}
 		}
 // jpw

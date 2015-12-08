@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -107,19 +107,17 @@ static void CG_ParseTeamInfo( void ) {
 	// -NERVE - SMF
 
 	numSortedTeamPlayers = atoi( CG_Argv( 3 ) );
-	if( numSortedTeamPlayers < 0 || numSortedTeamPlayers > TEAM_MAXOVERLAY )
-	{
+	if ( numSortedTeamPlayers < 0 || numSortedTeamPlayers > TEAM_MAXOVERLAY ) {
 		CG_Error( "CG_ParseTeamInfo: numSortedTeamPlayers out of range (%d)",
-				numSortedTeamPlayers );
+				  numSortedTeamPlayers );
 		return;
 	}
 
 	for ( i = 0 ; i < numSortedTeamPlayers ; i++ ) {
 		client = atoi( CG_Argv( i * 5 + 4 ) );
-		if( client < 0 || client >= MAX_CLIENTS )
-		{
-		  CG_Error( "CG_ParseTeamInfo: bad client number: %d", client );
-		  return;
+		if ( client < 0 || client >= MAX_CLIENTS ) {
+			CG_Error( "CG_ParseTeamInfo: bad client number: %d", client );
+			return;
 		}
 
 		sortedTeamPlayers[i] = client;
@@ -251,11 +249,11 @@ static void CG_ParseScreenFade( void ) {
 /*
 ==============
 CG_ParseFog
-	float near dist
-	float far dist
-	float density
-	float[3] r,g,b
-	int		time
+    float near dist
+    float far dist
+    float density
+    float[3] r,g,b
+    int		time
 ==============
 */
 static void CG_ParseFog( void ) {
@@ -302,7 +300,7 @@ void CG_SetConfigValues( void ) {
 		s = CG_ConfigString( CS_FLAGSTATUS );
 		cgs.redflag = s[0] - '0';
 		cgs.blueflag = s[1] - '0';
-	} else if ( cgs.gametype == GT_1FCTF )    {
+	} else if ( cgs.gametype == GT_1FCTF ) {
 		s = CG_ConfigString( CS_FLAGSTATUS );
 		cgs.flagStatus = s[0] - '0';
 	}
@@ -440,7 +438,7 @@ static void CG_ConfigStringModified( void ) {
 	else if ( num >= CS_DLIGHTS && num < CS_DLIGHTS + MAX_DLIGHTS ) {
 //		CG_Printf(">>>>>>>>>>>got configstring for dlight: %d\ntell Sherman!!!!!!!!!!", num-CS_DLIGHTS);
 //----(SA)
-	} else if ( num == CS_SHADERSTATE )   {
+	} else if ( num == CS_SHADERSTATE ) {
 		CG_ShaderStateChanged();
 	}
 }
@@ -868,9 +866,9 @@ int CG_ParseVoiceChats( const char *filename, voiceChatList_t *voiceChatList, in
 	}
 	if ( !Q_stricmp( token, "female" ) ) {
 		voiceChatList->gender = GENDER_FEMALE;
-	} else if ( !Q_stricmp( token, "male" ) )        {
+	} else if ( !Q_stricmp( token, "male" ) ) {
 		voiceChatList->gender = GENDER_MALE;
-	} else if ( !Q_stricmp( token, "neuter" ) )        {
+	} else if ( !Q_stricmp( token, "neuter" ) ) {
 		voiceChatList->gender = GENDER_NEUTER;
 	} else {
 		trap_Print( va( S_COLOR_RED "expected gender not found in voice chat file: %s\n", filename ) );
@@ -1137,9 +1135,9 @@ CG_PlayVoiceChat
 void CG_PlayVoiceChat( bufferedVoiceChat_t *vchat ) {
 	// if we are going into the intermission, don't start any voices
 /*	// NERVE - SMF - don't do this in wolfMP
-	if ( cg.intermissionStarted ) {
-		return;
-	}
+    if ( cg.intermissionStarted ) {
+        return;
+    }
 */
 
 	if ( !cg_noVoiceChats.integer ) {
@@ -1210,9 +1208,9 @@ CG_AddBufferedVoiceChat
 void CG_AddBufferedVoiceChat( bufferedVoiceChat_t *vchat ) {
 	// if we are going into the intermission, don't start any voices
 /*	// NERVE - SMF - don't do this in wolfMP
-	if ( cg.intermissionStarted ) {
-		return;
-	}
+    if ( cg.intermissionStarted ) {
+        return;
+    }
 */
 
 // JPW NERVE new system doesn't buffer but overwrites vchats FIXME put this on a cvar to choose which to use
@@ -1221,12 +1219,12 @@ void CG_AddBufferedVoiceChat( bufferedVoiceChat_t *vchat ) {
 	CG_PlayVoiceChat( &voiceChatBuffer[0] );
 
 /* JPW NERVE pulled this
-	memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
-	cg.voiceChatBufferIn = (cg.voiceChatBufferIn + 1) % MAX_VOICECHATBUFFER;
-	if (cg.voiceChatBufferIn == cg.voiceChatBufferOut) {
-		CG_PlayVoiceChat( &voiceChatBuffer[cg.voiceChatBufferOut] );
-		cg.voiceChatBufferOut++;
-	}
+    memcpy(&voiceChatBuffer[cg.voiceChatBufferIn], vchat, sizeof(bufferedVoiceChat_t));
+    cg.voiceChatBufferIn = (cg.voiceChatBufferIn + 1) % MAX_VOICECHATBUFFER;
+    if (cg.voiceChatBufferIn == cg.voiceChatBufferOut) {
+        CG_PlayVoiceChat( &voiceChatBuffer[cg.voiceChatBufferOut] );
+        cg.voiceChatBufferOut++;
+    }
 */
 }
 
@@ -1245,10 +1243,10 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 	const char *loc;            // NERVE - SMF
 
 /*	// NERVE - SMF - don't do this in wolfMP
-	// if we are going into the intermission, don't start any voices
-	if ( cg.intermissionStarted ) {
-		return;
-	}
+    // if we are going into the intermission, don't start any voices
+    if ( cg.intermissionStarted ) {
+        return;
+    }
 */
 
 	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
@@ -1280,7 +1278,7 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 			if ( mode == SAY_TELL ) {
 				Com_sprintf( vchat.message, sizeof( vchat.message ), "[%s]%c%c[%s]: %c%c%s",
 							 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
-			} else if ( mode == SAY_TEAM )   {
+			} else if ( mode == SAY_TEAM ) {
 				Com_sprintf( vchat.message, sizeof( vchat.message ), "(%s)%c%c(%s): %c%c%s",
 							 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
 			} else {
@@ -1316,7 +1314,7 @@ void CG_VoiceChat( int mode ) {
 
 	if ( cg_noTaunt.integer != 0 ) {
 		if ( !strcmp( cmd, VOICECHAT_KILLINSULT )  || !strcmp( cmd, VOICECHAT_TAUNT ) || \
-			 !strcmp( cmd, VOICECHAT_DEATHINSULT ) || !strcmp( cmd, VOICECHAT_KILLGAUNTLET ) ||	\
+			 !strcmp( cmd, VOICECHAT_DEATHINSULT ) || !strcmp( cmd, VOICECHAT_KILLGAUNTLET ) || \
 			 !strcmp( cmd, VOICECHAT_PRAISE ) ) {
 			return;
 		}
@@ -1469,7 +1467,7 @@ static void CG_ServerCommand( void ) {
 		CG_Printf( "[cgnotify]%s", CG_LocalizeServerCommand( CG_Argv( 1 ) ) );
 #ifdef MISSIONPACK
 		cmd = CG_Argv( 1 );           // yes, this is obviously a hack, but so is the way we hear about
-									  // votes passing or failing
+		                              // votes passing or failing
 		if ( !Q_stricmpn( cmd, "vote failed", 11 ) || !Q_stricmpn( cmd, "team vote failed", 16 ) ) {
 			trap_S_StartLocalSound( cgs.media.voteFailed, CHAN_ANNOUNCER );
 		} else if ( !Q_stricmpn( cmd, "vote passed", 11 ) || !Q_stricmpn( cmd, "team vote passed", 16 ) ) {
@@ -1590,19 +1588,17 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
-	if ( Q_stricmp (cmd, "remapShader") == 0 )
-	{
-		if (trap_Argc() == 4)
-		{
+	if ( Q_stricmp( cmd, "remapShader" ) == 0 ) {
+		if ( trap_Argc() == 4 ) {
 			char shader1[MAX_QPATH];
 			char shader2[MAX_QPATH];
 			char shader3[MAX_QPATH];
 
-			Q_strncpyz(shader1, CG_Argv(1), sizeof(shader1));
-			Q_strncpyz(shader2, CG_Argv(2), sizeof(shader2));
-			Q_strncpyz(shader3, CG_Argv(3), sizeof(shader3));
+			Q_strncpyz( shader1, CG_Argv( 1 ), sizeof( shader1 ) );
+			Q_strncpyz( shader2, CG_Argv( 2 ), sizeof( shader2 ) );
+			Q_strncpyz( shader3, CG_Argv( 3 ), sizeof( shader3 ) );
 
-			trap_R_RemapShader(shader1, shader2, shader3);
+			trap_R_RemapShader( shader1, shader2, shader3 );
 		}
 
 		return;

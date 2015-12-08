@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -210,24 +210,21 @@ void CG_Text_Paint( float x, float y, float scale, vec4_t color, const char *tex
 }
 
 // NERVE - SMF - added back in
-int CG_DrawFieldWidth(int x, int y, int width, int value, int charWidth, int charHeight)
-{
+int CG_DrawFieldWidth( int x, int y, int width, int value, int charWidth, int charHeight ) {
 	char num[16], *ptr;
-	int  l;
-	int  totalwidth = 0;
+	int l;
+	int totalwidth = 0;
 
-	if (width < 1)
-	{
+	if ( width < 1 ) {
 		return 0;
 	}
 
 	// draw number string
-	if (width > 5)
-	{
+	if ( width > 5 ) {
 		width = 5;
 	}
 
-	switch (width)
+	switch ( width )
 	{
 	case 1:
 		value = value > 9 ? 9 : value;
@@ -247,15 +244,14 @@ int CG_DrawFieldWidth(int x, int y, int width, int value, int charWidth, int cha
 		break;
 	}
 
-	Com_sprintf(num, sizeof(num), "%i", value);
-	l = strlen(num);
-	if (l > width)
-	{
+	Com_sprintf( num, sizeof( num ), "%i", value );
+	l = strlen( num );
+	if ( l > width ) {
 		l = width;
 	}
 
 	ptr = num;
-	while (*ptr && l)
+	while ( *ptr && l )
 	{
 		totalwidth += charWidth;
 		ptr++;
@@ -860,13 +856,13 @@ CG_DrawUpperRight
 
 =====================
 */
-static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
+static void CG_DrawUpperRight( stereoFrame_t stereoFrame ) {
 	float y;
 
 	y = 0; // JPW NERVE move team overlay below obits, even with timer on left
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_TOP );
 	}
 
 	if ( cgs.gametype >= GT_TEAM ) {
@@ -875,7 +871,7 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 	if ( cg_drawSnapshot.integer ) {
 		y = CG_DrawSnapshot( y );
 	}
-	if (cg_drawFPS.integer && (stereoFrame == STEREO_CENTER || stereoFrame == STEREO_RIGHT)) {
+	if ( cg_drawFPS.integer && ( stereoFrame == STEREO_CENTER || stereoFrame == STEREO_RIGHT ) ) {
 		y = CG_DrawFPS( y );
 	}
 	if ( cg_drawTimer.integer ) {
@@ -986,7 +982,7 @@ static void CG_DrawPickupItem( void ) {
 	const char *s;
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 	}
 
 	value = cg.itemPickup;
@@ -1040,7 +1036,7 @@ static void CG_DrawNotify( void ) {
 	float notifytime = 1.0f;
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 	}
 
 	trap_Cvar_VariableStringBuffer( "con_notifytime", var, sizeof( var ) );
@@ -1168,7 +1164,7 @@ static void CG_DrawDisconnect( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	// also add text in center of screen
@@ -1182,7 +1178,7 @@ static void CG_DrawDisconnect( void ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_BOTTOM );
 	}
 
 	x = 640 - 52;
@@ -1214,7 +1210,7 @@ static void CG_DrawLagometer( void ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_RIGHT, PLACE_BOTTOM );
 	}
 
 	//
@@ -1447,7 +1443,7 @@ static void CG_DrawCenterString( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	trap_R_SetColor( color );
@@ -1525,28 +1521,28 @@ static void CG_DrawWeapReticle( void ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
 					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, mask, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 640 - mask, 0, mask, 480, color );
 				} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
 					// sides with letterbox
 					lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, 80, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 560, 0, 80, 480, color );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 					CG_FillRect( 0, 480 - lb, 640, lb, color );
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 					CG_FillRect( 0, 0, 640, lb, color );
 				} else {
 					// resolution is 4:3
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, 80, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 560, 0, 80, 480, color );
 				}
 			} else {
@@ -1556,7 +1552,7 @@ static void CG_DrawWeapReticle( void ) {
 
 			// center
 			if ( cg_fixedAspect.integer ) {
-				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+				CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 			}
 
 			if ( cgs.media.reticleShaderSimple ) {
@@ -1569,7 +1565,7 @@ static void CG_DrawWeapReticle( void ) {
 			CG_FillRect( 319, 300, 2, 178, color );  // center bot
 			CG_FillRect( 380, 239, 177, 2, color );  // right
 		}
-	} else if ( snooper )     {
+	} else if ( snooper ) {
 		if ( cg_reticles.integer ) {
 
 			// sides
@@ -1577,28 +1573,28 @@ static void CG_DrawWeapReticle( void ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
 					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, mask, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 640 - mask, 0, mask, 480, color );
 				} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
 					// sides with letterbox
 					lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, 80, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 560, 0, 80, 480, color );
 
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 					CG_FillRect( 0, 480 - lb, 640, lb, color );
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 					CG_FillRect( 0, 0, 640, lb, color );
 				} else {
 					// resolution is 4:3
-					CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 					CG_FillRect( 0, 0, 80, 480, color );
-					CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+					CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 					CG_FillRect( 560, 0, 80, 480, color );
 				}
 			} else {
@@ -1608,7 +1604,7 @@ static void CG_DrawWeapReticle( void ) {
 
 			// center
 			if ( cg_fixedAspect.integer ) {
-				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+				CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 			}
 
 //----(SA)	added
@@ -1666,22 +1662,22 @@ static void CG_DrawBinocReticle( void ) {
 		if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
 			mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 640.0 ) ) / cgs.screenXScale );
 
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+			CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 			CG_FillRect( 0, 0, mask, 480, color );
-			CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
+			CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
 			CG_FillRect( 640 - mask, 0, mask, 480, color );
 		} else if ( cgs.glconfig.vidWidth * 480.0 < cgs.glconfig.vidHeight * 640.0 ) {
 			lb = 0.5 * ( ( cgs.glconfig.vidHeight - ( cgs.screenYScale * 480.0 ) ) / cgs.screenYScale );
 
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+			CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 			CG_FillRect( 0, 480 - lb, 640, lb, color );
-			CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+			CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 			CG_FillRect( 0, 0, 640, lb, color );
 		}
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	if ( cg_reticles.integer ) {
@@ -1737,7 +1733,7 @@ static void CG_DrawCrosshair( void ) {
 
 	switch ( weapnum ) {
 
-		// weapons that get no reticle
+	// weapons that get no reticle
 	case WP_NONE:       // no weapon, no crosshair
 		if ( cg.zoomedBinoc ) {
 			CG_DrawBinocReticle();
@@ -1748,7 +1744,7 @@ static void CG_DrawCrosshair( void ) {
 		}
 		break;
 
-		// special reticle for weapon
+	// special reticle for weapon
 	case WP_SNIPERRIFLE:
 		if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 
@@ -1788,7 +1784,7 @@ static void CG_DrawCrosshair( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	// set color based on health
@@ -1848,14 +1844,14 @@ static void CG_DrawCrosshair( void ) {
 				CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			} else {
 				trap_R_DrawStretchPic( x + 0.5 * ( cg.refdef.width - w ), y + 0.5 * ( cg.refdef.height - h ),
-								   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
+									   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			}
 		} else {
 			if ( cg_fixedAspect.integer ) {
 				CG_DrawPic( ( ( SCREEN_WIDTH - w ) * 0.5f ) + x, ( ( SCREEN_HEIGHT - h ) * 0.5f ) + y, w, h, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			} else {
 				trap_R_DrawStretchPic( x + 0.5 * ( cgs.glconfig.vidWidth - w ), y + 0.5 * ( cgs.glconfig.vidHeight - h ), // JPW NERVE fix for small main windows (dunno why people still do this, but it's supported)
-								   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
+									   w, h, 0, 0, 1, 1, cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] );
 			}
 		}
 	}
@@ -1895,7 +1891,7 @@ static void CG_DrawCrosshair3D( void ) {
 
 	switch ( weapnum ) {
 
-		// weapons that get no reticle
+	// weapons that get no reticle
 	case WP_NONE:       // no weapon, no crosshair
 		if ( cg.zoomedBinoc ) {
 			CG_DrawBinocReticle();
@@ -1906,7 +1902,7 @@ static void CG_DrawCrosshair3D( void ) {
 		}
 		break;
 
-		// special reticle for weapon
+	// special reticle for weapon
 	case WP_SNIPERRIFLE:
 		if ( !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 
@@ -1958,29 +1954,29 @@ static void CG_DrawCrosshair3D( void ) {
 	// We are going to trace to the next shootable object and place the crosshair in front of it.
 
 	// first get all the important renderer information
-	trap_Cvar_VariableStringBuffer("r_zProj", rendererinfos, sizeof(rendererinfos));
-	zProj = atof(rendererinfos);
-	trap_Cvar_VariableStringBuffer("r_stereoSeparation", rendererinfos, sizeof(rendererinfos));
-	stereoSep = zProj / atof(rendererinfos);
-	
-	xmax = zProj * tan(cg.refdef.fov_x * M_PI / 360.0f);
-	
+	trap_Cvar_VariableStringBuffer( "r_zProj", rendererinfos, sizeof( rendererinfos ) );
+	zProj = atof( rendererinfos );
+	trap_Cvar_VariableStringBuffer( "r_stereoSeparation", rendererinfos, sizeof( rendererinfos ) );
+	stereoSep = zProj / atof( rendererinfos );
+
+	xmax = zProj * tan( cg.refdef.fov_x * M_PI / 360.0f );
+
 	// let the trace run through until a change in stereo separation of the crosshair becomes less than one pixel.
-	maxdist = cgs.glconfig.vidWidth * stereoSep * zProj / (2 * xmax);
-	VectorMA(cg.refdef.vieworg, maxdist, cg.refdef.viewaxis[0], endpos);
-	CG_Trace(&trace, cg.refdef.vieworg, NULL, NULL, endpos, 0, MASK_SHOT);
-	
-	memset(&ent, 0, sizeof(ent));
+	maxdist = cgs.glconfig.vidWidth * stereoSep * zProj / ( 2 * xmax );
+	VectorMA( cg.refdef.vieworg, maxdist, cg.refdef.viewaxis[0], endpos );
+	CG_Trace( &trace, cg.refdef.vieworg, NULL, NULL, endpos, 0, MASK_SHOT );
+
+	memset( &ent, 0, sizeof( ent ) );
 	ent.reType = RT_SPRITE;
 	ent.renderfx = RF_DEPTHHACK | RF_CROSSHAIR;
-	
-	VectorCopy(trace.endpos, ent.origin);
-	
+
+	VectorCopy( trace.endpos, ent.origin );
+
 	// scale the crosshair so it appears the same size for all distances
 	ent.radius = w / 640 * xmax * trace.fraction * maxdist / zProj;
 	ent.customShader = hShader;
 
-	trap_R_AddRefEntityToScene(&ent);
+	trap_R_AddRefEntityToScene( &ent );
 }
 
 
@@ -2088,7 +2084,7 @@ static void CG_DrawDynamiteStatus( void ) {
 /*
 ==============
 CG_CheckForCursorHints
-	concept in progress...
+    concept in progress...
 ==============
 */
 void CG_CheckForCursorHints( void ) {
@@ -2187,7 +2183,7 @@ void CG_CheckForCursorHints( void ) {
 					cg.cursorHintFade = 500;
 				}
 				break;
-				//case HINT_CHAIR:
+			//case HINT_CHAIR:
 			case HINT_MG42:
 				if ( dist < CH_DOOR_DIST && !( cg.snap->ps.eFlags & EF_MG42_ACTIVE ) ) {
 					cg.cursorHintIcon = HINT_ACTIVATE;
@@ -2249,7 +2245,7 @@ static void CG_DrawCrosshairNames( void ) {
 	// done.
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 	}
 
 	// scan the known entities to see if the crosshair is sighted on one
@@ -2333,7 +2329,7 @@ CG_DrawSpectator
 */
 static void CG_DrawSpectator( void ) {
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_BOTTOM );
 	}
 
 	CG_DrawBigString( 320 - 9 * 8, 440, CG_TranslateString( "SPECTATOR" ), 1.0F );
@@ -2357,7 +2353,7 @@ static void CG_DrawVote( void ) {
 	int sec;
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
 	}
 
 	if ( cgs.complaintEndTime > cg.time ) {
@@ -2500,7 +2496,7 @@ static void CG_ActivateLimboMenu( void ) {
 			trap_SendConsoleCommand( "OpenLimboMenu\n" );
 			latch = qtrue;
 			ui_disable = qfalse;
-		} else if ( !test && latch )   {
+		} else if ( !test && latch ) {
 			trap_SendConsoleCommand( "CloseLimboMenu\n" );
 			latch = qfalse;
 		}
@@ -2636,7 +2632,7 @@ static qboolean CG_DrawFollow( void ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 	}
 
 	color[0] = 1;
@@ -2649,20 +2645,20 @@ static qboolean CG_DrawFollow( void ) {
 		color[1] = 0.0;
 		color[2] = 0.0;
 		if ( cg.snap->ps.persistant[PERS_RESPAWNS_LEFT] == 0 ) {
-			Q_strncpyz( deploytime, CG_TranslateString( "No more deployments this round" ), sizeof(deploytime) );
+			Q_strncpyz( deploytime, CG_TranslateString( "No more deployments this round" ), sizeof( deploytime ) );
 		} else if ( cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_RED ) {
-			Com_sprintf( deploytime, sizeof(deploytime), CG_TranslateString( "Deploying in %d seconds" ),
-					 (int)( 1 + (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
+			Com_sprintf( deploytime, sizeof( deploytime ), CG_TranslateString( "Deploying in %d seconds" ),
+						 (int)( 1 + (float)( cg_redlimbotime.integer - ( cg.time % cg_redlimbotime.integer ) ) * 0.001f ) );
 		} else {
-			Com_sprintf( deploytime, sizeof(deploytime), CG_TranslateString( "Deploying in %d seconds" ),
-					 (int)( 1 + (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
+			Com_sprintf( deploytime, sizeof( deploytime ), CG_TranslateString( "Deploying in %d seconds" ),
+						 (int)( 1 + (float)( cg_bluelimbotime.integer - ( cg.time % cg_bluelimbotime.integer ) ) * 0.001f ) );
 		}
 
 		CG_DrawStringExt( INFOTEXT_STARTX, 68, deploytime, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 80 );
 
 		// DHM - Nerve :: Don't display if you're following yourself
 		if ( cg.snap->ps.clientNum != cg.clientNum ) {
-			Com_sprintf( deploytime, sizeof(deploytime), "(%s %s)", CG_TranslateString( "Following" ), cgs.clientinfo[ cg.snap->ps.clientNum ].name );
+			Com_sprintf( deploytime, sizeof( deploytime ), "(%s %s)", CG_TranslateString( "Following" ), cgs.clientinfo[ cg.snap->ps.clientNum ].name );
 			CG_DrawStringExt( INFOTEXT_STARTX, 86, deploytime, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 80 );
 		}
 	} else {
@@ -2693,7 +2689,7 @@ static void CG_DrawWarmup( void ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_TOP );
 	}
 
 	sec = cg.warmup;
@@ -2759,7 +2755,7 @@ static void CG_DrawWarmup( void ) {
 				} else {
 					s1 = "You are on the Axis team";
 				}
-			} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE )   {
+			} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
 				if ( cgs.currentRound == 1 ) {
 					s1 = "You have been switched to the Allied team";
 					s2 = "Try to beat the clock!";
@@ -2775,7 +2771,7 @@ static void CG_DrawWarmup( void ) {
 				} else {
 					s1 = "You are on the Axis team";
 				}
-			} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE )   {
+			} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
 				if ( cgs.currentRound == 1 ) {
 					s1 = "You have been switched to the Allied team";
 					s2 = "Keep the Axis from beating the clock!";
@@ -2845,9 +2841,9 @@ static void CG_DrawFlashFade( void ) {
 		VectorClear( col );
 		col[3] = cgs.fadeAlphaCurrent;
 		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
-		 	CG_FillRect( -10, -10, 650, 490, col );
-		} else {	
+			CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
+			CG_FillRect( -10, -10, 650, 490, col );
+		} else {
 			CG_FillRect( -10, -10, 650, 490, col );
 		}
 	}
@@ -2858,7 +2854,7 @@ static void CG_DrawFlashFade( void ) {
 /*
 ==============
 CG_DrawFlashZoomTransition
-	hide the snap transition from regular view to/from zoomed
+    hide the snap transition from regular view to/from zoomed
 
   FIXME: TODO: use cg_fade?
 ==============
@@ -2904,7 +2900,7 @@ static void CG_DrawFlashZoomTransition( void ) {
 		}
 
 		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 			CG_FillRect( -10, -10, 650, 490, color );
 		} else {
 			CG_FillRect( -10, -10, 650, 490, color );
@@ -2939,7 +2935,7 @@ static void CG_DrawFlashDamage( void ) {
 		col[3] =  0.7 * ( redFlash / 5.0 );
 
 		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 			CG_FillRect( -10, -10, 650, 490, col );
 		} else {
 			CG_FillRect( -10, -10, 650, 490, col );
@@ -2992,7 +2988,7 @@ static void CG_DrawFlashFire( void ) {
 		col[3] = alpha;
 		trap_R_SetColor( col );
 		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		} else {
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
@@ -3036,7 +3032,7 @@ static void CG_DrawFlashLightning( void ) {
 	}
 
 	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+		CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 		CG_DrawPic( -10, -10, 650, 490, shader );
 	} else {
 		CG_DrawPic( -10, -10, 650, 490, shader );
@@ -3046,7 +3042,7 @@ static void CG_DrawFlashLightning( void ) {
 /*
 ==============
 CG_DrawFlashBlendBehindHUD
-	screen flash stuff drawn first (on top of world, behind HUD)
+    screen flash stuff drawn first (on top of world, behind HUD)
 ==============
 */
 static void CG_DrawFlashBlendBehindHUD( void ) {
@@ -3057,7 +3053,7 @@ static void CG_DrawFlashBlendBehindHUD( void ) {
 /*
 =================
 CG_DrawFlashBlend
-	screen flash stuff drawn last (on top of everything)
+    screen flash stuff drawn last (on top of everything)
 =================
 */
 static void CG_DrawFlashBlend( void ) {
@@ -3170,8 +3166,8 @@ static void CG_DrawObjectiveInfo( void ) {
 		}
 
 /*
-		if ( x1 + w > x2 )
-			x2 = x1 + w;
+        if ( x1 + w > x2 )
+            x2 = x1 + w;
 */
 // jpw
 		y += cg.oidPrintCharWidth * 1.5;
@@ -3251,7 +3247,7 @@ void CG_DrawObjectiveIcons( void ) {
 	int msec, mins, seconds, tens; // JPW NERVE
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
+		CG_SetScreenPlacement( PLACE_LEFT, PLACE_TOP );
 	}
 
 // JPW NERVE added round timer
@@ -3345,7 +3341,7 @@ void CG_DrawObjectiveIcons( void ) {
 
 			if ( status == 0 ) {
 				CG_DrawPic( xx, y, w, h, trap_R_RegisterShaderNoMip( "ui_mp/assets/ger_flag.tga" ) );
-			} else if ( status == 1 )   {
+			} else if ( status == 1 ) {
 				CG_DrawPic( xx, y, w, h, trap_R_RegisterShaderNoMip( "ui_mp/assets/usa_flag.tga" ) );
 			}
 
@@ -3473,7 +3469,7 @@ static void CG_ScreenFade( void ) {
 		}
 
 		if ( cg_fixedAspect.integer ) {
-			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+			CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
 		} else {
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
@@ -3489,7 +3485,7 @@ static void CG_ScreenFade( void ) {
 
 		if ( color[ 3 ] ) {
 			if ( cg_fixedAspect.integer ) {
-				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+				CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 				CG_FillRect( 0, 0, 640, 480, color );
 			} else {
 				CG_FillRect( 0, 0, 640, 480, color );
@@ -3509,7 +3505,7 @@ void CG_Draw2D2( void ) {
 	trap_R_SetColor( hcolor );
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_BOTTOM );
 	}
 
 	CG_DrawPic( 0, 480, 640, -70, cgs.media.hud1Shader );
@@ -3600,7 +3596,7 @@ static void CG_DrawCompass( void ) {
 	}
 
 	if ( cg_fixedAspect.integer == 2 ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
+		CG_SetScreenPlacement( PLACE_CENTER, PLACE_BOTTOM );
 	}
 
 	angle = ( cg.snap->ps.viewangles[YAW] + 180.f ) / 360.f - ( 0.25 / 2.f );
@@ -3691,7 +3687,7 @@ static void CG_DrawCompass( void ) {
 CG_Draw2D
 =================
 */
-static void CG_Draw2D(stereoFrame_t stereoFrame) {
+static void CG_Draw2D( stereoFrame_t stereoFrame ) {
 
 	// if we are taking a levelshot for the menu, don't draw anything
 	if ( cg.levelShot ) {
@@ -3726,8 +3722,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ) {
 		CG_DrawSpectator();
 
-		if(stereoFrame == STEREO_CENTER)
+		if ( stereoFrame == STEREO_CENTER ) {
 			CG_DrawCrosshair();
+		}
 
 		CG_DrawCrosshairNames();
 
@@ -3739,8 +3736,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 		// don't draw any status if dead
 		if ( cg.snap->ps.stats[STAT_HEALTH] > 0 || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
 
-			if(stereoFrame == STEREO_CENTER)
+			if ( stereoFrame == STEREO_CENTER ) {
 				CG_DrawCrosshair();
+			}
 
 			CG_DrawDynamiteStatus();
 			CG_DrawCrosshairNames();
@@ -3755,9 +3753,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 		}
 		if ( cg_drawStatus.integer ) {
 			if ( cg_fixedAspect.integer == 2 && cg.limboMenu ) {
-				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+				CG_SetScreenPlacement( PLACE_STRETCH, PLACE_STRETCH );
 			} else if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
-				CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
+				CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 			}
 
 			Menu_PaintAll();
@@ -3770,7 +3768,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 	CG_DrawLagometer();
 
 	if ( !cg_paused.integer ) {
-		CG_DrawUpperRight(stereoFrame);
+		CG_DrawUpperRight( stereoFrame );
 	}
 
 	// don't draw center string if scoreboard is up
@@ -3867,8 +3865,9 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	// clear around the rendered view if sized down
 	CG_TileClear();
 
-	if(stereoView != STEREO_CENTER)
+	if ( stereoView != STEREO_CENTER ) {
 		CG_DrawCrosshair3D();
+	}
 
 	cg.refdef.glfog.registered = 0; // make sure it doesn't use fog from another scene
 
@@ -3883,7 +3882,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 		h = LIMBO_3D_H;
 
 		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
-			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+			CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
 		}
 
 		cg.refdef.width = 0;
@@ -3901,7 +3900,5 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	trap_R_RenderScene( &cg.refdef );
 
 	// draw status bar and other floating elements
-	CG_Draw2D(stereoView);
+	CG_Draw2D( stereoView );
 }
-
-

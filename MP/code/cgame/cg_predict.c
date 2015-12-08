@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -451,30 +451,30 @@ static void CG_TouchTriggerPrediction( void ) {
 		}
 /*
 // JPW NERVE
-		if (ent->eType == ET_CONCUSSIVE_TRIGGER) {
-			vec3_t dir,center;
-			dir[0] = 0;
-			dir[1] = 0;
-			dir[2] = -1;
-			CG_Printf("in concussive trigger\n");
-			trap_R_ModelBounds(cmodel,mins,maxs);
-			VectorAdd(mins,maxs,center);
-			VectorScale(center,0.5,center);
-			CG_Printf("cmodel=%d mins=%f,%f,%f maxs=%f,%f,%f\n",cmodel,
-				mins[0],mins[1],mins[2],maxs[0],maxs[1],maxs[2]);
+        if (ent->eType == ET_CONCUSSIVE_TRIGGER) {
+            vec3_t dir,center;
+            dir[0] = 0;
+            dir[1] = 0;
+            dir[2] = -1;
+            CG_Printf("in concussive trigger\n");
+            trap_R_ModelBounds(cmodel,mins,maxs);
+            VectorAdd(mins,maxs,center);
+            VectorScale(center,0.5,center);
+            CG_Printf("cmodel=%d mins=%f,%f,%f maxs=%f,%f,%f\n",cmodel,
+                mins[0],mins[1],mins[2],maxs[0],maxs[1],maxs[2]);
 
-			CG_AddDirtBulletParticles( mins, dir,
-									190,	// speed
-									900,	// duration
-									1,	// count
-									0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-			CG_AddDirtBulletParticles( maxs, dir,
-									190,	// speed
-									900,	// duration
-									1,	// count
-									0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-		}
-		else
+            CG_AddDirtBulletParticles( mins, dir,
+                                    190,	// speed
+                                    900,	// duration
+                                    1,	// count
+                                    0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
+            CG_AddDirtBulletParticles( maxs, dir,
+                                    190,	// speed
+                                    900,	// duration
+                                    1,	// count
+                                    0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
+        }
+        else
 // jpw
 
 */
@@ -482,9 +482,9 @@ static void CG_TouchTriggerPrediction( void ) {
 			cs = CG_ConfigString( CS_OID_TRIGGERS + ent->teamNum );
 
 			CG_ObjectivePrint( va( "You are near %s\n", cs ), SMALLCHAR_WIDTH );
-		} else if ( ent->eType == ET_TELEPORT_TRIGGER )   {
+		} else if ( ent->eType == ET_TELEPORT_TRIGGER ) {
 			cg.hyperspace = qtrue;
-		} else if ( ent->eType == ET_PUSH_TRIGGER )   {
+		} else if ( ent->eType == ET_PUSH_TRIGGER ) {
 			float s;
 			vec3_t dir;
 
@@ -644,7 +644,7 @@ void CG_PredictPlayerState( void ) {
 
 	if ( pmove_msec.integer < 8 ) {
 		trap_Cvar_Set( "pmove_msec", "8" );
-	} else if ( pmove_msec.integer > 33 )     {
+	} else if ( pmove_msec.integer > 33 ) {
 		trap_Cvar_Set( "pmove_msec", "33" );
 	}
 
@@ -699,7 +699,7 @@ void CG_PredictPlayerState( void ) {
 			if ( cg_pmove.ps->eFlags & EF_MG42_ACTIVE ) {
 				// no prediction errors here, we're locked in place
 				VectorClear( cg.predictedError );
-			} else if ( cg.thisFrameTeleport )   {
+			} else if ( cg.thisFrameTeleport ) {
 				// a teleport will not cause an error decay
 				VectorClear( cg.predictedError );
 				if ( cg_showmiss.integer ) {
@@ -709,7 +709,7 @@ void CG_PredictPlayerState( void ) {
 			} else {
 				vec3_t adjusted, new_angles;
 				CG_AdjustPositionForMover( cg.predictedPlayerState.origin,
-				cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles);
+										   cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles );
 				// RF, add the deltaAngles (fixes jittery view while riding trains)
 				cg.predictedPlayerState.delta_angles[YAW] += ANGLE2SHORT( deltaAngles[YAW] );
 
@@ -796,10 +796,9 @@ void CG_PredictPlayerState( void ) {
 
 	// adjust for the movement of the groundentity
 	CG_AdjustPositionForMover( cg.predictedPlayerState.origin,
-		cg.predictedPlayerState.groundEntityNum,
-		cg.physicsTime, cg.time, cg.predictedPlayerState.origin, cg.predictedPlayerState.viewangles, cg.predictedPlayerState.viewangles);
+							   cg.predictedPlayerState.groundEntityNum,
+							   cg.physicsTime, cg.time, cg.predictedPlayerState.origin, cg.predictedPlayerState.viewangles, cg.predictedPlayerState.viewangles );
 
 	// fire events and other transition triggered things
 	CG_TransitionPlayerState( &cg.predictedPlayerState, &oldPlayerState );
 }
-
