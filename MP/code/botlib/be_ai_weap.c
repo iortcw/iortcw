@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,8 +54,8 @@ If you have questions concerning this license or the applicable additional terms
 //#define DEBUG_AI_WEAP
 
 //structure field offsets
-#define WEAPON_OFS(x) (size_t)&(((weaponinfo_t *)0)->x)
-#define PROJECTILE_OFS(x) (size_t)&(((projectileinfo_t *)0)->x)
+#define WEAPON_OFS( x ) (size_t)&( ( (weaponinfo_t *)0 )->x )
+#define PROJECTILE_OFS( x ) (size_t)&( ( (projectileinfo_t *)0 )->x )
 
 //weapon definition
 fielddef_t weaponinfo_fields[] =
@@ -89,7 +89,7 @@ fielddef_t weaponinfo_fields[] =
 fielddef_t projectileinfo_fields[] =
 {
 	{"name", PROJECTILE_OFS( name ), FT_STRING},            //name of the projectile
-	{"model", PROJECTILE_OFS(model), FT_STRING},		//model of the projectile
+	{"model", PROJECTILE_OFS( model ), FT_STRING},        //model of the projectile
 	{"flags", PROJECTILE_OFS( flags ), FT_INT},                 //special flags
 	{"gravity", PROJECTILE_OFS( gravity ), FT_FLOAT},       //amount of gravity applied to the projectile [0,1]
 	{"damage", PROJECTILE_OFS( damage ), FT_INT},           //damage of the projectile
@@ -530,4 +530,3 @@ void BotShutdownWeaponAI( void ) {
 		} //end if
 	} //end for
 } //end of the function BotShutdownWeaponAI
-

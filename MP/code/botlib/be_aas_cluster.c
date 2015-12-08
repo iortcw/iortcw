@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -484,21 +484,21 @@ void AAS_CreatePortals( void ) {
 //===========================================================================
 int AAS_MapContainsTeleporters(void)
 {
-	bsp_entity_t *entities, *ent;
-	char *classname;
+    bsp_entity_t *entities, *ent;
+    char *classname;
 
-	entities = AAS_ParseBSPEntities();
+    entities = AAS_ParseBSPEntities();
 
-	for (ent = entities; ent; ent = ent->next)
-	{
-		classname = AAS_ValueForBSPEpairKey(ent, "classname");
-		if (classname && !strcmp(classname, "misc_teleporter"))
-		{
-			AAS_FreeBSPEntities(entities);
-			return qtrue;
-		} //end if
-	} //end for
-	return qfalse;
+    for (ent = entities; ent; ent = ent->next)
+    {
+        classname = AAS_ValueForBSPEpairKey(ent, "classname");
+        if (classname && !strcmp(classname, "misc_teleporter"))
+        {
+            AAS_FreeBSPEntities(entities);
+            return qtrue;
+        } //end if
+    } //end for
+    return qfalse;
 } //end of the function AAS_MapContainsTeleporters
 //===========================================================================
 //
@@ -508,37 +508,37 @@ int AAS_MapContainsTeleporters(void)
 //===========================================================================
 int AAS_NonConvexFaces(aas_face_t *face1, aas_face_t *face2, int side1, int side2)
 {
-	int i, j, edgenum;
-	aas_plane_t *plane1, *plane2;
-	aas_edge_t *edge;
+    int i, j, edgenum;
+    aas_plane_t *plane1, *plane2;
+    aas_edge_t *edge;
 
 
-	plane1 = &(*aasworld).planes[face1->planenum ^ side1];
-	plane2 = &(*aasworld).planes[face2->planenum ^ side2];
+    plane1 = &(*aasworld).planes[face1->planenum ^ side1];
+    plane2 = &(*aasworld).planes[face2->planenum ^ side2];
 
-	//check if one of the points of face1 is at the back of the plane of face2
-	for (i = 0; i < face1->numedges; i++)
-	{
-		edgenum = abs((*aasworld).edgeindex[face1->firstedge + i]);
-		edge = &(*aasworld).edges[edgenum];
-		for (j = 0; j < 2; j++)
-		{
-			if (DotProduct(plane2->normal, (*aasworld).vertexes[edge->v[j]]) -
-							plane2->dist < -0.01) return qtrue;
-		} //end for
-	} //end for
-	for (i = 0; i < face2->numedges; i++)
-	{
-		edgenum = abs((*aasworld).edgeindex[face2->firstedge + i]);
-		edge = &(*aasworld).edges[edgenum];
-		for (j = 0; j < 2; j++)
-		{
-			if (DotProduct(plane1->normal, (*aasworld).vertexes[edge->v[j]]) -
-							plane1->dist < -0.01) return qtrue;
-		} //end for
-	} //end for
+    //check if one of the points of face1 is at the back of the plane of face2
+    for (i = 0; i < face1->numedges; i++)
+    {
+        edgenum = abs((*aasworld).edgeindex[face1->firstedge + i]);
+        edge = &(*aasworld).edges[edgenum];
+        for (j = 0; j < 2; j++)
+        {
+            if (DotProduct(plane2->normal, (*aasworld).vertexes[edge->v[j]]) -
+                            plane2->dist < -0.01) return qtrue;
+        } //end for
+    } //end for
+    for (i = 0; i < face2->numedges; i++)
+    {
+        edgenum = abs((*aasworld).edgeindex[face2->firstedge + i]);
+        edge = &(*aasworld).edges[edgenum];
+        for (j = 0; j < 2; j++)
+        {
+            if (DotProduct(plane1->normal, (*aasworld).vertexes[edge->v[j]]) -
+                            plane1->dist < -0.01) return qtrue;
+        } //end for
+    } //end for
 
-	return qfalse;
+    return qfalse;
 } //end of the function AAS_NonConvexFaces
 //===========================================================================
 //
@@ -548,51 +548,51 @@ int AAS_NonConvexFaces(aas_face_t *face1, aas_face_t *face2, int side1, int side
 //===========================================================================
 qboolean AAS_CanMergeAreas(int *areanums, int numareas)
 {
-	int i, j, s, face1num, face2num, side1, side2, fn1, fn2;
-	aas_face_t *face1, *face2;
-	aas_area_t *area1, *area2;
+    int i, j, s, face1num, face2num, side1, side2, fn1, fn2;
+    aas_face_t *face1, *face2;
+    aas_area_t *area1, *area2;
 
-	for (i = 0; i < numareas; i++)
-	{
-		area1 = &(*aasworld).areas[areanums[i]];
-		for (fn1 = 0; fn1 < area1->numfaces; fn1++)
-		{
-			face1num = abs((*aasworld).faceindex[area1->firstface + fn1]);
-			face1 = &(*aasworld).faces[face1num];
-			side1 = face1->frontarea != areanums[i];
-			//check if the face isn't a shared one with one of the other areas
-			for (s = 0; s < numareas; s++)
-			{
-				if (s == i) continue;
-				if (face1->frontarea == s || face1->backarea == s) break;
-			} //end for
-			//if the face was a shared one
-			if (s != numareas) continue;
-			//
-			for (j = 0; j < numareas; j++)
-			{
-				if (j == i) continue;
-				area2 = &(*aasworld).areas[areanums[j]];
-				for (fn2 = 0; fn2 < area2->numfaces; fn2++)
-				{
-					face2num = abs((*aasworld).faceindex[area2->firstface + fn2]);
-					face2 = &(*aasworld).faces[face2num];
-					side2 = face2->frontarea != areanums[j];
-					//check if the face isn't a shared one with one of the other areas
-					for (s = 0; s < numareas; s++)
-					{
-						if (s == j) continue;
-						if (face2->frontarea == s || face2->backarea == s) break;
-					} //end for
-					//if the face was a shared one
-					if (s != numareas) continue;
-					//
-					if (AAS_NonConvexFaces(face1, face2, side1, side2)) return qfalse;
-				} //end for
-			} //end for
-		} //end for
-	} //end for
-	return qtrue;
+    for (i = 0; i < numareas; i++)
+    {
+        area1 = &(*aasworld).areas[areanums[i]];
+        for (fn1 = 0; fn1 < area1->numfaces; fn1++)
+        {
+            face1num = abs((*aasworld).faceindex[area1->firstface + fn1]);
+            face1 = &(*aasworld).faces[face1num];
+            side1 = face1->frontarea != areanums[i];
+            //check if the face isn't a shared one with one of the other areas
+            for (s = 0; s < numareas; s++)
+            {
+                if (s == i) continue;
+                if (face1->frontarea == s || face1->backarea == s) break;
+            } //end for
+            //if the face was a shared one
+            if (s != numareas) continue;
+            //
+            for (j = 0; j < numareas; j++)
+            {
+                if (j == i) continue;
+                area2 = &(*aasworld).areas[areanums[j]];
+                for (fn2 = 0; fn2 < area2->numfaces; fn2++)
+                {
+                    face2num = abs((*aasworld).faceindex[area2->firstface + fn2]);
+                    face2 = &(*aasworld).faces[face2num];
+                    side2 = face2->frontarea != areanums[j];
+                    //check if the face isn't a shared one with one of the other areas
+                    for (s = 0; s < numareas; s++)
+                    {
+                        if (s == j) continue;
+                        if (face2->frontarea == s || face2->backarea == s) break;
+                    } //end for
+                    //if the face was a shared one
+                    if (s != numareas) continue;
+                    //
+                    if (AAS_NonConvexFaces(face1, face2, side1, side2)) return qfalse;
+                } //end for
+            } //end for
+        } //end for
+    } //end for
+    return qtrue;
 } //end of the function AAS_CanMergeAreas
 //===========================================================================
 //
@@ -602,31 +602,31 @@ qboolean AAS_CanMergeAreas(int *areanums, int numareas)
 //===========================================================================
 qboolean AAS_NonConvexEdges(aas_edge_t *edge1, aas_edge_t *edge2, int side1, int side2, int planenum)
 {
-	int i;
-	vec3_t edgevec1, edgevec2, normal1, normal2;
-	float dist1, dist2;
-	aas_plane_t *plane;
+    int i;
+    vec3_t edgevec1, edgevec2, normal1, normal2;
+    float dist1, dist2;
+    aas_plane_t *plane;
 
-	plane = &(*aasworld).planes[planenum];
-	VectorSubtract((*aasworld).vertexes[edge1->v[1]], (*aasworld).vertexes[edge1->v[0]], edgevec1);
-	VectorSubtract((*aasworld).vertexes[edge2->v[1]], (*aasworld).vertexes[edge2->v[0]], edgevec2);
-	if (side1) VectorInverse(edgevec1);
-	if (side2) VectorInverse(edgevec2);
-	//
-	CrossProduct(edgevec1, plane->normal, normal1);
-	dist1 = DotProduct(normal1, (*aasworld).vertexes[edge1->v[0]]);
-	CrossProduct(edgevec2, plane->normal, normal2);
-	dist2 = DotProduct(normal2, (*aasworld).vertexes[edge2->v[0]]);
+    plane = &(*aasworld).planes[planenum];
+    VectorSubtract((*aasworld).vertexes[edge1->v[1]], (*aasworld).vertexes[edge1->v[0]], edgevec1);
+    VectorSubtract((*aasworld).vertexes[edge2->v[1]], (*aasworld).vertexes[edge2->v[0]], edgevec2);
+    if (side1) VectorInverse(edgevec1);
+    if (side2) VectorInverse(edgevec2);
+    //
+    CrossProduct(edgevec1, plane->normal, normal1);
+    dist1 = DotProduct(normal1, (*aasworld).vertexes[edge1->v[0]]);
+    CrossProduct(edgevec2, plane->normal, normal2);
+    dist2 = DotProduct(normal2, (*aasworld).vertexes[edge2->v[0]]);
 
-	for (i = 0; i < 2; i++)
-	{
-		if (DotProduct((*aasworld).vertexes[edge1->v[i]], normal2) - dist2 < -0.01) return qfalse;
-	} //end for
-	for (i = 0; i < 2; i++)
-	{
-		if (DotProduct((*aasworld).vertexes[edge2->v[i]], normal1) - dist1 < -0.01) return qfalse;
-	} //end for
-	return qtrue;
+    for (i = 0; i < 2; i++)
+    {
+        if (DotProduct((*aasworld).vertexes[edge1->v[i]], normal2) - dist2 < -0.01) return qfalse;
+    } //end for
+    for (i = 0; i < 2; i++)
+    {
+        if (DotProduct((*aasworld).vertexes[edge2->v[i]], normal1) - dist1 < -0.01) return qfalse;
+    } //end for
+    return qtrue;
 } //end of the function AAS_NonConvexEdges
 //===========================================================================
 //
@@ -636,63 +636,63 @@ qboolean AAS_NonConvexEdges(aas_edge_t *edge1, aas_edge_t *edge2, int side1, int
 //===========================================================================
 qboolean AAS_CanMergeFaces(int *facenums, int numfaces, int planenum)
 {
-	int i, j, s, edgenum1, edgenum2, side1, side2, en1, en2, ens;
-	aas_face_t *face1, *face2, *otherface;
-	aas_edge_t *edge1, *edge2;
+    int i, j, s, edgenum1, edgenum2, side1, side2, en1, en2, ens;
+    aas_face_t *face1, *face2, *otherface;
+    aas_edge_t *edge1, *edge2;
 
-	for (i = 0; i < numfaces; i++)
-	{
-		face1 = &(*aasworld).faces[facenums[i]];
-		for (en1 = 0; en1 < face1->numedges; en1++)
-		{
-			edgenum1 = (*aasworld).edgeindex[face1->firstedge + en1];
-			side1 = (edgenum1 < 0) ^ (face1->planenum != planenum);
-			edgenum1 = abs(edgenum1);
-			edge1 = &(*aasworld).edges[edgenum1];
-			//check if the edge is shared with another face
-			for (s = 0; s < numfaces; s++)
-			{
-				if (s == i) continue;
-				otherface = &(*aasworld).faces[facenums[s]];
-				for (ens = 0; ens < otherface->numedges; ens++)
-				{
-					if (edgenum1 == abs((*aasworld).edgeindex[otherface->firstedge + ens])) break;
-				} //end for
-				if (ens != otherface->numedges) break;
-			} //end for
-			//if the edge was shared
-			if (s != numfaces) continue;
-			//
-			for (j = 0; j < numfaces; j++)
-			{
-				if (j == i) continue;
-				face2 = &(*aasworld).faces[facenums[j]];
-				for (en2 = 0; en2 < face2->numedges; en2++)
-				{
-					edgenum2 = (*aasworld).edgeindex[face2->firstedge + en2];
-					side2 = (edgenum2 < 0) ^ (face2->planenum != planenum);
-					edgenum2 = abs(edgenum2);
-					edge2 = &(*aasworld).edges[edgenum2];
-					//check if the edge is shared with another face
-					for (s = 0; s < numfaces; s++)
-					{
-						if (s == i) continue;
-						otherface = &(*aasworld).faces[facenums[s]];
-						for (ens = 0; ens < otherface->numedges; ens++)
-						{
-							if (edgenum2 == abs((*aasworld).edgeindex[otherface->firstedge + ens])) break;
-						} //end for
-						if (ens != otherface->numedges) break;
-					} //end for
-					//if the edge was shared
-					if (s != numfaces) continue;
-					//
-					if (AAS_NonConvexEdges(edge1, edge2, side1, side2, planenum)) return qfalse;
-				} //end for
-			} //end for
-		} //end for
-	} //end for
-	return qtrue;
+    for (i = 0; i < numfaces; i++)
+    {
+        face1 = &(*aasworld).faces[facenums[i]];
+        for (en1 = 0; en1 < face1->numedges; en1++)
+        {
+            edgenum1 = (*aasworld).edgeindex[face1->firstedge + en1];
+            side1 = (edgenum1 < 0) ^ (face1->planenum != planenum);
+            edgenum1 = abs(edgenum1);
+            edge1 = &(*aasworld).edges[edgenum1];
+            //check if the edge is shared with another face
+            for (s = 0; s < numfaces; s++)
+            {
+                if (s == i) continue;
+                otherface = &(*aasworld).faces[facenums[s]];
+                for (ens = 0; ens < otherface->numedges; ens++)
+                {
+                    if (edgenum1 == abs((*aasworld).edgeindex[otherface->firstedge + ens])) break;
+                } //end for
+                if (ens != otherface->numedges) break;
+            } //end for
+            //if the edge was shared
+            if (s != numfaces) continue;
+            //
+            for (j = 0; j < numfaces; j++)
+            {
+                if (j == i) continue;
+                face2 = &(*aasworld).faces[facenums[j]];
+                for (en2 = 0; en2 < face2->numedges; en2++)
+                {
+                    edgenum2 = (*aasworld).edgeindex[face2->firstedge + en2];
+                    side2 = (edgenum2 < 0) ^ (face2->planenum != planenum);
+                    edgenum2 = abs(edgenum2);
+                    edge2 = &(*aasworld).edges[edgenum2];
+                    //check if the edge is shared with another face
+                    for (s = 0; s < numfaces; s++)
+                    {
+                        if (s == i) continue;
+                        otherface = &(*aasworld).faces[facenums[s]];
+                        for (ens = 0; ens < otherface->numedges; ens++)
+                        {
+                            if (edgenum2 == abs((*aasworld).edgeindex[otherface->firstedge + ens])) break;
+                        } //end for
+                        if (ens != otherface->numedges) break;
+                    } //end for
+                    //if the edge was shared
+                    if (s != numfaces) continue;
+                    //
+                    if (AAS_NonConvexEdges(edge1, edge2, side1, side2, planenum)) return qfalse;
+                } //end for
+            } //end for
+        } //end for
+    } //end for
+    return qtrue;
 } //end of the function AAS_CanMergeFaces*/
 //===========================================================================
 //
@@ -718,7 +718,7 @@ void AAS_ConnectedAreas_r( int *areanums, int numareas, int *connectedareas, int
 		//get the area at the other side of the face
 		if ( face->frontarea != areanums[curarea] ) {
 			otherareanum = face->frontarea;
-		} else { otherareanum = face->backarea;}
+		} else { otherareanum = face->backarea; }
 		//check if the face is leading to one of the other areas
 		for ( j = 0; j < numareas; j++ )
 		{
@@ -789,7 +789,7 @@ int AAS_GetAdjacentAreasWithLessPresenceTypes_r( int *areanums, int numareas, in
 		//the area at the other side of the face
 		if ( face->frontarea != curareanum ) {
 			otherareanum = face->frontarea;
-		} else { otherareanum = face->backarea;}
+		} else { otherareanum = face->backarea; }
 		//
 		otherpresencetype = ( *aasworld ).areasettings[otherareanum].presencetype;
 		//if the other area has less presence types
@@ -877,7 +877,7 @@ int AAS_CheckAreaForPossiblePortals( int areanum ) {
 			//the number of the area at the other side of the face
 			if ( face->frontarea == areanums[i] ) {
 				otherareanum = face->backarea;
-			} else { otherareanum = face->frontarea;}
+			} else { otherareanum = face->frontarea; }
 			//if the other area already is a cluter portal
 			if ( ( *aasworld ).areasettings[otherareanum].contents & AREACONTENTS_CLUSTERPORTAL ) {
 				return 0;
@@ -1033,7 +1033,7 @@ void AAS_FloodCluster_r( int areanum, int clusternum ) {
 		//
 		if ( face->frontarea != areanum ) {
 			otherareanum = face->frontarea;
-		} else { otherareanum = face->backarea;}
+		} else { otherareanum = face->backarea; }
 		//if there's no area at the other side
 		if ( !otherareanum ) {
 			continue;
@@ -1159,7 +1159,7 @@ void AAS_RemoveNotClusterClosingPortals( void ) {
 			//
 			if ( face->frontarea != i ) {
 				otherareanum = face->frontarea;
-			} else { otherareanum = face->backarea;}
+			} else { otherareanum = face->backarea; }
 			//
 			if ( !otherareanum ) {
 				continue;
@@ -1181,7 +1181,7 @@ void AAS_RemoveNotClusterClosingPortals( void ) {
 				//
 				if ( face->frontarea != i ) {
 					otherareanum = face->frontarea;
-				} else { otherareanum = face->backarea;}
+				} else { otherareanum = face->backarea; }
 				//
 				if ( !otherareanum ) {
 					continue;
@@ -1242,7 +1242,7 @@ void AAS_RemoveNotClusterClosingPortals( void ) {
 			//
 			if ( face->frontarea != i ) {
 				otherareanum = face->frontarea;
-			} else { otherareanum = face->backarea;}
+			} else { otherareanum = face->backarea; }
 			//if not solid at the other side of the face
 			if ( !otherareanum ) {
 				continue;
@@ -1401,7 +1401,7 @@ void AAS_AddTeleporterPortals( void ) {
 					//
 					if ( face->frontarea != link->areanum ) {
 						otherareanum = face->frontarea;
-					} else { otherareanum = face->backarea;}
+					} else { otherareanum = face->backarea; }
 					//
 					if ( !otherareanum ) {
 						continue;

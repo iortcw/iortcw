@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,8 +47,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_interface.h"
 #include "be_aas_def.h"
 
-#define	LL(x) x=LittleLong(x)
-#define	LS(x) x=LittleShort(x)
+#define LL( x ) x = LittleLong( x )
+#define LS( x ) x = LittleShort( x )
 
 // ugly hack to turn off route-tables, can't find a way to check cvar's
 int disable_routetable = 0;
@@ -1207,14 +1207,14 @@ qboolean AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destp
 		return qfalse;
 	}
 /*
-	if (lastTime > (AAS_Time() - 0.1)) {
-		if (frameCount++ > maxPerFrame) {
-			return qfalse;
-		}
-	} else {
-		frameCount = 0;
-		lastTime = AAS_Time();
-	}
+    if (lastTime > (AAS_Time() - 0.1)) {
+        if (frameCount++ > maxPerFrame) {
+            return qfalse;
+        }
+    } else {
+        frameCount = 0;
+        lastTime = AAS_Time();
+    }
 */
 	pretime = -Sys_MilliSeconds();
 

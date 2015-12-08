@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -69,11 +69,10 @@ int ReadValue( source_t *source, float *value ) {
 		return qfalse;
 	}
 	if ( !strcmp( token.string, "-" ) ) {
-		SourceWarning(source, "negative value set to zero");
+		SourceWarning( source, "negative value set to zero" );
 
-		if(!PC_ExpectAnyToken(source, &token))
-		{
-			SourceError(source, "Missing return value");
+		if ( !PC_ExpectAnyToken( source, &token ) ) {
+			SourceError( source, "Missing return value" );
 			return qfalse;
 		}
 	}
@@ -216,7 +215,7 @@ fuzzyseperator_t *ReadFuzzySeperators_r( source_t *source ) {
 			fs->index = index;
 			if ( lastfs ) {
 				lastfs->next = fs;
-			} else { firstfs = fs;}
+			} else { firstfs = fs; }
 			lastfs = fs;
 			if ( def ) {
 				if ( founddefault ) {
@@ -294,7 +293,7 @@ fuzzyseperator_t *ReadFuzzySeperators_r( source_t *source ) {
 		fs->child = NULL;
 		if ( lastfs ) {
 			lastfs->next = fs;
-		} else { firstfs = fs;}
+		} else { firstfs = fs; }
 	} //end if
 	  //
 	return firstfs;
@@ -644,25 +643,26 @@ float FuzzyWeight_r( int *inventory, fuzzyseperator_t *fs ) {
 	if ( inventory[fs->index] < fs->value ) {
 		if ( fs->child ) {
 			return FuzzyWeight_r( inventory, fs->child );
-		} else { return fs->weight;}
+		} else { return fs->weight; }
 	} //end if
 	else if ( fs->next ) {
 		if ( inventory[fs->index] < fs->next->value ) {
 			//first weight
 			if ( fs->child ) {
 				w1 = FuzzyWeight_r( inventory, fs->child );
-			} else { w1 = fs->weight;}
+			} else { w1 = fs->weight; }
 			//second weight
 			if ( fs->next->child ) {
 				w2 = FuzzyWeight_r( inventory, fs->next->child );
-			} else { w2 = fs->next->weight;}
+			} else { w2 = fs->next->weight; }
 			//the scale factor
-			if(fs->next->value == MAX_INVENTORYVALUE) // is fs->next the default case?
-        		return w2;      // can't interpolate, return default weight
-			else
-				scale = (float) (inventory[fs->index] - fs->value) / (fs->next->value - fs->value);
+			if ( fs->next->value == MAX_INVENTORYVALUE ) { // is fs->next the default case?
+				return w2;      // can't interpolate, return default weight
+			} else {
+				scale = (float) ( inventory[fs->index] - fs->value ) / ( fs->next->value - fs->value );
+			}
 			//scale between the two weights
-			return (1 - scale) * w1 + scale * w2;
+			return ( 1 - scale ) * w1 + scale * w2;
 		} //end if
 		return FuzzyWeight_r( inventory, fs->next );
 	} //end else if
@@ -680,25 +680,26 @@ float FuzzyWeightUndecided_r( int *inventory, fuzzyseperator_t *fs ) {
 	if ( inventory[fs->index] < fs->value ) {
 		if ( fs->child ) {
 			return FuzzyWeightUndecided_r( inventory, fs->child );
-		} else { return fs->minweight + random() * ( fs->maxweight - fs->minweight );}
+		} else { return fs->minweight + random() * ( fs->maxweight - fs->minweight ); }
 	} //end if
 	else if ( fs->next ) {
 		if ( inventory[fs->index] < fs->next->value ) {
 			//first weight
 			if ( fs->child ) {
 				w1 = FuzzyWeightUndecided_r( inventory, fs->child );
-			} else { w1 = fs->minweight + random() * ( fs->maxweight - fs->minweight );}
+			} else { w1 = fs->minweight + random() * ( fs->maxweight - fs->minweight ); }
 			//second weight
 			if ( fs->next->child ) {
 				w2 = FuzzyWeight_r( inventory, fs->next->child );
-			} else { w2 = fs->next->minweight + random() * ( fs->next->maxweight - fs->next->minweight );}
+			} else { w2 = fs->next->minweight + random() * ( fs->next->maxweight - fs->next->minweight ); }
 			//the scale factor
-			if(fs->next->value == MAX_INVENTORYVALUE) // is fs->next the default case?
-        		return w2;      // can't interpolate, return default weight
-			else
-				scale = (float) (inventory[fs->index] - fs->value) / (fs->next->value - fs->value);
+			if ( fs->next->value == MAX_INVENTORYVALUE ) { // is fs->next the default case?
+				return w2;      // can't interpolate, return default weight
+			} else {
+				scale = (float) ( inventory[fs->index] - fs->value ) / ( fs->next->value - fs->value );
+			}
 			//scale between the two weights
-			return (1 - scale) * w1 + scale * w2;
+			return ( 1 - scale ) * w1 + scale * w2;
 		} //end if
 		return FuzzyWeightUndecided_r( inventory, fs->next );
 	} //end else if
@@ -725,13 +726,13 @@ float FuzzyWeight( int *inventory, weightconfig_t *wc, int weightnum ) {
 		if ( inventory[s->index] < s->value ) {
 			if ( s->child ) {
 				s = s->child;
-			} else { return s->weight;}
+			} else { return s->weight; }
 		} //end if
 		else
 		{
 			if ( s->next ) {
 				s = s->next;
-			} else { return s->weight;}
+			} else { return s->weight; }
 		} //end else
 	} //end if
 	return 0;
@@ -758,13 +759,13 @@ float FuzzyWeightUndecided( int *inventory, weightconfig_t *wc, int weightnum ) 
 		if ( inventory[s->index] < s->value ) {
 			if ( s->child ) {
 				s = s->child;
-			} else { return s->minweight + random() * ( s->maxweight - s->minweight );}
+			} else { return s->minweight + random() * ( s->maxweight - s->minweight ); }
 		} //end if
 		else
 		{
 			if ( s->next ) {
 				s = s->next;
-			} else { return s->minweight + random() * ( s->maxweight - s->minweight );}
+			} else { return s->minweight + random() * ( s->maxweight - s->minweight ); }
 		} //end else
 	} //end if
 	return 0;
@@ -784,7 +785,7 @@ void EvolveFuzzySeperator_r( fuzzyseperator_t *fs ) {
 		//every once in a while an evolution leap occurs, mutation
 		if ( random() < 0.01 ) {
 			fs->weight += crandom() * ( fs->maxweight - fs->minweight );
-		} else { fs->weight += crandom() * ( fs->maxweight - fs->minweight ) * 0.5;}
+		} else { fs->weight += crandom() * ( fs->maxweight - fs->minweight ) * 0.5; }
 		//modify bounds if necesary because of mutation
 		if ( fs->weight < fs->minweight ) {
 			fs->minweight = fs->weight;
@@ -822,7 +823,7 @@ void ScaleFuzzySeperator_r( fuzzyseperator_t *fs, float scale ) {
 	} //end if
 	else if ( fs->type == WT_BALANCE ) {
 		//
-		fs->weight = (float) (fs->maxweight + fs->minweight) * scale;
+		fs->weight = (float) ( fs->maxweight + fs->minweight ) * scale;
 		//get the weight between bounds
 		if ( fs->weight < fs->minweight ) {
 			fs->weight = fs->minweight;

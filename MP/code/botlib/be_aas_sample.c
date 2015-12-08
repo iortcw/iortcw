@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -239,7 +239,7 @@ int AAS_PointAreaNum( vec3_t point ) {
 		dist = DotProduct( point, plane->normal ) - plane->dist;
 		if ( dist > 0 ) {
 			nodenum = node->children[0];
-		} else { nodenum = node->children[1];}
+		} else { nodenum = node->children[1]; }
 	} //end while
 	if ( !nodenum ) {
 #ifdef AAS_SAMPLE_DEBUG
@@ -411,11 +411,10 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 				//exactly the same when they're both the start point
 				if ( tstack_p->start[0] == start[0] &&
 					 tstack_p->start[1] == start[1] &&
-					 tstack_p->start[2] == start[2] )
-				{
+					 tstack_p->start[2] == start[2] ) {
 					trace.startsolid = qtrue;
 					trace.fraction = 0.0;
-					VectorClear(v1);
+					VectorClear( v1 );
 				} //end if
 				else
 				{
@@ -462,11 +461,10 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			//exactly the same when they're both the start point
 			if ( tstack_p->start[0] == start[0] &&
 				 tstack_p->start[1] == start[1] &&
-				 tstack_p->start[2] == start[2] )
-			{
+				 tstack_p->start[2] == start[2] ) {
 				trace.startsolid = qtrue;
 				trace.fraction = 0.0;
-				VectorClear(v1);
+				VectorClear( v1 );
 			} //end if
 			else
 			{
@@ -494,7 +492,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			return trace;
 		} //end if
 #endif //AAS_SAMPLE_DEBUG
-	   //the node to test against
+		//the node to test against
 		aasnode = &( *aasworld ).nodes[nodenum];
 		//start point of current line to test against node
 		VectorCopy( tstack_p->start, cur_start );
@@ -508,21 +506,21 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			//check for axial planes
 			case PLANE_X:
 			{
-				front = cur_start[0] - plane->dist;
-				back = cur_end[0] - plane->dist;
-				break;
+			    front = cur_start[0] - plane->dist;
+			    back = cur_end[0] - plane->dist;
+			    break;
 			} //end case
 			case PLANE_Y:
 			{
-				front = cur_start[1] - plane->dist;
-				back = cur_end[1] - plane->dist;
-				break;
+			    front = cur_start[1] - plane->dist;
+			    back = cur_end[1] - plane->dist;
+			    break;
 			} //end case
 			case PLANE_Z:
 			{
-				front = cur_start[2] - plane->dist;
-				back = cur_end[2] - plane->dist;
-				break;
+			    front = cur_start[2] - plane->dist;
+			    back = cur_end[2] - plane->dist;
+			    break;
 			} //end case*/
 		default:     //gee it's not an axial plane
 		{
@@ -536,7 +534,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 		//put the crosspoint TRACEPLANE_EPSILON pixels on the near side
 		if ( front < 0 ) {
 			frac = ( front + TRACEPLANE_EPSILON ) / ( front - back );
-		} else { frac = ( front - TRACEPLANE_EPSILON ) / ( front - back );}
+		} else { frac = ( front - TRACEPLANE_EPSILON ) / ( front - back ); }
 		//if the whole to be traced line is totally at the front of this node
 		//only go down the tree with the front child
 		if ( ( front >= -ON_EPSILON && back >= -ON_EPSILON ) ) {
@@ -568,7 +566,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			//
 			if ( frac < 0 ) {
 				frac = 0.001; //0
-			} else if ( frac > 1 )                         {
+			} else if ( frac > 1 ) {
 				frac = 0.999; //1
 			}
 			//frac = front / (front-back);
@@ -679,7 +677,7 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 			return numareas;
 		} //end if
 #endif //AAS_SAMPLE_DEBUG
-	   //the node to test against
+		//the node to test against
 		aasnode = &( *aasworld ).nodes[nodenum];
 		//start point of current line to test against node
 		VectorCopy( tstack_p->start, cur_start );
@@ -693,21 +691,21 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 			//check for axial planes
 			case PLANE_X:
 			{
-				front = cur_start[0] - plane->dist;
-				back = cur_end[0] - plane->dist;
-				break;
+			    front = cur_start[0] - plane->dist;
+			    back = cur_end[0] - plane->dist;
+			    break;
 			} //end case
 			case PLANE_Y:
 			{
-				front = cur_start[1] - plane->dist;
-				back = cur_end[1] - plane->dist;
-				break;
+			    front = cur_start[1] - plane->dist;
+			    back = cur_end[1] - plane->dist;
+			    break;
 			} //end case
 			case PLANE_Z:
 			{
-				front = cur_start[2] - plane->dist;
-				back = cur_end[2] - plane->dist;
-				break;
+			    front = cur_start[2] - plane->dist;
+			    back = cur_end[2] - plane->dist;
+			    break;
 			} //end case*/
 		default:     //gee it's not an axial plane
 		{
@@ -749,7 +747,7 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 			//put the crosspoint TRACEPLANE_EPSILON pixels on the near side
 			if ( front < 0 ) {
 				frac = ( front ) / ( front - back );
-			} else { frac = ( front ) / ( front - back );}
+			} else { frac = ( front ) / ( front - back ); }
 			if ( frac < 0 ) {
 				frac = 0;
 			} else if ( frac > 1 ) {
@@ -800,8 +798,8 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 //===========================================================================
 // void AAS_OrthogonalToVectors(vec3_t v1, vec3_t v2, vec3_t res)
 #define AAS_OrthogonalToVectors( v1, v2, res ) \
-	( res )[0] = ( ( v1 )[1] * ( v2 )[2] ) - ( ( v1 )[2] * ( v2 )[1] );	\
-	( res )[1] = ( ( v1 )[2] * ( v2 )[0] ) - ( ( v1 )[0] * ( v2 )[2] );	\
+	( res )[0] = ( ( v1 )[1] * ( v2 )[2] ) - ( ( v1 )[2] * ( v2 )[1] ); \
+	( res )[1] = ( ( v1 )[2] * ( v2 )[0] ) - ( ( v1 )[0] * ( v2 )[2] ); \
 	( res )[2] = ( ( v1 )[0] * ( v2 )[1] ) - ( ( v1 )[1] * ( v2 )[0] );
 //===========================================================================
 // tests if the given point is within the face boundaries
@@ -841,7 +839,7 @@ qboolean AAS_InsideFace( aas_face_t *face, vec3_t pnormal, vec3_t point, float e
 		} //end if
 		lastvertex = edge->v[!firstvertex];
 #endif //AAS_SAMPLE_DEBUG
-	   //vector from first edge point to point possible in face
+		//vector from first edge point to point possible in face
 		VectorSubtract( point, v0, pointvec );
 		//get a vector pointing inside the face orthogonal to both the
 		//edge vector and the normal vector of the plane the face is in
@@ -930,7 +928,7 @@ aas_face_t *AAS_AreaGroundFace( int areanum, vec3_t point ) {
 			//get the up or down normal
 			if ( ( *aasworld ).planes[face->planenum].normal[2] < 0 ) {
 				VectorNegate( up, normal );
-			} else { VectorCopy( up, normal );}
+			} else { VectorCopy( up, normal ); }
 			//check if the point is in the face
 			if ( AAS_InsideFace( face, normal, point, 0.01 ) ) {
 				return face;
@@ -987,29 +985,29 @@ aas_face_t *AAS_TraceEndFace( aas_trace_t *trace ) {
 			//if there are more faces in the same plane then always
 			//check the one with the fewest edges first
 /*			if (firstface)
-			{
-				if (firstface->numedges < face->numedges)
-				{
-					if (AAS_InsideFace(firstface,
-						(*aasworld).planes[face->planenum].normal, trace->endpos))
-					{
-						return firstface;
-					} //end if
-					firstface = face;
-				} //end if
-				else
-				{
-					if (AAS_InsideFace(face,
-						(*aasworld).planes[face->planenum].normal, trace->endpos))
-					{
-						return face;
-					} //end if
-				} //end else
-			} //end if
-			else
-			{
-				firstface = face;
-			} //end else*/
+            {
+                if (firstface->numedges < face->numedges)
+                {
+                    if (AAS_InsideFace(firstface,
+                        (*aasworld).planes[face->planenum].normal, trace->endpos))
+                    {
+                        return firstface;
+                    } //end if
+                    firstface = face;
+                } //end if
+                else
+                {
+                    if (AAS_InsideFace(face,
+                        (*aasworld).planes[face->planenum].normal, trace->endpos))
+                    {
+                        return face;
+                    } //end if
+                } //end else
+            } //end if
+            else
+            {
+                firstface = face;
+            } //end else*/
 			if ( AAS_InsideFace( face,
 								 ( *aasworld ).planes[face->planenum].normal, trace->endpos, 0.01 ) ) {
 				return face;
@@ -1060,7 +1058,7 @@ int AAS_BoxOnPlaneSide2( vec3_t absmins, vec3_t absmaxs, aas_plane_t *p ) {
 // Changes Globals:		-
 //===========================================================================
 //int AAS_BoxOnPlaneSide(vec3_t absmins, vec3_t absmaxs, aas_plane_t *p)
-#define AAS_BoxOnPlaneSide( absmins, absmaxs, p ) (	\
+#define AAS_BoxOnPlaneSide( absmins, absmaxs, p ) ( \
 		( ( p )->type < 3 ) ? \
 		( \
 			( ( p )->dist <= ( absmins )[( p )->type] ) ? \
@@ -1101,7 +1099,7 @@ void AAS_UnlinkFromAreas( aas_link_t *areas ) {
 		//remove the entity from the linked list of this area
 		if ( link->prev_ent ) {
 			link->prev_ent->next_ent = link->next_ent;
-		} else { ( *aasworld ).arealinkedentities[link->areanum] = link->next_ent;}
+		} else { ( *aasworld ).arealinkedentities[link->areanum] = link->next_ent; }
 		if ( link->next_ent ) {
 			link->next_ent->prev_ent = link->prev_ent;
 		}

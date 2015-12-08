@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -510,7 +510,7 @@ int AAS_PredictClientMovement( struct aas_clientmove_s *move,
 				{
 					accelerate = sv_walkaccelerate;
 				} //end else
-				//ax = 2;
+				  //ax = 2;
 			} //end if
 			if ( swimming ) {
 				maxvel = sv_maxswimvelocity;
@@ -532,14 +532,14 @@ int AAS_PredictClientMovement( struct aas_clientmove_s *move,
 			/*
 			for (i = 0; i < ax; i++)
 			{
-				velchange = (cmdmove[i] * frametime) - frame_test_vel[i];
-				if (velchange > sv_maxacceleration) velchange = sv_maxacceleration;
-				else if (velchange < -sv_maxacceleration) velchange = -sv_maxacceleration;
-				newvel = frame_test_vel[i] + velchange;
-				//
-				if (frame_test_vel[i] <= maxvel && newvel > maxvel) frame_test_vel[i] = maxvel;
-				else if (frame_test_vel[i] >= -maxvel && newvel < -maxvel) frame_test_vel[i] = -maxvel;
-				else frame_test_vel[i] = newvel;
+			    velchange = (cmdmove[i] * frametime) - frame_test_vel[i];
+			    if (velchange > sv_maxacceleration) velchange = sv_maxacceleration;
+			    else if (velchange < -sv_maxacceleration) velchange = -sv_maxacceleration;
+			    newvel = frame_test_vel[i] + velchange;
+			    //
+			    if (frame_test_vel[i] <= maxvel && newvel > maxvel) frame_test_vel[i] = maxvel;
+			    else if (frame_test_vel[i] >= -maxvel && newvel < -maxvel) frame_test_vel[i] = -maxvel;
+			    else frame_test_vel[i] = newvel;
 			} //end for
 			*/
 		} //end if

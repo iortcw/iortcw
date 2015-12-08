@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,9 +85,9 @@ float LibVarStringValue( char *string ) {
 libvar_t *LibVarAlloc( char *var_name ) {
 	libvar_t *v;
 
-	v = (libvar_t *) GetMemory(sizeof(libvar_t));
+	v = (libvar_t *) GetMemory( sizeof( libvar_t ) );
 	memset( v, 0, sizeof( libvar_t ) );
-	v->name = (char *) GetMemory(strlen(var_name)+1);
+	v->name = (char *) GetMemory( strlen( var_name ) + 1 );
 	strcpy( v->name, var_name );
 	//add the variable in the list
 	v->next = libvarlist;
@@ -100,12 +100,13 @@ libvar_t *LibVarAlloc( char *var_name ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void LibVarDeAlloc(libvar_t *v)
- {
- 	if (v->string) FreeMemory(v->string);
-	FreeMemory(v->name);
- 	FreeMemory(v);
- } //end of the function LibVarDeAlloc
+void LibVarDeAlloc( libvar_t *v ) {
+	if ( v->string ) {
+		FreeMemory( v->string );
+	}
+	FreeMemory( v->name );
+	FreeMemory( v );
+}  //end of the function LibVarDeAlloc
 //===========================================================================
 //
 // Parameter:				-

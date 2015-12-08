@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ int AAS_OptimizeEdge( optimized_t *optimized, int edgenum ) {
 		//keep the edge reversed sign
 		if ( edgenum > 0 ) {
 			return optedgenum;
-		} else { return -optedgenum;}
+		} else { return -optedgenum; }
 	} //end if
 
 	optedge = &optimized->edges[optimized->numedges];
@@ -129,7 +129,7 @@ int AAS_OptimizeEdge( optimized_t *optimized, int edgenum ) {
 	//keep the edge reversed sign
 	if ( edgenum > 0 ) {
 		return optedgenum;
-	} else { return -optedgenum;}
+	} else { return -optedgenum; }
 } //end of the function AAS_OptimizeEdge
 //===========================================================================
 //
@@ -140,7 +140,7 @@ int AAS_OptimizeEdge( optimized_t *optimized, int edgenum ) {
 int AAS_KeepFace( aas_face_t *face ) {
 	if ( !( face->faceflags & FACE_LADDER ) ) {
 		return 0;
-	} else { return 1;}
+	} else { return 1; }
 } //end of the function AAS_KeepFace
 //===========================================================================
 //
@@ -162,7 +162,7 @@ int AAS_OptimizeFace( optimized_t *optimized, int facenum ) {
 		//keep the face side sign
 		if ( facenum > 0 ) {
 			return optfacenum;
-		} else { return -optfacenum;}
+		} else { return -optfacenum; }
 	} //end if
 
 	optface = &optimized->faces[optimized->numfaces];
@@ -186,7 +186,7 @@ int AAS_OptimizeFace( optimized_t *optimized, int facenum ) {
 	//keep the face side sign
 	if ( facenum > 0 ) {
 		return optfacenum;
-	} else { return -optfacenum;}
+	} else { return -optfacenum; }
 } //end of the function AAS_OptimizeFace
 //===========================================================================
 //

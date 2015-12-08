@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,11 +44,10 @@ void Log_Close( void );
 //close log file if present
 void Log_Shutdown( void );
 //write to the current opened log file
-void QDECL Log_Write(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void QDECL Log_Write( char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 //write to the current opened log file with a time stamp
-void QDECL Log_WriteTimeStamped(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void QDECL Log_WriteTimeStamped( char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 //returns a pointer to the log file
 FILE *Log_FilePointer( void );
 //flush log file
 void Log_Flush( void );
-

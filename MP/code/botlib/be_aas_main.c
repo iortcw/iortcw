@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -65,9 +65,9 @@ void QDECL AAS_Error( char *fmt, ... ) {
 	va_list arglist;
 
 	va_start( arglist, fmt );
-	Q_vsnprintf(str, sizeof(str), fmt, arglist);
+	Q_vsnprintf( str, sizeof( str ), fmt, arglist );
 	va_end( arglist );
-	botimport.Print(PRT_FATAL, "%s", str);
+	botimport.Print( PRT_FATAL, "%s", str );
 } //end of the function AAS_Error
 
 // Ridah, multiple AAS worlds
@@ -242,7 +242,7 @@ void AAS_ContinueInit( float time ) {
 		}
 		//save the AAS file
 		if ( AAS_WriteAASFile( ( *aasworld ).filename ) ) {
-			botimport.Print(PRT_MESSAGE, "%s written successfully\n", ( *aasworld ).filename);
+			botimport.Print( PRT_MESSAGE, "%s written successfully\n", ( *aasworld ).filename );
 		} //end if
 		else
 		{
@@ -280,18 +280,18 @@ int AAS_StartFrame( float time ) {
 		/* Ridah, disabled for speed
 		if (LibVarGetValue("showcacheupdates"))
 		{
-			AAS_RoutingInfo();
-			LibVarSet("showcacheupdates", "0");
+		    AAS_RoutingInfo();
+		    LibVarSet("showcacheupdates", "0");
 		} //end if
 		if (LibVarGetValue("showmemoryusage"))
 		{
-			PrintUsedMemorySize();
-			LibVarSet("showmemoryusage", "0");
+		    PrintUsedMemorySize();
+		    LibVarSet("showmemoryusage", "0");
 		} //end if
 		if (LibVarGetValue("memorydump"))
 		{
-			PrintMemoryLabels();
-			LibVarSet("memorydump", "0");
+		    PrintMemoryLabels();
+		    LibVarSet("memorydump", "0");
 		} //end if
 		*/
 	} //end if
@@ -366,7 +366,7 @@ int AAS_LoadMap( const char *mapname ) {
 
 		Q_strncpyz( this_mapname, mapname, sizeof( this_mapname ) );
 		Q_strcat( this_mapname, sizeof( this_mapname ) - strlen( this_mapname ) - 1, "_b" );
-		Com_sprintf( intstr, sizeof( intstr ), "%i", i);
+		Com_sprintf( intstr, sizeof( intstr ), "%i", i );
 		Q_strcat( this_mapname, sizeof( this_mapname ) - strlen( this_mapname ) - 1, intstr );
 
 		//if no mapname is provided then the string indexes are updated

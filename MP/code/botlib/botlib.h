@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ typedef struct bot_entitystate_s
 typedef struct botlib_import_s
 {
 	//print messages from the bot library
-	void		(QDECL *Print)(int type, char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+	void( QDECL * Print )( int type, char *fmt, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 	//trace a bbox through the world
 	void ( *Trace )( bsp_trace_t *trace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
 	//trace a bbox against a specific entity
@@ -207,7 +207,7 @@ typedef struct botlib_import_s
 	//memory allocation
 	void        *( *GetMemory )( int size );
 #ifdef _DEBUG // L0 - This fixes windows debug compile
-	void		*( *GetMemoryDebug )( unsigned long size, char *label, char *file, int line );
+	void        *( *GetMemoryDebug )( unsigned long size, char *label, char *file, int line );
 #endif
 	void ( *FreeMemory )( void *ptr );
 	void ( *FreeZoneMemory )( void );
@@ -523,4 +523,3 @@ name:						default:			module(s):			description:
 "laserhook"					"0"					be_ai_move.c		0 = CTF hook, 1 = laser hook
 
 */
-

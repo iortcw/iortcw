@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -75,11 +75,11 @@ void AAS_ClearShownPolygons( void ) {
 	} //end for
 //*/
 /*
-	for (i = 0; i < MAX_DEBUGPOLYGONS; i++)
-	{
-		botimport.DebugPolygonDelete(i);
-		debugpolygons[i] = 0;
-	} //end for
+    for (i = 0; i < MAX_DEBUGPOLYGONS; i++)
+    {
+        botimport.DebugPolygonDelete(i);
+        debugpolygons[i] = 0;
+    } //end for
 */
 } //end of the function AAS_ClearShownPolygons
 //===========================================================================
@@ -318,9 +318,9 @@ void AAS_ShowFace( int facenum ) {
 			color = LINECOLOR_GREEN;
 		} else if ( color == LINECOLOR_GREEN ) {
 			color = LINECOLOR_BLUE;
-		} else if ( color == LINECOLOR_BLUE )                                                            {
+		} else if ( color == LINECOLOR_BLUE ) {
 			color = LINECOLOR_YELLOW;
-		} else { color = LINECOLOR_RED;}
+		} else { color = LINECOLOR_RED; }
 		AAS_DebugLine( ( *aasworld ).vertexes[edge->v[0]],
 					   ( *aasworld ).vertexes[edge->v[1]],
 					   color );
@@ -457,9 +457,9 @@ void AAS_ShowArea( int areanum, int groundfacesonly ) {
 			color = LINECOLOR_BLUE;
 		} else if ( color == LINECOLOR_BLUE ) {
 			color = LINECOLOR_GREEN;
-		} else if ( color == LINECOLOR_GREEN )                                                            {
+		} else if ( color == LINECOLOR_GREEN ) {
 			color = LINECOLOR_YELLOW;
-		} else { color = LINECOLOR_RED;}
+		} else { color = LINECOLOR_RED; }
 		botimport.DebugLineShow( debuglines[line],
 								 ( *aasworld ).vertexes[edge->v[0]],
 								 ( *aasworld ).vertexes[edge->v[1]],
@@ -571,7 +571,7 @@ void AAS_DrawArrow( vec3_t start, vec3_t end, int linecolor, int arrowcolor ) {
 	dot = DotProduct( dir, up );
 	if ( dot > 0.99 || dot < -0.99 ) {
 		VectorSet( cross, 1, 0, 0 );
-	} else { CrossProduct( dir, up, cross );}
+	} else { CrossProduct( dir, up, cross ); }
 
 	VectorMA( end, -6, dir, p1 );
 	VectorCopy( p1, p2 );

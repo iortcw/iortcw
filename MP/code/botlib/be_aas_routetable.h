@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ typedef struct
 {
 	unsigned short int numvisible;          // number of areas that are visible and within range
 	unsigned short int
-	visible[MAX_VISIBLE_AREAS];             // list of area indexes of visible and within range areas
+		visible[MAX_VISIBLE_AREAS];         // list of area indexes of visible and within range areas
 } aas_area_buildlocalinfo_t;
 
 typedef struct aas_parent_link_s
@@ -168,4 +168,3 @@ aas_rt_route_t *AAS_RT_GetRoute( int srcnum, vec3_t origin, int destnum );
 void AAS_RT_ShutdownRouteTable( void );
 qboolean AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
 int AAS_RT_GetReachabilityIndex( int areanum, int reachIndex );
-

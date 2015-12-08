@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -92,4 +92,3 @@ int AAS_VectorForBSPEpairKey( int ent, char *key, vec3_t v );
 int AAS_FloatForBSPEpairKey( int ent, char *key, float *value );
 //get an integer for the BSP epair key
 int AAS_IntForBSPEpairKey( int ent, char *key, int *value );
-

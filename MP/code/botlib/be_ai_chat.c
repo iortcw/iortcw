@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -316,10 +316,10 @@ void BotRemoveConsoleMessage( int chatstate, int handle ) {
 		if ( m->handle == handle ) {
 			if ( m->next ) {
 				m->next->prev = m->prev;
-			} else { cs->lastmessage = m->prev;}
+			} else { cs->lastmessage = m->prev; }
 			if ( m->prev ) {
 				m->prev->next = m->next;
-			} else { cs->firstmessage = m->next;}
+			} else { cs->firstmessage = m->next; }
 
 			FreeConsoleMessage( m );
 			cs->numconsolemessages--;
@@ -383,13 +383,13 @@ int BotNextConsoleMessage( int chatstate, bot_consolemessage_t *cm ) {
 	if ( !cs ) {
 		return 0;
 	}
-	if ((firstmsg = cs->firstmessage)) {
-	cm->handle = firstmsg->handle;
+	if ( ( firstmsg = cs->firstmessage ) ) {
+		cm->handle = firstmsg->handle;
 		cm->time = firstmsg->time;
 		cm->type = firstmsg->type;
-		Q_strncpyz(cm->message, firstmsg->message,
-			   sizeof(cm->message));
-		
+		Q_strncpyz( cm->message, firstmsg->message,
+					sizeof( cm->message ) );
+
 		/* We omit setting the two pointers in cm because pointer
 		 * size in the VM differs between the size in the engine on
 		 * 64 bit machines, which would lead to a buffer overflow if
@@ -698,7 +698,7 @@ bot_synonymlist_t *BotLoadSynonyms( char *filename ) {
 						syn->next = NULL;
 						if ( lastsyn ) {
 							lastsyn->next = syn;
-						} else { synlist = syn;}
+						} else { synlist = syn; }
 						lastsyn = syn;
 					} //end if
 					numsynonyms = 0;
@@ -717,9 +717,9 @@ bot_synonymlist_t *BotLoadSynonyms( char *filename ) {
 							FreeSource( source );
 							return NULL;
 						} //end if
-						len = strlen(token.string) + 1;
-						len = PAD(len, sizeof(long));
-						size += sizeof(bot_synonym_t) + len;
+						len = strlen( token.string ) + 1;
+						len = PAD( len, sizeof( long ) );
+						size += sizeof( bot_synonym_t ) + len;
 						if ( pass && ptr ) {
 							synonym = (bot_synonym_t *) ptr;
 							ptr += sizeof( bot_synonym_t );
@@ -729,7 +729,7 @@ bot_synonymlist_t *BotLoadSynonyms( char *filename ) {
 							//
 							if ( lastsynonym ) {
 								lastsynonym->next = synonym;
-							} else { syn->firstsynonym = synonym;}
+							} else { syn->firstsynonym = synonym; }
 							lastsynonym = synonym;
 						} //end if
 						numsynonyms++;
@@ -982,7 +982,7 @@ void BotDumpRandomStringList( bot_randomlist_t *randomlist ) {
 			fprintf( fp, "\"%s\"", rs->string );
 			if ( rs->next ) {
 				fprintf( fp, ", " );
-			} else { fprintf( fp, "}\n" );}
+			} else { fprintf( fp, "}\n" ); }
 		} //end for
 	} //end for
 } //end of the function BotDumpRandomStringList
@@ -1032,9 +1032,9 @@ bot_randomlist_t *BotLoadRandomStrings( char *filename ) {
 				FreeSource( source );
 				return NULL;
 			} //end if
-			len = strlen(token.string) + 1;
-			len = PAD(len, sizeof(long));
-			size += sizeof(bot_randomlist_t) + len;
+			len = strlen( token.string ) + 1;
+			len = PAD( len, sizeof( long ) );
+			size += sizeof( bot_randomlist_t ) + len;
 			if ( pass && ptr ) {
 				random = (bot_randomlist_t *) ptr;
 				ptr += sizeof( bot_randomlist_t );
@@ -1046,7 +1046,7 @@ bot_randomlist_t *BotLoadRandomStrings( char *filename ) {
 				//
 				if ( lastrandom ) {
 					lastrandom->next = random;
-				} else { randomlist = random;}
+				} else { randomlist = random; }
 				lastrandom = random;
 			} //end if
 			if ( !PC_ExpectTokenString( source, "=" ) ||
@@ -1060,9 +1060,9 @@ bot_randomlist_t *BotLoadRandomStrings( char *filename ) {
 					FreeSource( source );
 					return NULL;
 				} //end if
-				len = strlen(chatmessagestring) + 1;
-				len = PAD(len, sizeof(long));
-				size += sizeof(bot_randomstring_t) + len;
+				len = strlen( chatmessagestring ) + 1;
+				len = PAD( len, sizeof( long ) );
+				size += sizeof( bot_randomstring_t ) + len;
 				if ( pass && ptr ) {
 					randomstring = (bot_randomstring_t *) ptr;
 					ptr += sizeof( bot_randomstring_t );
@@ -1200,7 +1200,7 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 	while ( PC_ReadToken( source, &token ) )
 	{
 		if ( token.type == TT_NUMBER && ( token.subtype & TT_INTEGER ) ) {
-			if (token.intvalue >= MAX_MATCHVARIABLES) {
+			if ( token.intvalue >= MAX_MATCHVARIABLES ) {
 				SourceError( source, "can't have more than %d match variables", MAX_MATCHVARIABLES );
 				FreeSource( source );
 				BotFreeMatchPieces( firstpiece );
@@ -1220,7 +1220,7 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->next = NULL;
 			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			} else { firstpiece = matchpiece;}
+			} else { firstpiece = matchpiece; }
 			lastpiece = matchpiece;
 		} //end if
 		else if ( token.type == TT_STRING ) {
@@ -1232,7 +1232,7 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->next = NULL;
 			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			} else { firstpiece = matchpiece;}
+			} else { firstpiece = matchpiece; }
 			lastpiece = matchpiece;
 			//
 			lastmatchstring = NULL;
@@ -1257,7 +1257,7 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 				matchstring->next = NULL;
 				if ( lastmatchstring ) {
 					lastmatchstring->next = matchstring;
-				} else { matchpiece->firststring = matchstring;}
+				} else { matchpiece->firststring = matchstring; }
 				lastmatchstring = matchstring;
 			} while ( PC_CheckTokenString( source, "|" ) );
 			//if there was no empty string found
@@ -1351,7 +1351,7 @@ bot_matchtemplate_t *BotLoadMatchTemplates( char *matchfile ) {
 			//add the match template to the list
 			if ( lastmatch ) {
 				lastmatch->next = matchtemplate;
-			} else { matches = matchtemplate;}
+			} else { matches = matchtemplate; }
 			lastmatch = matchtemplate;
 			//load the match template
 			matchtemplate->first = BotLoadMatchPieces( source, "=" );
@@ -1689,17 +1689,17 @@ void BotDumpReplyChat( bot_replychat_t *replychat ) {
 				fprintf( fp, "name" );
 			} else if ( key->flags & RCKFL_GENDERFEMALE ) {
 				fprintf( fp, "female" );
-			} else if ( key->flags & RCKFL_GENDERMALE )                                                                {
+			} else if ( key->flags & RCKFL_GENDERMALE ) {
 				fprintf( fp, "male" );
-			} else if ( key->flags & RCKFL_GENDERLESS )                                                                                                                                    {
+			} else if ( key->flags & RCKFL_GENDERLESS ) {
 				fprintf( fp, "it" );
-			} else if ( key->flags & RCKFL_VARIABLES )                                                                                                                                                                                                      {
+			} else if ( key->flags & RCKFL_VARIABLES ) {
 				fprintf( fp, "(" );
 				for ( mp = key->match; mp; mp = mp->next )
 				{
 					if ( mp->type == MT_STRING ) {
 						fprintf( fp, "\"%s\"", mp->firststring->string );
-					} else { fprintf( fp, "%d", mp->variable );}
+					} else { fprintf( fp, "%d", mp->variable ); }
 					if ( mp->next ) {
 						fprintf( fp, ", " );
 					}
@@ -1711,7 +1711,7 @@ void BotDumpReplyChat( bot_replychat_t *replychat ) {
 			} //end if
 			if ( key->next ) {
 				fprintf( fp, ", " );
-			} else { fprintf( fp, "] = %1.0f\n", rp->priority );}
+			} else { fprintf( fp, "] = %1.0f\n", rp->priority ); }
 		} //end for
 		fprintf( fp, "{\n" );
 		for ( cm = rp->firstchatmessage; cm; cm = cm->next )
@@ -1811,11 +1811,11 @@ bot_replychat_t *BotLoadReplyChat( char *filename ) {
 				key->flags |= RCKFL_NAME;
 			} else if ( PC_CheckTokenString( source, "female" ) ) {
 				key->flags |= RCKFL_GENDERFEMALE;
-			} else if ( PC_CheckTokenString( source, "male" ) )                                                                                    {
+			} else if ( PC_CheckTokenString( source, "male" ) ) {
 				key->flags |= RCKFL_GENDERMALE;
-			} else if ( PC_CheckTokenString( source, "it" ) )                                                                                                                                                                         {
+			} else if ( PC_CheckTokenString( source, "it" ) ) {
 				key->flags |= RCKFL_GENDERLESS;
-			} else if ( PC_CheckTokenString( source, "(" ) )                                                                                                                                                                                                                                                            { //match key
+			} else if ( PC_CheckTokenString( source, "(" ) ) {                                                                                                                                                                                                                                                            //match key
 				key->flags |= RCKFL_VARIABLES;
 				key->match = BotLoadMatchPieces( source, ")" );
 				if ( !key->match ) {
@@ -2033,8 +2033,8 @@ bot_chat_t *BotLoadInitialChat( char *chatfile, char *chatname ) {
 								FreeSource( source );
 								return NULL;
 							} //end if
-							len = strlen(chatmessagestring) + 1;
-							len = PAD(len, sizeof(long));
+							len = strlen( chatmessagestring ) + 1;
+							len = PAD( len, sizeof( long ) );
 							if ( pass && ptr ) {
 								chatmessage = (bot_chatmessage_t *) ptr;
 								chatmessage->time = -2 * CHATMESSAGE_RECENTTIME;
@@ -2049,7 +2049,7 @@ bot_chat_t *BotLoadInitialChat( char *chatfile, char *chatname ) {
 								//the number of chat messages increased
 								chattype->numchatmessages++;
 							} //end if
-							size += sizeof(bot_chatmessage_t) + len;
+							size += sizeof( bot_chatmessage_t ) + len;
 						} //end if
 					} //end while
 				} //end if
@@ -2203,7 +2203,7 @@ int BotExpandChatMessage( char *outmessage, char *message, unsigned long mcontex
 				{
 					num = num * 10 + ( *msgptr++ ) - '0';
 				}     //end while
-					  //step over the trailing escape char
+				      //step over the trailing escape char
 				if ( *msgptr ) {
 					msgptr++;
 				}
@@ -2228,7 +2228,7 @@ int BotExpandChatMessage( char *outmessage, char *message, unsigned long mcontex
 						//replace synonyms in the variable context
 						BotReplaceSynonyms( temp, vcontext );
 					}     //end else
-						  //
+					      //
 					if ( len + strlen( temp ) >= MAX_MESSAGE_SIZE ) {
 						botimport.Print( PRT_ERROR, "BotConstructChat: message %s too long\n", message );
 						return qfalse;
@@ -2486,17 +2486,17 @@ void BotPrintReplyChatKeys( bot_replychat_t *replychat ) {
 			botimport.Print( PRT_MESSAGE, "name" );
 		} else if ( key->flags & RCKFL_GENDERFEMALE ) {
 			botimport.Print( PRT_MESSAGE, "female" );
-		} else if ( key->flags & RCKFL_GENDERMALE )                                                                                     {
+		} else if ( key->flags & RCKFL_GENDERMALE ) {
 			botimport.Print( PRT_MESSAGE, "male" );
-		} else if ( key->flags & RCKFL_GENDERLESS )                                                                                                                                                                          {
+		} else if ( key->flags & RCKFL_GENDERLESS ) {
 			botimport.Print( PRT_MESSAGE, "it" );
-		} else if ( key->flags & RCKFL_VARIABLES )                                                                                                                                                                                                                                                             {
+		} else if ( key->flags & RCKFL_VARIABLES ) {
 			botimport.Print( PRT_MESSAGE, "(" );
 			for ( mp = key->match; mp; mp = mp->next )
 			{
 				if ( mp->type == MT_STRING ) {
 					botimport.Print( PRT_MESSAGE, "\"%s\"", mp->firststring->string );
-				} else { botimport.Print( PRT_MESSAGE, "%d", mp->variable );}
+				} else { botimport.Print( PRT_MESSAGE, "%d", mp->variable ); }
 				if ( mp->next ) {
 					botimport.Print( PRT_MESSAGE, ", " );
 				}
@@ -2508,7 +2508,7 @@ void BotPrintReplyChatKeys( bot_replychat_t *replychat ) {
 		} //end if
 		if ( key->next ) {
 			botimport.Print( PRT_MESSAGE, ", " );
-		} else { botimport.Print( PRT_MESSAGE, "] = %1.0f\n", replychat->priority );}
+		} else { botimport.Print( PRT_MESSAGE, "] = %1.0f\n", replychat->priority ); }
 	} //end for
 	botimport.Print( PRT_MESSAGE, "{\n" );
 } //end of the function BotPrintReplyChatKeys
@@ -2547,15 +2547,15 @@ int BotReplyChat( int chatstate, char *message, int mcontext, int vcontext, char
 				res = ( StringContains( message, cs->name, qfalse ) != -1 );
 			} else if ( key->flags & RCKFL_BOTNAMES ) {
 				res = ( StringContains( key->string, cs->name, qfalse ) != -1 );
-			} else if ( key->flags & RCKFL_GENDERFEMALE )                                                                                                    {
+			} else if ( key->flags & RCKFL_GENDERFEMALE ) {
 				res = ( cs->gender == CHAT_GENDERFEMALE );
-			} else if ( key->flags & RCKFL_GENDERMALE )                                                                                                                                                                                              {
+			} else if ( key->flags & RCKFL_GENDERMALE ) {
 				res = ( cs->gender == CHAT_GENDERMALE );
-			} else if ( key->flags & RCKFL_GENDERLESS )                                                                                                                                                                                                                                                                                    {
+			} else if ( key->flags & RCKFL_GENDERLESS ) {
 				res = ( cs->gender == CHAT_GENDERLESS );
-			} else if ( key->flags & RCKFL_VARIABLES )                                                                                                                                                                                                                                                                                                                                                                          {
+			} else if ( key->flags & RCKFL_VARIABLES ) {
 				res = StringsMatch( key->match, &match );
-			} else if ( key->flags & RCKFL_STRING )                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+			} else if ( key->flags & RCKFL_STRING ) {
 				res = ( StringContainsWord( message, key->string, qfalse ) != NULL );
 			}
 			//if the key must be present
@@ -2695,7 +2695,7 @@ void BotEnterChat( int chatstate, int client, int sendto ) {
 		} else {
 			if ( sendto == CHAT_TEAM ) {
 				EA_SayTeam( client, cs->chatmessage );
-			} else { EA_Say( client, cs->chatmessage );}
+			} else { EA_Say( client, cs->chatmessage ); }
 		}
 		//clear the chat message from the state
 		strcpy( cs->chatmessage, "" );

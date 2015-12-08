@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -351,22 +351,22 @@ int AAS_IntForBSPEpairKey( int ent, char *key, int *value ) {
 void AAS_FreeBSPEntities( void ) {
 // RF, optimized memory allocation
 /*
-	int i;
-	bsp_entity_t *ent;
-	bsp_epair_t *epair, *nextepair;
+    int i;
+    bsp_entity_t *ent;
+    bsp_epair_t *epair, *nextepair;
 
-	for (i = 1; i < bspworld.numentities; i++)
-	{
-		ent = &bspworld.entities[i];
-		for (epair = ent->epairs; epair; epair = nextepair)
-		{
-			nextepair = epair->next;
-			//
-			if (epair->key) FreeMemory(epair->key);
-			if (epair->value) FreeMemory(epair->value);
-			FreeMemory(epair);
-		} //end for
-	} //end for
+    for (i = 1; i < bspworld.numentities; i++)
+    {
+        ent = &bspworld.entities[i];
+        for (epair = ent->epairs; epair; epair = nextepair)
+        {
+            nextepair = epair->next;
+            //
+            if (epair->key) FreeMemory(epair->key);
+            if (epair->value) FreeMemory(epair->value);
+            FreeMemory(epair);
+        } //end for
+    } //end for
 */
 	if ( bspworld.ebuffer ) {
 		FreeMemory( bspworld.ebuffer );

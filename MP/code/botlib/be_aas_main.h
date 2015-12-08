@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 extern aas_t( *aasworld );
 
 //AAS error message
-void QDECL AAS_Error(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void QDECL AAS_Error( char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 //set AAS initialized
 void AAS_SetInitialized( void );
 //setup AAS with the given number of entities and clients

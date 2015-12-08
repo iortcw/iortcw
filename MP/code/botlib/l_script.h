@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -259,8 +259,6 @@ void FreeScript( script_t *script );
 //set the base folder to load files from
 void PS_SetBaseFolder( char *path );
 //print a script error with filename and line number
-void QDECL ScriptError(script_t *script, char *str, ...) __attribute__ ((format (printf, 2, 3)));
+void QDECL ScriptError( script_t *script, char *str, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 //print a script warning with filename and line number
-void QDECL ScriptWarning(script_t *script, char *str, ...) __attribute__ ((format (printf, 2, 3)));
-
-
+void QDECL ScriptWarning( script_t *script, char *str, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ void AAS_AltRoutingFloodCluster_r( int areanum ) {
 		//get the area at the other side of the face
 		if ( face->frontarea == areanum ) {
 			otherareanum = face->backarea;
-		} else { otherareanum = face->frontarea;}
+		} else { otherareanum = face->frontarea; }
 		//if there is an area at the other side of this face
 		if ( !otherareanum ) {
 			continue;
