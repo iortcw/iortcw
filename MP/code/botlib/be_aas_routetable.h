@@ -127,9 +127,8 @@ typedef struct
 // Temp structures used only during route-table contruction
 typedef struct
 {
-	unsigned short int numvisible;          // number of areas that are visible and within range
-	unsigned short int
-		visible[MAX_VISIBLE_AREAS];         // list of area indexes of visible and within range areas
+	unsigned short int numvisible;			// number of areas that are visible and within range
+	unsigned short int visible[MAX_VISIBLE_AREAS];	// list of area indexes of visible and within range areas
 } aas_area_buildlocalinfo_t;
 
 typedef struct aas_parent_link_s

@@ -86,7 +86,9 @@ void AAS_AltRoutingFloodCluster_r( int areanum ) {
 		//get the area at the other side of the face
 		if ( face->frontarea == areanum ) {
 			otherareanum = face->backarea;
-		} else { otherareanum = face->frontarea; }
+		} else {
+			otherareanum = face->frontarea;
+		}
 		//if there is an area at the other side of this face
 		if ( !otherareanum ) {
 			continue;

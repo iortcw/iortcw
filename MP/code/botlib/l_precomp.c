@@ -252,18 +252,6 @@ void PC_PushScript( source_t *source, script_t *script ) {
 // Changes Globals:		-
 //============================================================================
 void PC_InitTokenHeap( void ) {
-	/*
-	int i;
-
-	if (tokenheapinitialized) return;
-	freetokens = NULL;
-	for (i = 0; i < TOKEN_HEAP_SIZE; i++)
-	{
-	    token_heap[i].next = freetokens;
-	    freetokens = &token_heap[i];
-	} //end for
-	tokenheapinitialized = qtrue;
-	*/
 } //end of the function PC_InitTokenHeap
 //============================================================================
 //
@@ -442,7 +430,9 @@ int PC_ReadDefineParms( source_t *source, define_t *define, token_t **parms, int
 				t->next = NULL;
 				if ( last ) {
 					last->next = t;
-				} else { parms[numparms] = t; }
+				} else {
+					parms[numparms] = t;
+				}
 				last = t;
 			} //end if
 		} //end while
@@ -494,23 +484,6 @@ int PC_MergeTokens( token_t *t1, token_t *t2 ) {
 	  //FIXME: merging of two number of the same sub type
 	return qfalse;
 } //end of the function PC_MergeTokens
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-/*
-void PC_PrintDefine(define_t *define)
-{
-    printf("define->name = %s\n", define->name);
-    printf("define->flags = %d\n", define->flags);
-    printf("define->builtin = %d\n", define->builtin);
-    printf("define->numparms = %d\n", define->numparms);
-//	token_t *parms;					//define parameters
-//	token_t *tokens;					//macro tokens (possibly containing parm tokens)
-//	struct define_s *next;			//next defined macro in a list
-} //end of the function PC_PrintDefine*/
 #if DEFINEHASHING
 //============================================================================
 //
@@ -816,7 +789,9 @@ int PC_ExpandDefine( source_t *source, token_t *deftoken, define_t *define,
 				t->next = NULL;
 				if ( last ) {
 					last->next = t;
-				} else { first = t; }
+				} else {
+					first = t;
+				}
 				last = t;
 			} //end for
 		} //end if
@@ -827,7 +802,9 @@ int PC_ExpandDefine( source_t *source, token_t *deftoken, define_t *define,
 				//the stringizing operator must be followed by a define parameter
 				if ( dt->next ) {
 					parmnum = PC_FindDefineParm( define, dt->next->string );
-				} else { parmnum = -1; }
+				} else {
+					parmnum = -1;
+				}
 				//
 				if ( parmnum >= 0 ) {
 					//step over the stringizing operator
@@ -853,7 +830,9 @@ int PC_ExpandDefine( source_t *source, token_t *deftoken, define_t *define,
 			t->next = NULL;
 			if ( last ) {
 				last->next = t;
-			} else { first = t; }
+			} else {
+				first = t;
+			}
 			last = t;
 		} //end else
 	} //end for
@@ -1115,7 +1094,9 @@ int PC_Directive_undef( source_t *source ) {
 			{
 				if ( lastdefine ) {
 					lastdefine->hashnext = define->hashnext;
-				} else { source->definehash[hash] = define->hashnext; }
+				} else {
+					source->definehash[hash] = define->hashnext;
+				}
 				PC_FreeDefine( define );
 			} //end else
 			break;
@@ -1133,7 +1114,9 @@ int PC_Directive_undef( source_t *source ) {
 			{
 				if ( lastdefine ) {
 					lastdefine->next = define->next;
-				} else { source->defines = define->next; }
+				} else {
+					source->defines = define->next;
+				}
 				PC_FreeDefine( define );
 			} //end else
 			break;
@@ -1227,7 +1210,9 @@ int PC_Directive_define( source_t *source ) {
 				t->next = NULL;
 				if ( last ) {
 					last->next = t;
-				} else { define->parms = t; }
+				} else {
+					define->parms = t;
+				}
 				last = t;
 				define->numparms++;
 				//read next token
@@ -1263,7 +1248,9 @@ int PC_Directive_define( source_t *source ) {
 		t->next = NULL;
 		if ( last ) {
 			last->next = t;
-		} else { define->tokens = t; }
+		} else {
+			define->tokens = t;
+		}
 		last = t;
 	} while ( PC_ReadLine( source, &token ) );
 	//
@@ -1437,7 +1424,9 @@ define_t *PC_CopyDefine( source_t *source, define_t *define ) {
 		newtoken->next = NULL;
 		if ( lasttoken ) {
 			lasttoken->next = newtoken;
-		} else { newdefine->tokens = newtoken; }
+		} else {
+			newdefine->tokens = newtoken;
+		}
 		lasttoken = newtoken;
 	} //end for
 	  //copy the define parameters
@@ -1448,7 +1437,9 @@ define_t *PC_CopyDefine( source_t *source, define_t *define ) {
 		newtoken->next = NULL;
 		if ( lasttoken ) {
 			lasttoken->next = newtoken;
-		} else { newdefine->parms = newtoken; }
+		} else {
+			newdefine->parms = newtoken;
+		}
 		lasttoken = newtoken;
 	} //end for
 	return newdefine;
@@ -1693,7 +1684,7 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 				error = 1;
 				break;
 			}     //end if
-			      //v = (value_t *) GetClearedMemory(sizeof(value_t));
+			//v = (value_t *) GetClearedMemory(sizeof(value_t));
 			AllocValue( v );
 #if DEFINEHASHING
 			if ( PC_FindHashedDefine( source->definehash, t->string ) )
@@ -1779,7 +1770,7 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 				}     //end if
 				break;
 			}     //end else if
-			      //check for invalid operators on floating point values
+			//check for invalid operators on floating point values
 			if ( !integer ) {
 				if ( t->subtype == P_BIN_NOT || t->subtype == P_MOD ||
 					 t->subtype == P_RSHIFT || t->subtype == P_LSHIFT ||
@@ -1865,7 +1856,9 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 				o->prev = lastoperator;
 				if ( lastoperator ) {
 					lastoperator->next = o;
-				} else { firstoperator = o; }
+				} else {
+					firstoperator = o;
+				}
 				lastoperator = o;
 				lastwasvalue = 0;
 			}     //end if
@@ -2035,14 +2028,15 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 #ifdef DEBUG_EVAL
 		if ( integer ) {
 			Log_Write( "result value = %d", v1->intvalue );
-		} else { Log_Write( "result value = %f", v1->floatvalue ); }
+		} else {
+			Log_Write( "result value = %f", v1->floatvalue );
+		}
 #endif //DEBUG_EVAL
 		if ( error ) {
 			break;
 		}
 		//if not an operator with arity 1
-		if ( o->operator != P_LOGIC_NOT
-			 && o->operator != P_BIN_NOT ) {
+		if ( o->operator != P_LOGIC_NOT && o->operator != P_BIN_NOT ) {
 			//remove the second value if not question mark operator
 			if ( o->operator != P_QUESTIONMARK ) {
 				v = v->next;
@@ -2051,7 +2045,9 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 			if ( v ) {
 				if ( v->prev ) {
 					v->prev->next = v->next;
-				} else { firstvalue = v->next; }
+				} else {
+					firstvalue = v->next;
+				}
 				if ( v->next ) {
 					v->next->prev = v->prev;
 				}
@@ -2062,7 +2058,9 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 		  //remove the operator
 		if ( o->prev ) {
 			o->prev->next = o->next;
-		} else { firstoperator = o->next; }
+		} else {
+			firstoperator = o->next;
+		}
 		if ( o->next ) {
 			o->next->prev = o->prev;
 		}
@@ -2136,7 +2134,9 @@ int PC_Evaluate( source_t *source, signed long int *intvalue,
 				t->next = NULL;
 				if ( lasttoken ) {
 					lasttoken->next = t;
-				} else { firsttoken = t; }
+				} else {
+					firsttoken = t;
+				}
 				lasttoken = t;
 			} //end if
 			else if ( !strcmp( token.string, "defined" ) ) {
@@ -2145,7 +2145,9 @@ int PC_Evaluate( source_t *source, signed long int *intvalue,
 				t->next = NULL;
 				if ( lasttoken ) {
 					lasttoken->next = t;
-				} else { firsttoken = t; }
+				} else {
+					firsttoken = t;
+				}
 				lasttoken = t;
 			} //end if
 			else
@@ -2171,7 +2173,9 @@ int PC_Evaluate( source_t *source, signed long int *intvalue,
 			t->next = NULL;
 			if ( lasttoken ) {
 				lasttoken->next = t;
-			} else { firsttoken = t; }
+			} else {
+				firsttoken = t;
+			}
 			lasttoken = t;
 		} //end else
 		else //can't evaluate the token
@@ -2199,7 +2203,9 @@ int PC_Evaluate( source_t *source, signed long int *intvalue,
 #ifdef DEBUG_EVAL
 	if ( integer ) {
 		Log_Write( "eval result: %d", *intvalue );
-	} else { Log_Write( "eval result: %f", *floatvalue ); }
+	} else {
+		Log_Write( "eval result: %f", *floatvalue );
+	}
 #endif //DEBUG_EVAL
 	   //
 	return qtrue;
@@ -2245,7 +2251,9 @@ int PC_DollarEvaluate( source_t *source, signed long int *intvalue,
 				t->next = NULL;
 				if ( lasttoken ) {
 					lasttoken->next = t;
-				} else { firsttoken = t; }
+				} else {
+					firsttoken = t;
+				}
 				lasttoken = t;
 			} //end if
 			else if ( !strcmp( token.string, "defined" ) ) {
@@ -2254,7 +2262,9 @@ int PC_DollarEvaluate( source_t *source, signed long int *intvalue,
 				t->next = NULL;
 				if ( lasttoken ) {
 					lasttoken->next = t;
-				} else { firsttoken = t; }
+				} else {
+					firsttoken = t;
+				}
 				lasttoken = t;
 			} //end if
 			else
@@ -2288,7 +2298,9 @@ int PC_DollarEvaluate( source_t *source, signed long int *intvalue,
 			t->next = NULL;
 			if ( lasttoken ) {
 				lasttoken->next = t;
-			} else { firsttoken = t; }
+			} else {
+				firsttoken = t;
+			}
 			lasttoken = t;
 		} //end else
 		else //can't evaluate the token
@@ -2316,7 +2328,9 @@ int PC_DollarEvaluate( source_t *source, signed long int *intvalue,
 #ifdef DEBUG_EVAL
 	if ( integer ) {
 		Log_Write( "$eval result: %d", *intvalue );
-	} else { Log_Write( "$eval result: %f", *floatvalue ); }
+	} else {
+		Log_Write( "$eval result: %f", *floatvalue );
+	}
 #endif //DEBUG_EVAL
 	   //
 	return qtrue;

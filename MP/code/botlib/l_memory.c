@@ -93,7 +93,9 @@ void LinkMemoryBlock( memoryblock_t *block ) {
 void UnlinkMemoryBlock( memoryblock_t *block ) {
 	if ( block->prev ) {
 		block->prev->next = block->next;
-	} else { memory = block->next; }
+	} else {
+		memory = block->next;
+	}
 	if ( block->next ) {
 		block->next->prev = block->prev;
 	}

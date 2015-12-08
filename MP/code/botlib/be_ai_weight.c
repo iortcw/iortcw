@@ -215,7 +215,9 @@ fuzzyseperator_t *ReadFuzzySeperators_r( source_t *source ) {
 			fs->index = index;
 			if ( lastfs ) {
 				lastfs->next = fs;
-			} else { firstfs = fs; }
+			} else {
+				firstfs = fs;
+			}
 			lastfs = fs;
 			if ( def ) {
 				if ( founddefault ) {
@@ -293,7 +295,9 @@ fuzzyseperator_t *ReadFuzzySeperators_r( source_t *source ) {
 		fs->child = NULL;
 		if ( lastfs ) {
 			lastfs->next = fs;
-		} else { firstfs = fs; }
+		} else {
+			firstfs = fs;
+		}
 	} //end if
 	  //
 	return firstfs;
@@ -643,18 +647,24 @@ float FuzzyWeight_r( int *inventory, fuzzyseperator_t *fs ) {
 	if ( inventory[fs->index] < fs->value ) {
 		if ( fs->child ) {
 			return FuzzyWeight_r( inventory, fs->child );
-		} else { return fs->weight; }
+		} else {
+			return fs->weight;
+		}
 	} //end if
 	else if ( fs->next ) {
 		if ( inventory[fs->index] < fs->next->value ) {
 			//first weight
 			if ( fs->child ) {
 				w1 = FuzzyWeight_r( inventory, fs->child );
-			} else { w1 = fs->weight; }
+			} else {
+				w1 = fs->weight;
+			}
 			//second weight
 			if ( fs->next->child ) {
 				w2 = FuzzyWeight_r( inventory, fs->next->child );
-			} else { w2 = fs->next->weight; }
+			} else {
+				w2 = fs->next->weight;
+			}
 			//the scale factor
 			if ( fs->next->value == MAX_INVENTORYVALUE ) { // is fs->next the default case?
 				return w2;      // can't interpolate, return default weight
@@ -680,18 +690,24 @@ float FuzzyWeightUndecided_r( int *inventory, fuzzyseperator_t *fs ) {
 	if ( inventory[fs->index] < fs->value ) {
 		if ( fs->child ) {
 			return FuzzyWeightUndecided_r( inventory, fs->child );
-		} else { return fs->minweight + random() * ( fs->maxweight - fs->minweight ); }
+		} else {
+			return fs->minweight + random() * ( fs->maxweight - fs->minweight );
+		}
 	} //end if
 	else if ( fs->next ) {
 		if ( inventory[fs->index] < fs->next->value ) {
 			//first weight
 			if ( fs->child ) {
 				w1 = FuzzyWeightUndecided_r( inventory, fs->child );
-			} else { w1 = fs->minweight + random() * ( fs->maxweight - fs->minweight ); }
+			} else {
+				w1 = fs->minweight + random() * ( fs->maxweight - fs->minweight );
+			}
 			//second weight
 			if ( fs->next->child ) {
 				w2 = FuzzyWeight_r( inventory, fs->next->child );
-			} else { w2 = fs->next->minweight + random() * ( fs->next->maxweight - fs->next->minweight ); }
+			} else {
+				w2 = fs->next->minweight + random() * ( fs->next->maxweight - fs->next->minweight );
+			}
 			//the scale factor
 			if ( fs->next->value == MAX_INVENTORYVALUE ) { // is fs->next the default case?
 				return w2;      // can't interpolate, return default weight
@@ -726,13 +742,17 @@ float FuzzyWeight( int *inventory, weightconfig_t *wc, int weightnum ) {
 		if ( inventory[s->index] < s->value ) {
 			if ( s->child ) {
 				s = s->child;
-			} else { return s->weight; }
+			} else {
+				return s->weight;
+			}
 		} //end if
 		else
 		{
 			if ( s->next ) {
 				s = s->next;
-			} else { return s->weight; }
+			} else {
+				return s->weight;
+			}
 		} //end else
 	} //end if
 	return 0;
@@ -759,13 +779,17 @@ float FuzzyWeightUndecided( int *inventory, weightconfig_t *wc, int weightnum ) 
 		if ( inventory[s->index] < s->value ) {
 			if ( s->child ) {
 				s = s->child;
-			} else { return s->minweight + random() * ( s->maxweight - s->minweight ); }
+			} else {
+				return s->minweight + random() * ( s->maxweight - s->minweight );
+			}
 		} //end if
 		else
 		{
 			if ( s->next ) {
 				s = s->next;
-			} else { return s->minweight + random() * ( s->maxweight - s->minweight ); }
+			} else {
+				return s->minweight + random() * ( s->maxweight - s->minweight );
+			}
 		} //end else
 	} //end if
 	return 0;
@@ -785,7 +809,9 @@ void EvolveFuzzySeperator_r( fuzzyseperator_t *fs ) {
 		//every once in a while an evolution leap occurs, mutation
 		if ( random() < 0.01 ) {
 			fs->weight += crandom() * ( fs->maxweight - fs->minweight );
-		} else { fs->weight += crandom() * ( fs->maxweight - fs->minweight ) * 0.5; }
+		} else {
+			fs->weight += crandom() * ( fs->maxweight - fs->minweight ) * 0.5;
+		}
 		//modify bounds if necesary because of mutation
 		if ( fs->weight < fs->minweight ) {
 			fs->minweight = fs->weight;

@@ -316,10 +316,14 @@ void BotRemoveConsoleMessage( int chatstate, int handle ) {
 		if ( m->handle == handle ) {
 			if ( m->next ) {
 				m->next->prev = m->prev;
-			} else { cs->lastmessage = m->prev; }
+			} else {
+				cs->lastmessage = m->prev;
+			}
 			if ( m->prev ) {
 				m->prev->next = m->next;
-			} else { cs->firstmessage = m->next; }
+			} else {
+				cs->firstmessage = m->next;
+			}
 
 			FreeConsoleMessage( m );
 			cs->numconsolemessages--;
@@ -387,8 +391,7 @@ int BotNextConsoleMessage( int chatstate, bot_consolemessage_t *cm ) {
 		cm->handle = firstmsg->handle;
 		cm->time = firstmsg->time;
 		cm->type = firstmsg->type;
-		Q_strncpyz( cm->message, firstmsg->message,
-					sizeof( cm->message ) );
+		Q_strncpyz( cm->message, firstmsg->message, sizeof( cm->message ) );
 
 		/* We omit setting the two pointers in cm because pointer
 		 * size in the VM differs between the size in the engine on
@@ -698,7 +701,9 @@ bot_synonymlist_t *BotLoadSynonyms( char *filename ) {
 						syn->next = NULL;
 						if ( lastsyn ) {
 							lastsyn->next = syn;
-						} else { synlist = syn; }
+						} else {
+							synlist = syn;
+						}
 						lastsyn = syn;
 					} //end if
 					numsynonyms = 0;
@@ -729,7 +734,9 @@ bot_synonymlist_t *BotLoadSynonyms( char *filename ) {
 							//
 							if ( lastsynonym ) {
 								lastsynonym->next = synonym;
-							} else { syn->firstsynonym = synonym; }
+							} else {
+								syn->firstsynonym = synonym;
+							}
 							lastsynonym = synonym;
 						} //end if
 						numsynonyms++;
@@ -982,7 +989,9 @@ void BotDumpRandomStringList( bot_randomlist_t *randomlist ) {
 			fprintf( fp, "\"%s\"", rs->string );
 			if ( rs->next ) {
 				fprintf( fp, ", " );
-			} else { fprintf( fp, "}\n" ); }
+			} else {
+				fprintf( fp, "}\n" );
+			}
 		} //end for
 	} //end for
 } //end of the function BotDumpRandomStringList
@@ -1046,7 +1055,9 @@ bot_randomlist_t *BotLoadRandomStrings( char *filename ) {
 				//
 				if ( lastrandom ) {
 					lastrandom->next = random;
-				} else { randomlist = random; }
+				} else {
+					randomlist = random;
+				}
 				lastrandom = random;
 			} //end if
 			if ( !PC_ExpectTokenString( source, "=" ) ||
@@ -1220,7 +1231,9 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->next = NULL;
 			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			} else { firstpiece = matchpiece; }
+			} else {
+				firstpiece = matchpiece;
+			}
 			lastpiece = matchpiece;
 		} //end if
 		else if ( token.type == TT_STRING ) {
@@ -1232,7 +1245,9 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->next = NULL;
 			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			} else { firstpiece = matchpiece; }
+			} else {
+				firstpiece = matchpiece;
+			}
 			lastpiece = matchpiece;
 			//
 			lastmatchstring = NULL;
@@ -1257,7 +1272,9 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 				matchstring->next = NULL;
 				if ( lastmatchstring ) {
 					lastmatchstring->next = matchstring;
-				} else { matchpiece->firststring = matchstring; }
+				} else {
+					matchpiece->firststring = matchstring;
+				}
 				lastmatchstring = matchstring;
 			} while ( PC_CheckTokenString( source, "|" ) );
 			//if there was no empty string found
@@ -1351,7 +1368,9 @@ bot_matchtemplate_t *BotLoadMatchTemplates( char *matchfile ) {
 			//add the match template to the list
 			if ( lastmatch ) {
 				lastmatch->next = matchtemplate;
-			} else { matches = matchtemplate; }
+			} else {
+				matches = matchtemplate;
+			}
 			lastmatch = matchtemplate;
 			//load the match template
 			matchtemplate->first = BotLoadMatchPieces( source, "=" );
@@ -1699,7 +1718,9 @@ void BotDumpReplyChat( bot_replychat_t *replychat ) {
 				{
 					if ( mp->type == MT_STRING ) {
 						fprintf( fp, "\"%s\"", mp->firststring->string );
-					} else { fprintf( fp, "%d", mp->variable ); }
+					} else {
+						fprintf( fp, "%d", mp->variable );
+					}
 					if ( mp->next ) {
 						fprintf( fp, ", " );
 					}
@@ -1711,7 +1732,9 @@ void BotDumpReplyChat( bot_replychat_t *replychat ) {
 			} //end if
 			if ( key->next ) {
 				fprintf( fp, ", " );
-			} else { fprintf( fp, "] = %1.0f\n", rp->priority ); }
+			} else {
+				fprintf( fp, "] = %1.0f\n", rp->priority );
+			}
 		} //end for
 		fprintf( fp, "{\n" );
 		for ( cm = rp->firstchatmessage; cm; cm = cm->next )
@@ -2202,49 +2225,49 @@ int BotExpandChatMessage( char *outmessage, char *message, unsigned long mcontex
 				while ( *msgptr && *msgptr != ESCAPE_CHAR )
 				{
 					num = num * 10 + ( *msgptr++ ) - '0';
-				}     //end while
-				      //step over the trailing escape char
+				} //end while
+				//step over the trailing escape char
 				if ( *msgptr ) {
 					msgptr++;
 				}
 				if ( num > MAX_MATCHVARIABLES ) {
 					botimport.Print( PRT_ERROR, "BotConstructChat: message %s variable %d out of range\n", message, num );
 					return qfalse;
-				}     //end if
+				} //end if
 				ptr = variables[num].ptr;
 				if ( ptr ) {
 					for ( i = 0; i < variables[num].length; i++ )
 					{
 						temp[i] = ptr[i];
-					}     //end for
+					} //end for
 					temp[i] = 0;
 					//if it's a reply message
 					if ( reply ) {
 						//replace the reply synonyms in the variables
 						BotReplaceReplySynonyms( temp, vcontext );
-					}     //end if
+					} //end if
 					else
 					{
 						//replace synonyms in the variable context
 						BotReplaceSynonyms( temp, vcontext );
-					}     //end else
-					      //
+					} //end else
+					//
 					if ( len + strlen( temp ) >= MAX_MESSAGE_SIZE ) {
 						botimport.Print( PRT_ERROR, "BotConstructChat: message %s too long\n", message );
 						return qfalse;
-					}     //end if
+					} //end if
 					strcpy( &outputbuf[len], temp );
 					len += strlen( temp );
-				}     //end if
+				} //end if
 				break;
-			}     //end case
-			case 'r':    //random
+			} //end case
+			case 'r': //random
 			{
 				msgptr++;
 				for ( i = 0; ( *msgptr && *msgptr != ESCAPE_CHAR ); i++ )
 				{
 					temp[i] = *msgptr++;
-				}     //end while
+				} //end while
 				temp[i] = '\0';
 				//step over the trailing escape char
 				if ( *msgptr ) {
@@ -2255,21 +2278,21 @@ int BotExpandChatMessage( char *outmessage, char *message, unsigned long mcontex
 				if ( !ptr ) {
 					botimport.Print( PRT_ERROR, "BotConstructChat: unknown random string %s\n", temp );
 					return qfalse;
-				}     //end if
+				} //end if
 				if ( len + strlen( ptr ) >= MAX_MESSAGE_SIZE ) {
 					botimport.Print( PRT_ERROR, "BotConstructChat: message \"%s\" too long\n", message );
 					return qfalse;
-				}     //end if
+				} //end if
 				strcpy( &outputbuf[len], ptr );
 				len += strlen( ptr );
 				expansion = qtrue;
 				break;
-			}     //end case
+			} //end case
 			default:
 			{
 				botimport.Print( PRT_FATAL, "BotConstructChat: message \"%s\" invalid escape char\n", message );
 				break;
-			}     //end default
+			} //end default
 			} //end switch
 		} //end if
 		else
@@ -2496,7 +2519,9 @@ void BotPrintReplyChatKeys( bot_replychat_t *replychat ) {
 			{
 				if ( mp->type == MT_STRING ) {
 					botimport.Print( PRT_MESSAGE, "\"%s\"", mp->firststring->string );
-				} else { botimport.Print( PRT_MESSAGE, "%d", mp->variable ); }
+				} else {
+					botimport.Print( PRT_MESSAGE, "%d", mp->variable );
+				}
 				if ( mp->next ) {
 					botimport.Print( PRT_MESSAGE, ", " );
 				}
@@ -2508,7 +2533,9 @@ void BotPrintReplyChatKeys( bot_replychat_t *replychat ) {
 		} //end if
 		if ( key->next ) {
 			botimport.Print( PRT_MESSAGE, ", " );
-		} else { botimport.Print( PRT_MESSAGE, "] = %1.0f\n", replychat->priority ); }
+		} else {
+			botimport.Print( PRT_MESSAGE, "] = %1.0f\n", replychat->priority );
+		}
 	} //end for
 	botimport.Print( PRT_MESSAGE, "{\n" );
 } //end of the function BotPrintReplyChatKeys
@@ -2695,7 +2722,9 @@ void BotEnterChat( int chatstate, int client, int sendto ) {
 		} else {
 			if ( sendto == CHAT_TEAM ) {
 				EA_SayTeam( client, cs->chatmessage );
-			} else { EA_Say( client, cs->chatmessage ); }
+			} else {
+				EA_Say( client, cs->chatmessage );
+			}
 		}
 		//clear the chat message from the state
 		strcpy( cs->chatmessage, "" );

@@ -140,12 +140,16 @@ qboolean ReadNumber( source_t *source, fielddef_t *fd, void *p ) {
 	if ( ( fd->type & FT_TYPE ) == FT_CHAR ) {
 		if ( fd->type & FT_UNSIGNED ) {
 			intmin = 0; intmax = 255;
-		} else {intmin = -128; intmax = 127; }
+		} else {
+			intmin = -128; intmax = 127;
+		}
 	} //end if
 	if ( ( fd->type & FT_TYPE ) == FT_INT ) {
 		if ( fd->type & FT_UNSIGNED ) {
 			intmin = 0; intmax = 65535;
-		} else {intmin = -32768; intmax = 32767; }
+		} else {
+			intmin = -32768; intmax = 32767;
+		}
 	} //end else if
 	if ( ( fd->type & FT_TYPE ) == FT_CHAR || ( fd->type & FT_TYPE ) == FT_INT ) {
 		if ( fd->type & FT_BOUNDED ) {
@@ -169,12 +173,16 @@ qboolean ReadNumber( source_t *source, fielddef_t *fd, void *p ) {
 	if ( ( fd->type & FT_TYPE ) == FT_CHAR ) {
 		if ( fd->type & FT_UNSIGNED ) {
 			*(unsigned char *) p = (unsigned char) intval;
-		} else { *(char *) p = (char) intval; }
+		} else {
+			*(char *) p = (char) intval;
+		}
 	} //end if
 	else if ( ( fd->type & FT_TYPE ) == FT_INT ) {
 		if ( fd->type & FT_UNSIGNED ) {
 			*(unsigned int *) p = (unsigned int) intval;
-		} else { *(int *) p = (int) intval; }
+		} else {
+			*(int *) p = (int) intval;
+		}
 	} //end else
 	else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
 		*(float *) p = (float) intval;

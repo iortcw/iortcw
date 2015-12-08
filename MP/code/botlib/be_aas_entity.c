@@ -112,7 +112,9 @@ int AAS_UpdateEntity( int entnum, bot_entitystate_t *state ) {
 
 	if ( ( *defaultaasworld ).numframes == 1 ) {
 		relink = qtrue;
-	} else { relink = qfalse; }
+	} else {
+		relink = qfalse;
+	}
 
 	//
 	if ( ent->i.solid == SOLID_BSP ) {
@@ -428,27 +430,7 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum ) {
 		}
 		return qtrue;
 	}
-/*
-    ent = (*defaultaasworld).entities;
-    for (i = 0; i < (*defaultaasworld).maxclients; i++, ent++)
-    {
-        if (!ent->i.valid)
-            continue;
-        if (!ent->i.solid)
-            continue;
-        if (i == entnumIgnore)
-            continue;
-        if (i == entnumIgnore2)
-            continue;
-        for (link = ent->areas; link; link = link->next_area)
-        {
-            if (link->areanum == areanum)
-            {
-                return qtrue;
-            } //end if
-        } //end for
-    }
-*/
+
 	return qfalse;
 }
 

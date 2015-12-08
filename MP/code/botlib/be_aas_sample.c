@@ -239,7 +239,9 @@ int AAS_PointAreaNum( vec3_t point ) {
 		dist = DotProduct( point, plane->normal ) - plane->dist;
 		if ( dist > 0 ) {
 			nodenum = node->children[0];
-		} else { nodenum = node->children[1]; }
+		} else {
+			nodenum = node->children[1];
+		}
 	} //end while
 	if ( !nodenum ) {
 #ifdef AAS_SAMPLE_DEBUG
@@ -410,8 +412,8 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 				//NOTE: no need for epsilons because the points will be
 				//exactly the same when they're both the start point
 				if ( tstack_p->start[0] == start[0] &&
-					 tstack_p->start[1] == start[1] &&
-					 tstack_p->start[2] == start[2] ) {
+					tstack_p->start[1] == start[1] &&
+					tstack_p->start[2] == start[2] ) {
 					trace.startsolid = qtrue;
 					trace.fraction = 0.0;
 					VectorClear( v1 );
@@ -460,8 +462,8 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 			//NOTE: no need for epsilons because the points will be
 			//exactly the same when they're both the start point
 			if ( tstack_p->start[0] == start[0] &&
-				 tstack_p->start[1] == start[1] &&
-				 tstack_p->start[2] == start[2] ) {
+				tstack_p->start[1] == start[1] &&
+				tstack_p->start[2] == start[2] ) {
 				trace.startsolid = qtrue;
 				trace.fraction = 0.0;
 				VectorClear( v1 );
@@ -502,26 +504,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 		plane = &( *aasworld ).planes[aasnode->planenum];
 
 		switch ( plane->type )
-		{/*FIXME: wtf doesn't this work? obviously the axial node planes aren't always facing positive!!!
-			//check for axial planes
-			case PLANE_X:
-			{
-			    front = cur_start[0] - plane->dist;
-			    back = cur_end[0] - plane->dist;
-			    break;
-			} //end case
-			case PLANE_Y:
-			{
-			    front = cur_start[1] - plane->dist;
-			    back = cur_end[1] - plane->dist;
-			    break;
-			} //end case
-			case PLANE_Z:
-			{
-			    front = cur_start[2] - plane->dist;
-			    back = cur_end[2] - plane->dist;
-			    break;
-			} //end case*/
+		{
 		default:     //gee it's not an axial plane
 		{
 			front = DotProduct( cur_start, plane->normal ) - plane->dist;
@@ -534,7 +517,9 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
 		//put the crosspoint TRACEPLANE_EPSILON pixels on the near side
 		if ( front < 0 ) {
 			frac = ( front + TRACEPLANE_EPSILON ) / ( front - back );
-		} else { frac = ( front - TRACEPLANE_EPSILON ) / ( front - back ); }
+		} else {
+			frac = ( front - TRACEPLANE_EPSILON ) / ( front - back );
+		}
 		//if the whole to be traced line is totally at the front of this node
 		//only go down the tree with the front child
 		if ( ( front >= -ON_EPSILON && back >= -ON_EPSILON ) ) {
@@ -687,26 +672,7 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 		plane = &( *aasworld ).planes[aasnode->planenum];
 
 		switch ( plane->type )
-		{/*FIXME: wtf doesn't this work? obviously the node planes aren't always facing positive!!!
-			//check for axial planes
-			case PLANE_X:
-			{
-			    front = cur_start[0] - plane->dist;
-			    back = cur_end[0] - plane->dist;
-			    break;
-			} //end case
-			case PLANE_Y:
-			{
-			    front = cur_start[1] - plane->dist;
-			    back = cur_end[1] - plane->dist;
-			    break;
-			} //end case
-			case PLANE_Z:
-			{
-			    front = cur_start[2] - plane->dist;
-			    back = cur_end[2] - plane->dist;
-			    break;
-			} //end case*/
+		{
 		default:     //gee it's not an axial plane
 		{
 			front = DotProduct( cur_start, plane->normal ) - plane->dist;
@@ -747,7 +713,9 @@ int AAS_TraceAreas( vec3_t start, vec3_t end, int *areas, vec3_t *points, int ma
 			//put the crosspoint TRACEPLANE_EPSILON pixels on the near side
 			if ( front < 0 ) {
 				frac = ( front ) / ( front - back );
-			} else { frac = ( front ) / ( front - back ); }
+			} else {
+				frac = ( front ) / ( front - back );
+			}
 			if ( frac < 0 ) {
 				frac = 0;
 			} else if ( frac > 1 ) {
@@ -928,7 +896,9 @@ aas_face_t *AAS_AreaGroundFace( int areanum, vec3_t point ) {
 			//get the up or down normal
 			if ( ( *aasworld ).planes[face->planenum].normal[2] < 0 ) {
 				VectorNegate( up, normal );
-			} else { VectorCopy( up, normal ); }
+			} else {
+				VectorCopy( up, normal );
+			}
 			//check if the point is in the face
 			if ( AAS_InsideFace( face, normal, point, 0.01 ) ) {
 				return face;
@@ -984,32 +954,7 @@ aas_face_t *AAS_TraceEndFace( aas_trace_t *trace ) {
 			//face in the plane then it has to be the good one
 			//if there are more faces in the same plane then always
 			//check the one with the fewest edges first
-/*			if (firstface)
-            {
-                if (firstface->numedges < face->numedges)
-                {
-                    if (AAS_InsideFace(firstface,
-                        (*aasworld).planes[face->planenum].normal, trace->endpos))
-                    {
-                        return firstface;
-                    } //end if
-                    firstface = face;
-                } //end if
-                else
-                {
-                    if (AAS_InsideFace(face,
-                        (*aasworld).planes[face->planenum].normal, trace->endpos))
-                    {
-                        return face;
-                    } //end if
-                } //end else
-            } //end if
-            else
-            {
-                firstface = face;
-            } //end else*/
-			if ( AAS_InsideFace( face,
-								 ( *aasworld ).planes[face->planenum].normal, trace->endpos, 0.01 ) ) {
+			if ( AAS_InsideFace( face, ( *aasworld ).planes[face->planenum].normal, trace->endpos, 0.01 ) ) {
 				return face;
 			}
 		} //end if
@@ -1099,7 +1044,9 @@ void AAS_UnlinkFromAreas( aas_link_t *areas ) {
 		//remove the entity from the linked list of this area
 		if ( link->prev_ent ) {
 			link->prev_ent->next_ent = link->next_ent;
-		} else { ( *aasworld ).arealinkedentities[link->areanum] = link->next_ent; }
+		} else {
+			( *aasworld ).arealinkedentities[link->areanum] = link->next_ent;
+		}
 		if ( link->next_ent ) {
 			link->next_ent->prev_ent = link->prev_ent;
 		}

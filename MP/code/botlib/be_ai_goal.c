@@ -430,7 +430,9 @@ void AddLevelItemToList( levelitem_t *li ) {
 void RemoveLevelItemFromList( levelitem_t *li ) {
 	if ( li->prev ) {
 		li->prev->next = li->next;
-	} else { levelitems = li->next; }
+	} else {
+		levelitems = li->next;
+	}
 	if ( li->next ) {
 		li->next->prev = li->prev;
 	}
@@ -1198,28 +1200,6 @@ int BotChooseLTGItem( int goalstate, vec3_t origin, int *inventory, int travelfl
 	} //end for
 	  //if no goal item found
 	if ( !bestitem ) {
-		/*
-		//if not in lava or slime
-		if (!AAS_AreaLava(areanum) && !AAS_AreaSlime(areanum))
-		{
-		    if (AAS_RandomGoalArea(areanum, travelflags, &goal.areanum, goal.origin))
-		    {
-		        VectorSet(goal.mins, -15, -15, -15);
-		        VectorSet(goal.maxs, 15, 15, 15);
-		        goal.entitynum = 0;
-		        goal.number = 0;
-		        goal.flags = GFL_ROAM;
-		        goal.iteminfo = 0;
-		        //push the goal on the stack
-		        BotPushGoal(goalstate, &goal);
-		        //
-		#ifdef DEBUG
-		        botimport.Print(PRT_MESSAGE, "chosen roam goal area %d\n", goal.areanum);
-		#endif //DEBUG
-		        return qtrue;
-		    } //end if
-		} //end if
-		*/
 		return qfalse;
 	} //end if
 	  //create a bot goal for this item
@@ -1293,7 +1273,9 @@ int BotChooseNBGItem( int goalstate, vec3_t origin, int *inventory, int travelfl
 	//
 	if ( ltg ) {
 		ltg_time = AAS_AreaTravelTimeToGoalArea( areanum, origin, ltg->areanum, travelflags );
-	} else { ltg_time = 99999; }
+	} else {
+		ltg_time = 99999;
+	}
 	//the item configuration
 	ic = itemconfig;
 	if ( !itemconfig ) {

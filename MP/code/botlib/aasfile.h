@@ -259,16 +259,16 @@ typedef struct aas_header_s
 
 -	when a node child is a solid leaf the node child number is zero
 -	two adjacent areas (sharing a plane at opposite sides) share a face
-    this face is a portal between the areas
+-	this face is a portal between the areas
 -	when an area uses a face from the faceindex with a positive index
-    then the face plane normal points into the area
+-	then the face plane normal points into the area
 -	the face edges are stored counter clockwise using the edgeindex
 -	two adjacent convex areas (sharing a face) only share One face
-    this is a simple result of the areas being convex
+-	this is a simple result of the areas being convex
 -	the convex areas can't have a mixture of ground and gap faces
-    other mixtures of faces in one area are allowed
+-	other mixtures of faces in one area are allowed
 -	areas with the AREACONTENTS_CLUSTERPORTAL in the settings have
-    cluster number zero
+-	cluster number zero
 -	edge zero is a dummy
 -	face zero is a dummy
 -	area zero is a dummy

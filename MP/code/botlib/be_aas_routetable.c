@@ -1131,9 +1131,9 @@ void AAS_RT_ShowRoute( vec3_t srcpos, int srcnum, int destnum ) {
 		goal.areanum = destnum;
 		VectorCopy( botlibglobals.goalorigin, goal.origin );
 		reachnum = BotGetReachabilityToGoal( srcpos, srcnum, -1,
-											 lastgoalareanum, lastareanum,
-											 avoidreach, avoidreachtimes, avoidreachtries,
-											 &goal, TFL_DEFAULT | TFL_FUNCBOB, TFL_DEFAULT | TFL_FUNCBOB );
+				lastgoalareanum, lastareanum,
+				avoidreach, avoidreachtimes, avoidreachtries,
+				&goal, TFL_DEFAULT | TFL_FUNCBOB, TFL_DEFAULT | TFL_FUNCBOB );
 		AAS_ReachabilityFromNum( reachnum, &reach );
 		AAS_ShowReachability( &reach );
 	}
@@ -1149,17 +1149,16 @@ AAS_RT_GetHidePos
 */
 int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, vec3_t enemyorigin, int enemyareanum, int travelflags );
 qboolean AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos ) {
-	static int tfl = TFL_DEFAULT & ~( TFL_JUMPPAD | TFL_ROCKETJUMP | TFL_BFGJUMP | TFL_GRAPPLEHOOK | TFL_DOUBLEJUMP | TFL_RAMPJUMP | TFL_STRAFEJUMP | TFL_LAVA );   //----(SA)	modified since slime is no longer deadly
-//	static int tfl = TFL_DEFAULT & ~(TFL_JUMPPAD|TFL_ROCKETJUMP|TFL_BFGJUMP|TFL_GRAPPLEHOOK|TFL_DOUBLEJUMP|TFL_RAMPJUMP|TFL_STRAFEJUMP|TFL_SLIME|TFL_LAVA);
+static int tfl = TFL_DEFAULT & ~( TFL_JUMPPAD | TFL_ROCKETJUMP | TFL_BFGJUMP | TFL_GRAPPLEHOOK | TFL_DOUBLEJUMP | TFL_RAMPJUMP | TFL_STRAFEJUMP | TFL_LAVA );   //----(SA)	modified since slime is no longer deadly
+//static int tfl = TFL_DEFAULT & ~(TFL_JUMPPAD|TFL_ROCKETJUMP|TFL_BFGJUMP|TFL_GRAPPLEHOOK|TFL_DOUBLEJUMP|TFL_RAMPJUMP|TFL_STRAFEJUMP|TFL_SLIME|TFL_LAVA);
 
-#if 1
 	// use MrE's breadth first method
 	int hideareanum;
 //	int pretime;
 
 	// disabled this so grenade hiding works
-	//if (!srcarea || !destarea)
-	//	return qfalse;
+//	if (!srcarea || !destarea)
+//		return qfalse;
 
 //	pretime = -Sys_MilliSeconds();
 
@@ -1174,265 +1173,6 @@ qboolean AAS_RT_GetHidePos( vec3_t srcpos, int srcnum, int srcarea, vec3_t destp
 //	botimport.Print(PRT_MESSAGE, "Breadth First HidePos: %i ms\n", pretime + Sys_MilliSeconds());
 
 	return qtrue;
-
-#else
-	// look around at random parent areas, if any of them have a center point
-	// that isn't visible from "destpos", then return it's position in returnPos
-
-	int i, j, pathArea, dir;
-	unsigned short int destTravelTime;
-	aas_rt_parent_t *srcParent, *travParent, *destParent;
-	aas_rt_child_t  *srcChild, *destChild, *travChild;
-	aas_rt_route_t  *route;
-	vec3_t destVec;
-	float destTravelDist;
-	static float lastTime;
-	static int frameCount, maxPerFrame = 2;
-	int firstreach;
-	aas_reachability_t  *reachability, *reach;
-	qboolean startVisible;
-	unsigned short int bestTravelTime, thisTravelTime, elapsedTravelTime;
-	#define MAX_HIDE_TRAVELTIME     1000    // 10 seconds is a very long way away
-	unsigned char destVisLookup[MAX_PARENTS];
-	unsigned short int *destVisTrav;
-
-	aas_rt_t    *rt;
-
-	const int MAX_CHECK_VISPARENTS    = 100;
-	int visparents_count, total_parents_checked;
-	int thisParentIndex;
-	int pretime;
-
-	if ( !( rt = aasworld->routetable ) ) { // no route table present
-		return qfalse;
-	}
-/*
-    if (lastTime > (AAS_Time() - 0.1)) {
-        if (frameCount++ > maxPerFrame) {
-            return qfalse;
-        }
-    } else {
-        frameCount = 0;
-        lastTime = AAS_Time();
-    }
-*/
-	pretime = -Sys_MilliSeconds();
-
-	// is the src area grounded?
-	if ( !( srcChild = AAS_RT_GetChild( srcarea ) ) ) {
-		return qfalse;
-	}
-	// does it have a parent?
-// all valid areas have a parent
-//	if (!srcChild->numParentLinks) {
-//		return qfalse;
-//	}
-	// get the dest (enemy) area
-	if ( !( destChild = AAS_RT_GetChild( destarea ) ) ) {
-		return qfalse;
-	}
-	destParent = &rt->parents[ rt->parentLinks[destChild->startParentLinks].parent ];
-	//
-	// populate the destVisAreas
-	memset( destVisLookup, 0, sizeof( destVisLookup ) );
-	destVisTrav = rt->visibleParents + destParent->startVisibleParents;
-	for ( i = 0; i < destParent->numVisibleParents; i++, destVisTrav++ ) {
-		destVisLookup[*destVisTrav] = 1;
-	}
-	//
-	// use the first parent to source the vis areas from
-	srcParent = &rt->parents[ rt->parentLinks[srcChild->startParentLinks].parent ];
-	//
-	// set the destTravelTime
-	if ( route = AAS_RT_GetRoute( srcarea, srcpos, destarea ) ) {
-		destTravelTime = route->travel_time;
-	} else {
-		destTravelTime = 0;
-	}
-	bestTravelTime = MAX_HIDE_TRAVELTIME;   // ignore any routes longer than 10 seconds away
-	// set the destVec
-	VectorSubtract( destpos, srcpos, destVec );
-	destTravelDist = VectorNormalize( destVec );
-	//
-	// randomize the direction we traverse the list, so the hiding spot isn't always the same
-	if ( rand() % 2 ) {
-		dir = 1;    // forward
-	} else {
-		dir = -1;   // reverse
-	}
-	// randomize the starting area
-	if ( srcParent->numVisibleParents ) {
-		i = rand() % srcParent->numVisibleParents;
-	} else {    // prevent divide by zero
-		i = 0;
-	}
-	//
-	// setup misc stuff
-	reachability = ( *aasworld ).reachability;
-	startVisible = botimport.AICast_VisibleFromPos( destpos, destnum, srcpos, srcnum, qfalse );
-	//
-	// set the firstreach to prevent having to do an array and pointer lookup for each destination
-	firstreach = ( *aasworld ).areasettings[srcarea].firstreachablearea;
-	//
-	// just check random parent areas, traversing the route until we find an area that can't be seen from the dest area
-	for ( visparents_count = 0, total_parents_checked = 0; visparents_count < MAX_CHECK_VISPARENTS && total_parents_checked < rt->numParents; total_parents_checked++ ) {
-		thisParentIndex = rand() % rt->numParents;
-		travParent = &rt->parents[ thisParentIndex ];
-		//
-		// never go to the enemy's areas
-		if ( travParent->areanum == destarea ) {
-			continue;
-		}
-		//
-		// if it's visible from dest, ignore it
-		if ( destVisLookup[thisParentIndex] ) {
-			continue;
-		}
-		//
-		visparents_count++;
-		// they might be visible, check to see if the path to the area, takes us towards the
-		// enemy we are trying to hide from
-		{
-			qboolean invalidRoute;
-			vec3_t curPos, lastVec;
-			#define     GETHIDE_MAX_CHECK_PATHS     15
-			//
-			invalidRoute = qfalse;
-			// initialize the pathArea
-			pathArea = srcarea;
-			VectorCopy( srcpos, curPos );
-			// now evaluate the path
-			for ( j = 0; j < GETHIDE_MAX_CHECK_PATHS; j++ ) {
-				// get the reachability to the travParent
-				if ( !( route = AAS_RT_GetRoute( pathArea, curPos, travParent->areanum ) ) ) {
-					// we can't get to the travParent, so don't bother checking it
-					invalidRoute = qtrue;
-					break;
-				}
-				// set the pathArea
-				reach = &reachability[route->reachable_index];
-				// how far have we travelled so far?
-				elapsedTravelTime = AAS_AreaTravelTimeToGoalArea( pathArea, curPos, reach->areanum, tfl );
-				// add the travel to the center of the area
-				elapsedTravelTime += AAS_AreaTravelTime( reach->areanum, reach->end, ( *aasworld ).areas[reach->areanum].center );
-				// have we gone too far already?
-				if ( elapsedTravelTime > bestTravelTime ) {
-					invalidRoute = qtrue;
-					break;
-				} else {
-					thisTravelTime = route->travel_time;
-				}
-				//
-				// if this travel would have us do something wierd
-				if ( ( reach->traveltype == TRAVEL_WALKOFFLEDGE ) && ( reach->traveltime > 500 ) ) {
-					invalidRoute = qtrue;
-					break;
-				}
-				//
-				pathArea = reach->areanum;
-				VectorCopy( reach->end, curPos );
-				//
-				// if this moves us into the enemies area, skip it
-				if ( pathArea == destarea ) {
-					invalidRoute = qtrue;
-					break;
-				}
-				// if we are very close, don't get any closer under any circumstances
-				{
-					vec3_t vec;
-					float dist;
-					//
-					VectorSubtract( destpos, reachability[firstreach + route->reachable_index].end, vec );
-					dist = VectorNormalize( vec );
-					//
-					if ( destTravelTime < 400 ) {
-						if ( dist < destTravelDist ) {
-							invalidRoute = qtrue;
-							break;
-						}
-						if ( DotProduct( destVec, vec ) < 0.2 ) {
-							invalidRoute = qtrue;
-							break;
-						}
-					} else {
-						if ( dist < destTravelDist * 0.7 ) {
-							invalidRoute = qtrue;
-							break;
-						}
-					}
-					//
-					// check the directions to make sure we're not trying to run through them
-					if ( j > 0 ) {
-						if ( DotProduct( vec, lastVec ) < 0.2 ) {
-							invalidRoute = qtrue;
-							break;
-						}
-					} else if ( DotProduct( destVec, vec ) < 0.2 ) {
-						invalidRoute = qtrue;
-						break;
-					}
-					//
-					VectorCopy( vec, lastVec );
-				}
-				//
-				// if this area isn't in the visible list for the enemy's area, it's a good hiding spot
-				if ( !( travChild = AAS_RT_GetChild( pathArea ) ) ) {
-					invalidRoute = qtrue;
-					break;
-				}
-				if ( !destVisLookup[rt->parentLinks[travChild->startParentLinks].parent] ) {
-					// success ?
-					if ( !botimport.AICast_VisibleFromPos( destpos, destnum, ( *aasworld ).areas[pathArea].center, srcnum, qfalse ) ) {
-						// SUCCESS !!
-						travParent = &rt->parents[rt->parentLinks[travChild->startParentLinks].parent];
-						break;
-					}
-				} else {
-					// if we weren't visible when starting, make sure we don't move into their view
-					if ( !startVisible ) { //botimport.AICast_VisibleFromPos( destpos, destnum, reachability[firstreach + route->reachable_index].end, srcnum, qfalse )) {
-						invalidRoute = qtrue;
-						break;
-					}
-				}
-				//
-				// if this is the travParent, then stop checking
-				if ( pathArea == travParent->areanum ) {
-					invalidRoute = qtrue;   // we didn't find a hiding spot
-					break;
-				}
-			}   // end for areas in route
-			//
-			// if the route is invalid, skip this travParent
-			if ( invalidRoute ) {
-				continue;
-			}
-		}
-		//
-		// now last of all, check that this area is a safe hiding spot
-//		if (botimport.AICast_VisibleFromPos( destpos, destnum, (*aasworld).areas[travParent->areanum].center, srcnum, qfalse )) {
-//			continue;
-//		}
-		//
-		// we've found a good hiding spot, so use it
-		VectorCopy( ( *aasworld ).areas[travParent->areanum].center, returnPos );
-		bestTravelTime = elapsedTravelTime;
-		//
-		if ( thisTravelTime < 300 ) {
-			botimport.Print( PRT_MESSAGE, "Fuzzy RT HidePos: %i ms\n", pretime + Sys_MilliSeconds() );
-			return qtrue;
-		}
-	}
-	//
-	// did we find something?
-	if ( bestTravelTime < MAX_HIDE_TRAVELTIME ) {
-		botimport.Print( PRT_MESSAGE, "Fuzzy RT HidePos: %i ms\n", pretime + Sys_MilliSeconds() );
-		return qtrue;
-	}
-	//
-	// couldn't find anything
-	botimport.Print( PRT_MESSAGE, "Fuzzy RT HidePos FAILED: %i ms\n", pretime + Sys_MilliSeconds() );
-	return qfalse;
-#endif
 }
 
 /*
