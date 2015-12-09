@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -483,7 +483,7 @@ CL_ShutdonwCGame
 ====================
 */
 void CL_ShutdownCGame( void ) {
-	Key_SetCatcher( Key_GetCatcher( ) & ~KEYCATCH_CGAME );
+	Key_SetCatcher( Key_GetCatcher() & ~KEYCATCH_CGAME );
 	cls.cgameStarted = qfalse;
 	if ( !cgvm ) {
 		return;
@@ -509,10 +509,10 @@ The cgame module is making a system call
 intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	switch ( args[0] ) {
 	case CG_PRINT:
-		Com_Printf( "%s", (const char*)VMA(1) );
+		Com_Printf( "%s", (const char*)VMA( 1 ) );
 		return 0;
 	case CG_ERROR:
-		Com_Error( ERR_DROP, "%s", (const char*)VMA(1) );
+		Com_Error( ERR_DROP, "%s", (const char*)VMA( 1 ) );
 		return 0;
 	case CG_MILLISECONDS:
 		return Sys_Milliseconds();
@@ -523,7 +523,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		Cvar_Update( VMA( 1 ) );
 		return 0;
 	case CG_CVAR_SET:
-		Cvar_SetSafe( VMA(1), VMA(2) );
+		Cvar_SetSafe( VMA( 1 ), VMA( 2 ) );
 		return 0;
 	case CG_CVAR_VARIABLESTRINGBUFFER:
 		Cvar_VariableStringBuffer( VMA( 1 ), VMA( 2 ), args[3] );
@@ -553,10 +553,10 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		CL_AddCgameCommand( VMA( 1 ) );
 		return 0;
 	case CG_REMOVECOMMAND:
-		Cmd_RemoveCommandSafe( VMA(1) );
+		Cmd_RemoveCommandSafe( VMA( 1 ) );
 		return 0;
 	case CG_SENDCLIENTCOMMAND:
-		CL_AddReliableCommand(VMA(1), qfalse);
+		CL_AddReliableCommand( VMA( 1 ), qfalse );
 		return 0;
 	case CG_UPDATESCREEN:
 		// this is used during lengthy level loading, so pump message loop
@@ -647,12 +647,12 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_R_REGISTERSKIN:
 		return re.RegisterSkin( VMA( 1 ) );
 
-		//----(SA)	added
+	//----(SA)	added
 	case CG_R_GETSKINMODEL:
 		return re.GetSkinModel( args[1], VMA( 2 ), VMA( 3 ) );
 	case CG_R_GETMODELSHADER:
 		return re.GetShaderFromModel( args[1], args[2], args[3] );
-		//----(SA)	end
+	//----(SA)	end
 
 	case CG_R_REGISTERSHADER:
 		return re.RegisterShader( VMA( 1 ) );
@@ -670,11 +670,11 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_R_ADDPOLYTOSCENE:
 		re.AddPolyToScene( args[1], args[2], VMA( 3 ) );
 		return 0;
-		// Ridah
+	// Ridah
 	case CG_R_ADDPOLYSTOSCENE:
 		re.AddPolysToScene( args[1], args[2], VMA( 3 ), args[4] );
 		return 0;
-		// done.
+	// done.
 //	case CG_R_LIGHTFORPOINT:
 //		return re.LightForPoint( VMA(1), VMA(2), VMA(3), VMA(4) );
 	case CG_R_ADDLIGHTTOSCENE:
@@ -740,7 +740,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return Key_GetCatcher();
 	case CG_KEY_SETCATCHER:
 		// Don't allow the cgame module to close the console
-		Key_SetCatcher( args[1] | ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) );
+		Key_SetCatcher( args[1] | ( Key_GetCatcher() & KEYCATCH_CONSOLE ) );
 		return 0;
 	case CG_KEY_GETKEY:
 		return Key_GetKey( VMA( 1 ) );
@@ -748,13 +748,13 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 
 
 	case CG_MEMSET:
-		Com_Memset( VMA(1), args[2], args[3] );
+		Com_Memset( VMA( 1 ), args[2], args[3] );
 		return args[1];
 	case CG_MEMCPY:
-		Com_Memcpy( VMA(1), VMA(2), args[3] );
+		Com_Memcpy( VMA( 1 ), VMA( 2 ), args[3] );
 		return args[1];
 	case CG_STRNCPY:
-		strncpy( VMA(1), VMA(2), args[3] );
+		strncpy( VMA( 1 ), VMA( 2 ), args[3] );
 		return args[1];
 	case CG_SIN:
 		return FloatAsInt( sin( VMF( 1 ) ) );
@@ -789,7 +789,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_REAL_TIME:
 		return Com_RealTime( VMA( 1 ) );
 	case CG_SNAPVECTOR:
-		Q_SnapVector(VMA(1));
+		Q_SnapVector( VMA( 1 ) );
 		return 0;
 
 	case CG_SENDMOVESPEEDSTOGAME:
@@ -842,23 +842,23 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 			// NERVE - SMF
 			if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_PICKTEAM" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_PICKTEAM );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_PICKPLAYER" ) )    {
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_PICKPLAYER" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_PICKPLAYER );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_QUICKMESSAGE" ) )    {
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_QUICKMESSAGE" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_QUICKMESSAGE );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_QUICKMESSAGEALT" ) )    {
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_QUICKMESSAGEALT" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_QUICKMESSAGEALT );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_LIMBO" ) )    {
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_LIMBO" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_LIMBO );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_AUTOUPDATE" ) )    {
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_AUTOUPDATE" ) ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_WM_AUTOUPDATE );
 			}
 			// -NERVE - SMF
 			else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "hbook1" ) ) {   //----(SA)
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_BOOK1 );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "hbook2" ) )    { //----(SA)
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "hbook2" ) ) {    //----(SA)
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_BOOK2 );
-			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "hbook3" ) )    { //----(SA)
+			} else if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "hbook3" ) ) {    //----(SA)
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_BOOK3 );
 			} else {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_CLIPBOARD );
@@ -866,7 +866,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		}
 		return 0;
 
-		// NERVE - SMF
+	// NERVE - SMF
 	case CG_INGAME_CLOSEPOPUP:
 		// if popup menu is up, then close it
 		if ( VMA( 1 ) && !Q_stricmp( VMA( 1 ), "UIMENU_WM_LIMBO" ) ) {
@@ -898,7 +898,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 	case CG_TRANSLATE_STRING:
 		CL_TranslateString( VMA( 1 ), VMA( 2 ) );
 		return 0;
-		// - NERVE - SMF
+	// - NERVE - SMF
 	default:
 		Com_Error( ERR_DROP, "Bad cgame system trap: %ld", (long int) args[0] );
 	}
@@ -1028,7 +1028,7 @@ void CL_InitCGame( void ) {
 	Com_sprintf( cl.mapname, sizeof( cl.mapname ), "maps/%s.bsp", mapname );
 
 	// load the dll or bytecode
-	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, Cvar_VariableValue("vm_cgame") );
+	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, Cvar_VariableValue( "vm_cgame" ) );
 	if ( !cgvm ) {
 		Com_Error( ERR_DROP, "VM_Create on cgame failed" );
 	}
@@ -1040,8 +1040,9 @@ void CL_InitCGame( void ) {
 	VM_Call( cgvm, CG_INIT, clc.serverMessageSequence, clc.lastExecutedServerCommand, clc.clientNum );
 
 	// reset any CVAR_CHEAT cvars registered by cgame
-	if ( !clc.demoplaying && !cl_connectedToCheatServer )
+	if ( !clc.demoplaying && !cl_connectedToCheatServer ) {
 		Cvar_SetCheatState();
+	}
 
 	// we will send a usercmd this frame, which
 	// will cause the server to send us the first snapshot
@@ -1196,28 +1197,28 @@ void CL_FirstSnapshot( void ) {
 	}
 
 #ifdef USE_MUMBLE
-	if ((cl_useMumble->integer) && !mumble_islinked()) {
-		int ret = mumble_link(CLIENT_WINDOW_TITLE);
-		Com_Printf("Mumble: Linking to Mumble application %s\n", ret==0?"ok":"failed");
+	if ( ( cl_useMumble->integer ) && !mumble_islinked() ) {
+		int ret = mumble_link( CLIENT_WINDOW_TITLE );
+		Com_Printf( "Mumble: Linking to Mumble application %s\n", ret == 0 ? "ok" : "failed" );
 	}
 #endif
 
 #ifdef USE_VOIP
-	if (!clc.voipCodecInitialized) {
+	if ( !clc.voipCodecInitialized ) {
 		int i;
 		int error;
 
-		clc.opusEncoder = opus_encoder_create(48000, 1, OPUS_APPLICATION_VOIP, &error);
+		clc.opusEncoder = opus_encoder_create( 48000, 1, OPUS_APPLICATION_VOIP, &error );
 
 		if ( error ) {
-			Com_DPrintf("VoIP: Error opus_encoder_create %d\n", error);
+			Com_DPrintf( "VoIP: Error opus_encoder_create %d\n", error );
 			return;
 		}
 
-		for (i = 0; i < MAX_CLIENTS; i++) {
-			clc.opusDecoder[i] = opus_decoder_create(48000, 1, &error);
+		for ( i = 0; i < MAX_CLIENTS; i++ ) {
+			clc.opusDecoder[i] = opus_decoder_create( 48000, 1, &error );
 			if ( error ) {
-				Com_DPrintf("VoIP: Error opus_decoder_create(%d) %d\n", i, error);
+				Com_DPrintf( "VoIP: Error opus_decoder_create(%d) %d\n", i, error );
 				return;
 			}
 			clc.voipIgnore[i] = qfalse;
@@ -1225,9 +1226,9 @@ void CL_FirstSnapshot( void ) {
 		}
 		clc.voipCodecInitialized = qtrue;
 		clc.voipMuteAll = qfalse;
-		Cmd_AddCommand ("voip", CL_Voip_f);
-		Cvar_Set("cl_voipSendTarget", "spatial");
-		Com_Memset(clc.voipTargets, ~0, sizeof(clc.voipTargets));
+		Cmd_AddCommand( "voip", CL_Voip_f );
+		Cvar_Set( "cl_voipSendTarget", "spatial" );
+		Com_Memset( clc.voipTargets, ~0, sizeof( clc.voipTargets ) );
 	}
 #endif
 }
@@ -1338,7 +1339,7 @@ void CL_SetCGameTime( void ) {
 	// while a normal demo may have different time samples
 	// each time it is played back
 	if ( cl_timedemo->integer ) {
-		int now = Sys_Milliseconds( );
+		int now = Sys_Milliseconds();
 		int frameDuration;
 
 		if ( !clc.timeDemoStart ) {
@@ -1351,20 +1352,22 @@ void CL_SetCGameTime( void ) {
 		clc.timeDemoLastFrame = now;
 
 		// Ignore the first measurement as it'll always be 0
-		if( clc.timeDemoFrames > 0 )
-		{
-			if( frameDuration > clc.timeDemoMaxDuration )
+		if ( clc.timeDemoFrames > 0 ) {
+			if ( frameDuration > clc.timeDemoMaxDuration ) {
 				clc.timeDemoMaxDuration = frameDuration;
+			}
 
-			if( frameDuration < clc.timeDemoMinDuration )
+			if ( frameDuration < clc.timeDemoMinDuration ) {
 				clc.timeDemoMinDuration = frameDuration;
+			}
 
 			// 255 ms = about 4fps
-			if( frameDuration > UCHAR_MAX )
+			if ( frameDuration > UCHAR_MAX ) {
 				frameDuration = UCHAR_MAX;
+			}
 
 			clc.timeDemoDurations[ ( clc.timeDemoFrames - 1 ) %
-				MAX_TIMEDEMO_DURATIONS ] = frameDuration;
+								   MAX_TIMEDEMO_DURATIONS ] = frameDuration;
 		}
 
 		clc.timeDemoFrames++;
@@ -1403,11 +1406,11 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 		tagnameSize = strlen( tagname ) + 1;
 
 		// alloc data on cgame hunk and copy data to it
-		cgOr = VM_GetTempMemory( cgvm, sizeof (orientation_t), or );
+		cgOr = VM_GetTempMemory( cgvm, sizeof( orientation_t ), or );
 		cgTagname = VM_GetTempMemory( cgvm, tagnameSize, tagname );
 
 		if ( !cgOr || !cgTagname ) {
-			Com_Printf("WARNING: CL_GetTag: Not enough cgame QVM memory (increase vm_minQvmHunkMegs cvar).\n");
+			Com_Printf( "WARNING: CL_GetTag: Not enough cgame QVM memory (increase vm_minQvmHunkMegs cvar).\n" );
 			return qfalse;
 		}
 
@@ -1416,7 +1419,7 @@ qboolean CL_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 		// copy result back to game memory and free temp in reverse order
 		// tagname isn't copied back because it might be a static string.
 		VM_FreeTempMemory( cgvm, cgTagname, tagnameSize, NULL );
-		VM_FreeTempMemory( cgvm, cgOr, sizeof (orientation_t), or );
+		VM_FreeTempMemory( cgvm, cgOr, sizeof( orientation_t ), or );
 
 		return foundTag;
 	}

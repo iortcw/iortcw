@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ void LAN_LoadCachedServers( void ) {
 		FS_Read( &cls.numglobalservers, sizeof( int ), fileIn );
 		FS_Read( &cls.numfavoriteservers, sizeof( int ), fileIn );
 		FS_Read( &size, sizeof( int ), fileIn );
-		if (size == sizeof(cls.globalServers) + sizeof(cls.favoriteServers)) {
+		if ( size == sizeof( cls.globalServers ) + sizeof( cls.favoriteServers ) ) {
 			FS_Read( &cls.globalServers, sizeof( cls.globalServers ), fileIn );
 			FS_Read( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileIn );
 		} else {
@@ -85,7 +85,7 @@ void LAN_SaveServersToCache( void ) {
 	fileOut = FS_SV_FOpenFileWrite( "servercache.dat" );
 	FS_Write( &cls.numglobalservers, sizeof( int ), fileOut );
 	FS_Write( &cls.numfavoriteservers, sizeof( int ), fileOut );
-	size = sizeof(cls.globalServers) + sizeof(cls.favoriteServers);
+	size = sizeof( cls.globalServers ) + sizeof( cls.favoriteServers );
 	FS_Write( &size, sizeof( int ), fileOut );
 	FS_Write( &cls.globalServers, sizeof( cls.globalServers ), fileOut );
 	FS_Write( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileOut );
@@ -244,20 +244,20 @@ static void LAN_GetServerAddressString( int source, int n, char *buf, int buflen
 	switch ( source ) {
 	case AS_LOCAL:
 		if ( n >= 0 && n < MAX_OTHER_SERVERS ) {
-			Q_strncpyz(buf, NET_AdrToStringwPort( cls.localServers[n].adr) , buflen );
+			Q_strncpyz( buf, NET_AdrToStringwPort( cls.localServers[n].adr ), buflen );
 			return;
 		}
 		break;
 	case AS_MPLAYER:
 	case AS_GLOBAL:
 		if ( n >= 0 && n < MAX_GLOBAL_SERVERS ) {
-			Q_strncpyz(buf, NET_AdrToStringwPort( cls.globalServers[n].adr) , buflen );
+			Q_strncpyz( buf, NET_AdrToStringwPort( cls.globalServers[n].adr ), buflen );
 			return;
 		}
 		break;
 	case AS_FAVORITES:
 		if ( n >= 0 && n < MAX_OTHER_SERVERS ) {
-			Q_strncpyz(buf, NET_AdrToStringwPort( cls.favoriteServers[n].adr) , buflen );
+			Q_strncpyz( buf, NET_AdrToStringwPort( cls.favoriteServers[n].adr ), buflen );
 			return;
 		}
 		break;
@@ -304,7 +304,7 @@ static void LAN_GetServerInfo( int source, int n, char *buf, int buflen ) {
 		Info_SetValueForKey( info, "game", server->game );
 		Info_SetValueForKey( info, "gametype", va( "%i",server->gameType ) );
 		Info_SetValueForKey( info, "nettype", va( "%i",server->netType ) );
-		Info_SetValueForKey( info, "addr", NET_AdrToStringwPort(server->adr));
+		Info_SetValueForKey( info, "addr", NET_AdrToStringwPort( server->adr ) );
 		Info_SetValueForKey( info, "sv_allowAnonymous", va( "%i", server->allowAnonymous ) );
 		Info_SetValueForKey( info, "friendlyFire", va( "%i", server->friendlyFire ) );               // NERVE - SMF
 		Info_SetValueForKey( info, "maxlives", va( "%i", server->maxlives ) );                       // NERVE - SMF
@@ -312,8 +312,8 @@ static void LAN_GetServerInfo( int source, int n, char *buf, int buflen ) {
 		Info_SetValueForKey( info, "punkbuster", va( "%i", server->punkbuster ) );                   // DHM - Nerve
 		Info_SetValueForKey( info, "gamename", server->gameName );                                // Arnout
 		Info_SetValueForKey( info, "g_antilag", va( "%i", server->antilag ) ); // TTimo
-		Info_SetValueForKey( info, "g_needpass", va("%i", server->g_needpass));
-		Info_SetValueForKey( info, "g_humanplayers", va("%i", server->g_humanplayers));
+		Info_SetValueForKey( info, "g_needpass", va( "%i", server->g_needpass ) );
+		Info_SetValueForKey( info, "g_humanplayers", va( "%i", server->g_humanplayers ) );
 		Q_strncpyz( buf, info, buflen );
 	} else {
 		if ( buf ) {
@@ -407,7 +407,7 @@ static int LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int
 	case SORT_CLIENTS:
 		if ( server1->clients < server2->clients ) {
 			res = -1;
-		} else if ( server1->clients > server2->clients )     {
+		} else if ( server1->clients > server2->clients ) {
 			res = 1;
 		} else {
 			res = 0;
@@ -416,7 +416,7 @@ static int LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int
 	case SORT_GAME:
 		if ( server1->gameType < server2->gameType ) {
 			res = -1;
-		} else if ( server1->gameType > server2->gameType )     {
+		} else if ( server1->gameType > server2->gameType ) {
 			res = 1;
 		} else {
 			res = 0;
@@ -425,7 +425,7 @@ static int LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int
 	case SORT_PING:
 		if ( server1->ping < server2->ping ) {
 			res = -1;
-		} else if ( server1->ping > server2->ping )     {
+		} else if ( server1->ping > server2->ping ) {
 			res = 1;
 		} else {
 			res = 0;
@@ -434,7 +434,7 @@ static int LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int
 	case SORT_PUNKBUSTER:
 		if ( server1->punkbuster < server2->punkbuster ) {
 			res = -1;
-		} else if ( server1->punkbuster > server2->punkbuster )     {
+		} else if ( server1->punkbuster > server2->punkbuster ) {
 			res = 1;
 		} else {
 			res = 0;
@@ -729,11 +729,11 @@ The ui module is making a system call
 intptr_t CL_UISystemCalls( intptr_t *args ) {
 	switch ( args[0] ) {
 	case UI_ERROR:
-		Com_Error( ERR_DROP, "%s", (const char*)VMA(1) );
+		Com_Error( ERR_DROP, "%s", (const char*)VMA( 1 ) );
 		return 0;
 
 	case UI_PRINT:
-		Com_Printf( "%s", (const char*)VMA(1) );
+		Com_Printf( "%s", (const char*)VMA( 1 ) );
 		return 0;
 
 	case UI_MILLISECONDS:
@@ -748,7 +748,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_CVAR_SET:
-		Cvar_SetSafe( VMA(1), VMA(2) );
+		Cvar_SetSafe( VMA( 1 ), VMA( 2 ) );
 		return 0;
 
 	case UI_CVAR_VARIABLEVALUE:
@@ -759,7 +759,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_CVAR_SETVALUE:
-		Cvar_SetValueSafe( VMA(1), VMF(2) );
+		Cvar_SetValueSafe( VMA( 1 ), VMF( 2 ) );
 		return 0;
 
 	case UI_CVAR_RESET:
@@ -767,7 +767,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_CVAR_CREATE:
-		Cvar_Register( NULL, VMA(1), VMA(2), args[3] );
+		Cvar_Register( NULL, VMA( 1 ), VMA( 2 ), args[3] );
 		return 0;
 
 	case UI_CVAR_INFOSTRINGBUFFER:
@@ -782,12 +782,11 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_CMD_EXECUTETEXT:
-		if(args[1] == EXEC_NOW
-		&& (!strncmp(VMA(2), "snd_restart", 11)
-		|| !strncmp(VMA(2), "vid_restart", 11)
-		|| !strncmp(VMA(2), "quit", 5)))
-		{
-			Com_Printf (S_COLOR_YELLOW "turning EXEC_NOW '%.11s' into EXEC_INSERT\n", (const char*)VMA(2));
+		if ( args[1] == EXEC_NOW
+			 && ( !strncmp( VMA( 2 ), "snd_restart", 11 )
+				  || !strncmp( VMA( 2 ), "vid_restart", 11 )
+				  || !strncmp( VMA( 2 ), "quit", 5 ) ) ) {
+			Com_Printf( S_COLOR_YELLOW "turning EXEC_NOW '%.11s' into EXEC_INSERT\n", (const char*)VMA( 2 ) );
 			args[1] = EXEC_INSERT;
 		}
 		Cbuf_ExecuteText( args[1], VMA( 2 ) );
@@ -832,11 +831,11 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		re.AddPolyToScene( args[1], args[2], VMA( 3 ) );
 		return 0;
 
-		// Ridah
+	// Ridah
 	case UI_R_ADDPOLYSTOSCENE:
 		re.AddPolysToScene( args[1], args[2], VMA( 3 ), args[4] );
 		return 0;
-		// done.
+	// done.
 
 	case UI_R_ADDLIGHTTOSCENE:
 		re.AddLightToScene( VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), args[6] );
@@ -911,11 +910,11 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 
 	case UI_KEY_SETCATCHER:
 		// Don't allow the ui module to close the console
-		Key_SetCatcher( args[1] | ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) );
+		Key_SetCatcher( args[1] | ( Key_GetCatcher() & KEYCATCH_CONSOLE ) );
 		return 0;
 
 	case UI_GETCLIPBOARDDATA:
-		CL_GetClipboardData( VMA(1), args[2] );
+		CL_GetClipboardData( VMA( 1 ), args[2] );
 		return 0;
 
 	case UI_GETCLIENTSTATE:
@@ -1017,15 +1016,15 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return 0;
 
 	case UI_MEMSET:
-		Com_Memset( VMA(1), args[2], args[3] );
+		Com_Memset( VMA( 1 ), args[2], args[3] );
 		return args[1];
 
 	case UI_MEMCPY:
-		Com_Memcpy( VMA(1), VMA(2), args[3] );
+		Com_Memcpy( VMA( 1 ), VMA( 2 ), args[3] );
 		return args[1];
 
 	case UI_STRNCPY:
-		strncpy( VMA(1), VMA(2), args[3] );
+		strncpy( VMA( 1 ), VMA( 2 ), args[3] );
 		return args[1];
 
 	case UI_SIN:
@@ -1092,16 +1091,16 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 	case UI_VERIFY_CDKEY:
 		return CL_CDKeyValidate( VMA( 1 ), VMA( 2 ) );
 
-		// NERVE - SMF
+	// NERVE - SMF
 	case UI_CL_GETLIMBOSTRING:
 		return CL_GetLimboString( args[1], VMA( 2 ) );
 
 	case UI_CL_TRANSLATE_STRING:
 		CL_TranslateString( VMA( 1 ), VMA( 2 ) );
 		return 0;
-		// -NERVE - SMF
+	// -NERVE - SMF
 
-		// DHM - Nerve
+	// DHM - Nerve
 	case UI_CHECKAUTOUPDATE:
 		CL_CheckAutoUpdate();
 		return 0;
@@ -1109,7 +1108,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 	case UI_GET_AUTOUPDATE:
 		CL_GetAutoUpdate();
 		return 0;
-		// DHM - Nerve
+	// DHM - Nerve
 
 	case UI_OPENURL:
 		CL_OpenURL( (const char *)VMA( 1 ) );
@@ -1129,7 +1128,7 @@ CL_ShutdownUI
 ====================
 */
 void CL_ShutdownUI( void ) {
-	Key_SetCatcher( Key_GetCatcher( ) & ~KEYCATCH_UI );
+	Key_SetCatcher( Key_GetCatcher() & ~KEYCATCH_UI );
 	cls.uiStarted = qfalse;
 	if ( !uivm ) {
 		return;
@@ -1149,7 +1148,7 @@ void CL_InitUI( void ) {
 	int v;
 
 	// load the dll or bytecode
-	uivm = VM_Create( "ui", CL_UISystemCalls, Cvar_VariableValue("vm_ui") );
+	uivm = VM_Create( "ui", CL_UISystemCalls, Cvar_VariableValue( "vm_ui" ) );
 	if ( !uivm ) {
 		Com_Error( ERR_FATAL, "VM_Create on UI failed" );
 	}

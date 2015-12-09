@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f( void ) {
 	// Can't toggle the console when it's the only thing available
-	if ( clc.state == CA_DISCONNECTED && Key_GetCatcher( ) == KEYCATCH_CONSOLE ) {
+	if ( clc.state == CA_DISCONNECTED && Key_GetCatcher() == KEYCATCH_CONSOLE ) {
 		CL_StartDemoLoop();
 		return;
 	}
@@ -95,7 +95,7 @@ void Con_ToggleConsole_f( void ) {
 	g_consoleField.widthInChars = g_console_field_width;
 
 	Con_ClearNotify();
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_CONSOLE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_CONSOLE );
 }
 
 /*
@@ -119,7 +119,7 @@ void Con_MessageMode_f( void ) {
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_MESSAGE );
 }
 
 /*
@@ -132,7 +132,7 @@ void Con_MessageMode2_f( void ) {
 	chat_team = qtrue;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 25;
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_MESSAGE );
 }
 
 /*
@@ -149,7 +149,7 @@ void Con_MessageMode3_f( void ) {
 	chat_team = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_MESSAGE );
 }
 
 /*
@@ -166,7 +166,7 @@ void Con_MessageMode4_f( void ) {
 	chat_team = qfalse;
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_MESSAGE );
 }
 
 // NERVE - SMF
@@ -215,9 +215,9 @@ void Con_Dump_f( void ) {
 	int l, x, i;
 	short   *line;
 	fileHandle_t f;
-	int		bufferlen;
-	char	*buffer;
-	char	filename[MAX_QPATH];
+	int bufferlen;
+	char    *buffer;
+	char filename[MAX_QPATH];
 
 	if ( Cmd_Argc() != 2 ) {
 		Com_Printf( "usage: condump <filename>\n" );
@@ -229,11 +229,11 @@ void Con_Dump_f( void ) {
 
 	f = FS_FOpenFileWrite( filename );
 	if ( !f ) {
-		Com_Printf ("ERROR: couldn't open %s.\n", filename);
+		Com_Printf( "ERROR: couldn't open %s.\n", filename );
 		return;
 	}
 
-	Com_Printf ("Dumped console text to %s.\n", filename );
+	Com_Printf( "Dumped console text to %s.\n", filename );
 
 	// skip empty lines
 	for ( l = con.current - con.totallines + 1 ; l <= con.current ; l++ )
@@ -249,15 +249,15 @@ void Con_Dump_f( void ) {
 	}
 
 #ifdef _WIN32
-	bufferlen = con.linewidth + 3 * sizeof ( char );
+	bufferlen = con.linewidth + 3 * sizeof( char );
 #else
-	bufferlen = con.linewidth + 2 * sizeof ( char );
+	bufferlen = con.linewidth + 2 * sizeof( char );
 #endif
 
 	buffer = Hunk_AllocateTempMemory( bufferlen );
 
 	// write the remaining lines
-	buffer[bufferlen-1] = 0;
+	buffer[bufferlen - 1] = 0;
 	for ( ; l <= con.current ; l++ )
 	{
 		line = con.text + ( l % con.totallines ) * con.linewidth;
@@ -272,9 +272,9 @@ void Con_Dump_f( void ) {
 			}
 		}
 #ifdef _WIN32
-		Q_strcat(buffer, bufferlen, "\r\n");
+		Q_strcat( buffer, bufferlen, "\r\n" );
 #else
-		Q_strcat(buffer, bufferlen, "\n");
+		Q_strcat( buffer, bufferlen, "\n" );
 #endif
 		FS_Write( buffer, strlen( buffer ), f );
 	}
@@ -308,7 +308,7 @@ If the line width has changed, reformat the buffer.
 */
 void Con_CheckResize( void ) {
 	int i, j, width, oldwidth, oldtotallines, numlines, numchars;
-	short	tbuf[CON_TEXTSIZE];
+	short tbuf[CON_TEXTSIZE];
 
 	width = ( SCREEN_WIDTH / SMALLCHAR_WIDTH ) - 2;
 
@@ -370,7 +370,7 @@ Cmd_CompleteTxtName
 ==================
 */
 void Cmd_CompleteTxtName( char *args, int argNum ) {
-	if( argNum == 2 ) {
+	if ( argNum == 2 ) {
 		Field_CompleteFilename( "", "txt", qfalse, qtrue );
 	}
 }
@@ -394,10 +394,10 @@ void Con_Init( void ) {
 		Field_Clear( &historyEditLines[i] );
 		historyEditLines[i].widthInChars = g_console_field_width;
 	}
-	CL_LoadConsoleHistory( );
+	CL_LoadConsoleHistory();
 
 	Cmd_AddCommand( "toggleconsole", Con_ToggleConsole_f );
-	Cmd_AddCommand ("togglemenu", Con_ToggleMenu_f);
+	Cmd_AddCommand( "togglemenu", Con_ToggleMenu_f );
 	Cmd_AddCommand( "messagemode", Con_MessageMode_f );
 	Cmd_AddCommand( "messagemode2", Con_MessageMode2_f );
 	Cmd_AddCommand( "messagemode3", Con_MessageMode3_f );
@@ -414,18 +414,17 @@ void Con_Init( void ) {
 Con_Shutdown
 ================
 */
-void Con_Shutdown(void)
-{
-	Cmd_RemoveCommand("toggleconsole");
-	Cmd_RemoveCommand("togglemenu");
-	Cmd_RemoveCommand("messagemode");
-	Cmd_RemoveCommand("messagemode2");
-	Cmd_RemoveCommand("messagemode3");
-	Cmd_RemoveCommand("messagemode4");
-	Cmd_RemoveCommand("startLimboMode");
-	Cmd_RemoveCommand("stopLimboMode");
-	Cmd_RemoveCommand("clear");
-	Cmd_RemoveCommand("condump");
+void Con_Shutdown( void ) {
+	Cmd_RemoveCommand( "toggleconsole" );
+	Cmd_RemoveCommand( "togglemenu" );
+	Cmd_RemoveCommand( "messagemode" );
+	Cmd_RemoveCommand( "messagemode2" );
+	Cmd_RemoveCommand( "messagemode3" );
+	Cmd_RemoveCommand( "messagemode4" );
+	Cmd_RemoveCommand( "startLimboMode" );
+	Cmd_RemoveCommand( "stopLimboMode" );
+	Cmd_RemoveCommand( "clear" );
+	Cmd_RemoveCommand( "condump" );
 }
 
 /*
@@ -464,9 +463,9 @@ If no console is visible, the text will appear at the top of the game window
 ================
 */
 void CL_ConsolePrint( char *txt ) {
-	int	y, l;
-	unsigned char	c;
-	unsigned short	color;
+	int y, l;
+	unsigned char c;
+	unsigned short color;
 	qboolean skipnotify = qfalse;       // NERVE - SMF
 	int prev;                           // NERVE - SMF
 
@@ -493,7 +492,7 @@ void CL_ConsolePrint( char *txt ) {
 
 	color = ColorIndex( COLNSOLE_COLOR );
 
-	while ( (c = *((unsigned char *) txt)) != 0 ) {
+	while ( ( c = *( (unsigned char *) txt ) ) != 0 ) {
 		if ( Q_IsColorString( txt ) ) {
 			color = ColorIndex( *( txt + 1 ) );
 			txt += 2;
@@ -528,8 +527,9 @@ void CL_ConsolePrint( char *txt ) {
 			y = con.current % con.totallines;
 			con.text[y * con.linewidth + con.x] = ( color << 8 ) | c;
 			con.x++;
-			if(con.x >= con.linewidth)
+			if ( con.x >= con.linewidth ) {
 				Con_Linefeed( skipnotify );
+			}
 			break;
 		}
 	}
@@ -569,7 +569,7 @@ Draw the editline after a ] prompt
 void Con_DrawInput( void ) {
 	int y;
 
-	if ( clc.state != CA_DISCONNECTED && !(Key_GetCatcher( ) & KEYCATCH_CONSOLE ) ) {
+	if ( clc.state != CA_DISCONNECTED && !( Key_GetCatcher() & KEYCATCH_CONSOLE ) ) {
 		return;
 	}
 
@@ -580,7 +580,7 @@ void Con_DrawInput( void ) {
 	SCR_DrawSmallChar( con.xadjust + 1 * SMALLCHAR_WIDTH, y, ']' );
 
 	Field_Draw( &g_consoleField, con.xadjust + 2 * SMALLCHAR_WIDTH, y,
-		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue );
+				SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue );
 }
 
 
@@ -623,7 +623,7 @@ void Con_DrawNotify( void ) {
 		}
 		text = con.text + ( i % con.totallines ) * con.linewidth;
 
-		if (cl.snap.ps.pm_type != PM_INTERMISSION && Key_GetCatcher( ) & (KEYCATCH_UI | KEYCATCH_CGAME) ) {
+		if ( cl.snap.ps.pm_type != PM_INTERMISSION && Key_GetCatcher() & ( KEYCATCH_UI | KEYCATCH_CGAME ) ) {
 			continue;
 		}
 
@@ -643,12 +643,12 @@ void Con_DrawNotify( void ) {
 
 	re.SetColor( NULL );
 
-	if (Key_GetCatcher( ) & (KEYCATCH_UI | KEYCATCH_CGAME) ) {
+	if ( Key_GetCatcher() & ( KEYCATCH_UI | KEYCATCH_CGAME ) ) {
 		return;
 	}
 
 	// draw the chat line
-	if ( Key_GetCatcher( ) & KEYCATCH_MESSAGE ) {
+	if ( Key_GetCatcher() & KEYCATCH_MESSAGE ) {
 		if ( chat_team ) {
 			char buf[128];
 			CL_TranslateString( "say_team:", buf );
@@ -663,7 +663,7 @@ void Con_DrawNotify( void ) {
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-					SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
+					   SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
 
 	}
 
@@ -736,7 +736,7 @@ void Con_DrawSolidConsole( float frac ) {
 	for ( x = 0 ; x < i ; x++ ) {
 
 		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH,
-			lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
+						   lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
 	}
 
 
@@ -809,7 +809,7 @@ void Con_DrawConsole( void ) {
 
 	// if disconnected, render console full screen
 	if ( clc.state == CA_DISCONNECTED ) {
-		if ( !( Key_GetCatcher( ) & (KEYCATCH_UI | KEYCATCH_CGAME)) ) {
+		if ( !( Key_GetCatcher() & ( KEYCATCH_UI | KEYCATCH_CGAME ) ) ) {
 			Con_DrawSolidConsole( 1.0 );
 			return;
 		}
@@ -836,7 +836,7 @@ Scroll it up or down
 */
 void Con_RunConsole( void ) {
 	// decide on the destination height of the console
-	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {
+	if ( Key_GetCatcher() & KEYCATCH_CONSOLE ) {
 		con.finalFrac = 0.5;        // half screen
 	} else {
 		con.finalFrac = 0;              // none visible
@@ -849,7 +849,7 @@ void Con_RunConsole( void ) {
 			con.displayFrac = con.finalFrac;
 		}
 
-	} else if ( con.finalFrac > con.displayFrac )     {
+	} else if ( con.finalFrac > con.displayFrac ) {
 		con.displayFrac += con_conspeed->value * cls.realFrametime * 0.001;
 		if ( con.finalFrac < con.displayFrac ) {
 			con.displayFrac = con.finalFrac;
@@ -891,7 +891,7 @@ void Con_Close( void ) {
 	}
 	Field_Clear( &g_consoleField );
 	Con_ClearNotify();
-	Key_SetCatcher( Key_GetCatcher( ) & ~KEYCATCH_CONSOLE );
+	Key_SetCatcher( Key_GetCatcher() & ~KEYCATCH_CONSOLE );
 	con.finalFrac = 0;              // none visible
 	con.displayFrac = 0;
 }

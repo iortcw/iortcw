@@ -38,7 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../AL/alc.h"
 #else
 #ifdef _MSC_VER
-  // MSVC users must install the OpenAL SDK which doesn't use the AL/*.h scheme.
+// MSVC users must install the OpenAL SDK which doesn't use the AL/*.h scheme.
   #include <al.h>
   #include <alc.h>
 #else
@@ -244,7 +244,7 @@ extern LPALCCAPTURESAMPLES qalcCaptureSamples;
 #define qalcCaptureSamples alcCaptureSamples
 #endif
 
-qboolean QAL_Init(const char *libname);
+qboolean QAL_Init( const char *libname );
 void QAL_Shutdown( void );
 
-#endif	// __QAL_H__
+#endif  // __QAL_H__

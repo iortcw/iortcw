@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ Coordinates are at 640 by 480 virtual resolution
 ==================
 */
 void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor,
-		qboolean noColorEscape ) {
+						qboolean noColorEscape ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -274,7 +274,7 @@ to a fixed color.
 ==================
 */
 void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor,
-		qboolean noColorEscape ) {
+							 qboolean noColorEscape ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -359,30 +359,32 @@ SCR_DrawVoipMeter
 =================
 */
 void SCR_DrawVoipMeter( void ) {
-	char	buffer[16];
-	char	string[256];
+	char buffer[16];
+	char string[256];
 	int limit, i;
 
-	if (!cl_voipShowMeter->integer)
+	if ( !cl_voipShowMeter->integer ) {
 		return;  // player doesn't want to show meter at all.
-	else if (!cl_voipSend->integer)
+	} else if ( !cl_voipSend->integer )                                                                  {
 		return;  // not recording at the moment.
-	else if (clc.state != CA_ACTIVE)
+	} else if ( clc.state != CA_ACTIVE )                                                     {
 		return;  // not connected to a server.
-	else if (!clc.voipEnabled)
+	} else if ( !clc.voipEnabled )                                                   {
 		return;  // server doesn't support VoIP.
-	else if (clc.demoplaying)
+	} else if ( clc.demoplaying )                                                     {
 		return;  // playing back a demo.
-	else if (!cl_voip->integer)
+	} else if ( !cl_voip->integer )                                             {
 		return;  // client has VoIP support disabled.
 
-	limit = (int) (clc.voipPower * 10.0f);
-	if (limit > 10)
+	}
+	limit = (int) ( clc.voipPower * 10.0f );
+	if ( limit > 10 ) {
 		limit = 10;
+	}
 
-	for (i = 0; i < limit; i++)
+	for ( i = 0; i < limit; i++ )
 		buffer[i] = '*';
-	while (i < 10)
+	while ( i < 10 )
 		buffer[i++] = ' ';
 	buffer[i] = '\0';
 
@@ -397,14 +399,16 @@ SCR_ShowPing
 =================
 */
 void SCR_ShowPing( void ) {
-	char	string[11];
-	int	ping, w, x;
+	char string[11];
+	int ping, w, x;
 
-	if (!cl_showPing->integer)
+	if ( !cl_showPing->integer ) {
 		return;
+	}
 
-	if ( Cvar_VariableIntegerValue( "ui_limboMode" ) )
+	if ( Cvar_VariableIntegerValue( "ui_limboMode" ) ) {
 		return;
+	}
 
 	ping = cl.snap.ping;
 
@@ -413,10 +417,11 @@ void SCR_ShowPing( void ) {
 	w = strlen( string ) * TINYCHAR_WIDTH;
 	x = 320 - ( w * 0.5 );
 
-	if ( ping < 999 )
+	if ( ping < 999 ) {
 		SCR_DrawStringExt( x, 386, TINYCHAR_HEIGHT, string, g_color_table[7], qtrue, qfalse );
-	else
+	} else {
 		return;
+	}
 }
 
 /*
@@ -435,9 +440,9 @@ static float values[1024];
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph (float value) {
+void SCR_DebugGraph( float value ) {
 	values[current] = value;
-	current = (current + 1) % ARRAY_LEN(values);
+	current = ( current + 1 ) % ARRAY_LEN( values );
 }
 
 /*
@@ -462,7 +467,7 @@ void SCR_DrawDebugGraph( void ) {
 
 	for ( a = 0 ; a < w ; a++ )
 	{
-		i = (ARRAY_LEN(values)+current-1-(a % ARRAY_LEN(values))) % ARRAY_LEN(values);
+		i = ( ARRAY_LEN( values ) + current - 1 - ( a % ARRAY_LEN( values ) ) ) % ARRAY_LEN( values );
 		v = values[i];
 		v = v * cl_graphscale->integer + cl_graphshift->integer;
 
@@ -506,7 +511,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 
 	re.BeginFrame( stereoFrame );
 
-	uiFullscreen = (uivm && VM_Call( uivm, UI_IS_FULLSCREEN ));
+	uiFullscreen = ( uivm && VM_Call( uivm, UI_IS_FULLSCREEN ) );
 
 	// wide aspect ratio screens need to have the sides cleared
 	// unless they are displaying game renderings
@@ -521,7 +526,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 	// if the menu is going to cover the entire screen, we
 	// don't need to render anything under it
 	if ( uivm && !uiFullscreen ) {
-		switch( clc.state ) {
+		switch ( clc.state ) {
 		default:
 			Com_Error( ERR_FATAL, "SCR_DrawScreenField: bad clc.state" );
 			break;
@@ -571,7 +576,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 	}
 
 	// the menu draws next
-	if ( Key_GetCatcher( ) & KEYCATCH_UI && uivm ) {
+	if ( Key_GetCatcher() & KEYCATCH_UI && uivm ) {
 		VM_Call( uivm, UI_REFRESH, cls.realtime );
 	}
 
@@ -606,12 +611,11 @@ void SCR_UpdateScreen( void ) {
 
 	// If there is no VM, there are also no rendering commands issued. Stop the renderer in
 	// that case.
-	if( uivm || com_dedicated->integer )
-	{
+	if ( uivm || com_dedicated->integer ) {
 		// XXX
-		int in_anaglyphMode = Cvar_VariableIntegerValue("r_anaglyphMode");
+		int in_anaglyphMode = Cvar_VariableIntegerValue( "r_anaglyphMode" );
 		// if running in stereo, we need to draw the frame twice
-		if ( cls.glconfig.stereoEnabled || in_anaglyphMode) {
+		if ( cls.glconfig.stereoEnabled || in_anaglyphMode ) {
 			SCR_DrawScreenField( STEREO_LEFT );
 			SCR_DrawScreenField( STEREO_RIGHT );
 		} else {

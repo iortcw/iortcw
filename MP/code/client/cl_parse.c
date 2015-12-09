@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -490,13 +490,13 @@ void CL_SystemInfoChanged( void ) {
 
 #ifdef USE_VOIP
 #ifdef LEGACY_PROTOCOL
-	if(clc.compat)
+	if ( clc.compat ) {
 		clc.voipEnabled = qfalse;
-	else
+	} else
 #endif
 	{
 		s = Info_ValueForKey( systemInfo, "sv_voipProtocol" );
-		clc.voipEnabled = !Q_stricmp(s, "opus");
+		clc.voipEnabled = !Q_stricmp( s, "opus" );
 	}
 #endif
 
@@ -532,39 +532,36 @@ void CL_SystemInfoChanged( void ) {
 		}
 
 		// ehw!
-		if (!Q_stricmp(key, "fs_game"))
-		{
-			if(FS_CheckDirTraversal(value))
-			{
-				Com_Printf(S_COLOR_YELLOW "WARNING: Server sent invalid fs_game value %s\n", value);
+		if ( !Q_stricmp( key, "fs_game" ) ) {
+			if ( FS_CheckDirTraversal( value ) ) {
+				Com_Printf( S_COLOR_YELLOW "WARNING: Server sent invalid fs_game value %s\n", value );
 				continue;
 			}
-				
- 			gameSet = qtrue;
- 		}
- 
-		if((cvar_flags = Cvar_Flags(key)) == CVAR_NONEXISTENT)
-			Cvar_Get(key, value, CVAR_SERVER_CREATED | CVAR_ROM);
-		else
+
+			gameSet = qtrue;
+		}
+
+		if ( ( cvar_flags = Cvar_Flags( key ) ) == CVAR_NONEXISTENT ) {
+			Cvar_Get( key, value, CVAR_SERVER_CREATED | CVAR_ROM );
+		} else
 		{
 			// If this cvar may not be modified by a server discard the value.
-			if(!(cvar_flags & (CVAR_SYSTEMINFO | CVAR_SERVER_CREATED | CVAR_USER_CREATED)))
-			{
+			if ( !( cvar_flags & ( CVAR_SYSTEMINFO | CVAR_SERVER_CREATED | CVAR_USER_CREATED ) ) ) {
 #ifndef STANDALONE
-				if(Q_stricmp(key, "g_synchronousClients") && Q_stricmp(key, "pmove_fixed") &&
-				   Q_stricmp(key, "pmove_msec"))
+				if ( Q_stricmp( key, "g_synchronousClients" ) && Q_stricmp( key, "pmove_fixed" ) &&
+					 Q_stricmp( key, "pmove_msec" ) )
 #endif
 				{
-					Com_DPrintf(S_COLOR_YELLOW "WARNING: server is not allowed to set %s=%s\n", key, value);
+					Com_DPrintf( S_COLOR_YELLOW "WARNING: server is not allowed to set %s=%s\n", key, value );
 					continue;
 				}
 			}
 
-			Cvar_SetSafe(key, value);
+			Cvar_SetSafe( key, value );
 		}
 	}
 	// if game folder should not be set and it is set at the client side
-	if ( !gameSet && *Cvar_VariableString("fs_game") ) {
+	if ( !gameSet && *Cvar_VariableString( "fs_game" ) ) {
 		Cvar_Set( "fs_game", "" );
 	}
 	cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
@@ -575,18 +572,17 @@ void CL_SystemInfoChanged( void ) {
 CL_ParseServerInfo
 ==================
 */
-static void CL_ParseServerInfo(void)
-{
+static void CL_ParseServerInfo( void ) {
 	const char *serverInfo;
 
 	serverInfo = cl.gameState.stringData
-		+ cl.gameState.stringOffsets[ CS_SERVERINFO ];
+				 + cl.gameState.stringOffsets[ CS_SERVERINFO ];
 
-	clc.sv_allowDownload = atoi(Info_ValueForKey(serverInfo,
-		"sv_allowDownload"));
-	Q_strncpyz(clc.sv_dlURL,
-		Info_ValueForKey(serverInfo, "sv_dlURL"),
-		sizeof(clc.sv_dlURL));
+	clc.sv_allowDownload = atoi( Info_ValueForKey( serverInfo,
+												   "sv_allowDownload" ) );
+	Q_strncpyz( clc.sv_dlURL,
+				Info_ValueForKey( serverInfo, "sv_dlURL" ),
+				sizeof( clc.sv_dlURL ) );
 }
 
 /*
@@ -658,7 +654,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 	clc.checksumFeed = MSG_ReadLong( msg );
 
 	// save old gamedir
-	Cvar_VariableStringBuffer("fs_game", oldGame, sizeof(oldGame));
+	Cvar_VariableStringBuffer( "fs_game", oldGame, sizeof( oldGame ) );
 
 	// parse useful values out of CS_SERVERINFO
 	CL_ParseServerInfo();
@@ -667,21 +663,21 @@ void CL_ParseGamestate( msg_t *msg ) {
 	CL_SystemInfoChanged();
 
 	// stop recording now so the demo won't have an unnecessary level load at the end.
-	if(cl_autoRecordDemo->integer && clc.demorecording)
+	if ( cl_autoRecordDemo->integer && clc.demorecording ) {
 		CL_StopRecord_f();
-
-	// reinitialize the filesystem if the game directory has changed
-	if(!cl_oldGameSet && (Cvar_Flags("fs_game") & CVAR_MODIFIED))
-	{
-		cl_oldGameSet = qtrue;
-		Q_strncpyz(cl_oldGame, oldGame, sizeof(cl_oldGame));
 	}
 
-	FS_ConditionalRestart(clc.checksumFeed, qfalse);
-		// don't set to true because we yet have to start downloading
-		// enabling this can cause double loading of a map when connecting to
-		// a server which has a different game directory set
-		//clc.downloadRestart = qtrue;
+	// reinitialize the filesystem if the game directory has changed
+	if ( !cl_oldGameSet && ( Cvar_Flags( "fs_game" ) & CVAR_MODIFIED ) ) {
+		cl_oldGameSet = qtrue;
+		Q_strncpyz( cl_oldGame, oldGame, sizeof( cl_oldGame ) );
+	}
+
+	FS_ConditionalRestart( clc.checksumFeed, qfalse );
+	// don't set to true because we yet have to start downloading
+	// enabling this can cause double loading of a map when connecting to
+	// a server which has a different game directory set
+	//clc.downloadRestart = qtrue;
 
 	// This used to call CL_StartHunkUsers, but now we enter the download state before loading the
 	// cgame
@@ -706,16 +702,16 @@ void CL_ParseDownload( msg_t *msg ) {
 	unsigned char data[MAX_MSGLEN];
 	uint16_t block;
 
-	if (!*clc.downloadTempName) {
-		Com_Printf("Server sending download, but no download was requested\n");
-		CL_AddReliableCommand("stopdl", qfalse);
+	if ( !*clc.downloadTempName ) {
+		Com_Printf( "Server sending download, but no download was requested\n" );
+		CL_AddReliableCommand( "stopdl", qfalse );
 		return;
 	}
 
 	// read the data
 	block = MSG_ReadShort( msg );
 
-	if(!block && !clc.downloadBlock) {
+	if ( !block && !clc.downloadBlock ) {
 		// block zero is special, contains file size
 		clc.downloadSize = MSG_ReadLong( msg );
 
@@ -735,8 +731,8 @@ void CL_ParseDownload( msg_t *msg ) {
 
 	MSG_ReadData( msg, data, size );
 
-	if((clc.downloadBlock & 0xFFFF) != block) {
-		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", (clc.downloadBlock & 0xFFFF), block);
+	if ( ( clc.downloadBlock & 0xFFFF ) != block ) {
+		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", ( clc.downloadBlock & 0xFFFF ), block );
 		return;
 	}
 
@@ -746,7 +742,7 @@ void CL_ParseDownload( msg_t *msg ) {
 
 		if ( !clc.download ) {
 			Com_Printf( "Could not create %s\n", clc.downloadTempName );
-			CL_AddReliableCommand("stopdl", qfalse);
+			CL_AddReliableCommand( "stopdl", qfalse );
 			CL_NextDownload();
 			return;
 		}
@@ -756,7 +752,7 @@ void CL_ParseDownload( msg_t *msg ) {
 		FS_Write( data, size, clc.download );
 	}
 
-	CL_AddReliableCommand(va("nextdl %d", clc.downloadBlock), qfalse);
+	CL_AddReliableCommand( va( "nextdl %d", clc.downloadBlock ), qfalse );
 	clc.downloadBlock++;
 
 	clc.downloadCount += size;
@@ -788,19 +784,19 @@ void CL_ParseDownload( msg_t *msg ) {
 
 #ifdef USE_VOIP
 static
-qboolean CL_ShouldIgnoreVoipSender(int sender)
-{
-	if (!cl_voip->integer)
+qboolean CL_ShouldIgnoreVoipSender( int sender ) {
+	if ( !cl_voip->integer ) {
 		return qtrue;  // VoIP is disabled.
-	else if ((sender == clc.clientNum) && (!clc.demoplaying))
+	} else if ( ( sender == clc.clientNum ) && ( !clc.demoplaying ) )                                                    {
 		return qtrue;  // ignore own voice (unless playing back a demo).
-	else if (clc.voipMuteAll)
+	} else if ( clc.voipMuteAll )                                                                             {
 		return qtrue;  // all channels are muted with extreme prejudice.
-	else if (clc.voipIgnore[sender])
+	} else if ( clc.voipIgnore[sender] )                                                                             {
 		return qtrue;  // just ignoring this guy.
-	else if (clc.voipGain[sender] == 0.0f)
+	} else if ( clc.voipGain[sender] == 0.0f )                                                      {
 		return qtrue;  // too quiet to play.
 
+	}
 	return qfalse;
 }
 
@@ -812,18 +808,15 @@ Play raw data
 =====================
 */
 
-static void CL_PlayVoip(int sender, int samplecnt, const byte *data, int flags)
-{
-	if(flags & VOIP_DIRECT)
-	{
-		S_RawSamples(sender + 1, samplecnt, 48000, 2, 1,
-	             data, clc.voipGain[sender], -1);
+static void CL_PlayVoip( int sender, int samplecnt, const byte *data, int flags ) {
+	if ( flags & VOIP_DIRECT ) {
+		S_RawSamples( sender + 1, samplecnt, 48000, 2, 1,
+					  data, clc.voipGain[sender], -1 );
 	}
 
-	if(flags & VOIP_SPATIAL)
-	{
-		S_RawSamples(sender + MAX_CLIENTS + 1, samplecnt, 48000, 2, 1,
-	             data, 1.0f, sender);
+	if ( flags & VOIP_SPATIAL ) {
+		S_RawSamples( sender + MAX_CLIENTS + 1, samplecnt, 48000, 2, 1,
+					  data, 1.0f, sender );
 	}
 }
 
@@ -835,123 +828,134 @@ A VoIP message has been received from the server
 =====================
 */
 static
-void CL_ParseVoip ( msg_t *msg, qboolean ignoreData ) {
-	static short decoded[VOIP_MAX_PACKET_SAMPLES*4]; // !!! FIXME: don't hard code
+void CL_ParseVoip( msg_t *msg, qboolean ignoreData ) {
+	static short decoded[VOIP_MAX_PACKET_SAMPLES * 4]; // !!! FIXME: don't hard code
 
-	const int sender = MSG_ReadShort(msg);
-	const int generation = MSG_ReadByte(msg);
-	const int sequence = MSG_ReadLong(msg);
-	const int frames = MSG_ReadByte(msg);
-	const int packetsize = MSG_ReadShort(msg);
-	const int flags = MSG_ReadBits(msg, VOIP_FLAGCNT);
+	const int sender = MSG_ReadShort( msg );
+	const int generation = MSG_ReadByte( msg );
+	const int sequence = MSG_ReadLong( msg );
+	const int frames = MSG_ReadByte( msg );
+	const int packetsize = MSG_ReadShort( msg );
+	const int flags = MSG_ReadBits( msg, VOIP_FLAGCNT );
 	unsigned char encoded[4000];
-	int	numSamples;
+	int numSamples;
 	int seqdiff;
 	int written = 0;
 	int i;
 
-	Com_DPrintf("VoIP: %d-byte packet from client %d\n", packetsize, sender);
+	Com_DPrintf( "VoIP: %d-byte packet from client %d\n", packetsize, sender );
 
-	if (sender < 0)
+	if ( sender < 0 ) {
 		return;   // short/invalid packet, bail.
-	else if (generation < 0)
+	} else if ( generation < 0 )                                                     {
 		return;   // short/invalid packet, bail.
-	else if (sequence < 0)
+	} else if ( sequence < 0 )                                                     {
 		return;   // short/invalid packet, bail.
-	else if (frames < 0)
+	} else if ( frames < 0 )                                                     {
 		return;   // short/invalid packet, bail.
-	else if (packetsize < 0)
+	} else if ( packetsize < 0 )                                                     {
 		return;   // short/invalid packet, bail.
 
-	if (packetsize > sizeof (encoded)) {  // overlarge packet?
+	}
+	if ( packetsize > sizeof( encoded ) ) {  // overlarge packet?
 		int bytesleft = packetsize;
-		while (bytesleft) {
+		while ( bytesleft ) {
 			int br = bytesleft;
-			if (br > sizeof (encoded))
-				br = sizeof (encoded);
-			MSG_ReadData(msg, encoded, br);
+			if ( br > sizeof( encoded ) ) {
+				br = sizeof( encoded );
+			}
+			MSG_ReadData( msg, encoded, br );
 			bytesleft -= br;
 		}
 		return;   // overlarge packet, bail.
 	}
 
-	MSG_ReadData(msg, encoded, packetsize);
+	MSG_ReadData( msg, encoded, packetsize );
 
-	if (ignoreData) {
+	if ( ignoreData ) {
 		return; // just ignore legacy speex voip data
-	} else if (!clc.voipCodecInitialized) {
+	} else if ( !clc.voipCodecInitialized ) {
 		return;   // can't handle VoIP without libopus!
-	} else if (sender >= MAX_CLIENTS) {
+	} else if ( sender >= MAX_CLIENTS ) {
 		return;   // bogus sender.
-	} else if (CL_ShouldIgnoreVoipSender(sender)) {
+	} else if ( CL_ShouldIgnoreVoipSender( sender ) ) {
 		return;   // Channel is muted, bail.
 	}
 
 	// !!! FIXME: make sure data is narrowband? Does decoder handle this?
 
-	Com_DPrintf("VoIP: packet accepted!\n");
+	Com_DPrintf( "VoIP: packet accepted!\n" );
 
 	seqdiff = sequence - clc.voipIncomingSequence[sender];
 
 	// This is a new "generation" ... a new recording started, reset the bits.
-	if (generation != clc.voipIncomingGeneration[sender]) {
-		Com_DPrintf("VoIP: new generation %d!\n", generation);
-		opus_decoder_ctl(clc.opusDecoder[sender], OPUS_RESET_STATE);
+	if ( generation != clc.voipIncomingGeneration[sender] ) {
+		Com_DPrintf( "VoIP: new generation %d!\n", generation );
+		opus_decoder_ctl( clc.opusDecoder[sender], OPUS_RESET_STATE );
 		clc.voipIncomingGeneration[sender] = generation;
 		seqdiff = 0;
-	} else if (seqdiff < 0) {   // we're ahead of the sequence?!
+	} else if ( seqdiff < 0 ) {   // we're ahead of the sequence?!
 		// This shouldn't happen unless the packet is corrupted or something.
-		Com_DPrintf("VoIP: misordered sequence! %d < %d!\n",
-		            sequence, clc.voipIncomingSequence[sender]);
+		Com_DPrintf( "VoIP: misordered sequence! %d < %d!\n",
+					 sequence, clc.voipIncomingSequence[sender] );
 		// reset the decoder just in case.
-		opus_decoder_ctl(clc.opusDecoder[sender], OPUS_RESET_STATE);
+		opus_decoder_ctl( clc.opusDecoder[sender], OPUS_RESET_STATE );
 		seqdiff = 0;
-	} else if (seqdiff * VOIP_MAX_PACKET_SAMPLES*2 >= sizeof (decoded)) { // dropped more than we can handle?
+	} else if ( seqdiff * VOIP_MAX_PACKET_SAMPLES * 2 >= sizeof( decoded ) ) { // dropped more than we can handle?
 		// just start over.
-		Com_DPrintf("VoIP: Dropped way too many (%d) frames from client #%d\n",
-		            seqdiff, sender);
-		opus_decoder_ctl(clc.opusDecoder[sender], OPUS_RESET_STATE);
+		Com_DPrintf( "VoIP: Dropped way too many (%d) frames from client #%d\n",
+					 seqdiff, sender );
+		opus_decoder_ctl( clc.opusDecoder[sender], OPUS_RESET_STATE );
 		seqdiff = 0;
 	}
 
-	if (seqdiff != 0) {
-		Com_DPrintf("VoIP: Dropped %d frames from client #%d\n",
-		            seqdiff, sender);
+	if ( seqdiff != 0 ) {
+		Com_DPrintf( "VoIP: Dropped %d frames from client #%d\n",
+					 seqdiff, sender );
 		// tell opus that we're missing frames...
-		for (i = 0; i < seqdiff; i++) {
-			assert((written + VOIP_MAX_PACKET_SAMPLES) * 2 < sizeof (decoded));
-			numSamples = opus_decode(clc.opusDecoder[sender], NULL, 0, decoded + written, VOIP_MAX_PACKET_SAMPLES, 0);
+		for ( i = 0; i < seqdiff; i++ ) {
+			assert( ( written + VOIP_MAX_PACKET_SAMPLES ) * 2 < sizeof( decoded ) );
+			numSamples = opus_decode( clc.opusDecoder[sender], NULL, 0, decoded + written, VOIP_MAX_PACKET_SAMPLES, 0 );
 			if ( numSamples <= 0 ) {
-				Com_DPrintf("VoIP: Error decoding frame %d from client #%d\n", i, sender);
+				Com_DPrintf( "VoIP: Error decoding frame %d from client #%d\n", i, sender );
 				continue;
 			}
 			written += numSamples;
 		}
 	}
 
-	numSamples = opus_decode(clc.opusDecoder[sender], encoded, packetsize, decoded + written, ARRAY_LEN(decoded) - written, 0);
+	numSamples = opus_decode( clc.opusDecoder[sender], encoded, packetsize, decoded + written, ARRAY_LEN( decoded ) - written, 0 );
 
 	if ( numSamples <= 0 ) {
-		Com_DPrintf("VoIP: Error decoding voip data from client #%d\n", sender);
+		Com_DPrintf( "VoIP: Error decoding voip data from client #%d\n", sender );
 		numSamples = 0;
 	}
 
 	#if 0
 	static FILE *encio = NULL;
-	if (encio == NULL) encio = fopen("voip-incoming-encoded.bin", "wb");
-	if (encio != NULL) { fwrite(encoded, len, 1, encio); fflush(encio); }
+	if ( encio == NULL ) {
+		encio = fopen( "voip-incoming-encoded.bin", "wb" );
+	}
+	if ( encio != NULL ) {
+		fwrite( encoded, len, 1, encio ); fflush( encio );
+	}
 	static FILE *decio = NULL;
-	if (decio == NULL) decio = fopen("voip-incoming-decoded.bin", "wb");
-	if (decio != NULL) { fwrite(decoded+written, clc.speexFrameSize*2, 1, decio); fflush(decio); }
+	if ( decio == NULL ) {
+		decio = fopen( "voip-incoming-decoded.bin", "wb" );
+	}
+	if ( decio != NULL ) {
+		fwrite( decoded + written, clc.speexFrameSize * 2, 1, decio ); fflush( decio );
+	}
 	#endif
 
 	written += numSamples;
 
-	Com_DPrintf("VoIP: playback %d bytes, %d samples, %d frames\n",
-			written * 2, written, frames);
+	Com_DPrintf( "VoIP: playback %d bytes, %d samples, %d frames\n",
+				 written * 2, written, frames );
 
-	if(written > 0)
-		CL_PlayVoip(sender, written, (const byte *) decoded, flags);
+	if ( written > 0 ) {
+		CL_PlayVoip( sender, written, (const byte *) decoded, flags );
+	}
 
 	clc.voipIncomingSequence[sender] = sequence + frames;
 }
@@ -1024,7 +1028,7 @@ void CL_ParseServerMessage( msg_t *msg ) {
 		}
 
 		if ( cl_shownet->integer >= 2 ) {
-			if ( (cmd < 0) || (!svc_strings[cmd]) ) {
+			if ( ( cmd < 0 ) || ( !svc_strings[cmd] ) ) {
 				Com_Printf( "%3i:BAD CMD %i\n", msg->readcount - 1, cmd );
 			} else {
 				SHOWNET( msg, svc_strings[cmd] );
@@ -1034,7 +1038,7 @@ void CL_ParseServerMessage( msg_t *msg ) {
 		// other commands
 		switch ( cmd ) {
 		default:
-			Com_Error (ERR_DROP,"CL_ParseServerMessage: Illegible server message");
+			Com_Error( ERR_DROP,"CL_ParseServerMessage: Illegible server message" );
 			break;
 		case svc_nop:
 			break;

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,8 +54,8 @@ If you have questions concerning this license or the applicable additional terms
 // file full of random crap that gets used to create cl_guid
 #define QKEY_FILE "wkey"
 #define QKEY_SIZE 2048
- 
-#define	RETRANSMIT_TIMEOUT	3000	// time between connection packet retransmits
+
+#define RETRANSMIT_TIMEOUT  3000    // time between connection packet retransmits
 
 #define LIMBOCHAT_WIDTH     140     // NERVE - SMF - NOTE TTimo buffer size indicator, not related to screen bbox
 #define LIMBOCHAT_HEIGHT    7       // NERVE - SMF
@@ -79,7 +79,7 @@ typedef struct {
 	int parseEntitiesNum;                   // at the time of this snapshot
 
 	int serverCommandNum;                   // execute all commands up to this before
-											// making the snapshot current
+	                                        // making the snapshot current
 } clSnapshot_t;
 
 
@@ -108,15 +108,15 @@ extern int g_console_field_width;
 
 typedef struct {
 	int timeoutcount;               // it requres several frames in a timeout condition
-									// to disconnect, preventing debugging breaks from
-									// causing immediate disconnects on continue
+	                                // to disconnect, preventing debugging breaks from
+	                                // causing immediate disconnects on continue
 	clSnapshot_t snap;              // latest received from server
 
 	int serverTime;                 // may be paused during play
 	int oldServerTime;              // to prevent time from flowing bakcwards
 	int oldFrameServerTime;         // to check tournament restarts
 	int serverTimeDelta;            // cl.serverTime = cls.realtime + cl.serverTimeDelta
-									// this value changes as net lag varies
+	                                // this value changes as net lag varies
 	qboolean extrapolatedSnapshot;      // set if any cgame frame has been forced to extrapolate
 	// cleared when CL_AdjustTimeDelta looks at it
 	qboolean newSnapshots;          // set on parse of any valid packet
@@ -142,7 +142,7 @@ typedef struct {
 	// properly generated command
 	usercmd_t cmds[CMD_BACKUP];     // each mesage will send several old cmds
 	int cmdNumber;                  // incremented each frame, because multiple
-									// frames may need to be packed into a single packet
+	                                // frames may need to be packed into a single packet
 
 	outPacket_t outPackets[PACKET_BACKUP];  // information about each packet we have sent out
 
@@ -154,7 +154,7 @@ typedef struct {
 	vec3_t viewangles;
 
 	int serverId;                   // included in each client message so the server
-									// can tell if it is for a prior map_restart
+	                                // can tell if it is for a prior map_restart
 	// big stuff at end of structure so most offsets are 15 bits or less
 	clSnapshot_t snapshots[PACKET_BACKUP];
 
@@ -187,17 +187,17 @@ demo through a file.
 =============================================================================
 */
 
-#define MAX_TIMEDEMO_DURATIONS	4096
+#define MAX_TIMEDEMO_DURATIONS  4096
 
 typedef struct {
 
-	connstate_t	state;				// connection status
+	connstate_t state;              // connection status
 
 	int clientNum;
 	int lastPacketSentTime;                 // for retransmits during connection
 	int lastPacketTime;                     // for timeouts
 
-	char		servername[MAX_OSPATH];		// name of server from original connect (used by reconnect)
+	char servername[MAX_OSPATH];            // name of server from original connect (used by reconnect)
 	netadr_t serverAddress;
 	int connectTime;                        // for connection retransmits
 	int connectPacketCount;                 // for display on connection dialog
@@ -232,15 +232,15 @@ typedef struct {
 	char downloadTempName[MAX_OSPATH];
 	char downloadName[MAX_OSPATH];
 #ifdef USE_CURL
-	qboolean	cURLEnabled;
-	qboolean	cURLUsed;
-	qboolean	cURLDisconnected;
-	char		downloadURL[MAX_OSPATH];
-	CURL		*downloadCURL;
-	CURLM		*downloadCURLM;
+	qboolean cURLEnabled;
+	qboolean cURLUsed;
+	qboolean cURLDisconnected;
+	char downloadURL[MAX_OSPATH];
+	CURL        *downloadCURL;
+	CURLM       *downloadCURLM;
 #endif /* USE_CURL */
-	int		sv_allowDownload;
-	char		sv_dlURL[MAX_CVAR_VALUE_STRING];
+	int sv_allowDownload;
+	char sv_dlURL[MAX_CVAR_VALUE_STRING];
 	int downloadNumber;
 	int downloadBlock;          // block we are waiting for
 	int downloadCount;          // how many bytes we got
@@ -263,13 +263,13 @@ typedef struct {
 	int timeDemoFrames;             // counter of rendered frames
 	int timeDemoStart;              // cls.realtime before first frame
 	int timeDemoBaseTime;           // each frame will be at this time + frameNum * 50
-	int			timeDemoLastFrame;// time the last frame was rendered
-	int			timeDemoMinDuration;	// minimum frame duration
-	int			timeDemoMaxDuration;	// maximum frame duration
-	unsigned char	timeDemoDurations[ MAX_TIMEDEMO_DURATIONS ];	// log of frame durations
+	int timeDemoLastFrame;        // time the last frame was rendered
+	int timeDemoMinDuration;            // minimum frame duration
+	int timeDemoMaxDuration;            // maximum frame duration
+	unsigned char timeDemoDurations[ MAX_TIMEDEMO_DURATIONS ];      // log of frame durations
 
-	float	aviVideoFrameRemainder;
-	float	aviSoundFrameRemainder;
+	float aviVideoFrameRemainder;
+	float aviSoundFrameRemainder;
 
 #ifdef USE_VOIP
 	qboolean voipEnabled;
@@ -287,7 +287,7 @@ typedef struct {
 	// outgoing data...
 	// if voipTargets[i / 8] & (1 << (i % 8)),
 	// then we are sending to clientnum i.
-	uint8_t voipTargets[(MAX_CLIENTS + 7) / 8];
+	uint8_t voipTargets[( MAX_CLIENTS + 7 ) / 8];
 	uint8_t voipFlags;
 	OpusEncoder *opusEncoder;
 	int voipOutgoingDataSize;
@@ -344,8 +344,8 @@ typedef struct {
 	int punkbuster;                 // DHM - Nerve
 	int antilag;         // TTimo
 	char gameName[MAX_NAME_LENGTH];         // Arnout
-	int			g_humanplayers;
-	int			g_needpass;
+	int g_humanplayers;
+	int g_needpass;
 } serverInfo_t;
 
 #define MAX_AUTOUPDATE_SERVERS  5
@@ -401,8 +401,8 @@ typedef struct {
 
 extern clientStatic_t cls;
 
-extern	char		cl_oldGame[MAX_QPATH];
-extern	qboolean	cl_oldGameSet;
+extern char cl_oldGame[MAX_QPATH];
+extern qboolean cl_oldGameSet;
 
 //=============================================================================
 
@@ -444,8 +444,8 @@ extern cvar_t  *cl_sensitivity;
 extern cvar_t  *cl_freelook;
 
 extern cvar_t  *cl_mouseAccel;
-extern	cvar_t	*cl_mouseAccelOffset;
-extern	cvar_t	*cl_mouseAccelStyle;
+extern cvar_t  *cl_mouseAccelOffset;
+extern cvar_t  *cl_mouseAccelStyle;
 extern cvar_t  *cl_showMouseRate;
 
 extern cvar_t  *m_pitch;
@@ -454,57 +454,57 @@ extern cvar_t  *m_forward;
 extern cvar_t  *m_side;
 extern cvar_t  *m_filter;
 
-extern	cvar_t	*j_pitch;
-extern	cvar_t	*j_yaw;
-extern	cvar_t	*j_forward;
-extern	cvar_t	*j_side;
-extern	cvar_t	*j_up;
-extern	cvar_t	*j_pitch_axis;
-extern	cvar_t	*j_yaw_axis;
-extern	cvar_t	*j_forward_axis;
-extern	cvar_t	*j_side_axis;
-extern	cvar_t	*j_up_axis;
+extern cvar_t  *j_pitch;
+extern cvar_t  *j_yaw;
+extern cvar_t  *j_forward;
+extern cvar_t  *j_side;
+extern cvar_t  *j_up;
+extern cvar_t  *j_pitch_axis;
+extern cvar_t  *j_yaw_axis;
+extern cvar_t  *j_forward_axis;
+extern cvar_t  *j_side_axis;
+extern cvar_t  *j_up_axis;
 
 extern cvar_t  *cl_timedemo;
-extern	cvar_t	*cl_aviFrameRate;
-extern	cvar_t	*cl_aviMotionJpeg;
+extern cvar_t  *cl_aviFrameRate;
+extern cvar_t  *cl_aviMotionJpeg;
 
 extern cvar_t  *cl_activeAction;
 
 extern cvar_t  *cl_allowDownload;
-extern  cvar_t  *cl_downloadMethod;
+extern cvar_t  *cl_downloadMethod;
 extern cvar_t  *cl_conXOffset;
 extern cvar_t  *cl_inGameVideo;
 
-extern	cvar_t	*cl_lanForcePackets;
-extern	cvar_t	*cl_autoRecordDemo;
+extern cvar_t  *cl_lanForcePackets;
+extern cvar_t  *cl_autoRecordDemo;
 
-extern	cvar_t	*cl_consoleKeys;
+extern cvar_t  *cl_consoleKeys;
 
 #ifdef USE_MUMBLE
-extern	cvar_t	*cl_useMumble;
-extern	cvar_t	*cl_mumbleScale;
+extern cvar_t  *cl_useMumble;
+extern cvar_t  *cl_mumbleScale;
 #endif
 
 #ifdef USE_VOIP
 // cl_voipSendTarget is a string: "all" to broadcast to everyone, "none" to
 //  send to no one, or a comma-separated list of client numbers:
 //  "0,7,2,23" ... an empty string is treated like "all".
-extern	cvar_t	*cl_voipUseVAD;
-extern	cvar_t	*cl_voipVADThreshold;
-extern	cvar_t	*cl_voipSend;
-extern	cvar_t	*cl_voipSendTarget;
-extern	cvar_t	*cl_voipGainDuringCapture;
-extern	cvar_t	*cl_voipCaptureMult;
-extern	cvar_t	*cl_voipShowMeter;
-extern	cvar_t	*cl_voip;
+extern cvar_t  *cl_voipUseVAD;
+extern cvar_t  *cl_voipVADThreshold;
+extern cvar_t  *cl_voipSend;
+extern cvar_t  *cl_voipSendTarget;
+extern cvar_t  *cl_voipGainDuringCapture;
+extern cvar_t  *cl_voipCaptureMult;
+extern cvar_t  *cl_voipShowMeter;
+extern cvar_t  *cl_voip;
 
 // 20ms at 48k
-#define VOIP_MAX_FRAME_SAMPLES		( 20 * 48 )
+#define VOIP_MAX_FRAME_SAMPLES      ( 20 * 48 )
 
 // 3 frame is 60ms of audio, the max opus will encode at once
-#define VOIP_MAX_PACKET_FRAMES		3
-#define VOIP_MAX_PACKET_SAMPLES		( VOIP_MAX_FRAME_SAMPLES * VOIP_MAX_PACKET_FRAMES )
+#define VOIP_MAX_PACKET_FRAMES      3
+#define VOIP_MAX_PACKET_SAMPLES     ( VOIP_MAX_FRAME_SAMPLES * VOIP_MAX_PACKET_FRAMES )
 #endif
 
 extern cvar_t  *cl_missionStats;
@@ -521,7 +521,7 @@ extern cvar_t  *cl_language;
 //
 
 void CL_Init( void );
-void CL_AddReliableCommand(const char *cmd, qboolean isDisconnectCmd);
+void CL_AddReliableCommand( const char *cmd, qboolean isDisconnectCmd );
 
 void CL_StartHunkUsers( qboolean rendererOnly );
 
@@ -537,7 +537,7 @@ void CL_Snd_Restart_f( void );
 void CL_StartDemoLoop( void );
 void CL_NextDemo( void );
 void CL_ReadDemoMessage( void );
-void CL_StopRecord_f(void);
+void CL_StopRecord_f( void );
 
 void CL_InitDownloads( void );
 void CL_NextDownload( void );
@@ -552,15 +552,15 @@ void CL_InitRef( void );
 qboolean CL_CDKeyValidate( const char *key, const char *checksum );
 int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
 
-qboolean CL_CheckPaused(void);
+qboolean CL_CheckPaused( void );
 
 void CL_AddToLimboChat( const char *str );                  // NERVE - SMF
 qboolean CL_GetLimboString( int index, char *buf );         // NERVE - SMF
 
 // NERVE - SMF - localization
-void CL_InitTranslation(void);
-void CL_SaveTransTable(const char *fileName, qboolean newOnly);
-void CL_ReloadTranslation(void);
+void CL_InitTranslation( void );
+void CL_SaveTransTable( const char *fileName, qboolean newOnly );
+void CL_ReloadTranslation( void );
 void CL_TranslateString( const char *string, char *dest_buffer );
 const char* CL_TranslateStringBuf( const char *string ); // TTimo
 // -NERVE - SMF
@@ -616,7 +616,7 @@ typedef enum {
 void CL_ClearKeys( void );
 
 void CL_InitInput( void );
-void CL_ShutdownInput(void);
+void CL_ShutdownInput( void );
 void CL_SendCmd( void );
 void CL_ClearState( void );
 void CL_ReadPackets( void );
@@ -668,7 +668,7 @@ void Con_DrawCharacter( int cx, int line, int num );
 
 void Con_CheckResize( void );
 void Con_Init( void );
-void Con_Shutdown(void);
+void Con_Shutdown( void );
 void Con_Clear_f( void );
 void Con_ToggleConsole_f( void );
 void Con_DrawNotify( void );
@@ -690,7 +690,7 @@ void CL_SaveConsoleHistory( void );
 void    SCR_Init( void );
 void    SCR_UpdateScreen( void );
 
-void	SCR_DebugGraph (float value);
+void    SCR_DebugGraph( float value );
 
 int     SCR_GetBigStringWidth( const char *str );   // returns in virtual 640x480 coordinates
 
@@ -700,9 +700,9 @@ void    SCR_FillRect( float x, float y, float width, float height,
 void    SCR_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
 void    SCR_DrawNamedPic( float x, float y, float width, float height, const char *picname );
 
-void	SCR_DrawBigString( int x, int y, const char *s, float alpha, qboolean noColorEscape );			// draws a string with embedded color control characters with fade
-void	SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color, qboolean noColorEscape );	// ignores embedded color control characters
-void	SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor, qboolean noColorEscape );
+void    SCR_DrawBigString( int x, int y, const char *s, float alpha, qboolean noColorEscape );          // draws a string with embedded color control characters with fade
+void    SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color, qboolean noColorEscape );    // ignores embedded color control characters
+void    SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor, qboolean noColorEscape );
 void    SCR_DrawSmallChar( int x, int y, int ch );
 
 
@@ -763,5 +763,4 @@ qboolean CL_VideoRecording( void );
 //
 // cl_main.c
 //
-void CL_WriteDemoMessage ( msg_t *msg, int headerBytes );
-
+void CL_WriteDemoMessage( msg_t *msg, int headerBytes );
