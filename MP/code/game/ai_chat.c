@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -559,7 +559,7 @@ int BotChat_EndLevel( bot_state_t *bs ) {
 							  BotLastClientInRankings(), // 3
 							  BotMapTitle(),            // 4
 							  NULL );
-	} else if ( BotIsLastInRankings( bs ) )       {
+	} else if ( BotIsLastInRankings( bs ) ) {
 		BotAI_BotInitialChat( bs, "level_end_lose",
 							  EasyClientName( bs->client, name, 32 ), // 0
 							  BotRandomOpponentName( bs ), // 1
@@ -732,9 +732,9 @@ int BotChat_Kill( bot_state_t *bs ) {
 		//
 		if ( bs->enemydeathtype == MOD_GAUNTLET ) {
 			BotAI_BotInitialChat( bs, "kill_gauntlet", name, NULL );
-		} else if ( bs->enemydeathtype == MOD_RAILGUN )     {
+		} else if ( bs->enemydeathtype == MOD_RAILGUN ) {
 			BotAI_BotInitialChat( bs, "kill_rail", name, NULL );
-		} else if ( bs->enemydeathtype == MOD_TELEFRAG )     {
+		} else if ( bs->enemydeathtype == MOD_TELEFRAG ) {
 			BotAI_BotInitialChat( bs, "kill_telefrag", name, NULL );
 		}
 		//choose between insult and praise
@@ -784,7 +784,7 @@ int BotChat_EnemySuicide( bot_state_t *bs ) {
 	//
 	if ( bs->enemy >= 0 ) {
 		EasyClientName( bs->enemy, name, 32 );
-	} else { strcpy( name, "" );}
+	} else { strcpy( name, "" ); }
 	BotAI_BotInitialChat( bs, "enemy_suicide", name, NULL );
 	bs->lastchat_time = trap_AAS_Time();
 	bs->chatto = CHAT_ALL;

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -401,7 +401,7 @@ typedef struct cast_state_s
 
 	int lastGetHidePos;
 	int startAttackCount;       // incremented each time we start a standing attack
-								// used to make sure we only find a combat spot once per attack
+	                            // used to make sure we only find a combat spot once per attack
 	int combatSpotAttackCount;
 	int combatSpotDelayTime;
 	int startBattleChaseTime;
@@ -574,7 +574,7 @@ extern int numSecrets;
 //
 // ai_cast.c
 void    AIChar_SetBBox( gentity_t *ent, cast_state_t *cs );
-void    AICast_Printf( int type, const char *fmt, ... ) __attribute__ ((format (printf, 2, 3)));
+void    AICast_Printf( int type, const char *fmt, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 gentity_t *AICast_CreateCharacter( gentity_t *ent, float *attributes, cast_weapon_info_t *weaponInfo, char *castname, char *model, char *head, char *sex, char *color, char *handicap );
 void    AICast_Init( void );
 void    AICast_DelayedSpawnCast( gentity_t *ent, int castType );

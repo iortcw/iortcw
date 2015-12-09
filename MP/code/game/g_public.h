@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 #define SVF_BROADCAST           0x00000020  // send to all connected clients
 #define SVF_PORTAL              0x00000040  // merge a second pvs at origin2 into snapshots
 #define SVF_USE_CURRENT_ORIGIN  0x00000080  // entity->r.currentOrigin instead of entity->s.origin
-											// for link position (missiles and movers)
+                                            // for link position (missiles and movers)
 // Ridah
 #define SVF_NOFOOTSTEPS         0x00000100
 // done.
@@ -56,17 +56,17 @@ If you have questions concerning this license or the applicable additional terms
 // recent id changes
 #define SVF_SINGLECLIENT        0x00000800  // only send to a single client (entityShared_t->singleClient)
 #define SVF_NOSERVERINFO        0x00001000  // don't send CS_SERVERINFO updates to this client
-											// so that it can be updated for ping tools without
-											// lagging clients
+                                            // so that it can be updated for ping tools without
+                                            // lagging clients
 #define SVF_NOTSINGLECLIENT     0x00002000  // send entity to everyone but one client
-											// (entityShared_t->singleClient)
+                                            // (entityShared_t->singleClient)
 
 //===============================================================
 
 
 typedef struct {
-	entityState_t	unused;			// apparently this field was put here accidentally
-						//  (and is kept only for compatibility, as a struct pad)
+	entityState_t unused;           // apparently this field was put here accidentally
+	//  (and is kept only for compatibility, as a struct pad)
 
 	qboolean linked;                // qfalse if not in any good cluster
 	int linkcount;
@@ -75,10 +75,10 @@ typedef struct {
 	int singleClient;               // only send to this client when SVF_SINGLECLIENT is set
 
 	qboolean bmodel;                // if false, assume an explicit mins / maxs bounding box
-									// only set by trap_SetBrushModel
+	                                // only set by trap_SetBrushModel
 	vec3_t mins, maxs;
 	int contents;                   // CONTENTS_TRIGGER, CONTENTS_SOLID, CONTENTS_BODY, etc
-									// a non-solid entity should set to 0
+	                                // a non-solid entity should set to 0
 
 	vec3_t absmin, absmax;          // derived from mins/maxs and origin + rotation
 
@@ -468,4 +468,3 @@ typedef enum {
 	,GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT
 
 } gameExport_t;
-

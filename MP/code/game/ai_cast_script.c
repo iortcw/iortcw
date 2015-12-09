@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -398,17 +398,17 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 				G_Error( "AICast_ScriptParse(), Error (line %d): '}' found, but not expected.\n", COM_GetCurrentParseLine() );
 			}
 			wantName = qtrue;
-		} else if ( token[0] == '{' )    {
+		} else if ( token[0] == '{' ) {
 			if ( wantName ) {
 				G_Error( "AICast_ScriptParse(), Error (line %d): '{' found, NAME expected.\n", COM_GetCurrentParseLine() );
 			}
-		} else if ( wantName )   {
+		} else if ( wantName ) {
 			if ( !Q_strcasecmp( ent->aiName, token ) ) {
 				inScript = qtrue;
 				numEventItems = 0;
 			}
 			wantName = qfalse;
-		} else if ( inScript )   {
+		} else if ( inScript ) {
 			if ( !Q_strcasecmp( token, "attributes" ) ) {
 				// read in all the attributes
 				AICast_CheckLevelAttributes( cs, ent, &pScript );

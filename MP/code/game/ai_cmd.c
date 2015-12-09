@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ float BotGetTime( bot_match_t *match ) {
 					t = atof( timestring ) * 60;
 				} else if ( timematch.type == MSG_SECONDS ) {
 					t = atof( timestring );
-				} else { t = 0;}
+				} else { t = 0; }
 			}
 			//if there's a valid time
 			if ( t > 0 ) {
@@ -351,10 +351,10 @@ int BotGetPatrolWaypoints( bot_state_t *bs, bot_match_t *match ) {
 		if ( keyareamatch.subtype & ST_BACK ) {
 			patrolflags = PATROL_LOOP;
 			break;
-		} else if ( keyareamatch.subtype & ST_REVERSE )     {
+		} else if ( keyareamatch.subtype & ST_REVERSE ) {
 			patrolflags = PATROL_REVERSE;
 			break;
-		} else if ( keyareamatch.subtype & ST_MORE )     {
+		} else if ( keyareamatch.subtype & ST_MORE ) {
 			trap_BotMatchVariable( &keyareamatch, MORE, keyarea, MAX_MESSAGE_SIZE );
 		} else {
 			break;
@@ -407,7 +407,7 @@ int BotAddressedToBot( bot_state_t *bs, bot_match_t *match ) {
 		while ( trap_BotFindMatch( addressedto, &addresseematch, MTCONTEXT_ADDRESSEE ) ) {
 			if ( addresseematch.type == MSG_EVERYONE ) {
 				return qtrue;
-			} else if ( addresseematch.type == MSG_MULTIPLENAMES )     {
+			} else if ( addresseematch.type == MSG_MULTIPLENAMES ) {
 				trap_BotMatchVariable( &addresseematch, TEAMMATE, name, sizeof( name ) );
 				if ( strlen( name ) ) {
 					if ( stristr( botname, name ) ) {
@@ -499,7 +499,7 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	trap_BotMatchVariable( match, TEAMMATE, teammate, sizeof( teammate ) );
 	//get the client to help
 	if ( trap_BotFindMatch( teammate, &teammatematch, MTCONTEXT_TEAMMATE ) &&
-		 //if someone asks for him or herself
+	     //if someone asks for him or herself
 		 teammatematch.type == MSG_ME ) {
 		//get the netname
 		trap_BotMatchVariable( match, NETNAME, netname, sizeof( netname ) );
@@ -511,7 +511,7 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 		//if this is the bot self
 		if ( client == bs->client ) {
 			other = qfalse;
-		} else if ( !BotSameTeam( bs, client ) )       {
+		} else if ( !BotSameTeam( bs, client ) ) {
 			//FIXME: say "I don't help the enemy"
 			return;
 		} else {
@@ -522,7 +522,7 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	if ( client < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whois", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whois", netname, NULL );}
+		} else { BotAI_BotInitialChat( bs, "whois", netname, NULL ); }
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -562,7 +562,7 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	if ( bs->teamgoal.entitynum < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whereis", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL );}
+		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL ); }
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -705,7 +705,7 @@ void BotMatch_Camp( bot_state_t *bs, bot_match_t *match ) {
 		VectorCopy( bs->origin, bs->teamgoal.origin );
 		VectorSet( bs->teamgoal.mins, -8, -8, -8 );
 		VectorSet( bs->teamgoal.maxs, 8, 8, 8 );
-	} else if ( match->subtype & ST_HERE )     {
+	} else if ( match->subtype & ST_HERE ) {
 		//if this is the bot self
 		if ( client == bs->client ) {
 			return;
@@ -733,7 +733,7 @@ void BotMatch_Camp( bot_state_t *bs, bot_match_t *match ) {
 			trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 			return;
 		}
-	} else if ( !BotGetMessageTeamGoal( bs, itemname, &bs->teamgoal ) )       {
+	} else if ( !BotGetMessageTeamGoal( bs, itemname, &bs->teamgoal ) ) {
 		//BotAI_BotInitialChat(bs, "cannotfind", itemname, NULL);
 		//trap_BotEnterChat(bs->cs, bs->client, CHAT_TEAM);
 		return;
@@ -975,7 +975,7 @@ void BotMatch_CheckPoint( bot_state_t *bs, bot_match_t *match ) {
 		}
 		if ( cp->prev ) {
 			cp->prev->next = cp->next;
-		} else { bs->checkpoints = cp->next;}
+		} else { bs->checkpoints = cp->next; }
 		cp->inuse = qfalse;
 	}
 	//create a new check point
@@ -1020,7 +1020,7 @@ void BotMatch_FormationSpace( bot_state_t *bs, bot_match_t *match ) {
 		space = 0.3048 * 32 * atof( buf );
 	}
 	//else it's in meters
-	else {space = 32 * atof( buf );}
+	else {space = 32 * atof( buf ); }
 	//check if the formation intervening space is valid
 	if ( space < 48 || space > 500 ) {
 		space = 100;
@@ -1066,7 +1066,7 @@ void BotMatch_StartTeamLeaderShip( bot_state_t *bs, bot_match_t *match ) {
 		//get the team mate that will be the team leader
 		trap_BotMatchVariable( match, NETNAME, teammate, sizeof( teammate ) );
 		strncpy( bs->teamleader, teammate, sizeof( bs->teamleader ) );
-		bs->teamleader[sizeof( bs->teamleader )-1] = '\0';
+		bs->teamleader[sizeof( bs->teamleader ) - 1] = '\0';
 	}
 	//chats for someone else
 	else {
@@ -1315,7 +1315,7 @@ void BotMatch_WhereAreYou( bot_state_t *bs, bot_match_t *match ) {
 			blueflagtt = trap_AAS_AreaTravelTimeToGoalArea( bs->areanum, bs->origin, ctf_blueflag.areanum, TFL_DEFAULT );
 			if ( redflagtt < ( redflagtt + blueflagtt ) * 0.4 ) {
 				BotAI_BotInitialChat( bs, "ctflocation", nearbyitems[bestitem], "red", NULL );
-			} else if ( blueflagtt < ( redflagtt + blueflagtt ) * 0.4 )       {
+			} else if ( blueflagtt < ( redflagtt + blueflagtt ) * 0.4 ) {
 				BotAI_BotInitialChat( bs, "ctflocation", nearbyitems[bestitem], "blue", NULL );
 			} else {
 				BotAI_BotInitialChat( bs, "location", nearbyitems[bestitem], NULL );
@@ -1352,7 +1352,7 @@ void BotMatch_LeadTheWay( bot_state_t *bs, bot_match_t *match ) {
 		//if this is the bot self
 		if ( client == bs->client ) {
 			other = qfalse;
-		} else if ( !BotSameTeam( bs, client ) )       {
+		} else if ( !BotSameTeam( bs, client ) ) {
 			//FIXME: say "I don't help the enemy"
 			return;
 		} else {
@@ -1388,7 +1388,7 @@ void BotMatch_LeadTheWay( bot_state_t *bs, bot_match_t *match ) {
 	if ( bs->teamgoal.entitynum < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whereis", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL );}
+		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL ); }
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -1460,15 +1460,15 @@ void BotMatch_CTF( bot_state_t *bs, bot_match_t *match ) {
 			}
 		}
 		bs->flagstatuschanged = 1;
-	} else if ( match->subtype & ST_CAPTUREDFLAG )     {
+	} else if ( match->subtype & ST_CAPTUREDFLAG ) {
 		bs->redflagstatus = 0;
 		bs->blueflagstatus = 0;
 		bs->flagcarrier = 0;
 		bs->flagstatuschanged = 1;
-	} else if ( match->subtype & ST_RETURNEDFLAG )     {
+	} else if ( match->subtype & ST_RETURNEDFLAG ) {
 		if ( !Q_stricmp( flag, "red" ) ) {
 			bs->redflagstatus = 0;
-		} else { bs->blueflagstatus = 0;}
+		} else { bs->blueflagstatus = 0; }
 		bs->flagstatuschanged = 1;
 	}
 }

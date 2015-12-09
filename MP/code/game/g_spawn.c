@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ typedef enum {
 typedef struct
 {
 	char    *name;
-	size_t	ofs;
+	size_t ofs;
 	fieldtype_t type;
 } field_t;
 
@@ -817,10 +817,10 @@ void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
 }
 
 #define ADJUST_AREAPORTAL() \
-	if(ent->s.eType == ET_MOVER) \
+	if ( ent->s.eType == ET_MOVER ) \
 	{ \
-		trap_LinkEntity(ent); \
-		trap_AdjustAreaPortalState(ent, qtrue); \
+		trap_LinkEntity( ent ); \
+		trap_AdjustAreaPortalState( ent, qtrue ); \
 	}
 
 /*
@@ -1070,4 +1070,3 @@ void G_SpawnEntitiesFromString( void ) {
 
 	level.spawning = qfalse;            // any future calls to G_Spawn*() will be errors
 }
-

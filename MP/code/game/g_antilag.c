@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #include "g_local.h"
 
 #define IS_ACTIVE( x ) ( \
-		x->r.linked == qtrue &&	\
-		x->client->ps.stats[STAT_HEALTH] > 0 &&	\
+		x->r.linked == qtrue && \
+		x->client->ps.stats[STAT_HEALTH] > 0 && \
 		x->client->sess.sessionTeam != TEAM_SPECTATOR && \
-		( x->client->ps.pm_flags & PMF_LIMBO ) == 0	\
+		( x->client->ps.pm_flags & PMF_LIMBO ) == 0 \
 		)
 
 // OSP -
@@ -141,58 +141,55 @@ void G_AdjustClientPositions( gentity_t* ent, int time, qboolean forward ) {
 		if ( list != ent && IS_ACTIVE( list ) ) {
 			if ( forward ) {
 				G_AdjustSingleClientPosition( list, time );
-			} else { G_ReAdjustSingleClientPosition( list );}
+			} else { G_ReAdjustSingleClientPosition( list ); }
 		}
 	}
 }
 
 /*
 void G_ResetMarkers( gentity_t* ent ) {
+    int i, time;
+    char buffer[256];
+    float period;
+
+    trap_Cvar_VariableStringBuffer( "sv_fps", buffer, sizeof( buffer ) - 1 );
+
+    period = atoi( buffer );
+    period = ( period == 0 ) ? 50.0f : 1000.f / period;
+
+    ent->client->topMarker = MAX_CLIENT_MARKERS - 1;
+    for ( i = MAX_CLIENT_MARKERS, time = level.time; i >= 0; i--, time -= period ) {
+        ent->client->clientMarkers[i].servertime =  time;
+        ent->client->clientMarkers[i].time =        time;
+
+        VectorCopy( ent->r.mins,            ent->client->clientMarkers[i].mins );
+        VectorCopy( ent->r.maxs,            ent->client->clientMarkers[i].maxs );
+        VectorCopy( ent->r.currentOrigin,   ent->client->clientMarkers[i].origin );
+    }
+}
+*/
+
+void G_ResetMarkers( gentity_t *ent ) {
 	int i, time;
-	char buffer[256];
+	char buffer[MAX_CVAR_VALUE_STRING];
 	float period;
 
 	trap_Cvar_VariableStringBuffer( "sv_fps", buffer, sizeof( buffer ) - 1 );
 
 	period = atoi( buffer );
-	period = ( period == 0 ) ? 50.0f : 1000.f / period;
-
-	ent->client->topMarker = MAX_CLIENT_MARKERS - 1;
-	for ( i = MAX_CLIENT_MARKERS, time = level.time; i >= 0; i--, time -= period ) {
-		ent->client->clientMarkers[i].servertime =  time;
-		ent->client->clientMarkers[i].time =        time;
-
-		VectorCopy( ent->r.mins,            ent->client->clientMarkers[i].mins );
-		VectorCopy( ent->r.maxs,            ent->client->clientMarkers[i].maxs );
-		VectorCopy( ent->r.currentOrigin,   ent->client->clientMarkers[i].origin );
-	}
-}
-*/
-
-void G_ResetMarkers(gentity_t *ent)
-{
-	int   i, time;
-	char  buffer[MAX_CVAR_VALUE_STRING];
-	float period;
-
-	trap_Cvar_VariableStringBuffer("sv_fps", buffer, sizeof(buffer) - 1);
-
-	period = atoi(buffer);
-	if (!period)
-	{
+	if ( !period ) {
 		period = 50;
-	}
-	else
+	} else
 	{
 		period = 1000.f / period;
 	}
 
 	ent->client->topMarker = MAX_CLIENT_MARKERS - 1;
-	for (i = MAX_CLIENT_MARKERS - 1, time = level.time; i >= 0; i--, time -= period)
+	for ( i = MAX_CLIENT_MARKERS - 1, time = level.time; i >= 0; i--, time -= period )
 	{
-		VectorCopy(ent->r.mins, ent->client->clientMarkers[i].mins);
-		VectorCopy(ent->r.maxs, ent->client->clientMarkers[i].maxs);
-		VectorCopy(ent->r.currentOrigin, ent->client->clientMarkers[i].origin);
+		VectorCopy( ent->r.mins, ent->client->clientMarkers[i].mins );
+		VectorCopy( ent->r.maxs, ent->client->clientMarkers[i].maxs );
+		VectorCopy( ent->r.currentOrigin, ent->client->clientMarkers[i].origin );
 		ent->client->clientMarkers[i].time = time;
 	}
 }
@@ -226,13 +223,13 @@ int G_SwitchBodyPartEntity( gentity_t* ent ) {
 	return ent - g_entities;
 }
 
-#define POSITION_READJUST											\
-	if ( res != results->entityNum ) {							   \
-		VectorSubtract( end, start, dir );						  \
-		VectorNormalizeFast( dir );								  \
-																	\
-		VectorMA( results->endpos, -1, dir, results->endpos );	  \
-		results->entityNum = res;								\
+#define POSITION_READJUST                                           \
+	if ( res != results->entityNum ) {                             \
+		VectorSubtract( end, start, dir );                        \
+		VectorNormalizeFast( dir );                               \
+                                                                    \
+		VectorMA( results->endpos, -1, dir, results->endpos );    \
+		results->entityNum = res;                               \
 	}
 
 // Run a trace with players in historical positions.

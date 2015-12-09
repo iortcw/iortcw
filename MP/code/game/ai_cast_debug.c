@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ void AICast_DBG_RouteTable_f( vec3_t org, char *param ) {
 	if ( Q_stricmp( param, "src" ) == 0 ) { // set the src
 		srcarea = 1 + trap_AAS_PointAreaNum( org );
 		return;
-	} else if ( Q_stricmp( param, "dest" ) == 0 )        {
+	} else if ( Q_stricmp( param, "dest" ) == 0 ) {
 		dstarea = 1 + trap_AAS_PointAreaNum( org );
 	}
 
@@ -220,19 +220,19 @@ int Sys_MilliSeconds(void)
 {
 // Ridah, faster Win32 code
 #ifdef _WIN32
-	int			sys_curtime;
-	static qboolean	initialized = qfalse;
-	static int	sys_timeBase;
+    int			sys_curtime;
+    static qboolean	initialized = qfalse;
+    static int	sys_timeBase;
 
-	if (!initialized) {
-		sys_timeBase = timeGetTime();
-		initialized = qtrue;
-	}
-	sys_curtime = timeGetTime() - sys_timeBase;
+    if (!initialized) {
+        sys_timeBase = timeGetTime();
+        initialized = qtrue;
+    }
+    sys_curtime = timeGetTime() - sys_timeBase;
 
-	return sys_curtime;
+    return sys_curtime;
 #else
-	return clock() * 1000 / CLOCKS_PER_SEC;
+    return clock() * 1000 / CLOCKS_PER_SEC;
 #endif
 } //end of the function Sys_MilliSeconds
 */

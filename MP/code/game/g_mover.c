@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -615,7 +615,7 @@ void G_MoverTeam( gentity_t *ent ) {
 
 		if ( part->s.eType == ET_BAT && part->model && !G_MoverPush( part, move, amove, &obstacle ) ) {
 			break;
-		} else if ( !G_MoverPush( part, move, amove, &obstacle ) )    {
+		} else if ( !G_MoverPush( part, move, amove, &obstacle ) ) {
 			break;  // move was blocked
 		}
 	}
@@ -730,7 +730,7 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 		ent->s.pos.trType = TR_STATIONARY;
 		break;
 
-		// JOSEPH 1-26-00
+	// JOSEPH 1-26-00
 	case MOVER_POS3:
 		VectorCopy( ent->pos3, ent->s.pos.trBase );
 		ent->s.pos.trType = TR_STATIONARY;
@@ -750,7 +750,7 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 		VectorScale( delta, f, ent->s.pos.trDelta );
 		ent->s.pos.trType = TR_LINEAR_STOP;
 		break;
-		// END JOSEPH
+	// END JOSEPH
 
 	case MOVER_1TO2:        // opening
 		VectorCopy( ent->pos1, ent->s.pos.trBase );
@@ -937,7 +937,7 @@ void GotoPos3( gentity_t *ent ) {
 /*
 ================
 ReturnToPos1Rotate
-	closing
+    closing
 ================
 */
 void ReturnToPos1Rotate( gentity_t *ent ) {
@@ -1021,7 +1021,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 		if ( ent->teammaster == ent || !ent->teammaster ) {
 			trap_AdjustAreaPortalState( ent, qfalse );
 		}
-	} else if ( ent->moverState == MOVER_1TO2ROTATE )   {
+	} else if ( ent->moverState == MOVER_1TO2ROTATE ) {
 		// reached pos2
 		SetMoverState( ent, MOVER_POS2ROTATE, level.time );
 
@@ -1050,7 +1050,7 @@ void Reached_BinaryMover( gentity_t *ent ) {
 		ent->think = ReturnToPos1Rotate;
 		ent->nextthink = level.time + ent->wait;
 
-	} else if ( ent->moverState == MOVER_2TO1ROTATE )   {
+	} else if ( ent->moverState == MOVER_2TO1ROTATE ) {
 		// reached pos1
 		SetMoverState( ent, MOVER_POS1ROTATE, level.time );
 
@@ -1190,7 +1190,7 @@ void Reached_TrinaryMover( gentity_t *ent ) {
 		if ( ent->teammaster == ent || !ent->teammaster ) {
 			trap_AdjustAreaPortalState( ent, qfalse );
 		}
-	} else if ( ent->moverState == MOVER_2TO3 )   {
+	} else if ( ent->moverState == MOVER_2TO3 ) {
 		// reached pos3
 		SetMoverState( ent, MOVER_POS3, level.time );
 
@@ -1208,7 +1208,7 @@ void Reached_TrinaryMover( gentity_t *ent ) {
 			ent->activator = ent;
 		}
 		G_UseTargets( ent, ent->activator );
-	} else if ( ent->moverState == MOVER_3TO2 )   {
+	} else if ( ent->moverState == MOVER_3TO2 ) {
 		// reached pos2
 		SetMoverState( ent, MOVER_POS2, level.time );
 
@@ -1636,7 +1636,7 @@ void InitMover( gentity_t *ent ) {
 	if ( !Q_stricmp( ent->classname,"func_secret" ) ) {
 		ent->use = Use_TrinaryMover;
 		ent->reached = Reached_TrinaryMover;
-	} else if ( !Q_stricmp( ent->classname, "func_rotating" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "func_rotating" ) ) {
 		ent->use = Use_Func_Rotate;
 		ent->reached = 0; // rotating can never reach
 	} else
@@ -1841,17 +1841,19 @@ static void Touch_DoorTriggerSpectator( gentity_t *ent, gentity_t *other, trace_
 	doorMin = ent->r.absmin[axis] + 100;
 	doorMax = ent->r.absmax[axis] - 100;
 
-	VectorCopy(other->client->ps.origin, origin);
+	VectorCopy( other->client->ps.origin, origin );
 
-	if (origin[axis] < doorMin || origin[axis] > doorMax) return;
+	if ( origin[axis] < doorMin || origin[axis] > doorMax ) {
+		return;
+	}
 
-	if (fabs(origin[axis] - doorMax) < fabs(origin[axis] - doorMin)) {
+	if ( fabs( origin[axis] - doorMax ) < fabs( origin[axis] - doorMin ) ) {
 		origin[axis] = doorMin - 10;
 	} else {
 		origin[axis] = doorMax + 10;
 	}
 
-	TeleportPlayer(other, origin, tv(10000000.0, 0, 0));
+	TeleportPlayer( other, origin, tv( 10000000.0, 0, 0 ) );
 }
 
 /*
@@ -1919,7 +1921,7 @@ void Touch_DoorTrigger( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 			 ent->parent->moverState != MOVER_POS2 ) {
 			Touch_DoorTriggerSpectator( ent, other, trace );
 		}
-	} else if ( ent->parent->moverState != MOVER_1TO2 )   {
+	} else if ( ent->parent->moverState != MOVER_1TO2 ) {
 		Use_BinaryMover( ent->parent, ent, other );
 	}
 }
@@ -1937,7 +1939,7 @@ void Think_SpawnNewDoorTrigger( gentity_t *ent ) {
 	vec3_t mins, maxs;
 	int i, best;
 
-	if (!ent) {
+	if ( !ent ) {
 		return;
 	}
 
@@ -1987,8 +1989,8 @@ void Think_MatchTeam( gentity_t *ent ) {
 /*
 ==============
 findNonAIBrushTargeter
-	determine if there is an entity pointing at ent that is not a "trigger_aidoor"
-	(used now for checking which key to set for a door)
+    determine if there is an entity pointing at ent that is not a "trigger_aidoor"
+    (used now for checking which key to set for a door)
 ==============
 */
 qboolean findNonAIBrushTargeter( gentity_t *ent ) {
@@ -2071,9 +2073,9 @@ void finishSpawningKeyedMover( gentity_t *ent ) {
 /*
 ==============
 Door_reverse_sounds
-	The door has been marked as "START_OPEN" which means the open/closed
-	positions have been swapped.
-	This swaps the sounds around as well
+    The door has been marked as "START_OPEN" which means the open/closed
+    positions have been swapped.
+    This swaps the sounds around as well
 ==============
 */
 void Door_reverse_sounds( gentity_t *ent ) {
@@ -2106,8 +2108,8 @@ void Door_reverse_sounds( gentity_t *ent ) {
 /*
 ==============
 DoorSetSounds
-	get sound indexes for the various door sounds
-	(used by SP_func_door() and SP_func_door_rotating() )
+    get sound indexes for the various door sounds
+    (used by SP_func_door() and SP_func_door_rotating() )
 ==============
 */
 void DoorSetSounds( gentity_t *ent, int doortype, qboolean isRotating ) {
@@ -2136,8 +2138,8 @@ void DoorSetSounds( gentity_t *ent, int doortype, qboolean isRotating ) {
 /*
 ==============
 G_TryDoor
-	seemed better to have this isolated.  this way i can get func_invisible_user's using the
-	regular rules of doors.
+    seemed better to have this isolated.  this way i can get func_invisible_user's using the
+    regular rules of doors.
 ==============
 */
 void G_TryDoor( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -2224,33 +2226,33 @@ SHOOT-THRU	Bullets don't stop when they hit the door.  Set "shoot_thru_scale" wi
 "team"		team name.  other doors with same team name will open/close in syncronicity
 "shoot_thru_scale"	Multiplier for how much damage bullets do that have passed through the door.  Effectively how much damage the door 'absorbs'.  0.0 - 1.0 (0.0 will turn SHOOT-THRU off, 1.0 is full damage)
 "type"		use sounds based on construction of door:
-	 0 - nosound (default)
-	 1 - metal
-	 2 - stone
-	 3 - lab
-	 4 - wood
-	 5 - iron/jail
-	 6 - portcullis
-	 7 - wood (quiet)
+     0 - nosound (default)
+     1 - metal
+     2 - stone
+     3 - lab
+     4 - wood
+     5 - iron/jail
+     6 - portcullis
+     7 - wood (quiet)
 
 SOUND NAMING INFO -
 inside "sound/movers/doors/door<number>...
-	_open.wav		// opening
-	_endo.wav		// open
-	_close.wav		// closing
-	_endc.wav		// closed
-	_loopo.wav		// opening loop
-	_loopc.wav		// closing loop
-	_locked.wav		// locked
+    _open.wav		// opening
+    _endo.wav		// open
+    _close.wav		// closing
+    _endc.wav		// closed
+    _loopo.wav		// opening loop
+    _loopc.wav		// closing loop
+    _locked.wav		// locked
 
-	_openq.wav		// opening quietly
-	_endoq.wav		// open quietly
-	_closeq.wav		// closing quietly
-	_endcq.wav		// closed quietly
+    _openq.wav		// opening quietly
+    _endoq.wav		// open quietly
+    _closeq.wav		// closing quietly
+    _endcq.wav		// closed quietly
 
 and for rotating doors:
-	_kicked.wav
-	_kickedend.wav
+    _kicked.wav
+    _kickedend.wav
 
 */
 void SP_func_door( gentity_t *ent ) {
@@ -2449,11 +2451,11 @@ void SP_func_secret( gentity_t *ent ) {
 
 	// if "start_open", reverse position 1 and 3
 	/*if ( ent->spawnflags & 1 ) {
-		vec3_t	temp;
+	    vec3_t	temp;
 
-		VectorCopy( ent->pos3, temp );
-		VectorCopy( ent->s.origin, ent->pos3 );
-		VectorCopy( temp, ent->pos1 );
+	    VectorCopy( ent->pos3, temp );
+	    VectorCopy( ent->s.origin, ent->pos3 );
+	    VectorCopy( temp, ent->pos1 );
 	}*/
 
 	InitMover( ent );
@@ -2785,7 +2787,7 @@ void Reached_Train( gentity_t *ent ) {
 	ent->r.svFlags &= ~SVF_NOCLIENT;
 
 	// Tequila comment: Fast move case
-	if(ent->s.pos.trDuration<1) {
+	if ( ent->s.pos.trDuration < 1 ) {
 		// Tequila comment: As trDuration is used later in a division, we need to avoid that case now
 		// With null trDuration,
 		// the calculated rocks bounding box becomes infinite and the engine think for a short time
@@ -2794,9 +2796,9 @@ void Reached_Train( gentity_t *ent ) {
 		// The desired effect with very very big speed is to have instant move, so any not null duration
 		// lower than a frame duration should be sufficient.
 		// Afaik, the negative case don't have to be supported.
-		ent->s.pos.trDuration=1;
+		ent->s.pos.trDuration = 1;
 
-		// Tequila comment: Don't send entity to clients so it becomes really invisible 
+		// Tequila comment: Don't send entity to clients so it becomes really invisible
 		ent->r.svFlags |= SVF_NOCLIENT;
 	}
 
@@ -2897,22 +2899,22 @@ void Think_SetupTrainTargets( gentity_t *ent ) {
 		VectorCopy( ent->nextTrain->s.origin, ent->s.pos.trBase );
 		VectorCopy( ent->nextTrain->s.origin, ent->r.currentOrigin );
 		trap_LinkEntity( ent );
-	} else if ( !Q_stricmp( ent->classname, "func_train_particles" ) && ent->spawnflags & 2 )       { // TOGGLE
+	} else if ( !Q_stricmp( ent->classname, "func_train_particles" ) && ent->spawnflags & 2 ) {       // TOGGLE
 		VectorCopy( ent->nextTrain->s.origin, ent->s.pos.trBase );
 		VectorCopy( ent->nextTrain->s.origin, ent->r.currentOrigin );
 		trap_LinkEntity( ent );
-	} else if ( !Q_stricmp( ent->classname, "func_tramcar" ) && ent->spawnflags & 2 )       { // TOGGLE
+	} else if ( !Q_stricmp( ent->classname, "func_tramcar" ) && ent->spawnflags & 2 ) {       // TOGGLE
 		VectorCopy( ent->nextTrain->s.origin, ent->s.pos.trBase );
 		VectorCopy( ent->nextTrain->s.origin, ent->r.currentOrigin );
 		trap_LinkEntity( ent );
-	} else if ( !Q_stricmp( ent->classname, "func_bat" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "func_bat" ) ) {
 		//VectorCopy (ent->nextTrain->s.origin, ent->s.pos.trBase);
 		//VectorCopy (ent->nextTrain->s.origin, ent->r.currentOrigin);
 		//trap_LinkEntity (ent);
 		if ( ent->spawnflags & 1 ) {  // start on
 			ent->use( ent, ent, ent );
 		}
-	} else if ( !Q_stricmp( ent->classname, "truck_cam" ) && ent->spawnflags & 2 )     { // TOGGLE
+	} else if ( !Q_stricmp( ent->classname, "truck_cam" ) && ent->spawnflags & 2 ) {     // TOGGLE
 		VectorCopy( ent->nextTrain->s.origin, ent->s.pos.trBase );
 		VectorCopy( ent->nextTrain->s.origin, ent->r.currentOrigin );
 		trap_LinkEntity( ent );
@@ -3467,7 +3469,7 @@ STATIC
 /*
 ==============
 Use_Static
-	toggle hide or show (including collisions) this entity
+    toggle hide or show (including collisions) this entity
 ==============
 */
 void Use_Static( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -3629,11 +3631,11 @@ void SP_func_static( gentity_t *ent ) {
 	/*
 	// RF, check for blocking AAS
 	if ( ent->spawnflags & 1 ) {
-		// RF, AAS areas are now occupied
-		if (ent->model) {
-			ent->think = G_BlockThink;
-			ent->nextthink = level.time + FRAMETIME;
-		}
+	    // RF, AAS areas are now occupied
+	    if (ent->model) {
+	        ent->think = G_BlockThink;
+	        ent->nextthink = level.time + FRAMETIME;
+	    }
 	}
 	*/
 }
@@ -3663,7 +3665,7 @@ check either the X_AXIS or Y_AXIS box to change that.
 void Use_Func_Rotate( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 	if ( ent->spawnflags & 4 ) {
 		ent->s.apos.trDelta[2] = ent->speed;
-	} else if ( ent->spawnflags & 8 )   {
+	} else if ( ent->spawnflags & 8 ) {
 		ent->s.apos.trDelta[0] = ent->speed;
 	} else {
 		ent->s.apos.trDelta[1] = ent->speed;
@@ -3838,14 +3840,14 @@ SHOOT-THRU	Bullets don't stop when they hit the door.  Set "shoot_thru_scale" wi
 "light"     constantLight radius
 "shoot_thru_scale"	Multiplier for how much damage bullets do that have passed through the door.  Effectively how much damage the door 'absorbs'.  0.0 - 1.0 (0.0 will turn SHOOT-THRU off, 1.0 is full damage)
 "type"		use sounds based on construction of door:
-	 0 - nosound (default)
-	 1 - metal
-	 2 - stone
-	 3 - lab
-	 4 - wood
-	 5 - iron/jail
-	 6 - portcullis
-	 7 - wood (quiet)
+     0 - nosound (default)
+     1 - metal
+     2 - stone
+     3 - lab
+     4 - wood
+     5 - iron/jail
+     6 - portcullis
+     7 - wood (quiet)
 "team"		team name.  other doors with same team name will open/close in syncronicity
 */
 
@@ -3906,7 +3908,7 @@ void SP_func_door_rotating( gentity_t *ent ) {
 		ent->rotate[2] = 1;
 	} else if ( ent->spawnflags & 8 ) {
 		ent->rotate[0] = 1;
-	} else { ent->rotate[1] = 1;}
+	} else { ent->rotate[1] = 1; }
 
 	if ( VectorLength( ent->rotate ) > 1 ) { // check that rotation is only set for one axis
 		G_Error( "Too many axis marked in func_door_rotating entity.  Only choose one axis of rotation. (defaulting to standard door rotation)" );
@@ -4018,15 +4020,15 @@ void SP_target_effect( gentity_t *ent ) {
 			ent->key = 0;
 		} else if ( !Q_stricmp( type,"glass" ) ) {
 			ent->key = 1;
-		} else if ( !Q_stricmp( type,"metal" ) )                                                       {
+		} else if ( !Q_stricmp( type,"metal" ) ) {
 			ent->key = 2;
-		} else if ( !Q_stricmp( type,"gibs" ) )                                                                                                               {
+		} else if ( !Q_stricmp( type,"gibs" ) ) {
 			ent->key = 3;
-		} else if ( !Q_stricmp( type,"brick" ) )                                                                                                                                                                      {
+		} else if ( !Q_stricmp( type,"brick" ) ) {
 			ent->key = 4;
-		} else if ( !Q_stricmp( type,"rock" ) )                                                                                                                                                                                                                              {
+		} else if ( !Q_stricmp( type,"rock" ) ) {
 			ent->key = 5;
-		} else if ( !Q_stricmp( type,"fabric" ) )                                                                                                                                                                                                                                                                                     {
+		} else if ( !Q_stricmp( type,"fabric" ) ) {
 			ent->key = 6;
 		}
 	} else {
@@ -4059,7 +4061,7 @@ void ThrowDebris( gentity_t *self, char *modelname, float speed, vec3_t origin )
 /*
 ==============
 BecomeExplosion
-	nuke the original entity and create all the debris entities that need to be synced to clients
+    nuke the original entity and create all the debris entities that need to be synced to clients
 ==============
 */
 void BecomeExplosion( gentity_t *self ) {
@@ -4078,7 +4080,7 @@ void BecomeExplosion( gentity_t *self ) {
 /*
 ==============
 func_explosive_explode
-	NOTE: the 'damage' passed in is ignored completely
+    NOTE: the 'damage' passed in is ignored completely
 ==============
 */
 void func_explosive_explode( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
@@ -4277,7 +4279,7 @@ void SP_func_explosive( gentity_t *ent ) {
 	if ( ent->spawnflags & 1 ) {  // start invis
 		ent->use = func_explosive_spawn;
 		trap_UnlinkEntity( ent );
-	} else if ( ent->targetname )     {
+	} else if ( ent->targetname ) {
 		ent->use = func_explosive_use;
 		ent->AIScript_AlertEntity = func_explosive_alert;
 	}
@@ -4318,15 +4320,15 @@ void SP_func_explosive( gentity_t *ent ) {
 			ent->key = 0;
 		} else if ( !Q_stricmp( type,"glass" ) ) {
 			ent->key = 1;
-		} else if ( !Q_stricmp( type,"metal" ) )                                                       {
+		} else if ( !Q_stricmp( type,"metal" ) ) {
 			ent->key = 2;
-		} else if ( !Q_stricmp( type,"gibs" ) )                                                                                                               {
+		} else if ( !Q_stricmp( type,"gibs" ) ) {
 			ent->key = 3;
-		} else if ( !Q_stricmp( type,"brick" ) )                                                                                                                                                                      {
+		} else if ( !Q_stricmp( type,"brick" ) ) {
 			ent->key = 4;
-		} else if ( !Q_stricmp( type,"rock" ) )                                                                                                                                                                                                                              {
+		} else if ( !Q_stricmp( type,"rock" ) ) {
 			ent->key = 5;
-		} else if ( !Q_stricmp( type,"fabric" ) )                                                                                                                                                                                                                                                                                     {
+		} else if ( !Q_stricmp( type,"fabric" ) ) {
 			ent->key = 6;
 		}
 	} else {
@@ -4400,42 +4402,42 @@ NOT_KICKABLE - kicking doesn't fire, only player activating
 
 "cursorhint" cursor types: (probably more, ask sherman if you think the list is out of date)
 they /don't/ need to be all uppercase
-	HINT_NONE
-	HINT_PLAYER
-	HINT_ACTIVATE
-	HINT_DOOR
-	HINT_DOOR_ROTATING
-	HINT_DOOR_LOCKED
-	HINT_DOOR_ROTATING_LOCKED
-	HINT_MG42
-	HINT_BREAKABLE
-	HINT_BREAKABLE_BIG
-	HINT_CHAIR
-	HINT_ALARM
-	HINT_HEALTH
-	HINT_TREASURE
-	HINT_KNIFE
-	HINT_LADDER
-	HINT_BUTTON
-	HINT_WATER
-	HINT_CAUTION
-	HINT_DANGER
-	HINT_SECRET
-	HINT_QUESTION
-	HINT_EXCLAMATION
-	HINT_CLIPBOARD
-	HINT_WEAPON
-	HINT_AMMO
-	HINT_ARMOR
-	HINT_POWERUP
-	HINT_HOLDABLE
-	HINT_INVENTORY
-	HINT_SCENARIC
-	HINT_EXIT
-	HINT_PLYR_FRIEND
-	HINT_PLYR_NEUTRAL
-	HINT_PLYR_ENEMY
-	HINT_PLYR_UNKNOWN
+    HINT_NONE
+    HINT_PLAYER
+    HINT_ACTIVATE
+    HINT_DOOR
+    HINT_DOOR_ROTATING
+    HINT_DOOR_LOCKED
+    HINT_DOOR_ROTATING_LOCKED
+    HINT_MG42
+    HINT_BREAKABLE
+    HINT_BREAKABLE_BIG
+    HINT_CHAIR
+    HINT_ALARM
+    HINT_HEALTH
+    HINT_TREASURE
+    HINT_KNIFE
+    HINT_LADDER
+    HINT_BUTTON
+    HINT_WATER
+    HINT_CAUTION
+    HINT_DANGER
+    HINT_SECRET
+    HINT_QUESTION
+    HINT_EXCLAMATION
+    HINT_CLIPBOARD
+    HINT_WEAPON
+    HINT_AMMO
+    HINT_ARMOR
+    HINT_POWERUP
+    HINT_HOLDABLE
+    HINT_INVENTORY
+    HINT_SCENARIC
+    HINT_EXIT
+    HINT_PLYR_FRIEND
+    HINT_PLYR_NEUTRAL
+    HINT_PLYR_ENEMY
+    HINT_PLYR_UNKNOWN
 */
 
 void use_invisible_user( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -4487,7 +4489,7 @@ void use_invisible_user( gentity_t *ent, gentity_t *other, gentity_t *activator 
 	}
 
 	G_UseTargets( ent, other ); //----(SA)	how about this so the triggered targets have an 'activator' as well as an 'other'?
-								//----(SA)	Please let me know if you forsee any problems with this.
+	                            //----(SA)	Please let me know if you forsee any problems with this.
 }
 
 

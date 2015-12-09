@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -203,7 +203,7 @@ qboolean AICast_VisibleFromPos( vec3_t srcpos, int srcnum,
 			middle[2] -= ( destmaxs[2] - destmins[2] ) * 0.5;
 		} else if ( i == 1 ) {
 			middle[2] += destmaxs[2] - destmins[2];
-		} else if ( i == 2 )                                                          { // right side
+		} else if ( i == 2 ) {                                                          // right side
 			middle[2] -= ( destmaxs[2] - destmins[2] ) / 2.0;
 			VectorMA( eye, destmaxs[0] - 0.5, right, eye );
 		} else if ( i == 3 ) {    // left side
@@ -224,7 +224,7 @@ qboolean AICast_CheckVisibility( gentity_t *srcent, gentity_t *destent ) {
 	cast_state_t        *cs;
 	float fov, dist;
 	int viewer, ent;
-	orientation_t       or;
+	orientation_t or;
 
 	if ( destent->flags & FL_NOTARGET ) {
 		return qfalse;

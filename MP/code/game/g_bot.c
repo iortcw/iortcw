@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ void G_AddRandomBot( int team ) {
 			if ( cl->pers.connected != CON_CONNECTED ) {
 				continue;
 			}
-			if ( !(g_entities[i].r.svFlags & SVF_BOT) ) {
+			if ( !( g_entities[i].r.svFlags & SVF_BOT ) ) {
 				continue;
 			}
 			if ( team >= 0 && cl->sess.sessionTeam != team ) {
@@ -191,7 +191,7 @@ void G_AddRandomBot( int team ) {
 			if ( cl->pers.connected != CON_CONNECTED ) {
 				continue;
 			}
-			if ( !(g_entities[i].r.svFlags & SVF_BOT) ) {
+			if ( !( g_entities[i].r.svFlags & SVF_BOT ) ) {
 				continue;
 			}
 			if ( team >= 0 && cl->sess.sessionTeam != team ) {
@@ -209,8 +209,8 @@ void G_AddRandomBot( int team ) {
 					teamstr = "red";
 				} else if ( team == TEAM_BLUE ) {
 					teamstr = "blue";
-				} else { teamstr = "";}
-				Q_strncpyz(netname, value, sizeof(netname));
+				} else { teamstr = ""; }
+				Q_strncpyz( netname, value, sizeof( netname ) );
 				Q_CleanStr( netname );
 				trap_SendConsoleCommand( EXEC_INSERT, va( "addbot %s %i %s %i\n", netname, skill, teamstr, 0 ) );
 				return;
@@ -233,13 +233,13 @@ int G_RemoveRandomBot( int team ) {
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		if ( !(g_entities[i].r.svFlags & SVF_BOT) ) {
+		if ( !( g_entities[i].r.svFlags & SVF_BOT ) ) {
 			continue;
 		}
 		if ( team >= 0 && cl->sess.sessionTeam != team ) {
 			continue;
 		}
-		trap_SendConsoleCommand( EXEC_INSERT, va("clientkick %d\n", i) );
+		trap_SendConsoleCommand( EXEC_INSERT, va( "clientkick %d\n", i ) );
 		return qtrue;
 	}
 	return qfalse;
@@ -286,7 +286,7 @@ int G_CountBotPlayers( int team ) {
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		if ( !(g_entities[i].r.svFlags & SVF_BOT) ) {
+		if ( !( g_entities[i].r.svFlags & SVF_BOT ) ) {
 			continue;
 		}
 		if ( team >= 0 && cl->sess.sessionTeam != team ) {
@@ -349,7 +349,7 @@ void G_CheckMinimumPlayers( void ) {
 		} else if ( humanplayers + botplayers > minplayers && botplayers ) {
 			G_RemoveRandomBot( TEAM_BLUE );
 		}
-	} else if ( g_gametype.integer == GT_TOURNAMENT )     {
+	} else if ( g_gametype.integer == GT_TOURNAMENT ) {
 		if ( minplayers >= g_maxclients.integer ) {
 			minplayers = g_maxclients.integer - 1;
 		}
@@ -365,7 +365,7 @@ void G_CheckMinimumPlayers( void ) {
 				G_RemoveRandomBot( -1 );
 			}
 		}
-	} else if ( g_gametype.integer == GT_FFA )     {
+	} else if ( g_gametype.integer == GT_FFA ) {
 		if ( minplayers >= g_maxclients.integer ) {
 			minplayers = g_maxclients.integer - 1;
 		}
@@ -511,13 +511,13 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	Info_SetValueForKey( userinfo, "name", botname );
 	Info_SetValueForKey( userinfo, "rate", "25000" );
 	Info_SetValueForKey( userinfo, "snaps", "20" );
-	Info_SetValueForKey( userinfo, "skill", va("%.2f", skill) );
+	Info_SetValueForKey( userinfo, "skill", va( "%.2f", skill ) );
 
 	if ( skill == 1 ) {
 		Info_SetValueForKey( userinfo, "handicap", "50" );
-	} else if ( skill == 2 )   {
+	} else if ( skill == 2 ) {
 		Info_SetValueForKey( userinfo, "handicap", "70" );
-	} else if ( skill == 3 )   {
+	} else if ( skill == 3 ) {
 		Info_SetValueForKey( userinfo, "handicap", "90" );
 	}
 
@@ -780,59 +780,59 @@ void G_InitBots( qboolean restart ) {
 	return;
 	// done.
 /*
-	int			fragLimit;
-	int			timeLimit;
-	const char	*arenainfo;
-	char		*strValue;
-	int			basedelay;
-	char		map[MAX_QPATH];
-	char		serverinfo[MAX_INFO_STRING];
+    int			fragLimit;
+    int			timeLimit;
+    const char	*arenainfo;
+    char		*strValue;
+    int			basedelay;
+    char		map[MAX_QPATH];
+    char		serverinfo[MAX_INFO_STRING];
 
-	G_LoadBots();
-	G_LoadArenas();
+    G_LoadBots();
+    G_LoadArenas();
 
-	trap_Cvar_Register( &bot_minplayers, "bot_minplayers", "0", CVAR_SERVERINFO );
+    trap_Cvar_Register( &bot_minplayers, "bot_minplayers", "0", CVAR_SERVERINFO );
 
-	if( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		trap_GetServerinfo( serverinfo, sizeof(serverinfo) );
-		Q_strncpyz( map, Info_ValueForKey( serverinfo, "mapname" ), sizeof(map) );
-		arenainfo = G_GetArenaInfoByMap( map );
-		if ( !arenainfo ) {
-			return;
-		}
+    if( g_gametype.integer == GT_SINGLE_PLAYER ) {
+        trap_GetServerinfo( serverinfo, sizeof(serverinfo) );
+        Q_strncpyz( map, Info_ValueForKey( serverinfo, "mapname" ), sizeof(map) );
+        arenainfo = G_GetArenaInfoByMap( map );
+        if ( !arenainfo ) {
+            return;
+        }
 
-		strValue = Info_ValueForKey( arenainfo, "fraglimit" );
-		fragLimit = atoi( strValue );
-		if ( fragLimit ) {
-			trap_Cvar_Set( "fraglimit", strValue );
-		}
-		else {
-			trap_Cvar_Set( "fraglimit", "0" );
-		}
+        strValue = Info_ValueForKey( arenainfo, "fraglimit" );
+        fragLimit = atoi( strValue );
+        if ( fragLimit ) {
+            trap_Cvar_Set( "fraglimit", strValue );
+        }
+        else {
+            trap_Cvar_Set( "fraglimit", "0" );
+        }
 
-		strValue = Info_ValueForKey( arenainfo, "timelimit" );
-		timeLimit = atoi( strValue );
-		if ( timeLimit ) {
-			trap_Cvar_Set( "timelimit", strValue );
-		}
-		else {
-			trap_Cvar_Set( "timelimit", "0" );
-		}
+        strValue = Info_ValueForKey( arenainfo, "timelimit" );
+        timeLimit = atoi( strValue );
+        if ( timeLimit ) {
+            trap_Cvar_Set( "timelimit", strValue );
+        }
+        else {
+            trap_Cvar_Set( "timelimit", "0" );
+        }
 
-		if ( !fragLimit && !timeLimit ) {
-			trap_Cvar_Set( "fraglimit", "10" );
-			trap_Cvar_Set( "timelimit", "0" );
-		}
+        if ( !fragLimit && !timeLimit ) {
+            trap_Cvar_Set( "fraglimit", "10" );
+            trap_Cvar_Set( "timelimit", "0" );
+        }
 
-		basedelay = BOT_BEGIN_DELAY_BASE;
-		strValue = Info_ValueForKey( arenainfo, "special" );
-		if( Q_stricmp( strValue, "training" ) == 0 ) {
-			basedelay += 10000;
-		}
+        basedelay = BOT_BEGIN_DELAY_BASE;
+        strValue = Info_ValueForKey( arenainfo, "special" );
+        if( Q_stricmp( strValue, "training" ) == 0 ) {
+            basedelay += 10000;
+        }
 
-		if( !restart ) {
-			G_SpawnBots( Info_ValueForKey( arenainfo, "bots" ), basedelay );
-		}
-	}
+        if( !restart ) {
+            G_SpawnBots( Info_ValueForKey( arenainfo, "bots" ), basedelay );
+        }
+    }
 */
 }

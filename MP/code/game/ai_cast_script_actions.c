@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ qboolean AICast_ScriptAction_GotoMarker( cast_state_t *cs, char *params ) {
 			if ( cs->followSlowApproach && VectorLength( vec ) < cs->followDist ) {
 				AIFunc_IdleStart( cs );   // resume normal AI
 				return qtrue;
-			} else if ( !cs->followSlowApproach && VectorLength( vec ) < 64 /*&& DotProduct(cs->bs->cur_ps.velocity, vec) < 0*/ )       {
+			} else if ( !cs->followSlowApproach && VectorLength( vec ) < 64 /*&& DotProduct(cs->bs->cur_ps.velocity, vec) < 0*/ ) {
 				AIFunc_IdleStart( cs );   // resume normal AI
 				return qtrue;
 			} else
@@ -1016,10 +1016,10 @@ qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params ) {
 ==============
 AICast_ScriptAction_GiveArmor
 
-	syntax: givearmor <pickupname>
+    syntax: givearmor <pickupname>
 
-	will probably be more like:
-		syntax: givearmor <type> <amount>
+    will probably be more like:
+        syntax: givearmor <type> <amount>
 ==============
 */
 qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params ) {
@@ -1224,7 +1224,7 @@ qboolean AICast_ScriptAction_GiveInventory( cast_state_t *cs, char *params ) {
 
 	if ( item->giType == IT_KEY ) {
 		g_entities[cs->entityNum].client->ps.stats[STAT_KEYS] |= ( 1 << item->giTag );
-	} else if ( item->giType == IT_HOLDABLE )      {
+	} else if ( item->giType == IT_HOLDABLE ) {
 		// (SA) TODO
 	}
 
@@ -1455,17 +1455,17 @@ AICast_ScriptAction_Accum
 
   Commands:
 
-	accum <n> inc <m>
-	accum <n> abort_if_less_than <m>
-	accum <n> abort_if_greater_than <m>
-	accum <n> abort_if_not_equal <m>
-	accum <n> abort_if_equal <m>
-	accum <n> set <m>
-	accum <n> random <m>
-	accum <n> bitset <m>
-	accum <n> bitreset <m>
-	accum <n> abort_if_bitset <m>
-	accum <n> abort_if_not_bitset <m>
+    accum <n> inc <m>
+    accum <n> abort_if_less_than <m>
+    accum <n> abort_if_greater_than <m>
+    accum <n> abort_if_not_equal <m>
+    accum <n> abort_if_equal <m>
+    accum <n> set <m>
+    accum <n> random <m>
+    accum <n> bitset <m>
+    accum <n> bitreset <m>
+    accum <n> abort_if_bitset <m>
+    accum <n> abort_if_not_bitset <m>
 =================
 */
 qboolean AICast_ScriptAction_Accum( cast_state_t *cs, char *params ) {
@@ -1590,47 +1590,47 @@ qboolean AICast_ScriptAction_SpawnCast( cast_state_t *cs, char *params ) {
 	G_Error( "AI Scripting: spawncast is no longer functional. Use trigger_spawn instead.\n" );
 	return qfalse;
 /*
-	if (!params[0]) {
-		G_Error( "AI Scripting: spawncast without a classname\n" );
-	}
+    if (!params[0]) {
+        G_Error( "AI Scripting: spawncast without a classname\n" );
+    }
 
-	pString = params;
+    pString = params;
 
-	token = COM_ParseExt( &pString, qfalse );
-	if (!token[0]) {
-		G_Error( "AI Scripting: spawncast without a classname\n" );
-	}
+    token = COM_ParseExt( &pString, qfalse );
+    if (!token[0]) {
+        G_Error( "AI Scripting: spawncast without a classname\n" );
+    }
 
-	classname = G_Alloc( strlen(token)+1 );
-	Q_strncpyz( classname, token, strlen(token)+1 );
+    classname = G_Alloc( strlen(token)+1 );
+    Q_strncpyz( classname, token, strlen(token)+1 );
 
-	token = COM_ParseExt( &pString, qfalse );
-	if (!token[0]) {
-		G_Error( "AI Scripting: spawncast without a targetname\n" );
-	}
+    token = COM_ParseExt( &pString, qfalse );
+    if (!token[0]) {
+        G_Error( "AI Scripting: spawncast without a targetname\n" );
+    }
 
-	targetEnt = G_Find( NULL, FOFS(targetname), token );
-	if (!targetEnt) {
-		G_Error( "AI Scripting: cannot find targetname \"%s\"\n", token );
-	}
+    targetEnt = G_Find( NULL, FOFS(targetname), token );
+    if (!targetEnt) {
+        G_Error( "AI Scripting: cannot find targetname \"%s\"\n", token );
+    }
 
-	token = COM_ParseExt( &pString, qfalse );
-	if (!token[0]) {
-		G_Error( "AI Scripting: spawncast without an ainame\n" );
-	}
+    token = COM_ParseExt( &pString, qfalse );
+    if (!token[0]) {
+        G_Error( "AI Scripting: spawncast without an ainame\n" );
+    }
 
-	newCast = G_Spawn();
-	newCast->classname = classname;
-	VectorCopy( targetEnt->s.origin, newCast->s.origin );
-	VectorCopy( targetEnt->s.angles, newCast->s.angles );
-	newCast->aiName = G_Alloc( strlen(token)+1 );
-	Q_strncpyz( newCast->aiName, token, strlen(token)+1 );
+    newCast = G_Spawn();
+    newCast->classname = classname;
+    VectorCopy( targetEnt->s.origin, newCast->s.origin );
+    VectorCopy( targetEnt->s.angles, newCast->s.angles );
+    newCast->aiName = G_Alloc( strlen(token)+1 );
+    Q_strncpyz( newCast->aiName, token, strlen(token)+1 );
 
-	if (!G_CallSpawn( newCast )) {
-		G_Error( "AI Scripting: spawncast for unknown entity \"%s\"\n", newCast->classname );
-	}
+    if (!G_CallSpawn( newCast )) {
+        G_Error( "AI Scripting: spawncast for unknown entity \"%s\"\n", newCast->classname );
+    }
 
-	return qtrue;
+    return qtrue;
 */
 }
 
@@ -1753,7 +1753,7 @@ qboolean AICast_ScriptAction_FaceTargetAngles( cast_state_t *cs, char *params ) 
 ===================
 AICast_ScriptAction_ResetScript
 
-	causes any currently running scripts to abort, in favour of the current script
+    causes any currently running scripts to abort, in favour of the current script
 ===================
 */
 qboolean AICast_ScriptAction_ResetScript( cast_state_t *cs, char *params ) {
@@ -1790,7 +1790,7 @@ qboolean AICast_ScriptAction_ResetScript( cast_state_t *cs, char *params ) {
 ===================
 AICast_ScriptAction_Mount
 
-	syntax: mount <targetname>
+    syntax: mount <targetname>
 
   Used to an AI to mount the MG42
 ===================
@@ -1838,7 +1838,7 @@ qboolean AICast_ScriptAction_Mount( cast_state_t *cs, char *params ) {
 ===================
 AICast_ScriptAction_Unmount
 
-	syntax: unmount
+    syntax: unmount
 
   Stop using their current mounted entity
 ===================
@@ -1863,7 +1863,7 @@ qboolean AICast_ScriptAction_Unmount( cast_state_t *cs, char *params ) {
 ====================
 AICast_ScriptAction_SavePersistant
 
-	syntax: savepersistant <next_mapname>
+    syntax: savepersistant <next_mapname>
 
   Saves out the data that should be retained between certain levels. Not
   calling this routine before changing levels, is the equivalent of resetting
@@ -1882,7 +1882,7 @@ qboolean AICast_ScriptAction_SavePersistant( cast_state_t *cs, char *params ) {
 ====================
 AICast_ScriptAction_ChangeLevel
 
-	syntax: changelevel <mapname> [nostats] [persistant]
+    syntax: changelevel <mapname> [nostats] [persistant]
 
   Issues an spdevmap/spmap to the consol. Optionally add "persistant" if you want the player to
   keep their inventory through the transition.

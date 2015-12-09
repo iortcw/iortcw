@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -185,14 +185,14 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			return;
 		}
 /*
-		if (!cs->rebirthTime)
-		{
-			self->health = -999;
-			damage = 999;
-		} else if ( self->health >= GIB_HEALTH ) {
-			// while waiting for rebirth, we only "die" if we drop below gib health
-			return;
-		}
+        if (!cs->rebirthTime)
+        {
+            self->health = -999;
+            damage = 999;
+        } else if ( self->health >= GIB_HEALTH ) {
+            // while waiting for rebirth, we only "die" if we drop below gib health
+            return;
+        }
 */
 		// always gib
 		self->health = -999;
@@ -214,17 +214,17 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				GibEntity( self, killer );
 				nogib = qfalse;
 /*
-				// Zombie has special exploding cloud effect
-				if (attacker != inflictor || attacker->s.weapon == WP_VENOM)
-				{
-					GibEntity( self, killer );
-					nogib = qfalse;
-				} else {
-					// Zombie will decompose upon dying
-					self->client->ps.eFlags |= EF_MONSTER_EFFECT2;
-					self->s.effect2Time = level.time+200;
-					self->health = -1;
-				}
+                // Zombie has special exploding cloud effect
+                if (attacker != inflictor || attacker->s.weapon == WP_VENOM)
+                {
+                    GibEntity( self, killer );
+                    nogib = qfalse;
+                } else {
+                    // Zombie will decompose upon dying
+                    self->client->ps.eFlags |= EF_MONSTER_EFFECT2;
+                    self->s.effect2Time = level.time+200;
+                    self->health = -1;
+                }
 */
 				self->takedamage = qfalse;
 				self->r.contents = 0;
@@ -287,22 +287,22 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				GibEntity( self, killer );
 				nogib = qfalse;
 /*
-				// Zombie has special exploding cloud effect
-				if (attacker != inflictor || attacker->s.weapon == WP_VENOM)
-				{
-					GibEntity( self, killer );
-					nogib = qfalse;
-					self->takedamage = qfalse;
-					self->r.contents = 0;
-					cs->secondDeadTime = 2;
-				} else {
-					self->client->ps.eFlags |= EF_MONSTER_EFFECT2;
-					self->s.effect2Time = level.time+200;
-					self->takedamage = qfalse;
-					self->r.contents = 0;
-					self->health = -1;
-					cs->secondDeadTime = 2;
-				}
+                // Zombie has special exploding cloud effect
+                if (attacker != inflictor || attacker->s.weapon == WP_VENOM)
+                {
+                    GibEntity( self, killer );
+                    nogib = qfalse;
+                    self->takedamage = qfalse;
+                    self->r.contents = 0;
+                    cs->secondDeadTime = 2;
+                } else {
+                    self->client->ps.eFlags |= EF_MONSTER_EFFECT2;
+                    self->s.effect2Time = level.time+200;
+                    self->takedamage = qfalse;
+                    self->r.contents = 0;
+                    self->health = -1;
+                    cs->secondDeadTime = 2;
+                }
 */
 			} else if ( !( contents & CONTENTS_NODROP ) ) {
 				body_die( self, inflictor, attacker, damage, meansOfDeath );

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ If you have questions concerning this license or the applicable additional terms
 #error "Do not use in VM build"
 #endif
 
-static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
+static intptr_t( QDECL * syscall )( intptr_t arg, ... ) = ( intptr_t( QDECL * )( intptr_t, ... ) ) - 1;
 
-Q_EXPORT void dllEntry( intptr_t (QDECL *syscallptr)( intptr_t arg,... ) ) {
+Q_EXPORT void dllEntry( intptr_t( QDECL * syscallptr )( intptr_t arg,... ) ) {
 	syscall = syscallptr;
 }
 
@@ -46,15 +46,14 @@ int PASSFLOAT( float x ) {
 	return fi.i;
 }
 
-void	trap_Print( const char *text ) {
+void    trap_Print( const char *text ) {
 	syscall( G_PRINT, text );
 }
 
-void trap_Error( const char *text )
-{
+void trap_Error( const char *text ) {
 	syscall( G_ERROR, text );
 	// shut up GCC warning about returning functions, because we know better
-	exit(1);
+	exit( 1 );
 }
 
 int     trap_Milliseconds( void ) {
@@ -507,7 +506,7 @@ float trap_Characteristic_Float( int character, int index ) {
 
 float trap_Characteristic_BFloat( int character, int index, float min, float max ) {
 	floatint_t fi;
-	fi.i = syscall( BOTLIB_AI_CHARACTERISTIC_BFLOAT, character, index, PASSFLOAT(min), PASSFLOAT(max) );
+	fi.i = syscall( BOTLIB_AI_CHARACTERISTIC_BFLOAT, character, index, PASSFLOAT( min ), PASSFLOAT( max ) );
 	return fi.f;
 }
 
@@ -706,7 +705,7 @@ void trap_BotSaveGoalFuzzyLogic( int goalstate, char *filename ) {
 }
 
 void trap_BotMutateGoalFuzzyLogic( int goalstate, float range ) {
-	syscall( BOTLIB_AI_MUTATE_GOAL_FUZZY_LOGIC, goalstate, PASSFLOAT(range) );
+	syscall( BOTLIB_AI_MUTATE_GOAL_FUZZY_LOGIC, goalstate, PASSFLOAT( range ) );
 }
 
 int trap_BotAllocGoalState( int state ) {

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@ void AICast_StartFrame( int time );
 // done.
 
 // from the game source
-void QDECL BotAI_Print(int type, char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+void QDECL BotAI_Print( int type, char *fmt, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void QDECL QDECL BotAI_BotInitialChat( bot_state_t *bs, char *type, ... );
 void    BotAI_Trace( bsp_trace_t *bsptrace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
 int     BotAI_GetClientState( int clientNum, playerState_t *state );

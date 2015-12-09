@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -589,7 +589,7 @@ static qboolean PM_CheckWaterJump( void ) {
 
 	spot[2] += 16;
 	cont = pm->pointcontents( spot, pm->ps->clientNum );
-	if ( cont & (CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_BODY) ) {
+	if ( cont & ( CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY ) ) {
 		return qfalse;
 	}
 
@@ -920,7 +920,7 @@ static void PM_WalkMove( void ) {
 	if ( pm->ps->pm_flags & PMF_DUCKED ) {
 		/*
 		if ( wishspeed > pm->ps->speed * pm_duckScale ) {
-			wishspeed = pm->ps->speed * pm_duckScale;
+		    wishspeed = pm->ps->speed * pm_duckScale;
 		}
 		*/
 		if ( wishspeed > pm->ps->speed * pm->ps->crouchSpeedScale ) {
@@ -948,7 +948,7 @@ static void PM_WalkMove( void ) {
 	// full control, which allows them to be moved a bit
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
 		accelerate = pm_airaccelerate;
-	} else if ( ( pm->ps->stats[STAT_HEALTH] <= 0 ) && pm->ps->aiChar && ( pml.groundTrace.surfaceFlags & SURF_MONSTERSLICK ) )    {
+	} else if ( ( pm->ps->stats[STAT_HEALTH] <= 0 ) && pm->ps->aiChar && ( pml.groundTrace.surfaceFlags & SURF_MONSTERSLICK ) ) {
 		accelerate = pm_airaccelerate;
 	} else {
 		accelerate = pm_accelerate;
@@ -961,7 +961,7 @@ static void PM_WalkMove( void ) {
 
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
 		pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
-	} else if ( ( pm->ps->stats[STAT_HEALTH] <= 0 ) && pm->ps->aiChar && ( pml.groundTrace.surfaceFlags & SURF_MONSTERSLICK ) )   {
+	} else if ( ( pm->ps->stats[STAT_HEALTH] <= 0 ) && pm->ps->aiChar && ( pml.groundTrace.surfaceFlags & SURF_MONSTERSLICK ) ) {
 		pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
 	} else {
 		// don't reset the z velocity for slopes
@@ -1198,13 +1198,13 @@ static void PM_CrashLand( void ) {
 		}
 
 /* JPW NERVE removed from MP, breaks too many levels and skill as no-fall-damage indicator isn't obvious
-		// Rafael gameskill
-		if (bg_pmove_gameskill_integer == 1)
-		{
-			if (delta > 7)
-				delta = 8;
-		}
-		// done
+        // Rafael gameskill
+        if (bg_pmove_gameskill_integer == 1)
+        {
+            if (delta > 7)
+                delta = 8;
+        }
+        // done
 */
 
 		if ( delta > 77 ) {
@@ -1226,17 +1226,17 @@ static void PM_CrashLand( void ) {
 			if ( pm->ps->stats[STAT_HEALTH] > 0 ) {
 				PM_AddEvent( EV_FALL_DMG_25 );
 			}
-		} else if ( delta > 48 )     {
+		} else if ( delta > 48 ) {
 			// this is a pain grunt, so don't play it if dead
 			if ( pm->ps->stats[STAT_HEALTH] > 0 ) {
 				PM_AddEvent( EV_FALL_DMG_15 );
 			}
-		} else if ( delta > 38.75 )     {
+		} else if ( delta > 38.75 ) {
 			// this is a pain grunt, so don't play it if dead
 			if ( pm->ps->stats[STAT_HEALTH] > 0 ) {
 				PM_AddEvent( EV_FALL_DMG_10 );
 			}
-		} else if ( delta > 7 )   {
+		} else if ( delta > 7 ) {
 			PM_AddEvent( EV_FALL_SHORT );
 		} else
 		{
@@ -1596,7 +1596,7 @@ static void PM_Footsteps( void ) {
 			if ( pm->ps->velocity[2] >= 0 ) {
 				BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBUP, qtrue );
 				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
-			} else if ( pm->ps->velocity[2] < 0 )     {
+			} else if ( pm->ps->velocity[2] < 0 ) {
 				BG_AnimScriptAnimation( pm->ps, pm->ps->aiState, ANIM_MT_CLIMBDOWN, qtrue );
 				//BG_PlayAnimName( pm->ps, "BOTH_CLIMB_DOWN", ANIM_BP_BOTH, qfalse, qtrue, qfalse );
 			}
@@ -1728,7 +1728,7 @@ static void PM_Footsteps( void ) {
 			}
 
 		}
-	} else if ( ( ( old + 64 ) ^ ( pm->ps->bobCycle + 64 ) ) & 128 )   {
+	} else if ( ( ( old + 64 ) ^ ( pm->ps->bobCycle + 64 ) ) & 128 ) {
 
 		if ( pm->ps->sprintExertTime && pm->waterlevel <= 2 ) {
 			PM_ExertSound();
@@ -1955,8 +1955,8 @@ static void PM_FinishWeaponChange( void ) {
 
 	switch ( newweapon )
 	{
-		// don't really care about anim since these weapons don't show in view.
-		// However, need to set the animspreadscale so they are initally at worst accuracy
+	// don't really care about anim since these weapons don't show in view.
+	// However, need to set the animspreadscale so they are initally at worst accuracy
 	case WP_SNOOPERSCOPE:
 	case WP_SNIPERRIFLE:
 		pm->ps->aimSpreadScale = 255;               // initially at lowest accuracy
@@ -2084,7 +2084,7 @@ void PM_CheckForReload( int weapon ) {
 	if (    autoreload && !( pm->ps->ammoclip[BG_FindClipForWeapon( weapon )] ) &&  // clip is empty...
 			pm->ps->ammo[BG_FindAmmoForWeapon( weapon )] ) {          // and you have reserves
 		PM_BeginWeaponReload( weapon );
-	} else if ( reloadRequested )     {
+	} else if ( reloadRequested ) {
 		// don't allow a force reload if it won't have any effect (no more ammo reserves or full clip)
 		if ( pm->ps->ammo[BG_FindAmmoForWeapon( weapon )] && pm->ps->ammoclip[BG_FindClipForWeapon( weapon )] < ammoTable[weapon].maxclip ) {
 			PM_BeginWeaponReload( weapon );
@@ -2137,7 +2137,7 @@ static void PM_SwitchIfEmpty( void ) {
 /*
 ==============
 PM_WeaponUseAmmo
-	accounts for clips being used/not used
+    accounts for clips being used/not used
 ==============
 */
 void PM_WeaponUseAmmo( int wp, int amount ) {
@@ -2161,7 +2161,7 @@ void PM_WeaponUseAmmo( int wp, int amount ) {
 /*
 ==============
 PM_WeaponAmmoAvailable
-	accounts for clips being used/not used
+    accounts for clips being used/not used
 ==============
 */
 int PM_WeaponAmmoAvailable( int wp ) {
@@ -2175,7 +2175,7 @@ int PM_WeaponAmmoAvailable( int wp ) {
 /*
 ==============
 PM_WeaponClipEmpty
-	accounts for clips being used/not used
+    accounts for clips being used/not used
 ==============
 */
 int PM_WeaponClipEmpty( int wp ) {
@@ -2745,7 +2745,7 @@ static void PM_Weapon( void ) {
 			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
 		}
 		break;
-		// machineguns should continue the anim, rather than start each fire
+	// machineguns should continue the anim, rather than start each fire
 	case WP_MP40:
 	case WP_THOMPSON:
 	case WP_STEN:
@@ -2796,7 +2796,7 @@ static void PM_Weapon( void ) {
 		}
 		break;
 
-		// melee
+	// melee
 	case WP_KNIFE:
 	case WP_KNIFE2:
 		if ( !delayedFire ) {
@@ -2809,7 +2809,7 @@ static void PM_Weapon( void ) {
 		}
 		break;
 
-		// throw
+	// throw
 	case WP_DYNAMITE:
 	case WP_DYNAMITE2:
 	case WP_GRENADE_LAUNCHER:
@@ -2867,7 +2867,7 @@ static void PM_Weapon( void ) {
 			}
 
 			switch ( pm->ps->weapon ) {
-				// Ridah, only play if using a triggered weapon
+			// Ridah, only play if using a triggered weapon
 			case WP_GAUNTLET:
 			case WP_MONSTER_ATTACK1:
 			case WP_DYNAMITE:
@@ -2877,7 +2877,7 @@ static void PM_Weapon( void ) {
 				playswitchsound = qfalse;
 				break;
 
-				// some weapons not allowed to reload.  must switch back to primary first
+			// some weapons not allowed to reload.  must switch back to primary first
 			case WP_SNOOPERSCOPE:
 			case WP_SNIPERRIFLE:
 			case WP_FG42SCOPE:
@@ -3104,8 +3104,8 @@ static void PM_Weapon( void ) {
 		addTime = ammoTable[pm->ps->weapon].nextShotTime;
 		break;
 // jpw
-		// JPW: engineers disarm bomb "on the fly" (high sample rate) but medics & LTs throw out health pack/smoke grenades slow
-		// NERVE - SMF
+	// JPW: engineers disarm bomb "on the fly" (high sample rate) but medics & LTs throw out health pack/smoke grenades slow
+	// NERVE - SMF
 	case WP_PLIERS:
 		addTime = 50;
 		break;
@@ -3115,7 +3115,7 @@ static void PM_Weapon( void ) {
 	case WP_SMOKE_GRENADE:
 		addTime = 1000;
 		break;
-		// -NERVE - SMF
+	// -NERVE - SMF
 	case WP_MONSTER_ATTACK1:
 		addTime = 1000;
 		break;
@@ -3178,18 +3178,18 @@ PM_Animate
 
 static void PM_Animate( void ) {
 /*
-	if ( pm->cmd.buttons & BUTTON_GESTURE ) {
-		if ( pm->ps->torsoTimer == 0) {
-			PM_StartTorsoAnim( BOTH_SALUTE );
-			PM_StartLegsAnim( BOTH_SALUTE );
+    if ( pm->cmd.buttons & BUTTON_GESTURE ) {
+        if ( pm->ps->torsoTimer == 0) {
+            PM_StartTorsoAnim( BOTH_SALUTE );
+            PM_StartLegsAnim( BOTH_SALUTE );
 
-			pm->ps->torsoTimer = MYTIMER_SALUTE;
-			pm->ps->legsTimer = MYTIMER_SALUTE;
+            pm->ps->torsoTimer = MYTIMER_SALUTE;
+            pm->ps->legsTimer = MYTIMER_SALUTE;
 
-			if (!pm->ps->aiChar)	// Ridah, we'll play a custom sound upon calling the Taunt
-				PM_AddEvent( EV_TAUNT );	// for playing the sound
-		}
-	}
+            if (!pm->ps->aiChar)	// Ridah, we'll play a custom sound upon calling the Taunt
+                PM_AddEvent( EV_TAUNT );	// for playing the sound
+        }
+    }
 */
 }
 
@@ -3290,7 +3290,7 @@ void PM_UpdateLean( playerState_t *ps, usercmd_t *cmd, pmove_t *tpm ) {
 			if ( leanofs < 0 ) {
 				leanofs = 0;
 			}
-		} else if ( leanofs < 0 )   { // left
+		} else if ( leanofs < 0 ) {   // left
 			//FIXME: play lean anim backwards?
 			leanofs += ( ( (float)pml.msec / (float)LEAN_TIME_FR ) * LEAN_MAX );
 			if ( leanofs > 0 ) {
@@ -3361,7 +3361,7 @@ This can be used as another entry point when only the viewangles
 are being updated instead of a full move
 ================
 */
-void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) ) {   //----(SA)	modified
+void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void( trace ) ( trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) ) {   //----(SA)	modified
 	short temp;
 	int i;
 	pmove_t tpm;
@@ -3514,12 +3514,12 @@ void PM_CheckLadderMove( void ) {
 
 	/*
 	if (pm->ps->eFlags & EF_DEAD) {	// dead bodies should fall down ladders
-		return;
+	    return;
 	}
 
 	if (pm->ps->pm_flags & PM_DEAD && pm->ps->stats[STAT_HEALTH] <= 0)
 	{
-		return;
+	    return;
 	}
 	*/
 	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
@@ -3541,20 +3541,20 @@ void PM_CheckLadderMove( void ) {
 		pml.ladder = qtrue;
 	}
 /*
-	if (!pml.ladder && DotProduct(pm->ps->velocity, pml.forward) < 0) {
-		// trace along the negative velocity, so we grab onto a ladder if we are trying to reverse onto it from above the ladder
-		flatforward[0] = -pm->ps->velocity[0];
-		flatforward[1] = -pm->ps->velocity[1];
-		flatforward[2] = 0;
-		VectorNormalize (flatforward);
+    if (!pml.ladder && DotProduct(pm->ps->velocity, pml.forward) < 0) {
+        // trace along the negative velocity, so we grab onto a ladder if we are trying to reverse onto it from above the ladder
+        flatforward[0] = -pm->ps->velocity[0];
+        flatforward[1] = -pm->ps->velocity[1];
+        flatforward[2] = 0;
+        VectorNormalize (flatforward);
 
-		VectorMA (pm->ps->origin, tracedist, flatforward, spot);
-		pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask);
-		if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))
-		{
-			pml.ladder = qtrue;
-		}
-	}
+        VectorMA (pm->ps->origin, tracedist, flatforward, spot);
+        pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask);
+        if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))
+        {
+            pml.ladder = qtrue;
+        }
+    }
 */
 	if ( pml.ladder ) {
 		VectorCopy( trace.plane.normal, laddervec );
@@ -3826,7 +3826,7 @@ void PmoveSingle( pmove_t *pmove ) {
 	}
 
 
-	if ( !(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP ) {
+	if ( !( pm->ps->pm_flags & PMF_RESPAWNED ) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP ) {
 		// check for ammo
 		if ( PM_WeaponAmmoAvailable( pm->ps->weapon ) ) {
 			// check if zooming

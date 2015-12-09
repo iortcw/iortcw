@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ void G_WriteClientSessionData( gclient_t *client ) {
 			client->sess.latchPlayerSkin    // DHM - Nerve
 			);
 
-	var = va( "session%i", (int)(client - level.clients) );
+	var = va( "session%i", (int)( client - level.clients ) );
 
 	trap_Cvar_Set( var, s );
 }
@@ -85,7 +85,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	const char  *var;
 	qboolean test;
 
-	var = va( "session%i", (int)(client - level.clients) );
+	var = va( "session%i", (int)( client - level.clients ) );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
 
 	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",       // DHM - Nerve
@@ -116,7 +116,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	if ( g_gametype.integer == GT_WOLF_STOPWATCH && level.warmupTime > 0 && test ) {
 		if ( client->sess.sessionTeam == TEAM_RED ) {
 			client->sess.sessionTeam = TEAM_BLUE;
-		} else if ( client->sess.sessionTeam == TEAM_BLUE )   {
+		} else if ( client->sess.sessionTeam == TEAM_BLUE ) {
 			client->sess.sessionTeam = TEAM_RED;
 		}
 	}
@@ -126,7 +126,7 @@ void G_ReadSessionData( gclient_t *client ) {
 
 		if ( client->sess.sessionTeam == TEAM_RED ) {
 			client->sess.sessionTeam = TEAM_BLUE;
-		} else if ( client->sess.sessionTeam == TEAM_BLUE )   {
+		} else if ( client->sess.sessionTeam == TEAM_BLUE ) {
 			client->sess.sessionTeam = TEAM_RED;
 		}
 	}
@@ -180,7 +180,7 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 	}
 
 	sess->spectatorState = SPECTATOR_FREE;
-	AddTournamentQueue(client);
+	AddTournamentQueue( client );
 
 	// DHM - Nerve
 	sess->latchPlayerType = sess->playerType = 0;

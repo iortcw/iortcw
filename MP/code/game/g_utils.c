@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ void AddRemap( const char *oldShader, const char *newShader, float timeOffset ) 
 	}
 }
 
-const char *BuildShaderStateConfig(void) {
+const char *BuildShaderStateConfig( void ) {
 	static char buff[MAX_STRING_CHARS * 4];
 	char out[( MAX_QPATH * 2 ) + 5];
 	int i;
@@ -271,9 +271,9 @@ void G_UseTargets( gentity_t *ent, gentity_t *activator ) {
 				//G_Printf ("ent->classname %s ent->targetname %s t->targetname %s t->s.number %d\n", ent->classname, ent->targetname, t->targetname, t->s.number);
 
 				t->flags |= ( ent->flags & FL_KICKACTIVATE ); // (SA) If 'ent' was kicked to activate, pass this along to it's targets.
-															  //		It may become handy to put a "KICKABLE" flag in ents so that it knows whether to pass this along or not
-															  //		Right now, the only situation where it would be weird would be an invisible_user that is a 'button' near
-															  //		a rotating door that it triggers.  Kick the switch and the door next to it flies open.
+				                                              //		It may become handy to put a "KICKABLE" flag in ents so that it knows whether to pass this along or not
+				                                              //		Right now, the only situation where it would be weird would be an invisible_user that is a 'button' near
+				                                              //		a rotating door that it triggers.  Kick the switch and the door next to it flies open.
 
 				t->flags |= ( ent->flags & FL_SOFTACTIVATE ); // (SA) likewise for soft activation
 
@@ -307,20 +307,20 @@ for making temporary vectors for function calls
 */
 /*
 float	*tv( float x, float y, float z ) {
-	static	int		index;
-	static	vec3_t	vecs[8];
-	float	*v;
+    static	int		index;
+    static	vec3_t	vecs[8];
+    float	*v;
 
-	// use an array so that multiple tempvectors won't collide
-	// for a while
-	v = vecs[index];
-	index = (index + 1)&7;
+    // use an array so that multiple tempvectors won't collide
+    // for a while
+    v = vecs[index];
+    index = (index + 1)&7;
 
-	v[0] = x;
-	v[1] = y;
-	v[2] = z;
+    v[0] = x;
+    v[1] = y;
+    v[2] = z;
 
-	return v;
+    return v;
 }
 */
 
@@ -784,7 +784,7 @@ int DebugLine( vec3_t start, vec3_t end, int color ) {
 	dot = DotProduct( dir, up );
 	if ( dot > 0.99 || dot < -0.99 ) {
 		VectorSet( cross, 1, 0, 0 );
-	} else { CrossProduct( dir, up, cross );}
+	} else { CrossProduct( dir, up, cross ); }
 
 	VectorNormalize( cross );
 

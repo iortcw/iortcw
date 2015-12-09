@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -582,11 +582,11 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 
 		switch ( event ) {
 		case EV_FALL_NDIE:
-			//case EV_FALL_SHORT:
+		//case EV_FALL_SHORT:
 		case EV_FALL_DMG_10:
 		case EV_FALL_DMG_15:
 		case EV_FALL_DMG_25:
-			//case EV_FALL_DMG_30:
+		//case EV_FALL_DMG_30:
 		case EV_FALL_DMG_50:
 			//case EV_FALL_DMG_75:
 
@@ -598,22 +598,22 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			}
 			if ( event == EV_FALL_NDIE ) {
 				damage = 9999;
-			} else if ( event == EV_FALL_DMG_50 )     {
+			} else if ( event == EV_FALL_DMG_50 ) {
 				damage = 50;
 				ent->client->ps.pm_time = 1000;
 				ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 				VectorClear( ent->client->ps.velocity );
-			} else if ( event == EV_FALL_DMG_25 )     {
+			} else if ( event == EV_FALL_DMG_25 ) {
 				damage = 25;
 				ent->client->ps.pm_time = 250;
 				ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 				VectorClear( ent->client->ps.velocity );
-			} else if ( event == EV_FALL_DMG_15 )     {
+			} else if ( event == EV_FALL_DMG_15 ) {
 				damage = 15;
 				ent->client->ps.pm_time = 1000;
 				ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 				VectorClear( ent->client->ps.velocity );
-			} else if ( event == EV_FALL_DMG_10 )     {
+			} else if ( event == EV_FALL_DMG_10 ) {
 				damage = 10;
 				ent->client->ps.pm_time = 1000;
 				ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
@@ -674,26 +674,26 @@ void SendPendingPredictableEvents( playerState_t *ps ) {
 
 	// if there are still events pending
 	if ( ps->entityEventSequence < ps->eventSequence ) {
-		// create a temporary entity for this event which is sent to everyone
-		// except the client generated the event
-		seq = ps->entityEventSequence & (MAX_EVENTS-1);
-		event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
-		// set external event to zero before calling BG_PlayerStateToEntityState
-		extEvent = ps->externalEvent;
-		ps->externalEvent = 0;
-		// create temporary entity for event
-		t = G_TempEntity( ps->origin, event );
-		number = t->s.number;
-		BG_PlayerStateToEntityState( ps, &t->s, qtrue );
-		t->s.number = number;
-		t->s.eType = ET_EVENTS + event;
-		t->s.eFlags |= EF_PLAYER_EVENT;
-		t->s.otherEntityNum = ps->clientNum;
-		// send to everyone except the client who generated the event
-		t->r.svFlags |= SVF_NOTSINGLECLIENT;
-		t->r.singleClient = ps->clientNum;
-		// set back external event
-		ps->externalEvent = extEvent;
+	    // create a temporary entity for this event which is sent to everyone
+	    // except the client generated the event
+	    seq = ps->entityEventSequence & (MAX_EVENTS-1);
+	    event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
+	    // set external event to zero before calling BG_PlayerStateToEntityState
+	    extEvent = ps->externalEvent;
+	    ps->externalEvent = 0;
+	    // create temporary entity for event
+	    t = G_TempEntity( ps->origin, event );
+	    number = t->s.number;
+	    BG_PlayerStateToEntityState( ps, &t->s, qtrue );
+	    t->s.number = number;
+	    t->s.eType = ET_EVENTS + event;
+	    t->s.eFlags |= EF_PLAYER_EVENT;
+	    t->s.otherEntityNum = ps->clientNum;
+	    // send to everyone except the client who generated the event
+	    t->r.svFlags |= SVF_NOTSINGLECLIENT;
+	    t->r.singleClient = ps->clientNum;
+	    // set back external event
+	    ps->externalEvent = extEvent;
 	}
 	*/
 }
@@ -835,10 +835,10 @@ void ClientThink_real( gentity_t *ent ) {
 		/*
 		// Ridah, fixes savegame timing issue
 		if (msec < -100) {
-			client->ps.commandTime = ucmd->serverTime - 100;
-			msec = 100;
+		    client->ps.commandTime = ucmd->serverTime - 100;
+		    msec = 100;
 		} else {
-			return;
+		    return;
 		}
 		*/
 		// done.
@@ -849,7 +849,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 	if ( pmove_msec.integer < 8 ) {
 		trap_Cvar_Set( "pmove_msec", "8" );
-	} else if ( pmove_msec.integer > 33 )     {
+	} else if ( pmove_msec.integer > 33 ) {
 		trap_Cvar_Set( "pmove_msec", "33" );
 	}
 
@@ -888,7 +888,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 			// JPW per Id request, longer recoil time
 			muzzlebounce[PITCH] -= 2 * cos( 2.5 * ( level.time - client->sniperRifleFiredTime ) / RIFLE_SHAKE_TIME );
-			muzzlebounce[YAW] += 0.5*client->sniperRifleMuzzleYaw*cos( 1.0 - ( level.time - client->sniperRifleFiredTime ) * 3 / RIFLE_SHAKE_TIME );
+			muzzlebounce[YAW] += 0.5 * client->sniperRifleMuzzleYaw * cos( 1.0 - ( level.time - client->sniperRifleFiredTime ) * 3 / RIFLE_SHAKE_TIME );
 			muzzlebounce[PITCH] -= 0.25 * random() * ( 1.0f - ( level.time - client->sniperRifleFiredTime ) / RIFLE_SHAKE_TIME );
 			muzzlebounce[YAW] += 0.5 * crandom() * ( 1.0f - ( level.time - client->sniperRifleFiredTime ) / RIFLE_SHAKE_TIME );
 			SetClientViewAngle( ent,muzzlebounce );
@@ -1263,7 +1263,7 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 				do_respawn = 1;
 			}
 			ent->client->pers.lastReinforceTime = testtime;
-		} else if ( ent->client->sess.sessionTeam == TEAM_BLUE )     {
+		} else if ( ent->client->sess.sessionTeam == TEAM_BLUE ) {
 			testtime = level.time % g_bluelimbotime.integer;
 			if ( testtime < ent->client->pers.lastReinforceTime ) {
 				do_respawn = 1;
@@ -1461,7 +1461,7 @@ void WolfReviveBbox( gentity_t *self ) {
 					touchnum++;
 				}
 			}
-		} else if ( hit->r.contents & ( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_PLAYERCLIP ) )   {
+		} else if ( hit->r.contents & ( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_PLAYERCLIP ) ) {
 			// Arnout: if hit is a mover, use capsulehit (this will only work if we touch one mover at a time - situations where you hit two are
 			// really rare anyway though. The real fix is to move everything to capsule collision detection though
 			if ( hit->s.eType == ET_MOVER ) {

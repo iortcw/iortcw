@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ If you have questions concerning this license or the applicable additional terms
 #define VOTE_TIME           30000   // 30 seconds before vote times out
 
 // Ridah, disabled these
-#define	MINS_Z				-24
+#define MINS_Z              -24
 //#define	DEFAULT_VIEWHEIGHT	26
 //#define CROUCH_VIEWHEIGHT	12
 // done.
@@ -1199,9 +1199,9 @@ typedef enum {
 	IT_ARMOR,               // EFX: rotate + minlight
 	IT_HEALTH,              // EFX: static external sphere + rotating internal
 	IT_POWERUP,             // instant on, timer based
-							// EFX: rotate + external ring that rotates
+	                        // EFX: rotate + external ring that rotates
 	IT_HOLDABLE,            // single use, holdable item
-							// EFX: rotate + bob
+	                        // EFX: rotate + bob
 	IT_KEY,
 	IT_TREASURE,            // gold bars, etc.  things that can be picked up and counted for a tally at end-level
 	IT_CLIPBOARD,           // 'clipboard' used as a general term for 'popup' items where you pick up the item and it pauses and opens a menu
@@ -1334,8 +1334,8 @@ typedef enum {
 	ET_MG42_BARREL,         // Arnout: MG42 barrel
 
 	ET_EVENTS               // any of the EV_* events can be added freestanding
-							// by setting eType to ET_EVENTS + eventNum
-							// this avoids having to set eFlags and eventNum
+	                        // by setting eType to ET_EVENTS + eventNum
+	                        // this avoids having to set eFlags and eventNum
 } entityType_t;
 
 
@@ -1700,7 +1700,7 @@ int BG_AnimationIndexForString( char *string, int client );
 animation_t *BG_AnimationForString( char *string, animModelInfo_t *modelInfo );
 animation_t *BG_GetAnimationForIndex( int client, int index );
 int BG_GetAnimScriptEvent( playerState_t *ps, scriptAnimEventTypes_t event );
-void QDECL BG_AnimParseError( const char *msg, ... ) __attribute__ ((format (printf, 1, 2)));
+void QDECL BG_AnimParseError( const char *msg, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 extern animStringItem_t animStateStr[];
 extern animStringItem_t animBodyPartsStr[];

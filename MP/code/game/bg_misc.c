@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -1033,8 +1033,8 @@ model="models/weapons2/colt/colt.md3"
 
 /*QUAKED weapon_mp40 (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 "stand" values:
-	no value:	laying in a default position on it's side (default)
-	2:			upright, barrel pointing up, slightly angled (rack mount)
+    no value:	laying in a default position on it's side (default)
+    2:			upright, barrel pointing up, slightly angled (rack mount)
 -------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
 model="models\weapons2\mp40\mp40.md3"
 */
@@ -1410,8 +1410,8 @@ weapon_arty (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 	},
 
 	/*
-weapon_medic_syringe (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
-*/
+	weapon_medic_syringe (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+	*/
 	{
 		"weapon_medic_syringe",
 		"sound/misc/w_pkup.wav",
@@ -2485,24 +2485,24 @@ model="models/powerups/holdable/14.md3"
 
 /*QUAKED holdable_15(.3 .3 1) (-8 -8 -8) (8 8 8) suspended spin
 /
-	{
-		"holdable_15",
-		"sound/pickup/holdable/get_15.wav",
-		{
-			"models/powerups/holdable/15.md3",
-			0, 0, 0
-		,	0 },
-		"icons/15",				// icon
-		NULL,							// ammo icon
-		"15",					// pickup
-		1,
-		IT_HOLDABLE,
-		HI_15,
-		0,
-		"",								// precache
-		"sound/pickup/holdable/use_15.wav",	// sounds
-		{0,0,0,0,0}
-	},
+    {
+        "holdable_15",
+        "sound/pickup/holdable/get_15.wav",
+        {
+            "models/powerups/holdable/15.md3",
+            0, 0, 0
+        ,	0 },
+        "icons/15",				// icon
+        NULL,							// ammo icon
+        "15",					// pickup
+        1,
+        IT_HOLDABLE,
+        HI_15,
+        0,
+        "",								// precache
+        "sound/pickup/holdable/use_15.wav",	// sounds
+        {0,0,0,0,0}
+    },
 
 */
 
@@ -3241,8 +3241,8 @@ gitem_t *BG_FindItem( const char *pickupName ) {
 /*
 ==============
 BG_PlayerSeesItem
-	Try to quickly determine if an item should be highlighted as per the current cg_drawCrosshairPickups.integer value.
-	pvs check should have already been done by the time we get in here, so we shouldn't have to check
+    Try to quickly determine if an item should be highlighted as per the current cg_drawCrosshairPickups.integer value.
+    pvs check should have already been done by the time we get in here, so we shouldn't have to check
 ==============
 */
 
@@ -3263,7 +3263,7 @@ qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
    dist = VectorNormalize(dir);			// dir is now the direction from the item to the player
 
    if(dist > 255)
-	   return qfalse;						// only run the remaining stuff on items that are close enough
+       return qfalse;						// only run the remaining stuff on items that are close enough
 
    // (SA) FIXME: do this without AngleVectors.
    //		It'd be nice if the angle vectors for the player
@@ -3280,7 +3280,7 @@ qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
 
 //	Com_Printf("test: if(%f > %f) return qfalse (dot > foo)\n", dot, foo);
    if(dot > foo)
-	   return qfalse;
+       return qfalse;
 
    return qtrue;
 }
@@ -3484,7 +3484,7 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 	case IT_CLIPBOARD:  // clipboards always picked up
 		return qtrue;
 
-		//---- (SA) Wolf keys
+	//---- (SA) Wolf keys
 	case IT_KEY:
 		return qtrue;   // keys are always picked up
 
@@ -3493,10 +3493,10 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *
 	default:
 #ifndef Q3_VM
 #ifndef NDEBUG
-          Com_Printf("BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
+		Com_Printf( "BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
 #endif
 #endif
-         break;
+		break;
 	}
 	return qfalse;
 }
@@ -3545,13 +3545,13 @@ void BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result ) 
 		VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
 		result[2] -= 0.5 * DEFAULT_GRAVITY * deltaTime * deltaTime;     // FIXME: local gravity...
 		break;
-		// Ridah
+	// Ridah
 	case TR_GRAVITY_LOW:
 		deltaTime = ( atTime - tr->trTime ) * 0.001;    // milliseconds to seconds
 		VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
 		result[2] -= 0.5 * ( DEFAULT_GRAVITY * 0.3 ) * deltaTime * deltaTime;     // FIXME: local gravity...
 		break;
-		// done.
+	// done.
 //----(SA)
 	case TR_GRAVITY_FLOAT:
 		deltaTime = ( atTime - tr->trTime ) * 0.001;    // milliseconds to seconds
@@ -3559,7 +3559,7 @@ void BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result ) 
 		result[2] -= 0.5 * ( DEFAULT_GRAVITY * 0.2 ) * deltaTime;
 		break;
 //----(SA)	end
-		// RF, acceleration
+	// RF, acceleration
 	case TR_ACCELERATE:     // trDelta is the ultimate speed
 		if ( atTime > tr->trTime + tr->trDuration ) {
 			atTime = tr->trTime + tr->trDuration;
@@ -3630,13 +3630,13 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 		VectorCopy( tr->trDelta, result );
 		result[2] -= DEFAULT_GRAVITY * deltaTime;       // FIXME: local gravity...
 		break;
-		// Ridah
+	// Ridah
 	case TR_GRAVITY_LOW:
 		deltaTime = ( atTime - tr->trTime ) * 0.001;    // milliseconds to seconds
 		VectorCopy( tr->trDelta, result );
 		result[2] -= ( DEFAULT_GRAVITY * 0.3 ) * deltaTime;       // FIXME: local gravity...
 		break;
-		// done.
+	// done.
 //----(SA)
 	case TR_GRAVITY_FLOAT:
 		deltaTime = ( atTime - tr->trTime ) * 0.001;    // milliseconds to seconds
@@ -3644,7 +3644,7 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 		result[2] -= ( DEFAULT_GRAVITY * 0.2 ) * deltaTime;
 		break;
 //----(SA)	end
-		// RF, acceleration
+	// RF, acceleration
 	case TR_ACCELERATE: // trDelta is eventual speed
 		if ( atTime > tr->trTime + tr->trDuration ) {
 			VectorClear( result );
@@ -3919,7 +3919,7 @@ void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 	s->legsAnim     = ps->legsAnim;
 	s->torsoAnim    = ps->torsoAnim;
 	s->clientNum    = ps->clientNum;    // ET_PLAYER looks here instead of at number
-										// so corpses can also reference the proper config
+	                                    // so corpses can also reference the proper config
 	// Ridah, let clients know if this person is using a mounted weapon
 	// so they don't show any client muzzle flashes
 
@@ -4027,7 +4027,7 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->legsAnim = ps->legsAnim;
 	s->torsoAnim = ps->torsoAnim;
 	s->clientNum = ps->clientNum;       // ET_PLAYER looks here instead of at number
-										// so corpses can also reference the proper config
+	                                    // so corpses can also reference the proper config
 
 	if ( ps->persistant[PERS_HWEAPON_USE] ) {
 		ps->eFlags |= EF_MG42_ACTIVE;

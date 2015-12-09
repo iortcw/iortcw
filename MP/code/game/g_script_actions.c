@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -128,11 +128,11 @@ qboolean G_ScriptAction_GotoMarker( gentity_t *ent, char *params ) {
 			if ( token[0] ) {
 				if ( !Q_stricmp( token, "accel" ) ) {
 					trType = TR_ACCELERATE;
-				} else if ( !Q_stricmp( token, "deccel" ) )      {
+				} else if ( !Q_stricmp( token, "deccel" ) ) {
 					trType = TR_DECCELERATE;
-				} else if ( !Q_stricmp( token, "wait" ) )      {
+				} else if ( !Q_stricmp( token, "wait" ) ) {
 					wait = qtrue;
-				} else if ( !Q_stricmp( token, "turntotarget" ) )      {
+				} else if ( !Q_stricmp( token, "turntotarget" ) ) {
 					turntotarget = qtrue;
 				}
 			}
@@ -295,7 +295,7 @@ qboolean G_ScriptAction_Trigger( gentity_t *ent, char *params ) {
 
 	trent = AICast_FindEntityForName( name );
 	if ( trent ) { // we are triggering an AI
-				  //oldId = trent->scriptStatus.scriptId;
+		           //oldId = trent->scriptStatus.scriptId;
 		AICast_ScriptEvent( AICast_GetCastState( trent->s.number ), "trigger", trigger );
 		return qtrue;
 	}
@@ -499,17 +499,17 @@ G_ScriptAction_Accum
 
   Commands:
 
-	accum <n> inc <m>
-	accum <n> abort_if_less_than <m>
-	accum <n> abort_if_greater_than <m>
-	accum <n> abort_if_not_equal <m>
-	accum <n> abort_if_equal <m>
-	accum <n> set <m>
-	accum <n> random <m>
-	accum <n> bitset <m>
-	accum <n> bitreset <m>
-	accum <n> abort_if_bitset <m>
-	accum <n> abort_if_not_bitset <m>
+    accum <n> inc <m>
+    accum <n> abort_if_less_than <m>
+    accum <n> abort_if_greater_than <m>
+    accum <n> abort_if_not_equal <m>
+    accum <n> abort_if_equal <m>
+    accum <n> set <m>
+    accum <n> random <m>
+    accum <n> bitset <m>
+    accum <n> bitreset <m>
+    accum <n> abort_if_bitset <m>
+    accum <n> abort_if_not_bitset <m>
 =================
 */
 qboolean G_ScriptAction_Accum( gentity_t *ent, char *params ) {
@@ -786,7 +786,7 @@ qboolean G_ScriptAction_FaceAngles( gentity_t *ent, char *params ) {
 ===================
 G_ScriptAction_ResetScript
 
-	causes any currently running scripts to abort, in favour of the current script
+    causes any currently running scripts to abort, in favour of the current script
 ===================
 */
 qboolean G_ScriptAction_ResetScript( gentity_t *ent, char *params ) {
@@ -801,9 +801,9 @@ qboolean G_ScriptAction_ResetScript( gentity_t *ent, char *params ) {
 ===================
 G_ScriptAction_TagConnect
 
-	syntax: attachtotag <targetname/scriptname> <tagname>
+    syntax: attachtotag <targetname/scriptname> <tagname>
 
-	connect this entity onto the tag of another entity
+    connect this entity onto the tag of another entity
 ===================
 */
 qboolean G_ScriptAction_TagConnect( gentity_t *ent, char *params ) {

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -566,19 +566,19 @@ void InitProp( gentity_t *ent ) {
 
 	if ( !Q_stricmp( ent->classname, "props_bench" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/bench/bench_sm.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_radio" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_radio" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/mapobjects/electronics/radio1.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_locker_tall" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_locker_tall" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/storage/lockertall.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_flippy_table" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_flippy_table" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/table/woodflip.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_crate_32x64" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_crate_32x64" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/crate/crate32x64.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_58x112tablew" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_58x112tablew" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/table/56x112tablew.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_castlebed" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_castlebed" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/furniture/bed/castlebed.md3" );
-	} else if ( !Q_stricmp( ent->classname, "props_radioSEVEN" ) )  {
+	} else if ( !Q_stricmp( ent->classname, "props_radioSEVEN" ) ) {
 		ent->s.modelindex2 = G_ModelIndex( "models/mapobjects/electronics/radios.md3" );
 	}
 
@@ -821,10 +821,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -834,10 +834,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -847,10 +847,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -861,10 +861,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -874,10 +874,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 void Props_Chair_Think( gentity_t *self );
@@ -1090,10 +1090,10 @@ void Props_Activated( gentity_t *self ) {
 		if ( !Q_stricmp( self->classname, "props_chair_hiback" ) ) {
 			self->s.frame = 23;
 			self->s.density = 1;
-		} else if ( !Q_stricmp( self->classname, "props_chair" ) )       {
+		} else if ( !Q_stricmp( self->classname, "props_chair" ) ) {
 			self->s.frame = 28;
 			self->s.density = 1;
-		} else if ( !Q_stricmp( self->classname, "props_chair_side" ) )       {
+		} else if ( !Q_stricmp( self->classname, "props_chair_side" ) ) {
 			self->s.frame = 23;
 			self->s.density = 1;
 		}
@@ -1340,7 +1340,7 @@ void Props_Chair_Animate( gentity_t *ent ) {
 		{
 			ent->nextthink = level.time + ( FRAMETIME / 2 );
 		}
-	} else if ( !Q_stricmp( ent->classname, "props_desklamp" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "props_desklamp" ) ) {
 		if ( ent->s.frame >= 11 ) {
 			// player may have picked it up before
 			if ( ent->target ) {
@@ -1383,7 +1383,7 @@ void Spawn_Shard( gentity_t *ent, gentity_t *inflictor, int quantity, int type )
 		start[1] += crandom() * 32;
 		VectorSubtract( inflictor->r.currentOrigin, ent->r.currentOrigin, dir );
 		VectorNormalize( dir );
-	} else if ( inflictor )     {
+	} else if ( inflictor ) {
 		VectorSubtract( inflictor->r.currentOrigin, ent->r.currentOrigin, dir );
 		VectorNormalize( dir );
 		VectorNegate( dir, dir );
@@ -1446,7 +1446,7 @@ void Props_Chair_Die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker,
 			player->active = qfalse;
 			player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
 
-		} else if ( player && player->s.number == ent->r.ownerNum )     {
+		} else if ( player && player->s.number == ent->r.ownerNum ) {
 			player->active = qfalse;
 			player->melee = NULL;
 			player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
@@ -1488,7 +1488,7 @@ void Props_Chair_Skyboxtouch( gentity_t *ent ) {
 		player->melee = NULL;
 		player->active = qfalse;
 		player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
-	} else if ( player && player->s.number == ent->r.ownerNum )     {
+	} else if ( player && player->s.number == ent->r.ownerNum ) {
 		player->active = qfalse;
 		player->melee = NULL;
 		player->client->ps.eFlags &= ~EF_MELEE_ACTIVE;
@@ -1824,10 +1824,10 @@ health = default = 10
 wait = defaults to 5 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 void SP_Props_Desklamp( gentity_t *ent ) {
@@ -2275,10 +2275,10 @@ breakable pushable
 wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -2289,10 +2289,10 @@ breakable pushable
 wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -2307,10 +2307,10 @@ brushmodel only
 wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -2599,7 +2599,7 @@ void props_flippy_blocked( gentity_t *ent, gentity_t *other ) {
 
 		VectorScale( velocity, 32, kvel );
 		VectorAdd( other->client->ps.velocity, kvel, other->client->ps.velocity );
-	} else if ( other->s.eType == ET_ITEM )     {
+	} else if ( other->s.eType == ET_ITEM ) {
 		VectorCopy( ent->s.apos.trBase, angles );
 		angles[YAW] += angle;
 		angles[PITCH] = 0;  // always forward
@@ -2646,7 +2646,7 @@ void SP_Props_Flipping_Table( gentity_t *ent ) {
 		ent->rotate[2] = 1;
 	} else if ( ent->spawnflags & 8 ) {
 		ent->rotate[0] = 1;
-	} else { ent->rotate[1] = 1;}
+	} else { ent->rotate[1] = 1; }
 
 	ent->spawnflags |= 64; // stay open
 
@@ -2688,10 +2688,10 @@ brushmodel only
 wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -2749,10 +2749,10 @@ brushmodel only
 wait = defaults to 10 how many shards to spawn ( try not to exceed 20 )
 
 shard =
-	shard_glass = 0,
-	shard_wood = 1,
-	shard_metal = 2,
-	shard_ceramic = 3
+    shard_glass = 0,
+    shard_wood = 1,
+    shard_metal = 2,
+    shard_ceramic = 3
 
 */
 
@@ -2947,8 +2947,8 @@ void SP_props_snowGenerator( gentity_t *ent ) {
 this entity will require a target use an infonotnull to specifiy its direction
 
 defaults:
-	will leave a flaming trail by default
-	will not be affected by gravity
+    will leave a flaming trail by default
+    will not be affected by gravity
 
 radius = distance flame will corkscrew from origin
 speed = default is 900
@@ -3152,8 +3152,8 @@ void SP_props_ExploPart( gentity_t *ent ) {
 		} else if ( ent->count == 8 ) {
 			ent->s.modelindex = G_ModelIndex( "models/shards/2x4f.md3" );
 		}
-	} else if ( !Q_stricmp( type,"concrete" ) )        {
-	} else if ( !Q_stricmp( type,"stone" ) )        {
+	} else if ( !Q_stricmp( type,"concrete" ) ) {
+	} else if ( !Q_stricmp( type,"stone" ) ) {
 	}
 
 	if ( G_SpawnString( "noise", "100", &sound ) ) {
@@ -3237,7 +3237,7 @@ void Use_props_decoration( gentity_t *ent, gentity_t *self, gentity_t *activator
 	if ( ent->spawnflags & 1 ) {
 		trap_LinkEntity( ent );
 		ent->spawnflags &= ~1;
-	} else if ( ent->spawnflags & 4 )     {
+	} else if ( ent->spawnflags & 4 ) {
 		ent->nextthink = level.time + 50;
 		ent->think = props_decoration_animate;
 	} else
@@ -3322,11 +3322,11 @@ void SP_props_decoration( gentity_t *ent ) {
 			ent->key = 1;
 		} else if ( !Q_stricmp( type,"glass" ) ) {
 			ent->key = 0;
-		} else if ( !Q_stricmp( type,"metal" ) )                                                       {
+		} else if ( !Q_stricmp( type,"metal" ) ) {
 			ent->key = 2;
-		} else if ( !Q_stricmp( type,"ceramic" ) )                                                                                                               {
+		} else if ( !Q_stricmp( type,"ceramic" ) ) {
 			ent->key = 3;
-		} else if ( !Q_stricmp( type, "rubble" ) )                                                                                                                                                                         {
+		} else if ( !Q_stricmp( type, "rubble" ) ) {
 			ent->key = 4;
 		}
 
@@ -3366,7 +3366,7 @@ void SP_props_decoration( gentity_t *ent ) {
 
 		ent->touch = props_touch;
 
-	} else if ( !( ent->health ) && ent->spawnflags & 4 )       {
+	} else if ( !( ent->health ) && ent->spawnflags & 4 ) {
 		G_SpawnString( "frames", "0", &frames );
 		num_frames = atof( frames );
 
@@ -3593,7 +3593,7 @@ void props_statue_animate( gentity_t *ent ) {
 
 	if ( ( ( ent->delay * 1000 ) + ent->timestamp ) > level.time ) {
 		ent->count = 0;
-	} else if ( ent->count == 5 )     {
+	} else if ( ent->count == 5 ) {
 		takeashot = qtrue;
 		ent->count = 0;
 	} else {
@@ -3698,13 +3698,13 @@ void SP_props_statue( gentity_t *ent ) {
 	G_SpawnString( "type", "wood", &type );
 	if ( !Q_stricmp( type,"wood" ) ) {
 		ent->key = 1;
-	} else if ( !Q_stricmp( type,"glass" ) )   {
+	} else if ( !Q_stricmp( type,"glass" ) ) {
 		ent->key = 0;
-	} else if ( !Q_stricmp( type,"metal" ) )                                                           {
+	} else if ( !Q_stricmp( type,"metal" ) ) {
 		ent->key = 2;
-	} else if ( !Q_stricmp( type,"ceramic" ) )                                                                                                                   {
+	} else if ( !Q_stricmp( type,"ceramic" ) ) {
 		ent->key = 3;
-	} else if ( !Q_stricmp( type, "rubble" ) )                                                                                                                                                                             {
+	} else if ( !Q_stricmp( type, "rubble" ) ) {
 		ent->key = 4;
 	}
 
@@ -4033,15 +4033,15 @@ void SP_props_footlocker( gentity_t *self ) {
 			self->key = 0;
 		} else if ( !Q_stricmp( type,"glass" ) ) {
 			self->key = 1;
-		} else if ( !Q_stricmp( type,"metal" ) )                                                       {
+		} else if ( !Q_stricmp( type,"metal" ) ) {
 			self->key = 2;
-		} else if ( !Q_stricmp( type,"gibs" ) )                                                                                                                {
+		} else if ( !Q_stricmp( type,"gibs" ) ) {
 			self->key = 3;
-		} else if ( !Q_stricmp( type,"brick" ) )                                                                                                                                                                        {
+		} else if ( !Q_stricmp( type,"brick" ) ) {
 			self->key = 4;
-		} else if ( !Q_stricmp( type,"rock" ) )                                                                                                                                                                                                                                 {
+		} else if ( !Q_stricmp( type,"rock" ) ) {
 			self->key = 5;
-		} else if ( !Q_stricmp( type,"fabric" ) )                                                                                                                                                                                                                                                                                         {
+		} else if ( !Q_stricmp( type,"fabric" ) ) {
 			self->key = 6;
 		}
 	} else {

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -772,9 +772,9 @@ gentity_t* G_BuildHead( gentity_t *ent ) {
 /*
 ==============
 G_ArmorDamage
-	brokeparts is how many should be broken off now
-	curbroke is how many are broken
-	the difference is how many to pop off this time
+    brokeparts is how many should be broken off now
+    curbroke is how many are broken
+    the difference is how many to pop off this time
 ==============
 */
 void G_ArmorDamage( gentity_t *targ ) {
@@ -854,7 +854,7 @@ G_Damage
 targ		entity that is being damaged
 inflictor	entity that is causing the damage
 attacker	entity that caused the inflictor to damage targ
-	example: targ=monster, inflictor=rocket, attacker=player
+    example: targ=monster, inflictor=rocket, attacker=player
 
 dir			direction of the attack for knockback
 point		point at which the damage is being inflicted, used for headshots
@@ -864,10 +864,10 @@ knockback	force to be applied against targ as a result of the damage
 inflictor, attacker, dir, and point can be NULL for environmental effects
 
 dflags		these flags are used to control how T_Damage works
-	DAMAGE_RADIUS			damage was indirect (from a nearby explosion)
-	DAMAGE_NO_ARMOR			armor does not protect from this damage
-	DAMAGE_NO_KNOCKBACK		do not affect velocity, just view angles
-	DAMAGE_NO_PROTECTION	kills godmode, armor, everything
+    DAMAGE_RADIUS			damage was indirect (from a nearby explosion)
+    DAMAGE_NO_ARMOR			armor does not protect from this damage
+    DAMAGE_NO_KNOCKBACK		do not affect velocity, just view angles
+    DAMAGE_NO_PROTECTION	kills godmode, armor, everything
 ============
 */
 
@@ -919,7 +919,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		default:
 			return; // no damage from other weapons
 		}
-	} else if ( targ->s.eType == ET_EXPLOSIVE )   {
+	} else if ( targ->s.eType == ET_EXPLOSIVE ) {
 		// 32 Explosive
 		// 64 Dynamite only
 		if ( ( targ->spawnflags & 32 ) || ( targ->spawnflags & 64 ) ) {
@@ -1204,97 +1204,106 @@ Returns qtrue if the inflictor can directly damage the target.  Used for
 explosions and melee attacks.
 ============
 */
-qboolean CanDamage (gentity_t *targ, vec3_t origin) {
-	vec3_t	dest;
-	trace_t	tr;
-	vec3_t	midpoint;
-	vec3_t	offsetmins = {-15, -15, -15};
-	vec3_t	offsetmaxs = {15, 15, 15};
+qboolean CanDamage( gentity_t *targ, vec3_t origin ) {
+	vec3_t dest;
+	trace_t tr;
+	vec3_t midpoint;
+	vec3_t offsetmins = {-15, -15, -15};
+	vec3_t offsetmaxs = {15, 15, 15};
 
 	// use the midpoint of the bounds instead of the origin, because
 	// bmodels may have their origin is 0,0,0
-	VectorAdd (targ->r.absmin, targ->r.absmax, midpoint);
-	VectorScale (midpoint, 0.5, midpoint);
+	VectorAdd( targ->r.absmin, targ->r.absmax, midpoint );
+	VectorScale( midpoint, 0.5, midpoint );
 
-	VectorCopy(midpoint, dest);
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	VectorCopy( midpoint, dest );
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0 || tr.entityNum == targ->s.number)
+	if ( tr.fraction == 1.0 || tr.entityNum == targ->s.number ) {
 		return qtrue;
+	}
 
-	// this should probably check in the plane of projection, 
+	// this should probably check in the plane of projection,
 	// rather than in world coordinate
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmaxs[0];
 	dest[1] += offsetmaxs[1];
 	dest[2] += offsetmaxs[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmaxs[0];
 	dest[1] += offsetmins[1];
 	dest[2] += offsetmaxs[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmins[0];
 	dest[1] += offsetmaxs[1];
 	dest[2] += offsetmaxs[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmins[0];
 	dest[1] += offsetmins[1];
 	dest[2] += offsetmaxs[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmaxs[0];
 	dest[1] += offsetmaxs[1];
 	dest[2] += offsetmins[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmaxs[0];
 	dest[1] += offsetmins[1];
 	dest[2] += offsetmins[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmins[0];
 	dest[1] += offsetmaxs[1];
 	dest[2] += offsetmins[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
-	VectorCopy(midpoint, dest);
+	VectorCopy( midpoint, dest );
 	dest[0] += offsetmins[0];
 	dest[1] += offsetmins[2];
 	dest[2] += offsetmins[2];
-	trap_Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID);
+	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 
-	if (tr.fraction == 1.0)
+	if ( tr.fraction == 1.0 ) {
 		return qtrue;
+	}
 
 	return qfalse;
 }
@@ -1347,16 +1356,16 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float
 		}
 
 /* JPW NERVE -- we can put this back if we need to, but it kinna sucks for human-sized bboxes
-		// find the distance from the edge of the bounding box
-		for ( i = 0 ; i < 3 ; i++ ) {
-			if ( origin[i] < ent->r.absmin[i] ) {
-				v[i] = ent->r.absmin[i] - origin[i];
-			} else if ( origin[i] > ent->r.absmax[i] ) {
-				v[i] = origin[i] - ent->r.absmax[i];
-			} else {
-				v[i] = 0;
-			}
-		}
+        // find the distance from the edge of the bounding box
+        for ( i = 0 ; i < 3 ; i++ ) {
+            if ( origin[i] < ent->r.absmin[i] ) {
+                v[i] = ent->r.absmin[i] - origin[i];
+            } else if ( origin[i] > ent->r.absmax[i] ) {
+                v[i] = origin[i] - ent->r.absmax[i];
+            } else {
+                v[i] = 0;
+            }
+        }
 */
 // JPW NERVE
 		if ( !ent->r.bmodel ) {

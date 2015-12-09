@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -200,7 +200,7 @@ int Pickup_Treasure( gentity_t *ent, gentity_t *other ) {
 /*
 ==============
 UseHoldableItem
-	server side handling of holdable item use
+    server side handling of holdable item use
 ==============
 */
 void UseHoldableItem( gentity_t *ent, int item ) {
@@ -279,7 +279,7 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 /*
 ==============
 Fill_Clip
-	push reserve ammo into available space in the clip
+    push reserve ammo into available space in the clip
 ==============
 */
 void Fill_Clip( playerState_t *ps, int weapon ) {
@@ -313,10 +313,10 @@ void Fill_Clip( playerState_t *ps, int weapon ) {
 /*
 ==============
 Add_Ammo
-	Try to always add ammo here unless you have specific needs
-	(like the AI "infinite ammo" where they get below 900 and force back up to 999)
+    Try to always add ammo here unless you have specific needs
+    (like the AI "infinite ammo" where they get below 900 and force back up to 999)
 
-	fillClip will push the ammo straight through into the clip and leave the rest in reserve
+    fillClip will push the ammo straight through into the clip and leave the rest in reserve
 ==============
 */
 //----(SA)	modified
@@ -580,7 +580,7 @@ int Pickup_Health( gentity_t *ent, gentity_t *other ) {
 		if ( ent->s.density ) {    // multi-stage health
 			if ( ent->s.density == 2 ) {       // first stage (it counts down)
 				quantity = ent->item->gameskillnumber[( g_gameskill.integer ) - 1];
-			} else if ( ent->s.density == 1 )      { // second stage
+			} else if ( ent->s.density == 1 ) {      // second stage
 				quantity = ent->item->quantity;
 			}
 		} else {
@@ -637,7 +637,7 @@ RespawnItem
 ===============
 */
 void RespawnItem( gentity_t *ent ) {
-	if (! ent ) {
+	if ( !ent ) {
 		return;
 	}
 
@@ -661,7 +661,7 @@ void RespawnItem( gentity_t *ent ) {
 			;
 	}
 
-	if (! ent ) {
+	if ( !ent ) {
 		return;
 	}
 
@@ -672,14 +672,14 @@ void RespawnItem( gentity_t *ent ) {
 	trap_LinkEntity( ent );
 
 /*
-	if ( ent->item->giType == IT_POWERUP && g_gametype.integer != GT_SINGLE_PLAYER) {
-		// play powerup spawn sound to all clients
-		gentity_t	*te;
+    if ( ent->item->giType == IT_POWERUP && g_gametype.integer != GT_SINGLE_PLAYER) {
+        // play powerup spawn sound to all clients
+        gentity_t	*te;
 
-		te = G_TempEntity( ent->s.pos.trBase, EV_GLOBAL_SOUND );
-		te->s.eventParm = G_SoundIndex( "sound/items/poweruprespawn.wav" );
-		te->r.svFlags |= SVF_BROADCAST;
-	}
+        te = G_TempEntity( ent->s.pos.trBase, EV_GLOBAL_SOUND );
+        te->s.eventParm = G_SoundIndex( "sound/items/poweruprespawn.wav" );
+        te->r.svFlags |= SVF_BROADCAST;
+    }
 */
 
 	// play the normal respawn sound only to nearby clients
@@ -692,9 +692,9 @@ void RespawnItem( gentity_t *ent ) {
 /*
 ==============
 Touch_Item
-	if other->client->pers.autoActivate == PICKUP_ACTIVATE	(0), he will pick up items only when using +activate
-	if other->client->pers.autoActivate == PICKUP_TOUCH		(1), he will pickup items when touched
-	if other->client->pers.autoActivate == PICKUP_FORCE		(2), he will pickup the next item when touched (and reset to PICKUP_ACTIVATE when done)
+    if other->client->pers.autoActivate == PICKUP_ACTIVATE	(0), he will pick up items only when using +activate
+    if other->client->pers.autoActivate == PICKUP_TOUCH		(1), he will pickup items when touched
+    if other->client->pers.autoActivate == PICKUP_FORCE		(2), he will pickup the next item when touched (and reset to PICKUP_ACTIVATE when done)
 ==============
 */
 void Touch_Item_Auto( gentity_t *ent, gentity_t *other, trace_t *trace ) {
@@ -1051,7 +1051,7 @@ void FinishSpawningItem( gentity_t *ent ) {
 		}
 
 		ent->touch = Touch_Item;    // no auto-pickup, only activate
-	} else if ( ent->item->giType == IT_HOLDABLE )      {
+	} else if ( ent->item->giType == IT_HOLDABLE ) {
 		if ( ent->item->giTag >= HI_BOOK1 && ent->item->giTag <= HI_BOOK3 ) {
 			G_FindConfigstringIndex( va( "hbook%d", ent->item->giTag - HI_BOOK1 ), CS_CLIPBOARDS, MAX_CLIPBOARD_CONFIGSTRINGS, qtrue );
 		}
@@ -1356,7 +1356,7 @@ void G_RunItemProp( gentity_t *ent, vec3_t origin ) {
 		Prop_Break_Sound( ent );
 
 		return;
-	} else if ( trace.surfaceFlags & SURF_NOIMPACT )    {
+	} else if ( trace.surfaceFlags & SURF_NOIMPACT ) {
 		ent->takedamage = qfalse;
 
 		Props_Chair_Skyboxtouch( ent );
@@ -1435,4 +1435,3 @@ void G_RunItem( gentity_t *ent ) {
 
 	G_BounceItem( ent, &tr );
 }
-

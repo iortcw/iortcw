@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 /*
-	SP_Tramcar
+    SP_Tramcar
 */
 #include "g_local.h"
 
@@ -235,7 +235,7 @@ void Calc_Roll( gentity_t *ent ) {
 		if ( ent->s.apos.trBase[ROLL] > 90 ) {
 			ent->s.apos.trBase[ROLL] = 90;
 		}
-	} else if ( dot2 < 0 )     {
+	} else if ( dot2 < 0 ) {
 		if ( ent->s.apos.trBase[ROLL] > -( ent->angle * 2 ) ) {
 			ent->s.apos.trBase[ROLL] -= 2;
 		} else if ( ent->s.apos.trBase[ROLL] < -( ent->angle * 2 ) ) {
@@ -341,15 +341,15 @@ void Reached_Tramcar( gentity_t *ent ) {
 			} else {
 				G_Printf( "%s lap %i\n", next->targetname, next->count );
 			}
-		} else if ( ( next->spawnflags & 1 ) && !( next->count ) && ent->health > 0 )         { // SCRIPT flag
+		} else if ( ( next->spawnflags & 1 ) && !( next->count ) && ent->health > 0 ) {         // SCRIPT flag
 			GetNextTrack( ent );
 			Think_SetupAirplaneWaypoints( ent );
-		} else if ( ( next->spawnflags & 2 ) && ( ent->spawnflags & 8 ) && ent->health <= 0 && ent->takedamage )         { // death path
+		} else if ( ( next->spawnflags & 2 ) && ( ent->spawnflags & 8 ) && ent->health <= 0 && ent->takedamage ) {         // death path
 			ent->takedamage = qfalse;
 
 			GetNextTrack( ent );
 			Think_SetupAirplaneWaypoints( ent );
-		} else if ( ( next->spawnflags & 4 ) )       { // explode the plane
+		} else if ( ( next->spawnflags & 4 ) ) {       // explode the plane
 			ExplodePlaneSndFx( ent );
 
 			ent->s.modelindex = crash_part;
@@ -413,7 +413,7 @@ void Reached_Tramcar( gentity_t *ent ) {
 
 		ent->think = props_me109_think;
 		ent->nextthink = level.time + 50;
-	} else if ( !Q_stricmp( ent->classname, "truck_cam" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "truck_cam" ) ) {
 		G_Printf( "target: %s\n", next->targetname );
 
 		if ( next->spawnflags & 2 ) { // END
@@ -489,7 +489,7 @@ void Reached_Tramcar( gentity_t *ent ) {
 		ent->think = truck_cam_think;
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
 
-	} else if ( !Q_stricmp( ent->classname, "camera_cam" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "camera_cam" ) ) {
 
 	}
 
@@ -739,11 +739,11 @@ void SP_func_tramcar( gentity_t *self ) {
 	G_SpawnString( "type", "wood", &type );
 	if ( !Q_stricmp( type,"wood" ) ) {
 		self->key = 0;
-	} else if ( !Q_stricmp( type,"glass" ) )   {
+	} else if ( !Q_stricmp( type,"glass" ) ) {
 		self->key = 1;
-	} else if ( !Q_stricmp( type,"metal" ) )                                                            {
+	} else if ( !Q_stricmp( type,"metal" ) ) {
 		self->key = 2;
-	} else if ( !Q_stricmp( type,"gibs" ) )                                                                                                                     {
+	} else if ( !Q_stricmp( type,"gibs" ) ) {
 		self->key = 3;
 	}
 
@@ -981,7 +981,7 @@ void Plane_Attack( gentity_t *self, qboolean in_PVS ) {
 		} else {
 			self->s.density = 7;
 		}
-	} else if ( self->spawnflags & 4 )     { // spinning prop
+	} else if ( self->spawnflags & 4 ) {     // spinning prop
 		self->s.density = 7;
 	} else {
 		self->s.density = 0;
@@ -1055,13 +1055,13 @@ void props_me109_think( gentity_t *self ) {
 
 		if ( self->props_frame_state == plane_choke ) {
 			self->melee->s.loopSound = self->melee->noise_index = fpchoke_snd;
-		} else if ( self->props_frame_state == plane_startup )     {
+		} else if ( self->props_frame_state == plane_startup ) {
 			self->melee->s.loopSound = self->melee->noise_index = fpstartup_snd;
-		} else if ( self->props_frame_state == plane_idle )     {
+		} else if ( self->props_frame_state == plane_idle ) {
 			self->melee->s.loopSound = self->melee->noise_index = fpidle_snd;
-		} else if ( self->props_frame_state == plane_flyby1 )     {
+		} else if ( self->props_frame_state == plane_flyby1 ) {
 			self->melee->s.loopSound = self->melee->noise_index = fpflyby1_snd;
-		} else if ( self->props_frame_state == plane_flyby2 )     {
+		} else if ( self->props_frame_state == plane_flyby2 ) {
 			self->melee->s.loopSound = self->melee->noise_index = fpflyby2_snd;
 		}
 	} else

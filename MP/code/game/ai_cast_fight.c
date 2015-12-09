@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -511,7 +511,7 @@ float AICast_WeaponRange( cast_state_t *cs, int weaponnum ) {
 		}
 		break;
 
-		// Rafael added these changes as per Mikes request
+	// Rafael added these changes as per Mikes request
 	case WP_MAUSER:
 	case WP_GARAND:
 	case WP_SNIPERRIFLE:
@@ -894,8 +894,8 @@ qboolean AICast_WeaponUsable( cast_state_t *cs, int weaponNum ) {
 
 	// just return qfalse if this weapon isn't ready for use
 	switch ( weaponNum ) {
-		// don't attempt to lob a grenade more than this often, since we will abort a grenade
-		// throw if it's not safe, we shouldn't keep switching back too quickly
+	// don't attempt to lob a grenade more than this often, since we will abort a grenade
+	// throw if it's not safe, we shouldn't keep switching back too quickly
 	case WP_DYNAMITE:
 	case WP_DYNAMITE2:
 	case WP_GRENADE_LAUNCHER:
@@ -954,7 +954,7 @@ qboolean AICast_WeaponUsable( cast_state_t *cs, int weaponNum ) {
 			//}
 			break;
 
-			// melee attacks are always available
+		// melee attacks are always available
 		case AICHAR_LOPER:
 		case AICHAR_WARZOMBIE:
 		case AICHAR_REJECTX:
@@ -1225,7 +1225,7 @@ int AICast_WantsToTakeCover( cast_state_t *cs, qboolean attacking ) {
 	// if currently attacking, we should stick around if not getting hurt
 	if ( attacking ) {
 		aggrScale = 1.2;
-	} else { aggrScale = 0.8 /*+ 0.4 * random()*/;}
+	} else { aggrScale = 0.8 /*+ 0.4 * random()*/; }
 	//
 	// if currently following someone, we should be more aggressive
 	if ( cs->leaderNum >= 0 ) {
@@ -1471,26 +1471,26 @@ qboolean AICast_AimAtEnemy( cast_state_t *cs ) {
 	//
 	// adjust accuracy with distance if upclose, so we don't start firing the wrong direction
 /*
-	scale = 1;
-	switch (cs->bs->weaponnum) {
-	// these weapons don't do random offsetting
-	case WP_FLAMETHROWER:
-		break;
-	default:
-		{
-			float scale;
+    scale = 1;
+    switch (cs->bs->weaponnum) {
+    // these weapons don't do random offsetting
+    case WP_FLAMETHROWER:
+        break;
+    default:
+        {
+            float scale;
 
-			if (dist < 256)
-				scale *= (dist / 256);
-			else
-				scale *= 1.0;
+            if (dist < 256)
+                scale *= (dist / 256);
+            else
+                scale *= 1.0;
 
-			bestorigin[0] += scale * 96 * sin((float)level.time/(200.0 + (40.0*((cs->entityNum+3)%4)))) * (1 - aim_accuracy);
-			bestorigin[1] += scale * 96 * cos((float)level.time/(220.0 + (36.0*((cs->entityNum+1)%5)))) * (1 - aim_accuracy);
-			bestorigin[2] += scale * 48 * sin((float)level.time/(210.0 + (32.0*((cs->entityNum+2)%6)))) * (1 - aim_accuracy);
-		}
-		break;
-	}
+            bestorigin[0] += scale * 96 * sin((float)level.time/(200.0 + (40.0*((cs->entityNum+3)%4)))) * (1 - aim_accuracy);
+            bestorigin[1] += scale * 96 * cos((float)level.time/(220.0 + (36.0*((cs->entityNum+1)%5)))) * (1 - aim_accuracy);
+            bestorigin[2] += scale * 48 * sin((float)level.time/(210.0 + (32.0*((cs->entityNum+2)%6)))) * (1 - aim_accuracy);
+        }
+        break;
+    }
 */
 	// if the enemy is moving, they are harder to hit
 	if ( dist > 256 ) {
@@ -1735,8 +1735,8 @@ void AICast_RecordWeaponFire( gentity_t *ent ) {
 	//AICast_SightSoundEvent( cs, range );
 	/*
 	if (!cs->sightSoundTime || cs->sightSoundRange < range) {
-		cs->sightSoundRange = range;
-		cs->sightSoundTime = level.time;
+	    cs->sightSoundRange = range;
+	    cs->sightSoundTime = level.time;
 	}
 	*/
 
@@ -1893,7 +1893,7 @@ qboolean AICast_WantToRetreat( cast_state_t *cs ) {
 		if  (   ( cs->attributes[TACTICAL] > 0.11 + random() * 0.5 ) &&
 				(   ( cs->bs->cur_ps.weaponTime > 500 ) ||
 					(   ( cs->takeCoverTime < level.time - 100 ) &&
-					( AICast_WantsToTakeCover( cs, qtrue ) ) ) ) ) {
+						( AICast_WantsToTakeCover( cs, qtrue ) ) ) ) ) {
 			return qtrue;
 		}
 	}

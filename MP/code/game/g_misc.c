@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles ) {
 	gentity_t   *tent;
 	qboolean noAngles;
 
-	noAngles = (angles[0] > 999999.0);
+	noAngles = ( angles[0] > 999999.0 );
 	// use temp events at source and destination to prevent the effect
 	// from getting dropped by a second player event
 	if ( player->client->sess.sessionTeam != TEAM_SPECTATOR ) {
@@ -128,15 +128,15 @@ void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles ) {
 	VectorCopy( origin, player->client->ps.origin );
 	player->client->ps.origin[2] += 1;
 
-	if (!noAngles) {
-	// spit the player out
-	AngleVectors( angles, player->client->ps.velocity, NULL, NULL );
-	VectorScale( player->client->ps.velocity, 400, player->client->ps.velocity );
-	player->client->ps.pm_time = 160;       // hold time
-	player->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+	if ( !noAngles ) {
+		// spit the player out
+		AngleVectors( angles, player->client->ps.velocity, NULL, NULL );
+		VectorScale( player->client->ps.velocity, 400, player->client->ps.velocity );
+		player->client->ps.pm_time = 160;   // hold time
+		player->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 
-	// set angles
-	SetClientViewAngle(player, angles);
+		// set angles
+		SetClientViewAngle( player, angles );
 	}
 	// toggle the teleport bit so the client knows to not lerp
 	player->client->ps.eFlags ^= EF_TELEPORT_BIT;
@@ -170,7 +170,7 @@ void SP_misc_teleporter_dest( gentity_t *ent ) {
 /*
 =================================================================================
 
-	misc_grabber_trap
+    misc_grabber_trap
 
 */
 
@@ -186,7 +186,7 @@ static int attackHittimes[] = {     ( 7 * 1000 ) / 15,
 /*
 ==============
 grabber_think_idle
-	think func for the grabber ent to reset to idle if not attacking
+    think func for the grabber ent to reset to idle if not attacking
 ==============
 */
 void grabber_think_idle( gentity_t *ent ) {
@@ -198,7 +198,7 @@ void grabber_think_idle( gentity_t *ent ) {
 /*
 ==============
 grabber_think_hit
-	think func for grabber ent following an attack command
+    think func for grabber ent following an attack command
 ==============
 */
 void grabber_think_hit( gentity_t *ent ) {
@@ -244,7 +244,7 @@ void grabber_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int
 /*
 ==============
 grabber_attack
-	direct call to the grabber entity (not a trigger) to call the attack
+    direct call to the grabber entity (not a trigger) to call the attack
 ==============
 */
 void grabber_attack( gentity_t *ent ) {
@@ -257,7 +257,7 @@ void grabber_attack( gentity_t *ent ) {
 /*
 ==============
 grabber_close
-	touch func for attack distance trigger entity
+    touch func for attack distance trigger entity
 ==============
 */
 void grabber_close( gentity_t *ent, gentity_t *other, trace_t *trace ) {
@@ -273,7 +273,7 @@ void grabber_close( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 /*
 ==============
 grabber_pain
-	pain func for the grabber entity (not triggers)
+    pain func for the grabber entity (not triggers)
 ==============
 */
 void grabber_pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t point ) {
@@ -284,8 +284,8 @@ void grabber_pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t point
 /*
 ==============
 grabber_wake
-	ent calling this is the bounding box for the grabber, not the grabber ent itself.
-	the grabber ent is 'ent->parent'
+    ent calling this is the bounding box for the grabber, not the grabber ent itself.
+    the grabber ent is 'ent->parent'
 ==============
 */
 void grabber_wake( gentity_t *ent ) {
@@ -328,9 +328,9 @@ void grabber_wake( gentity_t *ent ) {
 /*
 ==============
 grabber_use
-	use func for the grabber entity
-	if not awake, allow waking by trigger
-	if awake, allow attacking by trigger
+    use func for the grabber entity
+    if not awake, allow waking by trigger
+    if awake, allow attacking by trigger
 ==============
 */
 void grabber_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -346,7 +346,7 @@ void grabber_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 /*
 ==============
 grabber_wake_touch
-	touch func for the first 'wake' trigger entity
+    touch func for the first 'wake' trigger entity
 ==============
 */
 void grabber_wake_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
@@ -374,10 +374,10 @@ pain sound - "models/misc/grabber/grabber_pain.wav"
 The current frames are:
 first frame
 |   length
-	|   looping frames
-		|   fps
-			|   damage at frame
-				|
+    |   looping frames
+        |   fps
+            |   damage at frame
+                |
 0   6   6   5   0  (main idle)
 5   21  21  7   0  (random idle)
 25  11  10  15  7  (attack big swipe)
@@ -788,11 +788,11 @@ void Use_Shooter( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 		fire_speargun( ent, ent->s.origin, dir );
 		break;
 
-		// Rafael sniper
+	// Rafael sniper
 	case WP_SNIPER:
 		fire_lead( ent, ent->s.origin, dir, ent->damage );
 		break;
-		// done
+	// done
 
 	case WP_MORTAR:
 		AimAtTarget( ent );   // store in ent->s.origin2 the direction/force needed to pass through the target
@@ -1077,7 +1077,7 @@ void brush_activate_sniper( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 					sniper->wait = level.time + sniper->delay;
 					// record enemypos pos
 					VectorCopy( ent->enemy->r.currentOrigin, ent->pos1 );
-				} else if ( sniper->count == 1 )     {
+				} else if ( sniper->count == 1 ) {
 					VectorSubtract( ent->enemy->r.currentOrigin, ent->pos1, vec );
 					dist = VectorLength( vec );
 					if ( dist < sniper->radius ) {
@@ -1144,7 +1144,7 @@ Use color picker to set color or key "color".  values are 0.0-1.0 for each color
 /*
 ==============
 use_corona
-	so level designers can toggle them on/off
+    so level designers can toggle them on/off
 ==============
 */
 void use_corona( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -1222,8 +1222,8 @@ char* predef_lightstyles[] = {
 /*
 ==============
 dlight_finish_spawning
-	All the dlights should call this on the same frame, thereby
-	being synched, starting	their sequences all at the same time.
+    All the dlights should call this on the same frame, thereby
+    being synched, starting	their sequences all at the same time.
 ==============
 */
 void dlight_finish_spawning( gentity_t *ent ) {
@@ -1272,7 +1272,7 @@ styles:
 /*
 ==============
 shutoff_dlight
-	the dlight knew when it was triggered to unlink after going through it's cycle once
+    the dlight knew when it was triggered to unlink after going through it's cycle once
 ==============
 */
 void shutoff_dlight( gentity_t *ent ) {
@@ -1311,9 +1311,9 @@ void use_dlight( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 /*
 ==============
 SP_dlight
-	ent->dl_stylestring contains the lightstyle string
-	ent->health tracks current index into style string
-	ent->count tracks length of style string
+    ent->dl_stylestring contains the lightstyle string
+    ent->health tracks current index into style string
+    ent->count tracks length of style string
 ==============
 */
 void SP_dlight( gentity_t *ent ) {
@@ -1332,7 +1332,7 @@ void SP_dlight( gentity_t *ent ) {
 	}
 
 	if ( ent->dl_stylestring && strlen( ent->dl_stylestring ) ) {    // if they're specified in a string, use em
-	} else if ( style )       {
+	} else if ( style ) {
 		style = max( 1, style );                                  // clamp to predefined range
 		style = min( 19, style );
 		ent->dl_stylestring = predef_lightstyles[style - 1];    // these are input as 1-20
@@ -1474,19 +1474,19 @@ void snow_think( gentity_t *ent ) {
 
 	if ( !Q_stricmp( ent->classname, "misc_snow256" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_SNOW256, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_snow128" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_snow128" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_SNOW128, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_snow64" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_snow64" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_SNOW64, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_snow32" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_snow32" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_SNOW32, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_bubbles8" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_bubbles8" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_BUBBLE8, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_bubbles16" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_bubbles16" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_BUBBLE16, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_bubbles32" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_bubbles32" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_BUBBLE32, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
-	} else if ( !Q_stricmp( ent->classname, "misc_bubbles64" ) )       {
+	} else if ( !Q_stricmp( ent->classname, "misc_bubbles64" ) ) {
 		G_FindConfigstringIndex( va( "%i %.2f %.2f %.2f %.2f %.2f %.2f %i %i %i", PARTICLE_BUBBLE64, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], tr.endpos[0], tr.endpos[1], tr.endpos[2], ent->health, turb, ent->s.number ), CS_PARTICLES, MAX_PARTICLES_AREAS, qtrue );
 	}
 
@@ -2120,19 +2120,19 @@ void Flak_Animate( gentity_t *ent ) {
 		} else if ( ent->s.frame > GUN1_IDLE ) {
 			ent->s.frame++;
 		}
-	} else if ( ent->count == 2 )     {
+	} else if ( ent->count == 2 ) {
 		if ( ent->s.frame == GUN2_LASTFIRE ) {
 			ent->s.frame = GUN3_IDLE;
 		} else if ( ent->s.frame > GUN2_IDLE ) {
 			ent->s.frame++;
 		}
-	} else if ( ent->count == 3 )     {
+	} else if ( ent->count == 3 ) {
 		if ( ent->s.frame == GUN3_LASTFIRE ) {
 			ent->s.frame = GUN4_IDLE;
 		} else if ( ent->s.frame > GUN3_IDLE ) {
 			ent->s.frame++;
 		}
-	} else if ( ent->count == 4 )     {
+	} else if ( ent->count == 4 ) {
 		if ( ent->s.frame == GUN4_LASTFIRE ) {
 			ent->s.frame = GUN1_IDLE;
 		} else if ( ent->s.frame > GUN4_IDLE ) {

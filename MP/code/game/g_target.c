@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -636,11 +636,11 @@ void SP_target_location( gentity_t *self ) {
 /*
 ==============
 Use_Target_Autosave
-	save game for emergency backup or convienience
+    save game for emergency backup or convienience
 ==============
 */
 /*void Use_Target_Autosave( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-	G_SaveGame("autosave.svg");
+    G_SaveGame("autosave.svg");
 }*/
 
 
@@ -788,38 +788,38 @@ wait	= default is 50 the rate at which it will travel up
 
 /*void smoke_think (gentity_t *ent)
 {
-	gentity_t	*tent;
+    gentity_t	*tent;
 
-	ent->nextthink = level.time + ent->delay;
+    ent->nextthink = level.time + ent->delay;
 
-	if (!(ent->spawnflags & 4))
-		return;
+    if (!(ent->spawnflags & 4))
+        return;
 
-	if (ent->health)
-	{
-		ent->health --;
-		if (!ent->health)
-		{
-			ent->think = G_FreeEntity;
-			ent->nextthink = level.time + FRAMETIME;
-		}
-	}
+    if (ent->health)
+    {
+        ent->health --;
+        if (!ent->health)
+        {
+            ent->think = G_FreeEntity;
+            ent->nextthink = level.time + FRAMETIME;
+        }
+    }
 
-	tent = G_TempEntity (ent->r.currentOrigin, EV_SMOKE);
-	VectorCopy (ent->r.currentOrigin, tent->s.origin);
-	tent->s.time = ent->speed;
-	tent->s.time2 = ent->duration;
-	tent->s.density = ent->s.density;
+    tent = G_TempEntity (ent->r.currentOrigin, EV_SMOKE);
+    VectorCopy (ent->r.currentOrigin, tent->s.origin);
+    tent->s.time = ent->speed;
+    tent->s.time2 = ent->duration;
+    tent->s.density = ent->s.density;
 
-	// this is used to set the size of the smoke particle
-	tent->s.angles2[0] = ent->start_size;
-	tent->s.angles2[1] = ent->end_size;
-	tent->s.angles2[2] = ent->wait;
+    // this is used to set the size of the smoke particle
+    tent->s.angles2[0] = ent->start_size;
+    tent->s.angles2[1] = ent->end_size;
+    tent->s.angles2[2] = ent->wait;
 
-	VectorCopy (ent->pos3, tent->s.origin2);
+    VectorCopy (ent->pos3, tent->s.origin2);
 
-	if (ent->s.frame) // denotes reverse gravity effect
-		tent->s.frame = 1;
+    if (ent->s.frame) // denotes reverse gravity effect
+        tent->s.frame = 1;
 
 }*/
 
@@ -1024,7 +1024,7 @@ void target_rumble_think( gentity_t * ent ) {
 			time = level.time - ent->timestamp;
 			time2 = ( ent->timestamp + ent->start_size ) - ent->timestamp;
 			ratio = time / time2;
-		} else if ( level.time < ( ent->timestamp + ent->end_size + ent->start_size ) )       {
+		} else if ( level.time < ( ent->timestamp + ent->end_size + ent->start_size ) ) {
 			time = level.time - ent->timestamp;
 			time2 = ( ent->timestamp + ent->start_size + ent->end_size ) - ent->timestamp;
 			ratio = time2 / time;

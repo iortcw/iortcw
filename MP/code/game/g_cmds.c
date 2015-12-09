@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 					 cl->ps.persistant[PERS_SCORE], ping, ( level.time - cl->pers.enterTime ) / 60000,
 					 scoreFlags, g_entities[level.sortedClients[i]].s.powerups, playerClass, respawnsLeft );
 		j = strlen( entry );
-		if ( stringlength + j >= sizeof(string) ) {
+		if ( stringlength + j >= sizeof( string ) ) {
 			break;
 		}
 		strcpy( string + stringlength, entry );
@@ -116,11 +116,11 @@ CheatsOk
 */
 qboolean    CheatsOk( gentity_t *ent ) {
 	if ( !g_cheats.integer ) {
-		trap_SendServerCommand( ent-g_entities, "print \"Cheats are not enabled on this server.\n\"");
+		trap_SendServerCommand( ent - g_entities, "print \"Cheats are not enabled on this server.\n\"" );
 		return qfalse;
 	}
 	if ( ent->health <= 0 ) {
-		trap_SendServerCommand( ent-g_entities, "print \"You must be alive to use this command.\n\"");
+		trap_SendServerCommand( ent - g_entities, "print \"You must be alive to use this command.\n\"" );
 		return qfalse;
 	}
 	return qtrue;
@@ -165,14 +165,14 @@ StringIsInteger
 ==================
 */
 qboolean StringIsInteger( const char * s ) {
-	int			i;
-	int			len;
-	qboolean	foundDigit;
+	int i;
+	int len;
+	qboolean foundDigit;
 
 	len = strlen( s );
 	foundDigit = qfalse;
 
-	for ( i=0 ; i < len ; i++ ) {
+	for ( i = 0 ; i < len ; i++ ) {
 		if ( !isdigit( s[i] ) ) {
 			return qfalse;
 		}
@@ -212,8 +212,8 @@ int ClientNumberFromString( gentity_t *to, char *s ) {
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		Q_strncpyz(cleanName, cl->pers.netname, sizeof(cleanName));
-		Q_CleanStr(cleanName);
+		Q_strncpyz( cleanName, cl->pers.netname, sizeof( cleanName ) );
+		Q_CleanStr( cleanName );
 		if ( !Q_stricmp( cleanName, s ) ) {
 			return idnum;
 		}
@@ -480,22 +480,20 @@ hide the scoreboard, and take a special screenshot
 ==================
 */
 void Cmd_LevelShot_f( gentity_t *ent ) {
-	if(!ent->client->pers.localClient)
-	{
-		trap_SendServerCommand(ent-g_entities,
-			"print \"The levelshot command must be executed by a local client\n\"");
- 		return;
- 	}
+	if ( !ent->client->pers.localClient ) {
+		trap_SendServerCommand( ent - g_entities,
+								"print \"The levelshot command must be executed by a local client\n\"" );
+		return;
+	}
 
 	if ( !CheatsOk( ent ) ) {
 		return;
 	}
 
 	// doesn't work in single player
-	if(g_gametype.integer == GT_SINGLE_PLAYER)
-	{
-		trap_SendServerCommand(ent-g_entities,
-			"print \"Must not be in singleplayer mode for levelshot\n\"" );
+	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
+		trap_SendServerCommand( ent - g_entities,
+								"print \"Must not be in singleplayer mode for levelshot\n\"" );
 		return;
 	}
 
@@ -661,8 +659,9 @@ void SetTeam( gentity_t *ent, char *s ) {
 		}
 	}
 	// they go to the end of the line for tournements
-	if(team == TEAM_SPECTATOR && oldTeam != team)
-		AddTournamentQueue(client);
+	if ( team == TEAM_SPECTATOR && oldTeam != team ) {
+		AddTournamentQueue( client );
+	}
 
 	client->sess.sessionTeam = team;
 	client->sess.spectatorState = specState;
@@ -872,10 +871,10 @@ void Cmd_FollowCycle_f( gentity_t *ent, int dir ) {
 	}
 
 	// if dedicated follow client, just switch between the two auto clients
-	if (ent->client->sess.spectatorClient < 0) {
-		if (ent->client->sess.spectatorClient == -1) {
+	if ( ent->client->sess.spectatorClient < 0 ) {
+		if ( ent->client->sess.spectatorClient == -1 ) {
 			ent->client->sess.spectatorClient = -2;
-		} else if (ent->client->sess.spectatorClient == -2) {
+		} else if ( ent->client->sess.spectatorClient == -2 ) {
 			ent->client->sess.spectatorClient = -1;
 		}
 		return;
@@ -1015,7 +1014,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		color = COLOR_CYAN;
 		break;
 	case SAY_TELL:
-		if (target && target->inuse && target->client && g_gametype.integer >= GT_TEAM &&
+		if ( target && target->inuse && target->client && g_gametype.integer >= GT_TEAM &&
 			 target->client->sess.sessionTeam == ent->client->sess.sessionTeam &&
 			 Team_GetLocationMsg( ent, location, sizeof( location ) ) ) {
 			Com_sprintf( name, sizeof( name ), "[%s%c%c] (%s): ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE, location );
@@ -1024,7 +1023,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		}
 		color = COLOR_MAGENTA;
 		break;
-		// NERVE - SMF
+	// NERVE - SMF
 	case SAY_LIMBO:
 		G_LogPrintf( "say_limbo: %s: %s\n", ent->client->pers.netname, chatText );
 		Com_sprintf( name, sizeof( name ), "%s%c%c: ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
@@ -1081,13 +1080,13 @@ Cmd_Tell_f
 ==================
 */
 static void Cmd_Tell_f( gentity_t *ent ) {
-	int			targetNum;
-	gentity_t	*target;
-	char		*p;
-	char		arg[MAX_TOKEN_CHARS];
+	int targetNum;
+	gentity_t   *target;
+	char        *p;
+	char arg[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc () < 3 ) {
-		trap_SendServerCommand( ent-g_entities, "print \"Usage: tell <player id> <message>\n\"" );
+	if ( trap_Argc() < 3 ) {
+		trap_SendServerCommand( ent - g_entities, "print \"Usage: tell <player id> <message>\n\"" );
 		return;
 	}
 
@@ -1108,7 +1107,7 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	G_Say( ent, target, SAY_TELL, p );
 	// don't tell to the player self if it was already directed to this player
 	// also don't send the chat back to a bot
-	if ( ent != target && !(ent->r.svFlags & SVF_BOT)) {
+	if ( ent != target && !( ent->r.svFlags & SVF_BOT ) ) {
 		G_Say( ent, ent, SAY_TELL, p );
 	}
 }
@@ -1138,7 +1137,7 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 	if ( mode == SAY_TEAM ) {
 		color = COLOR_CYAN;
 		cmd = "vtchat";
-	} else if ( mode == SAY_TELL )     {
+	} else if ( mode == SAY_TELL ) {
 		color = COLOR_MAGENTA;
 		cmd = "vtell";
 	} else {
@@ -1346,13 +1345,13 @@ static char *gc_orders[] = {
 static const int numgc_orders = ARRAY_LEN( gc_orders );
 
 void Cmd_GameCommand_f( gentity_t *ent ) {
-	int			targetNum;
-	gentity_t	*target;
-	int			order;
-	char		arg[MAX_TOKEN_CHARS];
+	int targetNum;
+	gentity_t   *target;
+	int order;
+	char arg[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() != 3 ) {
-		trap_SendServerCommand( ent-g_entities, va( "print \"Usage: gc <player id> <order 0-%d>\n\"", numgc_orders - 1 ) );
+		trap_SendServerCommand( ent - g_entities, va( "print \"Usage: gc <player id> <order 0-%d>\n\"", numgc_orders - 1 ) );
 		return;
 	}
 
@@ -1360,7 +1359,7 @@ void Cmd_GameCommand_f( gentity_t *ent ) {
 	order = atoi( arg );
 
 	if ( order < 0 || order >= numgc_orders ) {
-		trap_SendServerCommand( ent-g_entities, va("print \"Bad order: %i\n\"", order));
+		trap_SendServerCommand( ent - g_entities, va( "print \"Bad order: %i\n\"", order ) );
 		return;
 	}
 
@@ -1379,7 +1378,7 @@ void Cmd_GameCommand_f( gentity_t *ent ) {
 	G_Say( ent, target, SAY_TELL, gc_orders[order] );
 	// don't tell to the player self if it was already directed to this player
 	// also don't send the chat back to a bot
-	if ( ent != target && !(ent->r.svFlags & SVF_BOT)) {
+	if ( ent != target && !( ent->r.svFlags & SVF_BOT ) ) {
 		G_Say( ent, ent, SAY_TELL, gc_orders[order] );
 	}
 }
@@ -1390,7 +1389,7 @@ Cmd_Where_f
 ==================
 */
 void Cmd_Where_f( gentity_t *ent ) {
-	trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", vtos(ent->r.currentOrigin) ) );
+	trap_SendServerCommand( ent - g_entities, va( "print \"%s\n\"", vtos( ent->r.currentOrigin ) ) );
 }
 
 
@@ -1412,7 +1411,7 @@ Cmd_CallVote_f
 ==================
 */
 void Cmd_CallVote_f( gentity_t *ent ) {
-	char*	c;
+	char*   c;
 	int i;
 	char arg1[MAX_STRING_TOKENS];
 	char arg2[MAX_STRING_TOKENS];
@@ -1442,13 +1441,13 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	trap_Argv( 2, arg2, sizeof( arg2 ) );
 
 	// check for command separators in arg2
-	for( c = arg2; *c; ++c) {
-		switch(*c) {
-			case '\n':
-			case '\r':
-			case ';':
-				trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
-				return;
+	for ( c = arg2; *c; ++c ) {
+		switch ( *c ) {
+		case '\n':
+		case '\r':
+		case ';':
+			trap_SendServerCommand( ent - g_entities, "print \"Invalid vote string.\n\"" );
+			return;
 			break;
 		}
 	}
@@ -1711,11 +1710,11 @@ void Cmd_SetViewpos_f( gentity_t *ent ) {
 	int i;
 
 	if ( !g_cheats.integer ) {
-		trap_SendServerCommand( ent-g_entities, "print \"Cheats are not enabled on this server.\n\"");
+		trap_SendServerCommand( ent - g_entities, "print \"Cheats are not enabled on this server.\n\"" );
 		return;
 	}
 	if ( trap_Argc() != 5 ) {
-		trap_SendServerCommand( ent-g_entities, "print \"usage: setviewpos x y z yaw\n\"");
+		trap_SendServerCommand( ent - g_entities, "print \"usage: setviewpos x y z yaw\n\"" );
 		return;
 	}
 
@@ -1861,7 +1860,7 @@ void Cmd_Activate_f( gentity_t *ent ) {
 			if ( traceEnt->use ) {
 				traceEnt->use( traceEnt, ent, 0 );
 			}
-		} else if ( traceEnt->s.eType == ET_ITEM )     {
+		} else if ( traceEnt->s.eType == ET_ITEM ) {
 			trace_t trace;
 
 			if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
@@ -1878,7 +1877,7 @@ void Cmd_Activate_f( gentity_t *ent ) {
 				traceEnt->touch( traceEnt, ent, &trace );
 			}
 
-		} else if ( ( Q_stricmp( traceEnt->classname, "misc_mg42" ) == 0 ) && traceEnt->active == qfalse )         {
+		} else if ( ( Q_stricmp( traceEnt->classname, "misc_mg42" ) == 0 ) && traceEnt->active == qfalse ) {
 			if (
 				( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] < 40 ) &&
 				( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] > 0 ) &&
@@ -1921,12 +1920,12 @@ void Cmd_Activate_f( gentity_t *ent ) {
 					}
 				}
 			}
-		} else if ( ( ( Q_stricmp( traceEnt->classname, "func_door" ) == 0 ) || ( Q_stricmp( traceEnt->classname, "func_door_rotating" ) == 0 ) ) )           {
+		} else if ( ( ( Q_stricmp( traceEnt->classname, "func_door" ) == 0 ) || ( Q_stricmp( traceEnt->classname, "func_door_rotating" ) == 0 ) ) ) {
 			if ( walking ) {
 				traceEnt->flags |= FL_SOFTACTIVATE;     // no noise
 			}
 			G_TryDoor( traceEnt, ent, ent );      // (door,other,activator)
-		} else if ( ( Q_stricmp( traceEnt->classname, "team_WOLF_checkpoint" ) == 0 ) )       {
+		} else if ( ( Q_stricmp( traceEnt->classname, "team_WOLF_checkpoint" ) == 0 ) ) {
 			if ( traceEnt->count != ent->client->sess.sessionTeam ) {
 				traceEnt->health++;
 			}
@@ -1935,14 +1934,14 @@ void Cmd_Activate_f( gentity_t *ent ) {
 					&& traceEnt->active == qfalse ) {
 			Use_BinaryMover( traceEnt, ent, ent );
 			traceEnt->active = qtrue;
-		} else if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) )     {
+		} else if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) ) {
 			if ( walking ) {
 				traceEnt->flags |= FL_SOFTACTIVATE;     // no noise
 			}
 			traceEnt->use( traceEnt, ent, ent );
-		} else if ( !Q_stricmp( traceEnt->classname, "script_mover" ) )     {
+		} else if ( !Q_stricmp( traceEnt->classname, "script_mover" ) ) {
 			G_Script_ScriptEvent( traceEnt, "activate", ent->aiName );
-		} else if ( !Q_stricmp( traceEnt->classname, "props_footlocker" ) )     {
+		} else if ( !Q_stricmp( traceEnt->classname, "props_footlocker" ) ) {
 			traceEnt->use( traceEnt, ent, ent );
 		}
 	}
@@ -2014,7 +2013,7 @@ int Cmd_WolfKick_f( gentity_t *ent ) {
 			if ( traceEnt->key < 0 ) { // door force locked
 				//----(SA)	play kick "hit" sound
 				tent = G_TempEntity( tr.endpos, EV_WOLFKICK_HIT_WALL );
-				tent->s.otherEntityNum = ent->s.number;	\
+				tent->s.otherEntityNum = ent->s.number; \
 				//----(SA)	end
 
 				AICast_AudibleEvent( ent->s.clientNum, tr.endpos, HEAR_RANGE_DOOR_KICKLOCKED ); // "someone kicked a locked door near me!"
@@ -2032,7 +2031,7 @@ int Cmd_WolfKick_f( gentity_t *ent ) {
 				if ( !( ent->client->ps.stats[STAT_KEYS] & ( 1 << item->giTag ) ) ) {
 					//----(SA)	play kick "hit" sound
 					tent = G_TempEntity( tr.endpos, EV_WOLFKICK_HIT_WALL );
-					tent->s.otherEntityNum = ent->s.number;	\
+					tent->s.otherEntityNum = ent->s.number; \
 					//----(SA)	end
 
 					AICast_AudibleEvent( ent->s.clientNum, tr.endpos, HEAR_RANGE_DOOR_KICKLOCKED ); // "someone kicked a locked door near me!"
@@ -2065,15 +2064,15 @@ int Cmd_WolfKick_f( gentity_t *ent ) {
 			Use_BinaryMover( traceEnt, ent, ent );
 			traceEnt->active = qtrue;
 
-		} else if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) )     {
+		} else if ( !Q_stricmp( traceEnt->classname, "func_invisible_user" ) ) {
 			traceEnt->flags |= FL_KICKACTIVATE;     // so cell doors know they were kicked
-													// It doesn't hurt to pass this along since only ent use() funcs who care about it will check.
-													// However, it may become handy to put a "KICKABLE" or "NOTKICKABLE" flag on the invisible_user
+			                                        // It doesn't hurt to pass this along since only ent use() funcs who care about it will check.
+			                                        // However, it may become handy to put a "KICKABLE" or "NOTKICKABLE" flag on the invisible_user
 			traceEnt->use( traceEnt, ent, ent );
 			traceEnt->flags &= ~FL_KICKACTIVATE;    // reset
 
 			solidKick = qtrue;  //----(SA)
-		} else if ( !Q_stricmp( traceEnt->classname, "props_flippy_table" ) && traceEnt->use )       {
+		} else if ( !Q_stricmp( traceEnt->classname, "props_flippy_table" ) && traceEnt->use ) {
 			traceEnt->use( traceEnt, ent, ent );
 		}
 	}
@@ -2140,36 +2139,36 @@ Cmd_ClientMonsterSlickAngle
 /*
 void Cmd_ClientMonsterSlickAngle (gentity_t *clent) {
 
-	char s[MAX_STRING_CHARS];
-	int	entnum;
-	int angle;
-	gentity_t *ent;
-	vec3_t	dir, kvel;
-	vec3_t	forward;
+    char s[MAX_STRING_CHARS];
+    int	entnum;
+    int angle;
+    gentity_t *ent;
+    vec3_t	dir, kvel;
+    vec3_t	forward;
 
-	if (trap_Argc() != 3) {
-		G_Printf( "ClientDamage command issued with incorrect number of args\n" );
-	}
+    if (trap_Argc() != 3) {
+        G_Printf( "ClientDamage command issued with incorrect number of args\n" );
+    }
 
-	trap_Argv( 1, s, sizeof( s ) );
-	entnum = atoi(s);
-	ent = &g_entities[entnum];
+    trap_Argv( 1, s, sizeof( s ) );
+    entnum = atoi(s);
+    ent = &g_entities[entnum];
 
-	trap_Argv( 2, s, sizeof( s ) );
-	angle = atoi(s);
+    trap_Argv( 2, s, sizeof( s ) );
+    angle = atoi(s);
 
-	// sanity check (also protect from cheaters)
-	if (g_gametype.integer != GT_SINGLE_PLAYER && entnum != clent->s.number) {
-		trap_DropClient( clent->s.number, "Dropped due to illegal ClientMonsterSlick command\n" );
-		return;
-	}
+    // sanity check (also protect from cheaters)
+    if (g_gametype.integer != GT_SINGLE_PLAYER && entnum != clent->s.number) {
+        trap_DropClient( clent->s.number, "Dropped due to illegal ClientMonsterSlick command\n" );
+        return;
+    }
 
-	VectorClear (dir);
-	dir[YAW] = angle;
-	AngleVectors (dir, forward, NULL, NULL);
+    VectorClear (dir);
+    dir[YAW] = angle;
+    AngleVectors (dir, forward, NULL, NULL);
 
-	VectorScale (forward, 32, kvel);
-	VectorAdd (ent->client->ps.velocity, kvel, ent->client->ps.velocity);
+    VectorScale (forward, 32, kvel);
+    VectorAdd (ent->client->ps.velocity, kvel, ent->client->ps.velocity);
 }
 */
 
@@ -2252,54 +2251,54 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 	case CLDMG_FLAMETHROWER:
 		// do some cheat protection
 /*  JPW NERVE pulled flamethrower client damage completely
-		if (g_gametype.integer != GT_SINGLE_PLAYER) {
-			if ( enemy->s.weapon != WP_FLAMETHROWER )
-				break;
+        if (g_gametype.integer != GT_SINGLE_PLAYER) {
+            if ( enemy->s.weapon != WP_FLAMETHROWER )
+                break;
 //			if ( !(enemy->client->buttons & BUTTON_ATTACK) ) // JPW NERVE flames should be able to damage while puffs are active
 //				break;
-		} else {
-			// this is required for Zombie flame attack
-			//if ((enemy->aiCharacter == AICHAR_ZOMBIE) && !AICast_VisibleFromPos( enemy->r.currentOrigin, enemy->s.number, ent->r.currentOrigin, ent->s.number, qfalse ))
-			//	break;
-		}
+        } else {
+            // this is required for Zombie flame attack
+            //if ((enemy->aiCharacter == AICHAR_ZOMBIE) && !AICast_VisibleFromPos( enemy->r.currentOrigin, enemy->s.number, ent->r.currentOrigin, ent->s.number, qfalse ))
+            //	break;
+        }
 
-		if ( ent->takedamage && !AICast_NoFlameDamage(ent->s.number) ) {
-			#define	FLAME_THRESHOLD	50
-			int damage = 5;
+        if ( ent->takedamage && !AICast_NoFlameDamage(ent->s.number) ) {
+            #define	FLAME_THRESHOLD	50
+            int damage = 5;
 
-			// RF, only do damage once they start burning
-			//if (ent->health > 0)	// don't explode from flamethrower
-			//	G_Damage( traceEnt, ent, ent, forward, tr.endpos, 1, 0, MOD_LIGHTNING);
+            // RF, only do damage once they start burning
+            //if (ent->health > 0)	// don't explode from flamethrower
+            //	G_Damage( traceEnt, ent, ent, forward, tr.endpos, 1, 0, MOD_LIGHTNING);
 
-			// now check the damageQuota to see if we should play a pain animation
-			// first reduce the current damageQuota with time
-			if (ent->flameQuotaTime && ent->flameQuota > 0) {
-				ent->flameQuota -= (int)(((float)(level.time - ent->flameQuotaTime)/1000) * (float)damage/2.0);
-				if (ent->flameQuota < 0)
-					ent->flameQuota = 0;
-			}
+            // now check the damageQuota to see if we should play a pain animation
+            // first reduce the current damageQuota with time
+            if (ent->flameQuotaTime && ent->flameQuota > 0) {
+                ent->flameQuota -= (int)(((float)(level.time - ent->flameQuotaTime)/1000) * (float)damage/2.0);
+                if (ent->flameQuota < 0)
+                    ent->flameQuota = 0;
+            }
 
-			// add the new damage
-			ent->flameQuota += damage;
-			ent->flameQuotaTime = level.time;
+            // add the new damage
+            ent->flameQuota += damage;
+            ent->flameQuotaTime = level.time;
 
-			// Ridah, make em burn
-			if (ent->client && ( !(ent->r.svFlags & SVF_CASTAI) || ent->health <= 0 || ent->flameQuota > FLAME_THRESHOLD)) {				if (ent->s.onFireEnd < level.time)
-					ent->s.onFireStart = level.time;
-				if (ent->health <= 0 || !(ent->r.svFlags & SVF_CASTAI) || (g_gametype.integer != GT_SINGLE_PLAYER)) {
-					if (ent->r.svFlags & SVF_CASTAI) {
-						ent->s.onFireEnd = level.time + 6000;
-					} else {
-						ent->s.onFireEnd = level.time + FIRE_FLASH_TIME;
-					}
-				} else {
-					ent->s.onFireEnd = level.time + 99999;	// make sure it goes for longer than they need to die
-				}
-				ent->flameBurnEnt = enemy->s.number;
-				// add to playerState for client-side effect
-				ent->client->ps.onFireStart = level.time;
-			}
-		}
+            // Ridah, make em burn
+            if (ent->client && ( !(ent->r.svFlags & SVF_CASTAI) || ent->health <= 0 || ent->flameQuota > FLAME_THRESHOLD)) {				if (ent->s.onFireEnd < level.time)
+                    ent->s.onFireStart = level.time;
+                if (ent->health <= 0 || !(ent->r.svFlags & SVF_CASTAI) || (g_gametype.integer != GT_SINGLE_PLAYER)) {
+                    if (ent->r.svFlags & SVF_CASTAI) {
+                        ent->s.onFireEnd = level.time + 6000;
+                    } else {
+                        ent->s.onFireEnd = level.time + FIRE_FLASH_TIME;
+                    }
+                } else {
+                    ent->s.onFireEnd = level.time + 99999;	// make sure it goes for longer than they need to die
+                }
+                ent->flameBurnEnt = enemy->s.number;
+                // add to playerState for client-side effect
+                ent->client->ps.onFireStart = level.time;
+            }
+        }
 */
 		break;
 	}
@@ -2426,7 +2425,7 @@ void ClientCommand( int clientNum ) {
 	char cmd[MAX_TOKEN_CHARS];
 
 	ent = g_entities + clientNum;
-	if (!ent->client || ent->client->pers.connected != CON_CONNECTED) {
+	if ( !ent->client || ent->client->pers.connected != CON_CONNECTED ) {
 		return;     // not fully in game yet
 	}
 
@@ -2478,34 +2477,34 @@ void ClientCommand( int clientNum ) {
 
 	if ( Q_stricmp( cmd, "give" ) == 0 ) {
 		Cmd_Give_f( ent );
-	} else if ( Q_stricmp( cmd, "god" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "god" ) == 0 ) {
 		Cmd_God_f( ent );
-	} else if ( Q_stricmp( cmd, "nofatigue" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "nofatigue" ) == 0 ) {
 		Cmd_Nofatigue_f( ent );
-	} else if ( Q_stricmp( cmd, "notarget" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "notarget" ) == 0 ) {
 		Cmd_Notarget_f( ent );
-	} else if ( Q_stricmp( cmd, "noclip" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "noclip" ) == 0 ) {
 		Cmd_Noclip_f( ent );
-	} else if ( Q_stricmp( cmd, "kill" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "kill" ) == 0 ) {
 		Cmd_Kill_f( ent );
-	} else if ( Q_stricmp( cmd, "levelshot" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "levelshot" ) == 0 ) {
 		Cmd_LevelShot_f( ent );
-	} else if ( Q_stricmp( cmd, "follow" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "follow" ) == 0 ) {
 		Cmd_Follow_f( ent );
-	} else if ( Q_stricmp( cmd, "follownext" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "follownext" ) == 0 ) {
 		Cmd_FollowCycle_f( ent, 1 );
-	} else if ( Q_stricmp( cmd, "followprev" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "followprev" ) == 0 ) {
 		Cmd_FollowCycle_f( ent, -1 );
 	}
 //	else if (Q_stricmp (cmd, "team") == 0)		// NERVE - SMF - moved above intermission check
 //		Cmd_Team_f (ent);
 	else if ( Q_stricmp( cmd, "where" ) == 0 ) {
 		Cmd_Where_f( ent );
-	} else if ( Q_stricmp( cmd, "callvote" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "callvote" ) == 0 ) {
 		Cmd_CallVote_f( ent );
-	} else if ( Q_stricmp( cmd, "vote" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "vote" ) == 0 ) {
 		Cmd_Vote_f( ent );
-	} else if ( Q_stricmp( cmd, "gc" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "gc" ) == 0 ) {
 		Cmd_GameCommand_f( ent );
 	}
 //	else if (Q_stricmp (cmd, "startCamera") == 0)
@@ -2516,9 +2515,9 @@ void ClientCommand( int clientNum ) {
 //		Cmd_SetCameraOrigin_f( ent );
 	else if ( Q_stricmp( cmd, "setviewpos" ) == 0 ) {
 		Cmd_SetViewpos_f( ent );
-	} else if ( Q_stricmp( cmd, "entitycount" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "entitycount" ) == 0 ) {
 		Cmd_EntityCount_f( ent );
-	} else if ( Q_stricmp( cmd, "setspawnpt" ) == 0 )  {
+	} else if ( Q_stricmp( cmd, "setspawnpt" ) == 0 ) {
 		Cmd_SetSpawnPoint_f( ent );
 	} else {
 		trap_SendServerCommand( clientNum, va( "print \"unknown cmd[lof] %s\n\"", cmd ) );

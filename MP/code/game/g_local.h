@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -191,7 +191,7 @@ struct gentity_s {
 	int spawnflags;                 // set in QuakeEd
 
 	qboolean neverFree;             // if true, FreeEntity will only unlink
-									// bodyque uses this
+	                                // bodyque uses this
 
 	int flags;                      // FL_* variables
 
@@ -204,11 +204,11 @@ struct gentity_s {
 	qboolean unlinkAfterEvent;
 
 	qboolean physicsObject;         // if true, it can be pushed by movers and fall off edges
-									// all game items are physicsObjects,
+	                                // all game items are physicsObjects,
 	float physicsBounce;            // 1.0 = continuous bounce, 0.0 = no bounce
 	int clipmask;                   // brushes with this content value will be collided against
-									// when moving.  items and corpses do not collide against
-									// players, for instance
+	                                // when moving.  items and corpses do not collide against
+	                                // players, for instance
 
 	// movers
 	moverState_t moverState;
@@ -242,7 +242,7 @@ struct gentity_s {
 
 	int timestamp;              // body queue sinking, etc
 
-	float		angle;			// set in editor, -1 = up, -2 = down
+	float angle;                // set in editor, -1 = up, -2 = down
 	char        *target;
 	char        *targetname;
 	char        *team;
@@ -344,7 +344,7 @@ struct gentity_s {
 
 	// Ridah
 	int missionLevel;               // mission we are currently trying to complete
-									// gets reset each new level
+	                                // gets reset each new level
 	// done.
 
 	// Rafael
@@ -450,7 +450,7 @@ typedef struct {
 // MUST be dealt with in G_InitSessionData() / G_ReadSessionData() / G_WriteSessionData()
 typedef struct {
 	team_t sessionTeam;
-	int spectatorNum;		// for determining next-in-line to play
+	int spectatorNum;       // for determining next-in-line to play
 	spectatorState_t spectatorState;
 	int spectatorClient;            // for chasecam and follow mode
 	int wins, losses;               // tournament stats
@@ -536,8 +536,8 @@ struct gclient_s {
 	qboolean noclip;
 
 	int lastCmdTime;                // level.time of last usercmd_t, for EF_CONNECTION
-									// we can't just use pers.lastCommand.time, because
-									// of the g_sycronousclients case
+	                                // we can't just use pers.lastCommand.time, because
+	                                // of the g_sycronousclients case
 	int buttons;
 	int oldbuttons;
 	int latched_buttons;
@@ -653,7 +653,7 @@ typedef struct {
 	int lastTeamLocationTime;               // last time of client team location update
 
 	qboolean newSession;                // don't use any old session data, because
-										// we changed gametype
+	                                    // we changed gametype
 
 	qboolean restarted;                 // waiting for a map_restart to fire
 
@@ -693,10 +693,10 @@ typedef struct {
 
 	// intermission state
 	int intermissionQueued;             // intermission was qualified, but
-										// wait INTERMISSION_DELAY_TIME before
-										// actually going there so the last
-										// frag can be watched.  Disable future
-										// kills during this delay
+	                                    // wait INTERMISSION_DELAY_TIME before
+	                                    // actually going there so the last
+	                                    // frag can be watched.  Disable future
+	                                    // kills during this delay
 	int intermissiontime;               // time the intermission was started
 	char        *changemap;
 	qboolean readyToExit;               // at least one client wants to exit
@@ -953,7 +953,7 @@ int TeamCount( int ignoreClientNum, team_t team );
 team_t PickTeam( int ignoreClientNum );
 void SetClientViewAngle( gentity_t *ent, vec3_t angle );
 gentity_t *SelectSpawnPoint( vec3_t avoidPoint, vec3_t origin, vec3_t angles );
-void ClientRespawn(gentity_t *ent);
+void ClientRespawn( gentity_t *ent );
 void BeginIntermission( void );
 void InitBodyQue( void );
 void ClientSpawn( gentity_t *ent, qboolean revived );
@@ -990,12 +990,12 @@ void DeathmatchScoreboardMessage( gentity_t *ent );
 void MoveClientToIntermission( gentity_t *ent );
 void FindIntermissionPoint( void );
 void G_RunThink( gentity_t *ent );
-void AddTournamentQueue(gclient_t *client);
-void QDECL G_LogPrintf( const char *fmt, ... ) __attribute__ ((format (printf, 1, 2)));
+void AddTournamentQueue( gclient_t *client );
+void QDECL G_LogPrintf( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 void SendScoreboardMessageToAllClients( void );
-void QDECL G_Printf( const char *fmt, ... ) __attribute__ ((format (printf, 1, 2)));
-void QDECL G_DPrintf( const char *fmt, ... ) __attribute__ ((format (printf, 1, 2)));
-void QDECL G_Error( const char *fmt, ... ) __attribute__ ((noreturn, format (printf, 1, 2)));
+void QDECL G_Printf( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
+void QDECL G_DPrintf( const char *fmt, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
+void QDECL G_Error( const char *fmt, ... ) __attribute__ ( ( noreturn, format( printf, 1, 2 ) ) );
 
 //
 // g_client.c
@@ -1096,7 +1096,7 @@ extern level_locals_t level;
 extern gentity_t g_entities[];          //DAJ was explicit set to MAX_ENTITIES
 extern gentity_t       *g_camEnt;
 
-#define	FOFS(x) ((size_t)&(((gentity_t *)0)->x))
+#define FOFS( x ) ( (size_t)&( ( (gentity_t *)0 )->x ) )
 
 extern vmCvar_t g_gametype;
 
@@ -1204,10 +1204,10 @@ extern vmCvar_t g_antilag;
 
 extern vmCvar_t g_dbgRevive;
 
-void	trap_Print( const char *text );
-void	trap_Error( const char *text ) __attribute__((noreturn));
+void    trap_Print( const char *text );
+void    trap_Error( const char *text ) __attribute__( ( noreturn ) );
 int     trap_Milliseconds( void );
-int	trap_RealTime( qtime_t *qtime );
+int trap_RealTime( qtime_t *qtime );
 int     trap_Argc( void );
 void    trap_Argv( int n, char *buffer, int bufferLength );
 void    trap_Args( char *buffer, int bufferLength );

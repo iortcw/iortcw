@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -502,7 +502,7 @@ void limbo( gentity_t *ent, qboolean makeCorpse ) {
 		if ( ent->client->sess.sessionTeam == TEAM_RED ) {
 			ent->client->deployQueueNumber = level.redNumWaiting;
 			level.redNumWaiting++;
-		} else if ( ent->client->sess.sessionTeam == TEAM_BLUE )     {
+		} else if ( ent->client->sess.sessionTeam == TEAM_BLUE ) {
 			ent->client->deployQueueNumber = level.blueNumWaiting;
 			level.blueNumWaiting++;
 		}
@@ -644,7 +644,7 @@ team_t PickTeam( int ignoreClientNum ) {
 		}
 		if ( level.clients[i].sess.sessionTeam == TEAM_BLUE ) {
 			counts[TEAM_BLUE]++;
-		} else if ( level.clients[i].sess.sessionTeam == TEAM_RED )   {
+		} else if ( level.clients[i].sess.sessionTeam == TEAM_RED ) {
 			counts[TEAM_RED]++;
 		}
 	}
@@ -1111,59 +1111,53 @@ void SetWolfSpawnWeapons( gclient_t *client ) {
 ClientCleanName
 ============
 */
-static void ClientCleanName(const char *in, char *out, int outSize)
-{
+static void ClientCleanName( const char *in, char *out, int outSize ) {
 	int outpos = 0, colorlessLen = 0, spaces = 0;
 
 	// discard leading spaces
-	for(; *in == ' '; in++);
-	
-	for(; *in && outpos < outSize - 1; in++)
+	for (; *in == ' '; in++ );
+
+	for (; *in && outpos < outSize - 1; in++ )
 	{
 		out[outpos] = *in;
 
-		if(*in == ' ')
-		{
+		if ( *in == ' ' ) {
 			// don't allow too many consecutive spaces
-			if(spaces > 2)
+			if ( spaces > 2 ) {
 				continue;
-			
+			}
+
 			spaces++;
-		}
-		else if(outpos > 0 && out[outpos - 1] == Q_COLOR_ESCAPE)
-		{
-			if(Q_IsColorString(&out[outpos - 1]))
-			{
+		} else if ( outpos > 0 && out[outpos - 1] == Q_COLOR_ESCAPE )      {
+			if ( Q_IsColorString( &out[outpos - 1] ) ) {
 				colorlessLen--;
-				
-				if(ColorIndex(*in) == 0)
-				{
+
+				if ( ColorIndex( *in ) == 0 ) {
 					// Disallow color black in names to prevent players
 					// from getting advantage playing in front of black backgrounds
 					outpos--;
 					continue;
 				}
-			}
-			else
+			} else
 			{
 				spaces = 0;
 				colorlessLen++;
 			}
-		}
-		else
+		} else
 		{
 			spaces = 0;
 			colorlessLen++;
 		}
-		
+
 		outpos++;
 	}
 
 	out[outpos] = '\0';
 
 	// don't allow empty names
-	if( *out == '\0' || colorlessLen == 0)
-		Q_strncpyz(out, "UnnamedPlayer", outSize );
+	if ( *out == '\0' || colorlessLen == 0 ) {
+		Q_strncpyz( out, "UnnamedPlayer", outSize );
+	}
 }
 
 /*
@@ -1329,7 +1323,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	if ( !Info_Validate( userinfo ) ) {
 		strcpy( userinfo, "\\name\\badinfo" );
 		// don't keep those clients and userinfo
-		trap_DropClient(clientNum, "Invalid userinfo");
+		trap_DropClient( clientNum, "Invalid userinfo" );
 	}
 
 	// check for local client
@@ -1560,10 +1554,10 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	// if a player reconnects quickly after a disconnect, the client disconnect may never
 	// be called, thus flag can get lost in the ether
-	if (ent->inuse) {
-		G_LogPrintf("Forcing disconnect on active client: %i\n", clientNum);
+	if ( ent->inuse ) {
+		G_LogPrintf( "Forcing disconnect on active client: %i\n", clientNum );
 		// so lets just fix up anything that should happen on a disconnect
-		ClientDisconnect(clientNum);
+		ClientDisconnect( clientNum );
 	}
 
 	// they can connect
@@ -1717,15 +1711,15 @@ void ClientBegin( int clientNum ) {
 	}
 
 /*
-	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		if ( g_gametype.integer != GT_TOURNAMENT ) {
-			// Ridah
-			if ( !( ent->r.svFlags & SVF_CASTAI ) ) {
-				// done.
-				trap_SendServerCommand( -1, va( "print \"[lof]%s" S_COLOR_WHITE " [lon]entered the game\n\"", client->pers.netname ) );
-			}
-		}
-	}
+    if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
+        if ( g_gametype.integer != GT_TOURNAMENT ) {
+            // Ridah
+            if ( !( ent->r.svFlags & SVF_CASTAI ) ) {
+                // done.
+                trap_SendServerCommand( -1, va( "print \"[lof]%s" S_COLOR_WHITE " [lon]entered the game\n\"", client->pers.netname ) );
+            }
+        }
+    }
 */
 
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
@@ -1772,7 +1766,7 @@ void ClientSpawn( gentity_t *ent, qboolean revived ) {
 	index = ent - g_entities;
 	client = ent->client;
 
-	VectorClear(spawn_origin);
+	VectorClear( spawn_origin );
 
 	// find a spawn point
 	// do it before setting health back up, so farthest
@@ -1851,7 +1845,7 @@ void ClientSpawn( gentity_t *ent, qboolean revived ) {
 		persistant[i] = client->ps.persistant[i];
 	}
 
-	Com_Memset (client, 0, sizeof(*client));
+	Com_Memset( client, 0, sizeof( *client ) );
 
 	client->pers = saved;
 	client->sess = savedSess;
@@ -2015,7 +2009,7 @@ void ClientSpawn( gentity_t *ent, qboolean revived ) {
 	// run the presend to set anything else
 	// until all clients have been reconnected after map_restart
 	if ( ent->client->sess.spectatorState != SPECTATOR_FOLLOW ) {
-	ClientEndFrame( ent );
+		ClientEndFrame( ent );
 	}
 
 	// clear entity state values
@@ -2046,7 +2040,7 @@ void ClientDisconnect( int clientNum ) {
 	int i;
 
 	ent = g_entities + clientNum;
-	if (!ent->client || ent->client->pers.connected == CON_DISCONNECTED) {
+	if ( !ent->client || ent->client->pers.connected == CON_DISCONNECTED ) {
 		return;
 	}
 
@@ -2126,9 +2120,9 @@ void ClientDisconnect( int clientNum ) {
 		ClientUserinfoChanged( level.sortedClients[0] );
 	}
 
-	if( g_gametype.integer == GT_TOURNAMENT &&
-		ent->client->sess.sessionTeam == TEAM_FREE &&
-		level.intermissiontime ) {
+	if ( g_gametype.integer == GT_TOURNAMENT &&
+		 ent->client->sess.sessionTeam == TEAM_FREE &&
+		 level.intermissiontime ) {
 
 		trap_SendConsoleCommand( EXEC_APPEND, "map_restart 0\n" );
 		level.restarted = qtrue;

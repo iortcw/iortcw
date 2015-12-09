@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ void Team_InitGame( void ) {
 int OtherTeam( int team ) {
 	if ( team == TEAM_RED ) {
 		return TEAM_BLUE;
-	} else if ( team == TEAM_BLUE )  {
+	} else if ( team == TEAM_BLUE ) {
 		return TEAM_RED;
 	}
 	return team;
@@ -53,9 +53,9 @@ int OtherTeam( int team ) {
 const char *TeamName( int team ) {
 	if ( team == TEAM_RED ) {
 		return "RED";
-	} else if ( team == TEAM_BLUE )  {
+	} else if ( team == TEAM_BLUE ) {
 		return "BLUE";
-	} else if ( team == TEAM_SPECTATOR )  {
+	} else if ( team == TEAM_SPECTATOR ) {
 		return "SPECTATOR";
 	}
 	return "FREE";
@@ -64,23 +64,23 @@ const char *TeamName( int team ) {
 const char *TeamColorString( int team ) {
 	if ( team == TEAM_RED ) {
 		return S_COLOR_RED;
-	} else if ( team == TEAM_BLUE )  {
+	} else if ( team == TEAM_BLUE ) {
 		return S_COLOR_BLUE;
-	} else if ( team == TEAM_SPECTATOR )  {
+	} else if ( team == TEAM_SPECTATOR ) {
 		return S_COLOR_YELLOW;
 	}
 	return S_COLOR_WHITE;
 }
 
 // NULL for everyone
-static __attribute__ ((format (printf, 2, 3))) void QDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
+static __attribute__ ( ( format( printf, 2, 3 ) ) ) void QDECL PrintMsg( gentity_t *ent, const char *fmt, ... ) {
 	char msg[1024];
 	va_list argptr;
 	char        *p;
 
 	// NOTE: if buffer overflow, it's more likely to corrupt stack and crash than do a proper G_Error?
 	va_start( argptr,fmt );
-	if (Q_vsnprintf (msg, sizeof(msg), fmt, argptr) >= sizeof(msg)) {
+	if ( Q_vsnprintf( msg, sizeof( msg ), fmt, argptr ) >= sizeof( msg ) ) {
 		G_Error( "PrintMsg overrun" );
 	}
 	va_end( argptr );
@@ -423,7 +423,7 @@ void Team_DroppedFlagThink( gentity_t *ent ) {
 			trap_SendServerCommand( -1, "cp \"Axis have returned the objective!\" 2" );
 			G_Script_ScriptEvent( gm, "trigger", "axis_object_returned" );
 		}
-	} else if ( ent->item->giTag == PW_BLUEFLAG )     {
+	} else if ( ent->item->giTag == PW_BLUEFLAG ) {
 		Team_ReturnFlagSound( Team_ResetFlag( TEAM_BLUE ), TEAM_BLUE );
 		if ( gm ) {
 			trap_SendServerCommand( -1, "cp \"Allies have returned the objective!\" 2" );
@@ -632,7 +632,7 @@ int Pickup_Team( gentity_t *ent, gentity_t *other ) {
 	// figure out what team this flag is
 	if ( strcmp( ent->classname, "team_CTF_redflag" ) == 0 ) {
 		team = TEAM_RED;
-	} else if ( strcmp( ent->classname, "team_CTF_blueflag" ) == 0 )   {
+	} else if ( strcmp( ent->classname, "team_CTF_blueflag" ) == 0 ) {
 		team = TEAM_BLUE;
 	} else {
 		PrintMsg( other, "Don't know what team the flag is on.\n" );
@@ -648,7 +648,7 @@ int Pickup_Team( gentity_t *ent, gentity_t *other ) {
 
 	return ( ( team == cl->sess.sessionTeam ) ?
 			 Team_TouchOurFlag : Team_TouchEnemyFlag )
-						( ent, other, team );
+			   ( ent, other, team );
 }
 
 /*
@@ -749,11 +749,11 @@ int FindFarthestObjectiveIndex( vec3_t source ) {
 	}
 
 /*
-	cs_obj += j;
-	trap_GetConfigstring( cs_obj, cs, sizeof(cs) );
-	objectivename = Info_ValueForKey( cs, "spawn_targ");
+    cs_obj += j;
+    trap_GetConfigstring( cs_obj, cs, sizeof(cs) );
+    objectivename = Info_ValueForKey( cs, "spawn_targ");
 
-	G_Printf("got furthest dist (%f) at point %d (%s) of %d\n",dist,j,objectivename,i);
+    G_Printf("got furthest dist (%f) at point %d (%s) of %d\n",dist,j,objectivename,i);
 */
 
 	return j;
@@ -823,7 +823,7 @@ gentity_t *SelectRandomTeamSpawnPoint( int teamstate, team_t team, int spawnObje
 
 	if ( defendingTeam && team == TEAM_BLUE ) {         // allies
 		defender = qtrue;
-	} else if ( !defendingTeam && team == TEAM_RED )   {  // axis
+	} else if ( !defendingTeam && team == TEAM_RED ) {    // axis
 		defender = qtrue;
 	}
 
@@ -951,7 +951,7 @@ gentity_t *SelectCTFSpawnPoint( team_t team, int teamstate, vec3_t origin, vec3_
 TeamplayLocationsMessage
 
 Format:
-	clientNum location health armor weapon powerups
+    clientNum location health armor weapon powerups
 
 ==================
 */
@@ -971,9 +971,9 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 	stringlength = 0;
 
 	// send team info to spectator for team of followed client
-	if (ent->client->sess.sessionTeam == TEAM_SPECTATOR) {
+	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		if ( ent->client->sess.spectatorState != SPECTATOR_FOLLOW
-			|| ent->client->sess.spectatorClient < 0 ) {
+			 || ent->client->sess.spectatorClient < 0 ) {
 			return;
 		}
 		team = g_entities[ ent->client->sess.spectatorClient ].client->sess.sessionTeam;
@@ -981,13 +981,13 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 		team = ent->client->sess.sessionTeam;
 	}
 
-	if (team != TEAM_RED && team != TEAM_BLUE) {
+	if ( team != TEAM_RED && team != TEAM_BLUE ) {
 		return;
 	}
 
 	for ( i = 0, cnt = 0; i < level.numConnectedClients && cnt < TEAM_MAXOVERLAY; i++ ) {
 		player = g_entities + level.sortedClients[i];
-			if (player->inuse && player->client->sess.sessionTeam == team ) {
+		if ( player->inuse && player->client->sess.sessionTeam == team ) {
 
 			// DHM - Nerve :: If in LIMBO, don't show followee's health
 			if ( player->client->ps.pm_flags & PMF_LIMBO ) {
@@ -1051,7 +1051,7 @@ void CheckTeamStatus( void ) {
 
 		for ( i = 0; i < g_maxclients.integer; i++ ) {
 			ent = g_entities + i;
-			if (ent->inuse) {
+			if ( ent->inuse ) {
 				TeamplayInfoMessage( ent );
 			}
 		}
@@ -1184,7 +1184,7 @@ void objective_Register( gentity_t *self ) {
 	// set current # spawntargets
 	level.numspawntargets = numobjectives;
 	trap_GetConfigstring( CS_MULTI_INFO, cs, sizeof( cs ) );
-	Com_sprintf( numspawntargets, sizeof(numspawntargets), "%d", numobjectives );
+	Com_sprintf( numspawntargets, sizeof( numspawntargets ), "%d", numobjectives );
 	Info_SetValueForKey( cs, "numspawntargets", numspawntargets );
 	trap_SetConfigstring( CS_MULTI_INFO, cs );
 }
@@ -1436,7 +1436,7 @@ void checkpoint_spawntouch( gentity_t *self, gentity_t *other, trace_t *trace ) 
 		} else if ( self->s.frame == WCP_ANIM_NOFLAG ) {
 			self->s.frame = WCP_ANIM_NOFLAG;
 			playsound = qfalse;
-		} else if ( self->s.frame == WCP_ANIM_AMERICAN_RAISED && !( self->spawnflags & ALLIED_ONLY ) )     {
+		} else if ( self->s.frame == WCP_ANIM_AMERICAN_RAISED && !( self->spawnflags & ALLIED_ONLY ) ) {
 			self->s.frame = WCP_ANIM_AMERICAN_TO_AXIS;
 		} else if ( self->s.frame == WCP_ANIM_AMERICAN_RAISED ) {
 			self->s.frame = WCP_ANIM_AMERICAN_FALLING;
@@ -1449,7 +1449,7 @@ void checkpoint_spawntouch( gentity_t *self, gentity_t *other, trace_t *trace ) 
 		} else if ( self->s.frame == WCP_ANIM_NOFLAG ) {
 			self->s.frame = WCP_ANIM_NOFLAG;
 			playsound = qfalse;
-		} else if ( self->s.frame == WCP_ANIM_AXIS_RAISED && !( self->spawnflags & AXIS_ONLY ) )     {
+		} else if ( self->s.frame == WCP_ANIM_AXIS_RAISED && !( self->spawnflags & AXIS_ONLY ) ) {
 			self->s.frame = WCP_ANIM_AXIS_TO_AMERICAN;
 		} else if ( self->s.frame == WCP_ANIM_AXIS_RAISED ) {
 			self->s.frame = WCP_ANIM_AXIS_FALLING;

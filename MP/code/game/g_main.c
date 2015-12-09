@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -353,12 +353,12 @@ Q_EXPORT intptr_t vmMain( intptr_t command, intptr_t arg0, intptr_t arg1, intptr
 		return ConsoleCommand();
 	case BOTAI_START_FRAME:
 		return BotAIStartFrame( arg0 );
-		// Ridah, Cast AI
+	// Ridah, Cast AI
 	case AICAST_VISIBLEFROMPOS:
 		return AICast_VisibleFromPos( (float *)arg0, arg1, (float *)arg2, arg3, arg4 );
 	case AICAST_CHECKATTACKATPOS:
 		return AICast_CheckAttackAtPos( arg0, arg1, (float *)arg2, arg3, arg4 );
-		// done.
+	// done.
 
 	case GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT:
 		G_RetrieveMoveSpeedsFromClient( arg0, (char *)arg1 );
@@ -419,13 +419,13 @@ void QDECL G_Error( const char *fmt, ... ) {
 /*
 ==============
 G_CheckForCursorHints
-	non-AI's check for cursor hint contacts
+    non-AI's check for cursor hint contacts
 
-	server-side because there's info we want to show that the client
-	just doesn't know about.  (health or other info of an explosive,invisible_users,items,etc.)
+    server-side because there's info we want to show that the client
+    just doesn't know about.  (health or other info of an explosive,invisible_users,items,etc.)
 
-	traceEnt is the ent hit by the trace, checkEnt is the ent that is being
-	checked against (in case the traceent was an invisible_user or something)
+    traceEnt is the ent hit by the trace, checkEnt is the ent that is being
+    checked against (in case the traceent was an invisible_user or something)
 
 ==============
 */
@@ -616,8 +616,8 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 				if ( ( // general mg42 hint conditions
 						 !Q_stricmp( traceEnt->classname, "misc_mg42" ) ) &&
 					 ( ps->weapon != WP_SNIPERRIFLE ) && // JPW NERVE no hint if you're scoped in sniperwise
-					 // ATVI #470
-					 // mount hint conditions only, if busted MG42, no check
+				     // ATVI #470
+				     // mount hint conditions only, if busted MG42, no check
 					 (
 						 ( traceEnt->health < 255 ) ||
 						 (
@@ -655,7 +655,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 					}
 					// dhm - end
 				}
-			} else if ( checkEnt->s.eType == ET_EXPLOSIVE )      {
+			} else if ( checkEnt->s.eType == ET_EXPLOSIVE ) {
 //				if(traceEnt->s.dmgFlags) {	 // override flag		// hint icon specified in entity, this overrides type
 //					hintType = traceEnt->s.dmgFlags;
 //				} else {
@@ -705,12 +705,12 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 					hintVal     = checkEnt->health;         // also send health to client for visualization
 				}
 //				}
-			} else if ( checkEnt->s.eType == ET_ALARMBOX )      {
+			} else if ( checkEnt->s.eType == ET_ALARMBOX ) {
 				if ( checkEnt->health > 0 ) {
 //					hintDist	= CH_BREAKABLE_DIST;
 					hintType    = HINT_ACTIVATE;
 				}
-			} else if ( checkEnt->s.eType == ET_ITEM )      {
+			} else if ( checkEnt->s.eType == ET_ITEM ) {
 				gitem_t *it;
 				it = &bg_itemlist[checkEnt->item - bg_itemlist];
 
@@ -768,7 +768,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 				default:
 					break;
 				}
-			} else if ( checkEnt->s.eType == ET_MOVER )     {
+			} else if ( checkEnt->s.eType == ET_MOVER ) {
 				if ( !Q_stricmp( checkEnt->classname, "func_door_rotating" ) ) {
 					if ( checkEnt->moverState == MOVER_POS1ROTATE ) {  // stationary/closed
 						hintDist = CH_DOOR_DIST;
@@ -778,7 +778,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 							//						hintType = HINT_DOOR_ROTATING_LOCKED;
 						}
 					}
-				} else if ( !Q_stricmp( checkEnt->classname, "func_door" ) )         {
+				} else if ( !Q_stricmp( checkEnt->classname, "func_door" ) ) {
 					if ( checkEnt->moverState == MOVER_POS1 ) {    // stationary/closed
 						hintDist = CH_DOOR_DIST;
 						hintType = HINT_DOOR;
@@ -787,13 +787,13 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 							//						hintType = HINT_DOOR_LOCKED;
 						}
 					}
-				} else if ( !Q_stricmp( checkEnt->classname, "func_button" ) )         {
+				} else if ( !Q_stricmp( checkEnt->classname, "func_button" ) ) {
 					hintDist = CH_ACTIVATE_DIST;
 					hintType = HINT_BUTTON;
 				}/*
 				else if(checkEnt->s.dmgFlags == HINT_CHAIR) {
-					hintDist = CH_ACTIVATE_DIST;
-					hintType = HINT_CHAIR;
+				    hintDist = CH_ACTIVATE_DIST;
+				    hintType = HINT_CHAIR;
 				}*/
 			}
 
@@ -835,7 +835,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 		// zooming can eat a lot of potential hints
 		switch ( hintType ) {
 
-			// allow while zooming
+		// allow while zooming
 		case HINT_PLAYER:
 		case HINT_TREASURE:
 		case HINT_LADDER:
@@ -1052,7 +1052,7 @@ void G_UpdateCvars( void ) {
 /*
 ==============
 G_SpawnScriptCamera
-	create the game entity that's used for camera<->script communication and portal location for camera view
+    create the game entity that's used for camera<->script communication and portal location for camera view
 ==============
 */
 void G_SpawnScriptCamera( void ) {
@@ -1195,7 +1195,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	// range are NEVER anything but clients
 	level.num_entities = MAX_CLIENTS;
 
-	for ( i=0 ; i<MAX_CLIENTS ; i++ ) {
+	for ( i = 0 ; i < MAX_CLIENTS ; i++ ) {
 		g_entities[i].classname = "clientslot";
 	}
 
@@ -1357,8 +1357,9 @@ void AddTournamentPlayer( void ) {
 			continue;
 		}
 
-		if(!nextInLine || client->sess.spectatorNum > nextInLine->sess.spectatorNum)
+		if ( !nextInLine || client->sess.spectatorNum > nextInLine->sess.spectatorNum ) {
 			nextInLine = client;
+		}
 	}
 
 	if ( !nextInLine ) {
@@ -1379,21 +1380,20 @@ Add client to end of tournament queue
 =======================
 */
 
-void AddTournamentQueue(gclient_t *client)
-{
+void AddTournamentQueue( gclient_t *client ) {
 	int index;
 	gclient_t *curclient;
-	
-	for(index = 0; index < level.maxclients; index++)
+
+	for ( index = 0; index < level.maxclients; index++ )
 	{
 		curclient = &level.clients[index];
-		
-		if(curclient->pers.connected != CON_DISCONNECTED)
-		{
-			if(curclient == client)
+
+		if ( curclient->pers.connected != CON_DISCONNECTED ) {
+			if ( curclient == client ) {
 				curclient->sess.spectatorNum = 0;
-			else if(curclient->sess.sessionTeam == TEAM_SPECTATOR)
+			} else if ( curclient->sess.sessionTeam == TEAM_SPECTATOR ) {
 				curclient->sess.spectatorNum++;
+			}
 		}
 	}
 }
@@ -1530,7 +1530,7 @@ void CalculateRanks( void ) {
 	level.numFinalDead[0] = 0;      // NERVE - SMF
 	level.numFinalDead[1] = 0;      // NERVE - SMF
 
-	for (i = 0; i < ARRAY_LEN(level.numteamVotingClients); i++)
+	for ( i = 0; i < ARRAY_LEN( level.numteamVotingClients ); i++ )
 		level.numteamVotingClients[i] = 0;
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
@@ -1555,7 +1555,7 @@ void CalculateRanks( void ) {
 							}
 
 							level.numteamVotingClients[0]++;
-						} else if ( level.clients[i].sess.sessionTeam == TEAM_BLUE )   {
+						} else if ( level.clients[i].sess.sessionTeam == TEAM_BLUE ) {
 							// NERVE - SMF
 							if ( level.clients[i].ps.persistant[PERS_RESPAWNS_LEFT] == 0
 								 && g_entities[i].health <= 0 ) {
@@ -1581,7 +1581,7 @@ void CalculateRanks( void ) {
 	// set the rank value for all clients that are connected and not spectators
 	if ( g_gametype.integer >= GT_TEAM ) {
 		// in team games, rank is just the order of the teams, 0=red, 1=blue, 2=tied
-		for ( i = 0;  i < level.numConnectedClients; i++ ) {
+		for ( i = 0; i < level.numConnectedClients; i++ ) {
 			cl = &level.clients[ level.sortedClients[i] ];
 			if ( level.teamScores[TEAM_RED] == level.teamScores[TEAM_BLUE] ) {
 				cl->ps.persistant[PERS_RANK] = 2;
@@ -1594,7 +1594,7 @@ void CalculateRanks( void ) {
 	} else {
 		rank = -1;
 		score = 0;
-		for ( i = 0;  i < level.numPlayingClients; i++ ) {
+		for ( i = 0; i < level.numPlayingClients; i++ ) {
 			cl = &level.clients[ level.sortedClients[i] ];
 			newScore = cl->ps.persistant[PERS_SCORE];
 			if ( i == 0 || newScore != score ) {
@@ -1837,10 +1837,10 @@ void ExitLevel( void ) {
 		return;
 	}
 
-	trap_Cvar_VariableStringBuffer( "nextmap", nextmap, sizeof(nextmap) );
-	trap_Cvar_VariableStringBuffer( "d1", d1, sizeof(d1) );
+	trap_Cvar_VariableStringBuffer( "nextmap", nextmap, sizeof( nextmap ) );
+	trap_Cvar_VariableStringBuffer( "d1", d1, sizeof( d1 ) );
 
-	if( !Q_stricmp( nextmap, "map_restart 0" ) && Q_stricmp( d1, "" ) ) {
+	if ( !Q_stricmp( nextmap, "map_restart 0" ) && Q_stricmp( d1, "" ) ) {
 		trap_Cvar_Set( "nextmap", "vstr d2" );
 		trap_SendConsoleCommand( EXEC_APPEND, "vstr d1\n" );
 	} else {
@@ -2187,7 +2187,7 @@ void CheckExitRules( void ) {
 						num = 1;
 					}
 					if ( num != -1 ) {
-						Com_sprintf( txt, sizeof(txt), "%d", num );
+						Com_sprintf( txt, sizeof( txt ), "%d", num );
 						G_ScriptAction_SetWinner( NULL, txt );
 					}
 				}
@@ -2220,7 +2220,7 @@ void CheckExitRules( void ) {
 			Info_SetValueForKey( cs, "winner", "1" );
 			trap_SetConfigstring( CS_MULTI_MAPWINNER, cs );
 			LogExit( "Axis team eliminated." );
-		} else if ( level.numFinalDead[1] >= level.numteamVotingClients[1] && level.numteamVotingClients[1] > 0 )   {
+		} else if ( level.numFinalDead[1] >= level.numteamVotingClients[1] && level.numteamVotingClients[1] > 0 ) {
 			trap_GetConfigstring( CS_MULTI_MAPWINNER, cs, sizeof( cs ) );
 			Info_SetValueForKey( cs, "winner", "0" );
 			trap_SetConfigstring( CS_MULTI_MAPWINNER, cs );
@@ -2333,10 +2333,10 @@ void CheckTournement( void ) {
 		if ( level.numPlayingClients == 2 ) {
 			// fudge by -1 to account for extra delays
 			if ( g_warmup.integer > 1 ) {
-					level.warmupTime = level.time + ( g_warmup.integer - 1 ) * 1000;
-				} else {
-					level.warmupTime = 0;
-				}
+				level.warmupTime = level.time + ( g_warmup.integer - 1 ) * 1000;
+			} else {
+				level.warmupTime = 0;
+			}
 
 			trap_SetConfigstring( CS_WARMUP, va( "%i", level.warmupTime ) );
 		}
