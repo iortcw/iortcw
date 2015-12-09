@@ -67,7 +67,7 @@ ALuint S_AL_Format( int width, int channels ) {
 		} else if ( channels == 2 ) {
 			format = AL_FORMAT_STEREO8;
 		}
-	} else if ( width == 2 )      {
+	} else if ( width == 2 ) {
 		if ( channels == 1 ) {
 			format = AL_FORMAT_MONO16;
 		} else if ( channels == 2 ) {
@@ -115,8 +115,7 @@ static void S_AL_ClearError( qboolean quiet ) {
 		return;
 	}
 	if ( error != AL_NO_ERROR ) {
-		Com_DPrintf( S_COLOR_YELLOW "WARNING: unhandled AL error: %s\n",
-					 S_AL_ErrorMsg( error ) );
+		Com_DPrintf( S_COLOR_YELLOW "WARNING: unhandled AL error: %s\n", S_AL_ErrorMsg( error ) );
 	}
 }
 
@@ -261,8 +260,7 @@ static void S_AL_BufferUnload( sfxHandle_t sfx ) {
 	S_AL_ClearError( qfalse );
 	qalDeleteBuffers( 1, &knownSfx[sfx].buffer );
 	if ( qalGetError() != AL_NO_ERROR ) {
-		Com_Printf( S_COLOR_RED "ERROR: Can't delete sound buffer for %s\n",
-					knownSfx[sfx].filename );
+		Com_Printf( S_COLOR_RED "ERROR: Can't delete sound buffer for %s\n", knownSfx[sfx].filename );
 	}
 
 	knownSfx[sfx].inMemory = qfalse;
@@ -328,8 +326,7 @@ static qboolean S_AL_GenBuffers( ALsizei numBuffers, ALuint *buffers, const char
 	}
 
 	if ( error != AL_NO_ERROR ) {
-		Com_Printf( S_COLOR_RED "ERROR: Can't create a sound buffer for %s - %s\n",
-					name, S_AL_ErrorMsg( error ) );
+		Com_Printf( S_COLOR_RED "ERROR: Can't create a sound buffer for %s - %s\n", name, S_AL_ErrorMsg( error ) );
 		return qfalse;
 	}
 
@@ -421,8 +418,7 @@ static void S_AL_BufferLoad( sfxHandle_t sfx, qboolean cache ) {
 		qalDeleteBuffers( 1, &curSfx->buffer );
 		S_AL_BufferUseDefault( sfx );
 		Hunk_FreeTempMemory( data );
-		Com_Printf( S_COLOR_RED "ERROR: Can't fill sound buffer for %s - %s\n",
-					curSfx->filename, S_AL_ErrorMsg( error ) );
+		Com_Printf( S_COLOR_RED "ERROR: Can't fill sound buffer for %s - %s\n", curSfx->filename, S_AL_ErrorMsg( error ) );
 		return;
 	}
 
@@ -605,8 +601,7 @@ S_AL_SanitiseVector
 #define S_AL_SanitiseVector( v ) _S_AL_SanitiseVector( v,__LINE__ )
 static void _S_AL_SanitiseVector( vec3_t v, int line ) {
 	if ( Q_isnan( v[ 0 ] ) || Q_isnan( v[ 1 ] ) || Q_isnan( v[ 2 ] ) ) {
-		Com_DPrintf( S_COLOR_YELLOW "WARNING: vector with one or more NaN components "
-									"being passed to OpenAL at %s:%d -- zeroing\n", __FILE__, line );
+		Com_DPrintf( S_COLOR_YELLOW "WARNING: vector with one or more NaN components being passed to OpenAL at %s:%d -- zeroing\n", __FILE__, line );
 		VectorClear( v );
 	}
 }
@@ -680,9 +675,7 @@ static qboolean S_AL_HearingThroughEntity( int entityNum ) {
 		// can't ask cgame since that would involve changing the API and hence mod
 		// compatibility. I don't think there is any way around this, but I'll leave
 		// the FIXME just in case anyone has a bright idea.
-		distanceSq = DistanceSquared(
-			entityList[ entityNum ].origin,
-			lastListenerOrigin );
+		distanceSq = DistanceSquared( entityList[ entityNum ].origin, lastListenerOrigin );
 
 		if ( distanceSq > THIRD_PERSON_THRESHOLD_SQ ) {
 			return qfalse; //we're the player, but third person
@@ -775,8 +768,7 @@ void S_AL_SrcShutdown( void ) {
 S_AL_SrcSetup
 =================
 */
-static void S_AL_SrcSetup( srcHandle_t src, sfxHandle_t sfx, alSrcPriority_t priority,
-						   int entity, int channel, int flags, qboolean local ) {
+static void S_AL_SrcSetup( srcHandle_t src, sfxHandle_t sfx, alSrcPriority_t priority, int entity, int channel, int flags, qboolean local ) {
 	src_t *curSource;
 
 	// Set up src struct
@@ -838,8 +830,7 @@ static void S_AL_SaveLoopPos( src_t *dest, ALuint alSource ) {
 		// Old OpenAL implementations don't support AL_SEC_OFFSET
 
 		if ( error != AL_INVALID_ENUM ) {
-			Com_Printf( S_COLOR_YELLOW "WARNING: Could not get time offset for alSource %d: %s\n",
-						alSource, S_AL_ErrorMsg( error ) );
+			Com_Printf( S_COLOR_YELLOW "WARNING: Could not get time offset for alSource %d: %s\n", alSource, S_AL_ErrorMsg( error ) );
 		}
 
 		dest->lastTimePos = -1;
@@ -888,7 +879,7 @@ static void S_AL_NewLoopMaster( src_t *rmSource, qboolean iskilled ) {
 					curSource = &srcList[index];
 
 					if ( curSource->sfx == rmSource->sfx && curSource != rmSource &&
-						 curSource->isActive && curSource->isLooping && curSource->priority == SRCPRI_AMBIENT ) {
+						curSource->isActive && curSource->isLooping && curSource->priority == SRCPRI_AMBIENT ) {
 						if ( curSource->isPlaying ) {
 							curSfx->masterLoopSrc = index;
 							break;
@@ -914,8 +905,7 @@ static void S_AL_NewLoopMaster( src_t *rmSource, qboolean iskilled ) {
 				if ( rmSource->isPlaying ) {
 					// this was the last not stopped source, save last sample position + time
 					S_AL_SaveLoopPos( curSource, rmSource->alSource );
-				} else
-				{
+				} else {
 					// second case: all loops using this sound have stopped due to listener being of of range,
 					// and now the inactive master gets deleted. Just move over the soundpos settings to the
 					// new master.
@@ -1018,8 +1008,8 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 
 		if ( curSource->isPlaying ) {
 			if ( weakest_isplaying && curSource->priority < priority &&
-				 ( curSource->priority < weakest_pri ||
-				   ( !curSource->isLooping && ( curSource->scaleGain < weakest_gain || curSource->lastUsedTime < weakest_time ) ) ) ) {
+					( curSource->priority < weakest_pri ||
+					( !curSource->isLooping && ( curSource->scaleGain < weakest_gain || curSource->lastUsedTime < weakest_time ) ) ) ) {
 				// If it has lower priority, is fainter or older, flag it as weak
 				// the last two values are only compared if it's not a looping sound, because we want to prevent two
 				// loops (loops are added EVERY frame) fighting for a slot
@@ -1028,14 +1018,13 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 				weakest_gain = curSource->scaleGain;
 				weakest = i;
 			}
-		} else
-		{
+		} else {
 			weakest_isplaying = qfalse;
 
-			if ( weakest < 0 ||
-				 knownSfx[curSource->sfx].loopCnt > weakest_numloops ||
-				 curSource->priority < weakest_pri ||
-				 curSource->lastUsedTime < weakest_time ) {
+			if ( weakest < 0 || 
+					knownSfx[curSource->sfx].loopCnt > weakest_numloops ||
+					curSource->priority < weakest_pri ||
+					curSource->lastUsedTime < weakest_time ) {
 				// Sources currently not playing of course have lowest priority
 				// also try to always keep at least one loop master for every loop sound
 				weakest_pri = curSource->priority;
@@ -1244,8 +1233,7 @@ static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxH
 		}
 
 		VectorCopy( origin, sorigin );
-	} else
-	{
+	} else {
 		if ( S_AL_CheckInput( entnum, sfx ) ) {
 			return;
 		}
@@ -1261,8 +1249,8 @@ static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxH
 	S_AL_SanitiseVector( sorigin );
 
 	if ( ( srcActiveCnt > 5 * srcCount / 3 ) &&
-		 ( DistanceSquared( sorigin, lastListenerOrigin ) >=
-		   ( s_alMaxDistance->value + s_alGraceDistance->value ) * ( s_alMaxDistance->value + s_alGraceDistance->value ) ) ) {
+			( DistanceSquared( sorigin, lastListenerOrigin ) >=
+			( s_alMaxDistance->value + s_alGraceDistance->value ) * ( s_alMaxDistance->value + s_alGraceDistance->value ) ) ) {
 		// We're getting tight on sources and source is not within hearing distance so don't add it
 		return;
 	}
@@ -1334,8 +1322,7 @@ void S_AL_ClearLoopingSounds( qboolean killall ) {
 S_AL_SrcLoop
 =================
 */
-static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
-						  const vec3_t origin, const vec3_t velocity, int entityNum, int volume ) {
+static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx, const vec3_t origin, const vec3_t velocity, int entityNum, int volume ) {
 	int src;
 	sentity_t   *sent = &entityList[ entityNum ];
 	src_t       *curSource;
@@ -1354,8 +1341,7 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 		// Try to get a channel
 		src = S_AL_SrcAlloc( sfx, priority, entityNum, -1, 0 );
 		if ( src == -1 ) {
-			Com_DPrintf( S_COLOR_YELLOW "WARNING: Failed to allocate source "
-										"for loop sfx %d on entity %d\n", sfx, entityNum );
+			Com_DPrintf( S_COLOR_YELLOW "WARNING: Failed to allocate source for loop sfx %d on entity %d\n", sfx, entityNum );
 			return;
 		}
 
@@ -1365,8 +1351,7 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 
 		curSource->lastTimePos = -1.0;
 		curSource->lastSampleTime = Sys_Milliseconds();
-	} else
-	{
+	} else {
 		src = sent->srcIndex;
 		curSource = &srcList[src];
 	}
@@ -1401,8 +1386,7 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 		qalSourcefv( curSource->alSource, AL_POSITION, sorigin );
 		qalSourcefv( curSource->alSource, AL_VELOCITY, vec3_origin );
 		S_AL_Gain( curSource->alSource, volume / 255.0f );
-	} else
-	{
+	} else {
 		curSource->local = qfalse;
 
 		if ( origin ) {
@@ -1532,7 +1516,7 @@ void S_AL_SrcUpdate( void ) {
 						S_AL_NewLoopMaster( curSource, qfalse );
 						qalSourceStop( curSource->alSource );
 						curSource->isPlaying = qfalse;
-					} else if ( !curSfx->loopActiveCnt && curSfx->masterLoopSrc < 0 )      {
+					} else if ( !curSfx->loopActiveCnt && curSfx->masterLoopSrc < 0 ) {
 						curSfx->masterLoopSrc = i;
 					}
 
@@ -1556,8 +1540,7 @@ void S_AL_SrcUpdate( void ) {
 							qalGetSourcei( srcList[curSfx->masterLoopSrc].alSource, AL_SAMPLE_OFFSET, &offset );
 							if ( ( error = qalGetError() ) != AL_NO_ERROR ) {
 								if ( error != AL_INVALID_ENUM ) {
-									Com_Printf( S_COLOR_YELLOW "WARNING: Cannot get sample offset from source %d: "
-															   "%s\n", i, S_AL_ErrorMsg( error ) );
+									Com_Printf( S_COLOR_YELLOW "WARNING: Cannot get sample offset from source %d: %s\n", i, S_AL_ErrorMsg( error ) );
 								}
 							} else {
 								qalSourcei( curSource->alSource, AL_SAMPLE_OFFSET, offset );
@@ -1598,8 +1581,7 @@ void S_AL_SrcUpdate( void ) {
 				if ( curSource->local ) {
 					qalSourcei( curSource->alSource, AL_SOURCE_RELATIVE, AL_TRUE );
 					qalSourcef( curSource->alSource, AL_ROLLOFF_FACTOR, 0.0f );
-				} else
-				{
+				} else {
 					qalSourcei( curSource->alSource, AL_SOURCE_RELATIVE, AL_FALSE );
 					qalSourcef( curSource->alSource, AL_ROLLOFF_FACTOR, s_alRolloff->value );
 				}
@@ -1698,8 +1680,7 @@ static void S_AL_AllocateStreamChannel( int stream, int entityNum ) {
 		alsrc = S_AL_SrcGet( cursrc );
 		srcList[cursrc].isTracking = qtrue;
 		srcList[cursrc].isStream = qtrue;
-	} else
-	{
+	} else {
 		// Unspatialized stream source
 
 		// Allocate a streamSource at high priority
@@ -1718,13 +1699,13 @@ static void S_AL_AllocateStreamChannel( int stream, int entityNum ) {
 		srcList[cursrc].scaleGain = 0.0f;
 
 		// Set some streamSource parameters
-		qalSourcei( alsrc, AL_BUFFER,          0            );
-		qalSourcei( alsrc, AL_LOOPING,         AL_FALSE     );
-		qalSource3f( alsrc, AL_POSITION,        0.0, 0.0, 0.0 );
-		qalSource3f( alsrc, AL_VELOCITY,        0.0, 0.0, 0.0 );
-		qalSource3f( alsrc, AL_DIRECTION,       0.0, 0.0, 0.0 );
-		qalSourcef( alsrc, AL_ROLLOFF_FACTOR,  0.0          );
-		qalSourcei( alsrc, AL_SOURCE_RELATIVE, AL_TRUE      );
+		qalSourcei( alsrc, AL_BUFFER, 0 );
+		qalSourcei( alsrc, AL_LOOPING, AL_FALSE );
+		qalSource3f( alsrc, AL_POSITION, 0.0, 0.0, 0.0 );
+		qalSource3f( alsrc, AL_VELOCITY, 0.0, 0.0, 0.0 );
+		qalSource3f( alsrc, AL_DIRECTION, 0.0, 0.0, 0.0 );
+		qalSourcef( alsrc, AL_ROLLOFF_FACTOR, 0.0 );
+		qalSourcei( alsrc, AL_SOURCE_RELATIVE, AL_TRUE );
 	}
 
 	streamSourceHandles[stream] = cursrc;
@@ -1943,11 +1924,11 @@ static void S_AL_MusicSourceGet( void ) {
 	srcList[musicSourceHandle].scaleGain = 0.0f;
 
 	// Set some musicSource parameters
-	qalSource3f( musicSource, AL_POSITION,        0.0, 0.0, 0.0 );
-	qalSource3f( musicSource, AL_VELOCITY,        0.0, 0.0, 0.0 );
-	qalSource3f( musicSource, AL_DIRECTION,       0.0, 0.0, 0.0 );
-	qalSourcef( musicSource, AL_ROLLOFF_FACTOR,  0.0          );
-	qalSourcei( musicSource, AL_SOURCE_RELATIVE, AL_TRUE      );
+	qalSource3f( musicSource, AL_POSITION, 0.0, 0.0, 0.0 );
+	qalSource3f( musicSource, AL_VELOCITY, 0.0, 0.0, 0.0 );
+	qalSource3f( musicSource, AL_DIRECTION, 0.0, 0.0, 0.0 );
+	qalSourcef( musicSource, AL_ROLLOFF_FACTOR, 0.0 );
+	qalSourcei( musicSource, AL_SOURCE_RELATIVE, AL_TRUE );
 }
 
 /*
@@ -2104,7 +2085,7 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop ) {
 	if ( !loop || !*loop ) {
 		loop = intro;
 		issame = qtrue;
-	} else if ( intro && *intro && !strcmp( intro, loop ) )        {
+	} else if ( intro && *intro && !strcmp( intro, loop ) ) {
 		issame = qtrue;
 	} else {
 		issame = qfalse;
@@ -2565,8 +2546,7 @@ qboolean S_AL_Init( soundInterface_t *si ) {
 #ifdef _WIN32
 			defaultdevice = qalcGetString( NULL, ALC_DEFAULT_ALL_DEVICES_SPECIFIER );
 #endif
-		} else
-		{
+		} else {
 			// We don't have ALC_ENUMERATE_ALL_EXT but normal enumeration.
 			devicelist = qalcGetString( NULL, ALC_DEVICE_SPECIFIER );
 #ifdef _WIN32
@@ -2661,8 +2641,7 @@ qboolean S_AL_Init( soundInterface_t *si ) {
 #endif
 		{
 			Com_Printf( "No ALC_EXT_capture support, can't record audio.\n" );
-		} else
-		{
+		} else {
 			char inputdevicenames[16384] = "";
 			const char *inputdevicelist;
 			const char *defaultinputdevice;
@@ -2692,8 +2671,7 @@ qboolean S_AL_Init( soundInterface_t *si ) {
 				Com_Printf( "Failed to open OpenAL Input device '%s', trying default.\n", inputdevice );
 				alCaptureDevice = qalcCaptureOpenDevice( NULL, 48000, AL_FORMAT_MONO16, VOIP_MAX_PACKET_SAMPLES * 4 );
 			}
-			Com_Printf( "OpenAL capture device %s.\n",
-						( alCaptureDevice == NULL ) ? "failed to open" : "opened" );
+			Com_Printf( "OpenAL capture device %s.\n", ( alCaptureDevice == NULL ) ? "failed to open" : "opened" );
 		}
 	}
 #endif

@@ -36,10 +36,10 @@ If you have questions concerning this license or the applicable additional terms
 ==============
 CL_Netchan_Encode
 
-    // first 12 bytes of the data are always:
-    long serverId;
-    long messageAcknowledge;
-    long reliableAcknowledge;
+// first 12 bytes of the data are always:
+long serverId;
+long messageAcknowledge;
+long reliableAcknowledge;
 
 ==============
 */
@@ -93,8 +93,8 @@ static void CL_Netchan_Encode( msg_t *msg ) {
 ==============
 CL_Netchan_Decode
 
-    // first four bytes of the data are always:
-    long reliableAcknowledge;
+first four bytes of the data are always:
+long reliableAcknowledge;
 
 ==============
 */

@@ -203,8 +203,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor,
-						qboolean noColorEscape ) {
+void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor, qboolean noColorEscape ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -273,8 +272,7 @@ Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
 ==================
 */
-void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor,
-							 qboolean noColorEscape ) {
+void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor, qboolean noColorEscape ) {
 	vec4_t color;
 	const char  *s;
 	int xx;
@@ -365,17 +363,16 @@ void SCR_DrawVoipMeter( void ) {
 
 	if ( !cl_voipShowMeter->integer ) {
 		return;  // player doesn't want to show meter at all.
-	} else if ( !cl_voipSend->integer )                                                                  {
+	} else if ( !cl_voipSend->integer ) {
 		return;  // not recording at the moment.
-	} else if ( clc.state != CA_ACTIVE )                                                     {
+	} else if ( clc.state != CA_ACTIVE ) {
 		return;  // not connected to a server.
-	} else if ( !clc.voipEnabled )                                                   {
+	} else if ( !clc.voipEnabled ) {
 		return;  // server doesn't support VoIP.
-	} else if ( clc.demoplaying )                                                     {
+	} else if ( clc.demoplaying ) {
 		return;  // playing back a demo.
-	} else if ( !cl_voip->integer )                                             {
+	} else if ( !cl_voip->integer ) {
 		return;  // client has VoIP support disabled.
-
 	}
 	limit = (int) ( clc.voipPower * 10.0f );
 	if ( limit > 10 ) {

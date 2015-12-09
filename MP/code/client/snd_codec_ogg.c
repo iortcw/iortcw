@@ -341,9 +341,9 @@ int S_OGG_CodecReadStream( snd_stream_t *stream, int bytes, void *buffer ) {
 	// big endian machines want their samples in big endian order
 	int IsBigEndian = 0;
 
-#   ifdef Q3_BIG_ENDIAN
+#ifdef Q3_BIG_ENDIAN
 	IsBigEndian = 1;
-#   endif // Q3_BIG_ENDIAN
+#endif // Q3_BIG_ENDIAN
 
 	// check if input is valid
 	if ( !( stream && buffer ) ) {

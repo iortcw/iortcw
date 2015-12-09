@@ -190,8 +190,7 @@ void S_Base_SoundList( void ) {
 	for ( sfx = s_knownSfx, i = 0 ; i < s_numSfx ; i++, sfx++ ) {
 		size = sfx->soundLength;
 		total += size;
-		Com_Printf( "%6i[%s] : %s[%s]\n", size, type[sfx->soundCompressionMethod],
-					sfx->soundName, mem[sfx->inMemory] );
+		Com_Printf( "%6i[%s] : %s[%s]\n", size, type[sfx->soundCompressionMethod], sfx->soundName, mem[sfx->inMemory] );
 	}
 	Com_Printf( "Total resident: %i\n", total );
 	S_DisplayFreeMemory();
@@ -486,8 +485,7 @@ void S_SpatializeOrigin( vec3_t origin, int master_vol, int *left_vol, int *righ
 	if ( dma.channels == 1 ) { // no attenuation = no spatialization
 		rscale = 1.0;
 		lscale = 1.0;
-	} else
-	{
+	} else {
 		rscale = 0.5 * ( 1.0 + dot );
 		lscale = 0.5 * ( 1.0 - dot );
 		if ( rscale < 0 ) {
@@ -540,9 +538,7 @@ static qboolean S_Base_HearingThroughEntity( int entityNum, vec3_t origin ) {
 		// can't ask cgame since that would involve changing the API and hence mod
 		// compatibility. I don't think there is any way around this, but I'll leave
 		// the FIXME just in case anyone has a bright idea.
-		distanceSq = DistanceSquared(
-			sorigin,
-			listener_origin );
+		distanceSq = DistanceSquared( sorigin, listener_origin );
 
 		if ( distanceSq > THIRD_PERSON_THRESHOLD_SQ ) {
 			return qfalse; //we're the player, but third person
@@ -1087,11 +1083,11 @@ void S_AddLoopSounds( void ) {
 			continue;   // already merged into an earlier sound
 		}
 
-		//if (loop->kill) {
-		//	S_SpatializeOrigin( loop->origin, 127, &left_total, &right_total, loop->range );			// 3d
-		//} else {
-		S_SpatializeOrigin( loop->origin, 90,  &left_total, &right_total, loop->range );                // sphere
-		//}
+//		if (loop->kill) {
+//			S_SpatializeOrigin( loop->origin, 127, &left_total, &right_total, loop->range );	// 3d
+//		} else {
+			S_SpatializeOrigin( loop->origin, 90,  &left_total, &right_total, loop->range );	// sphere
+//		}
 
 		// adjust according to volume
 		left_total = (int)( (float)loop->vol * (float)left_total / 256.0 );
@@ -1106,11 +1102,11 @@ void S_AddLoopSounds( void ) {
 			}
 			loop2->mergeFrame = loopFrame;
 
-			//if (loop2->kill) {
-			//	S_SpatializeOrigin( loop2->origin, 127, &left, &right, loop2->range );				// 3d
-			//} else {
-			S_SpatializeOrigin( loop2->origin, 90,  &left, &right, loop2->range );                  // sphere
-			//}
+//			if (loop2->kill) {
+//				S_SpatializeOrigin( loop2->origin, 127, &left, &right, loop2->range );		// 3d
+//			} else {
+				S_SpatializeOrigin( loop2->origin, 90,  &left, &right, loop2->range );		// sphere
+//			}
 
 			// adjust according to volume
 			left = (int)( (float)loop2->vol * (float)left / 256.0 );
@@ -1234,8 +1230,7 @@ void S_Base_RawSamples( int stream, int samples, int rate, int width, int s_chan
 				rawsamples[dst].left = ( (short *)data )[i * 2] * intVolumeLeft;
 				rawsamples[dst].right = ( (short *)data )[i * 2 + 1] * intVolumeRight;
 			}
-		} else
-		{
+		} else {
 			for ( i = 0 ; ; i++ )
 			{
 				src = i * scale;
@@ -1248,7 +1243,7 @@ void S_Base_RawSamples( int stream, int samples, int rate, int width, int s_chan
 				rawsamples[dst].right = ( (short *)data )[src * 2 + 1] * intVolumeRight;
 			}
 		}
-	} else if ( s_channels == 1 && width == 2 )     {
+	} else if ( s_channels == 1 && width == 2 ) {
 		for ( i = 0 ; ; i++ )
 		{
 			src = i * scale;
@@ -1260,7 +1255,7 @@ void S_Base_RawSamples( int stream, int samples, int rate, int width, int s_chan
 			rawsamples[dst].left = ( (short *)data )[src] * intVolumeLeft;
 			rawsamples[dst].right = ( (short *)data )[src] * intVolumeRight;
 		}
-	} else if ( s_channels == 2 && width == 1 )     {
+	} else if ( s_channels == 2 && width == 1 ) {
 		intVolumeLeft *= 256;
 		intVolumeRight *= 256;
 
@@ -1275,7 +1270,7 @@ void S_Base_RawSamples( int stream, int samples, int rate, int width, int s_chan
 			rawsamples[dst].left = ( (char *)data )[src * 2] * intVolumeLeft;
 			rawsamples[dst].right = ( (char *)data )[src * 2 + 1] * intVolumeRight;
 		}
-	} else if ( s_channels == 1 && width == 1 )     {
+	} else if ( s_channels == 1 && width == 1 ) {
 		intVolumeLeft *= 256;
 		intVolumeRight *= 256;
 
@@ -1462,7 +1457,7 @@ void S_GetSoundtime( void ) {
 	// calls to S_Update.  Oh well.
 	samplepos = SNDDMA_GetDMAPos();
 	if ( samplepos < oldsamplepos ) {
-		buffers++;                  // buffer wrapped
+		buffers++; // buffer wrapped
 
 		if ( s_paintedtime > 0x40000000 ) { // time to chop things off to avoid 32 bit limits
 			buffers = 0;
@@ -1643,7 +1638,7 @@ S_UpdateBackgroundTrack
 void S_UpdateBackgroundTrack( void ) {
 	int bufferSamples;
 	int fileSamples;
-	byte raw[30000];        // just enough to fit in a mac stack frame
+	byte raw[30000]; // just enough to fit in a mac stack frame
 	int fileBytes;
 	int r;
 
@@ -1686,10 +1681,8 @@ void S_UpdateBackgroundTrack( void ) {
 
 		if ( r > 0 ) {
 			// add to raw buffer
-			S_Base_RawSamples( 0, fileSamples, s_backgroundStream->info.rate,
-							   s_backgroundStream->info.width, s_backgroundStream->info.channels, raw, s_musicVolume->value, -1 );
-		} else
-		{
+			S_Base_RawSamples( 0, fileSamples, s_backgroundStream->info.rate, s_backgroundStream->info.width, s_backgroundStream->info.channels, raw, s_musicVolume->value, -1 );
+		} else {
 			// loop
 			if ( s_backgroundLoop[0] ) {
 				S_CodecCloseStream( s_backgroundStream );
@@ -1698,13 +1691,11 @@ void S_UpdateBackgroundTrack( void ) {
 				if ( !s_backgroundStream ) {
 					return;
 				}
-			} else
-			{
+			} else {
 				S_Base_StopBackgroundTrack();
 				return;
 			}
 		}
-
 	}
 }
 

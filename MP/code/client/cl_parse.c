@@ -543,8 +543,7 @@ void CL_SystemInfoChanged( void ) {
 
 		if ( ( cvar_flags = Cvar_Flags( key ) ) == CVAR_NONEXISTENT ) {
 			Cvar_Get( key, value, CVAR_SERVER_CREATED | CVAR_ROM );
-		} else
-		{
+		} else {
 			// If this cvar may not be modified by a server discard the value.
 			if ( !( cvar_flags & ( CVAR_SYSTEMINFO | CVAR_SERVER_CREATED | CVAR_USER_CREATED ) ) ) {
 #ifndef STANDALONE
@@ -575,14 +574,11 @@ CL_ParseServerInfo
 static void CL_ParseServerInfo( void ) {
 	const char *serverInfo;
 
-	serverInfo = cl.gameState.stringData
-				 + cl.gameState.stringOffsets[ CS_SERVERINFO ];
+	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
 
-	clc.sv_allowDownload = atoi( Info_ValueForKey( serverInfo,
-												   "sv_allowDownload" ) );
-	Q_strncpyz( clc.sv_dlURL,
-				Info_ValueForKey( serverInfo, "sv_dlURL" ),
-				sizeof( clc.sv_dlURL ) );
+	clc.sv_allowDownload = atoi( Info_ValueForKey( serverInfo, "sv_allowDownload" ) );
+
+	Q_strncpyz( clc.sv_dlURL, Info_ValueForKey( serverInfo, "sv_dlURL" ), sizeof( clc.sv_dlURL ) );
 }
 
 /*
@@ -787,15 +783,14 @@ static
 qboolean CL_ShouldIgnoreVoipSender( int sender ) {
 	if ( !cl_voip->integer ) {
 		return qtrue;  // VoIP is disabled.
-	} else if ( ( sender == clc.clientNum ) && ( !clc.demoplaying ) )                                                    {
+	} else if ( ( sender == clc.clientNum ) && ( !clc.demoplaying ) ) {
 		return qtrue;  // ignore own voice (unless playing back a demo).
-	} else if ( clc.voipMuteAll )                                                                             {
+	} else if ( clc.voipMuteAll ) {
 		return qtrue;  // all channels are muted with extreme prejudice.
-	} else if ( clc.voipIgnore[sender] )                                                                             {
+	} else if ( clc.voipIgnore[sender] ) {
 		return qtrue;  // just ignoring this guy.
-	} else if ( clc.voipGain[sender] == 0.0f )                                                      {
+	} else if ( clc.voipGain[sender] == 0.0f ) {
 		return qtrue;  // too quiet to play.
-
 	}
 	return qfalse;
 }
@@ -810,13 +805,11 @@ Play raw data
 
 static void CL_PlayVoip( int sender, int samplecnt, const byte *data, int flags ) {
 	if ( flags & VOIP_DIRECT ) {
-		S_RawSamples( sender + 1, samplecnt, 48000, 2, 1,
-					  data, clc.voipGain[sender], -1 );
+		S_RawSamples( sender + 1, samplecnt, 48000, 2, 1, data, clc.voipGain[sender], -1 );
 	}
 
 	if ( flags & VOIP_SPATIAL ) {
-		S_RawSamples( sender + MAX_CLIENTS + 1, samplecnt, 48000, 2, 1,
-					  data, 1.0f, sender );
+		S_RawSamples( sender + MAX_CLIENTS + 1, samplecnt, 48000, 2, 1, data, 1.0f, sender );
 	}
 }
 
@@ -847,15 +840,14 @@ void CL_ParseVoip( msg_t *msg, qboolean ignoreData ) {
 
 	if ( sender < 0 ) {
 		return;   // short/invalid packet, bail.
-	} else if ( generation < 0 )                                                     {
+	} else if ( generation < 0 ) {
 		return;   // short/invalid packet, bail.
-	} else if ( sequence < 0 )                                                     {
+	} else if ( sequence < 0 ) {
 		return;   // short/invalid packet, bail.
-	} else if ( frames < 0 )                                                     {
+	} else if ( frames < 0 ) {
 		return;   // short/invalid packet, bail.
-	} else if ( packetsize < 0 )                                                     {
+	} else if ( packetsize < 0 ) {
 		return;   // short/invalid packet, bail.
-
 	}
 	if ( packetsize > sizeof( encoded ) ) {  // overlarge packet?
 		int bytesleft = packetsize;
@@ -896,15 +888,13 @@ void CL_ParseVoip( msg_t *msg, qboolean ignoreData ) {
 		seqdiff = 0;
 	} else if ( seqdiff < 0 ) {   // we're ahead of the sequence?!
 		// This shouldn't happen unless the packet is corrupted or something.
-		Com_DPrintf( "VoIP: misordered sequence! %d < %d!\n",
-					 sequence, clc.voipIncomingSequence[sender] );
+		Com_DPrintf( "VoIP: misordered sequence! %d < %d!\n",  sequence, clc.voipIncomingSequence[sender] );
 		// reset the decoder just in case.
 		opus_decoder_ctl( clc.opusDecoder[sender], OPUS_RESET_STATE );
 		seqdiff = 0;
 	} else if ( seqdiff * VOIP_MAX_PACKET_SAMPLES * 2 >= sizeof( decoded ) ) { // dropped more than we can handle?
 		// just start over.
-		Com_DPrintf( "VoIP: Dropped way too many (%d) frames from client #%d\n",
-					 seqdiff, sender );
+		Com_DPrintf( "VoIP: Dropped way too many (%d) frames from client #%d\n", seqdiff, sender );
 		opus_decoder_ctl( clc.opusDecoder[sender], OPUS_RESET_STATE );
 		seqdiff = 0;
 	}
@@ -950,8 +940,7 @@ void CL_ParseVoip( msg_t *msg, qboolean ignoreData ) {
 
 	written += numSamples;
 
-	Com_DPrintf( "VoIP: playback %d bytes, %d samples, %d frames\n",
-				 written * 2, written, frames );
+	Com_DPrintf( "VoIP: playback %d bytes, %d samples, %d frames\n", written * 2, written, frames );
 
 	if ( written > 0 ) {
 		CL_PlayVoip( sender, written, (const byte *) decoded, flags );

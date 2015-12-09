@@ -42,8 +42,8 @@ memory management
 ===============================================================================
 */
 
-static sndBuffer   *buffer = NULL;
-static sndBuffer   *freelist = NULL;
+static sndBuffer *buffer = NULL;
+static sndBuffer *freelist = NULL;
 static int inUse = 0;
 static int totalInUse = 0;
 

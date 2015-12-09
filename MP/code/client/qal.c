@@ -124,8 +124,7 @@ static void *GPA( char *str ) {
 		Com_Printf( " Can't load symbol %s\n", str );
 		alinit_fail = qtrue;
 		return NULL;
-	} else
-	{
+	} else {
 		Com_DPrintf( " Loaded symbol %s (%p)\n", str, rv );
 		return rv;
 	}

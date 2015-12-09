@@ -1366,8 +1366,7 @@ void CL_SetCGameTime( void ) {
 				frameDuration = UCHAR_MAX;
 			}
 
-			clc.timeDemoDurations[ ( clc.timeDemoFrames - 1 ) %
-								   MAX_TIMEDEMO_DURATIONS ] = frameDuration;
+			clc.timeDemoDurations[ ( clc.timeDemoFrames - 1 ) % MAX_TIMEDEMO_DURATIONS ] = frameDuration;
 		}
 
 		clc.timeDemoFrames++;

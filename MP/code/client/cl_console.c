@@ -213,10 +213,10 @@ Save the console contents out to a file
 */
 void Con_Dump_f( void ) {
 	int l, x, i;
-	short   *line;
+	short *line;
 	fileHandle_t f;
 	int bufferlen;
-	char    *buffer;
+	char *buffer;
 	char filename[MAX_QPATH];
 
 	if ( Cmd_Argc() != 2 ) {
@@ -580,7 +580,7 @@ void Con_DrawInput( void ) {
 	SCR_DrawSmallChar( con.xadjust + 1 * SMALLCHAR_WIDTH, y, ']' );
 
 	Field_Draw( &g_consoleField, con.xadjust + 2 * SMALLCHAR_WIDTH, y,
-				SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue );
+			SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue );
 }
 
 
@@ -663,7 +663,7 @@ void Con_DrawNotify( void ) {
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-					   SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
+				SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
 
 	}
 
@@ -736,7 +736,7 @@ void Con_DrawSolidConsole( float frac ) {
 	for ( x = 0 ; x < i ; x++ ) {
 
 		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH,
-						   lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
+					lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
 	}
 
 

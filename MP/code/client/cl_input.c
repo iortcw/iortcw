@@ -191,31 +191,31 @@ float CL_KeyState( kbutton_t *key ) {
 
 
 
-void IN_UpDown( void ) {IN_KeyDown( &kb[KB_UP] ); }
-void IN_UpUp( void ) {IN_KeyUp( &kb[KB_UP] ); }
-void IN_DownDown( void ) {IN_KeyDown( &kb[KB_DOWN] ); }
-void IN_DownUp( void ) {IN_KeyUp( &kb[KB_DOWN] ); }
-void IN_LeftDown( void ) {IN_KeyDown( &kb[KB_LEFT] ); }
-void IN_LeftUp( void ) {IN_KeyUp( &kb[KB_LEFT] ); }
-void IN_RightDown( void ) {IN_KeyDown( &kb[KB_RIGHT] ); }
-void IN_RightUp( void ) {IN_KeyUp( &kb[KB_RIGHT] ); }
-void IN_ForwardDown( void ) {IN_KeyDown( &kb[KB_FORWARD] ); }
-void IN_ForwardUp( void ) {IN_KeyUp( &kb[KB_FORWARD] ); }
-void IN_BackDown( void ) {IN_KeyDown( &kb[KB_BACK] ); }
-void IN_BackUp( void ) {IN_KeyUp( &kb[KB_BACK] ); }
-void IN_LookupDown( void ) {IN_KeyDown( &kb[KB_LOOKUP] ); }
-void IN_LookupUp( void ) {IN_KeyUp( &kb[KB_LOOKUP] ); }
-void IN_LookdownDown( void ) {IN_KeyDown( &kb[KB_LOOKDOWN] ); }
-void IN_LookdownUp( void ) {IN_KeyUp( &kb[KB_LOOKDOWN] ); }
-void IN_MoveleftDown( void ) {IN_KeyDown( &kb[KB_MOVELEFT] ); }
-void IN_MoveleftUp( void ) {IN_KeyUp( &kb[KB_MOVELEFT] ); }
-void IN_MoverightDown( void ) {IN_KeyDown( &kb[KB_MOVERIGHT] ); }
-void IN_MoverightUp( void ) {IN_KeyUp( &kb[KB_MOVERIGHT] ); }
+void IN_UpDown( void ) { IN_KeyDown( &kb[KB_UP] ); }
+void IN_UpUp( void ) { IN_KeyUp( &kb[KB_UP] ); }
+void IN_DownDown( void ) { IN_KeyDown( &kb[KB_DOWN] ); }
+void IN_DownUp( void ) { IN_KeyUp( &kb[KB_DOWN] ); }
+void IN_LeftDown( void ) { IN_KeyDown( &kb[KB_LEFT] ); }
+void IN_LeftUp( void ) { IN_KeyUp( &kb[KB_LEFT] ); }
+void IN_RightDown( void ) { IN_KeyDown( &kb[KB_RIGHT] ); }
+void IN_RightUp( void ) { IN_KeyUp( &kb[KB_RIGHT] ); }
+void IN_ForwardDown( void ) { IN_KeyDown( &kb[KB_FORWARD] ); }
+void IN_ForwardUp( void ) { IN_KeyUp( &kb[KB_FORWARD] ); }
+void IN_BackDown( void ) { IN_KeyDown( &kb[KB_BACK] ); }
+void IN_BackUp( void ) { IN_KeyUp( &kb[KB_BACK] ); }
+void IN_LookupDown( void ) { IN_KeyDown( &kb[KB_LOOKUP] ); }
+void IN_LookupUp( void ) { IN_KeyUp( &kb[KB_LOOKUP] ); }
+void IN_LookdownDown( void ) { IN_KeyDown( &kb[KB_LOOKDOWN] ); }
+void IN_LookdownUp( void ) { IN_KeyUp( &kb[KB_LOOKDOWN] ); }
+void IN_MoveleftDown( void ) { IN_KeyDown( &kb[KB_MOVELEFT] ); }
+void IN_MoveleftUp( void ) { IN_KeyUp( &kb[KB_MOVELEFT] ); }
+void IN_MoverightDown( void ) { IN_KeyDown( &kb[KB_MOVERIGHT] ); }
+void IN_MoverightUp( void ) { IN_KeyUp( &kb[KB_MOVERIGHT] ); }
 
-void IN_SpeedDown( void ) {IN_KeyDown( &kb[KB_SPEED] ); }
-void IN_SpeedUp( void ) {IN_KeyUp( &kb[KB_SPEED] ); }
-void IN_StrafeDown( void ) {IN_KeyDown( &kb[KB_STRAFE] ); }
-void IN_StrafeUp( void ) {IN_KeyUp( &kb[KB_STRAFE] ); }
+void IN_SpeedDown( void ) { IN_KeyDown( &kb[KB_SPEED] ); }
+void IN_SpeedUp( void ) { IN_KeyUp( &kb[KB_SPEED] ); }
+void IN_StrafeDown( void ) { IN_KeyDown( &kb[KB_STRAFE] ); }
+void IN_StrafeUp( void ) { IN_KeyUp( &kb[KB_STRAFE] ); }
 
 #ifdef USE_VOIP
 void IN_VoipRecordDown( void ) {
@@ -229,58 +229,58 @@ void IN_VoipRecordUp( void ) {
 }
 #endif
 
-void IN_Button0Down( void ) {IN_KeyDown( &kb[KB_BUTTONS0] ); }
-void IN_Button0Up( void ) {IN_KeyUp( &kb[KB_BUTTONS0] ); }
-void IN_Button1Down( void ) {IN_KeyDown( &kb[KB_BUTTONS1] ); }
-void IN_Button1Up( void ) {IN_KeyUp( &kb[KB_BUTTONS1] ); }
-void IN_UseItemDown( void ) {IN_KeyDown( &kb[KB_BUTTONS2] ); }
-void IN_UseItemUp( void ) {IN_KeyUp( &kb[KB_BUTTONS2] ); }
-void IN_Button3Down( void ) {IN_KeyDown( &kb[KB_BUTTONS3] ); }
-void IN_Button3Up( void ) {IN_KeyUp( &kb[KB_BUTTONS3] ); }
-void IN_Button4Down( void ) {IN_KeyDown( &kb[KB_BUTTONS4] ); }
-void IN_Button4Up( void ) {IN_KeyUp( &kb[KB_BUTTONS4] ); }
-// void IN_Button5Down(void) {IN_KeyDown(&kb[KB_BUTTONS5]);}
-// void IN_Button5Up(void) {IN_KeyUp(&kb[KB_BUTTONS5]);}
+void IN_Button0Down( void ) { IN_KeyDown( &kb[KB_BUTTONS0] ); }
+void IN_Button0Up( void ) { IN_KeyUp( &kb[KB_BUTTONS0] ); }
+void IN_Button1Down( void ) { IN_KeyDown( &kb[KB_BUTTONS1] ); }
+void IN_Button1Up( void ) { IN_KeyUp( &kb[KB_BUTTONS1] ); }
+void IN_UseItemDown( void ) { IN_KeyDown( &kb[KB_BUTTONS2] ); }
+void IN_UseItemUp( void ) { IN_KeyUp( &kb[KB_BUTTONS2] ); }
+void IN_Button3Down( void ) { IN_KeyDown( &kb[KB_BUTTONS3] ); }
+void IN_Button3Up( void ) { IN_KeyUp( &kb[KB_BUTTONS3] ); }
+void IN_Button4Down( void ) { IN_KeyDown( &kb[KB_BUTTONS4] ); }
+void IN_Button4Up( void ) { IN_KeyUp( &kb[KB_BUTTONS4] ); }
+// void IN_Button5Down(void) { IN_KeyDown(&kb[KB_BUTTONS5]);}
+// void IN_Button5Up(void) { IN_KeyUp(&kb[KB_BUTTONS5]);}
 
-// void IN_Button6Down(void) {IN_KeyDown(&kb[KB_BUTTONS6]);}
-// void IN_Button6Up(void) {IN_KeyUp(&kb[KB_BUTTONS6]);}
+// void IN_Button6Down(void) { IN_KeyDown(&kb[KB_BUTTONS6]);}
+// void IN_Button6Up(void) { IN_KeyUp(&kb[KB_BUTTONS6]);}
 
 // Rafael activate
-void IN_ActivateDown( void ) {IN_KeyDown( &kb[KB_BUTTONS6] ); }
-void IN_ActivateUp( void ) {IN_KeyUp( &kb[KB_BUTTONS6] ); }
+void IN_ActivateDown( void ) { IN_KeyDown( &kb[KB_BUTTONS6] ); }
+void IN_ActivateUp( void ) { IN_KeyUp( &kb[KB_BUTTONS6] ); }
 // done.
 
 // Rafael Kick
-void IN_KickDown( void ) {IN_KeyDown( &kb[KB_KICK] ); }
-void IN_KickUp( void ) {IN_KeyUp( &kb[KB_KICK] ); }
+void IN_KickDown( void ) { IN_KeyDown( &kb[KB_KICK] ); }
+void IN_KickUp( void ) { IN_KeyUp( &kb[KB_KICK] ); }
 // done.
 
-void IN_SprintDown( void ) {IN_KeyDown( &kb[KB_BUTTONS5] ); }
-void IN_SprintUp( void ) {IN_KeyUp( &kb[KB_BUTTONS5] ); }
+void IN_SprintDown( void ) { IN_KeyDown( &kb[KB_BUTTONS5] ); }
+void IN_SprintUp( void ) { IN_KeyUp( &kb[KB_BUTTONS5] ); }
 
 
 // wbuttons (wolf buttons)
-void IN_Wbutton0Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS0] );    }   //----(SA) secondary fire button
-void IN_Wbutton0Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS0] );  }
-void IN_ZoomDown( void )      { IN_KeyDown( &kb[KB_WBUTTONS1] );    }   //----(SA)	zoom key
-void IN_ZoomUp( void )        { IN_KeyUp( &kb[KB_WBUTTONS1] );  }
-void IN_QuickGrenDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS2] );    }   //----(SA)	"Quickgrenade"
-void IN_QuickGrenUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS2] );  }
-void IN_ReloadDown( void )    { IN_KeyDown( &kb[KB_WBUTTONS3] );    }   //----(SA)	manual weapon re-load
-void IN_ReloadUp( void )      { IN_KeyUp( &kb[KB_WBUTTONS3] );  }
-void IN_LeanLeftDown( void )  { IN_KeyDown( &kb[KB_WBUTTONS4] );    }   //----(SA)	lean left
-void IN_LeanLeftUp( void )    { IN_KeyUp( &kb[KB_WBUTTONS4] );  }
-void IN_LeanRightDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS5] );    }   //----(SA)	lean right
-void IN_LeanRightUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS5] );  }
+void IN_Wbutton0Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS0] ); }   //----(SA) secondary fire button
+void IN_Wbutton0Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS0] ); }
+void IN_ZoomDown( void )      { IN_KeyDown( &kb[KB_WBUTTONS1] ); }   //----(SA)	zoom key
+void IN_ZoomUp( void )        { IN_KeyUp( &kb[KB_WBUTTONS1] ); }
+void IN_QuickGrenDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS2] ); }   //----(SA)	"Quickgrenade"
+void IN_QuickGrenUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS2] ); }
+void IN_ReloadDown( void )    { IN_KeyDown( &kb[KB_WBUTTONS3] ); }   //----(SA)	manual weapon re-load
+void IN_ReloadUp( void )      { IN_KeyUp( &kb[KB_WBUTTONS3] ); }
+void IN_LeanLeftDown( void )  { IN_KeyDown( &kb[KB_WBUTTONS4] ); }   //----(SA)	lean left
+void IN_LeanLeftUp( void )    { IN_KeyUp( &kb[KB_WBUTTONS4] ); }
+void IN_LeanRightDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS5] ); }   //----(SA)	lean right
+void IN_LeanRightUp( void )   { IN_KeyUp( &kb[KB_WBUTTONS5] ); }
 
 // JPW NERVE
-void IN_MP_DropWeaponDown( void ) {IN_KeyDown( &kb[KB_WBUTTONS6] ); }
-void IN_MP_DropWeaponUp( void ) {IN_KeyUp( &kb[KB_WBUTTONS6] ); }
+void IN_MP_DropWeaponDown( void ) { IN_KeyDown( &kb[KB_WBUTTONS6] ); }
+void IN_MP_DropWeaponUp( void ) { IN_KeyUp( &kb[KB_WBUTTONS6] ); }
 // jpw
 
 // unused
-void IN_Wbutton7Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS7] );    }
-void IN_Wbutton7Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS7] );  }
+void IN_Wbutton7Down( void )  { IN_KeyDown( &kb[KB_WBUTTONS7] ); }
+void IN_Wbutton7Up( void )    { IN_KeyUp( &kb[KB_WBUTTONS7] ); }
 
 void IN_CenterView( void ) {
 	qboolean ok = qtrue;
@@ -527,8 +527,7 @@ void CL_MouseMove( usercmd_t *cmd ) {
 			if ( cl_showMouseRate->integer ) {
 				Com_Printf( "rate: %f, accelSensitivity: %f\n", rate, accelSensitivity );
 			}
-		} else
-		{
+		} else {
 			float rate[2];
 			float power[2];
 
@@ -549,8 +548,7 @@ void CL_MouseMove( usercmd_t *cmd ) {
 				Com_Printf( "ratex: %f, ratey: %f, powx: %f, powy: %f\n", rate[0], rate[1], power[0], power[1] );
 			}
 		}
-	} else
-	{
+	} else {
 		// Ridah, experimenting with a slow tracking gun
 
 		// Rafael - mg42
@@ -917,8 +915,7 @@ void CL_WritePacket( void ) {
 			clc.voipOutgoingSequence += clc.voipOutgoingDataFrames;
 			clc.voipOutgoingDataSize = 0;
 			clc.voipOutgoingDataFrames = 0;
-		} else
-		{
+		} else {
 			// We have data, but no targets. Silently discard all data
 			clc.voipOutgoingDataSize = 0;
 			clc.voipOutgoingDataFrames = 0;

@@ -70,8 +70,7 @@ static void *S_CodecGetSound( const char *filename, snd_info_t *info ) {
 				orgNameFailed = qtrue;
 				orgCodec = codec;
 				COM_StripExtension( filename, localName, MAX_QPATH );
-			} else
-			{
+			} else {
 				// Something loaded
 				return rtn;
 			}
@@ -126,7 +125,7 @@ void S_CodecInit() {
 	S_CodecRegister( &ogg_codec );
 #endif
 
-// Register wav codec last so that it is always tried first when a file extension was not found
+	// Register wav codec last so that it is always tried first when a file extension was not found
 	S_CodecRegister( &wav_codec );
 }
 

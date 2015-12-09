@@ -59,7 +59,7 @@ typedef struct {
 	int keynum;
 } keyname_t;
 
-qboolean UI_checkKeyExec( int key );        // NERVE - SMF
+qboolean UI_checkKeyExec( int key ); // NERVE - SMF
 
 // names not in this list can either be lowercase ascii, or '0xnn' hex sequences
 keyname_t keynames[] =
@@ -184,9 +184,9 @@ keyname_t keynames[] =
 
 	{"PAUSE", K_PAUSE},
 
-	{"SEMICOLON", ';'},   // because a raw semicolon seperates commands
+	{"SEMICOLON", ';'}, // because a raw semicolon seperates commands
 
-	{"COMMAND", K_COMMAND},  //mac
+	{"COMMAND", K_COMMAND}, //mac
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -301,7 +301,7 @@ keyname_t keynames[] =
 	{NULL,0}
 };
 
-keyname_t keynames_d[] =    //deutsch
+keyname_t keynames_d[] = //deutsch
 {
 	{"TAB", K_TAB},
 	{"EINGABETASTE", K_ENTER},
@@ -422,7 +422,7 @@ keyname_t keynames_d[] =    //deutsch
 
 	{"PAUSE", K_PAUSE},
 
-	{"COMMAND", K_COMMAND},  //mac
+	{"COMMAND", K_COMMAND}, //mac
 
 	{"SEMIKOLON", ';'}, // because a raw semicolon seperates commands
 
@@ -539,7 +539,7 @@ keyname_t keynames_d[] =    //deutsch
 	{NULL,0}
 };  //end german
 
-keyname_t keynames_f[] =    //french
+keyname_t keynames_f[] = //french
 {
 	{"TAB", K_TAB},
 	{"ENTREE",   K_ENTER},
@@ -660,9 +660,9 @@ keyname_t keynames_f[] =    //french
 
 	{"PAUSE", K_PAUSE},
 
-	{"COMMAND", K_COMMAND},  //mac
+	{"COMMAND", K_COMMAND}, //mac
 
-	{"PN_VIRGULE", ';'},    // because a raw semicolon seperates commands
+	{"PN_VIRGULE", ';'}, // because a raw semicolon seperates commands
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -777,7 +777,7 @@ keyname_t keynames_f[] =    //french
 	{NULL,0}
 };  //end french
 
-keyname_t keynames_s[] =  //Spanish
+keyname_t keynames_s[] = //Spanish
 {
 	{"TABULADOR", K_TAB},
 	{"INTRO", K_ENTER},
@@ -898,9 +898,9 @@ keyname_t keynames_s[] =  //Spanish
 
 	{"PAUSA", K_PAUSE},
 
-	{"PUNTO_Y_COMA", ';'},    // because a raw semicolon seperates commands
+	{"PUNTO_Y_COMA", ';'}, // because a raw semicolon seperates commands
 
-	{"COMANDO", K_COMMAND},  //mac
+	{"COMANDO", K_COMMAND}, //mac
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -1015,7 +1015,7 @@ keyname_t keynames_s[] =  //Spanish
 	{NULL,0}
 };
 
-keyname_t keynames_i[] =  //Italian
+keyname_t keynames_i[] = //Italian
 {
 	{"TAB", K_TAB},
 	{"INVIO", K_ENTER},
@@ -1136,9 +1136,9 @@ keyname_t keynames_i[] =  //Italian
 
 	{"PAUSA", K_PAUSE},
 
-	{"PUNTO_E_VIRGOLA", ';'},   // because a raw semicolon seperates commands
+	{"PUNTO_E_VIRGOLA", ';'}, // because a raw semicolon seperates commands
 
-	{"COMMAND", K_COMMAND},  //mac
+	{"COMMAND", K_COMMAND}, //mac
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -1270,8 +1270,7 @@ Handles horizontal scrolling and cursor blinking
 x, y, and width are in pixels
 ===================
 */
-void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, qboolean showCursor,
-							 qboolean noColorEscape ) {
+void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, qboolean showCursor, qboolean noColorEscape ) {
 	int len;
 	int drawLen;
 	int prestep;
@@ -1321,7 +1320,7 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 	// draw the cursor
 	if ( showCursor ) {
 		if ( (int)( cls.realtime >> 8 ) & 1 ) {
-			return;     // off blink
+			return; // off blink
 		}
 
 		if ( key_overstrikeMode ) {
@@ -1338,7 +1337,6 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 			str[0] = cursorChar;
 			str[1] = 0;
 			SCR_DrawBigString( x + ( edit->cursor - prestep - i ) * size, y, str, 1.0, qfalse );
-
 		}
 	}
 }
@@ -1401,8 +1399,7 @@ void Field_KeyDownEvent( field_t *edit, int key ) {
 	switch ( key ) {
 	case K_DEL:
 		if ( edit->cursor < len ) {
-			memmove( edit->buffer + edit->cursor,
-					 edit->buffer + edit->cursor + 1, len - edit->cursor );
+			memmove( edit->buffer + edit->cursor, edit->buffer + edit->cursor + 1, len - edit->cursor );
 		}
 		break;
 
@@ -1547,9 +1544,10 @@ void Console_Key( int key ) {
 	if ( key == K_ENTER || key == K_KP_ENTER ) {
 		// if not in the game explicitly prepend a slash if needed
 		if ( clc.state != CA_ACTIVE &&
-			 g_consoleField.buffer[0] &&
-			 g_consoleField.buffer[0] != '\\' &&
-			 g_consoleField.buffer[0] != '/' ) {
+			g_consoleField.buffer[0] &&
+			g_consoleField.buffer[0] != '\\' &&
+			g_consoleField.buffer[0] != '/' ) {
+
 			char temp[MAX_EDIT_LINE - 1];
 
 			Q_strncpyz( temp, g_consoleField.buffer, sizeof( temp ) );
@@ -2161,11 +2159,10 @@ void CL_ParseBinding( int key, qboolean down, unsigned time, qboolean forceAll )
 			// subframe corrected
 			if ( allCommands || ( allowUpCmds && !down ) ) {
 				char cmd[1024];
-				Com_sprintf( cmd, sizeof( cmd ), "%c%s %d %d\n",
-							 ( down ) ? '+' : '-', p + 1, key, time );
+				Com_sprintf( cmd, sizeof( cmd ), "%c%s %d %d\n", ( down ) ? '+' : '-', p + 1, key, time );
 				Cbuf_AddText( cmd );
 			}
-		} else if ( down )    {
+		} else if ( down ) {
 			// normal commands only execute on key press
 			if ( allCommands || CL_BindUICommand( p ) ) {
 				Cbuf_AddText( p );
@@ -2196,14 +2193,13 @@ void CL_KeyDownEvent( int key, unsigned time ) {
 	}
 
 	if ( keys[K_ALT].down && key == K_ENTER ) {
-		Cvar_SetValue( "r_fullscreen",
-					   !Cvar_VariableIntegerValue( "r_fullscreen" ) );
+		Cvar_SetValue( "r_fullscreen", !Cvar_VariableIntegerValue( "r_fullscreen" ) );
 		return;
 	}
 
 	// are we waiting to clear stats and move to briefing screen
-	if ( qtrue && cl_waitForFire && cl_waitForFire->integer ) {    //DAJ BUG in dedicated cl_waitForFire don't exist
-		if ( Key_GetCatcher() & KEYCATCH_CONSOLE ) {    // get rid of the console
+	if ( qtrue && cl_waitForFire && cl_waitForFire->integer ) {	//DAJ BUG in dedicated cl_waitForFire don't exist
+		if ( Key_GetCatcher() & KEYCATCH_CONSOLE ) {		//get rid of the console
 			Con_ToggleConsole_f();
 		}
 		// clear all input controls
@@ -2271,7 +2267,7 @@ void CL_KeyDownEvent( int key, unsigned time ) {
 		if ( !( Key_GetCatcher() & KEYCATCH_UI ) ) {
 			if ( clc.state == CA_ACTIVE && !clc.demoplaying ) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
-			} else if ( clc.state != CA_DISCONNECTED )   {
+			} else if ( clc.state != CA_DISCONNECTED ) {
 				CL_Disconnect_f();
 				S_StopAllSounds();
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
@@ -2284,7 +2280,7 @@ void CL_KeyDownEvent( int key, unsigned time ) {
 	}
 
 	// NERVE - SMF - if we just want to pass it along to game
-	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer && !( Key_GetCatcher() & KEYCATCH_CONSOLE ) ) {     //DAJ BUG in dedicated cl_missionStats don't exist
+	if ( cl_bypassMouseInput && cl_bypassMouseInput->integer && !( Key_GetCatcher() & KEYCATCH_CONSOLE ) ) {	//DAJ BUG in dedicated cl_missionStats don't exist
 		if ( ( key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3 ) ) {
 			if ( cl_bypassMouseInput->integer == 1 ) {
 				bypassMenu = qtrue;
@@ -2460,8 +2456,8 @@ void Key_SetCatcher( int catcher ) {
 }
 
 // This must not exceed MAX_CMD_LINE
-#define         MAX_CONSOLE_SAVE_BUFFER 1024
-#define         CONSOLE_HISTORY_FILE    "rtcwhistory"
+#define	MAX_CONSOLE_SAVE_BUFFER 1024
+#define	CONSOLE_HISTORY_FILE    "rtcwhistory"
 static char consoleSaveBuffer[ MAX_CONSOLE_SAVE_BUFFER ];
 static int consoleSaveBufferSize = 0;
 
@@ -2473,7 +2469,7 @@ Load the console history from cl_consoleHistory
 ================
 */
 void CL_LoadConsoleHistory( void ) {
-	char                    *token, *text_p;
+	char *token, *text_p;
 	int i, numChars, numLines = 0;
 	fileHandle_t f;
 
@@ -2484,7 +2480,7 @@ void CL_LoadConsoleHistory( void ) {
 	}
 
 	if ( consoleSaveBufferSize <= MAX_CONSOLE_SAVE_BUFFER &&
-		 FS_Read( consoleSaveBuffer, consoleSaveBufferSize, f ) == consoleSaveBufferSize ) {
+			FS_Read( consoleSaveBuffer, consoleSaveBufferSize, f ) == consoleSaveBufferSize ) {
 		text_p = consoleSaveBuffer;
 
 		for ( i = COMMAND_HISTORY - 1; i >= 0; i-- )
@@ -2511,16 +2507,14 @@ void CL_LoadConsoleHistory( void ) {
 				Com_DPrintf( S_COLOR_YELLOW "WARNING: probable corrupt history\n" );
 				break;
 			}
-			Com_Memcpy( historyEditLines[ i ].buffer,
-						text_p, numChars );
+			Com_Memcpy( historyEditLines[ i ].buffer, text_p, numChars );
 			historyEditLines[ i ].buffer[ numChars ] = '\0';
 			text_p += numChars;
 
 			numLines++;
 		}
 
-		memmove( &historyEditLines[ 0 ], &historyEditLines[ i + 1 ],
-				 numLines * sizeof( field_t ) );
+		memmove( &historyEditLines[ 0 ], &historyEditLines[ i + 1 ], numLines * sizeof( field_t ) );
 		for ( i = numLines; i < COMMAND_HISTORY; i++ )
 			Field_Clear( &historyEditLines[ i ] );
 
@@ -2559,11 +2553,11 @@ void CL_SaveConsoleHistory( void ) {
 
 			if ( saveBufferLength + additionalLength < MAX_CONSOLE_SAVE_BUFFER ) {
 				Q_strcat( consoleSaveBuffer, MAX_CONSOLE_SAVE_BUFFER,
-						  va( "%d %d %d %s ",
-							  historyEditLines[ i ].cursor,
-							  historyEditLines[ i ].scroll,
-							  lineLength,
-							  historyEditLines[ i ].buffer ) );
+						va( "%d %d %d %s ",
+						historyEditLines[ i ].cursor,
+						historyEditLines[ i ].scroll,
+						lineLength,
+						historyEditLines[ i ].buffer ) );
 			} else {
 				break;
 			}

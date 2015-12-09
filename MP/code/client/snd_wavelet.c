@@ -40,10 +40,10 @@ void daub4( float b[], unsigned long n, int isign ) {
 	nh1 = ( nh = n >> 1 ) + 1;
 	if ( isign >= 0 ) {
 		for ( i = 1,j = 1; j <= n - 3; j += 2,i++ ) {
-			wksp[i]    = C0 * a[j] + C1 * a[j + 1] + C2 * a[j + 2] + C3 * a[j + 3];
+			wksp[i] = C0 * a[j] + C1 * a[j + 1] + C2 * a[j + 2] + C3 * a[j + 3];
 			wksp[i + nh] = C3 * a[j] - C2 * a[j + 1] + C1 * a[j + 2] - C0 * a[j + 3];
 		}
-		wksp[i   ] = C0 * a[n - 1] + C1 * a[n] + C2 * a[1] + C3 * a[2];
+		wksp[i] = C0 * a[n - 1] + C1 * a[n] + C2 * a[1] + C3 * a[2];
 		wksp[i + nh] = C3 * a[n - 1] - C2 * a[n] + C1 * a[1] - C0 * a[2];
 	} else {
 		wksp[1] = C2 * a[nh] + C1 * a[n] + C0 * a[1] + C3 * a[nh1];
@@ -127,8 +127,8 @@ void NXPutc( NXStream *stream, char out ) {
 void encodeWavelet( sfx_t *sfx, short *packets ) {
 	float wksp[4097] = { 0.0f }, temp;
 	int i, samples, size;
-	sndBuffer       *newchunk, *chunk;
-	byte            *out;
+	sndBuffer *newchunk, *chunk;
+	byte *out;
 
 	if ( !madeTable ) {
 		for ( i = 0; i < 256; i++ ) {
@@ -181,7 +181,7 @@ void encodeWavelet( sfx_t *sfx, short *packets ) {
 void decodeWavelet( sndBuffer *chunk, short *to ) {
 	float wksp[4097] = { 0.0f };
 	int i;
-	byte            *out;
+	byte *out;
 
 	int size = chunk->size;
 
@@ -204,8 +204,8 @@ void decodeWavelet( sndBuffer *chunk, short *to ) {
 
 void encodeMuLaw( sfx_t *sfx, short *packets ) {
 	int i, samples, size, grade, poop;
-	sndBuffer       *newchunk, *chunk;
-	byte            *out;
+	sndBuffer *newchunk, *chunk;
+	byte *out;
 
 	if ( !madeTable ) {
 		for ( i = 0; i < 256; i++ ) {
@@ -250,7 +250,7 @@ void encodeMuLaw( sfx_t *sfx, short *packets ) {
 
 void decodeMuLaw( sndBuffer *chunk, short *to ) {
 	int i;
-	byte            *out;
+	byte *out;
 
 	int size = chunk->size;
 

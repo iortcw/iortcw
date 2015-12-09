@@ -105,7 +105,7 @@ LClampDone2:
 		jnz LWLBLoopTop
 		pop ebx
 		pop edi
-			ret
+		ret
 	}
 }
 
@@ -172,10 +172,11 @@ void S_TransferPaintBuffer( int endtime ) {
 	}
 
 
-	if ( dma.samplebits == 16 && dma.channels == 2 ) { // optimized case
+	if ( dma.samplebits == 16 && dma.channels == 2 ) {
+		// optimized case
 		S_TransferStereo16( pbuf, endtime );
-	} else
-	{   // general case
+	} else {
+		// general case
 		p = (int *) paintbuffer;
 		count = ( endtime - s_paintedtime ) * dma.channels;
 		out_mask = dma.samples - 1;
@@ -228,9 +229,9 @@ static void S_PaintChannelFrom16_altivec( channel_t *ch, const sfx_t *sc, int co
 	int data, aoff, boff;
 	int leftvol, rightvol;
 	int i, j;
-	portable_samplepair_t   *samp;
-	sndBuffer               *chunk;
-	short                   *samples;
+	portable_samplepair_t *samp;
+	sndBuffer *chunk;
+	short *samples;
 	float ooff, fdata[2], fdiv, fleftvol, frightvol;
 
 	if ( sc->soundChannels <= 0 ) {
@@ -418,9 +419,9 @@ static void S_PaintChannelFrom16_scalar( channel_t *ch, const sfx_t *sc, int cou
 	int data, aoff, boff;
 	int leftvol, rightvol;
 	int i, j;
-	portable_samplepair_t   *samp;
-	sndBuffer               *chunk;
-	short                   *samples;
+	portable_samplepair_t *samp;
+	sndBuffer *chunk;
+	short *samples;
 	float ooff, fdata[2], fdiv, fleftvol, frightvol;
 
 	if ( sc->soundChannels <= 0 ) {
@@ -524,9 +525,9 @@ void S_PaintChannelFromWavelet( channel_t *ch, sfx_t *sc, int count, int sampleO
 	int data;
 	int leftvol, rightvol;
 	int i;
-	portable_samplepair_t   *samp;
-	sndBuffer               *chunk;
-	short                   *samples;
+	portable_samplepair_t *samp;
+	sndBuffer *chunk;
+	short *samples;
 
 	leftvol = ch->leftvol * snd_vol;
 	rightvol = ch->rightvol * snd_vol;
@@ -566,9 +567,9 @@ void S_PaintChannelFromADPCM( channel_t *ch, sfx_t *sc, int count, int sampleOff
 	int data;
 	int leftvol, rightvol;
 	int i;
-	portable_samplepair_t   *samp;
-	sndBuffer               *chunk;
-	short                   *samples;
+	portable_samplepair_t *samp;
+	sndBuffer *chunk;
+	short *samples;
 
 	leftvol = ch->leftvol * snd_vol;
 	rightvol = ch->rightvol * snd_vol;
@@ -613,9 +614,9 @@ void S_PaintChannelFromMuLaw( channel_t *ch, sfx_t *sc, int count, int sampleOff
 	int data;
 	int leftvol, rightvol;
 	int i;
-	portable_samplepair_t   *samp;
-	sndBuffer               *chunk;
-	byte                    *samples;
+	portable_samplepair_t *samp;
+	sndBuffer *chunk;
+	byte *samples;
 	float ooff;
 
 	leftvol = ch->leftvol * snd_vol;
@@ -673,7 +674,7 @@ void S_PaintChannels( int endtime ) {
 	int end;
 	int stream;
 	channel_t *ch;
-	sfx_t   *sc;
+	sfx_t *sc;
 	int ltime, count;
 	int sampleOffset;
 
@@ -683,7 +684,7 @@ void S_PaintChannels( int endtime ) {
 		snd_vol = s_volume->value * 255;
 	}
 
-//Com_Printf ("%i to %i\n", s_paintedtime, endtime);
+//	Com_Printf ("%i to %i\n", s_paintedtime, endtime);
 	while ( s_paintedtime < endtime ) {
 		// if paintbuffer is smaller than DMA buffer
 		// we may need to fill it multiple times

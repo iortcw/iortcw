@@ -216,8 +216,7 @@ int S_GetVoiceAmplitude( int entityNum ) {
 S_RawSamples
 =================
 */
-void S_RawSamples( int stream, int samples, int rate, int width, int channels,
-				   const byte *data, float volume, int entityNum ) {
+void S_RawSamples( int stream, int samples, int rate, int width, int channels, const byte *data, float volume, int entityNum ) {
 	if ( si.RawSamples ) {
 		si.RawSamples( stream, samples, rate, width, channels, data, volume, entityNum );
 	}
@@ -250,8 +249,7 @@ void S_ClearLoopingSounds( qboolean killall ) {
 S_AddLoopingSound
 =================
 */
-void S_AddLoopingSound( int entityNum, const vec3_t origin,
-						const vec3_t velocity, const int range, sfxHandle_t sfx, int volume ) {
+void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx, int volume ) {
 	if ( si.AddLoopingSound ) {
 		si.AddLoopingSound( entityNum, origin, velocity, range, sfx, volume );
 	}
@@ -262,8 +260,7 @@ void S_AddLoopingSound( int entityNum, const vec3_t origin,
 S_AddRealLoopingSound
 =================
 */
-void S_AddRealLoopingSound( int entityNum, const vec3_t origin,
-							const vec3_t velocity, const int range, sfxHandle_t sfx ) {
+void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx ) {
 	if ( si.AddRealLoopingSound ) {
 		si.AddRealLoopingSound( entityNum, origin, velocity, range, sfx );
 	}
@@ -285,8 +282,7 @@ void S_StopLoopingSound( int entityNum ) {
 S_Respatialize
 =================
 */
-void S_Respatialize( int entityNum, const vec3_t origin,
-					 vec3_t axis[3], int inwater ) {
+void S_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater ) {
 	if ( si.Respatialize ) {
 		si.Respatialize( entityNum, origin, axis, inwater );
 	}
@@ -311,14 +307,13 @@ S_Update
 void S_Update( void ) {
 	if ( s_muted->integer ) {
 		if ( !( s_muteWhenMinimized->integer && com_minimized->integer ) &&
-			 !( s_muteWhenUnfocused->integer && com_unfocused->integer ) ) {
+			!( s_muteWhenUnfocused->integer && com_unfocused->integer ) ) {
 			s_muted->integer = qfalse;
 			s_muted->modified = qtrue;
 		}
-	} else
-	{
+	} else {
 		if ( ( s_muteWhenMinimized->integer && com_minimized->integer ) ||
-			 ( s_muteWhenUnfocused->integer && com_unfocused->integer ) ) {
+			( s_muteWhenUnfocused->integer && com_unfocused->integer ) ) {
 			s_muted->integer = qtrue;
 			s_muted->modified = qtrue;
 		}

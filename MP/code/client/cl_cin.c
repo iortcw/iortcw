@@ -124,7 +124,7 @@ typedef struct {
 	void ( *VQNormal )( byte *status, void *qdata );
 	void ( *VQBuffer )( byte *status, void *qdata );
 
-	long samplesPerPixel;                               // defaults to 2
+	long samplesPerPixel;		// defaults to 2
 	byte*               gray;
 	unsigned int xsize, ysize, maxsize, minsize;
 
@@ -145,7 +145,7 @@ static cin_cache cinTable[MAX_VIDEO_HANDLES];
 static int currentHandle = -1;
 static int CL_handle = -1;
 
-extern int s_soundtime;                     // sample PAIRS
+extern int s_soundtime;		// sample PAIRS
 
 void CIN_CloseAllVideos( void ) {
 	int i;
@@ -1084,29 +1084,6 @@ static void initRoQ( void ) {
 	RllSetupTable();
 }
 
-/******************************************************************************
-*
-* Function:
-*
-* Description:
-*
-******************************************************************************/
-/*
-static byte* RoQFetchInterlaced( byte *source ) {
-    int x, *src, *dst;
-
-    if (currentHandle < 0) return NULL;
-
-    src = (int *)source;
-    dst = (int *)cinTable[currentHandle].buf2;
-
-    for(x=0;x<256*256;x++) {
-        *dst = *src;
-        dst++; src += 2;
-    }
-    return cinTable[currentHandle].buf2;
-}
-*/
 static void RoQReset( void ) {
 
 	if ( currentHandle < 0 ) {
@@ -1736,13 +1713,13 @@ void CIN_UploadCinematic( int handle ) {
 		} else {
 			// Upload video at normal resolution
 			re.UploadCinematic( cinTable[handle].CIN_WIDTH, cinTable[handle].CIN_HEIGHT, cinTable[handle].drawX, cinTable[handle].drawY,
-								cinTable[handle].buf, handle, cinTable[handle].dirty );
+						cinTable[handle].buf, handle, cinTable[handle].dirty );
 			cinTable[handle].dirty = qfalse;
 		}
 
 		if ( cl_inGameVideo->integer == 0 && cinTable[handle].playonwalls == 1 ) {
 			cinTable[handle].playonwalls--;
-		} else if ( cl_inGameVideo->integer != 0 && cinTable[handle].playonwalls != 1 )     {
+		} else if ( cl_inGameVideo->integer != 0 && cinTable[handle].playonwalls != 1 ) {
 			cinTable[handle].playonwalls = 1;
 		}
 	}
