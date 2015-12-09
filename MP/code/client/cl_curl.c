@@ -244,12 +244,12 @@ void CL_cURL_BeginDownload( const char *localName, const char *remoteURL ) {
 
 	clc.downloadCURL = qcurl_easy_init();
 	if ( !clc.downloadCURL ) {
-		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: qcurl_easy_init() " "failed" );
+		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: qcurl_easy_init() failed" );
 		return;
 	}
 	clc.download = FS_SV_FOpenFileWrite( clc.downloadTempName );
 	if ( !clc.download ) {
-		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: failed to open " "%s for writing", clc.downloadTempName );
+		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: failed to open %s for writing", clc.downloadTempName );
 		return;
 	}
 
@@ -272,7 +272,7 @@ void CL_cURL_BeginDownload( const char *localName, const char *remoteURL ) {
 	if ( !clc.downloadCURLM ) {
 		qcurl_easy_cleanup( clc.downloadCURL );
 		clc.downloadCURL = NULL;
-		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: qcurl_multi_init() " "failed" );
+		Com_Error( ERR_DROP, "CL_cURL_BeginDownload: qcurl_multi_init() failed" );
 		return;
 	}
 	result = qcurl_multi_add_handle( clc.downloadCURLM, clc.downloadCURL );
@@ -320,9 +320,7 @@ void CL_cURL_PerformDownload( void ) {
 		long code;
 
 		qcurl_easy_getinfo( msg->easy_handle, CURLINFO_RESPONSE_CODE, &code );
-		Com_Error( ERR_DROP, "Download Error: %s Code: %ld URL: %s",
-				qcurl_easy_strerror( msg->data.result ),
-				code, clc.downloadURL );
+		Com_Error( ERR_DROP, "Download Error: %s Code: %ld URL: %s", qcurl_easy_strerror( msg->data.result ), code, clc.downloadURL );
 	}
 
 	CL_NextDownload();
