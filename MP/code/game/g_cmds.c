@@ -481,8 +481,7 @@ hide the scoreboard, and take a special screenshot
 */
 void Cmd_LevelShot_f( gentity_t *ent ) {
 	if ( !ent->client->pers.localClient ) {
-		trap_SendServerCommand( ent - g_entities,
-								"print \"The levelshot command must be executed by a local client\n\"" );
+		trap_SendServerCommand( ent - g_entities, "print \"The levelshot command must be executed by a local client\n\"" );
 		return;
 	}
 
@@ -492,8 +491,7 @@ void Cmd_LevelShot_f( gentity_t *ent ) {
 
 	// doesn't work in single player
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
-		trap_SendServerCommand( ent - g_entities,
-								"print \"Must not be in singleplayer mode for levelshot\n\"" );
+		trap_SendServerCommand( ent - g_entities, "print \"Must not be in singleplayer mode for levelshot\n\"" );
 		return;
 	}
 
@@ -2131,47 +2129,6 @@ int Cmd_WolfKick_f( gentity_t *ent ) {
 }
 // done
 
-/*
-============================
-Cmd_ClientMonsterSlickAngle
-============================
-*/
-/*
-void Cmd_ClientMonsterSlickAngle (gentity_t *clent) {
-
-    char s[MAX_STRING_CHARS];
-    int	entnum;
-    int angle;
-    gentity_t *ent;
-    vec3_t	dir, kvel;
-    vec3_t	forward;
-
-    if (trap_Argc() != 3) {
-        G_Printf( "ClientDamage command issued with incorrect number of args\n" );
-    }
-
-    trap_Argv( 1, s, sizeof( s ) );
-    entnum = atoi(s);
-    ent = &g_entities[entnum];
-
-    trap_Argv( 2, s, sizeof( s ) );
-    angle = atoi(s);
-
-    // sanity check (also protect from cheaters)
-    if (g_gametype.integer != GT_SINGLE_PLAYER && entnum != clent->s.number) {
-        trap_DropClient( clent->s.number, "Dropped due to illegal ClientMonsterSlick command\n" );
-        return;
-    }
-
-    VectorClear (dir);
-    dir[YAW] = angle;
-    AngleVectors (dir, forward, NULL, NULL);
-
-    VectorScale (forward, 32, kvel);
-    VectorAdd (ent->client->ps.velocity, kvel, ent->client->ps.velocity);
-}
-*/
-
 // NERVE - SMF
 /*
 ============
@@ -2249,57 +2206,6 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 		}
 		break;
 	case CLDMG_FLAMETHROWER:
-		// do some cheat protection
-/*  JPW NERVE pulled flamethrower client damage completely
-        if (g_gametype.integer != GT_SINGLE_PLAYER) {
-            if ( enemy->s.weapon != WP_FLAMETHROWER )
-                break;
-//			if ( !(enemy->client->buttons & BUTTON_ATTACK) ) // JPW NERVE flames should be able to damage while puffs are active
-//				break;
-        } else {
-            // this is required for Zombie flame attack
-            //if ((enemy->aiCharacter == AICHAR_ZOMBIE) && !AICast_VisibleFromPos( enemy->r.currentOrigin, enemy->s.number, ent->r.currentOrigin, ent->s.number, qfalse ))
-            //	break;
-        }
-
-        if ( ent->takedamage && !AICast_NoFlameDamage(ent->s.number) ) {
-            #define	FLAME_THRESHOLD	50
-            int damage = 5;
-
-            // RF, only do damage once they start burning
-            //if (ent->health > 0)	// don't explode from flamethrower
-            //	G_Damage( traceEnt, ent, ent, forward, tr.endpos, 1, 0, MOD_LIGHTNING);
-
-            // now check the damageQuota to see if we should play a pain animation
-            // first reduce the current damageQuota with time
-            if (ent->flameQuotaTime && ent->flameQuota > 0) {
-                ent->flameQuota -= (int)(((float)(level.time - ent->flameQuotaTime)/1000) * (float)damage/2.0);
-                if (ent->flameQuota < 0)
-                    ent->flameQuota = 0;
-            }
-
-            // add the new damage
-            ent->flameQuota += damage;
-            ent->flameQuotaTime = level.time;
-
-            // Ridah, make em burn
-            if (ent->client && ( !(ent->r.svFlags & SVF_CASTAI) || ent->health <= 0 || ent->flameQuota > FLAME_THRESHOLD)) {				if (ent->s.onFireEnd < level.time)
-                    ent->s.onFireStart = level.time;
-                if (ent->health <= 0 || !(ent->r.svFlags & SVF_CASTAI) || (g_gametype.integer != GT_SINGLE_PLAYER)) {
-                    if (ent->r.svFlags & SVF_CASTAI) {
-                        ent->s.onFireEnd = level.time + 6000;
-                    } else {
-                        ent->s.onFireEnd = level.time + FIRE_FLASH_TIME;
-                    }
-                } else {
-                    ent->s.onFireEnd = level.time + 99999;	// make sure it goes for longer than they need to die
-                }
-                ent->flameBurnEnt = enemy->s.number;
-                // add to playerState for client-side effect
-                ent->client->ps.onFireStart = level.time;
-            }
-        }
-*/
 		break;
 	}
 }

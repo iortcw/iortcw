@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 /*
 ==============
 alarmExplosion
-    copied from propExplosion
+  copied from propExplosion
 ==============
 */
 void alarmExplosion( gentity_t *ent ) {

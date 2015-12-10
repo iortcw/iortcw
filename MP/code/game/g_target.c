@@ -626,23 +626,7 @@ void SP_target_location( gentity_t *self ) {
 }
 
 
-
-
-
-
-
 //---- (SA) Wolf targets
-
-/*
-==============
-Use_Target_Autosave
-    save game for emergency backup or convienience
-==============
-*/
-/*void Use_Target_Autosave( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-    G_SaveGame("autosave.svg");
-}*/
-
 
 
 /*
@@ -665,6 +649,7 @@ void Use_Target_Counter( gentity_t *ent, gentity_t *other, gentity_t *activator 
 	}
 }
 
+
 /*
 ==============
 Use_Target_Lock
@@ -683,6 +668,7 @@ void Use_Target_Lock( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 }
 
 //==========================================================
+
 
 /*
 ==============
@@ -725,6 +711,7 @@ void SP_target_fog( gentity_t *ent ) {
 	}
 }
 
+
 //==========================================================
 
 /*QUAKED target_counter (1 1 0) (-8 -8 -8) (8 8 8)
@@ -736,8 +723,6 @@ void SP_target_counter( gentity_t *ent ) {
 	ent->use = Use_Target_Counter;
 }
 
-
-
 /*QUAKED target_autosave (1 1 0) (-8 -8 -8) (8 8 8)
 saves game to 'autosave.svg' when triggered then dies.
 */
@@ -745,6 +730,7 @@ void SP_target_autosave( gentity_t *ent ) {
 	//ent->use = Use_Target_Autosave;
 	G_FreeEntity( ent );
 }
+
 
 //==========================================================
 
@@ -761,10 +747,10 @@ void SP_target_lock( gentity_t *ent ) {
 }
 
 
-
 void Use_Target_Alarm( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 	G_UseTargets( ent, other );
 }
+
 
 /*QUAKED target_alarm (1 1 0) (-4 -4 -4) (4 4 4)
 does nothing yet (effectively a relay right now)
@@ -773,55 +759,9 @@ void SP_target_alarm( gentity_t *ent ) {
 	ent->use = Use_Target_Alarm;
 }
 
+
 //---- end
 
-/*QUAKED target_smoke (1 0 0) (-32 -32 -16) (32 32 16) Black White SmokeON Gravity
-1 second = 1000
-1 FRAME = 100
-delay = 100 = one millisecond default this is the maximum smoke that will show up
-time = 5000 default before the smoke disipates
-duration = 2000 before the smoke starts to alpha
-start_size = 24 default
-end_size = 96 default
-wait	= default is 50 the rate at which it will travel up
-*/
-
-/*void smoke_think (gentity_t *ent)
-{
-    gentity_t	*tent;
-
-    ent->nextthink = level.time + ent->delay;
-
-    if (!(ent->spawnflags & 4))
-        return;
-
-    if (ent->health)
-    {
-        ent->health --;
-        if (!ent->health)
-        {
-            ent->think = G_FreeEntity;
-            ent->nextthink = level.time + FRAMETIME;
-        }
-    }
-
-    tent = G_TempEntity (ent->r.currentOrigin, EV_SMOKE);
-    VectorCopy (ent->r.currentOrigin, tent->s.origin);
-    tent->s.time = ent->speed;
-    tent->s.time2 = ent->duration;
-    tent->s.density = ent->s.density;
-
-    // this is used to set the size of the smoke particle
-    tent->s.angles2[0] = ent->start_size;
-    tent->s.angles2[1] = ent->end_size;
-    tent->s.angles2[2] = ent->wait;
-
-    VectorCopy (ent->pos3, tent->s.origin2);
-
-    if (ent->s.frame) // denotes reverse gravity effect
-        tent->s.frame = 1;
-
-}*/
 
 void smoke_think( gentity_t *ent ) {
 	ent->nextthink = level.time + ent->s.constantLight;

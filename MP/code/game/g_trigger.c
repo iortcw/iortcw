@@ -843,8 +843,8 @@ Player must be carrying the proper flag for it to trigger.
 It will call the "death" function in the object's script.
 
 "scriptName"	The object name in the script file
-"score"			score given to player for dropping flag in this field
-                (default 20)
+"score"		score given to player for dropping flag in this field
+		(default 20)
 
 RED_FLAG -- only trigger if player is carrying red flag
 BLUE_FLAG -- only trigger if player is carrying blue flag

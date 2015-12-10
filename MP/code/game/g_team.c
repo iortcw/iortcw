@@ -194,8 +194,8 @@ void Team_FragBonuses( gentity_t *targ, gentity_t *inflictor, gentity_t *attacke
 	}
 	if ( g_gametype.integer < GT_WOLF ) { // JPW NERVE no danger protect in wolf
 		if ( targ->client->pers.teamState.lasthurtcarrier &&
-			 level.time - targ->client->pers.teamState.lasthurtcarrier < CTF_CARRIER_DANGER_PROTECT_TIMEOUT &&
-			 !attacker->client->ps.powerups[flag_pw] ) {
+				level.time - targ->client->pers.teamState.lasthurtcarrier < CTF_CARRIER_DANGER_PROTECT_TIMEOUT &&
+				!attacker->client->ps.powerups[flag_pw] ) {
 			// attacker is on the same team as the flag carrier and
 			// fragged a guy who hurt our flag carrier
 			AddScore( attacker, CTF_CARRIER_DANGER_PROTECT_BONUS );
@@ -250,9 +250,9 @@ void Team_FragBonuses( gentity_t *targ, gentity_t *inflictor, gentity_t *attacke
 		VectorSubtract( attacker->client->ps.origin, flag->s.origin, v2 );
 
 		if ( ( VectorLength( v1 ) < CTF_TARGET_PROTECT_RADIUS ||
-			   VectorLength( v2 ) < CTF_TARGET_PROTECT_RADIUS ||
-			   CanDamage( flag, targ->client->ps.origin ) || CanDamage( flag, attacker->client->ps.origin ) ) &&
-			 attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam ) {
+				VectorLength( v2 ) < CTF_TARGET_PROTECT_RADIUS ||
+				CanDamage( flag, targ->client->ps.origin ) || CanDamage( flag, attacker->client->ps.origin ) ) &&
+				attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam ) {
 			// we defended the base flag
 			if ( g_gametype.integer >= GT_WOLF ) { // JPW NERVE FIXME -- don't report flag defense messages, change to gooder message
 				AddScore( attacker, WOLF_FLAG_DEFENSE_BONUS );
@@ -647,8 +647,8 @@ int Pickup_Team( gentity_t *ent, gentity_t *other ) {
 // jpw
 
 	return ( ( team == cl->sess.sessionTeam ) ?
-			 Team_TouchOurFlag : Team_TouchEnemyFlag )
-			   ( ent, other, team );
+			Team_TouchOurFlag : Team_TouchEnemyFlag )
+			( ent, other, team );
 }
 
 /*
@@ -747,14 +747,6 @@ int FindFarthestObjectiveIndex( vec3_t source ) {
 			j = i;
 		}
 	}
-
-/*
-    cs_obj += j;
-    trap_GetConfigstring( cs_obj, cs, sizeof(cs) );
-    objectivename = Info_ValueForKey( cs, "spawn_targ");
-
-    G_Printf("got furthest dist (%f) at point %d (%s) of %d\n",dist,j,objectivename,i);
-*/
 
 	return j;
 }
@@ -951,7 +943,7 @@ gentity_t *SelectCTFSpawnPoint( team_t team, int teamstate, vec3_t origin, vec3_
 TeamplayLocationsMessage
 
 Format:
-    clientNum location health armor weapon powerups
+  clientNum location health armor weapon powerups
 
 ==================
 */
@@ -973,7 +965,7 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 	// send team info to spectator for team of followed client
 	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		if ( ent->client->sess.spectatorState != SPECTATOR_FOLLOW
-			 || ent->client->sess.spectatorClient < 0 ) {
+				|| ent->client->sess.spectatorClient < 0 ) {
 			return;
 		}
 		team = g_entities[ ent->client->sess.spectatorClient ].client->sess.sessionTeam;

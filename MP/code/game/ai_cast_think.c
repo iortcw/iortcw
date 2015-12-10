@@ -178,10 +178,10 @@ void AICast_InputToUserCommand( cast_state_t *cs, bot_input_t *bi, usercmd_t *uc
 		vec3_t ofs;
 		// don't fire if we are not facing the right direction yet
 		if ( ( cs->triggerReleaseTime < level.time ) &&
-			 (   ( cs->lockViewAnglesTime >= level.time ) ||
-				 ( fabs( AngleDifference( cs->bs->ideal_viewangles[YAW], cs->bs->viewangles[YAW] ) ) < 20 ) ) &&
-		     // check for radid luger firing by skilled users (release fire between shots)
-			 ( ( ( level.time + cs->entityNum * 500 ) / 2000 ) % 2 || !( rand() % ( 1 + g_gameskill.integer ) ) || ( cs->attributes[ATTACK_SKILL] < 0.5 ) || ( cs->bs->weaponnum != WP_LUGER ) || ( cs->bs->cur_ps.weaponTime == 0 ) || ( cs->bs->cur_ps.releasedFire ) ) ) {
+				( ( cs->lockViewAnglesTime >= level.time ) ||
+				( fabs( AngleDifference( cs->bs->ideal_viewangles[YAW], cs->bs->viewangles[YAW] ) ) < 20 ) ) &&
+				// check for radid luger firing by skilled users (release fire between shots)
+				( ( ( level.time + cs->entityNum * 500 ) / 2000 ) % 2 || !( rand() % ( 1 + g_gameskill.integer ) ) || ( cs->attributes[ATTACK_SKILL] < 0.5 ) || ( cs->bs->weaponnum != WP_LUGER ) || ( cs->bs->cur_ps.weaponTime == 0 ) || ( cs->bs->cur_ps.releasedFire ) ) ) {
 			ucmd->buttons |= BUTTON_ATTACK;
 			// do some swaying around for some weapons
 			AICast_WeaponSway( cs, ofs );
@@ -252,7 +252,9 @@ void AICast_InputToUserCommand( cast_state_t *cs, bot_input_t *bi, usercmd_t *uc
 			//get the pitch in the range [-180, 180]
 			if ( bi->dir[2] ) {
 				angles[PITCH] = bi->viewangles[PITCH];
-			} else { angles[PITCH] = 0; }
+			} else {
+				angles[PITCH] = 0;
+			}
 			angles[YAW] = bi->viewangles[YAW];
 			angles[ROLL] = 0;
 			AngleVectors( angles, forward, right, up );
@@ -523,27 +525,6 @@ void AICast_Think( int client, float thinktime ) {
 		}
 		//
 		if ( ent->health > GIB_HEALTH && cs->deathTime && cs->deathTime < ( level.time - 3000 ) ) {
-/*
-            // been dead for long enough, set our animation to the end frame
-            switch ( ent->s.legsAnim & ~ANIM_TOGGLEBIT ) {
-            case BOTH_DEATH1:
-            case BOTH_DEAD1:
-                anim = BOTH_DEAD1;
-                break;
-            case BOTH_DEATH2:
-            case BOTH_DEAD2:
-                anim = BOTH_DEAD2;
-                break;
-            case BOTH_DEATH3:
-            case BOTH_DEAD3:
-                anim = BOTH_DEAD3;
-                break;
-            default:
-                G_Error( "%s has unknown death animation\n", ent->classname);
-            }
-            ent->client->ps.torsoAnim = ( ( ent->client->ps.torsoAnim & ANIM_TOGGLEBIT ) ^ ANIM_TOGGLEBIT ) | anim;
-            ent->client->ps.legsAnim = ( ( ent->client->ps.legsAnim & ANIM_TOGGLEBIT ) ^ ANIM_TOGGLEBIT ) | anim;
-*/
 			cs->deathTime = 0;
 			ent->r.svFlags &= ~SVF_BROADCAST;
 		}
@@ -769,10 +750,10 @@ void AICast_StartFrame( int time ) {
 		return;         // no time has elapsed
 	}
 
-//G_Printf( "AI startframe: %i\n", time );
+	//G_Printf( "AI startframe: %i\n", time );
 
 	if ( elapsed < 0 ) {
-		//	elapsed = 0;
+		//elapsed = 0;
 		lasttime = time;
 	}
 	// don't let the framerate drop below 10
@@ -935,7 +916,7 @@ void AICast_StartServerFrame( int time ) {
 				elapsed = level.time - cs->lastMoveThink;
 				//
 				// optimization, if they're not in the player's PVS, and they aren't trying to move, then don't bother thinking
-				if (    ( ( ent->health > 0 ) && ( elapsed > 300 ) )
+				if ( ( ( ent->health > 0 ) && ( elapsed > 300 ) )
 						||  ( g_entities[0].client && g_entities[0].client->cameraPortal )
 						||  ( cs->vislist[0].visible_timestamp == cs->vislist[0].lastcheck_timestamp )
 						||  ( pcs->vislist[cs->entityNum].visible_timestamp == pcs->vislist[cs->entityNum].lastcheck_timestamp )
@@ -950,16 +931,7 @@ void AICast_StartServerFrame( int time ) {
 					AICast_UpdateInput( cs, elapsed );
 					trap_BotUserCommand( cs->bs->client, &( cs->bs->lastucmd ) );
 					cs->lastMoveThink = level.time;
-					//
-					// check for anim changes that may require us to stay still
-					//
-/*					if (oldLegsTimer != ent->client->ps.legsTimer) {
-                        // dont move until they are finished
-                        if (cs->castScriptStatus.scriptNoMoveTime < level.time + ent->client->ps.legsTimer) {
-                            cs->castScriptStatus.scriptNoMoveTime = level.time + ent->client->ps.legsTimer;
-                        }
-                    }
-*/              }
+				}
 			} else {
 				trap_UnlinkEntity( ent );
 			}
@@ -1198,8 +1170,8 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 		} else {
 			distmoved = Distance( castmove.endpos, cs->bs->cur_ps.origin );
 		}
-		if (    ( distmoved > bestmoved )
-		        //&&	((cs->bs->origin[2] - castmove.endpos[2]) < 64)	// allow up, but not down (falling)
+		if ( ( distmoved > bestmoved )
+				//&& ( ( cs->bs->origin[2] - castmove.endpos[2] ) < 64 ) // allow up, but not down (falling)
 				&&  ( castmove.groundEntityNum != ENTITYNUM_NONE ) ) {
 			// they all passed, check any other stuff
 			if ( !enemyVisible || AICast_CheckAttackAtPos( cs->entityNum, cs->bs->enemy, castmove.endpos, qfalse, qfalse ) ) {
@@ -1573,30 +1545,4 @@ AICast_DeadClipWalls
 ================
 */
 void AICast_DeadClipWalls( cast_state_t *cs ) {
-/*
-    //animation_t *anim;
-    orientation_t or;
-    vec3_t	src, vel;
-    trace_t	tr;
-
-    // get the death animation we are currently playing
-    //anim = BG_GetAnimationForIndex( cs->entityNum, (cs->bs->cur_ps.torsoAnim & ~ANIM_TOGGLEBIT) );
-
-    // find the head position
-    trap_GetTag( cs->entityNum, "tag_head", &or );
-    // move up a tad
-    or.origin[2] += 3;
-
-    // trace from the base of our bounding box, to the head
-    VectorCopy( cs->bs->origin, src );
-    src[2] -= cs->bs->cur_ps.mins[2] + 3;
-    trap_Trace( &tr, src, vec3_origin, vec3_origin, or.origin, cs->entityNum, MASK_SOLID );
-
-    // if we hit something, move away from it
-    if (!tr.startsolid && !tr.allsolid && tr.fraction < 1.0) {
-        VectorScale( tr.plane.normal, 80, vel );
-        vel[2] = 0;
-        VectorAdd( g_entities[cs->entityNum].client->ps.velocity, vel, g_entities[cs->entityNum].client->ps.velocity );
-    }
-*/
 }

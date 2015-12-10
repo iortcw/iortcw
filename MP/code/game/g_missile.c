@@ -49,53 +49,11 @@ void Shaker_think( gentity_t *ent ) {
 	float len, radius = ent->splashDamage, bounceamt;
 	int i;
 	char cmd[64];       //DAJ
-/* JPW NERVE used for trigger_concussive_dust, currently not working
-    vec3_t		mins, maxs; // JPW NERVE
-    static vec3_t	range; // JPW NERVE
-    int			num,touch[MAX_GENTITIES],scored=0; // JPW NERVE
-    gentity_t	*hit, *dirtshake; // JPW NERVE
-*/
 
 	// NERVE - SMF - we only want to call this once now
 //	if (level.time > ent->delay)
 	ent->think = G_FreeEntity;
 	ent->nextthink = level.time + FRAMETIME;
-
-/*
-// JPW NERVE check if we're close to trigger_concussive_dust fields
-    range[0] = radius/1.41f; // not exactly right, since we're doing a box trap for a radius, but wtf,
-    range[1] = radius/1.41f; // this is all eye candy anyway
-    range[2] = radius/1.41f;
-
-    VectorAdd(ent->s.origin,range,maxs);
-    VectorSubtract(ent->s.origin,range,mins);
-    num = trap_EntitiesInBox( mins, maxs, touch, MAX_GENTITIES ); // get a list of possibles
-    for ( i=0 ; i<num ; i++ ) {
-        hit = &g_entities[touch[i]];
-        if (hit->s.eType & ET_CONCUSSIVE_TRIGGER) { // add a tempent to shake some shit loose
-            dirtshake = G_Spawn();
-            dirtshake->nextthink = level.time + radius; // 1000 for aircraft flyby, other term for tumble stagger
-            VectorAdd(hit->r.maxs,hit->r.mins,vec);
-            VectorScale(vec,0.5f,vec);
-            VectorCopy(vec,dirtshake->s.pos.trBase);
-            VectorCopy(vec,dirtshake->s.origin);
-            VectorSubtract(vec,ent->s.origin,vec);
-            dirtshake->nextthink = level.time + 5000;//(radius - VectorLength(vec)); // closer the explosion, the longer the dirtshake
-            G_Printf("radius=%f dist=%f\n",radius,VectorLength(vec));
-            dirtshake->think = G_FreeEntity;
-            dirtshake->s.eType = ET_CONCUSSIVE_TRIGGER + ET_EVENTS;
-            dirtshake->s.eFlags |= EF_SMOKINGBLACK;
-            VectorCopy(hit->r.maxs, dirtshake->r.maxs);
-            VectorCopy(hit->r.mins, dirtshake->r.mins);
-            dirtshake->s.pos.trType = TR_STATIONARY;
-            dirtshake->clipmask = 0;
-            dirtshake->r.svFlags &= ~SVF_NOCLIENT;
-            SnapVector(dirtshake->r.maxs);
-            SnapVector(dirtshake->r.mins);
-            SnapVector(dirtshake->s.pos.trDelta);
-        }
-    }
-*/
 
 	for ( i = 0; i < level.maxclients; i++ ) {
 		// skip if not connected
@@ -125,7 +83,8 @@ void Shaker_think( gentity_t *ent ) {
 		bounceamt = min( 1.0f, 1.0f - ( len / radius ) );
 		Com_sprintf( cmd, sizeof( cmd ), "shake %.4f", bounceamt );   //DAJ
 		trap_SendServerCommand( player->s.clientNum, cmd );
-//DAJ BUGFIX		trap_SendServerCommand( player->s.clientNum, va( "shake %f", &bounceamt));
+		//DAJ BUGFIX
+		//trap_SendServerCommand( player->s.clientNum, va( "shake %f", &bounceamt));
 	}
 }
 // jpw
@@ -134,7 +93,7 @@ void Shaker_think( gentity_t *ent ) {
 /*
 =============
 Ground_Shaker
-    like concussive_fx but means it
+  like concussive_fx but means it
 =============
 */
 void Ground_Shaker( vec3_t origin, float range ) {
@@ -162,18 +121,6 @@ void G_BounceMissile( gentity_t *ent, trace_t *trace ) {
 	float dot;
 	int hitTime;
 
-// Arnout: removed this for MP as well (was already gone from SP)
-/*
-        // Ridah, if we are a grenade, and we have hit an AI that is waiting to catch us, give them a grenade, and delete ourselves
-    if ((ent->splashMethodOfDeath == MOD_GRENADE_SPLASH) && (g_entities[trace->entityNum].flags & FL_AI_GRENADE_KICK) &&
-        (trace->endpos[2] > g_entities[trace->entityNum].r.currentOrigin[2])) {
-        g_entities[trace->entityNum].grenadeExplodeTime = ent->nextthink;
-        g_entities[trace->entityNum].flags &= ~FL_AI_GRENADE_KICK;
-        Add_Ammo( &g_entities[trace->entityNum], WP_GRENADE_LAUNCHER, 1, qfalse );	//----(SA)	modified
-        G_FreeEntity( ent );
-        return;
-    }
-*/
 	// reflect the velocity on the trace plane
 	hitTime = level.previousTime + ( level.time - level.previousTime ) * trace->fraction;
 	BG_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity );
@@ -217,7 +164,7 @@ void G_BounceMissile( gentity_t *ent, trace_t *trace ) {
 /*
 ================
 G_MissileImpact
-    impactDamage is how much damage the impact will do to func_explosives
+  impactDamage is how much damage the impact will do to func_explosives
 ================
 */
 void G_MissileImpact( gentity_t *ent, trace_t *trace, int impactDamage ) {
@@ -287,8 +234,7 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace, int impactDamage ) {
 			G_Damage( other, ent, &g_entities[ent->r.ownerNum], velocity,
 					  ent->s.origin, ent->damage,
 					  0, ent->methodOfDeath );
-		} else    // if no damage value, then this is a splash damage grenade only
-		{
+		} else {   // if no damage value, then this is a splash damage grenade only
 			G_BounceMissile( ent, trace );
 			return;
 		}
@@ -389,42 +335,20 @@ void Concussive_think( gentity_t *ent ) {
 /*
 ==============
 Concussive_fx
-    shake the player
-    caused by explosives (grenades/dynamite/etc.)
+  shake the player
+  caused by explosives (grenades/dynamite/etc.)
 ==============
 */
-//void Concussive_fx (gentity_t *ent)
 void Concussive_fx( vec3_t origin ) {
-//	gentity_t *tent;
-//	gentity_t *player;
 
 	gentity_t *concussive;
 
 	concussive = G_Spawn();
-//	VectorCopy (ent->s.origin, concussive->s.origin);
 	VectorCopy( origin, concussive->s.origin );
 	concussive->think = Concussive_think;
 	concussive->nextthink = level.time + FRAMETIME;
 	concussive->delay = level.time + 500;
 	return;
-
-// Grenade and bomb flinching event
-/*
-    player = AICast_FindEntityForName( "player" );
-
-    if (!player)
-        return;
-
-    if ( trap_InPVS (player->r.currentOrigin, ent->s.origin) )
-    {
-        tent = G_TempEntity (ent->s.origin, EV_CONCUSSIVE);
-        VectorCopy (ent->s.origin, tent->s.origin);
-        tent->s.density = player->s.number;
-
-        // G_Printf ("sending concussive event\n");
-    }
-*/
-
 }
 
 
@@ -846,15 +770,6 @@ int G_PredictMissile( gentity_t *ent, int duration, vec3_t endPos, qboolean allo
 			break;
 		}
 	}
-/*
-    if (!allowBounce && tr.fraction < 1 && tr.entityNum > level.maxclients) {
-        // go back a bit in time, so we can catch it in the air
-        time -= 200;
-        if (time < level.time + FRAMETIME)
-            time = level.time + FRAMETIME;
-        BG_EvaluateTrajectory( &pos, time, org );
-    }
-*/
 
 	// get current position
 	VectorCopy( org, endPos );
@@ -1142,10 +1057,10 @@ void DynaSink( gentity_t *self ) {
 =================
 fire_grenade
 
-    NOTE!!!! NOTE!!!!!
+  NOTE!!!! NOTE!!!!!
 
-    This accepts a /non-normalized/ direction vector to allow specification
-    of how hard it's thrown.  Please scale the vector before calling.
+  This accepts a /non-normalized/ direction vector to allow specification
+  of how hard it's thrown.  Please scale the vector before calling.
 
 =================
 */
@@ -1563,7 +1478,7 @@ qboolean visible( gentity_t *self, gentity_t *other ) {
 /*
 ==============
 fire_mortar
-    dir is a non-normalized direction/power vector
+  dir is a non-normalized direction/power vector
 ==============
 */
 gentity_t *fire_mortar( gentity_t *self, vec3_t start, vec3_t dir ) {

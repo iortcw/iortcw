@@ -316,8 +316,7 @@ void sparks_angles_think( gentity_t *ent ) {
 
 	if ( !target ) {
 		VectorSet( ent->r.currentAngles, 0, 0, 1 );
-	} else
-	{
+	} else {
 		VectorSubtract( ent->s.origin, target->s.origin, vec );
 		VectorNormalize( vec );
 		VectorCopy( vec, ent->r.currentAngles );
@@ -456,9 +455,7 @@ void dust_use( gentity_t *ent, gentity_t *self, gentity_t *activator ) {
 		if ( ent->spawnflags & 1 ) {
 			tent->s.density = 1;
 		}
-	} else
-	{
-
+	} else {
 		AngleVectors( ent->r.currentAngles, forward, NULL, NULL );
 
 		tent = G_TempEntity( ent->r.currentOrigin, EV_DUST );
@@ -627,15 +624,13 @@ void props_bench_think( gentity_t *ent ) {
 
 	if ( ent->s.frame < 28 ) {
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
-	} else
-	{
+	} else {
 		ent->clipmask = 0;
 		ent->r.contents = 0;
 		ent->takedamage = qfalse;
 
 		G_UseTargets( ent, NULL );
 	}
-
 }
 
 void props_bench_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {
@@ -771,8 +766,7 @@ void locker_tall_think( gentity_t *ent ) {
 	if ( ent->s.frame == 30 ) {
 		G_UseTargets( ent, NULL );
 
-	} else
-	{
+	} else {
 		ent->s.frame++;
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
 	}
@@ -906,8 +900,7 @@ void Just_Got_Thrown( gentity_t *self ) {
 		}
 
 		return;
-	} else
-	{
+	} else {
 		// RF, alert AI of sound event
 		AICast_AudibleEvent( self->s.number, self->r.currentOrigin, 384 );
 
@@ -1085,8 +1078,7 @@ void Props_Activated( gentity_t *self ) {
 		G_FreeEntity( self );
 
 		return;
-	} else
-	{
+	} else {
 		if ( !Q_stricmp( self->classname, "props_chair_hiback" ) ) {
 			self->s.frame = 23;
 			self->s.density = 1;
@@ -1137,8 +1129,7 @@ void Props_Chair_Think( gentity_t *self ) {
 		VectorClear( self->s.pos.trDelta );
 		self->s.pos.trDuration = 0;
 		self->s.pos.trType = TR_STATIONARY;
-	} else
-	{
+	} else {
 		vec3_t mins, maxs;
 
 		VectorCopy( self->r.mins, mins );
@@ -1150,8 +1141,7 @@ void Props_Chair_Think( gentity_t *self ) {
 
 		if ( tr.fraction == 1 ) {
 			VectorCopy( self->s.pos.trBase, self->r.currentOrigin );
-		} else
-		{
+		} else {
 			VectorCopy( self->r.currentOrigin, self->s.pos.trBase );
 			VectorClear( self->s.pos.trDelta );
 			self->s.pos.trDuration = 0;
@@ -1318,8 +1308,7 @@ void Props_Chair_Animate( gentity_t *ent ) {
 			ent->s.time = level.time;
 			ent->s.time2 = level.time + 2000;
 			return;
-		} else
-		{
+		} else {
 			ent->nextthink = level.time + ( FRAMETIME / 2 );
 		}
 	} else if (
@@ -1336,8 +1325,7 @@ void Props_Chair_Animate( gentity_t *ent ) {
 			ent->s.time = level.time;
 			ent->s.time2 = level.time + 2000;
 			return;
-		} else
-		{
+		} else {
 			ent->nextthink = level.time + ( FRAMETIME / 2 );
 		}
 	} else if ( !Q_stricmp( ent->classname, "props_desklamp" ) ) {
@@ -1352,8 +1340,7 @@ void Props_Chair_Animate( gentity_t *ent ) {
 			ent->s.time = level.time;
 			ent->s.time2 = level.time + 2000;
 			return;
-		} else
-		{
+		} else {
 			ent->nextthink = level.time + ( FRAMETIME / 2 );
 		}
 	}
@@ -1749,8 +1736,7 @@ void Use_DamageInflictor( gentity_t *ent, gentity_t *other, gentity_t *activator
 	{
 		if ( daent == ent ) {
 			G_Printf( "Use_DamageInflictor damaging self.\n" );
-		} else
-		{
+		} else {
 			G_Damage( daent, ent, ent, NULL, NULL, 9999, 0, MOD_CRUSH );
 		}
 	}
@@ -1908,17 +1894,15 @@ void Props_Barrel_Animate( gentity_t *ent ) {
 			ent->think = G_FreeEntity;
 			ent->nextthink = level.time + 25000;
 			return;
-		} else
-		{
-			//	G_UseTargets (ent, NULL);
+		} else {
+			//G_UseTargets (ent, NULL);
 			ent->think = G_FreeEntity;
 			ent->nextthink = level.time + 25000;
 			//ent->s.time = level.time;
 			//ent->s.time2 = level.time + 2000;
 			return;
 		}
-	} else
-	{
+	} else {
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
 	}
 
@@ -1954,8 +1938,7 @@ void smoker_think( gentity_t *ent ) {
 
 	if ( !ent->count ) {
 		G_FreeEntity( ent );
-	} else
-	{
+	} else {
 		barrel_smoke( ent );
 		ent->nextthink = level.time + FRAMETIME;
 	}
@@ -2458,8 +2441,7 @@ void props_crate32x64_think( gentity_t *ent ) {
 
 	if ( ent->s.frame < 17 ) {
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
-	} else
-	{
+	} else {
 		ent->clipmask = 0;
 		ent->r.contents = 0;
 		ent->takedamage = qfalse;
@@ -2562,8 +2544,7 @@ void flippy_table_animate( gentity_t *ent ) {
 		G_UseTargets( ent, NULL );
 		ent->think = G_FreeEntity;
 		ent->nextthink = level.time + 2000;
-	} else
-	{
+	} else {
 		ent->s.frame++;
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
 	}
@@ -2614,8 +2595,7 @@ void props_flippy_blocked( gentity_t *ent, gentity_t *other ) {
 		VectorCopy( kvel, other->s.pos.trDelta );
 
 		other->s.eFlags |= EF_BOUNCE;
-	} else
-	{
+	} else {
 		// just delete it or destroy it
 		G_TempEntity( other->s.origin, EV_ITEM_POP );
 		G_FreeEntity( other );
@@ -2646,7 +2626,9 @@ void SP_Props_Flipping_Table( gentity_t *ent ) {
 		ent->rotate[2] = 1;
 	} else if ( ent->spawnflags & 8 ) {
 		ent->rotate[0] = 1;
-	} else { ent->rotate[1] = 1; }
+	} else {
+		ent->rotate[1] = 1;
+	}
 
 	ent->spawnflags |= 64; // stay open
 
@@ -2700,9 +2682,7 @@ void props_58x112tablew_think( gentity_t *ent ) {
 
 	if ( ent->s.frame < 16 ) {
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
-	} else
-	{
-
+	} else {
 		ent->clipmask = 0;
 		ent->r.contents = 0;
 
@@ -2782,8 +2762,7 @@ void props_castlebed_animate( gentity_t *ent ) {
 
 	if ( ent->s.frame < 8 ) {
 		ent->nextthink = level.time + ( FRAMETIME / 2 );
-	} else
-	{
+	} else {
 		ent->clipmask = 0;
 		ent->r.contents = 0;
 		G_UseTargets( ent, NULL );
@@ -2894,8 +2873,7 @@ void SP_props_snowGenerator( gentity_t *ent ) {
 	if ( !ent->target ) {
 		G_Printf( "snowGenerator at loc %s does not have a target\n", vtos( center ) );
 		return;
-	} else
-	{
+	} else {
 		target = G_Find( target, FOFS( targetname ), ent->target );
 		if ( !target ) {
 			G_Printf( "error snowGenerator at loc %s does cant find target %s\n", vtos( center ), ent->target );
@@ -3037,8 +3015,7 @@ void propsFireColumnInit( gentity_t *ent ) {
 		VectorSubtract( target->s.origin, ent->s.origin, vec );
 		vectoangles( vec, angles );
 		G_SetAngle( ent, angles );
-	} else
-	{
+	} else {
 		// ok then just up
 		VectorSet( vec, 0, 0, 1 );
 		vectoangles( vec, angles );
@@ -3086,8 +3063,7 @@ void props_ExploPartUse( gentity_t *ent, gentity_t *other, gentity_t *activator 
 	if ( ent->s.modelindex ) {
 		part = fire_flamebarrel( ent, start, dir );
 		part->s.modelindex = ent->s.modelindex;
-	} else
-	{
+	} else {
 		G_Printf( "props_ExploPartUse has not been assigned a model\n" );
 		return;
 	}
@@ -3118,8 +3094,7 @@ void props_ExploPartInit( gentity_t *ent ) {
 		VectorSubtract( target->s.origin, ent->s.origin, vec );
 		vectoangles( vec, angles );
 		G_SetAngle( ent, angles );
-	} else
-	{
+	} else {
 		// ok then just up
 		VectorSet( vec, 0, 0, 1 );
 		vectoangles( vec, angles );
@@ -3195,8 +3170,7 @@ void props_decoration_animate( gentity_t *ent ) {
 			if ( !( ent->spawnflags & 64 ) ) {
 				ent->takedamage = qfalse;
 			}
-		} else
-		{
+		} else {
 			ent->s.frame = ent->count2;
 			ent->takedamage = qfalse;
 
@@ -3240,8 +3214,7 @@ void Use_props_decoration( gentity_t *ent, gentity_t *self, gentity_t *activator
 	} else if ( ent->spawnflags & 4 ) {
 		ent->nextthink = level.time + 50;
 		ent->think = props_decoration_animate;
-	} else
-	{
+	} else {
 		trap_UnlinkEntity( ent );
 		ent->spawnflags |= 1;
 	}
@@ -4073,8 +4046,7 @@ void props_flamethrower_think( gentity_t *ent ) {
 		if ( !target ) {
 //			VectorSet (ent->r.currentAngles, 0, 0, 1);	// (SA) wasn't working
 			VectorSet( ent->s.apos.trBase, 0, 0, 1 );
-		} else
-		{
+		} else {
 			VectorSubtract( target->s.origin, ent->s.origin, vec );
 			VectorNormalize( vec );
 			vectoangles( vec, angles );
@@ -4115,8 +4087,7 @@ void props_flamethrower_use( gentity_t *ent, gentity_t *other, gentity_t *activa
 		ent->think = 0;      // (SA) wasn't working
 		ent->nextthink = 0;
 		return;
-	} else
-	{
+	} else {
 		ent->spawnflags |= 2;
 	}
 
@@ -4146,8 +4117,7 @@ void props_flamethrower_init( gentity_t *ent ) {
 	if ( !target ) {
 //		VectorSet (ent->r.currentAngles, 0, 0, 1);	//----(SA)
 		VectorSet( ent->s.apos.trBase, 0, 0, 1 );
-	} else
-	{
+	} else {
 		VectorSubtract( target->s.origin, ent->s.origin, vec );
 		VectorNormalize( vec );
 		vectoangles( vec, angles );

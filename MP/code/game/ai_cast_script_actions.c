@@ -1016,10 +1016,10 @@ qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params ) {
 ==============
 AICast_ScriptAction_GiveArmor
 
-    syntax: givearmor <pickupname>
+  syntax: givearmor <pickupname>
 
-    will probably be more like:
-        syntax: givearmor <type> <amount>
+  will probably be more like:
+  syntax: givearmor <type> <amount>
 ==============
 */
 qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params ) {
@@ -1455,17 +1455,17 @@ AICast_ScriptAction_Accum
 
   Commands:
 
-    accum <n> inc <m>
-    accum <n> abort_if_less_than <m>
-    accum <n> abort_if_greater_than <m>
-    accum <n> abort_if_not_equal <m>
-    accum <n> abort_if_equal <m>
-    accum <n> set <m>
-    accum <n> random <m>
-    accum <n> bitset <m>
-    accum <n> bitreset <m>
-    accum <n> abort_if_bitset <m>
-    accum <n> abort_if_not_bitset <m>
+  accum <n> inc <m>
+  accum <n> abort_if_less_than <m>
+  accum <n> abort_if_greater_than <m>
+  accum <n> abort_if_not_equal <m>
+  accum <n> abort_if_equal <m>
+  accum <n> set <m>
+  accum <n> random <m>
+  accum <n> bitset <m>
+  accum <n> bitreset <m>
+  accum <n> abort_if_bitset <m>
+  accum <n> abort_if_not_bitset <m>
 =================
 */
 qboolean AICast_ScriptAction_Accum( cast_state_t *cs, char *params ) {
@@ -1583,55 +1583,8 @@ AICast_ScriptAction_SpawnCast
 =================
 */
 qboolean AICast_ScriptAction_SpawnCast( cast_state_t *cs, char *params ) {
-//	char	*pString, *token;
-//	char	*classname;
-//	gentity_t	*targetEnt, *newCast;
-
 	G_Error( "AI Scripting: spawncast is no longer functional. Use trigger_spawn instead.\n" );
 	return qfalse;
-/*
-    if (!params[0]) {
-        G_Error( "AI Scripting: spawncast without a classname\n" );
-    }
-
-    pString = params;
-
-    token = COM_ParseExt( &pString, qfalse );
-    if (!token[0]) {
-        G_Error( "AI Scripting: spawncast without a classname\n" );
-    }
-
-    classname = G_Alloc( strlen(token)+1 );
-    Q_strncpyz( classname, token, strlen(token)+1 );
-
-    token = COM_ParseExt( &pString, qfalse );
-    if (!token[0]) {
-        G_Error( "AI Scripting: spawncast without a targetname\n" );
-    }
-
-    targetEnt = G_Find( NULL, FOFS(targetname), token );
-    if (!targetEnt) {
-        G_Error( "AI Scripting: cannot find targetname \"%s\"\n", token );
-    }
-
-    token = COM_ParseExt( &pString, qfalse );
-    if (!token[0]) {
-        G_Error( "AI Scripting: spawncast without an ainame\n" );
-    }
-
-    newCast = G_Spawn();
-    newCast->classname = classname;
-    VectorCopy( targetEnt->s.origin, newCast->s.origin );
-    VectorCopy( targetEnt->s.angles, newCast->s.angles );
-    newCast->aiName = G_Alloc( strlen(token)+1 );
-    Q_strncpyz( newCast->aiName, token, strlen(token)+1 );
-
-    if (!G_CallSpawn( newCast )) {
-        G_Error( "AI Scripting: spawncast for unknown entity \"%s\"\n", newCast->classname );
-    }
-
-    return qtrue;
-*/
 }
 
 /*
@@ -1753,7 +1706,7 @@ qboolean AICast_ScriptAction_FaceTargetAngles( cast_state_t *cs, char *params ) 
 ===================
 AICast_ScriptAction_ResetScript
 
-    causes any currently running scripts to abort, in favour of the current script
+  causes any currently running scripts to abort, in favour of the current script
 ===================
 */
 qboolean AICast_ScriptAction_ResetScript( cast_state_t *cs, char *params ) {
@@ -1790,7 +1743,7 @@ qboolean AICast_ScriptAction_ResetScript( cast_state_t *cs, char *params ) {
 ===================
 AICast_ScriptAction_Mount
 
-    syntax: mount <targetname>
+  syntax: mount <targetname>
 
   Used to an AI to mount the MG42
 ===================
@@ -1838,7 +1791,7 @@ qboolean AICast_ScriptAction_Mount( cast_state_t *cs, char *params ) {
 ===================
 AICast_ScriptAction_Unmount
 
-    syntax: unmount
+  syntax: unmount
 
   Stop using their current mounted entity
 ===================
@@ -1863,7 +1816,7 @@ qboolean AICast_ScriptAction_Unmount( cast_state_t *cs, char *params ) {
 ====================
 AICast_ScriptAction_SavePersistant
 
-    syntax: savepersistant <next_mapname>
+  syntax: savepersistant <next_mapname>
 
   Saves out the data that should be retained between certain levels. Not
   calling this routine before changing levels, is the equivalent of resetting
@@ -1882,7 +1835,7 @@ qboolean AICast_ScriptAction_SavePersistant( cast_state_t *cs, char *params ) {
 ====================
 AICast_ScriptAction_ChangeLevel
 
-    syntax: changelevel <mapname> [nostats] [persistant]
+  syntax: changelevel <mapname> [nostats] [persistant]
 
   Issues an spdevmap/spmap to the consol. Optionally add "persistant" if you want the player to
   keep their inventory through the transition.

@@ -170,7 +170,7 @@ void SP_misc_teleporter_dest( gentity_t *ent ) {
 /*
 =================================================================================
 
-    misc_grabber_trap
+  misc_grabber_trap
 
 */
 
@@ -186,7 +186,7 @@ static int attackHittimes[] = {     ( 7 * 1000 ) / 15,
 /*
 ==============
 grabber_think_idle
-    think func for the grabber ent to reset to idle if not attacking
+  think func for the grabber ent to reset to idle if not attacking
 ==============
 */
 void grabber_think_idle( gentity_t *ent ) {
@@ -198,7 +198,7 @@ void grabber_think_idle( gentity_t *ent ) {
 /*
 ==============
 grabber_think_hit
-    think func for grabber ent following an attack command
+  think func for grabber ent following an attack command
 ==============
 */
 void grabber_think_hit( gentity_t *ent ) {
@@ -244,7 +244,7 @@ void grabber_die( gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int
 /*
 ==============
 grabber_attack
-    direct call to the grabber entity (not a trigger) to call the attack
+  direct call to the grabber entity (not a trigger) to call the attack
 ==============
 */
 void grabber_attack( gentity_t *ent ) {
@@ -257,7 +257,7 @@ void grabber_attack( gentity_t *ent ) {
 /*
 ==============
 grabber_close
-    touch func for attack distance trigger entity
+  touch func for attack distance trigger entity
 ==============
 */
 void grabber_close( gentity_t *ent, gentity_t *other, trace_t *trace ) {
@@ -273,7 +273,7 @@ void grabber_close( gentity_t *ent, gentity_t *other, trace_t *trace ) {
 /*
 ==============
 grabber_pain
-    pain func for the grabber entity (not triggers)
+  pain func for the grabber entity (not triggers)
 ==============
 */
 void grabber_pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t point ) {
@@ -284,8 +284,8 @@ void grabber_pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t point
 /*
 ==============
 grabber_wake
-    ent calling this is the bounding box for the grabber, not the grabber ent itself.
-    the grabber ent is 'ent->parent'
+  ent calling this is the bounding box for the grabber, not the grabber ent itself.
+  the grabber ent is 'ent->parent'
 ==============
 */
 void grabber_wake( gentity_t *ent ) {
@@ -328,9 +328,9 @@ void grabber_wake( gentity_t *ent ) {
 /*
 ==============
 grabber_use
-    use func for the grabber entity
-    if not awake, allow waking by trigger
-    if awake, allow attacking by trigger
+  use func for the grabber entity
+  if not awake, allow waking by trigger
+  if awake, allow attacking by trigger
 ==============
 */
 void grabber_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -346,7 +346,7 @@ void grabber_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 /*
 ==============
 grabber_wake_touch
-    touch func for the first 'wake' trigger entity
+  touch func for the first 'wake' trigger entity
 ==============
 */
 void grabber_wake_touch( gentity_t *ent, gentity_t *other, trace_t *trace ) {
@@ -1144,7 +1144,7 @@ Use color picker to set color or key "color".  values are 0.0-1.0 for each color
 /*
 ==============
 use_corona
-    so level designers can toggle them on/off
+  so level designers can toggle them on/off
 ==============
 */
 void use_corona( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -1222,8 +1222,8 @@ char* predef_lightstyles[] = {
 /*
 ==============
 dlight_finish_spawning
-    All the dlights should call this on the same frame, thereby
-    being synched, starting	their sequences all at the same time.
+  All the dlights should call this on the same frame, thereby
+  being synched, starting	their sequences all at the same time.
 ==============
 */
 void dlight_finish_spawning( gentity_t *ent ) {
@@ -1272,7 +1272,7 @@ styles:
 /*
 ==============
 shutoff_dlight
-    the dlight knew when it was triggered to unlink after going through it's cycle once
+  the dlight knew when it was triggered to unlink after going through it's cycle once
 ==============
 */
 void shutoff_dlight( gentity_t *ent ) {
@@ -1311,9 +1311,9 @@ void use_dlight( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
 /*
 ==============
 SP_dlight
-    ent->dl_stylestring contains the lightstyle string
-    ent->health tracks current index into style string
-    ent->count tracks length of style string
+  ent->dl_stylestring contains the lightstyle string
+  ent->health tracks current index into style string
+  ent->count tracks length of style string
 ==============
 */
 void SP_dlight( gentity_t *ent ) {

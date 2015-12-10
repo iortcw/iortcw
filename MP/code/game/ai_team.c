@@ -134,7 +134,9 @@ int BotSortTeamMatesByBaseTravelTime( bot_state_t *bs, int *teammates, int maxte
 
 	if ( BotCTFTeam( bs ) == CTF_TEAM_RED ) {
 		goal = &ctf_redflag;
-	} else { goal = &ctf_blueflag; }
+	} else {
+		goal = &ctf_blueflag;
+	}
 
 	if ( !maxclients ) {
 		maxclients = trap_Cvar_VariableIntegerValue( "sv_maxclients" );
@@ -221,7 +223,9 @@ void BotCTFOrders_BothFlagsNotAtBase( bot_state_t *bs ) {
 		//tell the one not carrying the flag to attack the enemy base
 		if ( teammates[0] != bs->flagcarrier ) {
 			other = teammates[0];
-		} else { other = teammates[1]; }
+		} else {
+			other = teammates[1];
+		}
 		ClientName( other, name, sizeof( name ) );
 		BotAI_BotInitialChat( bs, "cmd_getflag", name, NULL );
 		BotSayTeamOrder( bs, other );
@@ -232,7 +236,9 @@ void BotCTFOrders_BothFlagsNotAtBase( bot_state_t *bs ) {
 		//tell the one closest to the base not carrying the flag to accompany the flag carrier
 		if ( teammates[0] != bs->flagcarrier ) {
 			other = teammates[0];
-		} else { other = teammates[1]; }
+		} else {
+			other = teammates[1];
+		}
 		ClientName( other, name, sizeof( name ) );
 		ClientName( bs->flagcarrier, carriername, sizeof( carriername ) );
 		if ( bs->flagcarrier == bs->client ) {
@@ -244,7 +250,9 @@ void BotCTFOrders_BothFlagsNotAtBase( bot_state_t *bs ) {
 		//tell the one furthest from the the base not carrying the flag to get the enemy flag
 		if ( teammates[2] != bs->flagcarrier ) {
 			other = teammates[2];
-		} else { other = teammates[1]; }
+		} else {
+			other = teammates[1];
+		}
 		ClientName( other, name, sizeof( name ) );
 		BotAI_BotInitialChat( bs, "cmd_getflag", name, NULL );
 		BotSayTeamOrder( bs, other );
@@ -368,7 +376,9 @@ void BotCTFOrders_EnemyFlagNotAtBase( bot_state_t *bs ) {
 		//tell the one not carrying the flag to defend the base
 		if ( teammates[0] == bs->flagcarrier ) {
 			other = teammates[1];
-		} else { other = teammates[0]; }
+		} else {
+			other = teammates[0];
+		}
 		ClientName( other, name, sizeof( name ) );
 		BotAI_BotInitialChat( bs, "cmd_defendbase", name, NULL );
 		BotSayTeamOrder( bs, other );
@@ -379,14 +389,18 @@ void BotCTFOrders_EnemyFlagNotAtBase( bot_state_t *bs ) {
 		//tell the one closest to the base not carrying the flag to defend the base
 		if ( teammates[0] != bs->flagcarrier ) {
 			other = teammates[0];
-		} else { other = teammates[1]; }
+		} else {
+			other = teammates[1];
+		}
 		ClientName( other, name, sizeof( name ) );
 		BotAI_BotInitialChat( bs, "cmd_defendbase", name, NULL );
 		BotSayTeamOrder( bs, other );
 		//tell the one furthest from the base not carrying the flag to accompany the flag carrier
 		if ( teammates[2] != bs->flagcarrier ) {
 			other = teammates[2];
-		} else { other = teammates[1]; }
+		} else {
+			other = teammates[1];
+		}
 		ClientName( other, name, sizeof( name ) );
 		ClientName( bs->flagcarrier, carriername, sizeof( carriername ) );
 		if ( bs->flagcarrier == bs->client ) {
@@ -593,7 +607,9 @@ void BotTeamAI( bot_state_t *bs ) {
 			//
 			if ( BotCTFTeam( bs ) == CTF_TEAM_RED ) {
 				flagstatus = bs->redflagstatus * 2 + bs->blueflagstatus;
-			} else { flagstatus = bs->blueflagstatus * 2 + bs->redflagstatus; }
+			} else {
+				flagstatus = bs->blueflagstatus * 2 + bs->redflagstatus;
+			}
 			//
 			switch ( flagstatus ) {
 			case 0: BotCTFOrders_BothFlagsAtBase( bs ); break;

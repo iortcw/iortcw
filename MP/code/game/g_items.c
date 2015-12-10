@@ -200,7 +200,7 @@ int Pickup_Treasure( gentity_t *ent, gentity_t *other ) {
 /*
 ==============
 UseHoldableItem
-    server side handling of holdable item use
+  server side handling of holdable item use
 ==============
 */
 void UseHoldableItem( gentity_t *ent, int item ) {
@@ -279,7 +279,7 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 /*
 ==============
 Fill_Clip
-    push reserve ammo into available space in the clip
+  push reserve ammo into available space in the clip
 ==============
 */
 void Fill_Clip( playerState_t *ps, int weapon ) {
@@ -313,10 +313,10 @@ void Fill_Clip( playerState_t *ps, int weapon ) {
 /*
 ==============
 Add_Ammo
-    Try to always add ammo here unless you have specific needs
-    (like the AI "infinite ammo" where they get below 900 and force back up to 999)
+  Try to always add ammo here unless you have specific needs
+  (like the AI "infinite ammo" where they get below 900 and force back up to 999)
 
-    fillClip will push the ammo straight through into the clip and leave the rest in reserve
+  fillClip will push the ammo straight through into the clip and leave the rest in reserve
 ==============
 */
 //----(SA)	modified
@@ -671,17 +671,6 @@ void RespawnItem( gentity_t *ent ) {
 	ent->r.svFlags &= ~SVF_NOCLIENT;
 	trap_LinkEntity( ent );
 
-/*
-    if ( ent->item->giType == IT_POWERUP && g_gametype.integer != GT_SINGLE_PLAYER) {
-        // play powerup spawn sound to all clients
-        gentity_t	*te;
-
-        te = G_TempEntity( ent->s.pos.trBase, EV_GLOBAL_SOUND );
-        te->s.eventParm = G_SoundIndex( "sound/items/poweruprespawn.wav" );
-        te->r.svFlags |= SVF_BROADCAST;
-    }
-*/
-
 	// play the normal respawn sound only to nearby clients
 	G_AddEvent( ent, EV_ITEM_RESPAWN, 0 );
 
@@ -692,9 +681,9 @@ void RespawnItem( gentity_t *ent ) {
 /*
 ==============
 Touch_Item
-    if other->client->pers.autoActivate == PICKUP_ACTIVATE	(0), he will pick up items only when using +activate
-    if other->client->pers.autoActivate == PICKUP_TOUCH		(1), he will pickup items when touched
-    if other->client->pers.autoActivate == PICKUP_FORCE		(2), he will pickup the next item when touched (and reset to PICKUP_ACTIVATE when done)
+  if other->client->pers.autoActivate == PICKUP_ACTIVATE	(0), he will pick up items only when using +activate
+  if other->client->pers.autoActivate == PICKUP_TOUCH		(1), he will pickup items when touched
+  if other->client->pers.autoActivate == PICKUP_FORCE		(2), he will pickup the next item when touched (and reset to PICKUP_ACTIVATE when done)
 ==============
 */
 void Touch_Item_Auto( gentity_t *ent, gentity_t *other, trace_t *trace ) {

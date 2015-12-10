@@ -197,16 +197,7 @@ int BotNearbyGoal( bot_state_t *bs, int tfl, bot_goal_t *ltg, float range ) {
 	}
 
 	ret = trap_BotChooseNBGItem( bs->gs, bs->origin, bs->inventory, tfl, ltg, range );
-	/*
-	if (ret)
-	{
-	    char buf[128];
-	    //get the goal at the top of the stack
-	    trap_BotGetTopGoal(bs->gs, &goal);
-	    trap_BotGoalName(goal.number, buf, sizeof(buf));
-	    BotAI_Print(PRT_MESSAGE, "%1.1f: new nearby goal %s\n", trap_AAS_Time(), buf);
-	}
-	*/
+
 	return ret;
 }
 
@@ -277,16 +268,8 @@ int BotGetItemLongTermGoal( bot_state_t *bs, int tfl, bot_goal_t *goal ) {
 		//choose a new goal
 		//BotAI_Print(PRT_MESSAGE, "%6.1f client %d: BotChooseLTGItem\n", trap_AAS_Time(), bs->client);
 		if ( trap_BotChooseLTGItem( bs->gs, bs->origin, bs->inventory, tfl ) ) {
-			/*
-			char buf[128];
-			//get the goal at the top of the stack
-			trap_BotGetTopGoal(bs->gs, goal);
-			trap_BotGoalName(goal->number, buf, sizeof(buf));
-			BotAI_Print(PRT_MESSAGE, "%1.1f: new long term goal %s\n", trap_AAS_Time(), buf);
-			*/
 			bs->ltg_time = trap_AAS_Time() + 20;
 		} else { //the bot gets sorta stuck with all the avoid timings, shouldn't happen though
-			     //
 #ifdef DEBUG
 			char netname[128];
 
@@ -1229,9 +1212,9 @@ int AINode_Seek_NBG( bot_state_t *bs ) {
 		if ( trap_BotMovementViewTarget( bs->ms, &goal, bs->tfl, 300, target ) ) {
 			VectorSubtract( target, bs->origin, dir );
 			vectoangles( dir, bs->ideal_viewangles );
+		} else { //FIXME: look at cluster portals?
+			vectoangles( moveresult.movedir, bs->ideal_viewangles );
 		}
-		//FIXME: look at cluster portals?
-		else {vectoangles( moveresult.movedir, bs->ideal_viewangles ); }
 		bs->ideal_viewangles[2] *= 0.5;
 	}
 	//if the weapon is used for the bot movement
@@ -1364,7 +1347,9 @@ int AINode_Seek_LTG( bot_state_t *bs ) {
 		//
 		if ( bs->ltgtype == LTG_DEFENDKEYAREA ) {
 			range = 400;
-		} else { range = 150; }
+		} else {
+			range = 150;
+		}
 		//
 #ifdef CTF
 		//if carrying a flag the bot shouldn't be distracted too much
@@ -1872,9 +1857,7 @@ int AINode_Battle_Retreat( bot_state_t *bs ) {
 	//choose the best weapon to fight with
 	BotChooseWeapon( bs );
 	//if the view is fixed for the movement
-	if ( moveresult.flags & ( MOVERESULT_MOVEMENTVIEW
-	                          //|MOVERESULT_SWIMVIEW
-							  ) ) {
+	if ( moveresult.flags & MOVERESULT_MOVEMENTVIEW ) {
 		VectorCopy( moveresult.ideal_viewangles, bs->ideal_viewangles );
 	} else if ( !( moveresult.flags & MOVERESULT_MOVEMENTVIEWSET )
 				&& !( bs->flags & BFL_IDEALVIEWSET ) ) {
@@ -1991,7 +1974,9 @@ int AINode_Battle_NBG( bot_state_t *bs ) {
 		//if the bot still has a goal
 		if ( trap_BotGetTopGoal( bs->gs, &goal ) ) {
 			AIEnter_Battle_Retreat( bs );
-		} else { AIEnter_Battle_Fight( bs ); }
+		} else {
+			AIEnter_Battle_Fight( bs );
+		}
 		//
 		return qfalse;
 	}

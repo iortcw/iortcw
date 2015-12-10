@@ -419,13 +419,13 @@ void QDECL G_Error( const char *fmt, ... ) {
 /*
 ==============
 G_CheckForCursorHints
-    non-AI's check for cursor hint contacts
+  non-AI's check for cursor hint contacts
 
-    server-side because there's info we want to show that the client
-    just doesn't know about.  (health or other info of an explosive,invisible_users,items,etc.)
+  server-side because there's info we want to show that the client
+  just doesn't know about.  (health or other info of an explosive,invisible_users,items,etc.)
 
-    traceEnt is the ent hit by the trace, checkEnt is the ent that is being
-    checked against (in case the traceent was an invisible_user or something)
+  traceEnt is the ent hit by the trace, checkEnt is the ent that is being
+  checked against (in case the traceent was an invisible_user or something)
 
 ==============
 */
@@ -613,21 +613,14 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 					}
 				}
 
-				if ( ( // general mg42 hint conditions
-						 !Q_stricmp( traceEnt->classname, "misc_mg42" ) ) &&
-					 ( ps->weapon != WP_SNIPERRIFLE ) && // JPW NERVE no hint if you're scoped in sniperwise
-				     // ATVI #470
-				     // mount hint conditions only, if busted MG42, no check
-					 (
-						 ( traceEnt->health < 255 ) ||
-						 (
-							 !( ent->client->ps.pm_flags & PMF_DUCKED ) &&
-							 ( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] < 40 ) &&
-							 ( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] > 0 ) &&
-							 !infront( traceEnt, ent )
-						 )
-					 )
-					 ) {
+				if ( ( !Q_stricmp( traceEnt->classname, "misc_mg42" ) ) && // general mg42 hint conditions
+						( ps->weapon != WP_SNIPERRIFLE ) && // JPW NERVE no hint if you're scoped in sniperwise
+						// ATVI #470
+						// mount hint conditions only, if busted MG42, no check
+						( ( traceEnt->health < 255 ) ||  ( !( ent->client->ps.pm_flags & PMF_DUCKED ) &&
+						( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] < 40 ) &&
+						( traceEnt->r.currentOrigin[2] - ent->r.currentOrigin[2] > 0 ) &&
+						!infront( traceEnt, ent ) ) ) ) {
 
 					hintDist = CH_ACTIVATE_DIST;
 					hintType = HINT_MG42;
@@ -790,11 +783,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 				} else if ( !Q_stricmp( checkEnt->classname, "func_button" ) ) {
 					hintDist = CH_ACTIVATE_DIST;
 					hintType = HINT_BUTTON;
-				}/*
-				else if(checkEnt->s.dmgFlags == HINT_CHAIR) {
-				    hintDist = CH_ACTIVATE_DIST;
-				    hintType = HINT_CHAIR;
-				}*/
+				}
 			}
 
 			// DHM - Nerve :: Handle wolf multiplayer hints
@@ -1052,7 +1041,7 @@ void G_UpdateCvars( void ) {
 /*
 ==============
 G_SpawnScriptCamera
-    create the game entity that's used for camera<->script communication and portal location for camera view
+  create the game entity that's used for camera<->script communication and portal location for camera view
 ==============
 */
 void G_SpawnScriptCamera( void ) {

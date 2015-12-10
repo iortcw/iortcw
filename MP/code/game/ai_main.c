@@ -228,7 +228,9 @@ void QDECL BotAI_BotInitialChat( bot_state_t *bs, char *type, ... ) {
 	mcontext = CONTEXT_NORMAL | CONTEXT_NEARBYITEM | CONTEXT_NAMES;
 	if ( BotCTFTeam( bs ) == CTF_TEAM_RED ) {
 		mcontext |= CONTEXT_CTFREDTEAM;
-	} else { mcontext |= CONTEXT_CTFBLUETEAM; }
+	} else {
+		mcontext |= CONTEXT_CTFBLUETEAM;
+	}
 
 	trap_BotInitialChat( bs->cs, type, mcontext, vars[0], vars[1], vars[2], vars[3], vars[4], vars[5], vars[6], vars[7] );
 }
@@ -427,13 +429,7 @@ void BotInputToUserCommand( bot_input_t *bi, usercmd_t *ucmd, int delta_angles[3
 	//subtract the delta angles
 	for ( j = 0; j < 3; j++ ) {
 		temp = ucmd->angles[j] - delta_angles[j];
-		/*NOTE: disabled because temp should be mod first
-		if ( j == PITCH ) {
-		    // don't let the player look up or down more than 90 degrees
-		    if ( temp > 16000 ) temp = 16000;
-		    else if ( temp < -16000 ) temp = -16000;
-		}
-		*/
+
 		ucmd->angles[j] = temp;
 	}
 	//NOTE: movement is relative to the REAL view angles
@@ -441,7 +437,9 @@ void BotInputToUserCommand( bot_input_t *bi, usercmd_t *ucmd, int delta_angles[3
 	//get the pitch in the range [-180, 180]
 	if ( bi->dir[2] ) {
 		angles[PITCH] = bi->viewangles[PITCH];
-	} else { angles[PITCH] = 0; }
+	} else {
+		angles[PITCH] = 0;
+	}
 	angles[YAW] = bi->viewangles[YAW];
 	angles[ROLL] = 0;
 	AngleVectors( angles, forward, right, NULL );
@@ -704,7 +702,9 @@ int BotAISetupClient( int client, struct bot_settings_s *settings ) {
 		trap_BotSetChatGender( bs->cs, CHAT_GENDERFEMALE );
 	} else if ( *gender == 'm' || *gender == 'M' ) {
 		trap_BotSetChatGender( bs->cs, CHAT_GENDERMALE );
-	} else { trap_BotSetChatGender( bs->cs, CHAT_GENDERLESS ); }
+	} else {
+		trap_BotSetChatGender( bs->cs, CHAT_GENDERLESS );
+	}
 
 	bs->inuse = qtrue;
 	bs->client = client;
@@ -909,7 +909,9 @@ int BotAIStartFrame( int time ) {
 
 	if ( elapsed_time > bot_thinktime.integer ) {
 		thinktime = elapsed_time;
-	} else { thinktime = bot_thinktime.integer; }
+	} else {
+		thinktime = bot_thinktime.integer;
+	}
 
 	// update the bot library
 	if ( botlib_residual >= thinktime ) {
@@ -954,7 +956,9 @@ int BotAIStartFrame( int time ) {
 			state.flags = ent->s.eFlags;
 			if ( ent->r.bmodel ) {
 				state.solid = SOLID_BSP;
-			} else { state.solid = SOLID_BBOX; }
+			} else {
+				state.solid = SOLID_BBOX;
+			}
 			state.groundent = ent->s.groundEntityNum;
 			state.modelindex = ent->s.modelindex;
 			state.modelindex2 = ent->s.modelindex2;

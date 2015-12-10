@@ -772,9 +772,9 @@ gentity_t* G_BuildHead( gentity_t *ent ) {
 /*
 ==============
 G_ArmorDamage
-    brokeparts is how many should be broken off now
-    curbroke is how many are broken
-    the difference is how many to pop off this time
+  brokeparts is how many should be broken off now
+  curbroke is how many are broken
+  the difference is how many to pop off this time
 ==============
 */
 void G_ArmorDamage( gentity_t *targ ) {
@@ -1355,19 +1355,6 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t *attacker, float damage, float
 			continue;
 		}
 
-/* JPW NERVE -- we can put this back if we need to, but it kinna sucks for human-sized bboxes
-        // find the distance from the edge of the bounding box
-        for ( i = 0 ; i < 3 ; i++ ) {
-            if ( origin[i] < ent->r.absmin[i] ) {
-                v[i] = ent->r.absmin[i] - origin[i];
-            } else if ( origin[i] > ent->r.absmax[i] ) {
-                v[i] = origin[i] - ent->r.absmax[i];
-            } else {
-                v[i] = 0;
-            }
-        }
-*/
-// JPW NERVE
 		if ( !ent->r.bmodel ) {
 			VectorSubtract( ent->r.currentOrigin,origin,v ); // JPW NERVE simpler centroid check that doesn't have box alignment weirdness
 		} else {

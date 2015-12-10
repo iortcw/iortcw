@@ -160,7 +160,7 @@ void MagicSink( gentity_t *self ) {
 /*
 ======================
   Weapon_Class_Special
-    class-specific in multiplayer
+  class-specific in multiplayer
 ======================
 */
 // JPW NERVE
@@ -279,7 +279,7 @@ void Weapon_MagicAmmo( gentity_t *ent ) {
 /*
 ======================
   Weapon_Syringe
-    shoot the syringe, do the old lazarus bit
+  shoot the syringe, do the old lazarus bit
 ======================
 */
 void Weapon_Syringe( gentity_t *ent ) {
@@ -574,7 +574,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 							i = num;
 
 							if ( ( !( hit->spawnflags & OBJECTIVE_DESTROYED ) ) &&
-								 te->s.teamNum && ( te->s.teamNum != ent->client->sess.sessionTeam ) ) {
+									te->s.teamNum && ( te->s.teamNum != ent->client->sess.sessionTeam ) ) {
 								AddScore( traceEnt->parent, WOLF_DYNAMITE_PLANT ); // give drop score to guy who dropped it
 								traceEnt->parent = ent; // give explode score to guy who armed it
 //	jpw pulled						hit->spawnflags |= OBJECTIVE_DESTROYED; // this is pretty kludgy but we can't test it in explode fn
@@ -930,12 +930,7 @@ void Weapon_Artillery( gentity_t *ent ) {
 			bomb->s.weapon      = WP_ARTY; // might wanna change this
 			bomb->r.ownerNum    = ent->s.number;
 			bomb->parent        = ent;
-/*
-            if (i == 0) {
-                bomb->nextthink = level.time + 4500;
-                bomb->think = artilleryThink;
-            }
-*/
+
 			if ( i == 0 ) {
 				bomb->nextthink = level.time + 5000;
 				bomb->r.svFlags     = SVF_USE_CURRENT_ORIGIN | SVF_BROADCAST;
@@ -943,7 +938,7 @@ void Weapon_Artillery( gentity_t *ent ) {
 				bomb->damage        = 0; // maybe should un-hard-code these?
 				bomb->splashDamage  = 90;
 				bomb->splashRadius  = 50;
-//		bomb->s.weapon	= WP_SMOKE_GRENADE;
+//				bomb->s.weapon	= WP_SMOKE_GRENADE;
 				// TTimo ambiguous else
 				if ( ent->client != NULL ) { // set team color on smoke
 					if ( ent->client->sess.sessionTeam == TEAM_RED ) { // store team so we can generate red or blue smoke
@@ -1034,7 +1029,7 @@ void Weapon_Gauntlet( gentity_t *ent ) {
 /*
 ===============
 CheckMeleeAttack
-    using 'isTest' to return hits to world surfaces
+  using 'isTest' to return hits to world surfaces
 ===============
 */
 trace_t *CheckMeleeAttack( gentity_t *ent, float dist, qboolean isTest ) {
@@ -1346,30 +1341,7 @@ void SP5_Fire( gentity_t *ent, float aimSpreadScale ) {
 	gentity_t       *tent;
 	gentity_t       *traceEnt;
 
-/*
-    // first do a very short, high-accuracy trace
-    VectorMA (muzzleTrace, 128, forward, end);
-    trap_Trace (&tr, muzzleTrace, NULL, NULL, end, ent->s.number, MASK_SHOT);
-    // then if that fails do a longer wild shot
-    if ( tr.fraction == 1 )	// didn't hit anything
-    {
-        {
-            vec3_t	vec;
-            float	len;
 
-            VectorMA (muzzleTrace, 4096, forward, end);
-            trap_Trace (&tr, muzzleTrace, NULL, NULL, end, ent->s.number, MASK_SHOT);
-            VectorSubtract (muzzleTrace, tr.endpos, vec);
-            len = VectorLength (vec);
-
-            if (len > 400)
-                spread = 400;
-            else
-                spread = len;
-
-            VectorClear (end);
-        }
-*/
 	spread *= aimSpreadScale;
 
 	r = crandom() * spread;
@@ -1514,7 +1486,7 @@ void RubbleFlagCheck( gentity_t *ent, trace_t tr ) {
 /*
 ==============
 EmitterCheck
-    see if a new particle emitter should be created at the bullet impact point
+  see if a new particle emitter should be created at the bullet impact point
 ==============
 */
 void EmitterCheck( gentity_t *ent, gentity_t *attacker, trace_t *tr ) {
@@ -1546,7 +1518,7 @@ void SniperSoundEFX( vec3_t pos ) {
 /*
 ==============
 Bullet_Endpos
-    find target end position for bullet trace based on entities weapon and accuracy
+  find target end position for bullet trace based on entities weapon and accuracy
 ==============
 */
 void Bullet_Endpos( gentity_t *ent, float spread, vec3_t *end ) {
@@ -1595,10 +1567,10 @@ void Bullet_Fire( gentity_t *ent, float spread, int damage ) {
 /*
 ==============
 Bullet_Fire_Extended
-    A modified Bullet_Fire with more parameters.
-    The original Bullet_Fire still passes through here and functions as it always has.
+  A modified Bullet_Fire with more parameters.
+  The original Bullet_Fire still passes through here and functions as it always has.
 
-    uses for this include shooting through entities (windows, doors, other players, etc.) and reflecting bullets
+  uses for this include shooting through entities (windows, doors, other players, etc.) and reflecting bullets
 ==============
 */
 void Bullet_Fire_Extended( gentity_t *source, gentity_t *attacker, vec3_t start, vec3_t end, float spread, int damage ) {
@@ -2138,7 +2110,7 @@ void Weapon_FlamethrowerFire( gentity_t *ent ) {
 /*
 ==============
 AddLean
-    add leaning offset
+  add leaning offset
 ==============
 */
 void AddLean( gentity_t *ent, vec3_t point ) {

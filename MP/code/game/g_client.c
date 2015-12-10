@@ -1128,7 +1128,7 @@ static void ClientCleanName( const char *in, char *out, int outSize ) {
 			}
 
 			spaces++;
-		} else if ( outpos > 0 && out[outpos - 1] == Q_COLOR_ESCAPE )      {
+		} else if ( outpos > 0 && out[outpos - 1] == Q_COLOR_ESCAPE ) {
 			if ( Q_IsColorString( &out[outpos - 1] ) ) {
 				colorlessLen--;
 
@@ -1138,13 +1138,11 @@ static void ClientCleanName( const char *in, char *out, int outSize ) {
 					outpos--;
 					continue;
 				}
-			} else
-			{
+			} else {
 				spaces = 0;
 				colorlessLen++;
 			}
-		} else
-		{
+		} else {
 			spaces = 0;
 			colorlessLen++;
 		}
@@ -1709,18 +1707,6 @@ void ClientBegin( int clientNum ) {
 	if ( g_gametype.integer == GT_SINGLE_PLAYER && !( ent->r.svFlags & SVF_CASTAI ) ) {
 		AICast_ScriptEvent( AICast_GetCastState( clientNum ), "spawn", "" );
 	}
-
-/*
-    if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-        if ( g_gametype.integer != GT_TOURNAMENT ) {
-            // Ridah
-            if ( !( ent->r.svFlags & SVF_CASTAI ) ) {
-                // done.
-                trap_SendServerCommand( -1, va( "print \"[lof]%s" S_COLOR_WHITE " [lon]entered the game\n\"", client->pers.netname ) );
-            }
-        }
-    }
-*/
 
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 

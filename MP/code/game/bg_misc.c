@@ -1034,7 +1034,7 @@ model="models/weapons2/colt/colt.md3"
 /*QUAKED weapon_mp40 (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 "stand" values:
     no value:	laying in a default position on it's side (default)
-    2:			upright, barrel pointing up, slightly angled (rack mount)
+    2:		upright, barrel pointing up, slightly angled (rack mount)
 -------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
 model="models\weapons2\mp40\mp40.md3"
 */
@@ -1409,9 +1409,9 @@ weapon_arty (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 		{0,0,0,0,0}
 	},
 
-	/*
-	weapon_medic_syringe (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
-	*/
+/*
+weapon_medic_syringe (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
 	{
 		"weapon_medic_syringe",
 		"sound/misc/w_pkup.wav",
@@ -2483,31 +2483,6 @@ model="models/powerups/holdable/14.md3"
 		{0,0,0,0,0}
 	},
 
-/*QUAKED holdable_15(.3 .3 1) (-8 -8 -8) (8 8 8) suspended spin
-/
-    {
-        "holdable_15",
-        "sound/pickup/holdable/get_15.wav",
-        {
-            "models/powerups/holdable/15.md3",
-            0, 0, 0
-        ,	0 },
-        "icons/15",				// icon
-        NULL,							// ammo icon
-        "15",					// pickup
-        1,
-        IT_HOLDABLE,
-        HI_15,
-        0,
-        "",								// precache
-        "sound/pickup/holdable/use_15.wav",	// sounds
-        {0,0,0,0,0}
-    },
-
-*/
-
-
-
 	//
 	// POWERUP ITEMS
 	//
@@ -3235,57 +3210,6 @@ gitem_t *BG_FindItem( const char *pickupName ) {
 
 	return NULL;
 }
-
-
-//----(SA)	added
-/*
-==============
-BG_PlayerSeesItem
-    Try to quickly determine if an item should be highlighted as per the current cg_drawCrosshairPickups.integer value.
-    pvs check should have already been done by the time we get in here, so we shouldn't have to check
-==============
-*/
-
-//----(SA)	not used
-/*
-qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
-{
-   vec3_t	vorigin, eorigin, viewa, dir;
-   float	dot, dist, foo;
-
-   BG_EvaluateTrajectory( &item->pos, atTime, eorigin );
-
-   VectorCopy(ps->origin, vorigin);
-   vorigin[2] += ps->viewheight;			// get the view loc up to the viewheight
-   eorigin[2] += 16;						// and subtract the item's offset (that is used to place it on the ground)
-   VectorSubtract(vorigin, eorigin, dir);
-
-   dist = VectorNormalize(dir);			// dir is now the direction from the item to the player
-
-   if(dist > 255)
-       return qfalse;						// only run the remaining stuff on items that are close enough
-
-   // (SA) FIXME: do this without AngleVectors.
-   //		It'd be nice if the angle vectors for the player
-   //		have already been figured at this point and I can
-   //		just pick them up.  (if anybody is storing this somewhere,
-   //		for the current frame please let me know so I don't
-   //		have to do redundant calcs)
-   AngleVectors(ps->viewangles, viewa, 0, 0);
-   dot = DotProduct(viewa, dir );
-
-   // give more range based on distance (the hit area is wider when closer)
-
-   foo = -0.94f - (dist/255.0f) * 0.057f;	// (ranging from -0.94 to -0.997) (it happened to be a pretty good range)
-
-//	Com_Printf("test: if(%f > %f) return qfalse (dot > foo)\n", dot, foo);
-   if(dot > foo)
-       return qfalse;
-
-   return qtrue;
-}
-*/
-//----(SA)	end
 
 // DHM - Nerve :: returns qtrue if a weapon is indeed used in multiplayer
 qboolean BG_WeaponInWolfMP( int weapon ) {

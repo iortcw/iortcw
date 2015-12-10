@@ -784,7 +784,9 @@ int BotChat_EnemySuicide( bot_state_t *bs ) {
 	//
 	if ( bs->enemy >= 0 ) {
 		EasyClientName( bs->enemy, name, 32 );
-	} else { strcpy( name, "" ); }
+	} else {
+		strcpy( name, "" );
+	}
 	BotAI_BotInitialChat( bs, "enemy_suicide", name, NULL );
 	bs->lastchat_time = trap_AAS_Time();
 	bs->chatto = CHAT_ALL;

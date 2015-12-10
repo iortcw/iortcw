@@ -450,7 +450,7 @@ typedef struct {
 // MUST be dealt with in G_InitSessionData() / G_ReadSessionData() / G_WriteSessionData()
 typedef struct {
 	team_t sessionTeam;
-	int spectatorNum;       // for determining next-in-line to play
+	int spectatorNum;		// for determining next-in-line to play
 	spectatorState_t spectatorState;
 	int spectatorClient;            // for chasecam and follow mode
 	int wins, losses;               // tournament stats
@@ -458,7 +458,7 @@ typedef struct {
 	int playerWeapon;               // DHM - Nerve :: for GT_WOLF
 	int playerItem;                 // DHM - Nerve :: for GT_WOLF
 	int playerSkin;                 // DHM - Nerve :: for GT_WOLF
-	int spawnObjectiveIndex;         // JPW NERVE index of objective to spawn nearest to (returned from UI)
+	int spawnObjectiveIndex;	// JPW NERVE index of objective to spawn nearest to (returned from UI)
 	int latchPlayerType;            // DHM - Nerve :: for GT_WOLF not archived
 	int latchPlayerWeapon;          // DHM - Nerve :: for GT_WOLF not archived
 	int latchPlayerItem;            // DHM - Nerve :: for GT_WOLF not archived
@@ -1207,7 +1207,7 @@ extern vmCvar_t g_dbgRevive;
 void    trap_Print( const char *text );
 void    trap_Error( const char *text ) __attribute__( ( noreturn ) );
 int     trap_Milliseconds( void );
-int trap_RealTime( qtime_t *qtime );
+int	trap_RealTime( qtime_t *qtime );
 int     trap_Argc( void );
 void    trap_Argv( int n, char *buffer, int bufferLength );
 void    trap_Args( char *buffer, int bufferLength );

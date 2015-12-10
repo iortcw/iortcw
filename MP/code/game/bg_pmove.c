@@ -1197,16 +1197,6 @@ static void PM_CrashLand( void ) {
 			Com_Printf( "delta: %5.2f\n", delta );
 		}
 
-/* JPW NERVE removed from MP, breaks too many levels and skill as no-fall-damage indicator isn't obvious
-        // Rafael gameskill
-        if (bg_pmove_gameskill_integer == 1)
-        {
-            if (delta > 7)
-                delta = 8;
-        }
-        // done
-*/
-
 		if ( delta > 77 ) {
 			PM_AddEvent( EV_FALL_NDIE );
 		}
@@ -2137,7 +2127,7 @@ static void PM_SwitchIfEmpty( void ) {
 /*
 ==============
 PM_WeaponUseAmmo
-    accounts for clips being used/not used
+  accounts for clips being used/not used
 ==============
 */
 void PM_WeaponUseAmmo( int wp, int amount ) {
@@ -2161,7 +2151,7 @@ void PM_WeaponUseAmmo( int wp, int amount ) {
 /*
 ==============
 PM_WeaponAmmoAvailable
-    accounts for clips being used/not used
+  accounts for clips being used/not used
 ==============
 */
 int PM_WeaponAmmoAvailable( int wp ) {
@@ -2175,7 +2165,7 @@ int PM_WeaponAmmoAvailable( int wp ) {
 /*
 ==============
 PM_WeaponClipEmpty
-    accounts for clips being used/not used
+  accounts for clips being used/not used
 ==============
 */
 int PM_WeaponClipEmpty( int wp ) {
@@ -3173,24 +3163,7 @@ static void PM_Weapon( void ) {
 PM_Animate
 ================
 */
-#define MYTIMER_SALUTE   1133   // 17 frames, 15 fps
-#define MYTIMER_DISMOUNT 667    // 10 frames, 15 fps
-
 static void PM_Animate( void ) {
-/*
-    if ( pm->cmd.buttons & BUTTON_GESTURE ) {
-        if ( pm->ps->torsoTimer == 0) {
-            PM_StartTorsoAnim( BOTH_SALUTE );
-            PM_StartLegsAnim( BOTH_SALUTE );
-
-            pm->ps->torsoTimer = MYTIMER_SALUTE;
-            pm->ps->legsTimer = MYTIMER_SALUTE;
-
-            if (!pm->ps->aiChar)	// Ridah, we'll play a custom sound upon calling the Taunt
-                PM_AddEvent( EV_TAUNT );	// for playing the sound
-        }
-    }
-*/
 }
 
 
@@ -3512,16 +3485,6 @@ void PM_CheckLadderMove( void ) {
 	pm->ps->pm_flags &= ~PMF_LADDER;    // clear ladder bit
 	ladderforward = qfalse;
 
-	/*
-	if (pm->ps->eFlags & EF_DEAD) {	// dead bodies should fall down ladders
-	    return;
-	}
-
-	if (pm->ps->pm_flags & PM_DEAD && pm->ps->stats[STAT_HEALTH] <= 0)
-	{
-	    return;
-	}
-	*/
 	if ( pm->ps->stats[STAT_HEALTH] <= 0 ) {
 		pm->ps->groundEntityNum = ENTITYNUM_NONE;
 		pml.groundPlane = qfalse;
@@ -3540,22 +3503,7 @@ void PM_CheckLadderMove( void ) {
 	if ( ( trace.fraction < 1 ) && ( trace.surfaceFlags & SURF_LADDER ) ) {
 		pml.ladder = qtrue;
 	}
-/*
-    if (!pml.ladder && DotProduct(pm->ps->velocity, pml.forward) < 0) {
-        // trace along the negative velocity, so we grab onto a ladder if we are trying to reverse onto it from above the ladder
-        flatforward[0] = -pm->ps->velocity[0];
-        flatforward[1] = -pm->ps->velocity[1];
-        flatforward[2] = 0;
-        VectorNormalize (flatforward);
 
-        VectorMA (pm->ps->origin, tracedist, flatforward, spot);
-        pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, spot, pm->ps->clientNum, pm->tracemask);
-        if ((trace.fraction < 1) && (trace.surfaceFlags & SURF_LADDER))
-        {
-            pml.ladder = qtrue;
-        }
-    }
-*/
 	if ( pml.ladder ) {
 		VectorCopy( trace.plane.normal, laddervec );
 	}

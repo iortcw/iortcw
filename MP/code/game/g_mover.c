@@ -937,7 +937,7 @@ void GotoPos3( gentity_t *ent ) {
 /*
 ================
 ReturnToPos1Rotate
-    closing
+  closing
 ================
 */
 void ReturnToPos1Rotate( gentity_t *ent ) {
@@ -1989,8 +1989,8 @@ void Think_MatchTeam( gentity_t *ent ) {
 /*
 ==============
 findNonAIBrushTargeter
-    determine if there is an entity pointing at ent that is not a "trigger_aidoor"
-    (used now for checking which key to set for a door)
+  determine if there is an entity pointing at ent that is not a "trigger_aidoor"
+  (used now for checking which key to set for a door)
 ==============
 */
 qboolean findNonAIBrushTargeter( gentity_t *ent ) {
@@ -2073,9 +2073,9 @@ void finishSpawningKeyedMover( gentity_t *ent ) {
 /*
 ==============
 Door_reverse_sounds
-    The door has been marked as "START_OPEN" which means the open/closed
-    positions have been swapped.
-    This swaps the sounds around as well
+  The door has been marked as "START_OPEN" which means the open/closed
+  positions have been swapped.
+  This swaps the sounds around as well
 ==============
 */
 void Door_reverse_sounds( gentity_t *ent ) {
@@ -2108,8 +2108,8 @@ void Door_reverse_sounds( gentity_t *ent ) {
 /*
 ==============
 DoorSetSounds
-    get sound indexes for the various door sounds
-    (used by SP_func_door() and SP_func_door_rotating() )
+  get sound indexes for the various door sounds
+  (used by SP_func_door() and SP_func_door_rotating() )
 ==============
 */
 void DoorSetSounds( gentity_t *ent, int doortype, qboolean isRotating ) {
@@ -2138,8 +2138,8 @@ void DoorSetSounds( gentity_t *ent, int doortype, qboolean isRotating ) {
 /*
 ==============
 G_TryDoor
-    seemed better to have this isolated.  this way i can get func_invisible_user's using the
-    regular rules of doors.
+  seemed better to have this isolated.  this way i can get func_invisible_user's using the
+  regular rules of doors.
 ==============
 */
 void G_TryDoor( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -2448,15 +2448,6 @@ void SP_func_secret( gentity_t *ent ) {
 	VectorSubtract( ent->r.maxs, ent->r.mins, size );
 	distance = DotProduct( abs_movedir, size ) - lip;
 	VectorMA( ent->pos2, distance, ent->movedir, ent->pos3 );
-
-	// if "start_open", reverse position 1 and 3
-	/*if ( ent->spawnflags & 1 ) {
-	    vec3_t	temp;
-
-	    VectorCopy( ent->pos3, temp );
-	    VectorCopy( ent->s.origin, ent->pos3 );
-	    VectorCopy( temp, ent->pos1 );
-	}*/
 
 	InitMover( ent );
 
@@ -3469,7 +3460,7 @@ STATIC
 /*
 ==============
 Use_Static
-    toggle hide or show (including collisions) this entity
+  toggle hide or show (including collisions) this entity
 ==============
 */
 void Use_Static( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
@@ -3626,18 +3617,6 @@ void SP_func_static( gentity_t *ent ) {
 			ent->count = 4;
 		}
 	}
-
-	// DISABLED since func_static will carve up AAS anyway, so blocking makes no sense
-	/*
-	// RF, check for blocking AAS
-	if ( ent->spawnflags & 1 ) {
-	    // RF, AAS areas are now occupied
-	    if (ent->model) {
-	        ent->think = G_BlockThink;
-	        ent->nextthink = level.time + FRAMETIME;
-	    }
-	}
-	*/
 }
 
 
@@ -3908,7 +3887,9 @@ void SP_func_door_rotating( gentity_t *ent ) {
 		ent->rotate[2] = 1;
 	} else if ( ent->spawnflags & 8 ) {
 		ent->rotate[0] = 1;
-	} else { ent->rotate[1] = 1; }
+	} else {
+		ent->rotate[1] = 1;
+	}
 
 	if ( VectorLength( ent->rotate ) > 1 ) { // check that rotation is only set for one axis
 		G_Error( "Too many axis marked in func_door_rotating entity.  Only choose one axis of rotation. (defaulting to standard door rotation)" );
@@ -4061,7 +4042,7 @@ void ThrowDebris( gentity_t *self, char *modelname, float speed, vec3_t origin )
 /*
 ==============
 BecomeExplosion
-    nuke the original entity and create all the debris entities that need to be synced to clients
+  nuke the original entity and create all the debris entities that need to be synced to clients
 ==============
 */
 void BecomeExplosion( gentity_t *self ) {
@@ -4080,7 +4061,7 @@ void BecomeExplosion( gentity_t *self ) {
 /*
 ==============
 func_explosive_explode
-    NOTE: the 'damage' passed in is ignored completely
+  NOTE: the 'damage' passed in is ignored completely
 ==============
 */
 void func_explosive_explode( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod ) {

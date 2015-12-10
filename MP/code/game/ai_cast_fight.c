@@ -1225,7 +1225,9 @@ int AICast_WantsToTakeCover( cast_state_t *cs, qboolean attacking ) {
 	// if currently attacking, we should stick around if not getting hurt
 	if ( attacking ) {
 		aggrScale = 1.2;
-	} else { aggrScale = 0.8 /*+ 0.4 * random()*/; }
+	} else {
+		aggrScale = 0.8 /*+ 0.4 * random()*/;
+	}
 	//
 	// if currently following someone, we should be more aggressive
 	if ( cs->leaderNum >= 0 ) {
@@ -1468,30 +1470,7 @@ qboolean AICast_AimAtEnemy( cast_state_t *cs ) {
 			bestorigin[2] += 16;
 		}
 	}
-	//
-	// adjust accuracy with distance if upclose, so we don't start firing the wrong direction
-/*
-    scale = 1;
-    switch (cs->bs->weaponnum) {
-    // these weapons don't do random offsetting
-    case WP_FLAMETHROWER:
-        break;
-    default:
-        {
-            float scale;
 
-            if (dist < 256)
-                scale *= (dist / 256);
-            else
-                scale *= 1.0;
-
-            bestorigin[0] += scale * 96 * sin((float)level.time/(200.0 + (40.0*((cs->entityNum+3)%4)))) * (1 - aim_accuracy);
-            bestorigin[1] += scale * 96 * cos((float)level.time/(220.0 + (36.0*((cs->entityNum+1)%5)))) * (1 - aim_accuracy);
-            bestorigin[2] += scale * 48 * sin((float)level.time/(210.0 + (32.0*((cs->entityNum+2)%6)))) * (1 - aim_accuracy);
-        }
-        break;
-    }
-*/
 	// if the enemy is moving, they are harder to hit
 	if ( dist > 256 ) {
 		VectorMA( bestorigin, ( 0.3 + 0.7 * ( 1 - aim_accuracy ) ) * 0.4 * sin( (float)level.time / ( 500.0 + ( 100.0 * ( ( cs->entityNum + 3 ) % 4 ) ) ) ), g_entities[bs->enemy].client->ps.velocity, bestorigin );
@@ -1733,12 +1712,6 @@ void AICast_RecordWeaponFire( gentity_t *ent ) {
 
 	AICast_AudibleEvent( cs->entityNum, cs->lastWeaponFiredPos, range );
 	//AICast_SightSoundEvent( cs, range );
-	/*
-	if (!cs->sightSoundTime || cs->sightSoundRange < range) {
-	    cs->sightSoundRange = range;
-	    cs->sightSoundTime = level.time;
-	}
-	*/
 
 	if ( cs->bs ) {   // real player's don't need to play AI sounds
 		AIChar_AttackSound( cs );
@@ -1890,10 +1863,10 @@ qboolean AICast_WantToRetreat( cast_state_t *cs ) {
 	}
 
 	if  ( cs->leaderNum < 0 ) {
-		if  (   ( cs->attributes[TACTICAL] > 0.11 + random() * 0.5 ) &&
-				(   ( cs->bs->cur_ps.weaponTime > 500 ) ||
-					(   ( cs->takeCoverTime < level.time - 100 ) &&
-						( AICast_WantsToTakeCover( cs, qtrue ) ) ) ) ) {
+		if  ( ( cs->attributes[TACTICAL] > 0.11 + random() * 0.5 ) &&
+				( ( cs->bs->cur_ps.weaponTime > 500 ) ||
+				( ( cs->takeCoverTime < level.time - 100 ) &&
+				( AICast_WantsToTakeCover( cs, qtrue ) ) ) ) ) {
 			return qtrue;
 		}
 	}

@@ -204,7 +204,9 @@ float BotGetTime( bot_match_t *match ) {
 					t = atof( timestring ) * 60;
 				} else if ( timematch.type == MSG_SECONDS ) {
 					t = atof( timestring );
-				} else { t = 0; }
+				} else {
+					t = 0;
+				}
 			}
 			//if there's a valid time
 			if ( t > 0 ) {
@@ -499,7 +501,7 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	trap_BotMatchVariable( match, TEAMMATE, teammate, sizeof( teammate ) );
 	//get the client to help
 	if ( trap_BotFindMatch( teammate, &teammatematch, MTCONTEXT_TEAMMATE ) &&
-	     //if someone asks for him or herself
+		//if someone asks for him or herself
 		 teammatematch.type == MSG_ME ) {
 		//get the netname
 		trap_BotMatchVariable( match, NETNAME, netname, sizeof( netname ) );
@@ -522,7 +524,9 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	if ( client < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whois", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whois", netname, NULL ); }
+		} else {
+			BotAI_BotInitialChat( bs, "whois", netname, NULL );
+		}
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -562,7 +566,9 @@ void BotMatch_HelpAccompany( bot_state_t *bs, bot_match_t *match ) {
 	if ( bs->teamgoal.entitynum < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whereis", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL ); }
+		} else {
+			BotAI_BotInitialChat( bs, "whereareyou", netname, NULL );
+		}
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -975,7 +981,9 @@ void BotMatch_CheckPoint( bot_state_t *bs, bot_match_t *match ) {
 		}
 		if ( cp->prev ) {
 			cp->prev->next = cp->next;
-		} else { bs->checkpoints = cp->next; }
+		} else {
+			bs->checkpoints = cp->next;
+		}
 		cp->inuse = qfalse;
 	}
 	//create a new check point
@@ -1018,9 +1026,9 @@ void BotMatch_FormationSpace( bot_state_t *bs, bot_match_t *match ) {
 	//if it's the distance in feet
 	if ( match->subtype & ST_FEET ) {
 		space = 0.3048 * 32 * atof( buf );
+	} else { // else it's in meters
+		space = 32 * atof( buf );
 	}
-	//else it's in meters
-	else {space = 32 * atof( buf ); }
 	//check if the formation intervening space is valid
 	if ( space < 48 || space > 500 ) {
 		space = 100;
@@ -1388,7 +1396,9 @@ void BotMatch_LeadTheWay( bot_state_t *bs, bot_match_t *match ) {
 	if ( bs->teamgoal.entitynum < 0 ) {
 		if ( other ) {
 			BotAI_BotInitialChat( bs, "whereis", teammate, NULL );
-		} else { BotAI_BotInitialChat( bs, "whereareyou", netname, NULL ); }
+		} else {
+			BotAI_BotInitialChat( bs, "whereareyou", netname, NULL );
+		}
 		trap_BotEnterChat( bs->cs, bs->client, CHAT_TEAM );
 		return;
 	}
@@ -1468,7 +1478,9 @@ void BotMatch_CTF( bot_state_t *bs, bot_match_t *match ) {
 	} else if ( match->subtype & ST_RETURNEDFLAG ) {
 		if ( !Q_stricmp( flag, "red" ) ) {
 			bs->redflagstatus = 0;
-		} else { bs->blueflagstatus = 0; }
+		} else {
+			bs->blueflagstatus = 0;
+		}
 		bs->flagstatuschanged = 1;
 	}
 }

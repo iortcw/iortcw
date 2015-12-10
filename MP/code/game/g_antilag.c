@@ -37,8 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // OSP -
 //	Aside from the inline edits, I also changed the client loops to poll only
-//  the active client slots on the server, rather than looping through every
-//  potential (and usually unused) slot.
+//	the active client slots on the server, rather than looping through every
+//	potential (and usually unused) slot.
 //
 
 void G_StoreClientPosition( gentity_t* ent ) {
@@ -141,33 +141,12 @@ void G_AdjustClientPositions( gentity_t* ent, int time, qboolean forward ) {
 		if ( list != ent && IS_ACTIVE( list ) ) {
 			if ( forward ) {
 				G_AdjustSingleClientPosition( list, time );
-			} else { G_ReAdjustSingleClientPosition( list ); }
+			} else {
+				G_ReAdjustSingleClientPosition( list );
+			}
 		}
 	}
 }
-
-/*
-void G_ResetMarkers( gentity_t* ent ) {
-    int i, time;
-    char buffer[256];
-    float period;
-
-    trap_Cvar_VariableStringBuffer( "sv_fps", buffer, sizeof( buffer ) - 1 );
-
-    period = atoi( buffer );
-    period = ( period == 0 ) ? 50.0f : 1000.f / period;
-
-    ent->client->topMarker = MAX_CLIENT_MARKERS - 1;
-    for ( i = MAX_CLIENT_MARKERS, time = level.time; i >= 0; i--, time -= period ) {
-        ent->client->clientMarkers[i].servertime =  time;
-        ent->client->clientMarkers[i].time =        time;
-
-        VectorCopy( ent->r.mins,            ent->client->clientMarkers[i].mins );
-        VectorCopy( ent->r.maxs,            ent->client->clientMarkers[i].maxs );
-        VectorCopy( ent->r.currentOrigin,   ent->client->clientMarkers[i].origin );
-    }
-}
-*/
 
 void G_ResetMarkers( gentity_t *ent ) {
 	int i, time;
@@ -179,8 +158,7 @@ void G_ResetMarkers( gentity_t *ent ) {
 	period = atoi( buffer );
 	if ( !period ) {
 		period = 50;
-	} else
-	{
+	} else {
 		period = 1000.f / period;
 	}
 
