@@ -65,7 +65,7 @@ typedef unsigned int glIndex_t;
 #define CUBE_MAP_SIZE      (1 << CUBE_MAP_MIPS)
  
 #define USE_VERT_TANGENT_SPACE
-
+#define USE_OVERBRIGHT
 
 // a trRefEntity_t has all the information passed in by
 // the client game, as well as some locally derived info
