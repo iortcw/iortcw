@@ -51,18 +51,18 @@ char *Sys_GetClipboardData( void ) {
 	return NULL;
 }
 
-int     Sys_Milliseconds( void ) {
+int Sys_Milliseconds( void ) {
 	return 0;
 }
 
-FILE    *Sys_FOpen( const char *ospath, const char *mode ) {
+FILE *Sys_FOpen( const char *ospath, const char *mode ) {
 	return fopen( ospath, mode );
 }
 
-void    Sys_Mkdir( char *path ) {
+void Sys_Mkdir( char *path ) {
 }
 
-void    Sys_Init( void ) {
+void Sys_Init( void ) {
 }
 
 void main( int argc, char **argv ) {
