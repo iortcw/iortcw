@@ -23,10 +23,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 //#define	DEBUG_VM
 #ifdef DEBUG_VM
-static char	*opnames[256] = {
-	"OP_UNDEF", 
+static char *opnames[256] = {
+	"OP_UNDEF",
 
-	"OP_IGNORE", 
+	"OP_IGNORE",
 
 	"OP_BREAK",
 
@@ -115,34 +115,34 @@ static char	*opnames[256] = {
 #if idppc
 
 //FIXME: these, um... look the same to me
-#if defined(__GNUC__)
-static ID_INLINE unsigned int loadWord(void *addr) {
+#if defined( __GNUC__ )
+static ID_INLINE unsigned int loadWord( void *addr ) {
 	unsigned int word;
 
-	asm("lwbrx %0,0,%1" : "=r" (word) : "r" (addr));
+	asm ( "lwbrx %0,0,%1" : "=r" ( word ) : "r" ( addr ) );
 	return word;
 }
 #else
-static ID_INLINE unsigned int __lwbrx(register void *addr,
-		register int offset) {
+static ID_INLINE unsigned int __lwbrx( register void *addr,
+									   register int offset ) {
 	register unsigned int word;
 
-	asm("lwbrx %0,%2,%1" : "=r" (word) : "r" (addr), "b" (offset));
+	asm ( "lwbrx %0,%2,%1" : "=r" ( word ) : "r" ( addr ), "b" ( offset ) );
 	return word;
 }
-#define loadWord(addr) __lwbrx(addr,0)
+#define loadWord( addr ) __lwbrx( addr,0 )
 #endif
 
 #else
-    static ID_INLINE int loadWord(void *addr) {
+static ID_INLINE int loadWord( void *addr ) {
 	int word;
-	memcpy(&word, addr, 4);
-	return LittleLong(word);
-    }
+	memcpy( &word, addr, 4 );
+	return LittleLong( word );
+}
 #endif
 
 char *VM_Indent( vm_t *vm ) {
-	static char	*string = "                                        ";
+	static char *string = "                                        ";
 	if ( vm->callLevel > 20 ) {
 		return string;
 	}
@@ -150,12 +150,12 @@ char *VM_Indent( vm_t *vm ) {
 }
 
 void VM_StackTrace( vm_t *vm, int programCounter, int programStack ) {
-	int		count;
+	int count;
 
 	count = 0;
 	do {
 		Com_Printf( "%s\n", VM_ValueToSymbol( vm, programCounter ) );
-		programStack =  *(int *)&vm->dataBase[programStack+4];
+		programStack =  *(int *)&vm->dataBase[programStack + 4];
 		programCounter = *(int *)&vm->dataBase[programStack];
 	} while ( programCounter != -1 && ++count < 32 );
 
@@ -168,14 +168,14 @@ VM_PrepareInterpreter
 ====================
 */
 void VM_PrepareInterpreter( vm_t *vm, vmHeader_t *header ) {
-	int		op;
-	int		byte_pc;
-	int		int_pc;
-	byte	*code;
-	int		instruction;
-	int		*codeBase;
+	int op;
+	int byte_pc;
+	int int_pc;
+	byte    *code;
+	int instruction;
+	int     *codeBase;
 
-	vm->codeBase = Hunk_Alloc( vm->codeLength*4, h_high );			// we're now int aligned
+	vm->codeBase = Hunk_Alloc( vm->codeLength * 4, h_high );          // we're now int aligned
 //	memcpy( vm->codeBase, (byte *)header + header->codeOffset, vm->codeLength );
 
 	// we don't need to translate the instructions, but we still need
@@ -192,8 +192,9 @@ void VM_PrepareInterpreter( vm_t *vm, vmHeader_t *header ) {
 
 		op = (int)code[ byte_pc ];
 		codeBase[int_pc] = op;
-		if(byte_pc > header->codeLength)
-			Com_Error(ERR_DROP, "VM_PrepareInterpreter: pc > header->codeLength");
+		if ( byte_pc > header->codeLength ) {
+			Com_Error( ERR_DROP, "VM_PrepareInterpreter: pc > header->codeLength" );
+		}
 
 		byte_pc++;
 		int_pc++;
@@ -221,7 +222,7 @@ void VM_PrepareInterpreter( vm_t *vm, vmHeader_t *header ) {
 		case OP_GTF:
 		case OP_GEF:
 		case OP_BLOCK_COPY:
-			codeBase[int_pc] = loadWord(&code[byte_pc]);
+			codeBase[int_pc] = loadWord( &code[byte_pc] );
 			byte_pc += 4;
 			int_pc++;
 			break;
@@ -237,14 +238,14 @@ void VM_PrepareInterpreter( vm_t *vm, vmHeader_t *header ) {
 	}
 	int_pc = 0;
 	instruction = 0;
-	
+
 	// Now that the code has been expanded to int-sized opcodes, we'll translate instruction index
 	//into an index into codeBase[], which contains opcodes and operands.
 	while ( instruction < header->instructionCount ) {
 		op = codeBase[ int_pc ];
 		instruction++;
 		int_pc++;
-		
+
 		switch ( op ) {
 		// These ops need to translate addresses in jumps from instruction index to int index
 		case OP_EQ:
@@ -263,8 +264,9 @@ void VM_PrepareInterpreter( vm_t *vm, vmHeader_t *header ) {
 		case OP_LEF:
 		case OP_GTF:
 		case OP_GEF:
-			if(codeBase[int_pc] < 0 || codeBase[int_pc] > vm->instructionCount)
-				Com_Error(ERR_DROP, "VM_PrepareInterpreter: Jump to invalid instruction number");
+			if ( codeBase[int_pc] < 0 || codeBase[int_pc] > vm->instructionCount ) {
+				Com_Error( ERR_DROP, "VM_PrepareInterpreter: Jump to invalid instruction number" );
+			}
 
 			// codeBase[pc] is the instruction index. Convert that into an offset into
 			//the int-aligned codeBase[] by the lookup table.
@@ -313,22 +315,22 @@ locals from sp
 ==============
 */
 
-#define	DEBUGSTR va("%s%i", VM_Indent(vm), opStackOfs)
+#define DEBUGSTR va( "%s%i", VM_Indent( vm ), opStackOfs )
 
-int	VM_CallInterpreted( vm_t *vm, int *args ) {
-	byte		stack[OPSTACK_SIZE + 15];
-	register int		*opStack;
-	register uint8_t 	opStackOfs;
-	int		programCounter;
-	int		programStack;
-	int		stackOnEntry;
-	byte	*image;
-	int		*codeImage;
-	int		v1;
-	int		dataMask;
-	int		arg;
+int VM_CallInterpreted( vm_t *vm, int *args ) {
+	byte stack[OPSTACK_SIZE + 15];
+	register int        *opStack;
+	register uint8_t opStackOfs;
+	int programCounter;
+	int programStack;
+	int stackOnEntry;
+	byte    *image;
+	int     *codeImage;
+	int v1;
+	int dataMask;
+	int arg;
 #ifdef DEBUG_VM
-	vmSymbol_t	*profileSymbol;
+	vmSymbol_t  *profileSymbol;
 #endif
 
 	// interpret the code
@@ -342,12 +344,12 @@ int	VM_CallInterpreted( vm_t *vm, int *args ) {
 	// uncomment this for debugging breakpoints
 	vm->breakFunction = 0;
 #endif
-	// set up the stack frame 
+	// set up the stack frame
 
 	image = vm->dataBase;
 	codeImage = (int *)vm->codeBase;
 	dataMask = vm->dataMask;
-	
+
 	programCounter = 0;
 
 	programStack -= ( 8 + 4 * MAX_VMMAIN_ARGS );
@@ -355,15 +357,15 @@ int	VM_CallInterpreted( vm_t *vm, int *args ) {
 	for ( arg = 0; arg < MAX_VMMAIN_ARGS; arg++ )
 		*(int *)&image[ programStack + 8 + arg * 4 ] = args[ arg ];
 
-	*(int *)&image[ programStack + 4 ] = 0;	// return stack
-	*(int *)&image[ programStack ] = -1;	// will terminate the loop on return
+	*(int *)&image[ programStack + 4 ] = 0; // return stack
+	*(int *)&image[ programStack ] = -1;    // will terminate the loop on return
 
-	VM_Debug(0);
+	VM_Debug( 0 );
 
 	// leave a free spot at start of stack so
 	// that as long as opStack is valid, opStack-1 will
 	// not corrupt anything
-	opStack = PADP(stack, 16);
+	opStack = PADP( stack, 16 );
 	*opStack = 0xDEADBEEF;
 	opStackOfs = 0;
 
@@ -374,12 +376,12 @@ int	VM_CallInterpreted( vm_t *vm, int *args ) {
 #define r2 codeImage[programCounter]
 
 	while ( 1 ) {
-		int		opcode,	r0, r1;
+		int opcode, r0, r1;
 //		unsigned int	r2;
 
 nextInstruction:
 		r0 = opStack[opStackOfs];
-		r1 = opStack[(uint8_t) (opStackOfs - 1)];
+		r1 = opStack[(uint8_t) ( opStackOfs - 1 )];
 nextInstruction2:
 #ifdef DEBUG_VM
 		if ( (unsigned)programCounter >= vm->codeLength ) {
@@ -417,21 +419,20 @@ nextInstruction2:
 			opStackOfs++;
 			r1 = r0;
 			r0 = opStack[opStackOfs] = r2;
-			
+
 			programCounter += 1;
 			goto nextInstruction2;
 		case OP_LOCAL:
 			opStackOfs++;
 			r1 = r0;
-			r0 = opStack[opStackOfs] = r2+programStack;
+			r0 = opStack[opStackOfs] = r2 + programStack;
 
 			programCounter += 1;
 			goto nextInstruction2;
 
 		case OP_LOAD4:
 #ifdef DEBUG_VM
-			if(opStack[opStackOfs] & 3)
-			{
+			if ( opStack[opStackOfs] & 3 ) {
 				Com_Error( ERR_DROP, "OP_LOAD4 misaligned" );
 				return 0;
 			}
@@ -439,34 +440,34 @@ nextInstruction2:
 			r0 = opStack[opStackOfs] = *(int *) &image[r0 & dataMask & ~3 ];
 			goto nextInstruction2;
 		case OP_LOAD2:
-			r0 = opStack[opStackOfs] = *(unsigned short *)&image[ r0&dataMask&~1 ];
+			r0 = opStack[opStackOfs] = *(unsigned short *)&image[ r0 & dataMask & ~1 ];
 			goto nextInstruction2;
 		case OP_LOAD1:
-			r0 = opStack[opStackOfs] = image[ r0&dataMask ];
+			r0 = opStack[opStackOfs] = image[ r0 & dataMask ];
 			goto nextInstruction2;
 
 		case OP_STORE4:
-			*(int *)&image[ r1&(dataMask & ~3) ] = r0;
+			*(int *)&image[ r1 & ( dataMask & ~3 ) ] = r0;
 			opStackOfs -= 2;
 			goto nextInstruction;
 		case OP_STORE2:
-			*(short *)&image[ r1&(dataMask & ~1) ] = r0;
+			*(short *)&image[ r1 & ( dataMask & ~1 ) ] = r0;
 			opStackOfs -= 2;
 			goto nextInstruction;
 		case OP_STORE1:
-			image[ r1&dataMask ] = r0;
+			image[ r1 & dataMask ] = r0;
 			opStackOfs -= 2;
 			goto nextInstruction;
 
 		case OP_ARG:
 			// single byte offset from programStack
-			*(int *)&image[ (codeImage[programCounter] + programStack)&dataMask&~3 ] = r0;
+			*(int *)&image[ ( codeImage[programCounter] + programStack ) & dataMask & ~3 ] = r0;
 			opStackOfs--;
 			programCounter += 1;
 			goto nextInstruction;
 
 		case OP_BLOCK_COPY:
-			VM_BlockCopy(r1, r0, r2);
+			VM_BlockCopy( r1, r0, r2 );
 			programCounter += 1;
 			opStackOfs -= 2;
 			goto nextInstruction;
@@ -474,16 +475,16 @@ nextInstruction2:
 		case OP_CALL:
 			// save current program counter
 			*(int *)&image[ programStack ] = programCounter;
-			
+
 			// jump to the location on the stack
 			programCounter = r0;
 			opStackOfs--;
 			if ( programCounter < 0 ) {
 				// system call
-				int		r;
+				int r;
 //				int		temp;
 #ifdef DEBUG_VM
-				int		stomped;
+				int stomped;
 
 				if ( vm_debugLevel ) {
 					Com_Printf( "%s---> systemcall(%i)\n", DEBUGSTR, -1 - programCounter );
@@ -501,12 +502,12 @@ nextInstruction2:
 				{
 					// the vm has ints on the stack, we expect
 					// pointers so we might have to convert it
-					if (sizeof(intptr_t) != sizeof(int)) {
+					if ( sizeof( intptr_t ) != sizeof( int ) ) {
 						intptr_t argarr[ MAX_VMSYSCALL_ARGS ];
 						int *imagePtr = (int *)&image[ programStack ];
 						int i;
-						for (i = 0; i < ARRAY_LEN(argarr); ++i) {
-							argarr[i] = *(++imagePtr);
+						for ( i = 0; i < ARRAY_LEN( argarr ); ++i ) {
+							argarr[i] = *( ++imagePtr );
 						}
 						r = vm->systemCall( argarr );
 					} else {
@@ -558,7 +559,7 @@ nextInstruction2:
 			programStack -= v1;
 #ifdef DEBUG_VM
 			// save old stack frame for debugging traces
-			*(int *)&image[programStack+4] = programStack + v1;
+			*(int *)&image[programStack + 4] = programStack + v1;
 			if ( vm_debugLevel ) {
 				Com_Printf( "%s---> %s\n", DEBUGSTR, VM_ValueToSymbol( vm, programCounter - 5 ) );
 				if ( vm->breakFunction && programCounter - 5 == vm->breakFunction ) {
@@ -602,8 +603,7 @@ nextInstruction2:
 		*/
 
 		case OP_JUMP:
-			if ( (unsigned)r0 >= vm->instructionCount )
-			{
+			if ( (unsigned)r0 >= vm->instructionCount ) {
 				Com_Error( ERR_DROP, "VM program counter out of range in OP_JUMP" );
 				return 0;
 			}
@@ -616,7 +616,7 @@ nextInstruction2:
 		case OP_EQ:
 			opStackOfs -= 2;
 			if ( r1 == r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -626,7 +626,7 @@ nextInstruction2:
 		case OP_NE:
 			opStackOfs -= 2;
 			if ( r1 != r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -636,7 +636,7 @@ nextInstruction2:
 		case OP_LTI:
 			opStackOfs -= 2;
 			if ( r1 < r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -646,7 +646,7 @@ nextInstruction2:
 		case OP_LEI:
 			opStackOfs -= 2;
 			if ( r1 <= r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -656,7 +656,7 @@ nextInstruction2:
 		case OP_GTI:
 			opStackOfs -= 2;
 			if ( r1 > r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -666,7 +666,7 @@ nextInstruction2:
 		case OP_GEI:
 			opStackOfs -= 2;
 			if ( r1 >= r0 ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -675,8 +675,8 @@ nextInstruction2:
 
 		case OP_LTU:
 			opStackOfs -= 2;
-			if ( ((unsigned)r1) < ((unsigned)r0) ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (unsigned)r1 ) < ( (unsigned)r0 ) ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -685,8 +685,8 @@ nextInstruction2:
 
 		case OP_LEU:
 			opStackOfs -= 2;
-			if ( ((unsigned)r1) <= ((unsigned)r0) ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (unsigned)r1 ) <= ( (unsigned)r0 ) ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -695,8 +695,8 @@ nextInstruction2:
 
 		case OP_GTU:
 			opStackOfs -= 2;
-			if ( ((unsigned)r1) > ((unsigned)r0) ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (unsigned)r1 ) > ( (unsigned)r0 ) ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -705,8 +705,8 @@ nextInstruction2:
 
 		case OP_GEU:
 			opStackOfs -= 2;
-			if ( ((unsigned)r1) >= ((unsigned)r0) ) {
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (unsigned)r1 ) >= ( (unsigned)r0 ) ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -715,10 +715,9 @@ nextInstruction2:
 
 		case OP_EQF:
 			opStackOfs -= 2;
-			
-			if(((float *) opStack)[(uint8_t) (opStackOfs + 1)] == ((float *) opStack)[(uint8_t) (opStackOfs + 2)])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+
+			if ( ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )] == ( (float *) opStack )[(uint8_t) ( opStackOfs + 2 )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -728,9 +727,8 @@ nextInstruction2:
 		case OP_NEF:
 			opStackOfs -= 2;
 
-			if(((float *) opStack)[(uint8_t) (opStackOfs + 1)] != ((float *) opStack)[(uint8_t) (opStackOfs + 2)])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )] != ( (float *) opStack )[(uint8_t) ( opStackOfs + 2 )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -740,9 +738,8 @@ nextInstruction2:
 		case OP_LTF:
 			opStackOfs -= 2;
 
-			if(((float *) opStack)[(uint8_t) (opStackOfs + 1)] < ((float *) opStack)[(uint8_t) (opStackOfs + 2)])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )] < ( (float *) opStack )[(uint8_t) ( opStackOfs + 2 )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -752,9 +749,8 @@ nextInstruction2:
 		case OP_LEF:
 			opStackOfs -= 2;
 
-			if(((float *) opStack)[(uint8_t) ((uint8_t) (opStackOfs + 1))] <= ((float *) opStack)[(uint8_t) ((uint8_t) (opStackOfs + 2))])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (float *) opStack )[(uint8_t) ( (uint8_t) ( opStackOfs + 1 ) )] <= ( (float *) opStack )[(uint8_t) ( (uint8_t) ( opStackOfs + 2 ) )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -764,9 +760,8 @@ nextInstruction2:
 		case OP_GTF:
 			opStackOfs -= 2;
 
-			if(((float *) opStack)[(uint8_t) (opStackOfs + 1)] > ((float *) opStack)[(uint8_t) (opStackOfs + 2)])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )] > ( (float *) opStack )[(uint8_t) ( opStackOfs + 2 )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -776,9 +771,8 @@ nextInstruction2:
 		case OP_GEF:
 			opStackOfs -= 2;
 
-			if(((float *) opStack)[(uint8_t) (opStackOfs + 1)] >= ((float *) opStack)[(uint8_t) (opStackOfs + 2)])
-			{
-				programCounter = r2;	//vm->instructionPointers[r2];
+			if ( ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )] >= ( (float *) opStack )[(uint8_t) ( opStackOfs + 2 )] ) {
+				programCounter = r2;    //vm->instructionPointers[r2];
 				goto nextInstruction;
 			} else {
 				programCounter += 1;
@@ -805,7 +799,7 @@ nextInstruction2:
 			goto nextInstruction;
 		case OP_DIVU:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) / ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) / ( (unsigned) r0 );
 			goto nextInstruction;
 		case OP_MODI:
 			opStackOfs--;
@@ -813,7 +807,7 @@ nextInstruction2:
 			goto nextInstruction;
 		case OP_MODU:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) % ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) % ( (unsigned) r0 );
 			goto nextInstruction;
 		case OP_MULI:
 			opStackOfs--;
@@ -821,23 +815,23 @@ nextInstruction2:
 			goto nextInstruction;
 		case OP_MULU:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) * ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) * ( (unsigned) r0 );
 			goto nextInstruction;
 
 		case OP_BAND:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) & ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) & ( (unsigned) r0 );
 			goto nextInstruction;
 		case OP_BOR:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) | ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) | ( (unsigned) r0 );
 			goto nextInstruction;
 		case OP_BXOR:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) ^ ((unsigned) r0);
+			opStack[opStackOfs] = ( (unsigned) r1 ) ^ ( (unsigned) r0 );
 			goto nextInstruction;
 		case OP_BCOM:
-			opStack[opStackOfs] = ~((unsigned) r0);
+			opStack[opStackOfs] = ~( (unsigned) r0 );
 			goto nextInstruction;
 
 		case OP_LSH:
@@ -850,34 +844,34 @@ nextInstruction2:
 			goto nextInstruction;
 		case OP_RSHU:
 			opStackOfs--;
-			opStack[opStackOfs] = ((unsigned) r1) >> r0;
+			opStack[opStackOfs] = ( (unsigned) r1 ) >> r0;
 			goto nextInstruction;
 
 		case OP_NEGF:
-			((float *) opStack)[opStackOfs] =  -((float *) opStack)[opStackOfs];
+			( (float *) opStack )[opStackOfs] =  -( (float *) opStack )[opStackOfs];
 			goto nextInstruction;
 		case OP_ADDF:
 			opStackOfs--;
-			((float *) opStack)[opStackOfs] = ((float *) opStack)[opStackOfs] + ((float *) opStack)[(uint8_t) (opStackOfs + 1)];
+			( (float *) opStack )[opStackOfs] = ( (float *) opStack )[opStackOfs] + ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )];
 			goto nextInstruction;
 		case OP_SUBF:
 			opStackOfs--;
-			((float *) opStack)[opStackOfs] = ((float *) opStack)[opStackOfs] - ((float *) opStack)[(uint8_t) (opStackOfs + 1)];
+			( (float *) opStack )[opStackOfs] = ( (float *) opStack )[opStackOfs] - ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )];
 			goto nextInstruction;
 		case OP_DIVF:
 			opStackOfs--;
-			((float *) opStack)[opStackOfs] = ((float *) opStack)[opStackOfs] / ((float *) opStack)[(uint8_t) (opStackOfs + 1)];
+			( (float *) opStack )[opStackOfs] = ( (float *) opStack )[opStackOfs] / ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )];
 			goto nextInstruction;
 		case OP_MULF:
 			opStackOfs--;
-			((float *) opStack)[opStackOfs] = ((float *) opStack)[opStackOfs] * ((float *) opStack)[(uint8_t) (opStackOfs + 1)];
+			( (float *) opStack )[opStackOfs] = ( (float *) opStack )[opStackOfs] * ( (float *) opStack )[(uint8_t) ( opStackOfs + 1 )];
 			goto nextInstruction;
 
 		case OP_CVIF:
-			((float *) opStack)[opStackOfs] = (float) opStack[opStackOfs];
+			( (float *) opStack )[opStackOfs] = (float) opStack[opStackOfs];
 			goto nextInstruction;
 		case OP_CVFI:
-			opStack[opStackOfs] = Q_ftol(((float *) opStack)[opStackOfs]);
+			opStack[opStackOfs] = Q_ftol( ( (float *) opStack )[opStackOfs] );
 			goto nextInstruction;
 		case OP_SEX8:
 			opStack[opStackOfs] = (signed char) opStack[opStackOfs];
@@ -891,8 +885,9 @@ nextInstruction2:
 done:
 	vm->currentlyInterpreting = qfalse;
 
-	if (opStackOfs != 1 || *opStack != 0xDEADBEEF)
-		Com_Error(ERR_DROP, "Interpreter error: opStack[0] = %X, opStackOfs = %d", opStack[0], opStackOfs);
+	if ( opStackOfs != 1 || *opStack != 0xDEADBEEF ) {
+		Com_Error( ERR_DROP, "Interpreter error: opStack[0] = %X, opStackOfs = %d", opStack[0], opStackOfs );
+	}
 
 	vm->programStack = stackOnEntry;
 

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "q_shared.h"
 #include "qcommon.h"
 
-#define MAX_CMD_BUFFER  128*1024
+#define MAX_CMD_BUFFER  128 * 1024
 #define MAX_CMD_LINE    1024
 
 typedef struct {
@@ -59,8 +59,9 @@ bind g "cmd use rocket ; +attack ; wait ; -attack ; cmd use blaster"
 void Cmd_Wait_f( void ) {
 	if ( Cmd_Argc() == 2 ) {
 		cmd_wait = atoi( Cmd_Argv( 1 ) );
-		if ( cmd_wait < 0 )
+		if ( cmd_wait < 0 ) {
 			cmd_wait = 1; // ignore the argument
+		}
 	} else {
 		cmd_wait = 1;
 	}
@@ -70,7 +71,7 @@ void Cmd_Wait_f( void ) {
 /*
 =============================================================================
 
-						COMMAND BUFFER
+                        COMMAND BUFFER
 
 =============================================================================
 */
@@ -150,11 +151,11 @@ void Cbuf_ExecuteText( int exec_when, const char *text ) {
 	{
 	case EXEC_NOW:
 		if ( text && strlen( text ) > 0 ) {
-			Com_DPrintf(S_COLOR_YELLOW "EXEC_NOW %s\n", text);
+			Com_DPrintf( S_COLOR_YELLOW "EXEC_NOW %s\n", text );
 			Cmd_ExecuteString( text );
 		} else {
 			Cbuf_Execute();
-			Com_DPrintf(S_COLOR_YELLOW "EXEC_NOW %s\n", cmd_text.data);
+			Com_DPrintf( S_COLOR_YELLOW "EXEC_NOW %s\n", cmd_text.data );
 		}
 		break;
 	case EXEC_INSERT:
@@ -202,13 +203,13 @@ void Cbuf_Execute( void ) {
 			if ( text[i] == '"' ) {
 				quotes++;
 			}
-			if ( !(quotes&1)) {
-				if (i < cmd_text.cursize - 1) {
-					if (! in_star_comment && text[i] == '/' && text[i+1] == '/')
+			if ( !( quotes & 1 ) ) {
+				if ( i < cmd_text.cursize - 1 ) {
+					if ( !in_star_comment && text[i] == '/' && text[i + 1] == '/' ) {
 						in_slash_comment = qtrue;
-					else if (! in_slash_comment && text[i] == '/' && text[i+1] == '*')
+					} else if ( !in_slash_comment && text[i] == '/' && text[i + 1] == '*' ) {
 						in_star_comment = qtrue;
-					else if (in_star_comment && text[i] == '*' && text[i+1] == '/') {
+					} else if ( in_star_comment && text[i] == '*' && text[i + 1] == '/' ) {
 						in_star_comment = qfalse;
 						// If we are in a star comment, then the part after it is valid
 						// Note: This will cause it to NUL out the terminating '/'
@@ -217,10 +218,11 @@ void Cbuf_Execute( void ) {
 						break;
 					}
 				}
-				if (! in_slash_comment && ! in_star_comment && text[i] == ';')
+				if ( !in_slash_comment && !in_star_comment && text[i] == ';' ) {
 					break;
+				}
 			}
-			if (! in_star_comment && (text[i] == '\n' || text[i] == '\r')) {
+			if ( !in_star_comment && ( text[i] == '\n' || text[i] == '\r' ) ) {
 				in_slash_comment = qfalse;
 				break;
 			}
@@ -256,7 +258,7 @@ void Cbuf_Execute( void ) {
 /*
 ==============================================================================
 
-						SCRIPT COMMANDS
+                        SCRIPT COMMANDS
 
 ==============================================================================
 */
@@ -270,28 +272,29 @@ Cmd_Exec_f
 void Cmd_Exec_f( void ) {
 	qboolean quiet;
 	union {
-		char	*c;
-		void	*v;
+		char    *c;
+		void    *v;
 	} f;
 	char filename[MAX_QPATH];
 
-	quiet = !Q_stricmp(Cmd_Argv(0), "execq");
+	quiet = !Q_stricmp( Cmd_Argv( 0 ), "execq" );
 
 	if ( Cmd_Argc() != 2 ) {
-		Com_Printf ("exec%s <filename> : execute a script file%s\n",
-		            quiet ? "q" : "", quiet ? " without notification" : "");
+		Com_Printf( "exec%s <filename> : execute a script file%s\n",
+					quiet ? "q" : "", quiet ? " without notification" : "" );
 		return;
 	}
 
 	Q_strncpyz( filename, Cmd_Argv( 1 ), sizeof( filename ) );
 	COM_DefaultExtension( filename, sizeof( filename ), ".cfg" );
-	FS_ReadFile( filename, &f.v);
-	if (!f.c) {
-		Com_Printf ("couldn't exec %s\n", filename);
+	FS_ReadFile( filename, &f.v );
+	if ( !f.c ) {
+		Com_Printf( "couldn't exec %s\n", filename );
 		return;
 	}
-	if (!quiet)
-		Com_Printf ("execing %s\n", filename);
+	if ( !quiet ) {
+		Com_Printf( "execing %s\n", filename );
+	}
 
 	Cbuf_InsertText( f.c );
 
@@ -327,14 +330,14 @@ Just prints the rest of the line to the console
 ===============
 */
 void Cmd_Echo_f( void ) {
-	Com_Printf ("%s\n", Cmd_Args());
+	Com_Printf( "%s\n", Cmd_Args() );
 }
 
 
 /*
 =============================================================================
 
-					COMMAND EXECUTION
+                    COMMAND EXECUTION
 
 =============================================================================
 */
@@ -344,7 +347,7 @@ typedef struct cmd_function_s
 	struct cmd_function_s   *next;
 	char                    *name;
 	xcommand_t function;
-	completionFunc_t	complete;
+	completionFunc_t complete;
 } cmd_function_t;
 
 
@@ -457,7 +460,7 @@ For rcon use when you want to transmit without altering quoting
 ATVI Wolfenstein Misc #284
 ============
 */
-char *Cmd_Cmd(void) {
+char *Cmd_Cmd( void ) {
 	return cmd_cmd;
 }
 
@@ -468,18 +471,18 @@ char *Cmd_Cmd(void) {
    https://bugzilla.icculus.org/show_bug.cgi?id=4769
 */
 
-void Cmd_Args_Sanitize(void)
-{
+void Cmd_Args_Sanitize( void ) {
 	int i;
 
-	for(i = 1; i < cmd_argc; i++)
+	for ( i = 1; i < cmd_argc; i++ )
 	{
 		char *c = cmd_argv[i];
-		
-		if(strlen(c) > MAX_CVAR_VALUE_STRING - 1)
+
+		if ( strlen( c ) > MAX_CVAR_VALUE_STRING - 1 ) {
 			c[MAX_CVAR_VALUE_STRING - 1] = '\0';
-		
-		while ((c = strpbrk(c, "\n\r;"))) {
+		}
+
+		while ( ( c = strpbrk( c, "\n\r;" ) ) ) {
 			*c = ' ';
 			++c;
 		}
@@ -615,12 +618,12 @@ void Cmd_TokenizeStringIgnoreQuotes( const char *text_in ) {
 Cmd_FindCommand
 ============
 */
-cmd_function_t *Cmd_FindCommand( const char *cmd_name )
-{
+cmd_function_t *Cmd_FindCommand( const char *cmd_name ) {
 	cmd_function_t *cmd;
-	for( cmd = cmd_functions; cmd; cmd = cmd->next )
-		if( !Q_stricmp( cmd_name, cmd->name ) )
+	for ( cmd = cmd_functions; cmd; cmd = cmd->next )
+		if ( !Q_stricmp( cmd_name, cmd->name ) ) {
 			return cmd;
+		}
 	return NULL;
 }
 
@@ -633,11 +636,11 @@ void    Cmd_AddCommand( const char *cmd_name, xcommand_t function ) {
 	cmd_function_t  *cmd;
 
 	// fail if the command already exists
-	if( Cmd_FindCommand( cmd_name ) )
-	{
+	if ( Cmd_FindCommand( cmd_name ) ) {
 		// allow completion-only commands to be silently doubled
-		if( function != NULL )
+		if ( function != NULL ) {
 			Com_Printf( "Cmd_AddCommand: %s already defined\n", cmd_name );
+		}
 		return;
 	}
 
@@ -656,10 +659,10 @@ Cmd_SetCommandCompletionFunc
 ============
 */
 void Cmd_SetCommandCompletionFunc( const char *command, completionFunc_t complete ) {
-	cmd_function_t	*cmd;
+	cmd_function_t  *cmd;
 
-	for( cmd = cmd_functions; cmd; cmd = cmd->next ) {
-		if( !Q_stricmp( command, cmd->name ) ) {
+	for ( cmd = cmd_functions; cmd; cmd = cmd->next ) {
+		if ( !Q_stricmp( command, cmd->name ) ) {
 			cmd->complete = complete;
 			return;
 		}
@@ -700,16 +703,15 @@ Cmd_RemoveCommandSafe
 Only remove commands with no associated function
 ============
 */
-void Cmd_RemoveCommandSafe( const char *cmd_name )
-{
+void Cmd_RemoveCommandSafe( const char *cmd_name ) {
 	cmd_function_t *cmd = Cmd_FindCommand( cmd_name );
 
-	if( !cmd )
+	if ( !cmd ) {
 		return;
-	if( cmd->function )
-	{
+	}
+	if ( cmd->function ) {
 		Com_Error( ERR_DROP, "Restricted source tried to remove "
-			"system command \"%s\"", cmd_name );
+							 "system command \"%s\"", cmd_name );
 		return;
 	}
 
@@ -721,7 +723,7 @@ void Cmd_RemoveCommandSafe( const char *cmd_name )
 Cmd_CommandCompletion
 ============
 */
-void    Cmd_CommandCompletion( void ( *callback )(const char *s) ) {
+void    Cmd_CommandCompletion( void ( *callback )( const char *s ) ) {
 	cmd_function_t  *cmd;
 
 	for ( cmd = cmd_functions ; cmd ; cmd = cmd->next ) {
@@ -735,10 +737,10 @@ Cmd_CompleteArgument
 ============
 */
 void Cmd_CompleteArgument( const char *command, char *args, int argNum ) {
-	cmd_function_t	*cmd;
+	cmd_function_t  *cmd;
 
-	for( cmd = cmd_functions; cmd; cmd = cmd->next ) {
-		if( !Q_stricmp( command, cmd->name ) ) {
+	for ( cmd = cmd_functions; cmd; cmd = cmd->next ) {
+		if ( !Q_stricmp( command, cmd->name ) ) {
 			if ( cmd->complete ) {
 				cmd->complete( args, argNum );
 			}
@@ -843,7 +845,7 @@ Cmd_CompleteCfgName
 ==================
 */
 void Cmd_CompleteCfgName( char *args, int argNum ) {
-	if( argNum == 2 ) {
+	if ( argNum == 2 ) {
 		Field_CompleteFilename( "", "cfg", qfalse, qtrue );
 	}
 }
@@ -856,7 +858,7 @@ Cmd_Init
 void Cmd_Init( void ) {
 	Cmd_AddCommand( "cmdlist",Cmd_List_f );
 	Cmd_AddCommand( "exec",Cmd_Exec_f );
-	Cmd_AddCommand ("execq",Cmd_Exec_f);
+	Cmd_AddCommand( "execq",Cmd_Exec_f );
 	Cmd_SetCommandCompletionFunc( "exec", Cmd_CompleteCfgName );
 	Cmd_SetCommandCompletionFunc( "execq", Cmd_CompleteCfgName );
 	Cmd_AddCommand( "vstr",Cmd_Vstr_f );
@@ -864,4 +866,3 @@ void Cmd_Init( void ) {
 	Cmd_AddCommand( "echo",Cmd_Echo_f );
 	Cmd_AddCommand( "wait", Cmd_Wait_f );
 }
-

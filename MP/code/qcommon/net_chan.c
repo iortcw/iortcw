@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -90,8 +90,7 @@ Netchan_Setup
 called to open a channel to a remote system
 ==============
 */
-void Netchan_Setup(netsrc_t sock, netchan_t *chan, netadr_t adr, int qport, int challenge, qboolean compat)
-{
+void Netchan_Setup( netsrc_t sock, netchan_t *chan, netadr_t adr, int qport, int challenge, qboolean compat ) {
 	memset( chan, 0, sizeof( *chan ) );
 
 	chan->sock = sock;
@@ -123,7 +122,7 @@ void Netchan_TransmitNextFragment( netchan_t *chan ) {
 	MSG_InitOOB( &send, send_buf, sizeof( send_buf ) );                // <-- only do the oob here
 
 	outgoingSequence = chan->outgoingSequence | FRAGMENT_BIT;
-	MSG_WriteLong(&send, outgoingSequence);
+	MSG_WriteLong( &send, outgoingSequence );
 
 	// send the qport if we are a client
 	if ( chan->sock == NS_CLIENT ) {
@@ -131,9 +130,9 @@ void Netchan_TransmitNextFragment( netchan_t *chan ) {
 	}
 
 #ifdef LEGACY_PROTOCOL
-	if(!chan->compat)
+	if ( !chan->compat )
 #endif
-		MSG_WriteLong(&send, NETCHAN_GENCHECKSUM(chan->challenge, chan->outgoingSequence));
+	MSG_WriteLong( &send, NETCHAN_GENCHECKSUM( chan->challenge, chan->outgoingSequence ) );
 
 	// copy the reliable message to the packet first
 	fragmentLength = FRAGMENT_SIZE;
@@ -146,8 +145,8 @@ void Netchan_TransmitNextFragment( netchan_t *chan ) {
 	MSG_WriteData( &send, chan->unsentBuffer + chan->unsentFragmentStart, fragmentLength );
 
 	// send the datagram
-	NET_SendPacket(chan->sock, send.cursize, send.data, chan->remoteAddress);
-	
+	NET_SendPacket( chan->sock, send.cursize, send.data, chan->remoteAddress );
+
 	// Store send time and size of this packet for rate control
 	chan->lastSentTime = Sys_Milliseconds();
 	chan->lastSentSize = send.cursize;
@@ -208,13 +207,14 @@ void Netchan_Transmit( netchan_t *chan, int length, const byte *data ) {
 	MSG_WriteLong( &send, chan->outgoingSequence );
 
 	// send the qport if we are a client
-	if(chan->sock == NS_CLIENT)
-		MSG_WriteShort(&send, qport->integer);
+	if ( chan->sock == NS_CLIENT ) {
+		MSG_WriteShort( &send, qport->integer );
+	}
 
 #ifdef LEGACY_PROTOCOL
-	if(!chan->compat)
+	if ( !chan->compat )
 #endif
-		MSG_WriteLong(&send, NETCHAN_GENCHECKSUM(chan->challenge, chan->outgoingSequence));
+	MSG_WriteLong( &send, NETCHAN_GENCHECKSUM( chan->challenge, chan->outgoingSequence ) );
 
 	chan->outgoingSequence++;
 
@@ -271,15 +271,16 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 	}
 
 #ifdef LEGACY_PROTOCOL
-	if(!chan->compat)
+	if ( !chan->compat )
 #endif
 	{
-		int checksum = MSG_ReadLong(msg);
+		int checksum = MSG_ReadLong( msg );
 
 		// UDP spoofing protection
-		if(NETCHAN_GENCHECKSUM(chan->challenge, sequence) != checksum)
+		if ( NETCHAN_GENCHECKSUM( chan->challenge, sequence ) != checksum ) {
 			return qfalse;
- 	}
+		}
+	}
 
 	// read the fragment information
 	if ( fragmented ) {
@@ -351,7 +352,7 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 		if ( fragmentStart != chan->fragmentLength ) {
 			if ( showdrop->integer || showpackets->integer ) {
 				Com_Printf( "%s:Dropped a message fragment\n"
-				, NET_AdrToString( chan->remoteAddress ));
+							, NET_AdrToString( chan->remoteAddress ) );
 			}
 			// we can still keep the part that we have so far,
 			// so we don't need to clear chan->fragmentLength
@@ -483,37 +484,37 @@ void NET_SendLoopPacket( netsrc_t sock, int length, const void *data, netadr_t t
 //=============================================================================
 
 typedef struct packetQueue_s {
-        struct packetQueue_s *next;
-        int length;
-        byte *data;
-        netadr_t to;
-        int release;
+	struct packetQueue_s *next;
+	int length;
+	byte *data;
+	netadr_t to;
+	int release;
 } packetQueue_t;
 
 packetQueue_t *packetQueue = NULL;
 
 static void NET_QueuePacket( int length, const void *data, netadr_t to,
-	int offset )
-{
+							 int offset ) {
 	packetQueue_t *new, *next = packetQueue;
 
-	if(offset > 999)
+	if ( offset > 999 ) {
 		offset = 999;
+	}
 
-	new = S_Malloc(sizeof(packetQueue_t));
-	new->data = S_Malloc(length);
-	Com_Memcpy(new->data, data, length);
+	new = S_Malloc( sizeof( packetQueue_t ) );
+	new->data = S_Malloc( length );
+	Com_Memcpy( new->data, data, length );
 	new->length = length;
 	new->to = to;
-	new->release = Sys_Milliseconds() + (int)((float)offset / com_timescale->value);	
+	new->release = Sys_Milliseconds() + (int)( (float)offset / com_timescale->value );
 	new->next = NULL;
 
-	if(!packetQueue) {
+	if ( !packetQueue ) {
 		packetQueue = new;
 		return;
 	}
-	while(next) {
-		if(!next->next) {
+	while ( next ) {
+		if ( !next->next ) {
 			next->next = new;
 			return;
 		}
@@ -521,21 +522,21 @@ static void NET_QueuePacket( int length, const void *data, netadr_t to,
 	}
 }
 
-void NET_FlushPacketQueue(void)
-{
+void NET_FlushPacketQueue( void ) {
 	packetQueue_t *last;
 	int now;
 
-	while(packetQueue) {
+	while ( packetQueue ) {
 		now = Sys_Milliseconds();
-		if(packetQueue->release >= now)
+		if ( packetQueue->release >= now ) {
 			break;
-		Sys_SendPacket(packetQueue->length, packetQueue->data,
-			packetQueue->to);
+		}
+		Sys_SendPacket( packetQueue->length, packetQueue->data,
+						packetQueue->to );
 		last = packetQueue;
 		packetQueue = packetQueue->next;
-		Z_Free(last->data);
-		Z_Free(last);
+		Z_Free( last->data );
+		Z_Free( last );
 	}
 }
 
@@ -559,11 +560,9 @@ void NET_SendPacket( netsrc_t sock, int length, const void *data, netadr_t to ) 
 
 	if ( sock == NS_CLIENT && cl_packetdelay->integer > 0 ) {
 		NET_QueuePacket( length, data, to, cl_packetdelay->integer );
-	}
-	else if ( sock == NS_SERVER && sv_packetdelay->integer > 0 ) {
+	} else if ( sock == NS_SERVER && sv_packetdelay->integer > 0 )   {
 		NET_QueuePacket( length, data, to, sv_packetdelay->integer );
-	}
-	else {
+	} else {
 		Sys_SendPacket( length, data, to );
 	}
 }
@@ -633,10 +632,9 @@ Traps "localhost" for loopback, passes everything else to system
 return 0 on address not found, 1 on address found with port, 2 on address found without port.
 =============
 */
-int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family )
-{
-	char	base[MAX_STRING_CHARS], *search;
-	char	*port = NULL;
+int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family ) {
+	char base[MAX_STRING_CHARS], *search;
+	char    *port = NULL;
 
 	if ( !strcmp( s, "localhost" ) ) {
 		memset( a, 0, sizeof( *a ) );
@@ -647,52 +645,47 @@ int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family )
 
 	Q_strncpyz( base, s, sizeof( base ) );
 
-	if(*base == '[' || Q_CountChar(base, ':') > 1)
-	{
+	if ( *base == '[' || Q_CountChar( base, ':' ) > 1 ) {
 		// This is an ipv6 address, handle it specially.
-		search = strchr(base, ']');
-		if(search)
-		{
+		search = strchr( base, ']' );
+		if ( search ) {
 			*search = '\0';
 			search++;
 
-			if(*search == ':')
+			if ( *search == ':' ) {
 				port = search + 1;
+			}
 		}
-		
-		if(*base == '[')
+
+		if ( *base == '[' ) {
 			search = base + 1;
-		else
+		} else {
 			search = base;
-	}
-	else
+		}
+	} else
 	{
 		// look for a port number
 		port = strchr( base, ':' );
-		
+
 		if ( port ) {
 			*port = '\0';
 			port++;
 		}
-		
+
 		search = base;
 	}
 
-	if(!Sys_StringToAdr(search, a, family))
-	{
+	if ( !Sys_StringToAdr( search, a, family ) ) {
 		a->type = NA_BAD;
 		return 0;
 	}
 
-	if(port)
-	{
-		a->port = BigShort((short) atoi(port));
+	if ( port ) {
+		a->port = BigShort( (short) atoi( port ) );
 		return 1;
-	}
-	else
+	} else
 	{
-		a->port = BigShort(PORT_SERVER);
+		a->port = BigShort( PORT_SERVER );
 		return 2;
 	}
 }
-

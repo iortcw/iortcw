@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -270,11 +270,11 @@ CopyWinding
 ==================
 */
 winding_t   *CopyWinding( winding_t *w ) {
-	intptr_t	size;
+	intptr_t size;
 	winding_t   *c;
 
 	c = AllocWinding( w->numpoints );
-	size = (intptr_t) ((winding_t *)0)->p[w->numpoints];
+	size = (intptr_t) ( (winding_t *)0 )->p[w->numpoints];
 	memcpy( c, w, size );
 	return c;
 }
@@ -348,7 +348,7 @@ void    ClipWindingEpsilon( winding_t *in, vec3_t normal, vec_t dist,
 	}
 
 	maxpts = in->numpoints + 4;   // cant use counts[0]+2 because
-								  // of fp grouping errors
+	                              // of fp grouping errors
 
 	*front = f = AllocWinding( maxpts );
 	*back = b = AllocWinding( maxpts );
@@ -457,7 +457,7 @@ void ChopWindingInPlace( winding_t **inout, vec3_t normal, vec_t dist, vec_t eps
 
 	}
 	maxpts = in->numpoints + 4;   // cant use counts[0]+2 because
-								  // of fp grouping errors
+	                              // of fp grouping errors
 
 	f = AllocWinding( maxpts );
 
@@ -736,5 +736,3 @@ void    AddWindingToConvexHull( winding_t *w, winding_t **hull, vec3_t normal ) 
 	*hull = w;
 	memcpy( w->p, hullPoints, numHullPoints * sizeof( vec3_t ) );
 }
-
-

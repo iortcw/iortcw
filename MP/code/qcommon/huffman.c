@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,13 +46,11 @@ void    Huff_putBit( int bit, byte *fout, int *offset ) {
 	*offset = bloc;
 }
 
-int		Huff_getBloc(void)
-{
+int     Huff_getBloc( void ) {
 	return bloc;
 }
 
-void	Huff_setBloc(int _bloc)
-{
+void    Huff_setBloc( int _bloc ) {
 	bloc = _bloc;
 }
 
@@ -399,7 +397,7 @@ void Huff_Compress( msg_t *mbuf, int offset ) {
 	huff_t huff;
 
 	size = mbuf->cursize - offset;
-	buffer = mbuf->data + + offset;
+	buffer = mbuf->data + +offset;
 
 	if ( size <= 0 ) {
 		return;
@@ -449,4 +447,3 @@ void Huff_Init( huffman_t *huff ) {
 	huff->compressor.lhead->next = huff->compressor.lhead->prev = NULL;
 	huff->compressor.tree->parent = huff->compressor.tree->left = huff->compressor.tree->right = NULL;
 }
-

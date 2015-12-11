@@ -319,7 +319,7 @@ int get_num( char *str, int *len );
 
 char *Com_PBMD5File( char *key ) {
 	char    *k;
-	char	*guid;
+	char    *guid;
 
 	k = key;
 
@@ -381,4 +381,3 @@ int get_num( char *str, int *len ) {
 }
 
 #endif // USE_PBMD5
-

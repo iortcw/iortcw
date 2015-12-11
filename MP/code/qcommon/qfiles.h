@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 //Ignore __attribute__ on non-gcc platforms
 #ifndef __GNUC__
 #ifndef __attribute__
-#define __attribute__(x)
+#define __attribute__( x )
 #endif
 #endif
 
@@ -57,8 +57,8 @@ QVM files
 ========================================================================
 */
 
-#define	VM_MAGIC			0x12721444
-#define	VM_MAGIC_VER2	0x12721445
+#define VM_MAGIC            0x12721444
+#define VM_MAGIC_VER2   0x12721445
 
 typedef struct {
 	int vmMagic;
@@ -74,7 +74,7 @@ typedef struct {
 	int bssLength;              // zero filled memory appended to datalength
 
 	//!!! below here is VM_MAGIC_VER2 !!!
-	int		jtrgLength;			// number of jump table targets
+	int jtrgLength;             // number of jump table targets
 } vmHeader_t;
 
 /*
@@ -300,106 +300,106 @@ MDR file format
  * - Thilo Schulz (arny@ats.s.bawue.de)
  */
 
-#define MDR_IDENT	(('5'<<24)+('M'<<16)+('D'<<8)+'R')
-#define MDR_VERSION	2
-#define	MDR_MAX_BONES	128
+#define MDR_IDENT   ( ( '5' << 24 ) + ( 'M' << 16 ) + ( 'D' << 8 ) + 'R' )
+#define MDR_VERSION 2
+#define MDR_MAX_BONES   128
 
 typedef struct {
-	int			boneIndex;	// these are indexes into the boneReferences,
-	float		   boneWeight;		// not the global per-frame bone list
-	vec3_t		offset;
+	int boneIndex;          // these are indexes into the boneReferences,
+	float boneWeight;               // not the global per-frame bone list
+	vec3_t offset;
 } mdrWeight_t;
 
 typedef struct {
-	vec3_t		normal;
-	vec2_t		texCoords;
-	int			numWeights;
-	mdrWeight_t	weights[1];		// variable sized
+	vec3_t normal;
+	vec2_t texCoords;
+	int numWeights;
+	mdrWeight_t weights[1];     // variable sized
 } mdrVertex_t;
 
 typedef struct {
-	int			indexes[3];
+	int indexes[3];
 } mdrTriangle_t;
 
 typedef struct {
-	int			ident;
+	int ident;
 
-	char		name[MAX_QPATH];	// polyset name
-	char		shader[MAX_QPATH];
-	int			shaderIndex;	// for in-game use
+	char name[MAX_QPATH];           // polyset name
+	char shader[MAX_QPATH];
+	int shaderIndex;            // for in-game use
 
-	int			ofsHeader;	// this will be a negative number
+	int ofsHeader;          // this will be a negative number
 
-	int			numVerts;
-	int			ofsVerts;
+	int numVerts;
+	int ofsVerts;
 
-	int			numTriangles;
-	int			ofsTriangles;
+	int numTriangles;
+	int ofsTriangles;
 
 	// Bone references are a set of ints representing all the bones
 	// present in any vertex weights for this surface.  This is
 	// needed because a model may have surfaces that need to be
 	// drawn at different sort times, and we don't want to have
 	// to re-interpolate all the bones for each surface.
-	int			numBoneReferences;
-	int			ofsBoneReferences;
+	int numBoneReferences;
+	int ofsBoneReferences;
 
-	int			ofsEnd;		// next surface follows
+	int ofsEnd;             // next surface follows
 } mdrSurface_t;
 
 typedef struct {
-	float		matrix[3][4];
+	float matrix[3][4];
 } mdrBone_t;
 
 typedef struct {
-	vec3_t		bounds[2];		// bounds of all surfaces of all LOD's for this frame
-	vec3_t		localOrigin;		// midpoint of bounds, used for sphere cull
-	float		radius;			// dist from localOrigin to corner
-	char		name[16];
-	mdrBone_t	bones[1];		// [numBones]
+	vec3_t bounds[2];           // bounds of all surfaces of all LOD's for this frame
+	vec3_t localOrigin;             // midpoint of bounds, used for sphere cull
+	float radius;               // dist from localOrigin to corner
+	char name[16];
+	mdrBone_t bones[1];         // [numBones]
 } mdrFrame_t;
 
 typedef struct {
-        unsigned char Comp[24]; // MC_COMP_BYTES is in MatComp.h, but don't want to couple
+	unsigned char Comp[24];     // MC_COMP_BYTES is in MatComp.h, but don't want to couple
 } mdrCompBone_t;
 
 typedef struct {
-        vec3_t          bounds[2];		// bounds of all surfaces of all LOD's for this frame
-        vec3_t          localOrigin;		// midpoint of bounds, used for sphere cull
-        float           radius;			// dist from localOrigin to corner
-        mdrCompBone_t   bones[1];		// [numBones]
+	vec3_t bounds[2];                   // bounds of all surfaces of all LOD's for this frame
+	vec3_t localOrigin;                     // midpoint of bounds, used for sphere cull
+	float radius;                       // dist from localOrigin to corner
+	mdrCompBone_t bones[1];             // [numBones]
 } mdrCompFrame_t;
 
 typedef struct {
-	int			numSurfaces;
-	int			ofsSurfaces;		// first surface, others follow
-	int			ofsEnd;				// next lod follows
+	int numSurfaces;
+	int ofsSurfaces;                // first surface, others follow
+	int ofsEnd;                     // next lod follows
 } mdrLOD_t;
 
 typedef struct {
-        int                     boneIndex;
-        char            name[32];
+	int boneIndex;
+	char name[32];
 } mdrTag_t;
 
 typedef struct {
-	int			ident;
-	int			version;
+	int ident;
+	int version;
 
-	char		name[MAX_QPATH];	// model name
+	char name[MAX_QPATH];           // model name
 
 	// frames and bones are shared by all levels of detail
-	int			numFrames;
-	int			numBones;
-	int			ofsFrames;			// mdrFrame_t[numFrames]
+	int numFrames;
+	int numBones;
+	int ofsFrames;                  // mdrFrame_t[numFrames]
 
 	// each level of detail has completely separate sets of surfaces
-	int			numLODs;
-	int			ofsLODs;
+	int numLODs;
+	int ofsLODs;
 
-        int                     numTags;
-        int                     ofsTags;
+	int numTags;
+	int ofsTags;
 
-	int			ofsEnd;				// end of file
+	int ofsEnd;                     // end of file
 } mdrHeader_t;
 
 
@@ -694,7 +694,7 @@ typedef struct {
 	byte color[4];
 } drawVert_t;
 
-#define drawVert_t_cleared(x) drawVert_t (x) = {{0, 0, 0}, {0, 0}, {0, 0}, {0, 0, 0}, {0, 0, 0, 0}}
+#define drawVert_t_cleared( x ) drawVert_t( x ) = {{0, 0, 0}, {0, 0}, {0, 0}, {0, 0, 0}, {0, 0, 0, 0}}
 
 typedef enum {
 	MST_BAD,

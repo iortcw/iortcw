@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ int cvar_numIndexes;
 
 #define FILE_HASH_SIZE      256
 
-static	cvar_t	*hashTable[FILE_HASH_SIZE];
+static cvar_t  *hashTable[FILE_HASH_SIZE];
 
 /*
 ================
@@ -177,18 +177,18 @@ void Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize 
 Cvar_Flags
 ============
 */
-int Cvar_Flags(const char *var_name)
-{
+int Cvar_Flags( const char *var_name ) {
 	cvar_t *var;
-	
-	if(!(var = Cvar_FindVar(var_name)))
+
+	if ( !( var = Cvar_FindVar( var_name ) ) ) {
 		return CVAR_NONEXISTENT;
-	else
+	} else
 	{
-		if(var->modified)
+		if ( var->modified ) {
 			return var->flags | CVAR_MODIFIED;
-		else
+		} else {
 			return var->flags;
+		}
 	}
 }
 
@@ -197,13 +197,14 @@ int Cvar_Flags(const char *var_name)
 Cvar_CommandCompletion
 ============
 */
-void Cvar_CommandCompletion( void ( *callback )(const char *s) ) {
+void Cvar_CommandCompletion( void ( *callback )( const char *s ) ) {
 	cvar_t      *cvar;
 
-	for(cvar = cvar_vars; cvar; cvar = cvar->next)
+	for ( cvar = cvar_vars; cvar; cvar = cvar->next )
 	{
-		if(cvar->name)
-			callback(cvar->name);
+		if ( cvar->name ) {
+			callback( cvar->name );
+		}
 	}
 }
 
@@ -213,101 +214,98 @@ Cvar_Validate
 ============
 */
 static const char *Cvar_Validate( cvar_t *var,
-    const char *value, qboolean warn )
-{
+								  const char *value, qboolean warn ) {
 	static char s[ MAX_CVAR_VALUE_STRING ];
 	float valuef;
 	qboolean changed = qfalse;
 
-	if( !var->validate )
+	if ( !var->validate ) {
 		return value;
+	}
 
-	if( !value )
+	if ( !value ) {
 		return value;
+	}
 
-	if( Q_isanumber( value ) )
-	{
+	if ( Q_isanumber( value ) ) {
 		valuef = atof( value );
 
-		if( var->integral )
-		{
-			if( !Q_isintegral( valuef ) )
-			{
-				if( warn )
+		if ( var->integral ) {
+			if ( !Q_isintegral( valuef ) ) {
+				if ( warn ) {
 					Com_Printf( "WARNING: cvar '%s' must be integral", var->name );
+				}
 
 				valuef = (int)valuef;
 				changed = qtrue;
 			}
 		}
-	}
-	else
+	} else
 	{
-		if( warn )
+		if ( warn ) {
 			Com_Printf( "WARNING: cvar '%s' must be numeric", var->name );
+		}
 
 		valuef = atof( var->resetString );
 		changed = qtrue;
 	}
 
-	if( valuef < var->min )
-	{
-		if( warn )
-		{
-			if( changed )
+	if ( valuef < var->min ) {
+		if ( warn ) {
+			if ( changed ) {
 				Com_Printf( " and is" );
-			else
+			} else {
 				Com_Printf( "WARNING: cvar '%s'", var->name );
+			}
 
-			if( Q_isintegral( var->min ) )
+			if ( Q_isintegral( var->min ) ) {
 				Com_Printf( " out of range (min %d)", (int)var->min );
-			else
+			} else {
 				Com_Printf( " out of range (min %f)", var->min );
+			}
 		}
 
 		valuef = var->min;
 		changed = qtrue;
-	}
-	else if( valuef > var->max )
-	{
-		if( warn )
-		{
-			if( changed )
+	} else if ( valuef > var->max )    {
+		if ( warn ) {
+			if ( changed ) {
 				Com_Printf( " and is" );
-			else
+			} else {
 				Com_Printf( "WARNING: cvar '%s'", var->name );
+			}
 
-			if( Q_isintegral( var->max ) )
+			if ( Q_isintegral( var->max ) ) {
 				Com_Printf( " out of range (max %d)", (int)var->max );
-			else
+			} else {
 				Com_Printf( " out of range (max %f)", var->max );
+			}
 		}
 
 		valuef = var->max;
 		changed = qtrue;
 	}
 
-	if( changed )
-	{
-		if( Q_isintegral( valuef ) )
-		{
+	if ( changed ) {
+		if ( Q_isintegral( valuef ) ) {
 			Com_sprintf( s, sizeof( s ), "%d", (int)valuef );
 
-			if( warn )
+			if ( warn ) {
 				Com_Printf( ", setting to %d\n", (int)valuef );
-		}
-		else
+			}
+		} else
 		{
 			Com_sprintf( s, sizeof( s ), "%f", valuef );
 
-			if( warn )
+			if ( warn ) {
 				Com_Printf( ", setting to %f\n", valuef );
+			}
 		}
 
 		return s;
-	}
-	else
+	} else {
 		return value;
+	}
 }
 
 /*
@@ -344,7 +342,7 @@ The flags will be or'ed in if the variable exists.
 cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	cvar_t  *var;
 	long hash;
-	int	index;
+	int index;
 
 	if ( !var_name || !var_value ) {
 		Com_Error( ERR_FATAL, "Cvar_Get: NULL parameter" );
@@ -365,50 +363,48 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var = Cvar_FindVar( var_name );
 	if ( var ) {
 
-		var_value = Cvar_Validate(var, var_value, qfalse);
+		var_value = Cvar_Validate( var, var_value, qfalse );
 
 		// Make sure the game code cannot mark engine-added variables as gamecode vars
-		if(var->flags & CVAR_VM_CREATED)
-		{
-			if(!(flags & CVAR_VM_CREATED))
+		if ( var->flags & CVAR_VM_CREATED ) {
+			if ( !( flags & CVAR_VM_CREATED ) ) {
 				var->flags &= ~CVAR_VM_CREATED;
-		}
-		else if (!(var->flags & CVAR_USER_CREATED))
-		{
-			if(flags & CVAR_VM_CREATED)
+			}
+		} else if ( !( var->flags & CVAR_USER_CREATED ) )       {
+			if ( flags & CVAR_VM_CREATED ) {
 				flags &= ~CVAR_VM_CREATED;
+			}
 		}
 
 		// if the C code is now specifying a variable that the user already
 		// set a value for, take the new value as the reset value
-		if(var->flags & CVAR_USER_CREATED)
-		{
+		if ( var->flags & CVAR_USER_CREATED ) {
 			var->flags &= ~CVAR_USER_CREATED;
 			Z_Free( var->resetString );
 			var->resetString = CopyString( var_value );
 
-			if(flags & CVAR_ROM)
-			{
+			if ( flags & CVAR_ROM ) {
 				// this variable was set by the user,
 				// so force it to value given by the engine.
- 
-				if(var->latchedString)
-					Z_Free(var->latchedString);
-				
-				var->latchedString = CopyString(var_value);
+
+				if ( var->latchedString ) {
+					Z_Free( var->latchedString );
+				}
+
+				var->latchedString = CopyString( var_value );
 			}
 		}
 
 		// Make sure servers cannot mark engine-added variables as SERVER_CREATED
-		if(var->flags & CVAR_SERVER_CREATED)
-		{
-			if(!(flags & CVAR_SERVER_CREATED))
+		if ( var->flags & CVAR_SERVER_CREATED ) {
+			if ( !( flags & CVAR_SERVER_CREATED ) ) {
 				var->flags &= ~CVAR_SERVER_CREATED;
-		}
-		else
+			}
+		} else
 		{
-			if(flags & CVAR_SERVER_CREATED)
+			if ( flags & CVAR_SERVER_CREATED ) {
 				flags &= ~CVAR_SERVER_CREATED;
+			}
 		}
 
 		var->flags |= flags;
@@ -441,7 +437,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 			}
 		}
 
-		// ZOID--needs to be set so that cvars the game sets as 
+		// ZOID--needs to be set so that cvars the game sets as
 		// SERVERINFO get sent to clients
 		cvar_modifiedFlags |= flags;
 
@@ -453,24 +449,26 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	//
 
 	// find a free cvar
-	for(index = 0; index < MAX_CVARS; index++)
+	for ( index = 0; index < MAX_CVARS; index++ )
 	{
-		if(!cvar_indexes[index].name)
+		if ( !cvar_indexes[index].name ) {
 			break;
+		}
 	}
 
-	if(index >= MAX_CVARS)
-	{
-		if(!com_errorEntered)
-			Com_Error(ERR_FATAL, "Error: Too many cvars, cannot create a new one!");
+	if ( index >= MAX_CVARS ) {
+		if ( !com_errorEntered ) {
+			Com_Error( ERR_FATAL, "Error: Too many cvars, cannot create a new one!" );
+		}
 
 		return NULL;
 	}
-	
+
 	var = &cvar_indexes[index];
-	
-	if(index >= cvar_numIndexes)
+
+	if ( index >= cvar_numIndexes ) {
 		cvar_numIndexes = index + 1;
+	}
 
 	var->name = CopyString( var_name );
 	var->string = CopyString( var_value );
@@ -483,8 +481,9 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 
 	// link the variable in
 	var->next = cvar_vars;
-	if(cvar_vars)
+	if ( cvar_vars ) {
 		cvar_vars->prev = var;
+	}
 
 	var->prev = NULL;
 	cvar_vars = var;
@@ -497,8 +496,9 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->hashIndex = hash;
 
 	var->hashNext = hashTable[hash];
-	if(hashTable[hash])
+	if ( hashTable[hash] ) {
 		hashTable[hash]->hashPrev = var;
+	}
 
 	var->hashPrev = NULL;
 	hashTable[hash] = var;
@@ -514,19 +514,19 @@ Prints the value, default, and latched string of the given variable
 ============
 */
 void Cvar_Print( cvar_t *v ) {
-	Com_Printf ("\"%s\" is:\"%s" S_COLOR_WHITE "\"",
-			v->name, v->string );
+	Com_Printf( "\"%s\" is:\"%s" S_COLOR_WHITE "\"",
+				v->name, v->string );
 
 	if ( !( v->flags & CVAR_ROM ) ) {
 		if ( !Q_stricmp( v->string, v->resetString ) ) {
-			Com_Printf (", the default" );
+			Com_Printf( ", the default" );
 		} else {
-			Com_Printf (" default:\"%s" S_COLOR_WHITE "\"",
-					v->resetString );
+			Com_Printf( " default:\"%s" S_COLOR_WHITE "\"",
+						v->resetString );
 		}
 	}
 
-	Com_Printf ("\n");
+	Com_Printf( "\n" );
 
 	if ( v->latchedString ) {
 		Com_Printf( "latched: \"%s\"\n", v->latchedString );
@@ -582,22 +582,21 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 		}
 	}
 
-	value = Cvar_Validate(var, value, qtrue);
+	value = Cvar_Validate( var, value, qtrue );
 
-	if((var->flags & CVAR_LATCH) && var->latchedString)
-	{
-		if(!strcmp(value, var->string))
-		{
-			Z_Free(var->latchedString);
+	if ( ( var->flags & CVAR_LATCH ) && var->latchedString ) {
+		if ( !strcmp( value, var->string ) ) {
+			Z_Free( var->latchedString );
 			var->latchedString = NULL;
 			return var;
 		}
 
-		if(!strcmp(value, var->latchedString))
+		if ( !strcmp( value, var->latchedString ) ) {
 			return var;
-	}
-	else if(!strcmp(value, var->string))
+		}
+	} else if ( !strcmp( value, var->string ) )        {
 		return var;
+	}
 
 	// note what types of cvars have been modified (userinfo, archive, serverinfo, systeminfo)
 	cvar_modifiedFlags |= var->flags;
@@ -676,18 +675,17 @@ void Cvar_Set( const char *var_name, const char *value ) {
 Cvar_SetSafe
 ============
 */
-void Cvar_SetSafe( const char *var_name, const char *value )
-{
+void Cvar_SetSafe( const char *var_name, const char *value ) {
 	int flags = Cvar_Flags( var_name );
 
-	if((flags != CVAR_NONEXISTENT) && (flags & CVAR_PROTECTED))
-	{
-		if( value )
+	if ( ( flags != CVAR_NONEXISTENT ) && ( flags & CVAR_PROTECTED ) ) {
+		if ( value ) {
 			Com_Error( ERR_DROP, "Restricted source tried to set "
-				"\"%s\" to \"%s\"", var_name, value );
-		else
+								 "\"%s\" to \"%s\"", var_name, value );
+		} else {
 			Com_Error( ERR_DROP, "Restricted source tried to "
-				"modify \"%s\"", var_name );
+								 "modify \"%s\"", var_name );
+		}
 		return;
 	}
 	Cvar_Set( var_name, value );
@@ -723,14 +721,14 @@ void Cvar_SetValue( const char *var_name, float value ) {
 Cvar_SetValueSafe
 ============
 */
-void Cvar_SetValueSafe( const char *var_name, float value )
-{
+void Cvar_SetValueSafe( const char *var_name, float value ) {
 	char val[32];
 
-	if( Q_isintegral( value ) )
-		Com_sprintf( val, sizeof(val), "%i", (int)value );
-	else
-		Com_sprintf( val, sizeof(val), "%f", value );
+	if ( Q_isintegral( value ) ) {
+		Com_sprintf( val, sizeof( val ), "%i", (int)value );
+	} else {
+		Com_sprintf( val, sizeof( val ), "%f", value );
+	}
 	Cvar_SetSafe( var_name, val );
 }
 
@@ -748,9 +746,8 @@ void Cvar_Reset( const char *var_name ) {
 Cvar_ForceReset
 ============
 */
-void Cvar_ForceReset(const char *var_name)
-{
-	Cvar_Set2(var_name, NULL, qtrue);
+void Cvar_ForceReset( const char *var_name ) {
+	Cvar_Set2( var_name, NULL, qtrue );
 }
 
 /*
@@ -764,19 +761,18 @@ void Cvar_SetCheatState( void ) {
 	cvar_t  *var;
 
 	// set all default vars to the safe value
-	for(var = cvar_vars; var ; var = var->next)
+	for ( var = cvar_vars; var ; var = var->next )
 	{
-		if(var->flags & CVAR_CHEAT)
-		{
-			// the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here 
+		if ( var->flags & CVAR_CHEAT ) {
+			// the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here
 			// because of a different var->latchedString
-			if (var->latchedString)
-			{
-				Z_Free(var->latchedString);
+			if ( var->latchedString ) {
+				Z_Free( var->latchedString );
 				var->latchedString = NULL;
 			}
-			if (strcmp(var->resetString,var->string))
-				Cvar_Set(var->name, var->resetString);
+			if ( strcmp( var->resetString,var->string ) ) {
+				Cvar_Set( var->name, var->resetString );
+			}
 		}
 	}
 }
@@ -804,7 +800,7 @@ qboolean Cvar_Command( void ) {
 	}
 
 	// set the value if forcing isn't required
-	Cvar_Set2 (v->name, Cmd_Args(), qfalse);
+	Cvar_Set2( v->name, Cmd_Args(), qfalse );
 	return qtrue;
 }
 
@@ -812,29 +808,28 @@ qboolean Cvar_Command( void ) {
 ============
 Cvar_Print_f
 
-Prints the contents of a cvar 
+Prints the contents of a cvar
 (preferred over Cvar_Command where cvar names and commands conflict)
 ============
 */
-void Cvar_Print_f(void)
-{
+void Cvar_Print_f( void ) {
 	char *name;
 	cvar_t *cv;
-	
-	if(Cmd_Argc() != 2)
-	{
-		Com_Printf ("usage: print <variable>\n");
+
+	if ( Cmd_Argc() != 2 ) {
+		Com_Printf( "usage: print <variable>\n" );
 		return;
 	}
 
-	name = Cmd_Argv(1);
+	name = Cmd_Argv( 1 );
 
-	cv = Cvar_FindVar(name);
-	
-	if(cv)
-		Cvar_Print(cv);
-	else
-		Com_Printf ("Cvar %s does not exist.\n", name);
+	cv = Cvar_FindVar( name );
+
+	if ( cv ) {
+		Cvar_Print( cv );
+	} else {
+		Com_Printf( "Cvar %s does not exist.\n", name );
+	}
 }
 
 /*
@@ -846,39 +841,39 @@ given values
 ============
 */
 void Cvar_Toggle_f( void ) {
-	int		i, c = Cmd_Argc();
-	char		*curval;
+	int i, c = Cmd_Argc();
+	char        *curval;
 
-	if(c < 2) {
-		Com_Printf("usage: toggle <variable> [value1, value2, ...]\n");
+	if ( c < 2 ) {
+		Com_Printf( "usage: toggle <variable> [value1, value2, ...]\n" );
 		return;
 	}
 
-	if(c == 2) {
-		Cvar_Set2(Cmd_Argv(1), va("%d", 
-			!Cvar_VariableValue(Cmd_Argv(1))), 
-			qfalse);
+	if ( c == 2 ) {
+		Cvar_Set2( Cmd_Argv( 1 ), va( "%d",
+									  !Cvar_VariableValue( Cmd_Argv( 1 ) ) ),
+				   qfalse );
 		return;
 	}
 
-	if(c == 3) {
-		Com_Printf("toggle: nothing to toggle to\n");
+	if ( c == 3 ) {
+		Com_Printf( "toggle: nothing to toggle to\n" );
 		return;
 	}
 
-	curval = Cvar_VariableString(Cmd_Argv(1));
+	curval = Cvar_VariableString( Cmd_Argv( 1 ) );
 
 	// don't bother checking the last arg for a match since the desired
 	// behaviour is the same as no match (set to the first argument)
-	for(i = 2; i + 1 < c; i++) {
-		if(strcmp(curval, Cmd_Argv(i)) == 0) {
-			Cvar_Set2(Cmd_Argv(1), Cmd_Argv(i + 1), qfalse);
+	for ( i = 2; i + 1 < c; i++ ) {
+		if ( strcmp( curval, Cmd_Argv( i ) ) == 0 ) {
+			Cvar_Set2( Cmd_Argv( 1 ), Cmd_Argv( i + 1 ), qfalse );
 			return;
 		}
 	}
 
 	// fallback
-	Cvar_Set2(Cmd_Argv(1), Cmd_Argv(2), qfalse);
+	Cvar_Set2( Cmd_Argv( 1 ), Cmd_Argv( 2 ), qfalse );
 }
 
 /*
@@ -890,15 +885,15 @@ weren't declared in C code.
 ============
 */
 void Cvar_Set_f( void ) {
-	int		c;
-	char	*cmd;
-	cvar_t	*v;
+	int c;
+	char    *cmd;
+	cvar_t  *v;
 
 	c = Cmd_Argc();
-	cmd = Cmd_Argv(0);
+	cmd = Cmd_Argv( 0 );
 
 	if ( c < 2 ) {
-		Com_Printf ("usage: %s <variable> <value>\n", cmd);
+		Com_Printf( "usage: %s <variable> <value>\n", cmd );
 		return;
 	}
 	if ( c == 2 ) {
@@ -906,29 +901,29 @@ void Cvar_Set_f( void ) {
 		return;
 	}
 
-	v = Cvar_Set2 (Cmd_Argv(1), Cmd_ArgsFrom(2), qfalse);
-	if( !v ) {
+	v = Cvar_Set2( Cmd_Argv( 1 ), Cmd_ArgsFrom( 2 ), qfalse );
+	if ( !v ) {
 		return;
 	}
-	switch( cmd[3] ) {
-		case 'a':
-			if( !( v->flags & CVAR_ARCHIVE ) ) {
-				v->flags |= CVAR_ARCHIVE;
-				cvar_modifiedFlags |= CVAR_ARCHIVE;
-			}
-			break;
-		case 'u':
-			if( !( v->flags & CVAR_USERINFO ) ) {
-				v->flags |= CVAR_USERINFO;
-				cvar_modifiedFlags |= CVAR_USERINFO;
-			}
-			break;
-		case 's':
-			if( !( v->flags & CVAR_SERVERINFO ) ) {
-				v->flags |= CVAR_SERVERINFO;
-				cvar_modifiedFlags |= CVAR_SERVERINFO;
-			}
-			break;
+	switch ( cmd[3] ) {
+	case 'a':
+		if ( !( v->flags & CVAR_ARCHIVE ) ) {
+			v->flags |= CVAR_ARCHIVE;
+			cvar_modifiedFlags |= CVAR_ARCHIVE;
+		}
+		break;
+	case 'u':
+		if ( !( v->flags & CVAR_USERINFO ) ) {
+			v->flags |= CVAR_USERINFO;
+			cvar_modifiedFlags |= CVAR_USERINFO;
+		}
+		break;
+	case 's':
+		if ( !( v->flags & CVAR_SERVERINFO ) ) {
+			v->flags |= CVAR_SERVERINFO;
+			cvar_modifiedFlags |= CVAR_SERVERINFO;
+		}
+		break;
 	}
 }
 
@@ -957,27 +952,28 @@ void Cvar_WriteVariables( fileHandle_t f ) {
 	cvar_t  *var;
 	char buffer[1024];
 
-	for (var = cvar_vars; var; var = var->next)
+	for ( var = cvar_vars; var; var = var->next )
 	{
-		if(!var->name || Q_stricmp( var->name, "cl_cdkey" ) == 0)
+		if ( !var->name || Q_stricmp( var->name, "cl_cdkey" ) == 0 ) {
 			continue;
+		}
 
 		if ( var->flags & CVAR_ARCHIVE ) {
 			// write the latched value, even if it hasn't taken effect yet
 			if ( var->latchedString ) {
-				if( strlen( var->name ) + strlen( var->latchedString ) + 10 > sizeof( buffer ) ) {
+				if ( strlen( var->name ) + strlen( var->latchedString ) + 10 > sizeof( buffer ) ) {
 					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable "
-							"\"%s\" too long to write to file\n", var->name );
+											   "\"%s\" too long to write to file\n", var->name );
 					continue;
 				}
-				Com_sprintf (buffer, sizeof(buffer), "seta %s \"%s\"\n", var->name, var->latchedString);
+				Com_sprintf( buffer, sizeof( buffer ), "seta %s \"%s\"\n", var->name, var->latchedString );
 			} else {
-				if( strlen( var->name ) + strlen( var->string ) + 10 > sizeof( buffer ) ) {
+				if ( strlen( var->name ) + strlen( var->string ) + 10 > sizeof( buffer ) ) {
 					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable "
-							"\"%s\" too long to write to file\n", var->name );
+											   "\"%s\" too long to write to file\n", var->name );
 					continue;
 				}
-				Com_sprintf (buffer, sizeof(buffer), "seta %s \"%s\"\n", var->name, var->string);
+				Com_sprintf( buffer, sizeof( buffer ), "seta %s \"%s\"\n", var->name, var->string );
 			}
 			FS_Write( buffer, strlen( buffer ), f );
 		}
@@ -1003,18 +999,19 @@ void Cvar_List_f( void ) {
 	i = 0;
 	for ( var = cvar_vars ; var ; var = var->next, i++ )
 	{
-		if(!var->name || (match && !Com_Filter(match, var->name, qfalse)))
+		if ( !var->name || ( match && !Com_Filter( match, var->name, qfalse ) ) ) {
 			continue;
+		}
 
 		if ( var->flags & CVAR_SERVERINFO ) {
 			Com_Printf( "S" );
 		} else {
 			Com_Printf( " " );
 		}
-		if (var->flags & CVAR_SYSTEMINFO) {
-			Com_Printf("s");
+		if ( var->flags & CVAR_SYSTEMINFO ) {
+			Com_Printf( "s" );
 		} else {
-			Com_Printf(" ");
+			Com_Printf( " " );
 		}
 		if ( var->flags & CVAR_USERINFO ) {
 			Com_Printf( "U" );
@@ -1046,10 +1043,10 @@ void Cvar_List_f( void ) {
 		} else {
 			Com_Printf( " " );
 		}
-		if (var->flags & CVAR_USER_CREATED) {
-			Com_Printf("?");
+		if ( var->flags & CVAR_USER_CREATED ) {
+			Com_Printf( "?" );
 		} else {
-			Com_Printf(" ");
+			Com_Printf( " " );
 		}
 
 		Com_Printf( " %s \"%s\"\n", var->name, var->string );
@@ -1065,10 +1062,10 @@ Cvar_ListModified_f
 ============
 */
 void Cvar_ListModified_f( void ) {
-	cvar_t	*var;
-	int		totalModified;
-	char	*value;
-	char	*match;
+	cvar_t  *var;
+	int totalModified;
+	char    *value;
+	char    *match;
 
 	if ( Cmd_Argc() > 1 ) {
 		match = Cmd_Argv( 1 );
@@ -1077,70 +1074,73 @@ void Cvar_ListModified_f( void ) {
 	}
 
 	totalModified = 0;
-	for (var = cvar_vars ; var ; var = var->next)
+	for ( var = cvar_vars ; var ; var = var->next )
 	{
-		if ( !var->name || !var->modificationCount )
+		if ( !var->name || !var->modificationCount ) {
 			continue;
+		}
 
 		value = var->latchedString ? var->latchedString : var->string;
-		if ( !strcmp( value, var->resetString ) )
+		if ( !strcmp( value, var->resetString ) ) {
 			continue;
+		}
 
 		totalModified++;
 
-		if (match && !Com_Filter(match, var->name, qfalse))
+		if ( match && !Com_Filter( match, var->name, qfalse ) ) {
 			continue;
-
-		if (var->flags & CVAR_SERVERINFO) {
-			Com_Printf("S");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_SYSTEMINFO) {
-			Com_Printf("s");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_USERINFO) {
-			Com_Printf("U");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_ROM) {
-			Com_Printf("R");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_INIT) {
-			Com_Printf("I");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_ARCHIVE) {
-			Com_Printf("A");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_LATCH) {
-			Com_Printf("L");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_CHEAT) {
-			Com_Printf("C");
-		} else {
-			Com_Printf(" ");
-		}
-		if (var->flags & CVAR_USER_CREATED) {
-			Com_Printf("?");
-		} else {
-			Com_Printf(" ");
 		}
 
-		Com_Printf (" %s \"%s\", default \"%s\"\n", var->name, value, var->resetString);
+		if ( var->flags & CVAR_SERVERINFO ) {
+			Com_Printf( "S" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_SYSTEMINFO ) {
+			Com_Printf( "s" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_USERINFO ) {
+			Com_Printf( "U" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_ROM ) {
+			Com_Printf( "R" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_INIT ) {
+			Com_Printf( "I" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_ARCHIVE ) {
+			Com_Printf( "A" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_LATCH ) {
+			Com_Printf( "L" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_CHEAT ) {
+			Com_Printf( "C" );
+		} else {
+			Com_Printf( " " );
+		}
+		if ( var->flags & CVAR_USER_CREATED ) {
+			Com_Printf( "?" );
+		} else {
+			Com_Printf( " " );
+		}
+
+		Com_Printf( " %s \"%s\", default \"%s\"\n", var->name, value, var->resetString );
 	}
 
-	Com_Printf ("\n%i total modified cvars\n", totalModified);
+	Com_Printf( "\n%i total modified cvars\n", totalModified );
 }
 
 /*
@@ -1151,38 +1151,45 @@ Unsets a cvar
 ============
 */
 
-cvar_t *Cvar_Unset(cvar_t *cv)
-{
+cvar_t *Cvar_Unset( cvar_t *cv ) {
 	cvar_t *next = cv->next;
 
 	// note what types of cvars have been modified (userinfo, archive, serverinfo, systeminfo)
 	cvar_modifiedFlags |= cv->flags;
 
-	if(cv->name)
-		Z_Free(cv->name);
-	if(cv->string)
-		Z_Free(cv->string);
-	if(cv->latchedString)
-		Z_Free(cv->latchedString);
-	if(cv->resetString)
-		Z_Free(cv->resetString);
+	if ( cv->name ) {
+		Z_Free( cv->name );
+	}
+	if ( cv->string ) {
+		Z_Free( cv->string );
+	}
+	if ( cv->latchedString ) {
+		Z_Free( cv->latchedString );
+	}
+	if ( cv->resetString ) {
+		Z_Free( cv->resetString );
+	}
 
-	if(cv->prev)
+	if ( cv->prev ) {
 		cv->prev->next = cv->next;
-	else
+	} else {
 		cvar_vars = cv->next;
-	if(cv->next)
+	}
+	if ( cv->next ) {
 		cv->next->prev = cv->prev;
+	}
 
-	if(cv->hashPrev)
+	if ( cv->hashPrev ) {
 		cv->hashPrev->hashNext = cv->hashNext;
-	else
+	} else {
 		hashTable[cv->hashIndex] = cv->hashNext;
-	if(cv->hashNext)
+	}
+	if ( cv->hashNext ) {
 		cv->hashNext->hashPrev = cv->hashPrev;
+	}
 
-	Com_Memset(cv, '\0', sizeof(*cv));
-	
+	Com_Memset( cv, '\0', sizeof( *cv ) );
+
 	return next;
 }
 
@@ -1194,25 +1201,25 @@ Unsets a userdefined cvar
 ============
 */
 
-void Cvar_Unset_f(void)
-{
+void Cvar_Unset_f( void ) {
 	cvar_t *cv;
-	
-	if(Cmd_Argc() != 2)
-	{
-		Com_Printf("Usage: %s <varname>\n", Cmd_Argv(0));
+
+	if ( Cmd_Argc() != 2 ) {
+		Com_Printf( "Usage: %s <varname>\n", Cmd_Argv( 0 ) );
 		return;
 	}
-	
-	cv = Cvar_FindVar(Cmd_Argv(1));
 
-	if(!cv)
+	cv = Cvar_FindVar( Cmd_Argv( 1 ) );
+
+	if ( !cv ) {
 		return;
-	
-	if(cv->flags & CVAR_USER_CREATED)
-		Cvar_Unset(cv);
-	else
-		Com_Printf("Error: %s: Variable %s is not user created.\n", Cmd_Argv(0), cv->name);
+	}
+
+	if ( cv->flags & CVAR_USER_CREATED ) {
+		Cvar_Unset( cv );
+	} else {
+		Com_Printf( "Error: %s: Variable %s is not user created.\n", Cmd_Argv( 0 ), cv->name );
+	}
 }
 
 /*
@@ -1224,28 +1231,25 @@ and variables added via the VMs if requested.
 ============
 */
 
-void Cvar_Restart(qboolean unsetVM)
-{
-	cvar_t	*curvar;
+void Cvar_Restart( qboolean unsetVM ) {
+	cvar_t  *curvar;
 
 	curvar = cvar_vars;
 
-	while(curvar)
+	while ( curvar )
 	{
-		if((curvar->flags & CVAR_USER_CREATED) ||
-			(unsetVM && (curvar->flags & CVAR_VM_CREATED)))
-		{
+		if ( ( curvar->flags & CVAR_USER_CREATED ) ||
+			 ( unsetVM && ( curvar->flags & CVAR_VM_CREATED ) ) ) {
 			// throw out any variables the user/vm created
-			curvar = Cvar_Unset(curvar);
+			curvar = Cvar_Unset( curvar );
 			continue;
 		}
-		
-		if(!(curvar->flags & (CVAR_ROM | CVAR_INIT | CVAR_NORESTART)))
-		{
+
+		if ( !( curvar->flags & ( CVAR_ROM | CVAR_INIT | CVAR_NORESTART ) ) ) {
 			// Just reset the rest to their default values.
-			Cvar_Set2(curvar->name, curvar->resetString, qfalse);
+			Cvar_Set2( curvar->name, curvar->resetString, qfalse );
 		}
-		
+
 		curvar = curvar->next;
 	}
 }
@@ -1258,9 +1262,8 @@ Cvar_Restart_f
 Resets all cvars to their hardcoded values
 ============
 */
-void Cvar_Restart_f(void)
-{
-	Cvar_Restart(qfalse);
+void Cvar_Restart_f( void ) {
+	Cvar_Restart( qfalse );
 }
 
 
@@ -1275,10 +1278,11 @@ char *Cvar_InfoString( int bit ) {
 
 	info[0] = 0;
 
-	for(var = cvar_vars; var; var = var->next)
+	for ( var = cvar_vars; var; var = var->next )
 	{
-		if(var->name && (var->flags & bit))
+		if ( var->name && ( var->flags & bit ) ) {
 			Info_SetValueForKey( info, var->name, var->string );
+		}
 	}
 	return info;
 }
@@ -1296,10 +1300,11 @@ char *Cvar_InfoString_Big( int bit ) {
 
 	info[0] = 0;
 
-	for (var = cvar_vars; var; var = var->next)
+	for ( var = cvar_vars; var; var = var->next )
 	{
-		if(var->name && (var->flags & bit))
+		if ( var->name && ( var->flags & bit ) ) {
 			Info_SetValueForKey_Big( info, var->name, var->string );
+		}
 	}
 	return info;
 }
@@ -1319,8 +1324,7 @@ void Cvar_InfoStringBuffer( int bit, char* buff, int buffsize ) {
 Cvar_CheckRange
 =====================
 */
-void Cvar_CheckRange( cvar_t *var, float min, float max, qboolean integral )
-{
+void Cvar_CheckRange( cvar_t *var, float min, float max, qboolean integral ) {
 	var->validate = qtrue;
 	var->min = min;
 	var->max = max;
@@ -1344,16 +1348,17 @@ void Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultVa
 	// user. In other words CVAR_ARCHIVE and CVAR_ROM are mutually exclusive
 	// flags. Unfortunately some historical game code (including single player
 	// baseq3) sets both flags. We unset CVAR_ROM for such cvars.
-	if ((flags & (CVAR_ARCHIVE | CVAR_ROM)) == (CVAR_ARCHIVE | CVAR_ROM)) {
+	if ( ( flags & ( CVAR_ARCHIVE | CVAR_ROM ) ) == ( CVAR_ARCHIVE | CVAR_ROM ) ) {
 		Com_DPrintf( S_COLOR_YELLOW "WARNING: Unsetting CVAR_ROM cvar '%s', "
-			"since it is also CVAR_ARCHIVE\n", varName );
+									"since it is also CVAR_ARCHIVE\n", varName );
 		flags &= ~CVAR_ROM;
 	}
 
-	cv = Cvar_Get(varName, defaultValue, flags | CVAR_VM_CREATED);
+	cv = Cvar_Get( varName, defaultValue, flags | CVAR_VM_CREATED );
 
-	if (!vmCvar)
+	if ( !vmCvar ) {
 		return;
+	}
 
 	vmCvar->handle = cv - cvar_indexes;
 	vmCvar->modificationCount = -1;
@@ -1385,10 +1390,11 @@ void    Cvar_Update( vmCvar_t *vmCvar ) {
 		return;     // variable might have been cleared by a cvar_restart
 	}
 	vmCvar->modificationCount = cv->modificationCount;
-	if ( strlen( cv->string ) + 1 > MAX_CVAR_VALUE_STRING )
+	if ( strlen( cv->string ) + 1 > MAX_CVAR_VALUE_STRING ) {
 		Com_Error( ERR_DROP, "Cvar_Update: src %s length %u exceeds MAX_CVAR_VALUE_STRING",
-			cv->string,
-			(unsigned int) strlen(cv->string));
+				   cv->string,
+				   (unsigned int) strlen( cv->string ) );
+	}
 	Q_strncpyz( vmCvar->string, cv->string,  MAX_CVAR_VALUE_STRING );
 
 	vmCvar->value = cv->value;
@@ -1400,15 +1406,14 @@ void    Cvar_Update( vmCvar_t *vmCvar ) {
 Cvar_CompleteCvarName
 ==================
 */
-void Cvar_CompleteCvarName( char *args, int argNum )
-{
-	if( argNum == 2 )
-	{
+void Cvar_CompleteCvarName( char *args, int argNum ) {
+	if ( argNum == 2 ) {
 		// Skip "<cmd> "
 		char *p = Com_SkipTokens( args, 1, " " );
 
-		if( p > args )
+		if ( p > args ) {
 			Field_CompleteCommand( p, qfalse, qtrue );
+		}
 	}
 }
 
@@ -1421,26 +1426,26 @@ Reads in all archived cvars
 */
 void Cvar_Init( void ) {
 
-	Com_Memset(cvar_indexes, '\0', sizeof(cvar_indexes));
-	Com_Memset(hashTable, '\0', sizeof(hashTable));
+	Com_Memset( cvar_indexes, '\0', sizeof( cvar_indexes ) );
+	Com_Memset( hashTable, '\0', sizeof( hashTable ) );
 
 	cvar_cheats = Cvar_Get( "sv_cheats", "1", CVAR_ROM | CVAR_SYSTEMINFO );
 
-	Cmd_AddCommand ("print", Cvar_Print_f);
+	Cmd_AddCommand( "print", Cvar_Print_f );
 	Cmd_AddCommand( "toggle", Cvar_Toggle_f );
 	Cmd_SetCommandCompletionFunc( "toggle", Cvar_CompleteCvarName );
 	Cmd_AddCommand( "set", Cvar_Set_f );
 	Cmd_SetCommandCompletionFunc( "set", Cvar_CompleteCvarName );
-	Cmd_AddCommand ("sets", Cvar_Set_f);
+	Cmd_AddCommand( "sets", Cvar_Set_f );
 	Cmd_SetCommandCompletionFunc( "sets", Cvar_CompleteCvarName );
-	Cmd_AddCommand ("setu", Cvar_Set_f);
+	Cmd_AddCommand( "setu", Cvar_Set_f );
 	Cmd_SetCommandCompletionFunc( "setu", Cvar_CompleteCvarName );
-	Cmd_AddCommand ("seta", Cvar_Set_f);
+	Cmd_AddCommand( "seta", Cvar_Set_f );
 	Cmd_SetCommandCompletionFunc( "seta", Cvar_CompleteCvarName );
 	Cmd_AddCommand( "reset", Cvar_Reset_f );
 	Cmd_SetCommandCompletionFunc( "reset", Cvar_CompleteCvarName );
-	Cmd_AddCommand ("unset", Cvar_Unset_f);
-	Cmd_SetCommandCompletionFunc("unset", Cvar_CompleteCvarName);
+	Cmd_AddCommand( "unset", Cvar_Unset_f );
+	Cmd_SetCommandCompletionFunc( "unset", Cvar_CompleteCvarName );
 
 	Cmd_AddCommand( "cvarlist", Cvar_List_f );
 	Cmd_AddCommand( "cvar_modified", Cvar_ListModified_f );

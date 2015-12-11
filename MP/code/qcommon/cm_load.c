@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ void    CM_FloodAreaConnections( void );
 /*
 ===============================================================================
 
-					MAP LOADING
+                    MAP LOADING
 
 ===============================================================================
 */
@@ -149,7 +149,7 @@ void CMod_LoadSubmodels( lump_t *l ) {
 		Com_Error( ERR_DROP, "MAX_SUBMODELS exceeded" );
 	}
 
-	for ( i=0 ; i<count ; i++, in++)
+	for ( i = 0 ; i < count ; i++, in++ )
 	{
 		out = &cm.cmodels[i];
 
@@ -603,8 +603,8 @@ Loads in the map and all submodels
 */
 void CM_LoadMap( const char *name, qboolean clientload, int *checksum ) {
 	union {
-		int				*i;
-		void			*v;
+		int             *i;
+		void            *v;
 	} buf;
 	int i;
 	dheader_t header;
@@ -646,7 +646,7 @@ void CM_LoadMap( const char *name, qboolean clientload, int *checksum ) {
 #ifndef BSPC
 	length = FS_ReadFile( name, &buf.v );
 #else
-	length = LoadQuakeFile((quakefile_t *) name, &buf.v);
+	length = LoadQuakeFile( (quakefile_t *) name, &buf.v );
 #endif
 
 	if ( !buf.i ) {
@@ -879,5 +879,3 @@ void CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
 	VectorCopy( cmod->mins, mins );
 	VectorCopy( cmod->maxs, maxs );
 }
-
-
