@@ -2192,7 +2192,7 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 			//	break;
 		}
 
-		if (    ( ent->aiCharacter == AICHAR_PROTOSOLDIER ) ||
+		if ( ( ent->aiCharacter == AICHAR_PROTOSOLDIER ) ||
 				( ent->aiCharacter == AICHAR_SUPERSOLDIER ) ||
 				( ent->aiCharacter == AICHAR_LOPER ) ||
 				( ent->aiCharacter >= AICHAR_STIMSOLDIER1 && ent->aiCharacter <= AICHAR_STIMSOLDIER3 ) ) {

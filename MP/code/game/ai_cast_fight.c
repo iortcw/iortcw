@@ -785,10 +785,10 @@ AICast_CheckAttack
 */
 qboolean AICast_CheckAttack( cast_state_t *cs, int enemy, qboolean allowHitWorld ) {
 	if ( cs->bs ) {
-		if (    ( cs->checkAttackCache.time == level.time )
-				&&  ( cs->checkAttackCache.enemy == enemy )
-				&&  ( cs->checkAttackCache.weapon == cs->bs->weaponnum )
-				&&  ( cs->checkAttackCache.allowHitWorld == allowHitWorld ) ) {
+		if ( ( cs->checkAttackCache.time == level.time ) &&
+				( cs->checkAttackCache.enemy == enemy ) &&
+				( cs->checkAttackCache.weapon == cs->bs->weaponnum ) &&
+				( cs->checkAttackCache.allowHitWorld == allowHitWorld ) ) {
 			//G_Printf( "checkattack cache hit\n" );
 			return ( cs->checkAttackCache.result );
 		} else {
@@ -1321,12 +1321,12 @@ bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 			cs->combatSpotAttackCount = cs->startAttackCount;
 		}
 	} else {    // look for a good position to move to?
-		if (    (   ( cs->attributes[CAMPER] < random() )
+		if ( ( ( cs->attributes[CAMPER] < random() )
 					&&  ( cs->takeCoverTime < level.time )
 					&&  ( cs->combatSpotAttackCount < cs->startAttackCount )
 					&&  ( cs->combatSpotDelayTime < level.time ) ) ) {
 
-			if (    ( cs->attributes[TACTICAL] > 0.3 + random() * 0.5 )
+			if ( ( cs->attributes[TACTICAL] > 0.3 + random() * 0.5 )
 					&&  trap_AAS_RT_GetHidePos( cs->bs->origin, cs->bs->entitynum, cs->bs->areanum, cs->vislist[cs->bs->enemy].visible_pos, bs->enemy, BotPointAreaNum( cs->vislist[cs->bs->enemy].visible_pos ), cs->combatGoalOrigin ) ) {
 				cs->combatGoalTime = level.time + 10000;                // give us plenty of time to get there
 				//cs->combatSpotAttackCount = cs->startAttackCount + 3;	// don't keep moving around to different positions on our own
@@ -1566,8 +1566,8 @@ void AICast_ProcessAttack( cast_state_t *cs ) {
 		}
 		// if we're trying to move somewhere, don't let us shoot, until we've arrived
 		trap_EA_GetInput( bs->client, (float) level.time / 1000, &bi );
-		if (    ( cs->castScriptStatus.scriptNoMoveTime < level.time ) &&
-				(   ( bi.actionflags & ACTION_MOVEFORWARD ) ||
+		if ( ( cs->castScriptStatus.scriptNoMoveTime < level.time ) &&
+					( ( bi.actionflags & ACTION_MOVEFORWARD ) ||
 					( bi.actionflags & ACTION_MOVEBACK ) ||
 					( bi.actionflags & ACTION_MOVELEFT ) ||
 					( bi.actionflags & ACTION_MOVERIGHT ) ||
@@ -1629,10 +1629,10 @@ qboolean AICast_GetTakeCoverPos( cast_state_t *cs, int enemyNum, vec3_t enemyPos
 	cs->lastGetHidePos = level.time;
 	//
 	// can we just crouch?
-	if (    ( cs->bs->attackcrouch_time < trap_AAS_Time() )
-			&&  ( enemyNum < aicast_maxclients )
-			&&  AICast_CheckAttackAtPos( cs->entityNum, enemyNum, cs->bs->origin, qfalse, qfalse )
-			&&  !AICast_CheckAttackAtPos( cs->entityNum, enemyNum, cs->bs->origin, qtrue, qfalse ) ) {
+	if ( ( cs->bs->attackcrouch_time < trap_AAS_Time() ) &&
+			( enemyNum < aicast_maxclients ) &&
+			AICast_CheckAttackAtPos( cs->entityNum, enemyNum, cs->bs->origin, qfalse, qfalse ) &&
+			!AICast_CheckAttackAtPos( cs->entityNum, enemyNum, cs->bs->origin, qtrue, qfalse ) ) {
 
 		// do a more thorough check to see if the enemy can see us if we crouch
 		vec3_t omaxs;

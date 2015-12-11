@@ -559,9 +559,9 @@ char *AIFunc_InspectFriendly( cast_state_t *cs ) {
 	// if the entity is not ready yet
 	if ( !followent->inuse ) {
 		// if it's a connecting client, wait
-		if (    cs->followEntity < MAX_CLIENTS
-				&&  (   ( followent->client && followent->client->pers.connected == CON_CONNECTING )
-						|| ( level.time < 3000 ) ) ) {
+		if ( cs->followEntity < MAX_CLIENTS &&
+				( ( followent->client && followent->client->pers.connected == CON_CONNECTING ) ||
+				( level.time < 3000 ) ) ) {
 			return AIFunc_ChaseGoalIdleStart( cs, cs->followEntity, cs->followDist );
 		} else { // stop following it
 			AICast_EndChase( cs );
@@ -1341,9 +1341,9 @@ char *AIFunc_ChaseGoal( cast_state_t *cs ) {
 	// if the entity is not ready yet
 	if ( !followent->inuse ) {
 		// if it's a connecting client, wait
-		if (    cs->followEntity < MAX_CLIENTS
-				&&  (   ( followent->client && followent->client->pers.connected == CON_CONNECTING )
-						|| ( level.time < 3000 ) ) ) {
+		if ( cs->followEntity < MAX_CLIENTS &&
+				( ( followent->client && followent->client->pers.connected == CON_CONNECTING ) ||
+				( level.time < 3000 ) ) ) {
 			return AIFunc_ChaseGoalIdleStart( cs, cs->followEntity, cs->followDist );
 		} else { // stop following it
 			AICast_EndChase( cs );
@@ -1569,7 +1569,7 @@ char *AIFunc_DoorMarker( cast_state_t *cs ) {
 
 	// if the door is open or idle
 	door = &g_entities[cs->doorEntNum];
-	if (    ( !door->key ) &&
+	if ( ( !door->key ) &&
 			( door->s.apos.trType == TR_STATIONARY && door->s.pos.trType == TR_STATIONARY ) ) {
 		cs->doorMarkerTime = 0;
 		//return AIFunc_DefaultStart( cs );
@@ -1870,9 +1870,9 @@ char *AIFunc_BattleHunt( cast_state_t *cs ) {
 	// if the entity is not ready yet
 	if ( !followent->inuse ) {
 		// if it's a connecting client, wait
-		if ( !(   ( bs->enemy < MAX_CLIENTS )
-				  && (   ( followent->client && followent->client->pers.connected == CON_CONNECTING )
-						 || ( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
+		if ( !( ( bs->enemy < MAX_CLIENTS ) &&
+				( ( followent->client && followent->client->pers.connected == CON_CONNECTING ) ||
+				( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
 			bs->enemy = -1;
 		}
 
@@ -2364,9 +2364,9 @@ char *AIFunc_BattleChase( cast_state_t *cs ) {
 	// if the entity is not ready yet
 	if ( !followent->inuse ) {
 		// if it's a connecting client, wait
-		if ( !(   ( bs->enemy < MAX_CLIENTS )
-				  && (   ( followent->client && followent->client->pers.connected == CON_CONNECTING )
-						 || ( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
+		if ( !( ( bs->enemy < MAX_CLIENTS ) &&
+				( ( followent->client && followent->client->pers.connected == CON_CONNECTING ) ||
+				( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
 			bs->enemy = -1;
 		}
 
@@ -2663,7 +2663,7 @@ char *AIFunc_BattleChase( cast_state_t *cs ) {
 		}
 		//
 		// do we went to play a diving animation into a cover position?
-		else if (   ( cs->attributes[TACTICAL] > 0.85 && cs->aiFlags & AIFL_ROLL_ANIM && !client->ps.torsoTimer && !client->ps.legsTimer && cs->lastRollMove < level.time - 800 && move.numtouch == 0 && moveDist > simTime * cs->attributes[RUNNING_SPEED] * 0.8 && move.groundEntityNum == ENTITYNUM_WORLD ) &&
+		else if ( ( cs->attributes[TACTICAL] > 0.85 && cs->aiFlags & AIFL_ROLL_ANIM && !client->ps.torsoTimer && !client->ps.legsTimer && cs->lastRollMove < level.time - 800 && move.numtouch == 0 && moveDist > simTime * cs->attributes[RUNNING_SPEED] * 0.8 && move.groundEntityNum == ENTITYNUM_WORLD ) &&
 					( AICast_CheckAttackAtPos( cs->entityNum, cs->bs->enemy, move.endpos, cs->bs->attackcrouch_time > trap_AAS_Time(), qfalse ) ) ) {
 			return AIFunc_BattleRollStart( cs, vec );
 		}
@@ -3099,7 +3099,7 @@ char *AIFunc_BattleTakeCover( cast_state_t *cs ) {
 		}
 		//
 		// do we went to play a rolling animation into a cover position?
-		else if (   ( cs->aiFlags & AIFL_DIVE_ANIM && !client->ps.torsoTimer && cs->castScriptStatus.castScriptEventIndex < 0 && cs->lastRollMove < level.time - 800 && move.numtouch == 0 && moveDist > 64 && move.groundEntityNum == ENTITYNUM_WORLD ) &&
+		else if ( ( cs->aiFlags & AIFL_DIVE_ANIM && !client->ps.torsoTimer && cs->castScriptStatus.castScriptEventIndex < 0 && cs->lastRollMove < level.time - 800 && move.numtouch == 0 && moveDist > 64 && move.groundEntityNum == ENTITYNUM_WORLD ) &&
 					( shouldAttack && !AICast_VisibleFromPos( g_entities[cs->bs->enemy].s.pos.trBase, cs->bs->enemy, move.endpos, cs->entityNum, qfalse ) ) ) {
 			VectorClear( cs->takeCoverPos );    // stay there when done rolling
 			return AIFunc_BattleDiveStart( cs, vec );
@@ -3359,9 +3359,9 @@ char *AIFunc_GrenadeFlush( cast_state_t *cs ) {
 	// if the entity is not ready yet
 	if ( !followent->inuse ) {
 		// if it's a connecting client, wait
-		if ( !(   ( bs->enemy < MAX_CLIENTS )
-				  && (   ( followent->client && followent->client->pers.connected == CON_CONNECTING )
-						 || ( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
+		if ( !( ( bs->enemy < MAX_CLIENTS ) &&
+				( ( followent->client && followent->client->pers.connected == CON_CONNECTING ) ||
+				( level.time < 3000 ) ) ) ) { // they don't exist anymore, stop attacking
 			bs->enemy = -1;
 		}
 		return AIFunc_IdleStart( cs );
@@ -3651,7 +3651,7 @@ char *AIFunc_BattleMG42( cast_state_t *cs ) {
 				VectorNormalize( vec );
 				vectoangles( vec, angles );
 				angles[PITCH] = AngleNormalize180( angles[PITCH] );
-				if ( !(  ( fabs( AngleDifference( angles[YAW], mg42->s.angles[YAW] ) ) > mg42->harc ) ||
+				if ( !( ( fabs( AngleDifference( angles[YAW], mg42->s.angles[YAW] ) ) > mg42->harc ) ||
 						 ( angles[YAW] < 0 && angles[YAW] + 2 < -mg42->varc ) ||
 						 ( angles[YAW] > 0 && angles[YAW] - 2 > 5.0 ) ) ) {
 					if ( AICast_CheckAttack( cs, enemies[i], qfalse ) ) {
@@ -4168,7 +4168,7 @@ char *AIFunc_Battle( cast_state_t *cs ) {
 	}
 	//
 	// if the enemy is no longer visible
-	if (    ( cs->bs->cur_ps.weaponTime < 100 )   // if reloading, don't chase until ready
+	if ( ( cs->bs->cur_ps.weaponTime < 100 )   // if reloading, don't chase until ready
 			&&  ( cs->castScriptStatus.scriptNoMoveTime < level.time )
 			&&  ( !AICast_EntityVisible( cs, bs->enemy, qtrue ) || !AICast_CheckAttack( cs, bs->enemy, qfalse ) ) ) {
 
@@ -4278,7 +4278,7 @@ char *AIFunc_Battle( cast_state_t *cs ) {
 	}
 	//
 	// Dodge enemy aim?
-	if (    ( cs->attributes[AGGRESSION] < 1.0 ) &&
+	if ( ( cs->attributes[AGGRESSION] < 1.0 ) &&
 			( ent->client->ps.weapon ) &&
 			( ent->client->ps.groundEntityNum == ENTITYNUM_WORLD ) &&
 			( !cs->lastRollMove || cs->lastRollMove < level.time - 4000 ) &&

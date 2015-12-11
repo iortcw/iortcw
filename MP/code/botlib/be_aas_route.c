@@ -2291,8 +2291,8 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 				if ( ( *aasworld ).areavisibility[nextareanum] ) {
 					//if the nextarea is not visible from the enemy area
 					if ( !AAS_AreaVisible( enemyareanum, nextareanum ) ) { // now last of all, check that this area is a safe hiding spot
-						if (    ( ( *aasworld ).visCache[nextareanum] == 2 ) ||
-								( !( *aasworld ).visCache[nextareanum] && !botimport.AICast_VisibleFromPos( enemyorigin, enemynum, ( *aasworld ).areawaypoints[nextareanum], srcnum, qfalse ) ) ) {
+						if ( ( ( *aasworld ).visCache[nextareanum] == 2 ) ||
+							( !( *aasworld ).visCache[nextareanum] && !botimport.AICast_VisibleFromPos( enemyorigin, enemynum, ( *aasworld ).areawaypoints[nextareanum], srcnum, qfalse ) ) ) {
 							( *aasworld ).visCache[nextareanum] = 2;
 							besttraveltime = t;
 							bestarea = nextareanum;
@@ -2466,10 +2466,10 @@ int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float
 			if ( ( *aasworld ).areavisibility[nextareanum] ) {
 				//if the nextarea can see the enemy area
 				if ( AAS_AreaVisible( enemyarea, nextareanum ) ) { // now last of all, check that this area is a good attacking spot
-					if (    ( ( *aasworld ).visCache[nextareanum] == 2 ) ||
-							(   !( *aasworld ).visCache[nextareanum] &&
-								( count += 10 ) &&    // we are about to use lots of CPU time
-								botimport.AICast_CheckAttackAtPos( srcnum, enemynum, ( *aasworld ).areawaypoints[nextareanum], qfalse, qfalse ) ) ) {
+					if ( ( ( *aasworld ).visCache[nextareanum] == 2 ) ||
+						( !( *aasworld ).visCache[nextareanum] &&
+						( count += 10 ) &&    // we are about to use lots of CPU time
+						botimport.AICast_CheckAttackAtPos( srcnum, enemynum, ( *aasworld ).areawaypoints[nextareanum], qfalse, qfalse ) ) ) {
 						( *aasworld ).visCache[nextareanum] = 2;
 						besttraveltime = srctraveltime;
 						bestarea = nextareanum;

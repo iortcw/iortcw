@@ -515,8 +515,7 @@ void G_Script_ScriptEvent( gentity_t *ent, char *eventStr, char *params ) {
 	for ( i = 0; i < ent->numScriptEvents; i++ )
 	{
 		if ( ent->scriptEvents[i].eventNum == eventNum ) {
-			if (    ( !ent->scriptEvents[i].params )
-					||  ( !gScriptEvents[eventNum].eventMatch || gScriptEvents[eventNum].eventMatch( &ent->scriptEvents[i], params ) ) ) {
+			if ( ( !ent->scriptEvents[i].params ) || ( !gScriptEvents[eventNum].eventMatch || gScriptEvents[eventNum].eventMatch( &ent->scriptEvents[i], params ) ) ) {
 				G_Script_ScriptChange( ent, i );
 				break;
 			}

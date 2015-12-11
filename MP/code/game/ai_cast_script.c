@@ -599,9 +599,9 @@ void AICast_ScriptEvent( struct cast_state_s *cs, char *eventStr, char *params )
 	}
 
 	// show debugging info
-	if (    (   ( aicast_debug.integer == 1 ) ||
-				(   ( aicast_debug.integer == 2 ) &&
-					( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
+	if ( ( ( aicast_debug.integer == 1 ) ||
+			( ( aicast_debug.integer == 2 ) &&
+			( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
 		G_Printf( "(%s) AIScript event: %s %s ", g_entities[cs->entityNum].aiName, eventStr, params );
 	}
 
@@ -611,13 +611,11 @@ void AICast_ScriptEvent( struct cast_state_s *cs, char *eventStr, char *params )
 	for ( i = 0; i < cs->numCastScriptEvents; i++ )
 	{
 		if ( cs->castScriptEvents[i].eventNum == eventNum ) {
-			if (    ( !cs->castScriptEvents[i].params )
-					||  ( !scriptEvents[eventNum].eventMatch || scriptEvents[eventNum].eventMatch( &cs->castScriptEvents[i], params ) ) ) {
-
+			if ( ( !cs->castScriptEvents[i].params ) ||  ( !scriptEvents[eventNum].eventMatch || scriptEvents[eventNum].eventMatch( &cs->castScriptEvents[i], params ) ) ) {
 				// show debugging info
-				if (    (   ( aicast_debug.integer == 1 ) ||
-							(   ( aicast_debug.integer == 2 ) &&
-								( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
+				if ( ( ( aicast_debug.integer == 1 ) ||
+						( ( aicast_debug.integer == 2 ) &&
+						( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
 					G_Printf( "found, calling script: (%s) %s %s\n", g_entities[cs->entityNum].aiName, eventStr, params );
 				}
 
@@ -628,9 +626,9 @@ void AICast_ScriptEvent( struct cast_state_s *cs, char *eventStr, char *params )
 	}
 
 	// show debugging info
-	if (    (   ( aicast_debug.integer == 1 ) ||
-				(   ( aicast_debug.integer == 2 ) &&
-					( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
+	if ( ( ( aicast_debug.integer == 1 ) ||
+				( ( aicast_debug.integer == 2 ) &&
+				( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
 		if ( i == cs->numCastScriptEvents ) {
 			G_Printf( "not found\n" );
 		}
@@ -702,10 +700,10 @@ qboolean AICast_ScriptRun( cast_state_t *cs, qboolean force ) {
 	{
 		//
 		// show debugging info
-		if (    ( cs->castScriptStatus.castScriptStackChangeTime == level.time ) &&
-				(   ( aicast_debug.integer == 1 ) ||
-					(   ( aicast_debug.integer == 2 ) &&
-						( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
+		if ( ( cs->castScriptStatus.castScriptStackChangeTime == level.time ) &&
+				( ( aicast_debug.integer == 1 ) ||
+				( ( aicast_debug.integer == 2 ) &&
+				( ( strlen( aicast_debugname.string ) < 1 ) || ( g_entities[cs->entityNum].aiName && !strcmp( aicast_debugname.string, g_entities[cs->entityNum].aiName ) ) ) ) ) ) {
 			G_Printf( "(%s) AIScript command: %s %s\n", g_entities[cs->entityNum].aiName, stack->items[cs->castScriptStatus.castScriptStackHead].action->actionString, ( stack->items[cs->castScriptStatus.castScriptStackHead].params ? stack->items[cs->castScriptStatus.castScriptStackHead].params : "" ) );
 		}
 		//

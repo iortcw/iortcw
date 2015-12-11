@@ -440,10 +440,10 @@ static void PM_SetMovementDir( void ) {
 
 	VectorSubtract( pm->ps->origin, pml.previous_origin, moved );
 
-	if (    ( pm->cmd.forwardmove || pm->cmd.rightmove )
-			&&  ( pm->ps->groundEntityNum != ENTITYNUM_NONE )
-			&&  ( speed = VectorLength( moved ) )
-			&&  ( speed > pml.frametime * 5 ) ) { // if moving slower than 20 units per second, just face head angles
+	if ( ( pm->cmd.forwardmove || pm->cmd.rightmove ) &&
+			( pm->ps->groundEntityNum != ENTITYNUM_NONE ) &&
+			( speed = VectorLength( moved ) ) &&
+			( speed > pml.frametime * 5 ) ) { // if moving slower than 20 units per second, just face head angles
 		vec3_t dir;
 
 		VectorNormalize2( moved, dir );

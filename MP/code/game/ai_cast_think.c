@@ -633,7 +633,7 @@ void AICast_Think( int client, float thinktime ) {
 		cs->movestateType = MSTYPE_NONE;
 	}
 	// crouching?
-	if (    ( cs->bs->attackcrouch_time > trap_AAS_Time() ) &&
+	if ( ( cs->bs->attackcrouch_time > trap_AAS_Time() ) &&
 			( ( cs->lastAttackCrouch > level.time - 500 ) || ( cs->thinkFuncChangeTime < level.time - 1000 ) ) ) {
 		// if we are not moving, and we are firing, always stand, unless we are allowed to crouch + fire
 		if ( VectorLength( cs->bs->cur_ps.velocity ) || ( cs->lastWeaponFired < level.time - 2000 ) || ( cs->aiFlags & AIFL_ATTACK_CROUCH ) ) {
@@ -786,11 +786,11 @@ void AICast_StartFrame( int time ) {
 					//
 					// if they're moving/firing think every frame
 					if ( ( elapsed >= 50 ) &&
-						 (   (   (   ( !VectorCompare( ent->client->ps.velocity, vec3_origin ) ) ||
-									 ( ent->client->buttons ) ||
-									 ( elapsed >= aicast_thinktime ) ) &&
-								 ( count <= aicast_maxthink ) ) ||
-							 ( elapsed >= aicast_thinktime * 2 ) ) ) {
+							( ( ( ( !VectorCompare( ent->client->ps.velocity, vec3_origin ) ) ||
+							( ent->client->buttons ) ||
+							( elapsed >= aicast_thinktime ) ) &&
+							( count <= aicast_maxthink ) ) ||
+							( elapsed >= aicast_thinktime * 2 ) ) ) {
 						// make it think now
 						AICast_Think( i, (float)elapsed / 1000 );
 						cs->lastThink = time;
@@ -1411,7 +1411,7 @@ void AICast_EvaluatePmove( int clientnum, pmove_t *pm ) {
 			AICast_UpdateVisibility( &g_entities[pm->touchents[i]], &g_entities[cs->entityNum], qfalse, qtrue );
 
 			ocs = AICast_GetCastState( pm->touchents[i] );
-			if (    ( ocs->bs ) &&
+			if ( ( ocs->bs ) &&
 					( !( ocs->aiFlags & AIFL_NOAVOID ) ) &&
 					( ( ocs->leaderNum == cs->entityNum ) || ( VectorLength( ocs->bs->velocity ) < 5 ) ) &&
 					( ocs->obstructingTime < ( level.time + 100 ) ) ) {

@@ -277,11 +277,7 @@ void G_UseTargets( gentity_t *ent, gentity_t *activator ) {
 
 				t->flags |= ( ent->flags & FL_SOFTACTIVATE ); // (SA) likewise for soft activation
 
-				if (    activator &&
-						(   ( Q_stricmp( t->classname, "func_door" ) == 0 ) ||
-							( Q_stricmp( t->classname, "func_door_rotating" ) == 0 )
-						)
-						) {
+				if ( activator && ( ( Q_stricmp( t->classname, "func_door" ) == 0 ) || ( Q_stricmp( t->classname, "func_door_rotating" ) == 0 ) ) ) {
 					// check door usage rules before allowing any entity to trigger a door open
 					G_TryDoor( t, ent, activator );       // (door,other,activator)
 				} else {

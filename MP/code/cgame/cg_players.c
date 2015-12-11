@@ -67,11 +67,11 @@ CG_EntOnFire
 */
 qboolean CG_EntOnFire( centity_t *cent ) {
 	if ( cent->currentState.number == cg.snap->ps.clientNum ) {
-		return  (   ( cg.snap->ps.onFireStart < cg.time ) &&
-					( ( cg.snap->ps.onFireStart + 2000 ) > cg.time ) );
+		return  ( ( cg.snap->ps.onFireStart < cg.time ) &&
+				( ( cg.snap->ps.onFireStart + 2000 ) > cg.time ) );
 	} else {
-		return  (   ( cent->currentState.onFireStart < cg.time ) &&
-					( cent->currentState.onFireEnd > cg.time ) );
+		return  ( ( cent->currentState.onFireStart < cg.time ) &&
+				( cent->currentState.onFireEnd > cg.time ) );
 	}
 }
 

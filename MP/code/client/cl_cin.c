@@ -1393,8 +1393,8 @@ e_status CIN_RunCinematic( int handle ) {
 	cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime ) * 3 ) / 100 );
 
 	start = cinTable[currentHandle].startTime;
-	while (  ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads )
-			 && ( cinTable[currentHandle].status == FMV_PLAY ) )
+	while ( ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads ) &&
+			( cinTable[currentHandle].status == FMV_PLAY ) )
 	{
 		RoQInterrupt();
 		if ( start != cinTable[currentHandle].startTime ) {

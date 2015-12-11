@@ -226,7 +226,7 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 
 	// if this entity was firing last frame, interpolate the angles as we spawn the chunks that
 	// fired over the last frame
-	if (    ( centInfo->lastClientFrame == cent->currentState.frame ) &&
+	if ( ( centInfo->lastClientFrame == cent->currentState.frame ) &&
 			( centInfo->lastFlameChunk && centInfo->lastFiring == firing ) ) {
 		AngleVectors( centInfo->lastAngles, lastFwd, lastRight, lastUp );
 		VectorCopy( centInfo->lastOrigin, lastOrg );

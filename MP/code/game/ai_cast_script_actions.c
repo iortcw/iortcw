@@ -485,14 +485,14 @@ qboolean AICast_ScriptAction_Wait( cast_state_t *cs, char *params ) {
 		if ( moverange > 0 ) {
 			dist = Distance( cs->bs->origin, cs->castScriptStatus.scriptWaitPos );
 			// if we are able to move, and have an enemy
-			if (    ( cs->castScriptStatus.scriptWaitMovetime < level.time )
+			if ( ( cs->castScriptStatus.scriptWaitMovetime < level.time )
 					&&  ( cs->bs->enemy >= 0 ) ) {
 
 				// if we can attack them, or they can't attack us, stay here
 				// TTimo gcc: suggest parentheses around && within ||
-				if (    AICast_CheckAttack( cs, cs->bs->enemy, qfalse )
-						||  (   !AICast_EntityVisible( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse )
-								&&  !AICast_CheckAttack( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse ) ) ) {
+				if ( AICast_CheckAttack( cs, cs->bs->enemy, qfalse ) ||
+						( !AICast_EntityVisible( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse ) &&
+						!AICast_CheckAttack( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse ) ) ) {
 					cs->castScriptStatus.scriptNoMoveTime = level.time + 200;
 				}
 
