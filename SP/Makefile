@@ -407,13 +407,15 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   endif
 
   ifeq ($(USE_INTERNAL_LIBS),1)
-    ifeq ($(ARCH),x86)
-    SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
-               $(LIBSDIR)/linux32/libSDL2.so
-    endif
-    ifeq ($(ARCH),x86_64)
-    SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
-               $(LIBSDIR)/linux64/libSDL2.so
+    ifeq ($(CROSS_COMPILING),1)
+      ifeq ($(ARCH),x86)
+      SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
+                 $(LIBSDIR)/linux32/libSDL2.so
+      endif
+      ifeq ($(ARCH),x86_64)
+      SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
+                 $(LIBSDIR)/linux64/libSDL2.so
+      endif
     endif
   endif
 
