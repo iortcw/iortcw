@@ -181,8 +181,8 @@ or configs will never get loaded from disk!
 
 // TTimo: moved to qcommon.h
 // NOTE: could really do with a cvar
-//#define	BASEGAME			"main"
-//#define DEMOGAME            "demomain"
+//#define	BASEGAME	"main"
+//#define	DEMOGAME	"demomain"
 
 // every time a new demo pk3 file is built, this checksum must be updated.
 // the easiest way to get it is to just run the game and see what it spits out
@@ -215,7 +215,7 @@ typedef struct fileInPack_s {
 } fileInPack_t;
 
 typedef struct {
-	char pakPathname[MAX_OSPATH];           // c:\quake3\baseq3
+	char pakPathname[MAX_OSPATH];               // c:\quake3\baseq3
 	char pakFilename[MAX_OSPATH];               // c:\quake3\baseq3\pak0.pk3
 	char pakBasename[MAX_OSPATH];               // pak0
 	char pakGamename[MAX_OSPATH];               // baseq3
@@ -231,7 +231,7 @@ typedef struct {
 
 typedef struct {
 	char path[MAX_OSPATH];              // c:\quake3
-	char fullpath[MAX_OSPATH];              // c:\quake3\baseq3
+	char fullpath[MAX_OSPATH];          // c:\quake3\baseq3
 	char gamedir[MAX_OSPATH];           // baseq3
 	qboolean allowUnzippedDLLs;         // whether to load unzipped dlls from directory
 } directory_t;
@@ -239,36 +239,37 @@ typedef struct {
 typedef struct searchpath_s {
 	struct searchpath_s *next;
 
-	pack_t      *pack;      // only one of pack / dir will be non NULL
+	pack_t *pack;      // only one of pack / dir will be non NULL
 	directory_t *dir;
 } searchpath_t;
 
 static char fs_gamedir[MAX_OSPATH];         // this will be a single file name with no separators
-static cvar_t      *fs_debug;
-static cvar_t      *fs_homepath;
+static cvar_t *fs_debug;
+static cvar_t *fs_homepath;
 
 #ifdef MACOS_X
 // Also search the .app bundle for .pk3 files
-static cvar_t          *fs_apppath;
+static cvar_t *fs_apppath;
 #endif
 
 #ifndef STANDALONE
-static cvar_t      *fs_steampath;
+static cvar_t *fs_steampath;
 #endif
 
-static cvar_t      *fs_basepath;
-static cvar_t      *fs_basegame;
-static cvar_t      *fs_gamedirvar;
-static searchpath_t    *fs_searchpaths;
+static cvar_t *fs_basepath;
+static cvar_t *fs_basegame;
+static cvar_t *fs_gamedirvar;
+static searchpath_t *fs_searchpaths;
+
 static int fs_readCount;                    // total bytes read
 static int fs_loadCount;                    // total files read
 static int fs_loadStack;                    // total files in memory
-static int fs_packFiles = 0;                    // total number of files in packs
+static int fs_packFiles = 0;                // total number of files in packs
 
 static int fs_checksumFeed;
 
 typedef union qfile_gus {
-	FILE*       o;
+	FILE* o;
 	unzFile z;
 } qfile_gut;
 
@@ -298,13 +299,13 @@ static qboolean fs_reordered;
 // ex: when fs_numServerPaks != 0, FS_FOpenFileRead won't load anything outside of pk3 except .cfg .menu .game .dat
 static int fs_numServerPaks = 0;
 static int fs_serverPaks[MAX_SEARCH_PATHS];                     // checksums
-static char     *fs_serverPakNames[MAX_SEARCH_PATHS];           // pk3 names
+static char *fs_serverPakNames[MAX_SEARCH_PATHS];               // pk3 names
 
 // only used for autodownload, to make sure the client has at least
 // all the pk3 files that are referenced at the server side
 static int fs_numServerReferencedPaks;
 static int fs_serverReferencedPaks[MAX_SEARCH_PATHS];               // checksums
-static char     *fs_serverReferencedPakNames[MAX_SEARCH_PATHS];     // pk3 names
+static char *fs_serverReferencedPakNames[MAX_SEARCH_PATHS];         // pk3 names
 
 // last valid game folder used
 char lastValidBase[MAX_OSPATH];
@@ -552,8 +553,7 @@ qboolean FS_CreatePath( char *OSPath ) {
 			// create the directory
 			*ofs = 0;
 			if ( !Sys_Mkdir( path ) ) {
-				Com_Error( ERR_FATAL, "FS_CreatePath: failed to create path \"%s\"",
-						   path );
+				Com_Error( ERR_FATAL, "FS_CreatePath: failed to create path \"%s\"", path );
 			}
 			*ofs = PATH_SEP;
 		}
@@ -572,10 +572,9 @@ static void FS_CheckFilenameIsMutable( const char *filename,
 									   const char *function ) {
 	// Check if the filename ends with the library, QVM, or pk3 extension
 	if ( COM_CompareExtension( filename, DLL_EXT )
-		 || COM_CompareExtension( filename, ".qvm" )
-		 || COM_CompareExtension( filename, ".pk3" ) ) {
-		Com_Error( ERR_FATAL, "%s: Not allowed to manipulate '%s' due "
-							  "to %s extension", function, filename, COM_GetExtension( filename ) );
+			|| COM_CompareExtension( filename, ".qvm" )
+			|| COM_CompareExtension( filename, ".pk3" ) ) {
+		Com_Error( ERR_FATAL, "%s: Not allowed to manipulate '%s' due to %s extension", function, filename, COM_GetExtension( filename ) );
 	}
 }
 
@@ -600,8 +599,7 @@ FS_HomeRemove
 void FS_HomeRemove( const char *homePath ) {
 	FS_CheckFilenameIsMutable( homePath, __func__ );
 
-	remove( FS_BuildOSPath( fs_homepath->string,
-							fs_gamedir, homePath ) );
+	remove( FS_BuildOSPath( fs_homepath->string, fs_gamedir, homePath ) );
 }
 
 /*
@@ -960,8 +958,8 @@ FS_FCreateOpenPipeFile
 ===========
 */
 fileHandle_t FS_FCreateOpenPipeFile( const char *filename ) {
-	char                *ospath;
-	FILE                    *fifo;
+	char *ospath;
+	FILE *fifo;
 	fileHandle_t f;
 
 	if ( !fs_searchpaths ) {
@@ -988,8 +986,7 @@ fileHandle_t FS_FCreateOpenPipeFile( const char *filename ) {
 	if ( fifo ) {
 		fsh[f].handleFiles.file.o = fifo;
 		fsh[f].handleSync = qfalse;
-	} else
-	{
+	} else {
 		Com_Printf( S_COLOR_YELLOW "WARNING: Could not create new com_pipefile at %s. "
 								   "com_pipefile will not be used.\n", ospath );
 		f = 0;
@@ -1142,11 +1139,11 @@ static int fs_filter_flag = 0;
 
 long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle_t *file, qboolean uniqueFILE, qboolean unpure ) {
 	long hash;
-	pack_t      *pak;
-	fileInPack_t    *pakFile;
+	pack_t *pak;
+	fileInPack_t *pakFile;
 	directory_t *dir;
-	char        *netpath;
-	FILE        *filep;
+	char *netpath;
+	FILE *filep;
 	int len;
 
 	if ( filename == NULL ) {
@@ -1200,8 +1197,7 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 						// found it!
 						if ( pakFile->len ) {
 							return pakFile->len;
-						} else
-						{
+						} else {
 							// It's not nice, but legacy code depends
 							// on positive value if file exists no matter
 							// what size
@@ -1212,7 +1208,7 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 					pakFile = pakFile->next;
 				} while ( pakFile != NULL );
 			}
-		} else if ( search->dir && !( fs_filter_flag & FS_EXCLUDE_DIR ) )        {
+		} else if ( search->dir && !( fs_filter_flag & FS_EXCLUDE_DIR ) ) {
 			dir = search->dir;
 
 			netpath = FS_BuildOSPath( dir->path, dir->gamedir, filename );
@@ -1264,14 +1260,14 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 
 					if ( !( pak->referenced & FS_GENERAL_REF ) ) {
 						if ( !FS_IsExt( filename, ".shader", len ) &&
-							 !FS_IsExt( filename, ".txt", len ) &&
-							 !FS_IsExt( filename, ".cfg", len ) &&
-							 !FS_IsExt( filename, ".config", len ) &&
-							 !FS_IsExt( filename, ".bot", len ) &&
-							 !FS_IsExt( filename, ".arena", len ) &&
-							 !FS_IsExt( filename, ".menu", len ) &&
-//						   Q_stricmp(filename, "vm/qagame.qvm") != 0 && // Commented out for now
-							 !strstr( filename, "levelshots" ) ) {
+								!FS_IsExt( filename, ".txt", len ) &&
+								!FS_IsExt( filename, ".cfg", len ) &&
+								!FS_IsExt( filename, ".config", len ) &&
+								!FS_IsExt( filename, ".bot", len ) &&
+								!FS_IsExt( filename, ".arena", len ) &&
+								!FS_IsExt( filename, ".menu", len ) &&
+//								Q_stricmp(filename, "vm/qagame.qvm") != 0 && // Commented out for now
+								!strstr( filename, "levelshots" ) ) {
 							pak->referenced |= FS_GENERAL_REF;
 						}
 					}
@@ -1323,8 +1319,7 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 					fsh[*file].zipFileLen = pakFile->len;
 
 					if ( fs_debug->integer ) {
-						Com_Printf( "FS_FOpenFileRead: %s (found in '%s')\n",
-									filename, pak->pakFilename );
+						Com_Printf( "FS_FOpenFileRead: %s (found in '%s')\n", filename, pak->pakFilename );
 					}
 
 					return pakFile->len;
@@ -1333,7 +1328,7 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 				pakFile = pakFile->next;
 			} while ( pakFile != NULL );
 		}
-	} else if ( search->dir && !( fs_filter_flag & FS_EXCLUDE_DIR ) )        {
+	} else if ( search->dir && !( fs_filter_flag & FS_EXCLUDE_DIR ) ) {
 		// check a file in the directory tree
 
 		// if we are running restricted, the only files we
@@ -1345,11 +1340,11 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 		// I had the problem on https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=8
 		// turned out I used FS_FileExists instead
 		if ( !unpure && fs_numServerPaks ) {
-			if ( !FS_IsExt( filename, ".cfg", len ) &&      // for config files
-				 !FS_IsExt( filename, ".menu", len ) && // menu files
-				 !FS_IsExt( filename, ".game", len ) && // menu files
-				 !FS_IsExt( filename, ".dat", len ) &&  // for journal files
-				 !FS_IsDemoExt( filename, len ) ) {     // demos
+			if ( !FS_IsExt( filename, ".cfg", len ) && // for config files
+					!FS_IsExt( filename, ".menu", len ) && // menu files
+					!FS_IsExt( filename, ".game", len ) && // menu files
+					!FS_IsExt( filename, ".dat", len ) &&  // for journal files
+					!FS_IsDemoExt( filename, len ) ) { // demos
 				*file = 0;
 				return -1;
 			}
@@ -1369,8 +1364,7 @@ long FS_FOpenFileReadDir( const char *filename, searchpath_t *search, fileHandle
 		fsh[*file].zipFile = qfalse;
 
 		if ( fs_debug->integer ) {
-			Com_Printf( "FS_FOpenFileRead: %s (found in '%s%c%s')\n", filename,
-						dir->path, PATH_SEP, dir->gamedir );
+			Com_Printf( "FS_FOpenFileRead: %s (found in '%s%c%s')\n", filename, dir->path, PATH_SEP, dir->gamedir );
 		}
 
 		fsh[*file].handleFiles.file.o = filep;
@@ -1407,8 +1401,7 @@ long FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean unique
 			if ( len > 0 ) {
 				return len;
 			}
-		} else
-		{
+		} else {
 			if ( len >= 0 && *file ) {
 				return len;
 			}
@@ -1425,8 +1418,7 @@ long FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean unique
 	if ( file ) {
 		*file = 0;
 		return -1;
-	} else
-	{
+	} else {
 		// When file is NULL, we're querying the existance of the file
 		// If we've got here, it doesn't exist
 		return 0;
@@ -1500,7 +1492,7 @@ int FS_FindVM( void **startSearch, char *found, int foundlen, const char *name, 
 
 				return VMI_NATIVE;
 			}
-		} else if ( search->pack )      {
+		} else if ( search->pack ) {
 			pack = search->pack;
 
 			if ( lastSearch && lastSearch->pack ) {
@@ -1557,8 +1549,8 @@ This is necessary for exe/dlls which may or may not be locked.
 
 NOTE TTimo:
   fullpath gives the full OS path to the dll that will potentially be loaded
-    on win32 it's always in fs_basepath/<fs_game>/
-    on linux it can be in fs_homepath/<fs_game>/ or fs_basepath/<fs_game>/
+  on win32 it's always in fs_basepath/<fs_game>/
+  on linux it can be in fs_homepath/<fs_game>/ or fs_basepath/<fs_game>/
   the dll is extracted to fs_homepath (== fs_basepath on win32) if needed
 
   the return value doesn't tell wether file was extracted or not, it just says wether it's ok to continue
@@ -1894,7 +1886,7 @@ int FS_Seek( fileHandle_t f, long offset, int origin ) {
 			}
 			unzSetOffset( fsh[f].handleFiles.file.z, fsh[f].zipFilePos );
 			unzOpenCurrentFile( fsh[f].handleFiles.file.z );
-		//fallthrough
+			//fallthrough
 
 		case FS_SEEK_END:
 		case FS_SEEK_CUR:
@@ -2011,8 +2003,8 @@ If searchPath is non-NULL search only in that specific search path
 */
 long FS_ReadFileDir( const char *qpath, void *searchPath, qboolean unpure, void **buffer ) {
 	fileHandle_t h;
-	searchpath_t    *search;
-	byte*           buf;
+	searchpath_t *search;
+	byte* buf;
 	qboolean isConfig;
 	long len;
 
@@ -2078,8 +2070,7 @@ long FS_ReadFileDir( const char *qpath, void *searchPath, qboolean unpure, void 
 	if ( search == NULL ) {
 		// look for it in the filesystem or pack files
 		len = FS_FOpenFileRead( qpath, &h, qfalse );
-	} else
-	{
+	} else {
 		// look for it in a specific search path only
 		len = FS_FOpenFileReadDir( qpath, search, &h, qfalse, unpure );
 	}
@@ -2484,7 +2475,6 @@ char **FS_ListFilteredFiles( const char *path, const char *extension, char *filt
 					// unique the match
 					nfiles = FS_AddFileToList( name, list, nfiles );
 				} else {
-
 					zpathLen = FS_ReturnPath( name, zpath, &depth );
 
 					if ( ( depth - pathDepth ) > 2 || pathLength > zpathLen || Q_stricmpn( name, path, pathLength ) ) {
@@ -3029,7 +3019,7 @@ qboolean FS_Which( const char *filename, void *searchPath ) {
 		if ( search->pack ) {
 			Com_Printf( "File \"%s\" found in \"%s\"\n", filename, search->pack->pakFilename );
 			return qtrue;
-		} else if ( search->dir )      {
+		} else if ( search->dir ) {
 			Com_Printf( "File \"%s\" found at \"%s\"\n", filename, search->dir->fullpath );
 			return qtrue;
 		}
@@ -3317,8 +3307,7 @@ qboolean FS_ComparePaks( char *neededpaks, int len, qboolean dlstring ) {
 					// Make something up with the checksum in it
 					Com_sprintf( st, sizeof( st ), "%s.%08x.pk3", fs_serverReferencedPakNames[i], fs_serverReferencedPaks[i] );
 					Q_strcat( neededpaks, len, st );
-				} else
-				{
+				} else {
 					Q_strcat( neededpaks, len, fs_serverReferencedPakNames[i] );
 					Q_strcat( neededpaks, len, ".pk3" );
 				}
@@ -3329,8 +3318,7 @@ qboolean FS_ComparePaks( char *neededpaks, int len, qboolean dlstring ) {
 					*origpos = '\0';
 					break;
 				}
-			} else
-			{
+			} else {
 				Q_strcat( neededpaks, len, fs_serverReferencedPakNames[i] );
 				Q_strcat( neededpaks, len, ".pk3" );
 				// Do we have one with the same name?
@@ -3407,8 +3395,8 @@ NOTE TTimo: the reordering that happens here is not reflected in the cvars (\cva
 static void FS_ReorderPurePaks( void ) {
 	searchpath_t *s;
 	int i;
-	searchpath_t **p_insert_index, // for linked list reordering
-				 **p_previous; // when doing the scan
+	searchpath_t	**p_insert_index,	// for linked list reordering
+			**p_previous;		// when doing the scan
 
 	fs_reordered = qfalse;
 
@@ -3582,31 +3570,29 @@ static void FS_CheckMPPaks( void ) {
 		curpack = path->pack;
 
 		if ( !Q_stricmpn( curpack->pakGamename, BASEGAME, MAX_OSPATH )
-			 && strlen( pakBasename ) == 7 && !Q_stricmpn( pakBasename, "mp_pak", 6 )
-			 && pakBasename[6] >= '0' && pakBasename[6] <= '0' + NUM_MP_PAKS - 1 ) {
+				&& strlen( pakBasename ) == 7 && !Q_stricmpn( pakBasename, "mp_pak", 6 )
+				&& pakBasename[6] >= '0' && pakBasename[6] <= '0' + NUM_MP_PAKS - 1 ) {
 			if ( curpack->checksum != mppak_checksums[pakBasename[6] - '0'] ) {
 				if ( pakBasename[6] == '0' ) {
 					Com_Printf( "\n\n"
-								"**************************************************\n"
-								"WARNING: " BASEGAME "/mp_pak0.pk3 is present but its checksum (%u)\n"
-													 "is not correct. Please re-copy mp_pak0.pk3 from your\n"
-													 "legitimate RTCW CDROM.\n"
-													 "**************************************************\n\n\n",
-								curpack->checksum );
-				} else
-				{
+							"**************************************************\n"
+							"WARNING: " BASEGAME "/mp_pak0.pk3 is present but its checksum (%u)\n"
+							"is not correct. Please re-copy mp_pak0.pk3 from your\n"
+							"legitimate RTCW CDROM.\n"
+							"**************************************************\n\n\n",
+							curpack->checksum );
+				} else {
 					Com_Printf( "\n\n"
-								"**************************************************\n"
-								"WARNING: " BASEGAME "/mp_pak%d.pk3 is present but its checksum (%u)\n"
-													 "is not correct. Please re-install the point release\n"
-													 "**************************************************\n\n\n",
-								pakBasename[6] - '0', curpack->checksum );
+							"**************************************************\n"
+							"WARNING: " BASEGAME "/mp_pak%d.pk3 is present but its checksum (%u)\n"
+							"is not correct. Please re-install the point release\n"
+							"**************************************************\n\n\n",
+							pakBasename[6] - '0', curpack->checksum );
 				}
 			}
 
 			foundPak |= 1 << ( pakBasename[6] - '0' );
-		} else
-		{
+		} else {
 			int index;
 
 			// Finally check whether this pak's checksum is listed because the user tried
@@ -3616,18 +3602,17 @@ static void FS_CheckMPPaks( void ) {
 			{
 				if ( curpack->checksum == mppak_checksums[index] ) {
 					Com_Printf( "\n\n"
-								"**************************************************\n"
-								"WARNING: %s is renamed pak file %s%cmp_pak%d.pk3\n"
-								"Running in standalone mode won't work\n"
-								"Please rename, or remove this file\n"
-								"**************************************************\n\n\n",
-								curpack->pakFilename, BASEGAME, PATH_SEP, index );
+							"**************************************************\n"
+							"WARNING: %s is renamed pak file %s%cmp_pak%d.pk3\n"
+							"Running in standalone mode won't work\n"
+							"Please rename, or remove this file\n"
+							"**************************************************\n\n\n",
+							curpack->pakFilename, BASEGAME, PATH_SEP, index );
 
 
 					foundPak |= 0x80000000;
 				}
 			}
-
 		}
 	}
 
@@ -3651,8 +3636,8 @@ static void FS_CheckMPPaks( void ) {
 			}
 
 			Q_strcat( errorText, sizeof( errorText ),
-					  va( "\n\nPoint Release files are missing: %s \n"
-						  "Please re-install the 1.41 point release.\n\n", missingPaks ) );
+					va( "\n\nPoint Release files are missing: %s \n"
+					"Please re-install the 1.41 point release.\n\n", missingPaks ) );
 		}
 
 		Com_Error( ERR_FATAL, "%s", errorText );
@@ -3689,7 +3674,7 @@ static void FS_CheckPak0( void ) {
 		curpack = path->pack;
 
 		if ( !Q_stricmpn( curpack->pakGamename, "demomain", MAX_OSPATH )
-			 && !Q_stricmpn( pakBasename, "pak0", MAX_OSPATH ) ) {
+				&& !Q_stricmpn( pakBasename, "pak0", MAX_OSPATH ) ) {
 			if ( curpack->checksum == DEMO_PAK0_CHECKSUM ) {
 				founddemo = qtrue;
 			}
@@ -3699,31 +3684,30 @@ static void FS_CheckPak0( void ) {
 			if ( curpack->checksum != pak_checksums[pakBasename[3] - '0'] ) {
 				if ( pakBasename[3] == '0' ) {
 					Com_Printf( "\n\n"
-								"**************************************************\n"
-								"WARNING: " BASEGAME "/pak0.pk3 is present but its checksum (%u)\n"
-													 "is not correct. Please re-copy pak0.pk3 from your\n"
-													 "legitimate RTCW CDROM.\n"
-													 "**************************************************\n\n\n",
-								curpack->checksum );
+							"**************************************************\n"
+							"WARNING: " BASEGAME "/pak0.pk3 is present but its checksum (%u)\n"
+							"is not correct. Please re-copy pak0.pk3 from your\n"
+							"legitimate RTCW CDROM.\n"
+							"**************************************************\n\n\n",
+							curpack->checksum );
 
 					Com_Error( ERR_FATAL, NULL );
 				}
 				/*
 				else
 				{
-				    Com_Printf("\n\n"
-				        "**************************************************\n"
-				        "WARNING: " BASEGAME "/pak%d.pk3 is present but its checksum (%u)\n"
-				        "is not correct. Please re-install the point release\n"
-				        "**************************************************\n\n\n",
-				        pakBasename[3]-'0', curpack->checksum );
+					Com_Printf("\n\n"
+							"**************************************************\n"
+							"WARNING: " BASEGAME "/pak%d.pk3 is present but its checksum (%u)\n"
+							"is not correct. Please re-install the point release\n"
+							"**************************************************\n\n\n",
+							pakBasename[3]-'0', curpack->checksum );
 				}
 				*/
 			}
 
 			foundPak |= 1 << ( pakBasename[3] - '0' );
-		} else
-		{
+		} else {
 			int index;
 
 			// Finally check whether this pak's checksum is listed because the user tried
@@ -3733,13 +3717,12 @@ static void FS_CheckPak0( void ) {
 			{
 				if ( curpack->checksum == pak_checksums[index] ) {
 					Com_Printf( "\n\n"
-								"**************************************************\n"
-								"WARNING: %s is renamed pak file %s%cpak%d.pk3\n"
-								"Running in standalone mode won't work\n"
-								"Please rename, or remove this file\n"
-								"**************************************************\n\n\n",
-								curpack->pakFilename, BASEGAME, PATH_SEP, index );
-
+							"**************************************************\n"
+							"WARNING: %s is renamed pak file %s%cpak%d.pk3\n"
+							"Running in standalone mode won't work\n"
+							"Please rename, or remove this file\n"
+							"**************************************************\n\n\n",
+							curpack->pakFilename, BASEGAME, PATH_SEP, index );
 
 					foundPak |= 0x80000000;
 				}
@@ -3757,11 +3740,11 @@ static void FS_CheckPak0( void ) {
 		if ( !( foundPak & 0x01 ) ) {
 			if ( founddemo ) {
 				Com_Printf( "\n\n"
-							"**************************************************\n"
-							"WARNING: It looks like you're using pak0.pk3\n"
-							"from the demo. This may work fine, but it is not\n"
-							"guaranteed or supported.\n"
-							"**************************************************\n\n\n" );
+						"**************************************************\n"
+						"WARNING: It looks like you're using pak0.pk3\n"
+						"from the demo. This may work fine, but it is not\n"
+						"guaranteed or supported.\n"
+						"**************************************************\n\n\n" );
 
 				foundPak |= 0x01;
 			}
@@ -3774,14 +3757,14 @@ static void FS_CheckPak0( void ) {
 
 		if ( ( foundPak & 0x01 ) != 0x01 ) {
 			Q_strcat( errorText, sizeof( errorText ),
-					  "\n\n\"pak0.pk3\" is missing. Please copy it\n"
-					  "from your legitimate RTCW CDROM.\n\n" );
+				"\n\n\"pak0.pk3\" is missing. Please copy it\n"
+				"from your legitimate RTCW CDROM.\n\n" );
 		}
 
 		Q_strcat( errorText, sizeof( errorText ),
-				  va( "Also check that your iortcw executable is in\n"
-					  "the correct place and that every file\n"
-					  "in the \"%s\" directory is present and readable.\n\n", BASEGAME ) );
+				va( "Also check that your iortcw executable is in\n"
+				"the correct place and that every file\n"
+				"in the \"%s\" directory is present and readable.\n\n", BASEGAME ) );
 
 		Com_Error( ERR_FATAL, "%s", errorText );
 	}
@@ -4032,8 +4015,7 @@ void FS_PureServerSetLoadedPaks( const char *pakSums, const char *pakNames ) {
 
 	if ( fs_numServerPaks ) {
 		Com_DPrintf( "Connected to a pure server.\n" );
-	} else
-	{
+	} else {
 		if ( fs_reordered ) {
 			// show_bug.cgi?id=540
 			// force a restart to make sure the search order will be correct
@@ -4224,8 +4206,8 @@ Return qtrue if restarting due to game directory changed, qfalse otherwise
 qboolean FS_ConditionalRestart( int checksumFeed, qboolean disconnect ) {
 	if ( fs_gamedirvar->modified ) {
 		if ( FS_FilenameCompare( lastValidGame, fs_gamedirvar->string ) &&
-			 ( *lastValidGame || FS_FilenameCompare( fs_gamedirvar->string, com_basegame->string ) ) &&
-			 ( *fs_gamedirvar->string || FS_FilenameCompare( lastValidGame, com_basegame->string ) ) ) {
+				( *lastValidGame || FS_FilenameCompare( fs_gamedirvar->string, com_basegame->string ) ) &&
+				( *fs_gamedirvar->string || FS_FilenameCompare( lastValidGame, com_basegame->string ) ) ) {
 			Com_GameRestart( checksumFeed, disconnect );
 			return qtrue;
 		} else {
