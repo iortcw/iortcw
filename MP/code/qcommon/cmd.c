@@ -235,20 +235,19 @@ void Cbuf_Execute( void ) {
 		memcpy( line, text, i );
 		line[i] = 0;
 
-// delete the text from the command buffer and move remaining commands down
-// this is necessary because commands (exec) can insert data at the
-// beginning of the text buffer
+		// delete the text from the command buffer and move remaining commands down
+		// this is necessary because commands (exec) can insert data at the
+		// beginning of the text buffer
 
 		if ( i == cmd_text.cursize ) {
 			cmd_text.cursize = 0;
-		} else
-		{
+		} else {
 			i++;
 			cmd_text.cursize -= i;
 			memmove( text, text + i, cmd_text.cursize );
 		}
 
-// execute the command line
+		// execute the command line
 
 		Cmd_ExecuteString( line );
 	}
@@ -258,7 +257,7 @@ void Cbuf_Execute( void ) {
 /*
 ==============================================================================
 
-                        SCRIPT COMMANDS
+SCRIPT COMMANDS
 
 ==============================================================================
 */
@@ -281,7 +280,7 @@ void Cmd_Exec_f( void ) {
 
 	if ( Cmd_Argc() != 2 ) {
 		Com_Printf( "exec%s <filename> : execute a script file%s\n",
-					quiet ? "q" : "", quiet ? " without notification" : "" );
+			quiet ? "q" : "", quiet ? " without notification" : "" );
 		return;
 	}
 
@@ -337,7 +336,7 @@ void Cmd_Echo_f( void ) {
 /*
 =============================================================================
 
-                    COMMAND EXECUTION
+COMMAND EXECUTION
 
 =============================================================================
 */
@@ -363,7 +362,7 @@ static cmd_function_t  *cmd_functions;      // possible commands to execute
 Cmd_Argc
 ============
 */
-int     Cmd_Argc( void ) {
+int Cmd_Argc( void ) {
 	return cmd_argc;
 }
 
@@ -372,7 +371,7 @@ int     Cmd_Argc( void ) {
 Cmd_Argv
 ============
 */
-char    *Cmd_Argv( int arg ) {
+char *Cmd_Argv( int arg ) {
 	if ( (unsigned)arg >= cmd_argc ) {
 		return "";
 	}
@@ -387,7 +386,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void    Cmd_ArgvBuffer( int arg, char *buffer, int bufferLength ) {
+void Cmd_ArgvBuffer( int arg, char *buffer, int bufferLength ) {
 	Q_strncpyz( buffer, Cmd_Argv( arg ), bufferLength );
 }
 
@@ -399,7 +398,7 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-char    *Cmd_Args( void ) {
+char *Cmd_Args( void ) {
 	static char cmd_args[MAX_STRING_CHARS];
 	int i;
 
@@ -447,7 +446,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void    Cmd_ArgsBuffer( char *buffer, int bufferLength ) {
+void Cmd_ArgsBuffer( char *buffer, int bufferLength ) {
 	Q_strncpyz( buffer, Cmd_Args(), bufferLength );
 }
 
@@ -592,7 +591,6 @@ static void Cmd_TokenizeString2( const char *text_in, qboolean ignoreQuotes ) {
 			return;     // all tokens parsed
 		}
 	}
-
 }
 
 /*
@@ -632,7 +630,7 @@ cmd_function_t *Cmd_FindCommand( const char *cmd_name ) {
 Cmd_AddCommand
 ============
 */
-void    Cmd_AddCommand( const char *cmd_name, xcommand_t function ) {
+void Cmd_AddCommand( const char *cmd_name, xcommand_t function ) {
 	cmd_function_t  *cmd;
 
 	// fail if the command already exists
@@ -674,7 +672,7 @@ void Cmd_SetCommandCompletionFunc( const char *command, completionFunc_t complet
 Cmd_RemoveCommand
 ============
 */
-void    Cmd_RemoveCommand( const char *cmd_name ) {
+void Cmd_RemoveCommand( const char *cmd_name ) {
 	cmd_function_t  *cmd, **back;
 
 	back = &cmd_functions;
@@ -710,8 +708,7 @@ void Cmd_RemoveCommandSafe( const char *cmd_name ) {
 		return;
 	}
 	if ( cmd->function ) {
-		Com_Error( ERR_DROP, "Restricted source tried to remove "
-							 "system command \"%s\"", cmd_name );
+		Com_Error( ERR_DROP, "Restricted source tried to remove system command \"%s\"", cmd_name );
 		return;
 	}
 
@@ -723,7 +720,7 @@ void Cmd_RemoveCommandSafe( const char *cmd_name ) {
 Cmd_CommandCompletion
 ============
 */
-void    Cmd_CommandCompletion( void ( *callback )( const char *s ) ) {
+void Cmd_CommandCompletion( void ( *callback )( const char *s ) ) {
 	cmd_function_t  *cmd;
 
 	for ( cmd = cmd_functions ; cmd ; cmd = cmd->next ) {
@@ -756,7 +753,7 @@ Cmd_ExecuteString
 A complete command line has been parsed, so try to execute it
 ============
 */
-void    Cmd_ExecuteString( const char *text ) {
+void Cmd_ExecuteString( const char *text ) {
 	cmd_function_t  *cmd, **prev;
 
 	// execute the command line

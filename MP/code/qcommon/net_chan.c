@@ -351,8 +351,7 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 		// if we missed a fragment, dump the message
 		if ( fragmentStart != chan->fragmentLength ) {
 			if ( showdrop->integer || showpackets->integer ) {
-				Com_Printf( "%s:Dropped a message fragment\n"
-							, NET_AdrToString( chan->remoteAddress ) );
+				Com_Printf( "%s:Dropped a message fragment\n", NET_AdrToString( chan->remoteAddress ) );
 			}
 			// we can still keep the part that we have so far,
 			// so we don't need to clear chan->fragmentLength
@@ -363,8 +362,7 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 		if ( fragmentLength < 0 || msg->readcount + fragmentLength > msg->cursize ||
 			 chan->fragmentLength + fragmentLength > sizeof( chan->fragmentBuffer ) ) {
 			if ( showdrop->integer || showpackets->integer ) {
-				Com_Printf( "%s:illegal fragment length\n"
-							, NET_AdrToString( chan->remoteAddress ) );
+				Com_Printf( "%s:illegal fragment length\n", NET_AdrToString( chan->remoteAddress ) );
 			}
 			return qfalse;
 		}
@@ -380,9 +378,7 @@ qboolean Netchan_Process( netchan_t *chan, msg_t *msg ) {
 		}
 
 		if ( chan->fragmentLength > msg->maxsize ) {
-			Com_Printf( "%s:fragmentLength %i > msg->maxsize\n"
-						, NET_AdrToString( chan->remoteAddress ),
-						chan->fragmentLength );
+			Com_Printf( "%s:fragmentLength %i > msg->maxsize\n", NET_AdrToString( chan->remoteAddress ), chan->fragmentLength );
 			return qfalse;
 		}
 
@@ -493,8 +489,7 @@ typedef struct packetQueue_s {
 
 packetQueue_t *packetQueue = NULL;
 
-static void NET_QueuePacket( int length, const void *data, netadr_t to,
-							 int offset ) {
+static void NET_QueuePacket( int length, const void *data, netadr_t to, int offset ) {
 	packetQueue_t *new, *next = packetQueue;
 
 	if ( offset > 999 ) {
@@ -531,8 +526,7 @@ void NET_FlushPacketQueue( void ) {
 		if ( packetQueue->release >= now ) {
 			break;
 		}
-		Sys_SendPacket( packetQueue->length, packetQueue->data,
-						packetQueue->to );
+		Sys_SendPacket( packetQueue->length, packetQueue->data, packetQueue->to );
 		last = packetQueue;
 		packetQueue = packetQueue->next;
 		Z_Free( last->data );
@@ -541,7 +535,6 @@ void NET_FlushPacketQueue( void ) {
 }
 
 void NET_SendPacket( netsrc_t sock, int length, const void *data, netadr_t to ) {
-
 	// sequenced packets are shown in netchan, so just show oob
 	if ( showpackets->integer && *(int *)data == -1 ) {
 		Com_Printf( "send packet %4i\n", length );
@@ -634,12 +627,12 @@ return 0 on address not found, 1 on address found with port, 2 on address found 
 */
 int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family ) {
 	char base[MAX_STRING_CHARS], *search;
-	char    *port = NULL;
+	char *port = NULL;
 
 	if ( !strcmp( s, "localhost" ) ) {
 		memset( a, 0, sizeof( *a ) );
 		a->type = NA_LOOPBACK;
-// as NA_LOOPBACK doesn't require ports report port was given.
+		// as NA_LOOPBACK doesn't require ports report port was given.
 		return 1;
 	}
 
@@ -662,8 +655,7 @@ int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family ) {
 		} else {
 			search = base;
 		}
-	} else
-	{
+	} else {
 		// look for a port number
 		port = strchr( base, ':' );
 
@@ -683,8 +675,7 @@ int NET_StringToAdr( const char *s, netadr_t *a, netadrtype_t family ) {
 	if ( port ) {
 		a->port = BigShort( (short) atoi( port ) );
 		return 1;
-	} else
-	{
+	} else {
 		a->port = BigShort( PORT_SERVER );
 		return 2;
 	}

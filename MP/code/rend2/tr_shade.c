@@ -479,9 +479,21 @@ static void ProjectDlightTexture( void ) {
 
 static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t vertColor, int blend )
 {
+	qboolean isBlend = ((blend & GLS_SRCBLEND_BITS) == GLS_SRCBLEND_DST_COLOR)
+		|| ((blend & GLS_SRCBLEND_BITS) == GLS_SRCBLEND_ONE_MINUS_DST_COLOR)
+		|| ((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_SRC_COLOR)
+		|| ((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_ONE_MINUS_SRC_COLOR);
+
+#if defined(USE_OVERBRIGHT)
+	float exactLight = 1.0f;
+#else
+	qboolean isWorldDraw = !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL);
+	float exactLight = (isBlend || !isWorldDraw) ? 1.0f : (float)(1 << r_mapOverBrightBits->integer);
+#endif
+
 	baseColor[0] = 
 	baseColor[1] =
-	baseColor[2] =
+	baseColor[2] = exactLight;
 	baseColor[3] = 1.0f;
 
 	vertColor[0] =
@@ -508,7 +520,7 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 
 			vertColor[0] =
 			vertColor[1] =
-			vertColor[2] = 
+			vertColor[2] = exactLight;
 			vertColor[3] = 1.0f;
 			break;
 		case CGEN_CONST:
@@ -644,11 +656,7 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 	}
 
 	// multiply color by overbrightbits if this isn't a blend
-	if (tr.overbrightBits 
-	 && !((blend & GLS_SRCBLEND_BITS) == GLS_SRCBLEND_DST_COLOR)
-	 && !((blend & GLS_SRCBLEND_BITS) == GLS_SRCBLEND_ONE_MINUS_DST_COLOR)
-	 && !((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_SRC_COLOR)
-	 && !((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_ONE_MINUS_SRC_COLOR))
+	if (tr.overbrightBits && !isBlend)
 	{
 		float scale = 1 << tr.overbrightBits;
 
@@ -1664,15 +1672,14 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		if (!(tr.viewParms.flags & VPF_NOCUBEMAPS) && input->cubemapIndex && r_cubeMapping->integer)
 		{
 			vec4_t vec;
+			cubemap_t *cubemap = &tr.cubemaps[input->cubemapIndex - 1];
 
-			GL_BindToTMU( tr.cubemaps[input->cubemapIndex - 1], TB_CUBEMAP);
+			GL_BindToTMU( cubemap->image, TB_CUBEMAP);
 
-			vec[0] = tr.cubemapOrigins[input->cubemapIndex - 1][0] - backEnd.viewParms.or.origin[0];
-			vec[1] = tr.cubemapOrigins[input->cubemapIndex - 1][1] - backEnd.viewParms.or.origin[1];
-			vec[2] = tr.cubemapOrigins[input->cubemapIndex - 1][2] - backEnd.viewParms.or.origin[2];
+			VectorSubtract(cubemap->origin, backEnd.viewParms.or.origin, vec);
 			vec[3] = 1.0f;
 
-			VectorScale4(vec, 1.0f / 1000.0f, vec);
+			VectorScale4(vec, 1.0f / cubemap->parallaxRadius, vec);
 
 			GLSL_SetUniformVec4(sp, UNIFORM_CUBEMAPINFO, vec);
 		}

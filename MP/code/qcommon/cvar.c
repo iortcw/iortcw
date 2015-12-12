@@ -182,8 +182,7 @@ int Cvar_Flags( const char *var_name ) {
 
 	if ( !( var = Cvar_FindVar( var_name ) ) ) {
 		return CVAR_NONEXISTENT;
-	} else
-	{
+	} else {
 		if ( var->modified ) {
 			return var->flags | CVAR_MODIFIED;
 		} else {
@@ -213,8 +212,7 @@ void Cvar_CommandCompletion( void ( *callback )( const char *s ) ) {
 Cvar_Validate
 ============
 */
-static const char *Cvar_Validate( cvar_t *var,
-								  const char *value, qboolean warn ) {
+static const char *Cvar_Validate( cvar_t *var, const char *value, qboolean warn ) {
 	static char s[ MAX_CVAR_VALUE_STRING ];
 	float valuef;
 	qboolean changed = qfalse;
@@ -240,8 +238,7 @@ static const char *Cvar_Validate( cvar_t *var,
 				changed = qtrue;
 			}
 		}
-	} else
-	{
+	} else {
 		if ( warn ) {
 			Com_Printf( "WARNING: cvar '%s' must be numeric", var->name );
 		}
@@ -293,8 +290,7 @@ static const char *Cvar_Validate( cvar_t *var,
 			if ( warn ) {
 				Com_Printf( ", setting to %d\n", (int)valuef );
 			}
-		} else
-		{
+		} else {
 			Com_sprintf( s, sizeof( s ), "%f", valuef );
 
 			if ( warn ) {
@@ -370,7 +366,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 			if ( !( flags & CVAR_VM_CREATED ) ) {
 				var->flags &= ~CVAR_VM_CREATED;
 			}
-		} else if ( !( var->flags & CVAR_USER_CREATED ) )       {
+		} else if ( !( var->flags & CVAR_USER_CREATED ) ) {
 			if ( flags & CVAR_VM_CREATED ) {
 				flags &= ~CVAR_VM_CREATED;
 			}
@@ -400,8 +396,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 			if ( !( flags & CVAR_SERVER_CREATED ) ) {
 				var->flags &= ~CVAR_SERVER_CREATED;
 			}
-		} else
-		{
+		} else {
 			if ( flags & CVAR_SERVER_CREATED ) {
 				flags &= ~CVAR_SERVER_CREATED;
 			}
@@ -514,15 +509,13 @@ Prints the value, default, and latched string of the given variable
 ============
 */
 void Cvar_Print( cvar_t *v ) {
-	Com_Printf( "\"%s\" is:\"%s" S_COLOR_WHITE "\"",
-				v->name, v->string );
+	Com_Printf( "\"%s\" is:\"%s" S_COLOR_WHITE "\"", v->name, v->string );
 
 	if ( !( v->flags & CVAR_ROM ) ) {
 		if ( !Q_stricmp( v->string, v->resetString ) ) {
 			Com_Printf( ", the default" );
 		} else {
-			Com_Printf( " default:\"%s" S_COLOR_WHITE "\"",
-						v->resetString );
+			Com_Printf( " default:\"%s" S_COLOR_WHITE "\"", v->resetString );
 		}
 	}
 
@@ -594,7 +587,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 		if ( !strcmp( value, var->latchedString ) ) {
 			return var;
 		}
-	} else if ( !strcmp( value, var->string ) )        {
+	} else if ( !strcmp( value, var->string ) ) {
 		return var;
 	}
 
@@ -623,8 +616,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 					return var;
 				}
 				Z_Free( var->latchedString );
-			} else
-			{
+			} else {
 				if ( strcmp( value, var->string ) == 0 ) {
 					return var;
 				}
@@ -637,8 +629,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 			return var;
 		}
 
-	} else
-	{
+	} else {
 		if ( var->latchedString ) {
 			Z_Free( var->latchedString );
 			var->latchedString = NULL;
@@ -680,11 +671,9 @@ void Cvar_SetSafe( const char *var_name, const char *value ) {
 
 	if ( ( flags != CVAR_NONEXISTENT ) && ( flags & CVAR_PROTECTED ) ) {
 		if ( value ) {
-			Com_Error( ERR_DROP, "Restricted source tried to set "
-								 "\"%s\" to \"%s\"", var_name, value );
+			Com_Error( ERR_DROP, "Restricted source tried to set \"%s\" to \"%s\"", var_name, value );
 		} else {
-			Com_Error( ERR_DROP, "Restricted source tried to "
-								 "modify \"%s\"", var_name );
+			Com_Error( ERR_DROP, "Restricted source tried to modify \"%s\"", var_name );
 		}
 		return;
 	}
@@ -850,9 +839,7 @@ void Cvar_Toggle_f( void ) {
 	}
 
 	if ( c == 2 ) {
-		Cvar_Set2( Cmd_Argv( 1 ), va( "%d",
-									  !Cvar_VariableValue( Cmd_Argv( 1 ) ) ),
-				   qfalse );
+		Cvar_Set2( Cmd_Argv( 1 ), va( "%d", !Cvar_VariableValue( Cmd_Argv( 1 ) ) ), qfalse );
 		return;
 	}
 
@@ -962,15 +949,13 @@ void Cvar_WriteVariables( fileHandle_t f ) {
 			// write the latched value, even if it hasn't taken effect yet
 			if ( var->latchedString ) {
 				if ( strlen( var->name ) + strlen( var->latchedString ) + 10 > sizeof( buffer ) ) {
-					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable "
-											   "\"%s\" too long to write to file\n", var->name );
+					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable \"%s\" too long to write to file\n", var->name );
 					continue;
 				}
 				Com_sprintf( buffer, sizeof( buffer ), "seta %s \"%s\"\n", var->name, var->latchedString );
 			} else {
 				if ( strlen( var->name ) + strlen( var->string ) + 10 > sizeof( buffer ) ) {
-					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable "
-											   "\"%s\" too long to write to file\n", var->name );
+					Com_Printf( S_COLOR_YELLOW "WARNING: value of variable \"%s\" too long to write to file\n", var->name );
 					continue;
 				}
 				Com_sprintf( buffer, sizeof( buffer ), "seta %s \"%s\"\n", var->name, var->string );
@@ -1238,8 +1223,7 @@ void Cvar_Restart( qboolean unsetVM ) {
 
 	while ( curvar )
 	{
-		if ( ( curvar->flags & CVAR_USER_CREATED ) ||
-			 ( unsetVM && ( curvar->flags & CVAR_VM_CREATED ) ) ) {
+		if ( ( curvar->flags & CVAR_USER_CREATED ) || ( unsetVM && ( curvar->flags & CVAR_VM_CREATED ) ) ) {
 			// throw out any variables the user/vm created
 			curvar = Cvar_Unset( curvar );
 			continue;
@@ -1349,8 +1333,7 @@ void Cvar_Register( vmCvar_t *vmCvar, const char *varName, const char *defaultVa
 	// flags. Unfortunately some historical game code (including single player
 	// baseq3) sets both flags. We unset CVAR_ROM for such cvars.
 	if ( ( flags & ( CVAR_ARCHIVE | CVAR_ROM ) ) == ( CVAR_ARCHIVE | CVAR_ROM ) ) {
-		Com_DPrintf( S_COLOR_YELLOW "WARNING: Unsetting CVAR_ROM cvar '%s', "
-									"since it is also CVAR_ARCHIVE\n", varName );
+		Com_DPrintf( S_COLOR_YELLOW "WARNING: Unsetting CVAR_ROM cvar '%s', since it is also CVAR_ARCHIVE\n", varName );
 		flags &= ~CVAR_ROM;
 	}
 
@@ -1392,8 +1375,8 @@ void    Cvar_Update( vmCvar_t *vmCvar ) {
 	vmCvar->modificationCount = cv->modificationCount;
 	if ( strlen( cv->string ) + 1 > MAX_CVAR_VALUE_STRING ) {
 		Com_Error( ERR_DROP, "Cvar_Update: src %s length %u exceeds MAX_CVAR_VALUE_STRING",
-				   cv->string,
-				   (unsigned int) strlen( cv->string ) );
+				cv->string,
+				(unsigned int) strlen( cv->string ) );
 	}
 	Q_strncpyz( vmCvar->string, cv->string,  MAX_CVAR_VALUE_STRING );
 

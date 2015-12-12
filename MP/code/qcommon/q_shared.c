@@ -226,10 +226,11 @@ void COM_BitClear( int array[], int bitNum ) {
 }
 //============================================================================
 
+
 /*
 ============================================================================
 
-                    BYTE ORDER FUNCTIONS
+BYTE ORDER FUNCTIONS
 
 ============================================================================
 */
@@ -534,8 +535,7 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks ) {
 			if ( *data ) {
 				data += 2;
 			}
-		} else
-		{
+		} else {
 			break;
 		}
 	}
@@ -617,7 +617,7 @@ void SkipBracedSection( char **program ) {
 		if ( token[1] == 0 ) {
 			if ( token[0] == '{' ) {
 				depth++;
-			} else if ( token[0] == '}' )    {
+			} else if ( token[0] == '}' ) {
 				depth--;
 			}
 		}
@@ -727,10 +727,11 @@ int Com_HexStrToInt( const char *str ) {
 	return -1;
 }
 
+
 /*
 ============================================================================
 
-                    LIBRARY REPLACEMENT FUNCTIONS
+LIBRARY REPLACEMENT FUNCTIONS
 
 ============================================================================
 */
@@ -1124,8 +1125,7 @@ void Com_TruncateLongString( char *buffer, const char *s ) {
 
 	if ( length <= TRUNCATE_LENGTH ) {
 		Q_strncpyz( buffer, s, TRUNCATE_LENGTH );
-	} else
-	{
+	} else {
 		Q_strncpyz( buffer, s, ( TRUNCATE_LENGTH / 2 ) - 3 );
 		Q_strcat( buffer, TRUNCATE_LENGTH, " ... " );
 		Q_strcat( buffer, TRUNCATE_LENGTH, s + length - ( TRUNCATE_LENGTH / 2 ) + 3 );
@@ -1544,7 +1544,7 @@ char *Com_SkipTokens( char *s, int numTokens, char *sep ) {
 			sepCount++;
 			while ( Com_CharIsOneOfCharset( *p, sep ) )
 				p++;
-		} else if ( *p == '\0' )    {
+		} else if ( *p == '\0' ) {
 			break;
 		}
 	}

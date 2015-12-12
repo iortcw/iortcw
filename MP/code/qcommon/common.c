@@ -223,8 +223,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 					// data even if we are crashing
 					FS_ForceFlush( logfile );
 				}
-			} else
-			{
+			} else {
 				Com_Printf( "Opening rtcwconsole.log failed!\n" );
 				Cvar_SetValue( "logfile", 0 );
 			}
@@ -752,7 +751,7 @@ int Com_RealTime( qtime_t *qtime ) {
 /*
 ==============================================================================
 
-                        ZONE MEMORY ALLOCATION
+ZONE MEMORY ALLOCATION
 
 There is never any space between memblocks, and there will never be two
 contiguous free memblocks.
@@ -1278,7 +1277,7 @@ void Com_Meminfo_f( void ) {
 	for ( block = mainzone->blocklist.next ; ; block = block->next ) {
 		if ( Cmd_Argc() != 1 ) {
 			Com_Printf( "block:%p    size:%7i    tag:%3i\n",
-						(void *)block, block->size, block->tag );
+					(void *)block, block->size, block->tag );
 		}
 		if ( block->tag ) {
 			zoneBytes += block->size;
@@ -1414,32 +1413,6 @@ void Com_InitSmallZoneMemory( void ) {
 	Z_ClearZone( smallzone, s_smallZoneTotal );
 }
 
-/*
-void Com_InitZoneMemory( void ) {
-    cvar_t	*cv;
-    s_smallZoneTotal = 512 * 1024;
-    smallzone = malloc( s_smallZoneTotal );
-    if ( !smallzone ) {
-        Com_Error( ERR_FATAL, "Small zone data failed to allocate %1.1f megs", (float)s_smallZoneTotal / (1024*1024) );
-    }
-    Z_ClearZone( smallzone, s_smallZoneTotal );
-
-    // allocate the random block zone
-    cv = Cvar_Get( "com_zoneMegs", DEF_COMZONEMEGS, CVAR_LATCH | CVAR_ARCHIVE );
-
-    if ( cv->integer < 16 ) {
-        s_zoneTotal = 1024 * 1024 * 16;
-    } else {
-        s_zoneTotal = cv->integer * 1024 * 1024;
-    }
-
-    mainzone = malloc( s_zoneTotal );
-    if ( !mainzone ) {
-        Com_Error( ERR_FATAL, "Zone data failed to allocate %i megs", s_zoneTotal / (1024*1024) );
-    }
-    Z_ClearZone( mainzone, s_zoneTotal );
-}
-*/
 void Com_InitZoneMemory( void ) {
 	cvar_t  *cv;
 
@@ -1463,7 +1436,6 @@ void Com_InitZoneMemory( void ) {
 		Com_Error( ERR_FATAL, "Zone data failed to allocate %i megs", s_zoneTotal / ( 1024 * 1024 ) );
 	}
 	Z_ClearZone( mainzone, s_zoneTotal );
-
 }
 
 /*
@@ -2629,18 +2601,17 @@ static void Com_DetectSSE( void ) {
 
 		Q_ftol = qftolsse;
 #endif
-	Q_VMftol = qvmftolsse;
+		Q_VMftol = qvmftolsse;
 
-	Com_Printf( "Have SSE support\n" );
+		Com_Printf( "Have SSE support\n" );
 #if !idx64
-} else
-{
-	Q_ftol = qftolx87;
-	Q_VMftol = qvmftolx87;
-	Q_SnapVector = qsnapvectorx87;
+	} else {
+		Q_ftol = qftolx87;
+		Q_VMftol = qvmftolx87;
+		Q_SnapVector = qsnapvectorx87;
 
-	Com_Printf( "No SSE support on this machine\n" );
-}
+		Com_Printf( "No SSE support on this machine\n" );
+	}
 #endif
 }
 
@@ -2823,8 +2794,9 @@ void Com_Init( char *commandLine ) {
 		Cvar_Get( "protocol", com_legacyprotocol->string, CVAR_ROM );
 	} else
 #endif
-	Cvar_Get( "protocol", com_protocol->string, CVAR_ROM );
-
+	{
+		Cvar_Get( "protocol", com_protocol->string, CVAR_ROM );
+	}
 	com_hunkused = Cvar_Get( "com_hunkused", "0", 0 );
 
 	Sys_Init();
@@ -2832,8 +2804,8 @@ void Com_Init( char *commandLine ) {
 	if ( Sys_WritePIDFile() ) {
 #ifndef DEDICATED
 		const char *message = "The last time " CLIENT_WINDOW_TITLE " ran, "
-																   "it didn't exit properly. This may be due to inappropriate video "
-																   "settings. Would you like to start with \"safe\" video settings?";
+					"it didn't exit properly. This may be due to inappropriate video "
+					"settings. Would you like to start with \"safe\" video settings?";
 
 		if ( Sys_Dialog( DT_YES_NO, message, "Abnormal Exit" ) == DR_YES ) {
 			Cvar_Set( "com_abnormalExit", "1" );
@@ -2942,7 +2914,7 @@ void Com_ReadFromPipe( void ) {
 
 			accu -= brk - buf;
 			memmove( buf, brk, accu + 1 );
-		} else if ( accu >= sizeof( buf ) - 1 )    { // full
+		} else if ( accu >= sizeof( buf ) - 1 ) { // full
 			Cbuf_ExecuteText( EXEC_APPEND, buf );
 			accu = 0;
 		}
@@ -3058,8 +3030,7 @@ int Com_ModifyMsec( int msec ) {
 			Com_Printf( "Hitch warning: %i msec frame time\n", msec );
 		}
 		clampTime = 5000;
-	} else
-	if ( !com_sv_running->integer ) {
+	} else if ( !com_sv_running->integer ) {
 		// clients of remote servers do not want to clamp time, because
 		// it would skew their view of the server's time temporarily
 		clampTime = 5000;
@@ -3143,8 +3114,7 @@ void Com_Frame( void ) {
 	if ( !com_timedemo->integer ) {
 		if ( com_dedicated->integer ) {
 			minMsec = SV_FrameMsec();
-		} else
-		{
+		} else {
 			if ( com_minimized->integer && com_maxfpsMinimized->integer > 0 ) {
 				minMsec = 1000 / com_maxfpsMinimized->integer;
 			} else if ( com_unfocused->integer && com_maxfpsUnfocused->integer > 0 ) {
@@ -3446,7 +3416,7 @@ static qboolean Field_Complete( void ) {
 	completionOffset = strlen( completionField->buffer ) - strlen( completionString );
 
 	Q_strncpyz( &completionField->buffer[ completionOffset ], shortestMatch,
-				sizeof( completionField->buffer ) - completionOffset );
+			sizeof( completionField->buffer ) - completionOffset );
 
 	completionField->cursor = strlen( completionField->buffer );
 
@@ -3484,8 +3454,7 @@ void Field_CompleteKeyname( void ) {
 Field_CompleteFilename
 ===============
 */
-void Field_CompleteFilename( const char *dir,
-							 const char *ext, qboolean stripExt, qboolean allowNonPureFilesOnDisk ) {
+void Field_CompleteFilename( const char *dir, const char *ext, qboolean stripExt, qboolean allowNonPureFilesOnDisk ) {
 	matchCount = 0;
 	shortestMatch[ 0 ] = 0;
 
@@ -3501,8 +3470,7 @@ void Field_CompleteFilename( const char *dir,
 Field_CompleteCommand
 ===============
 */
-void Field_CompleteCommand( char *cmd,
-							qboolean doCommands, qboolean doCvars ) {
+void Field_CompleteCommand( char *cmd, qboolean doCommands, qboolean doCvars ) {
 	int completionArgument = 0;
 
 	// Skip leading whitespace and quotes
@@ -3521,18 +3489,14 @@ void Field_CompleteCommand( char *cmd,
 
 #ifndef DEDICATED
 	// Unconditionally add a '\' to the start of the buffer
-	if ( completionField->buffer[ 0 ] &&
-		 completionField->buffer[ 0 ] != '\\' ) {
+	if ( completionField->buffer[ 0 ] && completionField->buffer[ 0 ] != '\\' ) {
 		if ( completionField->buffer[ 0 ] != '/' ) {
 			// Buffer is full, refuse to complete
-			if ( strlen( completionField->buffer ) + 1 >=
-				 sizeof( completionField->buffer ) ) {
+			if ( strlen( completionField->buffer ) + 1 >= sizeof( completionField->buffer ) ) {
 				return;
 			}
 
-			memmove( &completionField->buffer[ 1 ],
-					 &completionField->buffer[ 0 ],
-					 strlen( completionField->buffer ) + 1 );
+			memmove( &completionField->buffer[ 1 ], &completionField->buffer[ 0 ], strlen( completionField->buffer ) + 1 );
 			completionField->cursor++;
 		}
 
@@ -3556,8 +3520,7 @@ void Field_CompleteCommand( char *cmd,
 		} else {
 			Cmd_CompleteArgument( baseCmd, cmd, completionArgument );
 		}
-	} else
-	{
+	} else {
 		if ( completionString[0] == '\\' || completionString[0] == '/' ) {
 			completionString++;
 		}

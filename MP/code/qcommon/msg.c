@@ -37,7 +37,7 @@ int pcount[256];
 /*
 ==============================================================================
 
-            MESSAGE IO FUNCTIONS
+MESSAGE IO FUNCTIONS
 
 Handles byte ordering and avoids alignment errors
 ==============================================================================
@@ -987,16 +987,20 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 					// send as small integer
 					MSG_WriteBits( msg, 0, 1 );
 					MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
-/*					if ( print ) {
-                        Com_Printf( "%s:%i ", field->name, trunc );
-                    }*/
+/*
+					if ( print ) {
+						Com_Printf( "%s:%i ", field->name, trunc );
+					}
+*/
 				} else {
 					// send as full floating point value
 					MSG_WriteBits( msg, 1, 1 );
 					MSG_WriteBits( msg, *toF, 32 );
-/*					if ( print ) {
-                        Com_Printf( "%s:%f ", field->name, *(float *)toF );
-                    }*/
+/*
+					if ( print ) {
+						Com_Printf( "%s:%f ", field->name, *(float *)toF );
+					}
+*/
 				}
 			}
 		} else {
@@ -1006,24 +1010,27 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 				MSG_WriteBits( msg, 1, 1 );
 				// integer
 				MSG_WriteBits( msg, *toF, field->bits );
-/*				if ( print ) {
-                    Com_Printf( "%s:%i ", field->name, *toF );
-                }*/
+/*
+				if ( print ) {
+					Com_Printf( "%s:%i ", field->name, *toF );
+				}
+*/
 			}
 		}
 	}
 
 /*
-    c = msg->cursize - c;
+	c = msg->cursize - c;
 
-    if ( print ) {
-        if ( msg->bit == 0 ) {
-            endBit = msg->cursize * 8 - GENTITYNUM_BITS;
-        } else {
-            endBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-        }
-        Com_Printf( " (%i bits)\n", endBit - startBit  );
-    }
+	if ( print ) {
+		if ( msg->bit == 0 ) {
+			endBit = msg->cursize * 8 - GENTITYNUM_BITS;
+		} else {
+			endBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
+		}
+
+	        Com_Printf( " (%i bits)\n", endBit - startBit  );
+	}
 */
 }
 
@@ -2064,36 +2071,42 @@ void MSG_initHuffman( void ) {
 
 /*
 void MSG_NUinitHuffman() {
-    byte	*data;
-    int		size, i, ch;
-    int		array[256];
+	byte	*data;
+	int	size, i, ch;
+	int	array[256];
 
-    msgInit = qtrue;
+	msgInit = qtrue;
 
-    Huff_Init(&msgHuff);
-    // load it in
-    size = FS_ReadFile( "netchan/netchan.bin", (void **)&data );
+	Huff_Init(&msgHuff);
 
-    for(i=0;i<256;i++) {
-        array[i] = 0;
-    }
-    for(i=0;i<size;i++) {
-        ch = data[i];
-        Huff_addRef(&msgHuff.compressor,	ch);			// Do update
-        Huff_addRef(&msgHuff.decompressor,	ch);			// Do update
-        array[ch]++;
-    }
-    Com_Printf("msg_hData {\n");
-    for(i=0;i<256;i++) {
-        if (array[i] == 0) {
-            Huff_addRef(&msgHuff.compressor,	i);			// Do update
-            Huff_addRef(&msgHuff.decompressor,	i);			// Do update
-        }
-        Com_Printf("%d,			// %d\n", array[i], i);
-    }
-    Com_Printf("};\n");
-    FS_FreeFile( data );
-    Cbuf_AddText( "condump dump.txt\n" );
+	// load it in
+	size = FS_ReadFile( "netchan/netchan.bin", (void **)&data );
+
+	for( i = 0; i < 256 ; i++ ) {
+		array[i] = 0;
+	}
+
+	for( i = 0; i < size ; i++ ) {
+		ch = data[i];
+		Huff_addRef( &msgHuff.compressor, ch );			// Do update
+		Huff_addRef( &msgHuff.decompressor, ch );		// Do update
+		array[ch]++;
+	}
+
+	Com_Printf("msg_hData {\n");
+
+	for( i = 0; i < 256 ; i++ ) {
+		if (array[i] == 0) {
+			Huff_addRef( &msgHuff.compressor, i );			// Do update
+			Huff_addRef( &msgHuff.decompressor, i );		// Do update
+		}
+
+		Com_Printf( "%d, // %d\n", array[i], i );
+	}
+
+	Com_Printf( "};\n" );
+	FS_FreeFile( data );
+	Cbuf_AddText( "condump dump.txt\n" );
 }
 */
 

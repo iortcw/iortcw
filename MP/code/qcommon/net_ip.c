@@ -24,70 +24,72 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/qcommon.h"
 
 #ifdef _WIN32
-#   include <winsock2.h>
-#   include <ws2tcpip.h>
-#   if WINVER < 0x501
-#       ifdef __MINGW32__
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#if WINVER < 0x501
+#ifdef __MINGW32__
 // wspiapi.h isn't available on MinGW, so if it's
 // present it's because the end user has added it
 // and we should look for it in our tree
-#           include "wspiapi.h"
-#       else
-#           include <wspiapi.h>
-#       endif
-#   else
-#       include <ws2spi.h>
-#   endif
+#include "wspiapi.h"
+#else
+#include <wspiapi.h>
+#endif
+#else
+#include <ws2spi.h>
+#endif
 
 typedef int socklen_t;
-#   ifdef ADDRESS_FAMILY
-#       define sa_family_t  ADDRESS_FAMILY
-#   else
-typedef unsigned short sa_family_t;
-#   endif
 
-#   define EAGAIN                   WSAEWOULDBLOCK
-#   define EADDRNOTAVAIL    WSAEADDRNOTAVAIL
-#   define EAFNOSUPPORT     WSAEAFNOSUPPORT
-#   define ECONNRESET           WSAECONNRESET
+#ifdef ADDRESS_FAMILY
+#define sa_family_t ADDRESS_FAMILY
+#else
+typedef unsigned short sa_family_t;
+#endif
+
+#define EAGAIN		WSAEWOULDBLOCK
+#define EADDRNOTAVAIL	WSAEADDRNOTAVAIL
+#define EAFNOSUPPORT	WSAEAFNOSUPPORT
+#define ECONNRESET	WSAECONNRESET
 typedef u_long ioctlarg_t;
-#   define socketError      WSAGetLastError()
+#define socketError	WSAGetLastError()
 
 static WSADATA winsockdata;
 static qboolean winsockInitialized = qfalse;
 
 #else
 
-#   if MAC_OS_X_VERSION_MIN_REQUIRED == 1020
+#if MAC_OS_X_VERSION_MIN_REQUIRED == 1020
 // needed for socklen_t on OSX 10.2
-#       define _BSD_SOCKLEN_T_
-#   endif
+#define _BSD_SOCKLEN_T_
+#endif
 
-#   include <sys/socket.h>
-#   include <errno.h>
-#   include <netdb.h>
-#   include <netinet/in.h>
-#   include <arpa/inet.h>
-#   include <net/if.h>
-#   include <sys/ioctl.h>
-#   include <sys/types.h>
-#   include <sys/time.h>
-#   include <unistd.h>
-#   if !defined( __sun ) && !defined( __sgi )
-#       include <ifaddrs.h>
-#   endif
+#include <sys/socket.h>
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <unistd.h>
 
-#   ifdef __sun
-#       include <sys/filio.h>
-#   endif
+#if !defined( __sun ) && !defined( __sgi )
+#include <ifaddrs.h>
+#endif
+
+#ifdef __sun
+#include <sys/filio.h>
+#endif
 
 typedef int SOCKET;
-#   define INVALID_SOCKET       -1
-#   define SOCKET_ERROR         -1
-#   define closesocket          close
-#   define ioctlsocket          ioctl
+#define INVALID_SOCKET		-1
+#define SOCKET_ERROR		-1
+#define closesocket		close
+#define ioctlsocket		ioctl
 typedef int ioctlarg_t;
-#   define socketError          errno
+#define socketError		errno
 
 #endif
 
@@ -124,13 +126,13 @@ static struct ipv6_mreq curgroup;
 static struct sockaddr_in6 boundto;
 
 #ifndef IF_NAMESIZE
-  #define IF_NAMESIZE 16
+#define IF_NAMESIZE 16
 #endif
 
 // use an admin local address per default so that network admins can decide on how to handle quake3 traffic.
 #define NET_MULTICAST_IP6 "ff04::696f:7175:616b:6533"
 
-#define MAX_IPS     32
+#define MAX_IPS	32
 
 typedef struct
 {
@@ -290,8 +292,7 @@ static qboolean Sys_StringToSockaddr( const char *s, struct sockaddr *sadr, int 
 				if ( !search && ( net_enabled->integer & NET_ENABLEV4 ) ) {
 					search = SearchAddrInfo( res, AF_INET );
 				}
-			} else
-			{
+			} else {
 				if ( net_enabled->integer & NET_ENABLEV4 ) {
 					search = SearchAddrInfo( res, AF_INET );
 				}
@@ -401,15 +402,14 @@ qboolean NET_CompareBaseAdrMask( netadr_t a, netadr_t b, int netmask ) {
 		if ( netmask < 0 || netmask > 32 ) {
 			netmask = 32;
 		}
-	} else if ( a.type == NA_IP6 )      {
+	} else if ( a.type == NA_IP6 ) {
 		addra = (byte *) &a.ip6;
 		addrb = (byte *) &b.ip6;
 
 		if ( netmask < 0 || netmask > 128 ) {
 			netmask = 128;
 		}
-	} else
-	{
+	} else {
 		Com_Printf( "NET_CompareBaseAdr: bad address type\n" );
 		return qfalse;
 	}
@@ -528,9 +528,7 @@ qboolean NET_GetPacket( netadr_t *net_from, msg_t *net_message, fd_set *fdr ) {
 			if ( err != EAGAIN && err != ECONNRESET ) {
 				Com_Printf( "NET_GetPacket: %s\n", NET_ErrorString() );
 			}
-		} else
-		{
-
+		} else {
 			memset( ( (struct sockaddr_in *)&from )->sin_zero, 0, 8 );
 
 			if ( usingSocks && memcmp( &from, &socksRelayAddr, fromlen ) == 0 ) {
@@ -569,8 +567,7 @@ qboolean NET_GetPacket( netadr_t *net_from, msg_t *net_message, fd_set *fdr ) {
 			if ( err != EAGAIN && err != ECONNRESET ) {
 				Com_Printf( "NET_GetPacket: %s\n", NET_ErrorString() );
 			}
-		} else
-		{
+		} else {
 			SockadrToNetadr( (struct sockaddr *) &from, net_from );
 			net_message->readcount = 0;
 
@@ -594,8 +591,7 @@ qboolean NET_GetPacket( netadr_t *net_from, msg_t *net_message, fd_set *fdr ) {
 			if ( err != EAGAIN && err != ECONNRESET ) {
 				Com_Printf( "NET_GetPacket: %s\n", NET_ErrorString() );
 			}
-		} else
-		{
+		} else {
 			SockadrToNetadr( (struct sockaddr *) &from, net_from );
 			net_message->readcount = 0;
 
@@ -715,7 +711,7 @@ qboolean Sys_IsLANAddress( netadr_t adr ) {
 		if ( adr.ip[0] == 127 ) {
 			return qtrue;
 		}
-	} else if ( adr.type == NA_IP6 )      {
+	} else if ( adr.type == NA_IP6 ) {
 		if ( adr.ip6[0] == 0xfe && ( adr.ip6[1] & 0xc0 ) == 0x80 ) {
 			return qtrue;
 		}
@@ -734,8 +730,7 @@ qboolean Sys_IsLANAddress( netadr_t adr ) {
 				compareadr = adr.ip;
 
 				addrsize = sizeof( adr.ip );
-			} else
-			{
+			} else {
 				// TODO? should we check the scope_id here?
 
 				compareip = (byte *) &( (struct sockaddr_in6 *) &localIP[index].addr )->sin6_addr;
@@ -829,8 +824,7 @@ SOCKET NET_IPSocket( char *net_interface, int port, int *err ) {
 	if ( !net_interface || !net_interface[0] ) {
 		address.sin_family = AF_INET;
 		address.sin_addr.s_addr = INADDR_ANY;
-	} else
-	{
+	} else {
 		if ( !Sys_StringToSockaddr( net_interface, (struct sockaddr *)&address, sizeof( address ), AF_INET ) ) {
 			closesocket( newsocket );
 			return INVALID_SOCKET;
@@ -905,8 +899,7 @@ SOCKET NET_IP6Socket( char *net_interface, int port, struct sockaddr_in6 *bindto
 	if ( !net_interface || !net_interface[0] ) {
 		address.sin6_family = AF_INET6;
 		address.sin6_addr = in6addr_any;
-	} else
-	{
+	} else {
 		if ( !Sys_StringToSockaddr( net_interface, (struct sockaddr *)&address, sizeof( address ), AF_INET6 ) ) {
 			closesocket( newsocket );
 			return INVALID_SOCKET;
@@ -980,8 +973,7 @@ void NET_JoinMulticast6( void ) {
 	if ( IN6_IS_ADDR_MULTICAST( &boundto.sin6_addr ) || IN6_IS_ADDR_UNSPECIFIED( &boundto.sin6_addr ) ) {
 		// The way the socket was bound does not prohibit receiving multi-cast packets. So we don't need to open a new one.
 		multicast6_socket = ip6_socket;
-	} else
-	{
+	} else {
 		if ( ( multicast6_socket = NET_IP6Socket( net_mcast6addr->string, ntohs( boundto.sin6_port ), NULL, &err ) ) == INVALID_SOCKET ) {
 			// If the OS does not support binding to multicast addresses, like WinXP, at least try with the normal file descriptor.
 			multicast6_socket = ip6_socket;
@@ -1209,7 +1201,7 @@ static void NET_AddLocalAddress( char *ifname, struct sockaddr *addr, struct soc
 		if ( family == AF_INET ) {
 			addrlen = sizeof( struct sockaddr_in );
 			localIP[numIP].type = NA_IP;
-		} else if ( family == AF_INET6 )      {
+		} else if ( family == AF_INET6 ) {
 			addrlen = sizeof( struct sockaddr_in6 );
 			localIP[numIP].type = NA_IP6;
 		} else {
@@ -1235,8 +1227,7 @@ static void NET_GetLocalAddress( void ) {
 
 	if ( getifaddrs( &ifap ) ) {
 		Com_Printf( "NET_GetLocalAddress: Unable to get list of network interfaces: %s\n", NET_ErrorString() );
-	} else
-	{
+	} else {
 		for ( search = ifap; search; search = search->ifa_next )
 		{
 			// Only add interfaces that are up.
@@ -1330,8 +1321,7 @@ void NET_OpenIP( void ) {
 			if ( ip6_socket != INVALID_SOCKET ) {
 				Cvar_SetValue( "net_port6", port6 + i );
 				break;
-			} else
-			{
+			} else {
 				if ( err == EAFNOSUPPORT ) {
 					break;
 				}
@@ -1353,8 +1343,7 @@ void NET_OpenIP( void ) {
 				}
 
 				break;
-			} else
-			{
+			} else {
 				if ( err == EAFNOSUPPORT ) {
 					break;
 				}

@@ -30,86 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "cm_local.h"
 #include "cm_patch.h"
 
-//#define	CULL_BBOX
-
-/*
-
-This file does not reference any globals, and has these entry points:
-
-void CM_ClearLevelPatches( void );
-struct patchCollide_s	*CM_GeneratePatchCollide( int width, int height, const vec3_t *points );
-void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *pc );
-qboolean CM_PositionTestInPatchCollide( traceWork_t *tw, const struct patchCollide_s *pc );
-void CM_DrawDebugSurface( void (*drawPoly)(int color, int numPoints, flaot *points) );
-
-
-Issues for collision against curved surfaces:
-
-Surface edges need to be handled differently than surface planes
-
-Plane expansion causes raw surfaces to expand past expanded bounding box
-
-Position test of a volume against a surface is tricky.
-
-Position test of a point against a surface is not well defined, because the surface has no volume.
-
-
-Tracing leading edge points instead of volumes?
-Position test by tracing corner to corner? (8*7 traces -- ouch)
-
-coplanar edges
-triangulated patches
-degenerate patches
-
-  endcaps
-  degenerate
-
-WARNING: this may misbehave with meshes that have rows or columns that only
-degenerate a few triangles.  Completely degenerate rows and columns are handled
-properly.
-*/
-
-/*
-#define	MAX_FACETS			1024
-#define	MAX_PATCH_PLANES	2048
-
-typedef struct {
-    float	plane[4];
-    int		signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
-} patchPlane_t;
-
-typedef struct {
-    int			surfacePlane;
-    int			numBorders;		// 3 or four + 6 axial bevels + 4 or 3 * 4 edge bevels
-    int			borderPlanes[4+6+16];
-    int			borderInward[4+6+16];
-    qboolean	borderNoAdjust[4+6+16];
-} facet_t;
-
-typedef struct patchCollide_s {
-    vec3_t	bounds[2];
-    int		numPlanes;			// surface planes plus edge planes
-    patchPlane_t	*planes;
-    int		numFacets;
-    facet_t	*facets;
-} patchCollide_t;
-
-
-#define	MAX_GRID_SIZE	129
-
-typedef struct {
-    int			width;
-    int			height;
-    qboolean	wrapWidth;
-    qboolean	wrapHeight;
-    vec3_t	points[MAX_GRID_SIZE][MAX_GRID_SIZE];	// [width][height]
-} cGrid_t;
-
-#define	SUBDIVIDE_DISTANCE	16	//4	// never more than this units away from curve
-#define	PLANE_TRI_EPSILON	0.1
-#define	WRAP_POINT_EPSILON	0.1
-*/
-
 #define ADDBEVELS
 
 int c_totalPatchBlocks;
@@ -1274,105 +1194,6 @@ TRACE TESTING
 
 /*
 ====================
-CM_TraceThroughPatchCollide
-
-Modifies tr->tr if any of the facets effect the trace
-====================
-*/
-
-/*
-void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *pc )
-{
-    int i, j, n;
-    float d1, d2, offset, planedist, fraction;
-    vec3_t v1, v2, normal, point;
-    patchPlane_t *planes;
-    facet_t	*facet;
-    //
-    facet = pc->facets;
-    for ( i = 0 ; i < pc->numFacets ; i++, facet++ )
-    {
-        planes = &pc->planes[ facet->surfacePlane ];
-        VectorCopy(planes->plane, normal);
-        for (n = 0; n < 3; n++)
-        {
-            if (normal[n] > 0) v1[n] = tw->size[0][n];
-            else v1[n] = tw->size[1][n];
-        } //end for
-        VectorNegate(normal, v2);
-        offset = DotProduct(v1, v2);
-        //offset = 0;
-        //
-        planedist = planes->plane[3] + offset;
-        //
-        d1 = DotProduct( tw->start, normal ) - planedist;
-        d2 = DotProduct( tw->end, normal ) - planedist;
-
-        // if completely in front of face, no intersection with the entire patch
-        if (d1 > 0 && ( d2 >= SURFACE_CLIP_EPSILON || d2 >= d1 )  ) {
-            continue;
-        }
-
-        // if it doesn't cross the plane, the plane isn't relevent
-        if (d1 <= 0 && d2 <= 0 ) {
-            continue;
-        }
-
-        // crosses face
-        if (d1 > d2) {	// enter
-            fraction = (d1-SURFACE_CLIP_EPSILON) / (d1-d2);
-            if ( fraction < 0 ) {
-                fraction = 0;
-            }
-            for (j = 0; j < 3; j++)
-                point[j] = tw->start[j] + (tw->end[j] - tw->start[j]) * fraction;
-        }
-        else {
-            continue;
-        }
-        //
-        for (j = 0; j < facet->numBorders; j++)
-        {
-            planes = &pc->planes[ facet->borderPlanes[j] ];
-            if (!facet->borderInward[j])
-            {
-                VectorNegate(planes->plane, normal);
-                planedist = -planes->plane[3];
-            } //end if
-            else
-            {
-                VectorCopy(planes->plane, normal);
-                planedist = planes->plane[3];
-            } //end else
-            for (n = 0; n < 3; n++)
-            {
-                if (normal[n] > 0) v1[n] = tw->size[0][n];
-                else v1[n] = tw->size[1][n];
-            } //end for
-            VectorNegate(normal, v2);
-            offset = DotProduct(v1, v2);
-            //offset = 0;
-            planedist -= offset;
-            //the hit point should be in front of the (inward facing) border plane
-            if (DotProduct(point, normal) - planedist < -ON_EPSILON) break;
-        } //end for
-        if (j < facet->numBorders) continue;
-        //
-        if (fraction < tw->trace.fraction)
-        {
-            debugPatchCollide = pc;
-            debugFacet = facet;
-
-            tw->trace.fraction = fraction;
-            planes = &pc->planes[ facet->surfacePlane ];
-            VectorCopy( planes->plane, tw->trace.plane.normal );
-            tw->trace.plane.dist = planes->plane[3];
-        } //end if
-    } //end for
-} //end of the function CM_TraceThroughPatchCollide*/
-
-/*
-====================
 CM_TracePointThroughPatchCollide
 
   special case for point traces because the patch collide "brushes" have no volume
@@ -1537,7 +1358,7 @@ void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *
 #endif
 
 	if ( !CM_BoundsIntersect( tw->bounds[0], tw->bounds[1],
-							  pc->bounds[0], pc->bounds[1] ) ) {
+			pc->bounds[0], pc->bounds[1] ) ) {
 		return;
 	}
 
@@ -1568,8 +1389,7 @@ void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *
 			if ( t > 0 ) {
 				VectorSubtract( tw->start, tw->sphere.offset, startp );
 				VectorSubtract( tw->end, tw->sphere.offset, endp );
-			} else
-			{
+			} else {
 				VectorAdd( tw->start, tw->sphere.offset, startp );
 				VectorAdd( tw->end, tw->sphere.offset, endp );
 			}
@@ -1605,8 +1425,7 @@ void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *
 				if ( t > 0 ) {
 					VectorSubtract( tw->start, tw->sphere.offset, startp );
 					VectorSubtract( tw->end, tw->sphere.offset, endp );
-				} else
-				{
+				} else {
 					VectorAdd( tw->start, tw->sphere.offset, startp );
 					VectorAdd( tw->end, tw->sphere.offset, endp );
 				}
@@ -1822,7 +1641,9 @@ void CM_DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float *p
 			{
 				if ( plane[n] > 0 ) {
 					v1[n] = maxs[n];
-				} else { v1[n] = mins[n]; }
+				} else {
+					v1[n] = mins[n];
+				}
 			} //end for
 			VectorNegate( plane, v2 );
 			plane[3] += fabs( DotProduct( v1, v2 ) );
@@ -1856,7 +1677,9 @@ void CM_DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float *p
 				{
 					if ( plane[n] > 0 ) {
 						v1[n] = maxs[n];
-					} else { v1[n] = mins[n]; }
+					} else {
+						v1[n] = mins[n];
+					}
 				} //end for
 				VectorNegate( plane, v2 );
 				plane[3] -= fabs( DotProduct( v1, v2 ) );

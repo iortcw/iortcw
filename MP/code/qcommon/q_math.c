@@ -149,16 +149,16 @@ vec3_t bytedirs[NUMVERTEXNORMALS] =
 
 //==============================================================
 
-int     Q_rand( int *seed ) {
+int Q_rand( int *seed ) {
 	*seed = ( 69069 * *seed + 1 );
 	return *seed;
 }
 
-float   Q_random( int *seed ) {
+float Q_random( int *seed ) {
 	return ( Q_rand( seed ) & 0xffff ) / (float)0x10000;
 }
 
-float   Q_crandom( int *seed ) {
+float Q_crandom( int *seed ) {
 	return 2.0 * ( Q_random( seed ) - 0.5 );
 }
 
@@ -289,8 +289,7 @@ RotatePointAroundVector
 This is not implemented very well...
 ===============
 */
-void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point,
-							  float degrees ) {
+void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees ) {
 	float m[3][3];
 	float im[3][3];
 	float zrot[3][3];
@@ -497,10 +496,10 @@ float Q_rsqrt( float number ) {
 
 	x2 = number * 0.5F;
 	t.f  = number;
-	t.i  = 0x5f3759df - ( t.i >> 1 );               // what the fuck?
+	t.i  = 0x5f3759df - ( t.i >> 1 );		// what the fuck?
 	y  = t.f;
-	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+	y  = y * ( threehalfs - ( x2 * y * y ) );	// 1st iteration
+//	y  = y * ( threehalfs - ( x2 * y * y ) );	// 2nd iteration, this can be removed
 
 	return y;
 }
@@ -557,7 +556,7 @@ AngleSubtract
 Always returns a value from -180 to 180
 =================
 */
-float   AngleSubtract( float a1, float a2 ) {
+float AngleSubtract( float a1, float a2 ) {
 	float a;
 
 	a = a1 - a2;
@@ -578,7 +577,7 @@ void AnglesSubtract( vec3_t v1, vec3_t v2, vec3_t v3 ) {
 }
 
 
-float   AngleMod( float a ) {
+float AngleMod( float a ) {
 	a = ( 360.0 / 65536 ) * ( (int)( a * ( 65536 / 360.0 ) ) & 65535 );
 	return a;
 }
@@ -739,42 +738,39 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs ) {
 	}
 }
 
-qboolean BoundsIntersect( const vec3_t mins, const vec3_t maxs,
-						  const vec3_t mins2, const vec3_t maxs2 ) {
+qboolean BoundsIntersect( const vec3_t mins, const vec3_t maxs, const vec3_t mins2, const vec3_t maxs2 ) {
 	if ( maxs[0] < mins2[0] ||
-		 maxs[1] < mins2[1] ||
-		 maxs[2] < mins2[2] ||
-		 mins[0] > maxs2[0] ||
-		 mins[1] > maxs2[1] ||
-		 mins[2] > maxs2[2] ) {
+			maxs[1] < mins2[1] ||
+			maxs[2] < mins2[2] ||
+			mins[0] > maxs2[0] ||
+			mins[1] > maxs2[1] ||
+			mins[2] > maxs2[2] ) {
 		return qfalse;
 	}
 
 	return qtrue;
 }
 
-qboolean BoundsIntersectSphere( const vec3_t mins, const vec3_t maxs,
-								const vec3_t origin, vec_t radius ) {
+qboolean BoundsIntersectSphere( const vec3_t mins, const vec3_t maxs, const vec3_t origin, vec_t radius ) {
 	if ( origin[0] - radius > maxs[0] ||
-		 origin[0] + radius < mins[0] ||
-		 origin[1] - radius > maxs[1] ||
-		 origin[1] + radius < mins[1] ||
-		 origin[2] - radius > maxs[2] ||
-		 origin[2] + radius < mins[2] ) {
+			origin[0] + radius < mins[0] ||
+			origin[1] - radius > maxs[1] ||
+			origin[1] + radius < mins[1] ||
+			origin[2] - radius > maxs[2] ||
+			origin[2] + radius < mins[2] ) {
 		return qfalse;
 	}
 
 	return qtrue;
 }
 
-qboolean BoundsIntersectPoint( const vec3_t mins, const vec3_t maxs,
-							   const vec3_t origin ) {
+qboolean BoundsIntersectPoint( const vec3_t mins, const vec3_t maxs, const vec3_t origin ) {
 	if ( origin[0] > maxs[0] ||
-		 origin[0] < mins[0] ||
-		 origin[1] > maxs[1] ||
-		 origin[1] < mins[1] ||
-		 origin[2] > maxs[2] ||
-		 origin[2] < mins[2] ) {
+			origin[0] < mins[0] ||
+			origin[1] > maxs[1] ||
+			origin[1] < mins[1] ||
+			origin[2] > maxs[2] ||
+			origin[2] < mins[2] ) {
 		return qfalse;
 	}
 
@@ -875,22 +871,24 @@ int Q_log2( int val ) {
 }
 
 
-
 /*
 =================
 PlaneTypeForNormal
 =================
 */
 /*
-int	PlaneTypeForNormal (vec3_t normal) {
-    if ( normal[0] == 1.0 )
-        return PLANE_X;
-    if ( normal[1] == 1.0 )
-        return PLANE_Y;
-    if ( normal[2] == 1.0 )
-        return PLANE_Z;
+int PlaneTypeForNormal (vec3_t normal) {
+	if ( normal[0] == 1.0 ) {
+		return PLANE_X;
+	}
+	if ( normal[1] == 1.0 ) {
+		return PLANE_Y;
+	}
+	if ( normal[2] == 1.0 ) {
+		return PLANE_Z;
+	}
 
-    return PLANE_NON_AXIAL;
+	return PLANE_NON_AXIAL;
 }
 */
 
@@ -901,24 +899,15 @@ MatrixMultiply
 ================
 */
 void MatrixMultiply( float in1[3][3], float in2[3][3], float out[3][3] ) {
-	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
-				in1[0][2] * in2[2][0];
-	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] +
-				in1[0][2] * in2[2][1];
-	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] +
-				in1[0][2] * in2[2][2];
-	out[1][0] = in1[1][0] * in2[0][0] + in1[1][1] * in2[1][0] +
-				in1[1][2] * in2[2][0];
-	out[1][1] = in1[1][0] * in2[0][1] + in1[1][1] * in2[1][1] +
-				in1[1][2] * in2[2][1];
-	out[1][2] = in1[1][0] * in2[0][2] + in1[1][1] * in2[1][2] +
-				in1[1][2] * in2[2][2];
-	out[2][0] = in1[2][0] * in2[0][0] + in1[2][1] * in2[1][0] +
-				in1[2][2] * in2[2][0];
-	out[2][1] = in1[2][0] * in2[0][1] + in1[2][1] * in2[1][1] +
-				in1[2][2] * in2[2][1];
-	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] +
-				in1[2][2] * in2[2][2];
+	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] + in1[0][2] * in2[2][0];
+	out[0][1] = in1[0][0] * in2[0][1] + in1[0][1] * in2[1][1] + in1[0][2] * in2[2][1];
+	out[0][2] = in1[0][0] * in2[0][2] + in1[0][1] * in2[1][2] + in1[0][2] * in2[2][2]
+	out[1][0] = in1[1][0] * in2[0][0] + in1[1][1] * in2[1][0] + in1[1][2] * in2[2][0];
+	out[1][1] = in1[1][0] * in2[0][1] + in1[1][1] * in2[1][1] + in1[1][2] * in2[2][1];
+	out[1][2] = in1[1][0] * in2[0][2] + in1[1][1] * in2[1][2] + in1[1][2] * in2[2][2];
+	out[2][0] = in1[2][0] * in2[0][0] + in1[2][1] * in2[1][0] + in1[2][2] * in2[2][0];
+	out[2][1] = in1[2][0] * in2[0][1] + in1[2][1] * in2[1][1] + in1[2][2] * in2[2][1];
+	out[2][2] = in1[2][0] * in2[0][2] + in1[2][1] * in2[1][2] + in1[2][2] * in2[2][2];
 }
 
 

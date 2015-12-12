@@ -306,7 +306,7 @@ OGGDIR=$(MOUNT_DIR)/libogg-1.3.2
 VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.4
 OPUSDIR=$(MOUNT_DIR)/opus-1.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.6
-ZDIR=$(MOUNT_DIR)/zlib
+ZDIR=$(MOUNT_DIR)/zlib-1.2.8
 FTDIR=$(MOUNT_DIR)/freetype-2.5.5
 SPLDIR=$(MOUNT_DIR)/splines
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
@@ -418,13 +418,15 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   endif
 
   ifeq ($(USE_INTERNAL_LIBS),1)
-    ifeq ($(ARCH),x86)
-    SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
-               $(LIBSDIR)/linux32/libSDL2.so
-    endif
-    ifeq ($(ARCH),x86_64)
-    SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
-               $(LIBSDIR)/linux64/libSDL2.so
+    ifeq ($(CROSS_COMPILING),1)
+      ifeq ($(ARCH),x86)
+      SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
+                 $(LIBSDIR)/linux32/libSDL2.so
+      endif
+      ifeq ($(ARCH),x86_64)
+      SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
+                 $(LIBSDIR)/linux64/libSDL2.so
+      endif
     endif
   endif
 

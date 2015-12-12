@@ -107,7 +107,11 @@ static void R_ColorShiftLightingBytes( byte in[4], byte out[4] ) {
 	int shift, r, g, b;
 
 	// shift the color data based on overbright range
+#if defined(USE_OVERBRIGHT)
 	shift = r_mapOverBrightBits->integer - tr.overbrightBits;
+#else
+	shift = 0;
+#endif
 
 	// shift the data based on overbright range
 	r = in[0] << shift;
@@ -141,7 +145,9 @@ static void R_ColorShiftLightingFloats(float in[4], float out[4], float scale )
 {
 	float	r, g, b;
 
+#if defined(USE_OVERBRIGHT)
 	scale *= pow(2.0f, r_mapOverBrightBits->integer - tr.overbrightBits);
+#endif
 
 	r = in[0] * scale;
 	g = in[1] * scale;
@@ -3093,7 +3099,11 @@ void R_LoadLightGrid( lump_t *l ) {
 
 		if (hdrLightGrid)
 		{
+#if defined(USE_OVERBRIGHT)
 			float lightScale = pow(2, r_mapOverBrightBits->integer - tr.overbrightBits);
+#else
+			float lightScale = 1.0f;
+#endif
 
 			//ri.Printf(PRINT_ALL, "found!\n");
 
@@ -3324,16 +3334,17 @@ void R_LoadCubemapEntities(char *cubemapEntityName)
 		return;
 
 	tr.numCubemaps = numCubemaps;
-	tr.cubemapOrigins = ri.Hunk_Alloc( tr.numCubemaps * sizeof(*tr.cubemapOrigins), h_low);
-	tr.cubemaps = ri.Hunk_Alloc( tr.numCubemaps * sizeof(*tr.cubemaps), h_low);
+	tr.cubemaps = ri.Hunk_Alloc(tr.numCubemaps * sizeof(*tr.cubemaps), h_low);
+	memset(tr.cubemaps, 0, tr.numCubemaps * sizeof(*tr.cubemaps));
 
 	numCubemaps = 0;
 	while(R_ParseSpawnVars(spawnVarChars, sizeof(spawnVarChars), &numSpawnVars, spawnVars))
 	{
 		int i;
 		qboolean isCubemap = qfalse;
-		qboolean positionSet = qfalse;
+		qboolean originSet = qfalse;
 		vec3_t origin;
+		float parallaxRadius = 1000.0f;
 
 		for (i = 0; i < numSpawnVars; i++)
 		{
@@ -3343,14 +3354,19 @@ void R_LoadCubemapEntities(char *cubemapEntityName)
 			if (!Q_stricmp(spawnVars[i][0], "origin"))
 			{
 				sscanf(spawnVars[i][1], "%f %f %f", &origin[0], &origin[1], &origin[2]);
-				positionSet = qtrue;
+				originSet = qtrue;
+			}
+			else if (!Q_stricmp(spawnVars[i][0], "radius"))
+			{
+				sscanf(spawnVars[i][1], "%f", &parallaxRadius);
 			}
 		}
 
-		if (isCubemap && positionSet)
+		if (isCubemap && originSet)
 		{
 			//ri.Printf(PRINT_ALL, "cubemap at %f %f %f\n", origin[0], origin[1], origin[2]);
-			VectorCopy(origin, tr.cubemapOrigins[numCubemaps]);
+			VectorCopy(origin, tr.cubemaps[numCubemaps].origin);
+			tr.cubemaps[numCubemaps].parallaxRadius = parallaxRadius;
 			numCubemaps++;
 		}
 	}
@@ -3396,7 +3412,7 @@ void R_RenderAllCubemaps(void)
 
 	for (i = 0; i < tr.numCubemaps; i++)
 	{
-		tr.cubemaps[i] = R_CreateImage(va("*cubeMap%d", i), NULL, CUBE_MAP_SIZE, CUBE_MAP_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE | IMGFLAG_MIPMAP | IMGFLAG_CUBEMAP, GL_RGBA8);
+		tr.cubemaps[i].image = R_CreateImage(va("*cubeMap%d", i), NULL, CUBE_MAP_SIZE, CUBE_MAP_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE | IMGFLAG_MIPMAP | IMGFLAG_CUBEMAP, GL_RGBA8);
 	}
 
 	ri.Printf(PRINT_ALL, "Total cubemaps: %d\n", tr.numCubemaps );
