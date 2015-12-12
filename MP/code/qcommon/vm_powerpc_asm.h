@@ -143,8 +143,7 @@ typedef enum powerpc_iname {
 
 typedef uint32_t ppc_instruction_t;
 
-extern ppc_instruction_t
-	asm_instruction( powerpc_iname_t, const int, const long int * );
+extern ppc_instruction_t asm_instruction( powerpc_iname_t, const int, const long int * );
 
 #define IN( inst, args ... ) \
 	( { \

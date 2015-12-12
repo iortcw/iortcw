@@ -150,10 +150,10 @@ struct vm_s {
 	//------------------------------------
 
 	char name[MAX_QPATH];
-	void    *searchPath;                // hint for FS_ReadFileDir()
+	void *searchPath;                // hint for FS_ReadFileDir()
 
 	// for dynamic linked modules
-	void        *dllHandle;
+	void *dllHandle;
 	intptr_t( QDECL * entryPoint )( intptr_t callNum, ... );
 	void (*destroy)( vm_t* self );
 
@@ -161,14 +161,14 @@ struct vm_s {
 	qboolean currentlyInterpreting;
 
 	qboolean compiled;
-	byte        *codeBase;
+	byte *codeBase;
 	int entryOfs;
 	int codeLength;
 
-	intptr_t    *instructionPointers;
+	intptr_t *instructionPointers;
 	int instructionCount;
 
-	byte        *dataBase;
+	byte *dataBase;
 	int dataMask;
 
 	int dataLength;                 // length of QVMs data
@@ -184,12 +184,12 @@ struct vm_s {
 	int breakFunction;              // increment breakCount on function entry to this
 	int breakCount;
 
-	byte        *jumpTableTargets;
+	byte *jumpTableTargets;
 	int numJumpTableTargets;
 };
 
 
-extern vm_t    *currentVM;
+extern vm_t *currentVM;
 extern int vm_debugLevel;
 
 void VM_Compile( vm_t *vm, vmHeader_t *header );

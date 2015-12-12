@@ -54,8 +54,7 @@ static clock_t time_total_vm = 0;
 
 //#define VM_SYSTEM_MALLOC
 #ifdef VM_SYSTEM_MALLOC
-static inline void *
-PPC_Malloc( size_t size ) {
+static inline void * PPC_Malloc( size_t size ) {
 	void *mem = malloc( size );
 	if ( !mem ) {
 		DIE( "Not enough memory" );
@@ -340,8 +339,7 @@ typedef struct VM_Data {
 /*
  * functions used by generated code
  */
-static long int
-VM_AsmCall( int callSyscallInvNum, int callProgramStack ) {
+static long int VM_AsmCall( int callSyscallInvNum, int callProgramStack ) {
 	vm_t *savedVM = currentVM;
 	long int i, ret;
 #ifdef VM_TIMES
@@ -414,7 +412,7 @@ struct dest_instruction {
 	// source instruction number
 	unsigned long int i_count;
 
-	// exact (for instructins), or maximum (for jump) length
+	// exact (for instructions), or maximum (for jump) length
 	unsigned short length;
 
 	dest_instruction_t *next;
@@ -444,11 +442,7 @@ static dest_instruction_t **di_pointers = NULL;
 /*
  * append specified instructions at the end of instruction chain
  */
-static void
-PPC_Append(
-	dest_instruction_t *di_now,
-	unsigned long int i_count
-	) {
+static void PPC_Append( dest_instruction_t *di_now, unsigned long int i_count ) {
 	di_now->count = di_count++;
 	di_now->i_count = i_count;
 	di_now->next = NULL;
@@ -466,12 +460,7 @@ PPC_Append(
 /*
  * make space for instructions and append
  */
-static void
-PPC_AppendInstructions(
-	unsigned long int i_count,
-	size_t num_instructions,
-	const ppc_instruction_t *is
-	) {
+static void PPC_AppendInstructions( unsigned long int i_count, size_t num_instructions, const ppc_instruction_t *is ) {
 	if ( num_instructions < 0 ) {
 		num_instructions = 0;
 	}
@@ -492,14 +481,7 @@ PPC_AppendInstructions(
  * create symbolic jump and append
  */
 static symbolic_jump_t *sj_first = NULL, *sj_last = NULL;
-static void
-PPC_PrepareJump(
-	unsigned long int i_count,
-	unsigned long int dest,
-	long int bo,
-	long int bi,
-	unsigned long int ext
-	) {
+static void PPC_PrepareJump( unsigned long int i_count, unsigned long int dest, long int bo, long int bi, unsigned long int ext ) {
 	dest_instruction_t *di_now = PPC_Malloc( sizeof( dest_instruction_t ) );
 	symbolic_jump_t *sj = PPC_Malloc( sizeof( symbolic_jump_t ) );
 
@@ -571,8 +553,7 @@ static long int data_acc = 0;
 /*
  * append the data and return its offset
  */
-static size_t
-PPC_PushData( unsigned int datum ) {
+static size_t PPC_PushData( unsigned int datum ) {
 	local_data_t *d_now = data_first;
 	long int accumulated = 0;
 
@@ -617,8 +598,7 @@ PPC_PushData( unsigned int datum ) {
  * "rotate and mask" instruction
  */
 static long int fastMaskHi = 0, fastMaskLo = 31;
-static void
-PPC_MakeFastMask( int mask ) {
+static void PPC_MakeFastMask( int mask ) {
 #if defined( __GNUC__ ) && ( __GNUC__ >= 4 || ( __GNUC__ == 3 && __GNUC_MINOR__ >= 4 ) )
 	/* count leading zeros */
 	fastMaskHi = __builtin_clz( mask );
@@ -686,8 +666,7 @@ static const long int fpr_total = ARRAY_LEN( fpr_list );
 /*
  * prepare some dummy structures and emit init code
  */
-static void
-PPC_CompileInit( void ) {
+static void PPC_CompileInit( void ) {
 	di_first = di_last = PPC_Malloc( sizeof( dest_instruction_t ) );
 	di_first->count = 0;
 	di_first->next = NULL;
@@ -762,8 +741,7 @@ PPC_CompileInit( void ) {
 /*
  * emit OP_CONST, called if nothing has used the const value directly
  */
-static void
-PPC_EmitConst( source_instruction_t * const i_const ) {
+static void PPC_EmitConst( source_instruction_t * const i_const ) {
 	emitStart( i_const->i_count );
 
 	if ( !( i_const->regR & rTYPE_FLOAT ) ) {
@@ -798,8 +776,7 @@ PPC_EmitConst( source_instruction_t * const i_const ) {
 /*
  * emit empty instruction, just sets the needed pointers
  */
-static inline void
-PPC_EmitNull( source_instruction_t * const i_null ) {
+static inline void PPC_EmitNull( source_instruction_t * const i_null ) {
 	PPC_AppendInstructions( i_null->i_count, 0, NULL );
 }
 #define EMIT_FALSE_CONST() PPC_EmitNull( i_const )
@@ -808,13 +785,7 @@ PPC_EmitNull( source_instruction_t * const i_null ) {
 /*
  * analize function for register usage and whether it needs stack (r1) prepared
  */
-static void
-VM_AnalyzeFunction(
-	source_instruction_t * const i_first,
-	long int *prepareStack,
-	long int *gpr_start_pos,
-	long int *fpr_start_pos
-	) {
+static void VM_AnalyzeFunction( source_instruction_t * const i_first, long int *prepareStack, long int *gpr_start_pos, long int *fpr_start_pos ) {
 	source_instruction_t *i_now = i_first;
 
 	source_instruction_t *value_provider[20] = { NULL };
@@ -997,8 +968,7 @@ VM_AnalyzeFunction(
  * translate opcodes to ppc instructions,
  * it works on functions, not on whole code at once
  */
-static void
-VM_CompileFunction( source_instruction_t * const i_first ) {
+static void VM_CompileFunction( source_instruction_t * const i_first ) {
 	long int prepareStack = 0;
 	long int gpr_start_pos, fpr_start_pos;
 
@@ -1786,8 +1756,7 @@ VM_CompileFunction( source_instruction_t * const i_first ) {
 /*
  * check which jumps are short enough to use signed 16bit immediate branch
  */
-static void
-PPC_ShrinkJumps( void ) {
+static void PPC_ShrinkJumps( void ) {
 	symbolic_jump_t *sj_now = sj_first;
 	while ( ( sj_now = sj_now->nextJump ) ) {
 		if ( sj_now->bo == branchAlways ) {
@@ -1820,23 +1789,19 @@ PPC_ShrinkJumps( void ) {
 /*
  * puts all the data in one place, it consists of many different tasks
  */
-static void
-PPC_ComputeCode( vm_t *vm ) {
+static void PPC_ComputeCode( vm_t *vm ) {
 	dest_instruction_t *di_now = di_first;
 
 	unsigned long int codeInstructions = 0;
-	// count total instruciton number
+	// count total instruction number
 	while ( ( di_now = di_now->next ) )
 		codeInstructions += di_now->length;
 
-	size_t codeLength = sizeof( vm_data_t )
-						+ sizeof( unsigned int ) * data_acc
-						+ sizeof( ppc_instruction_t ) * codeInstructions;
+	size_t codeLength = sizeof( vm_data_t ) + sizeof( unsigned int ) * data_acc + sizeof( ppc_instruction_t ) * codeInstructions;
 
 	// get the memory for the generated code, smarter ppcs need the
 	// mem to be marked as executable (whill change later)
-	unsigned char *dataAndCode = mmap( NULL, codeLength,
-									   PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0 );
+	unsigned char *dataAndCode = mmap( NULL, codeLength, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0 );
 
 	if ( dataAndCode == MAP_FAILED ) {
 		DIE( "Not enough memory" );
@@ -1991,8 +1956,7 @@ PPC_ComputeCode( vm_t *vm ) {
 	}
 }
 
-static void
-VM_Destroy_Compiled( vm_t *self ) {
+static void VM_Destroy_Compiled( vm_t *self ) {
 	if ( self->codeBase ) {
 		if ( munmap( self->codeBase, self->codeLength ) ) {
 			Com_Printf( S_COLOR_RED "Memory unmap failed, possible memory leak\n" );
@@ -2001,8 +1965,7 @@ VM_Destroy_Compiled( vm_t *self ) {
 	self->codeBase = NULL;
 }
 
-void
-VM_Compile( vm_t *vm, vmHeader_t *header ) {
+void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 	long int pc = 0;
 	unsigned long int i_count;
 	char* code;
@@ -2112,8 +2075,7 @@ VM_Compile( vm_t *vm, vmHeader_t *header ) {
 	}
 }
 
-int
-VM_CallCompiled( vm_t *vm, int *args ) {
+int VM_CallCompiled( vm_t *vm, int *args ) {
 	int retVal;
 	int *argPointer;
 

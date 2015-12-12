@@ -285,8 +285,7 @@ static void vimm( unsigned int val, int bits, int shift, int sgned, int arg_inde
 		bits--;
 	}
 	if ( val & ~( ( 1U << bits ) - 1U ) ) {
-		Com_Printf( "VM ERROR: immediate value 0x%08x out of %d bit range\n",
-					orig_val, orig_bits );
+		Com_Printf( "VM ERROR: immediate value 0x%08x out of %d bit range\n", orig_val, orig_bits );
 		DIE( "sparc VM bug" );
 	}
 }
@@ -646,8 +645,7 @@ static unsigned int sparc_push_data( struct func_info * const fp, unsigned int v
 	return VM_Data_Offset( data[off] );
 }
 
-static void dst_insn_insert_tail( struct func_info * const fp,
-								  struct dst_insn *dp ) {
+static void dst_insn_insert_tail( struct func_info * const fp, struct dst_insn *dp ) {
 	if ( !fp->dst_first ) {
 		fp->dst_first = fp->dst_last = dp;
 	} else {
@@ -656,8 +654,7 @@ static void dst_insn_insert_tail( struct func_info * const fp,
 	}
 }
 
-static void jump_insn_insert_tail( struct func_info * const fp,
-								   struct jump_insn *jp ) {
+static void jump_insn_insert_tail( struct func_info * const fp, struct jump_insn *jp ) {
 	if ( !fp->jump_first ) {
 		fp->jump_first = fp->jump_last = jp;
 	} else {
@@ -666,8 +663,7 @@ static void jump_insn_insert_tail( struct func_info * const fp,
 	}
 }
 
-static struct dst_insn *dst_new( struct func_info * const fp, unsigned int length,
-								 struct jump_insn *jp, int insns_size ) {
+static struct dst_insn *dst_new( struct func_info * const fp, unsigned int length, struct jump_insn *jp, int insns_size ) {
 	struct dst_insn *dp = Z_Malloc( sizeof( struct dst_insn ) + insns_size );
 
 	dp->length = length;
@@ -817,9 +813,9 @@ static void blockcopy( unsigned int dest, unsigned int src, unsigned int count )
 	unsigned int dataMask = currentVM->dataMask;
 
 	if ( ( dest & dataMask ) != dest ||
-		 ( src & dataMask ) != src ||
-		 ( ( dest + count ) & dataMask ) != dest + count ||
-		 ( ( src + count ) & dataMask ) != src + count ) {
+			( src & dataMask ) != src ||
+			( ( dest + count ) & dataMask ) != dest + count ||
+			( ( src + count ) & dataMask ) != src + count ) {
 		DIE( "OP_BLOCK_COPY out of range!" );
 	}
 
@@ -863,9 +859,7 @@ static void compile_one_insn( vm_t *vm, struct func_info * const fp, struct src_
 
 	switch ( sp->op ) {
 	default:
-		Com_Printf( "VM: Unhandled opcode 0x%02x[%s]\n",
-					sp->op,
-					opnames[sp->op] ? opnames[sp->op] : "UNKNOWN" );
+		Com_Printf( "VM: Unhandled opcode 0x%02x[%s]\n", sp->op, opnames[sp->op] ? opnames[sp->op] : "UNKNOWN" );
 		DIE( "Unsupported opcode" );
 		break;
 
@@ -1433,18 +1427,14 @@ static void sparc_compute_code( vm_t *vm, struct func_info * const fp ) {
 		dp = dp->next;
 	}
 
-	code_length = ( sizeof( vm_data_t ) +
-					( fp->data_num * sizeof( unsigned int ) ) +
-					( code_insns * sizeof( unsigned int ) ) );
+	code_length = ( sizeof( vm_data_t ) + ( fp->data_num * sizeof( unsigned int ) ) + ( code_insns * sizeof( unsigned int ) ) );
 
-	data_and_code = mmap( NULL, code_length, PROT_READ | PROT_WRITE,
-						  MAP_SHARED | MAP_ANONYMOUS, -1, 0 );
+	data_and_code = mmap( NULL, code_length, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0 );
 	if ( data_and_code == MAP_FAILED ) {
 		DIE( "Not enough memory" );
 	}
 
-	code_now = code_begin = (unsigned int *)
-							( data_and_code + VM_Data_Offset( data[fp->data_num] ) );
+	code_now = code_begin = (unsigned int *)( data_and_code + VM_Data_Offset( data[fp->data_num] ) );
 
 	dp = fp->dst_first;
 	while ( dp ) {
@@ -1552,8 +1542,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 
 #ifdef __arch64__
 	Z_Free( vm->instructionPointers );
-	vm->instructionPointers = Z_Malloc( header->instructionCount *
-										sizeof( void * ) );
+	vm->instructionPointers = Z_Malloc( header->instructionCount * sizeof( void * ) );
 #endif
 
 	fi.dst_by_i_count = (struct dst_insn **) vm->instructionPointers;
@@ -1598,8 +1587,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 			union {
 				unsigned char b[4];
 				unsigned int i;
-			} c = { { code[ pc + 3 ], code[ pc + 2 ],
-					  code[ pc + 1 ], code[ pc + 0 ] }, };
+			} c = { { code[ pc + 3 ], code[ pc + 2 ], code[ pc + 1 ], code[ pc + 0 ] }, };
 
 			sp->arg.i = c.i;
 			pc += 4;

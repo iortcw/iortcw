@@ -74,7 +74,7 @@ static const struct powerpc_opcode powerpc_opcodes[];
 #define PPC_OPCODE_601            0x20
 #define PPC_OPCODE_COMMON         0x40
 #define PPC_OPCODE_ANY            0x80
-#define PPC_OPCODE_64_BRIDGE         0x100
+#define PPC_OPCODE_64_BRIDGE     0x100
 #define PPC_OPCODE_ALTIVEC       0x200
 #define PPC_OPCODE_403           0x400
 #define PPC_OPCODE_BOOKE         0x800
@@ -140,8 +140,7 @@ static const struct powerpc_operand powerpc_operands[];
 
 #define PPC_DEST_ARCH PPC_OPCODE_PPC
 
-ppc_instruction_t
-asm_instruction( powerpc_iname_t sname, const int argc, const long int *argv ) {
+ppc_instruction_t asm_instruction( powerpc_iname_t sname, const int argc, const long int *argv ) {
 	const char *errmsg = NULL;
 	const char *name;
 	unsigned long int ret;
@@ -238,7 +237,7 @@ static unsigned long insert_rbs( unsigned long, long, int, const char ** );
 /* The operands table.
 
    The fields are bitm, shift, insert, extract, flags.
-   */
+*/
 
 static const struct powerpc_operand powerpc_operands[] =
 {
@@ -410,17 +409,12 @@ static const struct powerpc_operand powerpc_operands[] =
    extract_bdp always occur in pairs.  One or the other will always
    be valid.  */
 
-static unsigned long
-insert_bdm( unsigned long insn,
-			long value,
-			int dialect,
-			const char **errmsg ATTRIBUTE_UNUSED ) {
+static unsigned long insert_bdm( unsigned long insn, long value, int dialect, const char **errmsg ATTRIBUTE_UNUSED ) {
 	if ( ( dialect & PPC_OPCODE_POWER4 ) == 0 ) {
 		if ( ( value & 0x8000 ) != 0 ) {
 			insn |= 1 << 21;
 		}
-	} else
-	{
+	} else {
 		if ( ( insn & ( 0x14 << 21 ) ) == ( 0x04 << 21 ) ) {
 			insn |= 0x02 << 21;
 		} else if ( ( insn & ( 0x14 << 21 ) ) == ( 0x10 << 21 ) )    {
@@ -433,8 +427,7 @@ insert_bdm( unsigned long insn,
 
 /* Check for legal values of a BO field.  */
 
-static int
-valid_bo( long value, int dialect, int extract ) {
+static int valid_bo( long value, int dialect, int extract ) {
 	if ( ( dialect & PPC_OPCODE_POWER4 ) == 0 ) {
 		int valid;
 		/* Certain encodings have bits that are required to be zero.
@@ -483,7 +476,7 @@ valid_bo( long value, int dialect, int extract ) {
 	*/
 	if ( ( value & 0x14 ) == 0 ) {
 		return ( value & 0x1 ) == 0;
-	} else if ( ( value & 0x14 ) == 0x14 )    {
+	} else if ( ( value & 0x14 ) == 0x14 ) {
 		return value == 0x14;
 	} else {
 		return 1;
@@ -493,11 +486,7 @@ valid_bo( long value, int dialect, int extract ) {
 /* The BO field in a B form instruction.  Warn about attempts to set
    the field to an illegal value.  */
 
-static unsigned long
-insert_bo( unsigned long insn,
-		   long value,
-		   int dialect,
-		   const char **errmsg ) {
+static unsigned long insert_bo( unsigned long insn, long value, int dialect, const char **errmsg ) {
 	if ( !valid_bo( value, dialect, 0 ) ) {
 		*errmsg = _( "invalid conditional option" );
 	}
@@ -508,11 +497,7 @@ insert_bo( unsigned long insn,
    store or an updating floating point load, which means that the RA
    field may not be zero.  */
 
-static unsigned long
-insert_ras( unsigned long insn,
-			long value,
-			int dialect ATTRIBUTE_UNUSED,
-			const char **errmsg ) {
+static unsigned long insert_ras( unsigned long insn, long value, int dialect ATTRIBUTE_UNUSED, const char **errmsg ) {
 	if ( value == 0 ) {
 		*errmsg = _( "invalid register operand when updating" );
 	}
@@ -525,11 +510,7 @@ insert_ras( unsigned long insn,
    function just copies the BT field into the BA field, and the
    extraction function just checks that the fields are the same.  */
 
-static unsigned long
-insert_rbs( unsigned long insn,
-			long value ATTRIBUTE_UNUSED,
-			int dialect ATTRIBUTE_UNUSED,
-			const char **errmsg ATTRIBUTE_UNUSED ) {
+static unsigned long insert_rbs( unsigned long insn, long value ATTRIBUTE_UNUSED, int dialect ATTRIBUTE_UNUSED, const char **errmsg ATTRIBUTE_UNUSED ) {
 	return insn | ( ( ( insn >> 21 ) & 0x1f ) << 11 );
 }
 

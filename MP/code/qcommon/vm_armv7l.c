@@ -589,7 +589,7 @@ static inline unsigned _j_rel( int x, int pc ) {
 			goto err;
 		}
 		x &= ~( 0xFF << 24 );
-	} else if ( x & ( 0xFF << 24 ) )           {
+	} else if ( x & ( 0xFF << 24 ) ) {
 		goto err;
 	}
 	return x;
@@ -678,14 +678,13 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 #ifdef EXCESSIVE_DEBUG
 				Com_Printf( "%d: instruction %d (%s %d), offset %d\n", pass, i_count, opnames[op], arg.i, vm->codeLength );
 #endif
-			} else if ( vm_opInfo[op] & opImm1 )     {
+			} else if ( vm_opInfo[op] & opImm1 ) {
 				arg.b[0] = code[pc];
 				++pc;
 #ifdef EXCESSIVE_DEBUG
 				Com_Printf( "%d: instruction %d (%s %hhd), offset %d\n", pass, i_count, opnames[op], arg.i, vm->codeLength );
 #endif
-			} else
-			{
+			} else {
 #ifdef EXCESSIVE_DEBUG
 				Com_Printf( "%d: instruction %d (%s), offset %d\n", pass, i_count, opnames[op], vm->codeLength );
 #endif
@@ -713,8 +712,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 				emit( SUBi( SP, SP, 12 ) ); // align stack
 				if ( arg.i == 0 || can_encode( arg.i ) ) {
 					emit( SUBi( rPSTACK, rPSTACK, arg.i ) ); // pstack -= arg
-				} else
-				{
+				} else {
 					emit_MOVR0i( arg.i );
 					emit( SUB( rPSTACK, rPSTACK, R0 ) ); // pstack -= arg
 				}
@@ -723,8 +721,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 			case OP_LEAVE:
 				if ( arg.i == 0 || can_encode( arg.i ) ) {
 					emit( ADDi( rPSTACK, rPSTACK, arg.i ) ); // pstack += arg
-				} else
-				{
+				} else {
 					emit_MOVR0i( arg.i );
 					emit( ADD( rPSTACK, rPSTACK, R0 ) ); // pstack += arg
 				}
@@ -788,8 +785,7 @@ void VM_Compile( vm_t *vm, vmHeader_t *header ) {
 				MAYBE_EMIT_CONST();
 				if ( arg.i == 0 || can_encode( arg.i ) ) {
 					emit( ADDi( R0, rPSTACK, arg.i ) );     // r0 = pstack+arg
-				} else
-				{
+				} else {
 					emit_MOVR0i( arg.i );
 					emit( ADD( R0, rPSTACK, R0 ) );     // r0 = pstack+arg
 				}

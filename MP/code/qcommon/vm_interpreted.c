@@ -123,8 +123,7 @@ static ID_INLINE unsigned int loadWord( void *addr ) {
 	return word;
 }
 #else
-static ID_INLINE unsigned int __lwbrx( register void *addr,
-									   register int offset ) {
+static ID_INLINE unsigned int __lwbrx( register void *addr, register int offset ) {
 	register unsigned int word;
 
 	asm ( "lwbrx %0,%2,%1" : "=r" ( word ) : "r" ( addr ), "b" ( offset ) );

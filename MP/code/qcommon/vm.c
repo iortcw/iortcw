@@ -44,7 +44,7 @@ int vm_debugLevel;
 // used by Com_Error to get rid of running vm's before longjmp
 static int forced_unload;
 
-#define MAX_VM      3
+#define MAX_VM	3
 vm_t vmTable[MAX_VM];
 
 
@@ -400,11 +400,11 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 		}
 
 		// validate
-		if ( header.h->jtrgLength < 0
-			 || header.h->bssLength < 0
-			 || header.h->dataLength < 0
-			 || header.h->litLength < 0
-			 || header.h->codeLength <= 0 ) {
+		if ( header.h->jtrgLength < 0 ||
+				header.h->bssLength < 0 ||
+				header.h->dataLength < 0 ||
+				header.h->litLength < 0 ||
+				header.h->codeLength <= 0 ) {
 			VM_Free( vm );
 			FS_FreeFile( header.v );
 
@@ -419,10 +419,10 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 		}
 
 		// validate
-		if ( header.h->bssLength < 0
-			 || header.h->dataLength < 0
-			 || header.h->litLength < 0
-			 || header.h->codeLength <= 0 ) {
+		if ( header.h->bssLength < 0 ||
+				header.h->dataLength < 0 ||
+				header.h->litLength < 0 ||
+				header.h->codeLength <= 0 ) {
 			VM_Free( vm );
 			FS_FreeFile( header.v );
 
@@ -440,8 +440,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 
 	// round up to next power of 2 so all data operations can
 	// be mask protected
-	dataLength = header.h->dataLength + header.h->litLength +
-				 header.h->bssLength;
+	dataLength = header.h->dataLength + header.h->litLength + header.h->bssLength;
 
 	vm->dataAlloc = vm->dataLength = dataLength - PROGRAM_STACK_SIZE;
 
@@ -455,15 +454,13 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 		// allocate zero filled space for initialized and uninitialized data
 		vm->dataBase = Hunk_Alloc( dataLength, h_high );
 		vm->dataMask = dataLength - 1;
-	} else
-	{
+	} else {
 		// clear the data, but make sure we're not clearing more than allocated
 		if ( vm->dataMask + 1 != dataLength ) {
 			VM_Free( vm );
 			FS_FreeFile( header.v );
 
-			Com_Printf( S_COLOR_YELLOW "Warning: Data region size of %s not matching after "
-									   "VM_Restart()\n", filename );
+			Com_Printf( S_COLOR_YELLOW "Warning: Data region size of %s not matching after VM_Restart()\n", filename ); 
 			return NULL;
 		}
 
@@ -471,8 +468,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 	}
 
 	// copy the intialized data
-	Com_Memcpy( vm->dataBase, (byte *)header.h + header.h->dataOffset,
-				header.h->dataLength + header.h->litLength );
+	Com_Memcpy( vm->dataBase, (byte *)header.h + header.h->dataOffset, header.h->dataLength + header.h->litLength );
 
 	// byte swap the longs
 	for ( i = 0 ; i < header.h->dataLength ; i += 4 ) {
@@ -489,22 +485,19 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure ) {
 
 		if ( alloc ) {
 			vm->jumpTableTargets = Hunk_Alloc( header.h->jtrgLength, h_high );
-		} else
-		{
+		} else {
 			if ( vm->numJumpTableTargets != previousNumJumpTableTargets ) {
 				VM_Free( vm );
 				FS_FreeFile( header.v );
 
-				Com_Printf( S_COLOR_YELLOW "Warning: Jump table size of %s not matching after "
-										   "VM_Restart()\n", filename );
+				Com_Printf( S_COLOR_YELLOW "Warning: Jump table size of %s not matching after VM_Restart()\n", filename );
 				return NULL;
 			}
 
 			Com_Memset( vm->jumpTableTargets, 0, header.h->jtrgLength );
 		}
 
-		Com_Memcpy( vm->jumpTableTargets, (byte *) header.h + header.h->dataOffset +
-					header.h->dataLength + header.h->litLength, header.h->jtrgLength );
+		Com_Memcpy( vm->jumpTableTargets, (byte *) header.h + header.h->dataOffset + header.h->dataLength + header.h->litLength, header.h->jtrgLength );
 
 		// byte swap the longs
 		for ( i = 0 ; i < header.h->jtrgLength ; i += 4 ) {
@@ -569,8 +562,7 @@ If image ends in .qvm it will be interpreted, otherwise
 it will attempt to load as a system dll
 ================
 */
-vm_t *VM_Create( const char *module, intptr_t ( *systemCalls )( intptr_t * ),
-				 vmInterpret_t interpret ) {
+vm_t *VM_Create( const char *module, intptr_t ( *systemCalls )( intptr_t * ), vmInterpret_t interpret ) {
 	vm_t        *vm;
 	vmHeader_t  *header;
 	int i, remaining, retval;
@@ -852,9 +844,7 @@ intptr_t QDECL VM_Call( vm_t *vm, intptr_t callnum, ... ) {
 		}
 		va_end( ap );
 
-		r = vm->entryPoint( callnum,  args[0],  args[1],  args[2], args[3],
-							args[4],  args[5],  args[6], args[7],
-							args[8],  args[9], args[10], args[11] );
+		r = vm->entryPoint( callnum,  args[0],  args[1],  args[2], args[3], args[4],  args[5],  args[6], args[7], args[8],  args[9], args[10], args[11] );
 	} else {
 #if ( id386 || idsparc ) && !defined __clang__ // calling convention doesn't need conversion in some cases
 #ifndef NO_VM_COMPILED
@@ -862,7 +852,9 @@ intptr_t QDECL VM_Call( vm_t *vm, intptr_t callnum, ... ) {
 			r = VM_CallCompiled( vm, (int*)&callnum );
 		} else
 #endif
-		r = VM_CallInterpreted( vm, (int*)&callnum );
+		{
+			r = VM_CallInterpreted( vm, (int*)&callnum );
+		}
 #else
 		struct {
 			int callnum;
@@ -881,7 +873,9 @@ intptr_t QDECL VM_Call( vm_t *vm, intptr_t callnum, ... ) {
 			r = VM_CallCompiled( vm, &a.callnum );
 		} else
 #endif
-		r = VM_CallInterpreted( vm, &a.callnum );
+		{
+			r = VM_CallInterpreted( vm, &a.callnum );
+		}
 #endif
 	}
 	--vm->callLevel;
@@ -1008,8 +1002,7 @@ void VM_LogSyscalls( int *args ) {
 		f = fopen( "syscalls.log", "w" );
 	}
 	callnum++;
-	fprintf( f, "%i: %p (%i) = %i %i %i %i\n", callnum, (void*)( args - (int *)currentVM->dataBase ),
-			 args[0], args[1], args[2], args[3], args[4] );
+	fprintf( f, "%i: %p (%i) = %i %i %i %i\n", callnum, (void*)( args - (int *)currentVM->dataBase ), args[0], args[1], args[2], args[3], args[4] );
 }
 
 /*
@@ -1022,10 +1015,10 @@ Executes a block copy operation within currentVM data space
 void VM_BlockCopy( unsigned int dest, unsigned int src, size_t n ) {
 	unsigned int dataMask = currentVM->dataMask;
 
-	if ( ( dest & dataMask ) != dest
-		 || ( src & dataMask ) != src
-		 || ( ( dest + n ) & dataMask ) != dest + n
-		 || ( ( src + n ) & dataMask ) != src + n ) {
+	if ( ( dest & dataMask ) != dest ||
+			( src & dataMask ) != src ||
+			( ( dest + n ) & dataMask ) != dest + n ||
+			( ( src + n ) & dataMask ) != src + n ) {
 		Com_Error( ERR_DROP, "OP_BLOCK_COPY out of range!" );
 	}
 
