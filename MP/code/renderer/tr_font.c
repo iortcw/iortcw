@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -148,21 +148,21 @@ FT_Bitmap *R_RenderGlyph( FT_GlyphSlot glyph, glyphInfo_t* glyphOut ) {
 	return NULL;
 }
 
-void WriteTGA (char *filename, byte *data, int width, int height) {
-	byte			*buffer;
-	int				i, c;
-	int             row;
+void WriteTGA( char *filename, byte *data, int width, int height ) {
+	byte            *buffer;
+	int i, c;
+	int row;
 	unsigned char  *flip;
 	unsigned char  *src, *dst;
 
-	buffer = ri.Z_Malloc(width*height*4 + 18);
-	Com_Memset (buffer, 0, 18);
-	buffer[2] = 2;		// uncompressed type
-	buffer[12] = width&255;
-	buffer[13] = width>>8;
-	buffer[14] = height&255;
-	buffer[15] = height>>8;
-	buffer[16] = 32;	// pixel size
+	buffer = ri.Z_Malloc( width * height * 4 + 18 );
+	Com_Memset( buffer, 0, 18 );
+	buffer[2] = 2;      // uncompressed type
+	buffer[12] = width & 255;
+	buffer[13] = width >> 8;
+	buffer[14] = height & 255;
+	buffer[15] = height >> 8;
+	buffer[16] = 32;    // pixel size
 
 	// swap rgb to bgr
 	c = 18 + width * height * 4;
@@ -175,19 +175,19 @@ void WriteTGA (char *filename, byte *data, int width, int height) {
 	}
 
 	// flip upside down
-	flip = (unsigned char *)ri.Z_Malloc(width*4);
-	for(row = 0; row < height/2; row++)
+	flip = (unsigned char *)ri.Z_Malloc( width * 4 );
+	for ( row = 0; row < height / 2; row++ )
 	{
 		src = buffer + 18 + row * 4 * width;
-		dst = buffer + 18 + (height - row - 1) * 4 * width;
+		dst = buffer + 18 + ( height - row - 1 ) * 4 * width;
 
-		Com_Memcpy(flip, src, width*4);
-		Com_Memcpy(src, dst, width*4);
-		Com_Memcpy(dst, flip, width*4);
+		Com_Memcpy( flip, src, width * 4 );
+		Com_Memcpy( src, dst, width * 4 );
+		Com_Memcpy( dst, flip, width * 4 );
 	}
-	ri.Free(flip);
+	ri.Free( flip );
 
-	ri.FS_WriteFile(filename, buffer, c);
+	ri.FS_WriteFile( filename, buffer, c );
 
 	//f = fopen (filename, "wb");
 	//fwrite (buffer, 1, c, f);
@@ -225,24 +225,24 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 		}
 
 /*
-	// need to convert to power of 2 sizes so we do not get
-	// any scaling from the gl upload
-	for (scaled_width = 1 ; scaled_width < glyph.pitch ; scaled_width<<=1)
-		;
-	for (scaled_height = 1 ; scaled_height < glyph.height ; scaled_height<<=1)
-		;
+    // need to convert to power of 2 sizes so we do not get
+    // any scaling from the gl upload
+    for (scaled_width = 1 ; scaled_width < glyph.pitch ; scaled_width<<=1)
+        ;
+    for (scaled_height = 1 ; scaled_height < glyph.height ; scaled_height<<=1)
+        ;
 */
 
 		scaled_width = glyph.pitch;
 		scaled_height = glyph.height;
 
 		// we need to make sure we fit
-		if (*xOut + scaled_width + 1 >= 255) {
+		if ( *xOut + scaled_width + 1 >= 255 ) {
 			*xOut = 0;
 			*yOut += *maxHeight + 1;
 		}
 
-		if (*yOut + *maxHeight + 1 >= 255) {
+		if ( *yOut + *maxHeight + 1 >= 255 ) {
 			*yOut = -1;
 			*xOut = -1;
 			ri.Free( bitmap->buffer );
@@ -298,8 +298,8 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 
 		*xOut += scaled_width + 1;
 
-		ri.Free(bitmap->buffer);
-		ri.Free(bitmap);
+		ri.Free( bitmap->buffer );
+		ri.Free( bitmap );
 	}
 
 	return &glyph;
@@ -307,7 +307,7 @@ static glyphInfo_t *RE_ConstructGlyphInfo( unsigned char *imageOut, int *xOut, i
 #endif
 
 static int fdOffset;
-static byte	*fdFile;
+static byte *fdFile;
 
 int readInt( void ) {
 	int i = fdFile[fdOffset] + ( fdFile[fdOffset + 1] << 8 ) + ( fdFile[fdOffset + 2] << 16 ) + ( fdFile[fdOffset + 3] << 24 );
@@ -316,8 +316,8 @@ int readInt( void ) {
 }
 
 typedef union {
-	byte	fred[4];
-	float	ffred;
+	byte fred[4];
+	float ffred;
 } poor;
 
 float readFloat( void ) {
@@ -354,8 +354,8 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 	int i, len;
 	char name[1024];
 
-	if (!fontName) {
-		ri.Printf(PRINT_ALL, "RE_RegisterFont: called with empty name\n");
+	if ( !fontName ) {
+		ri.Printf( PRINT_ALL, "RE_RegisterFont: called with empty name\n" );
 		return;
 	}
 
@@ -396,8 +396,8 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			font->glyphs[i].s2          = readFloat();
 			font->glyphs[i].t2          = readFloat();
 			font->glyphs[i].glyph       = readInt();
-			Q_strncpyz(font->glyphs[i].shaderName, (const char *)&fdFile[fdOffset], sizeof(font->glyphs[i].shaderName));
-			fdOffset += sizeof(font->glyphs[i].shaderName);
+			Q_strncpyz( font->glyphs[i].shaderName, (const char *)&fdFile[fdOffset], sizeof( font->glyphs[i].shaderName ) );
+			fdOffset += sizeof( font->glyphs[i].shaderName );
 		}
 		font->glyphScale = readFloat();
 		Com_Memcpy( font->name, &fdFile[fdOffset], MAX_QPATH );
@@ -408,7 +408,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			font->glyphs[i].glyph = RE_RegisterShaderNoMip( font->glyphs[i].shaderName );
 		}
 		Com_Memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
-		ri.FS_FreeFile(faceData);
+		ri.FS_FreeFile( faceData );
 		return;
 	}
 
@@ -422,19 +422,19 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 	len = ri.FS_ReadFile( fontName, &faceData );
 	if ( len <= 0 ) {
-		ri.Printf(PRINT_WARNING, "RE_RegisterFont: Unable to read font file '%s'\n", fontName);
+		ri.Printf( PRINT_WARNING, "RE_RegisterFont: Unable to read font file '%s'\n", fontName );
 		return;
 	}
 
 	// allocate on the stack first in case we fail
 	if ( FT_New_Memory_Face( ftLibrary, faceData, len, 0, &face ) ) {
-		ri.Printf(PRINT_WARNING, "RE_RegisterFont: FreeType, unable to allocate new face.\n");
+		ri.Printf( PRINT_WARNING, "RE_RegisterFont: FreeType, unable to allocate new face.\n" );
 		return;
 	}
 
 
 	if ( FT_Set_Char_Size( face, pointSize << 6, pointSize << 6, dpi, dpi ) ) {
-		ri.Printf(PRINT_WARNING, "RE_RegisterFont: FreeType, unable to set face char size.\n");
+		ri.Printf( PRINT_WARNING, "RE_RegisterFont: FreeType, unable to set face char size.\n" );
 		return;
 	}
 
@@ -445,7 +445,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 
 	out = ri.Z_Malloc( 256 * 256 );
 	if ( out == NULL ) {
-		ri.Printf(PRINT_WARNING, "RE_RegisterFont: ri.Z_Malloc failure during output image creation.\n");
+		ri.Printf( PRINT_WARNING, "RE_RegisterFont: ri.Z_Malloc failure during output image creation.\n" );
 		return;
 	}
 	Com_Memset( out, 0, 256 * 256 );
@@ -468,7 +468,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			// upload/save current image buffer
 			xOut = yOut = -1;
 		} else {
-			glyph = RE_ConstructGlyphInfo(out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qfalse);
+			glyph = RE_ConstructGlyphInfo( out, &xOut, &yOut, &maxHeight, face, (unsigned char)i, qfalse );
 		}
 
 		if ( xOut == -1 || yOut == -1 ) {
@@ -516,8 +516,9 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 			xOut = 0;
 			yOut = 0;
 			ri.Free( imageBuff );
-			if ( i == GLYPH_END + 1 )
+			if ( i == GLYPH_END + 1 ) {
 				i++;
+			}
 		} else {
 			Com_Memcpy( &font->glyphs[i], glyph, sizeof( glyphInfo_t ) );
 			i++;
@@ -549,7 +550,7 @@ void RE_RegisterFont( const char *fontName, int pointSize, fontInfo_t *font ) {
 void R_InitFreeType( void ) {
 #ifdef BUILD_FREETYPE
 	if ( FT_Init_FreeType( &ftLibrary ) ) {
-		ri.Printf(PRINT_WARNING, "R_InitFreeType: Unable to initialize FreeType.\n");
+		ri.Printf( PRINT_WARNING, "R_InitFreeType: Unable to initialize FreeType.\n" );
 	}
 #endif
 	registeredFontCount = 0;
@@ -565,4 +566,3 @@ void R_DoneFreeType( void ) {
 #endif
 	registeredFontCount = 0;
 }
-

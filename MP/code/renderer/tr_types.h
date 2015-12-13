@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_CORONAS     32          //----(SA)	not really a reason to limit this other than trying to keep a reasonable count
 #define MAX_DLIGHTS     32          // can't be increased, because bit flags are used on surfaces
-#define	REFENTITYNUM_BITS	10		// can't be increased without changing drawsurf bit packing
-#define	REFENTITYNUM_MASK	((1<<REFENTITYNUM_BITS) - 1)
+#define REFENTITYNUM_BITS   10      // can't be increased without changing drawsurf bit packing
+#define REFENTITYNUM_MASK   ( ( 1 << REFENTITYNUM_BITS ) - 1 )
 // the last N-bit number (2^REFENTITYNUM_BITS - 1) is reserved for the special world refentity,
 //  and this is reflected by the value of MAX_REFENTITIES (which therefore is not a power-of-2)
-#define	MAX_REFENTITIES		((1<<REFENTITYNUM_BITS) - 1)
-#define	REFENTITYNUM_WORLD	((1<<REFENTITYNUM_BITS) - 1)
+#define MAX_REFENTITIES     ( ( 1 << REFENTITYNUM_BITS ) - 1 )
+#define REFENTITYNUM_WORLD  ( ( 1 << REFENTITYNUM_BITS ) - 1 )
 
 // renderfx flags
 #define RF_MINLIGHT         0x0001       // allways have some light (viewmodel, some items)
@@ -45,20 +45,20 @@ If you have questions concerning this license or the applicable additional terms
 #define RF_FIRST_PERSON     0x0004       // only draw through eyes (view weapon, damage blood blob)
 #define RF_DEPTHHACK        0x0008       // for view weapon Z crunching
 
-#define RF_CROSSHAIR		0x0010		// This item is a cross hair and will draw over everything similar to
-						// DEPTHHACK in stereo rendering mode, with the difference that the
-						// projection matrix won't be hacked to reduce the stereo separation as
-						// is done for the gun.
+#define RF_CROSSHAIR        0x0010      // This item is a cross hair and will draw over everything similar to
+// DEPTHHACK in stereo rendering mode, with the difference that the
+// projection matrix won't be hacked to reduce the stereo separation as
+// is done for the gun.
 
 #define RF_NOSHADOW         0x0040      // don't add stencil shadows
 
 #define RF_LIGHTING_ORIGIN  0x0080     // use refEntity->lightingOrigin instead of refEntity->origin
-									// for lighting.  This allows entities to sink into the floor
-									// with their origin going solid, and allows all parts of a
-									// player to get the same lighting
+                                       // for lighting.  This allows entities to sink into the floor
+                                       // with their origin going solid, and allows all parts of a
+                                       // player to get the same lighting
 #define RF_SHADOW_PLANE     0x0100     // use refEntity->shadowPlane
 #define RF_WRAP_FRAMES      0x0200     // mod the model frames by the maxframes to allow continuous
-									// animation without needing to know the frame count
+                                       // animation without needing to know the frame count
 
 #define RF_HILIGHT          ( 1 << 8 )  // more than RF_MINLIGHT.  For when an object is "Highlighted" (looked at/training identification/etc)
 #define RF_BLINK            ( 1 << 9 )  // eyes in 'blink' state
@@ -253,17 +253,17 @@ typedef enum {
 */
 typedef enum {
 	TC_NONE,
-	TC_S3TC,	// this is for the GL_S3_s3tc extension.
-	TC_S3TC_ARB,	// this is for the GL_EXT_texture_compression_s3tc extension.
+	TC_S3TC,    // this is for the GL_S3_s3tc extension.
+	TC_S3TC_ARB,    // this is for the GL_EXT_texture_compression_s3tc extension.
 	TC_EXT_COMP_S3TC
 } textureCompression_t;
 
 typedef enum {
 	GLDRV_ICD,                  // driver is integrated with window system
-								// WARNING: there are tests that check for
-								// > GLDRV_ICD for minidriverness, so this
-								// should always be the lowest value in this
-								// enum set
+	                            // WARNING: there are tests that check for
+	                            // > GLDRV_ICD for minidriverness, so this
+	                            // should always be the lowest value in this
+	                            // enum set
 	GLDRV_STANDALONE,           // driver is a non-3Dfx standalone driver
 	GLDRV_VOODOO                // driver is a 3Dfx standalone driver
 } glDriverType_t;
@@ -271,8 +271,8 @@ typedef enum {
 typedef enum {
 	GLHW_GENERIC,           // where everthing works the way it should
 	GLHW_3DFX_2D3D,         // Voodoo Banshee or Voodoo3, relevant since if this is
-							// the hardware type then there can NOT exist a secondary
-							// display adapter
+	                        // the hardware type then there can NOT exist a secondary
+	                        // display adapter
 	GLHW_RIVA128,           // where you can't interpolate alpha
 	GLHW_RAGEPRO,           // where you can't modulate alpha on alpha textures
 	GLHW_PERMEDIA2          // where you don't have src*dst
@@ -285,7 +285,7 @@ typedef struct {
 	char extensions_string[MAX_STRING_CHARS * 4];                  // TTimo - bumping, some cards have a big extension string
 
 	int maxTextureSize;                             // queried from GL
-	int numTextureUnits;				// multitexture ability
+	int numTextureUnits;                // multitexture ability
 
 	int colorBits, depthBits, stencilBits;
 

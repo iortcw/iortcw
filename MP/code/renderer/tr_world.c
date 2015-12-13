@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ static qboolean R_CullGrid( srfGridMesh_t *cv ) {
 		if ( boxCull == CULL_OUT ) {
 			tr.pc.c_box_cull_patch_out++;
 			return qtrue;
-		} else if ( boxCull == CULL_IN )   {
+		} else if ( boxCull == CULL_IN ) {
 			tr.pc.c_box_cull_patch_in++;
 		} else
 		{
@@ -195,9 +195,9 @@ static int R_DlightGrid( srfGridMesh_t *grid, int dlightBits ) {
 		dl = &tr.refdef.dlights[i];
 		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0]
 			 || dl->origin[0] + dl->radius < grid->meshBounds[0][0]
-											 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
+			 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
 			 || dl->origin[1] + dl->radius < grid->meshBounds[0][1]
-											 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
+			 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
 			 || dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
 			// dlight doesn't reach the bounds
 			dlightBits &= ~( 1 << i );
@@ -228,9 +228,9 @@ static int R_DlightTrisurf( srfTriangles_t *surf, int dlightBits ) {
 		dl = &tr.refdef.dlights[i];
 		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0]
 			 || dl->origin[0] + dl->radius < grid->meshBounds[0][0]
-											 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
+			 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
 			 || dl->origin[1] + dl->radius < grid->meshBounds[0][1]
-											 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
+			 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
 			 || dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
 			// dlight doesn't reach the bounds
 			dlightBits &= ~( 1 << i );
@@ -305,7 +305,7 @@ static void R_AddWorldSurface( msurface_t *surf, shader_t *shader, int dlightBit
 /*
 =============================================================
 
-	BRUSH MODELS
+    BRUSH MODELS
 
 =============================================================
 */
@@ -400,7 +400,7 @@ void R_AddBrushModelSurfaces( trRefEntity_t *ent ) {
 /*
 =============================================================
 
-	WORLD MODEL
+    WORLD MODEL
 
 =============================================================
 */
@@ -479,13 +479,12 @@ static void R_RecursiveWorldNode( mnode_t *node, int planeBits, int dlightBits )
 		newDlights[0] = 0;
 		newDlights[1] = 0;
 
-		if ( dlightBits )
-		{
-			int	i;
+		if ( dlightBits ) {
+			int i;
 
 			for ( i = 0 ; i < tr.refdef.num_dlights ; i++ ) {
-				dlight_t	*dl;
-				float		dist;
+				dlight_t    *dl;
+				float dist;
 
 				if ( dlightBits & ( 1 << i ) ) {
 					dl = &tr.refdef.dlights[i];

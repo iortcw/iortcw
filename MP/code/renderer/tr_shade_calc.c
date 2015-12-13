@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,12 +29,12 @@ If you have questions concerning this license or the applicable additional terms
 // tr_shade_calc.c
 
 #include "tr_local.h"
-#if idppc_altivec && !defined(MACOS_X)
+#if idppc_altivec && !defined( MACOS_X )
 #include <altivec.h>
 #endif
 
 
-#define	WAVEVALUE( table, base, amplitude, phase, freq )  ((base) + table[ ri.ftol( ( ( (phase) + tess.shaderTime * (freq) ) * FUNCTABLE_SIZE ) ) & FUNCTABLE_MASK ] * (amplitude))
+#define WAVEVALUE( table, base, amplitude, phase, freq )  ( ( base ) + table[ ri.ftol( ( ( ( phase ) + tess.shaderTime * ( freq ) ) * FUNCTABLE_SIZE ) ) & FUNCTABLE_MASK ] * ( amplitude ) )
 
 static float *TableForFunc( genFunc_t func ) {
 	switch ( func )
@@ -744,7 +744,7 @@ void RB_CalcWaveColor( const waveForm_t *wf, unsigned char *dstColors ) {
 
 	if ( glow < 0 ) {
 		glow = 0;
-	} else if ( glow > 1 )   {
+	} else if ( glow > 1 ) {
 		glow = 1;
 	}
 
@@ -1170,18 +1170,17 @@ void RB_CalcSpecularAlpha( unsigned char *alphas ) {
 ** The basic vertex lighting calc
 */
 #if idppc_altivec
-static void RB_CalcDiffuseColor_altivec( unsigned char *colors )
-{
-	int				i;
-	float			*v, *normal;
-	trRefEntity_t	*ent;
-	int				ambientLightInt;
-	vec3_t			lightDir;
-	int				numVertexes;
-	vector unsigned char vSel = VECCONST_UINT8(0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff);
+static void RB_CalcDiffuseColor_altivec( unsigned char *colors ) {
+	int i;
+	float           *v, *normal;
+	trRefEntity_t   *ent;
+	int ambientLightInt;
+	vec3_t lightDir;
+	int numVertexes;
+	vector unsigned char vSel = VECCONST_UINT8( 0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff );
 	vector float ambientLightVec;
 	vector float directedLightVec;
 	vector float lightDirVec;
@@ -1195,62 +1194,61 @@ static void RB_CalcDiffuseColor_altivec( unsigned char *colors )
 	ambientLightInt = ent->ambientLightInt;
 	// A lot of this could be simplified if we made sure
 	// entities light info was 16-byte aligned.
-	jVecChar = vec_lvsl(0, ent->ambientLight);
-	ambientLightVec = vec_ld(0, (vector float *)ent->ambientLight);
-	jVec = vec_ld(11, (vector float *)ent->ambientLight);
-	ambientLightVec = vec_perm(ambientLightVec,jVec,jVecChar);
+	jVecChar = vec_lvsl( 0, ent->ambientLight );
+	ambientLightVec = vec_ld( 0, (vector float *)ent->ambientLight );
+	jVec = vec_ld( 11, (vector float *)ent->ambientLight );
+	ambientLightVec = vec_perm( ambientLightVec,jVec,jVecChar );
 
-	jVecChar = vec_lvsl(0, ent->directedLight);
-	directedLightVec = vec_ld(0,(vector float *)ent->directedLight);
-	jVec = vec_ld(11,(vector float *)ent->directedLight);
-	directedLightVec = vec_perm(directedLightVec,jVec,jVecChar);	 
+	jVecChar = vec_lvsl( 0, ent->directedLight );
+	directedLightVec = vec_ld( 0,(vector float *)ent->directedLight );
+	jVec = vec_ld( 11,(vector float *)ent->directedLight );
+	directedLightVec = vec_perm( directedLightVec,jVec,jVecChar );
 
-	jVecChar = vec_lvsl(0, ent->lightDir);
-	lightDirVec = vec_ld(0,(vector float *)ent->lightDir);
-	jVec = vec_ld(11,(vector float *)ent->lightDir);
-	lightDirVec = vec_perm(lightDirVec,jVec,jVecChar);	 
+	jVecChar = vec_lvsl( 0, ent->lightDir );
+	lightDirVec = vec_ld( 0,(vector float *)ent->lightDir );
+	jVec = vec_ld( 11,(vector float *)ent->lightDir );
+	lightDirVec = vec_perm( lightDirVec,jVec,jVecChar );
 
-	zero = (vector float)vec_splat_s8(0);
+	zero = (vector float)vec_splat_s8( 0 );
 	VectorCopy( ent->lightDir, lightDir );
 
 	v = tess.xyz[0];
 	normal = tess.normal[0];
 
-	normalPerm = vec_lvsl(0,normal);
+	normalPerm = vec_lvsl( 0,normal );
 	numVertexes = tess.numVertexes;
-	for (i = 0 ; i < numVertexes ; i++, v += 4, normal += 4) {
-		normalVec0 = vec_ld(0,(vector float *)normal);
-		normalVec1 = vec_ld(11,(vector float *)normal);
-		normalVec0 = vec_perm(normalVec0,normalVec1,normalPerm);
-		incomingVec0 = vec_madd(normalVec0, lightDirVec, zero);
-		incomingVec1 = vec_sld(incomingVec0,incomingVec0,4);
-		incomingVec2 = vec_add(incomingVec0,incomingVec1);
-		incomingVec1 = vec_sld(incomingVec1,incomingVec1,4);
-		incomingVec2 = vec_add(incomingVec2,incomingVec1);
-		incomingVec0 = vec_splat(incomingVec2,0);
-		incomingVec0 = vec_max(incomingVec0,zero);
-		normalPerm = vec_lvsl(12,normal);
-		jVec = vec_madd(incomingVec0, directedLightVec, ambientLightVec);
-		jVecInt = vec_cts(jVec,0);	// RGBx
-		jVecShort = vec_pack(jVecInt,jVecInt);		// RGBxRGBx
-		jVecChar = vec_packsu(jVecShort,jVecShort);	// RGBxRGBxRGBxRGBx
-		jVecChar = vec_sel(jVecChar,vSel,vSel);		// RGBARGBARGBARGBA replace alpha with 255
-		vec_ste((vector unsigned int)jVecChar,0,(unsigned int *)&colors[i*4]);	// store color
+	for ( i = 0 ; i < numVertexes ; i++, v += 4, normal += 4 ) {
+		normalVec0 = vec_ld( 0,(vector float *)normal );
+		normalVec1 = vec_ld( 11,(vector float *)normal );
+		normalVec0 = vec_perm( normalVec0,normalVec1,normalPerm );
+		incomingVec0 = vec_madd( normalVec0, lightDirVec, zero );
+		incomingVec1 = vec_sld( incomingVec0,incomingVec0,4 );
+		incomingVec2 = vec_add( incomingVec0,incomingVec1 );
+		incomingVec1 = vec_sld( incomingVec1,incomingVec1,4 );
+		incomingVec2 = vec_add( incomingVec2,incomingVec1 );
+		incomingVec0 = vec_splat( incomingVec2,0 );
+		incomingVec0 = vec_max( incomingVec0,zero );
+		normalPerm = vec_lvsl( 12,normal );
+		jVec = vec_madd( incomingVec0, directedLightVec, ambientLightVec );
+		jVecInt = vec_cts( jVec,0 );  // RGBx
+		jVecShort = vec_pack( jVecInt,jVecInt );      // RGBxRGBx
+		jVecChar = vec_packsu( jVecShort,jVecShort ); // RGBxRGBxRGBxRGBx
+		jVecChar = vec_sel( jVecChar,vSel,vSel );     // RGBARGBARGBARGBA replace alpha with 255
+		vec_ste( (vector unsigned int)jVecChar,0,(unsigned int *)&colors[i * 4] );  // store color
 	}
 }
 #endif
 
-static void RB_CalcDiffuseColor_scalar( unsigned char *colors )
-{
-	int				i, j;
-	float			*v, *normal;
-	float			incoming;
-	trRefEntity_t	*ent;
-	int				ambientLightInt;
-	vec3_t			ambientLight;
-	vec3_t			lightDir;
-	vec3_t			directedLight;
-	int				numVertexes;
+static void RB_CalcDiffuseColor_scalar( unsigned char *colors ) {
+	int i, j;
+	float           *v, *normal;
+	float incoming;
+	trRefEntity_t   *ent;
+	int ambientLightInt;
+	vec3_t ambientLight;
+	vec3_t lightDir;
+	vec3_t directedLight;
+	int numVertexes;
 	ent = backEnd.currentEntity;
 	ambientLightInt = ent->ambientLightInt;
 	VectorCopy( ent->ambientLight, ambientLight );
@@ -1261,38 +1259,37 @@ static void RB_CalcDiffuseColor_scalar( unsigned char *colors )
 	normal = tess.normal[0];
 
 	numVertexes = tess.numVertexes;
-	for (i = 0 ; i < numVertexes ; i++, v += 4, normal += 4) {
-		incoming = DotProduct (normal, lightDir);
+	for ( i = 0 ; i < numVertexes ; i++, v += 4, normal += 4 ) {
+		incoming = DotProduct( normal, lightDir );
 		if ( incoming <= 0 ) {
-			*(int *)&colors[i*4] = ambientLightInt;
+			*(int *)&colors[i * 4] = ambientLightInt;
 			continue;
-		} 
-		j = ri.ftol(ambientLight[0] + incoming * directedLight[0]);
+		}
+		j = ri.ftol( ambientLight[0] + incoming * directedLight[0] );
 		if ( j > 255 ) {
 			j = 255;
 		}
-		colors[i*4+0] = j;
+		colors[i * 4 + 0] = j;
 
-		j = ri.ftol(ambientLight[1] + incoming * directedLight[1]);
+		j = ri.ftol( ambientLight[1] + incoming * directedLight[1] );
 		if ( j > 255 ) {
 			j = 255;
 		}
-		colors[i*4+1] = j;
+		colors[i * 4 + 1] = j;
 
-		j = ri.ftol(ambientLight[2] + incoming * directedLight[2]);
+		j = ri.ftol( ambientLight[2] + incoming * directedLight[2] );
 		if ( j > 255 ) {
 			j = 255;
 		}
-		colors[i*4+2] = j;
+		colors[i * 4 + 2] = j;
 
-		colors[i*4+3] = 255;
+		colors[i * 4 + 3] = 255;
 	}
 }
 
-void RB_CalcDiffuseColor( unsigned char *colors )
-{
+void RB_CalcDiffuseColor( unsigned char *colors ) {
 #if idppc_altivec
-	if (com_altivec->integer) {
+	if ( com_altivec->integer ) {
 		// must be in a seperate function or G3 systems will crash.
 		RB_CalcDiffuseColor_altivec( colors );
 		return;
@@ -1300,4 +1297,3 @@ void RB_CalcDiffuseColor( unsigned char *colors )
 #endif
 	RB_CalcDiffuseColor_scalar( colors );
 }
-

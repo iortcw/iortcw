@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -136,7 +136,7 @@ void *R_GetCommandBufferReserved( int bytes, int reservedBytes ) {
 		return NULL;
 	}
 	cmdList = &backEndData->commands;
-	bytes = PAD(bytes, sizeof(void *));
+	bytes = PAD( bytes, sizeof( void * ) );
 
 	// always leave room for the end of list command
 	if ( cmdList->used + bytes + sizeof( int ) + reservedBytes > MAX_RENDER_COMMANDS ) {
@@ -161,7 +161,7 @@ returns NULL if there is not enough space for important commands
 =============
 */
 void *R_GetCommandBuffer( int bytes ) {
-	return R_GetCommandBufferReserved( bytes, PAD( sizeof( swapBuffersCommand_t ), sizeof(void *) ) );
+	return R_GetCommandBufferReserved( bytes, PAD( sizeof( swapBuffersCommand_t ), sizeof( void * ) ) );
 }
 
 
@@ -240,45 +240,43 @@ void RE_StretchPic( float x, float y, float w, float h,
 	cmd->t2 = t2;
 }
 
-#define MODE_RED_CYAN	1
-#define MODE_RED_BLUE	2
-#define MODE_RED_GREEN	3
+#define MODE_RED_CYAN   1
+#define MODE_RED_BLUE   2
+#define MODE_RED_GREEN  3
 #define MODE_GREEN_MAGENTA 4
-#define MODE_MAX	MODE_GREEN_MAGENTA
+#define MODE_MAX    MODE_GREEN_MAGENTA
 
-void R_SetColorMode(GLboolean *rgba, stereoFrame_t stereoFrame, int colormode)
-{
+void R_SetColorMode( GLboolean *rgba, stereoFrame_t stereoFrame, int colormode ) {
 	rgba[0] = rgba[1] = rgba[2] = rgba[3] = GL_TRUE;
-	
-	if(colormode > MODE_MAX)
-	{
-		if(stereoFrame == STEREO_LEFT)
+
+	if ( colormode > MODE_MAX ) {
+		if ( stereoFrame == STEREO_LEFT ) {
 			stereoFrame = STEREO_RIGHT;
-		else if(stereoFrame == STEREO_RIGHT)
+		} else if ( stereoFrame == STEREO_RIGHT ) {
 			stereoFrame = STEREO_LEFT;
-		
+		}
+
 		colormode -= MODE_MAX;
 	}
-	
-	if(colormode == MODE_GREEN_MAGENTA)
-	{
-		if(stereoFrame == STEREO_LEFT)
+
+	if ( colormode == MODE_GREEN_MAGENTA ) {
+		if ( stereoFrame == STEREO_LEFT ) {
 			rgba[0] = rgba[2] = GL_FALSE;
-		else if(stereoFrame == STEREO_RIGHT)
+		} else if ( stereoFrame == STEREO_RIGHT ) {
 			rgba[1] = GL_FALSE;
-	}
-	else
+		}
+	} else
 	{
-		if(stereoFrame == STEREO_LEFT)
+		if ( stereoFrame == STEREO_LEFT ) {
 			rgba[1] = rgba[2] = GL_FALSE;
-		else if(stereoFrame == STEREO_RIGHT)
-		{
+		} else if ( stereoFrame == STEREO_RIGHT ) {
 			rgba[0] = GL_FALSE;
-		
-			if(colormode == MODE_RED_BLUE)
+
+			if ( colormode == MODE_RED_BLUE ) {
 				rgba[1] = GL_FALSE;
-			else if(colormode == MODE_RED_GREEN)
+			} else if ( colormode == MODE_RED_GREEN ) {
 				rgba[2] = GL_FALSE;
+			}
 		}
 	}
 }
@@ -389,7 +387,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			ri.Printf( PRINT_ALL, "Warning: not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
-		} else if ( r_shadows->integer == 2 )   {
+		} else if ( r_shadows->integer == 2 ) {
 			ri.Printf( PRINT_ALL, "Warning: stencil shadows and overdraw measurement are mutually exclusive\n" );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
@@ -466,12 +464,13 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	}
 
 #ifndef USE_OPENGLES
-	if (glConfig.stereoEnabled) {
-		if( !(cmd = R_GetCommandBuffer(sizeof(*cmd))) )
+	if ( glConfig.stereoEnabled ) {
+		if ( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) ) {
 			return;
-			
+		}
+
 		cmd->commandId = RC_DRAW_BUFFER;
-		
+
 		if ( stereoFrame == STEREO_LEFT ) {
 			cmd->buffer = (int)GL_BACK_LEFT;
 		} else if ( stereoFrame == STEREO_RIGHT ) {
@@ -479,82 +478,79 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		} else {
 			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame );
 		}
-	}
-	else
+	} else
 	{
-		if(r_anaglyphMode->integer)
-		{
-			if(r_anaglyphMode->modified)
-			{
+		if ( r_anaglyphMode->integer ) {
+			if ( r_anaglyphMode->modified ) {
 				// clear both, front and backbuffer.
-				qglColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-				qglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+				qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+				qglClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
 
-				qglDrawBuffer(GL_FRONT);
-				qglClear(GL_COLOR_BUFFER_BIT);
-				qglDrawBuffer(GL_BACK);
-				qglClear(GL_COLOR_BUFFER_BIT);
-				
+				qglDrawBuffer( GL_FRONT );
+				qglClear( GL_COLOR_BUFFER_BIT );
+				qglDrawBuffer( GL_BACK );
+				qglClear( GL_COLOR_BUFFER_BIT );
+
 				r_anaglyphMode->modified = qfalse;
 			}
-			
-			if(stereoFrame == STEREO_LEFT)
-			{
-				if( !(cmd = R_GetCommandBuffer(sizeof(*cmd))) )
+
+			if ( stereoFrame == STEREO_LEFT ) {
+				if ( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) ) {
 					return;
-				
-				if( !(colcmd = R_GetCommandBuffer(sizeof(*colcmd))) )
+				}
+
+				if ( !( colcmd = R_GetCommandBuffer( sizeof( *colcmd ) ) ) ) {
 					return;
-			}
-			else if(stereoFrame == STEREO_RIGHT)
-			{
+				}
+			} else if ( stereoFrame == STEREO_RIGHT )      {
 				clearDepthCommand_t *cldcmd;
-				
-				if( !(cldcmd = R_GetCommandBuffer(sizeof(*cldcmd))) )
+
+				if ( !( cldcmd = R_GetCommandBuffer( sizeof( *cldcmd ) ) ) ) {
 					return;
+				}
 
 				cldcmd->commandId = RC_CLEARDEPTH;
 
-				if( !(colcmd = R_GetCommandBuffer(sizeof(*colcmd))) )
+				if ( !( colcmd = R_GetCommandBuffer( sizeof( *colcmd ) ) ) ) {
 					return;
-			}
-			else
+				}
+			} else {
 				ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame );
-
-			R_SetColorMode(colcmd->rgba, stereoFrame, r_anaglyphMode->integer);
-			colcmd->commandId = RC_COLORMASK;
-		}
-		else
-#endif
-		{
-			if(stereoFrame != STEREO_CENTER)
-				ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
-
-			if( !(cmd = R_GetCommandBuffer(sizeof(*cmd))) )
-				return;
-		}
-
-		if(cmd)
-		{
-			cmd->commandId = RC_DRAW_BUFFER;
-
-#ifndef USE_OPENGLES
-			if(r_anaglyphMode->modified)
-			{
-				qglColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-				r_anaglyphMode->modified = qfalse;
 			}
 
-			if (!Q_stricmp(r_drawBuffer->string, "GL_FRONT"))
-				cmd->buffer = (int)GL_FRONT;
-			else
+			R_SetColorMode( colcmd->rgba, stereoFrame, r_anaglyphMode->integer );
+			colcmd->commandId = RC_COLORMASK;
+		} else
 #endif
-				cmd->buffer = (int)GL_BACK;
+	{
+		if ( stereoFrame != STEREO_CENTER ) {
+			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
 		}
-#ifndef USE_OPENGLES
+
+		if ( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) ) {
+			return;
+		}
 	}
+
+	if ( cmd ) {
+		cmd->commandId = RC_DRAW_BUFFER;
+
+#ifndef USE_OPENGLES
+		if ( r_anaglyphMode->modified ) {
+			qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+			r_anaglyphMode->modified = qfalse;
+		}
+
+		if ( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) ) {
+			cmd->buffer = (int)GL_FRONT;
+		} else
 #endif
-	
+		cmd->buffer = (int)GL_BACK;
+	}
+#ifndef USE_OPENGLES
+}
+#endif
+
 	tr.refdef.stereoFrame = stereoFrame;
 }
 
@@ -597,16 +593,15 @@ RE_TakeVideoFrame
 =============
 */
 void RE_TakeVideoFrame( int width, int height,
-		byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg )
-{
-	videoFrameCommand_t	*cmd;
+						byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg ) {
+	videoFrameCommand_t *cmd;
 
-	if( !tr.registered ) {
+	if ( !tr.registered ) {
 		return;
 	}
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
-	if( !cmd ) {
+	if ( !cmd ) {
 		return;
 	}
 

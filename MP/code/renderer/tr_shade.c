@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 // tr_shade.c
 
 #include "tr_local.h"
-#if idppc_altivec && !defined(MACOS_X)
+#if idppc_altivec && !defined( MACOS_X )
 #include <altivec.h>
 #endif
 
@@ -71,15 +71,15 @@ R_DrawStripElements
 glIndex_t sindexes[MAX_INDEX];
 int num_sindexed;
 
-void AddIndexe(GLint idx) {
-	sindexes[num_sindexed++]=idx;
+void AddIndexe( GLint idx ) {
+	sindexes[num_sindexed++] = idx;
 }
 #endif
 
 #ifndef USE_OPENGLES
 static int c_vertexes;          // for seeing how long our average strips are
 static int c_begins;
-static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void ( APIENTRY *element )( GLint ) ) {
+static void R_DrawStripElements( int numIndexes, const glIndex_t *indexes, void( APIENTRY * element )( GLint ) ) {
 	int i;
 	int last[3] = { -1, -1, -1 };
 	qboolean even;
@@ -182,11 +182,11 @@ without compiled vertex arrays.
 */
 static void R_DrawElements( int numIndexes, const glIndex_t *indexes ) {
 #ifdef USE_OPENGLES
-	qglDrawElements( GL_TRIANGLES, 
-						numIndexes,
-						GL_INDEX_TYPE,
-						indexes );
-		return;
+	qglDrawElements( GL_TRIANGLES,
+					 numIndexes,
+					 GL_INDEX_TYPE,
+					 indexes );
+	return;
 #else
 	int primitives;
 
@@ -302,10 +302,10 @@ static void DrawTris( shaderCommands_t *input ) {
 	}
 
 #ifdef USE_OPENGLES
-	qglDrawElements( GL_LINE_STRIP, 
-					input->numIndexes,
-					GL_INDEX_TYPE,
-					input->indexes );
+	qglDrawElements( GL_LINE_STRIP,
+					 input->numIndexes,
+					 GL_INDEX_TYPE,
+					 input->indexes );
 #else
 	R_DrawElements( input->numIndexes, input->indexes );
 #endif
@@ -346,10 +346,10 @@ static void DrawNormals( shaderCommands_t *input ) {
 #endif
 		VectorMA( input->xyz[i], 2, input->normal[i], temp );
 #ifdef USE_OPENGLES
-		memcpy(vtx, input->xyz[i], sizeof(GLfloat)*3);
-		memcpy(vtx+1, temp, sizeof(GLfloat)*3);
-		qglVertexPointer (3, GL_FLOAT, 16, vtx);
-		qglDrawArrays(GL_LINES, 0, 2);
+		memcpy( vtx, input->xyz[i], sizeof( GLfloat ) * 3 );
+		memcpy( vtx + 1, temp, sizeof( GLfloat ) * 3 );
+		qglVertexPointer( 3, GL_FLOAT, 16, vtx );
+		qglDrawArrays( GL_LINES, 0, 2 );
 #else
 		qglVertex3fv( temp );
 #endif
@@ -474,29 +474,29 @@ Perform dynamic lighting with another rendering pass
 */
 #if idppc_altivec
 static void ProjectDlightTexture_altivec( void ) {
-	int		i, l;
-	vec_t	origin0, origin1, origin2;
-	float   texCoords0, texCoords1;
+	int i, l;
+	vec_t origin0, origin1, origin2;
+	float texCoords0, texCoords1;
 	vector float floatColorVec0, floatColorVec1;
 	vector float modulateVec, colorVec, zero;
 	vector short colorShort;
 	vector signed int colorInt;
 	vector unsigned char floatColorVecPerm, modulatePerm, colorChar;
-	vector unsigned char vSel = VECCONST_UINT8(0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff,
-                                               0x00, 0x00, 0x00, 0xff);
-	float	*texCoords;
-	byte	*colors;
-	byte	clipBits[SHADER_MAX_VERTEXES];
-	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
-	byte	colorArray[SHADER_MAX_VERTEXES][4];
-	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
-	int		numIndexes;
-	float	scale;
-	float	radius;
-	vec3_t	floatColor;
-	float	modulate = 0.0f;
+	vector unsigned char vSel = VECCONST_UINT8( 0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff,
+												0x00, 0x00, 0x00, 0xff );
+	float   *texCoords;
+	byte    *colors;
+	byte clipBits[SHADER_MAX_VERTEXES];
+	float texCoordsArray[SHADER_MAX_VERTEXES][2];
+	byte colorArray[SHADER_MAX_VERTEXES][4];
+	glIndex_t hitIndexes[SHADER_MAX_INDEXES];
+	int numIndexes;
+	float scale;
+	float radius;
+	vec3_t floatColor;
+	float modulate = 0.0f;
 
 	if ( !backEnd.refdef.num_dlights ) {
 		return;
@@ -508,16 +508,16 @@ static void ProjectDlightTexture_altivec( void ) {
 
 	// There has to be a better way to do this so that floatColor
 	// and/or modulate are already 16-byte aligned.
-	floatColorVecPerm = vec_lvsl(0,(float *)floatColor);
-	modulatePerm = vec_lvsl(0,(float *)&modulate);
-	modulatePerm = (vector unsigned char)vec_splat((vector unsigned int)modulatePerm,0);
-	zero = (vector float)vec_splat_s8(0);
+	floatColorVecPerm = vec_lvsl( 0,(float *)floatColor );
+	modulatePerm = vec_lvsl( 0,(float *)&modulate );
+	modulatePerm = (vector unsigned char)vec_splat( (vector unsigned int)modulatePerm,0 );
+	zero = (vector float)vec_splat_s8( 0 );
 
 	for ( l = 0 ; l < backEnd.refdef.num_dlights ; l++ ) {
-		dlight_t	*dl;
+		dlight_t    *dl;
 
 		if ( !( tess.dlightBits & ( 1 << l ) ) ) {
-			continue;	// this surface definately doesn't have any of this light
+			continue;   // this surface definately doesn't have any of this light
 		}
 		texCoords = texCoordsArray[0];
 		colors = colorArray[0];
@@ -529,35 +529,31 @@ static void ProjectDlightTexture_altivec( void ) {
 		radius = dl->radius;
 		scale = 1.0f / radius;
 
-		if(r_greyscale->integer)
-		{
+		if ( r_greyscale->integer ) {
 			float luminance;
-			
-			luminance = LUMA(dl->color[0], dl->color[1], dl->color[2]) * 255.0f;
+
+			luminance = LUMA( dl->color[0], dl->color[1], dl->color[2] ) * 255.0f;
 			floatColor[0] = floatColor[1] = floatColor[2] = luminance;
-		}
-		else if(r_greyscale->value)
-		{
+		} else if ( r_greyscale->value )      {
 			float luminance;
-			
-			luminance = LUMA(dl->color[0], dl->color[1], dl->color[2]) * 255.0f;
-			floatColor[0] = LERP(dl->color[0] * 255.0f, luminance, r_greyscale->value);
-			floatColor[1] = LERP(dl->color[1] * 255.0f, luminance, r_greyscale->value);
-			floatColor[2] = LERP(dl->color[2] * 255.0f, luminance, r_greyscale->value);
-		}
-		else
+
+			luminance = LUMA( dl->color[0], dl->color[1], dl->color[2] ) * 255.0f;
+			floatColor[0] = LERP( dl->color[0] * 255.0f, luminance, r_greyscale->value );
+			floatColor[1] = LERP( dl->color[1] * 255.0f, luminance, r_greyscale->value );
+			floatColor[2] = LERP( dl->color[2] * 255.0f, luminance, r_greyscale->value );
+		} else
 		{
 			floatColor[0] = dl->color[0] * 255.0f;
 			floatColor[1] = dl->color[1] * 255.0f;
 			floatColor[2] = dl->color[2] * 255.0f;
 		}
-		floatColorVec0 = vec_ld(0, floatColor);
-		floatColorVec1 = vec_ld(11, floatColor);
-		floatColorVec0 = vec_perm(floatColorVec0,floatColorVec0,floatColorVecPerm);
+		floatColorVec0 = vec_ld( 0, floatColor );
+		floatColorVec1 = vec_ld( 11, floatColor );
+		floatColorVec0 = vec_perm( floatColorVec0,floatColorVec0,floatColorVecPerm );
 		for ( i = 0 ; i < tess.numVertexes ; i++, texCoords += 2, colors += 4 ) {
-			int		clip = 0;
+			int clip = 0;
 			vec_t dist0, dist1, dist2;
-			
+
 			dist0 = origin0 - tess.xyz[i][0];
 			dist1 = origin1 - tess.xyz[i][1];
 			dist2 = origin2 - tess.xyz[i][2];
@@ -567,11 +563,11 @@ static void ProjectDlightTexture_altivec( void ) {
 			texCoords0 = 0.5f + dist0 * scale;
 			texCoords1 = 0.5f + dist1 * scale;
 
-			if( !r_dlightBacks->integer &&
-					// dist . tess.normal[i]
-					( dist0 * tess.normal[i][0] +
-					dist1 * tess.normal[i][1] +
-					dist2 * tess.normal[i][2] ) < 0.0f ) {
+			if ( !r_dlightBacks->integer &&
+			     // dist . tess.normal[i]
+				 ( dist0 * tess.normal[i][0] +
+				   dist1 * tess.normal[i][1] +
+				   dist2 * tess.normal[i][2] ) < 0.0f ) {
 				clip = 63;
 			} else {
 				if ( texCoords0 < 0.0f ) {
@@ -595,40 +591,40 @@ static void ProjectDlightTexture_altivec( void ) {
 					clip |= 32;
 					modulate = 0.0f;
 				} else {
-					dist2 = Q_fabs(dist2);
+					dist2 = Q_fabs( dist2 );
 					if ( dist2 < radius * 0.5f ) {
 						modulate = 1.0f;
 					} else {
-						modulate = 2.0f * (radius - dist2) * scale;
+						modulate = 2.0f * ( radius - dist2 ) * scale;
 					}
 				}
 			}
 			clipBits[i] = clip;
 
-			modulateVec = vec_ld(0,(float *)&modulate);
-			modulateVec = vec_perm(modulateVec,modulateVec,modulatePerm);
-			colorVec = vec_madd(floatColorVec0,modulateVec,zero);
-			colorInt = vec_cts(colorVec,0);	// RGBx
-			colorShort = vec_pack(colorInt,colorInt);		// RGBxRGBx
-			colorChar = vec_packsu(colorShort,colorShort);	// RGBxRGBxRGBxRGBx
-			colorChar = vec_sel(colorChar,vSel,vSel);		// RGBARGBARGBARGBA replace alpha with 255
-			vec_ste((vector unsigned int)colorChar,0,(unsigned int *)colors);	// store color
+			modulateVec = vec_ld( 0,(float *)&modulate );
+			modulateVec = vec_perm( modulateVec,modulateVec,modulatePerm );
+			colorVec = vec_madd( floatColorVec0,modulateVec,zero );
+			colorInt = vec_cts( colorVec,0 ); // RGBx
+			colorShort = vec_pack( colorInt,colorInt );       // RGBxRGBx
+			colorChar = vec_packsu( colorShort,colorShort );  // RGBxRGBxRGBxRGBx
+			colorChar = vec_sel( colorChar,vSel,vSel );       // RGBARGBARGBARGBA replace alpha with 255
+			vec_ste( (vector unsigned int)colorChar,0,(unsigned int *)colors );   // store color
 		}
 
 		// build a list of triangles that need light
 		numIndexes = 0;
 		for ( i = 0 ; i < tess.numIndexes ; i += 3 ) {
-			int		a, b, c;
+			int a, b, c;
 
 			a = tess.indexes[i];
-			b = tess.indexes[i+1];
-			c = tess.indexes[i+2];
+			b = tess.indexes[i + 1];
+			c = tess.indexes[i + 2];
 			if ( clipBits[a] & clipBits[b] & clipBits[c] ) {
-				continue;	// not lighted
+				continue;   // not lighted
 			}
 			hitIndexes[numIndexes] = a;
-			hitIndexes[numIndexes+1] = b;
-			hitIndexes[numIndexes+2] = c;
+			hitIndexes[numIndexes + 1] = b;
+			hitIndexes[numIndexes + 2] = c;
 			numIndexes += 3;
 		}
 
@@ -684,19 +680,19 @@ static void ProjectDlightTexture_altivec( void ) {
 #endif
 
 static void ProjectDlightTexture_scalar( void ) {
-	int		i, l;
-	vec3_t	origin;
-	float	*texCoords;
-	byte	*colors;
-	byte	clipBits[SHADER_MAX_VERTEXES];
-	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
-	byte	colorArray[SHADER_MAX_VERTEXES][4];
-	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
-	int		numIndexes;
-	float	scale;
-	float	radius;
-	vec3_t	floatColor;
-	float	modulate = 0.0f;
+	int i, l;
+	vec3_t origin;
+	float   *texCoords;
+	byte    *colors;
+	byte clipBits[SHADER_MAX_VERTEXES];
+	float texCoordsArray[SHADER_MAX_VERTEXES][2];
+	byte colorArray[SHADER_MAX_VERTEXES][4];
+	glIndex_t hitIndexes[SHADER_MAX_INDEXES];
+	int numIndexes;
+	float scale;
+	float radius;
+	vec3_t floatColor;
+	float modulate = 0.0f;
 
 	if ( !backEnd.refdef.num_dlights ) {
 		return;
@@ -707,10 +703,10 @@ static void ProjectDlightTexture_scalar( void ) {
 	}
 
 	for ( l = 0 ; l < backEnd.refdef.num_dlights ; l++ ) {
-		dlight_t	*dl;
+		dlight_t    *dl;
 
 		if ( !( tess.dlightBits & ( 1 << l ) ) ) {
-			continue;	// this surface definately doesn't have any of this light
+			continue;   // this surface definately doesn't have any of this light
 		}
 		texCoords = texCoordsArray[0];
 		colors = colorArray[0];
@@ -720,23 +716,19 @@ static void ProjectDlightTexture_scalar( void ) {
 		radius = dl->radius;
 		scale = 1.0f / radius;
 
-		if(r_greyscale->integer)
-		{
+		if ( r_greyscale->integer ) {
 			float luminance;
 
-			luminance = LUMA(dl->color[0], dl->color[1], dl->color[2]) * 255.0f;
+			luminance = LUMA( dl->color[0], dl->color[1], dl->color[2] ) * 255.0f;
 			floatColor[0] = floatColor[1] = floatColor[2] = luminance;
-		}
-		else if(r_greyscale->value)
-		{
+		} else if ( r_greyscale->value )      {
 			float luminance;
-			
-			luminance = LUMA(dl->color[0], dl->color[1], dl->color[2]) * 255.0f;
-			floatColor[0] = LERP(dl->color[0] * 255.0f, luminance, r_greyscale->value);
-			floatColor[1] = LERP(dl->color[1] * 255.0f, luminance, r_greyscale->value);
-			floatColor[2] = LERP(dl->color[2] * 255.0f, luminance, r_greyscale->value);
-		}
-		else
+
+			luminance = LUMA( dl->color[0], dl->color[1], dl->color[2] ) * 255.0f;
+			floatColor[0] = LERP( dl->color[0] * 255.0f, luminance, r_greyscale->value );
+			floatColor[1] = LERP( dl->color[1] * 255.0f, luminance, r_greyscale->value );
+			floatColor[2] = LERP( dl->color[2] * 255.0f, luminance, r_greyscale->value );
+		} else
 		{
 			floatColor[0] = dl->color[0] * 255.0f;
 			floatColor[1] = dl->color[1] * 255.0f;
@@ -744,9 +736,9 @@ static void ProjectDlightTexture_scalar( void ) {
 		}
 
 		for ( i = 0 ; i < tess.numVertexes ; i++, texCoords += 2, colors += 4 ) {
-			int		clip = 0;
-			vec3_t	dist;
-			
+			int clip = 0;
+			vec3_t dist;
+
 			VectorSubtract( origin, tess.xyz[i], dist );
 
 			backEnd.pc.c_dlightVertexes++;
@@ -754,11 +746,11 @@ static void ProjectDlightTexture_scalar( void ) {
 			texCoords[0] = 0.5f + dist[0] * scale;
 			texCoords[1] = 0.5f + dist[1] * scale;
 
-			if( !r_dlightBacks->integer &&
-					// dist . tess.normal[i]
-					( dist[0] * tess.normal[i][0] +
-					dist[1] * tess.normal[i][1] +
-					dist[2] * tess.normal[i][2] ) < 0.0f ) {
+			if ( !r_dlightBacks->integer &&
+			     // dist . tess.normal[i]
+				 ( dist[0] * tess.normal[i][0] +
+				   dist[1] * tess.normal[i][1] +
+				   dist[2] * tess.normal[i][2] ) < 0.0f ) {
 				clip = 63;
 			} else {
 				if ( texCoords[0] < 0.0f ) {
@@ -782,35 +774,35 @@ static void ProjectDlightTexture_scalar( void ) {
 					clip |= 32;
 					modulate = 0.0f;
 				} else {
-					dist[2] = Q_fabs(dist[2]);
+					dist[2] = Q_fabs( dist[2] );
 					if ( dist[2] < radius * 0.5f ) {
 						modulate = 1.0f;
 					} else {
-						modulate = 2.0f * (radius - dist[2]) * scale;
+						modulate = 2.0f * ( radius - dist[2] ) * scale;
 					}
 				}
 			}
 			clipBits[i] = clip;
-			colors[0] = ri.ftol(floatColor[0] * modulate);
-			colors[1] = ri.ftol(floatColor[1] * modulate);
-			colors[2] = ri.ftol(floatColor[2] * modulate);
+			colors[0] = ri.ftol( floatColor[0] * modulate );
+			colors[1] = ri.ftol( floatColor[1] * modulate );
+			colors[2] = ri.ftol( floatColor[2] * modulate );
 			colors[3] = 255;
 		}
 
 		// build a list of triangles that need light
 		numIndexes = 0;
 		for ( i = 0 ; i < tess.numIndexes ; i += 3 ) {
-			int		a, b, c;
+			int a, b, c;
 
 			a = tess.indexes[i];
-			b = tess.indexes[i+1];
-			c = tess.indexes[i+2];
+			b = tess.indexes[i + 1];
+			c = tess.indexes[i + 2];
 			if ( clipBits[a] & clipBits[b] & clipBits[c] ) {
-				continue;	// not lighted
+				continue;   // not lighted
 			}
 			hitIndexes[numIndexes] = a;
-			hitIndexes[numIndexes+1] = b;
-			hitIndexes[numIndexes+2] = c;
+			hitIndexes[numIndexes + 1] = b;
+			hitIndexes[numIndexes + 2] = c;
 			numIndexes += 3;
 		}
 
@@ -866,7 +858,7 @@ static void ProjectDlightTexture_scalar( void ) {
 
 static void ProjectDlightTexture( void ) {
 #if idppc_altivec
-	if (com_altivec->integer) {
+	if ( com_altivec->integer ) {
 		// must be in a seperate function or G3 systems will crash.
 		ProjectDlightTexture_altivec();
 		return;
@@ -1037,7 +1029,7 @@ static void ComputeColors( shaderStage_t *pStage ) {
 	case AGEN_ONE_MINUS_ENTITY:
 		RB_CalcAlphaFromOneMinusEntity( ( unsigned char * ) tess.svars.colors );
 		break;
-		// Ridah
+	// Ridah
 	case AGEN_NORMALZFADE:
 	{
 		float alpha, range, lowest, highest, dot;
@@ -1109,7 +1101,7 @@ static void ComputeColors( shaderStage_t *pStage ) {
 		}
 	}
 	break;
-		// done.
+	// done.
 	case AGEN_VERTEX:
 		if ( pStage->rgbGen != CGEN_VERTEX ) {
 			for ( i = 0; i < tess.numVertexes; i++ ) {
@@ -1139,7 +1131,7 @@ static void ComputeColors( shaderStage_t *pStage ) {
 
 			if ( len < 0 ) {
 				alpha = 0;
-			} else if ( len > 1 )   {
+			} else if ( len > 1 ) {
 				alpha = 0xff;
 			} else
 			{
@@ -1173,25 +1165,22 @@ static void ComputeColors( shaderStage_t *pStage ) {
 	}
 
 	// if in greyscale rendering mode turn all color values into greyscale.
-	if(r_greyscale->integer)
-	{
+	if ( r_greyscale->integer ) {
 		int scale;
-		for(i = 0; i < tess.numVertexes; i++)
+		for ( i = 0; i < tess.numVertexes; i++ )
 		{
-			scale = LUMA(tess.svars.colors[i][0], tess.svars.colors[i][1], tess.svars.colors[i][2]);
- 			tess.svars.colors[i][0] = tess.svars.colors[i][1] = tess.svars.colors[i][2] = scale;
+			scale = LUMA( tess.svars.colors[i][0], tess.svars.colors[i][1], tess.svars.colors[i][2] );
+			tess.svars.colors[i][0] = tess.svars.colors[i][1] = tess.svars.colors[i][2] = scale;
 		}
-	}
-	else if(r_greyscale->value)
-	{
+	} else if ( r_greyscale->value )      {
 		float scale;
-		
-		for(i = 0; i < tess.numVertexes; i++)
+
+		for ( i = 0; i < tess.numVertexes; i++ )
 		{
-			scale = LUMA(tess.svars.colors[i][0], tess.svars.colors[i][1], tess.svars.colors[i][2]);
-			tess.svars.colors[i][0] = LERP(tess.svars.colors[i][0], scale, r_greyscale->value);
-			tess.svars.colors[i][1] = LERP(tess.svars.colors[i][1], scale, r_greyscale->value);
-			tess.svars.colors[i][2] = LERP(tess.svars.colors[i][2], scale, r_greyscale->value);
+			scale = LUMA( tess.svars.colors[i][0], tess.svars.colors[i][1], tess.svars.colors[i][2] );
+			tess.svars.colors[i][0] = LERP( tess.svars.colors[i][0], scale, r_greyscale->value );
+			tess.svars.colors[i][1] = LERP( tess.svars.colors[i][1], scale, r_greyscale->value );
+			tess.svars.colors[i][2] = LERP( tess.svars.colors[i][2], scale, r_greyscale->value );
 		}
 	}
 }
@@ -1311,7 +1300,7 @@ extern void R_Fog( glfog_t *curfog );
 /*
 ==============
 SetIteratorFog
-	set the fog parameters for this pass
+    set the fog parameters for this pass
 ==============
 */
 void SetIteratorFog( void ) {
@@ -1457,7 +1446,7 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input ) {
 */
 void RB_StageIteratorGeneric( void ) {
 	shaderCommands_t *input;
-	shader_t		*shader;
+	shader_t        *shader;
 
 	input = &tess;
 	shader = input->shader;
@@ -1646,7 +1635,7 @@ void RB_StageIteratorVertexLitTexture( void ) {
 
 void RB_StageIteratorLightmappedMultitexture( void ) {
 	shaderCommands_t *input;
-	shader_t		*shader;
+	shader_t        *shader;
 
 	input = &tess;
 	shader = input->shader;
@@ -1816,4 +1805,3 @@ void RB_EndSurface( void ) {
 
 	GLimp_LogComment( "----------\n" );
 }
-

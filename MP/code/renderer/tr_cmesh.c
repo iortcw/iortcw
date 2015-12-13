@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -126,7 +126,7 @@ static int R_CullModel( mdcHeader_t *header, trRefEntity_t *ent ) {
 				if ( sphereCull == CULL_OUT ) {
 					tr.pc.c_sphere_cull_md3_out++;
 					return CULL_OUT;
-				} else if ( sphereCull == CULL_IN )   {
+				} else if ( sphereCull == CULL_IN ) {
 					tr.pc.c_sphere_cull_md3_in++;
 					return CULL_IN;
 				} else
@@ -182,37 +182,35 @@ static int R_ComputeLOD( trRefEntity_t *ent ) {
 		// multiple LODs exist, so compute projected bounding sphere
 		// and use that as a criteria for selecting LOD
 
-		if(tr.currentModel->type == MOD_MDR)
-		{
+		if ( tr.currentModel->type == MOD_MDR ) {
 			int frameSize;
 			mdr = (mdrHeader_t *) tr.currentModel->modelData;
-			frameSize = (size_t) (&((mdrFrame_t *)0)->bones[mdr->numBones]);
-			
-			mdrframe = (mdrFrame_t *) ((byte *) mdr + mdr->ofsFrames + frameSize * ent->e.frame);
-			
-			radius = RadiusFromBounds(mdrframe->bounds[0], mdrframe->bounds[1]);
-		}
-		else
+			frameSize = (size_t) ( &( (mdrFrame_t *)0 )->bones[mdr->numBones] );
+
+			mdrframe = (mdrFrame_t *) ( (byte *) mdr + mdr->ofsFrames + frameSize * ent->e.frame );
+
+			radius = RadiusFromBounds( mdrframe->bounds[0], mdrframe->bounds[1] );
+		} else
 		{
-		// RF, checked for a forced lowest LOD
-		if ( ent->e.reFlags & REFLAG_FORCE_LOD ) {
-			return ( tr.currentModel->numLods - 1 );
-		}
+			// RF, checked for a forced lowest LOD
+			if ( ent->e.reFlags & REFLAG_FORCE_LOD ) {
+				return ( tr.currentModel->numLods - 1 );
+			}
 
-		frame = ( md3Frame_t * )( ( ( unsigned char * ) tr.currentModel->mdc[0] ) + tr.currentModel->mdc[0]->ofsFrames );
+			frame = ( md3Frame_t * )( ( ( unsigned char * ) tr.currentModel->mdc[0] ) + tr.currentModel->mdc[0]->ofsFrames );
 
-		frame += ent->e.frame;
+			frame += ent->e.frame;
 
-		radius = RadiusFromBounds( frame->bounds[0], frame->bounds[1] );
+			radius = RadiusFromBounds( frame->bounds[0], frame->bounds[1] );
 
-		//----(SA)	testing
-		if ( ent->e.reFlags & REFLAG_ORIENT_LOD ) {
-			// right now this is for trees, and pushes the lod distance way in.
-			// this is not the intended purpose, but is helpful for the new
-			// terrain level that has loads of trees
+			//----(SA)	testing
+			if ( ent->e.reFlags & REFLAG_ORIENT_LOD ) {
+				// right now this is for trees, and pushes the lod distance way in.
+				// this is not the intended purpose, but is helpful for the new
+				// terrain level that has loads of trees
 //			radius = radius/2.0f;
-		}
-		//----(SA)	end
+			}
+			//----(SA)	end
 		}
 
 		if ( ( projectedRadius = ProjectRadius( radius, ent->e.origin ) ) != 0 ) {
@@ -232,7 +230,7 @@ static int R_ComputeLOD( trRefEntity_t *ent ) {
 
 		if ( lod < 0 ) {
 			lod = 0;
-		} else if ( lod >= tr.currentModel->numLods )   {
+		} else if ( lod >= tr.currentModel->numLods ) {
 			lod = tr.currentModel->numLods - 1;
 		}
 	}
@@ -438,4 +436,3 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 	}
 
 }
-

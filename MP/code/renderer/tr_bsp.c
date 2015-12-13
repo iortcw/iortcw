@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ static void R_LoadLightmaps( lump_t *l ) {
 		return;
 	}
 
-	tr.lightmaps = ri.Hunk_Alloc( tr.numLightmaps * sizeof(image_t *), h_low );
+	tr.lightmaps = ri.Hunk_Alloc( tr.numLightmaps * sizeof( image_t * ), h_low );
 	for ( i = 0 ; i < tr.numLightmaps ; i++ ) {
 		// expand the 24 bit on-disk to 32 bit
 		buf_p = buf + i * LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3;
@@ -210,8 +210,8 @@ static void R_LoadLightmaps( lump_t *l ) {
 			}
 		}
 		tr.lightmaps[i] = R_CreateImage( va( "*lightmap%d",i ), image,
-			LIGHTMAP_SIZE, LIGHTMAP_SIZE, IMGTYPE_COLORALPHA,
-			IMGFLAG_NOLIGHTSCALE | IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, 0 );
+										 LIGHTMAP_SIZE, LIGHTMAP_SIZE, IMGTYPE_COLORALPHA,
+										 IMGFLAG_NOLIGHTSCALE | IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, 0 );
 	}
 
 	if ( r_lightmap->integer == 2 ) {
@@ -380,7 +380,7 @@ static void ParseFace( dsurface_t *ds, drawVert_t *verts, msurface_t *surf, int 
 	numIndexes = LittleLong( ds->numIndexes );
 
 	// create the srfSurfaceFace_t
-	sfaceSize = ( size_t ) &((srfSurfaceFace_t *)0)->points[numPoints];
+	sfaceSize = ( size_t ) &( (srfSurfaceFace_t *)0 )->points[numPoints];
 	ofsIndexes = sfaceSize;
 	sfaceSize += sizeof( int ) * numIndexes;
 
@@ -679,7 +679,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 			//
 			if ( n ) {
 				offset1 = ( grid1->height - 1 ) * grid1->width;
-			} else { offset1 = 0;}
+			} else { offset1 = 0; }
 			if ( R_MergedWidthPoints( grid1, offset1 ) ) {
 				continue;
 			}
@@ -688,7 +688,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 
 					if ( m ) {
 						offset2 = ( grid2->height - 1 ) * grid2->width;
-					} else { offset2 = 0;}
+					} else { offset2 = 0; }
 					if ( R_MergedWidthPoints( grid2, offset2 ) ) {
 						continue;
 					}
@@ -712,7 +712,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 
 					if ( m ) {
 						offset2 = grid2->width - 1;
-					} else { offset2 = 0;}
+					} else { offset2 = 0; }
 					if ( R_MergedHeightPoints( grid2, offset2 ) ) {
 						continue;
 					}
@@ -738,7 +738,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 			//
 			if ( n ) {
 				offset1 = grid1->width - 1;
-			} else { offset1 = 0;}
+			} else { offset1 = 0; }
 			if ( R_MergedHeightPoints( grid1, offset1 ) ) {
 				continue;
 			}
@@ -747,7 +747,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 
 					if ( m ) {
 						offset2 = ( grid2->height - 1 ) * grid2->width;
-					} else { offset2 = 0;}
+					} else { offset2 = 0; }
 					if ( R_MergedWidthPoints( grid2, offset2 ) ) {
 						continue;
 					}
@@ -771,7 +771,7 @@ void R_FixSharedVertexLodError_r( int start, srfGridMesh_t *grid1 ) {
 
 					if ( m ) {
 						offset2 = grid2->width - 1;
-					} else { offset2 = 0;}
+					} else { offset2 = 0; }
 					if ( R_MergedHeightPoints( grid2, offset2 ) ) {
 						continue;
 					}
@@ -849,7 +849,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 		//
 		if ( n ) {
 			offset1 = ( grid1->height - 1 ) * grid1->width;
-		} else { offset1 = 0;}
+		} else { offset1 = 0; }
 		if ( R_MergedWidthPoints( grid1, offset1 ) ) {
 			continue;
 		}
@@ -862,7 +862,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = ( grid2->height - 1 ) * grid2->width;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedWidthPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->width - 1; l++ ) {
@@ -903,7 +903,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert column into grid2 right after after column l
 					if ( m ) {
 						row = grid2->height - 1;
-					} else { row = 0;}
+					} else { row = 0; }
 					grid2 = R_GridInsertColumn( grid2, l + 1, row,
 												grid1->verts[k + 1 + offset1].xyz, grid1->widthLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -918,7 +918,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = grid2->width - 1;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedHeightPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->height - 1; l++ ) {
@@ -959,7 +959,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert row into grid2 right after after row l
 					if ( m ) {
 						column = grid2->width - 1;
-					} else { column = 0;}
+					} else { column = 0; }
 					grid2 = R_GridInsertRow( grid2, l + 1, column,
 											 grid1->verts[k + 1 + offset1].xyz, grid1->widthLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -973,7 +973,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 		//
 		if ( n ) {
 			offset1 = grid1->width - 1;
-		} else { offset1 = 0;}
+		} else { offset1 = 0; }
 		if ( R_MergedHeightPoints( grid1, offset1 ) ) {
 			continue;
 		}
@@ -985,7 +985,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = ( grid2->height - 1 ) * grid2->width;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedWidthPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->width - 1; l++ ) {
@@ -1026,7 +1026,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert column into grid2 right after after column l
 					if ( m ) {
 						row = grid2->height - 1;
-					} else { row = 0;}
+					} else { row = 0; }
 					grid2 = R_GridInsertColumn( grid2, l + 1, row,
 												grid1->verts[grid1->width * ( k + 1 ) + offset1].xyz, grid1->heightLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -1041,7 +1041,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = grid2->width - 1;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedHeightPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->height - 1; l++ ) {
@@ -1082,7 +1082,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert row into grid2 right after after row l
 					if ( m ) {
 						column = grid2->width - 1;
-					} else { column = 0;}
+					} else { column = 0; }
 					grid2 = R_GridInsertRow( grid2, l + 1, column,
 											 grid1->verts[grid1->width * ( k + 1 ) + offset1].xyz, grid1->heightLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -1096,7 +1096,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 		//
 		if ( n ) {
 			offset1 = ( grid1->height - 1 ) * grid1->width;
-		} else { offset1 = 0;}
+		} else { offset1 = 0; }
 		if ( R_MergedWidthPoints( grid1, offset1 ) ) {
 			continue;
 		}
@@ -1109,7 +1109,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = ( grid2->height - 1 ) * grid2->width;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedWidthPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->width - 1; l++ ) {
@@ -1150,7 +1150,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert column into grid2 right after after column l
 					if ( m ) {
 						row = grid2->height - 1;
-					} else { row = 0;}
+					} else { row = 0; }
 					grid2 = R_GridInsertColumn( grid2, l + 1, row,
 												grid1->verts[k - 1 + offset1].xyz, grid1->widthLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -1165,7 +1165,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = grid2->width - 1;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedHeightPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->height - 1; l++ ) {
@@ -1206,7 +1206,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert row into grid2 right after after row l
 					if ( m ) {
 						column = grid2->width - 1;
-					} else { column = 0;}
+					} else { column = 0; }
 					grid2 = R_GridInsertRow( grid2, l + 1, column,
 											 grid1->verts[k - 1 + offset1].xyz, grid1->widthLodError[k + 1] );
 					if ( !grid2 ) {
@@ -1223,7 +1223,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 		//
 		if ( n ) {
 			offset1 = grid1->width - 1;
-		} else { offset1 = 0;}
+		} else { offset1 = 0; }
 		if ( R_MergedHeightPoints( grid1, offset1 ) ) {
 			continue;
 		}
@@ -1235,7 +1235,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = ( grid2->height - 1 ) * grid2->width;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedWidthPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->width - 1; l++ ) {
@@ -1276,7 +1276,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert column into grid2 right after after column l
 					if ( m ) {
 						row = grid2->height - 1;
-					} else { row = 0;}
+					} else { row = 0; }
 					grid2 = R_GridInsertColumn( grid2, l + 1, row,
 												grid1->verts[grid1->width * ( k - 1 ) + offset1].xyz, grid1->heightLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -1291,7 +1291,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 				}
 				if ( m ) {
 					offset2 = grid2->width - 1;
-				} else { offset2 = 0;}
+				} else { offset2 = 0; }
 				//if (R_MergedHeightPoints(grid2, offset2))
 				//	continue;
 				for ( l = 0; l < grid2->height - 1; l++ ) {
@@ -1332,7 +1332,7 @@ int R_StitchPatches( int grid1num, int grid2num ) {
 					// insert row into grid2 right after after row l
 					if ( m ) {
 						column = grid2->width - 1;
-					} else { column = 0;}
+					} else { column = 0; }
 					grid2 = R_GridInsertRow( grid2, l + 1, column,
 											 grid1->verts[grid1->width * ( k - 1 ) + offset1].xyz, grid1->heightLodError[k + 1] );
 					grid2->lodStitched = qfalse;
@@ -1571,7 +1571,7 @@ static void R_LoadSubmodels( lump_t *l ) {
 
 		assert( model != NULL );            // this should never happen
 		if ( model == NULL ) {
-			ri.Error(ERR_DROP, "R_LoadSubmodels: R_AllocModel() failed");
+			ri.Error( ERR_DROP, "R_LoadSubmodels: R_AllocModel() failed" );
 		}
 
 		model->type = MOD_BRUSH;
@@ -2207,7 +2207,7 @@ void RE_LoadWorldMap( const char *name ) {
 	Q_strncpyz( s_worldData.name, name, sizeof( s_worldData.name ) );
 
 	Q_strncpyz( s_worldData.baseName, COM_SkipPath( s_worldData.name ), sizeof( s_worldData.name ) );
-	COM_StripExtension(s_worldData.baseName, s_worldData.baseName, sizeof(s_worldData.baseName));
+	COM_StripExtension( s_worldData.baseName, s_worldData.baseName, sizeof( s_worldData.baseName ) );
 
 	startMarker = ri.Hunk_Alloc( 0, h_low );
 	c_gridVerts = 0;
@@ -2267,4 +2267,3 @@ void RE_LoadWorldMap( const char *name ) {
 //----(SA)	end
 	ri.FS_FreeFile( buffer.v );
 }
-

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,13 +40,13 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef USE_OPENGLES
 #ifdef USE_LOCAL_HEADERS
-#	include "GLES/glext.h"
+#   include "GLES/glext.h"
 #else
-#	include <GLES/glext.h>
+#   include <GLES/glext.h>
 #endif
-#define GL_RGBA4				0x8056
-#define GL_RGB5					0x8050
-#define GL_INDEX_TYPE		GL_UNSIGNED_SHORT
+#define GL_RGBA4                0x8056
+#define GL_RGB5                 0x8050
+#define GL_INDEX_TYPE       GL_UNSIGNED_SHORT
 typedef unsigned short glIndex_t;
 #else
 #define GL_INDEX_TYPE       GL_UNSIGNED_INT
@@ -57,8 +57,8 @@ typedef unsigned int glIndex_t;
 // can't be increased without changing bit packing for drawsurfs
 // see QSORT_SHADERNUM_SHIFT
 
-#define SHADERNUM_BITS	13
-#define MAX_SHADERS		(1<<SHADERNUM_BITS)
+#define SHADERNUM_BITS  13
+#define MAX_SHADERS     ( 1 << SHADERNUM_BITS )
 
 // a trRefEntity_t has all the information passed in by
 // the client game, as well as some locally derived info
@@ -115,8 +115,8 @@ typedef struct image_s {
 	int internalFormat;
 	int TMU;                        // only needed for voodoo2
 
-	imgType_t   type;
-	imgFlags_t  flags;
+	imgType_t type;
+	imgFlags_t flags;
 
 	int hash;           // for fast building of the backupHash
 
@@ -133,7 +133,7 @@ typedef enum {
 
 	SS_DECAL,           // scorch marks, etc.
 	SS_SEE_THROUGH,     // ladders, grates, grills that may have small blended edges
-						// in addition to alpha test
+	                    // in addition to alpha test
 	SS_BANNER,
 
 	SS_FOG,
@@ -284,11 +284,11 @@ typedef struct {
 
 	// used for TMOD_SCALE
 	float scale[2];                     // s *= scale[0]
-										// t *= scale[1]
+	                                    // t *= scale[1]
 
 	// used for TMOD_SCROLL
 	float scroll[2];                    // s' = s + scroll[0] * time
-										// t' = t + scroll[1] * time
+	                                    // t' = t + scroll[1] * time
 
 	// + = clockwise
 	// - = counterclockwise
@@ -347,8 +347,8 @@ struct shaderCommands_s;
 
 // any change in the LIGHTMAP_* defines here MUST be reflected in
 // R_FindShader() in tr_bsp.c
-#define LIGHTMAP_2D         -4	// shader is for 2D rendering
-#define LIGHTMAP_BY_VERTEX  -3	// pre-lit triangle models
+#define LIGHTMAP_2D         -4  // shader is for 2D rendering
+#define LIGHTMAP_BY_VERTEX  -3  // pre-lit triangle models
 #define LIGHTMAP_WHITEIMAGE -2
 #define LIGHTMAP_NONE       -1
 
@@ -385,10 +385,10 @@ typedef struct shader_s {
 	float sort;                         // lower numbered shaders draw before higher numbered
 
 	qboolean defaultShader;             // we want to return index 0 if the shader failed to
-										// load for some reason, but R_FindShader should
-										// still keep a name allocated for it, so if
-										// something calls RE_RegisterShader again with
-										// the same name, we don't try looking for it again
+	                                    // load for some reason, but R_FindShader should
+	                                    // still keep a name allocated for it, so if
+	                                    // something calls RE_RegisterShader again with
+	                                    // the same name, we don't try looking for it again
 
 	qboolean explicitlyDefined;         // found in a .shader file
 
@@ -456,9 +456,9 @@ typedef struct dlight_s {
 	int overdraw;
 	// done.
 
-	shader_t    *dlshader;	//----(SA) adding a shader to dlights, so, if desired, we can change the blend or texture of a dlight
+	shader_t    *dlshader;  //----(SA) adding a shader to dlights, so, if desired, we can change the blend or texture of a dlight
 
-	qboolean forced;	//----(SA) use this dlight when r_dynamiclight is either 1 or 2 (rather than just 1) for "important" gameplay lights (alarm lights, etc)
+	qboolean forced;    //----(SA) use this dlight when r_dynamiclight is either 1 or 2 (rather than just 1) for "important" gameplay lights (alarm lights, etc)
 	//done
 
 } dlight_t;
@@ -471,7 +471,7 @@ typedef struct {
 	vec3_t vieworg;
 	vec3_t viewaxis[3];             // transformation matrix
 
-	stereoFrame_t	stereoFrame;
+	stereoFrame_t stereoFrame;
 
 	int time;                       // time in milliseconds for shader effects and other time dependent rendering issues
 	int rdflags;                    // RDF_NOWORLDMODEL, etc
@@ -542,7 +542,7 @@ typedef struct {
 } fog_t;
 
 typedef struct {
-	orientationr_t  or;
+	orientationr_t or;
 	orientationr_t world;
 	vec3_t pvsOrigin;               // may be different than or.origin for portals
 	qboolean isPortal;              // true if this view is through a portal
@@ -556,7 +556,7 @@ typedef struct {
 	cplane_t frustum[4];
 	vec3_t visBounds[2];
 	float zFar;
-	stereoFrame_t	stereoFrame;
+	stereoFrame_t stereoFrame;
 
 	glfog_t glFog;                  // fog parameters	//----(SA)	added
 
@@ -661,7 +661,7 @@ typedef struct {
 	int numIndices;
 	int ofsIndices;
 	float points[1][VERTEXSIZE];        // variable sized
-										// there is a variable length list of indices here also
+	                                    // there is a variable length list of indices here also
 } srfSurfaceFace_t;
 
 
@@ -687,46 +687,46 @@ typedef struct {
 
 // inter-quake-model
 typedef struct {
-	int		num_vertexes;
-	int		num_triangles;
-	int		num_frames;
-	int		num_surfaces;
-	int		num_joints;
-	int		num_poses;
-	struct srfIQModel_s	*surfaces;
+	int num_vertexes;
+	int num_triangles;
+	int num_frames;
+	int num_surfaces;
+	int num_joints;
+	int num_poses;
+	struct srfIQModel_s *surfaces;
 
-	float		*positions;
-	float		*texcoords;
-	float		*normals;
-	float		*tangents;
-	byte		*blendIndexes;
+	float       *positions;
+	float       *texcoords;
+	float       *normals;
+	float       *tangents;
+	byte        *blendIndexes;
 	union {
-		float	*f;
-		byte	*b;
+		float   *f;
+		byte    *b;
 	} blendWeights;
-	byte		*colors;
-	int		*triangles;
+	byte        *colors;
+	int     *triangles;
 
 	// depending upon the exporter, blend indices and weights might be int/float
 	// as opposed to the recommended byte/byte, for example Noesis exports
 	// int/float whereas the official IQM tool exports byte/byte
 	byte blendWeightsType; // IQM_UBYTE or IQM_FLOAT
 
-	int		*jointParents;
-	float		*jointMats;
-	float		*poseMats;
-	float		*bounds;
-	char		*names;
+	int     *jointParents;
+	float       *jointMats;
+	float       *poseMats;
+	float       *bounds;
+	char        *names;
 } iqmData_t;
 
 // inter-quake-model surface
 typedef struct srfIQModel_s {
-	surfaceType_t	surfaceType;
-	char		name[MAX_QPATH];
-	shader_t	*shader;
-	iqmData_t	*data;
-	int		first_vertex, num_vertexes;
-	int		first_triangle, num_triangles;
+	surfaceType_t surfaceType;
+	char name[MAX_QPATH];
+	shader_t    *shader;
+	iqmData_t   *data;
+	int first_vertex, num_vertexes;
+	int first_triangle, num_triangles;
 } srfIQModel_t;
 
 extern void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * );
@@ -849,7 +849,7 @@ typedef struct model_s {
 	md3Header_t *md3[MD3_MAX_LODS]; // only if type == MOD_MESH
 	mdsHeader_t *mds;               // only if type == MOD_MDS
 	mdcHeader_t *mdc[MD3_MAX_LODS]; // only if type == MOD_MDC
-	void	*modelData;		// only if type == (MOD_MDR | MOD_IQM)
+	void    *modelData;     // only if type == (MOD_MDR | MOD_IQM)
 
 	int numLods;
 } model_t;
@@ -912,10 +912,10 @@ newest: (fixes shader index not having enough bytes)
 
 */
 
-#define	QSORT_FOGNUM_SHIFT	2
-#define	QSORT_REFENTITYNUM_SHIFT	7
-#define	QSORT_SHADERNUM_SHIFT	(QSORT_REFENTITYNUM_SHIFT+REFENTITYNUM_BITS)
-#if (QSORT_SHADERNUM_SHIFT+SHADERNUM_BITS) > 32
+#define QSORT_FOGNUM_SHIFT  2
+#define QSORT_REFENTITYNUM_SHIFT    7
+#define QSORT_SHADERNUM_SHIFT   ( QSORT_REFENTITYNUM_SHIFT + REFENTITYNUM_BITS )
+#if ( QSORT_SHADERNUM_SHIFT + SHADERNUM_BITS ) > 32
 	#error "Need to update sorting, too many bits."
 #endif
 
@@ -971,7 +971,7 @@ typedef struct {
 typedef struct {
 	trRefdef_t refdef;
 	viewParms_t viewParms;
-	orientationr_t  or;
+	orientationr_t or;
 	backEndCounters_t pc;
 	qboolean isHyperspace;
 	trRefEntity_t   *currentEntity;
@@ -981,8 +981,8 @@ typedef struct {
 	byte color2D[4];
 	qboolean vertexes2D;        // shader needs to be finished
 #ifdef USE_BLOOM
-	qboolean	doneBloom;		// done bloom this frame
-	qboolean	doneSurfaces;   // done any 3d surfaces already
+	qboolean doneBloom;         // done bloom this frame
+	qboolean doneSurfaces;      // done any 3d surfaces already
 #endif
 	trRefEntity_t entity2D;     // currentEntity will point at this when doing 2D rendering
 } backEndState_t;
@@ -1002,7 +1002,7 @@ typedef struct {
 	int frameCount;                         // incremented every frame
 	int sceneCount;                         // incremented every scene
 	int viewCount;                          // incremented every view (twice a scene if portaled)
-											// and every R_MarkFragments call
+	                                        // and every R_MarkFragments call
 
 	int frameSceneNum;                      // zeroed at RE_BeginFrame
 
@@ -1044,7 +1044,7 @@ typedef struct {
 	int identityLightByte;                      // identityLight * 255
 	int overbrightBits;                         // r_overbrightBits->integer, but set to 0 if no hw gamma
 
-	orientationr_t          or;                 // for current entity
+	orientationr_t or;                          // for current entity
 
 	trRefdef_t refdef;
 
@@ -1103,9 +1103,9 @@ extern glstate_t glState;           // outside of TR since it shouldn't be clear
 // These two variables should live inside glConfig but can't because of compatibility issues to the original ID vms.
 // If you release a stand-alone game and your mod uses tr_types.h from this build you can safely move them to
 // the glconfig_t struct.
-extern qboolean  textureFilterAnisotropic;
-extern int       maxAnisotropy;
-extern float     displayAspect;
+extern qboolean textureFilterAnisotropic;
+extern int maxAnisotropy;
+extern float displayAspect;
 
 //
 // cvars
@@ -1114,7 +1114,7 @@ extern cvar_t   *r_flareSize;
 extern cvar_t   *r_flareFade;
 // coefficient for the flare intensity falloff function.
 #define FLARE_STDCOEFF "150"
-extern cvar_t	*r_flareCoeff;
+extern cvar_t   *r_flareCoeff;
 
 extern cvar_t   *r_railWidth;
 extern cvar_t   *r_railCoreWidth;
@@ -1125,19 +1125,19 @@ extern cvar_t   *r_verbose;             // used for verbose debug spew
 extern cvar_t   *r_ignoreFastPath;      // allows us to ignore our Tess fast paths
 
 extern cvar_t   *r_znear;               // near Z clip plane
-extern cvar_t	*r_zproj;		// z distance of projection plane
-extern cvar_t	*r_stereoSeparation;	// separation of cameras for stereo rendering
+extern cvar_t   *r_zproj;       // z distance of projection plane
+extern cvar_t   *r_stereoSeparation;    // separation of cameras for stereo rendering
 extern cvar_t   *r_zfar;                // far Z clip plane
 
 extern cvar_t   *r_stencilbits;         // number of desired stencil bits
 extern cvar_t   *r_depthbits;           // number of desired depth bits
 extern cvar_t   *r_colorbits;           // number of desired color bits, only relevant for fullscreen
 extern cvar_t   *r_texturebits;         // number of desired texture bits
-extern cvar_t	*r_ext_multisample;
-										// 0 = use framebuffer depth
-										// 16 = use 16-bit textures
-										// 32 = use 32-bit textures
-										// all else = error
+extern cvar_t   *r_ext_multisample;
+// 0 = use framebuffer depth
+// 16 = use 16-bit textures
+// 32 = use 32-bit textures
+// all else = error
 
 extern cvar_t   *r_measureOverdraw;     // enables stencil buffer overdraw measurement
 
@@ -1145,16 +1145,16 @@ extern cvar_t   *r_lodbias;             // push/pull LOD transitions
 extern cvar_t   *r_lodscale;
 
 extern cvar_t   *r_primitives;          // "0" = based on compiled vertex array existance
-										// "1" = glDrawElemet tristrips
-										// "2" = glDrawElements triangles
-										// "-1" = no drawing
+                                        // "1" = glDrawElemet tristrips
+                                        // "2" = glDrawElements triangles
+                                        // "-1" = no drawing
 
 extern cvar_t   *r_inGameVideo;             // controls whether in game video should be draw
 extern cvar_t   *r_fastsky;             // controls whether sky should be cleared or drawn
 extern cvar_t   *r_drawSun;             // controls drawing of sun quad
-										// "0" no sun
-										// "1" draw sun
-										// "2" also draw lens flare effect centered on sun
+                                        // "0" no sun
+                                        // "1" draw sun
+                                        // "2" also draw lens flare effect centered on sun
 extern cvar_t   *r_dynamiclight;        // dynamic lights enabled/disabled
 extern cvar_t   *r_dlightBacks;         // dlight non-facing surfaces for continuity
 
@@ -1171,10 +1171,10 @@ extern cvar_t  *r_showcluster;
 
 extern cvar_t   *r_mode;                // video mode
 extern cvar_t   *r_fullscreen;
-extern cvar_t	*r_noborder;
+extern cvar_t   *r_noborder;
 extern cvar_t   *r_gamma;
 extern cvar_t   *r_ignorehwgamma;       // overrides hardware gamma capabilities
-extern cvar_t	*r_displayRefresh;		// optional display refresh option
+extern cvar_t   *r_displayRefresh;      // optional display refresh option
 
 extern cvar_t   *r_allowExtensions;             // global enable/disable of OpenGL extensions
 extern cvar_t   *r_ext_compressed_textures;     // these control use of specific extensions
@@ -1182,7 +1182,7 @@ extern cvar_t   *r_ext_multitexture;
 extern cvar_t   *r_ext_compiled_vertex_array;
 extern cvar_t   *r_ext_texture_env_add;
 extern cvar_t   *r_ext_texture_filter_anisotropic;  //DAJ from EF
-extern cvar_t	*r_ext_max_anisotropy;
+extern cvar_t   *r_ext_max_anisotropy;
 
 //----(SA)	added
 extern cvar_t   *r_ext_NV_fog_dist;
@@ -1210,7 +1210,7 @@ extern cvar_t  *r_textureMode;
 extern cvar_t  *r_offsetFactor;
 extern cvar_t  *r_offsetUnits;
 
-extern cvar_t  *r_fullbright;			// avoid lightmap pass // JPW NERVE removed per atvi request
+extern cvar_t  *r_fullbright;           // avoid lightmap pass // JPW NERVE removed per atvi request
 extern cvar_t  *r_lightmap;                     // render lightmaps only
 extern cvar_t  *r_vertexLight;                  // vertex lighting mode for better performance
 extern cvar_t  *r_uiFullScreen;                 // ui is running fullscreen
@@ -1235,10 +1235,10 @@ extern cvar_t  *r_subdivisions;
 extern cvar_t  *r_lodCurveError;
 extern cvar_t  *r_skipBackEnd;
 
-extern	cvar_t	*r_stereoEnabled;
-extern	cvar_t	*r_anaglyphMode;
+extern cvar_t  *r_stereoEnabled;
+extern cvar_t  *r_anaglyphMode;
 
-extern	cvar_t	*r_greyscale;
+extern cvar_t  *r_greyscale;
 
 extern cvar_t  *r_ignoreGLErrors;
 
@@ -1254,7 +1254,7 @@ extern cvar_t  *r_debugSort;
 extern cvar_t  *r_printShaders;
 extern cvar_t  *r_saveFontData;
 
-extern cvar_t	*r_marksOnTriangleMeshes;
+extern cvar_t   *r_marksOnTriangleMeshes;
 
 extern cvar_t  *r_bonesDebug;
 // done.
@@ -1298,7 +1298,7 @@ int R_CullLocalBox( vec3_t bounds[2] );
 int R_CullPointAndRadius( vec3_t origin, float radius );
 int R_CullLocalPointAndRadius( vec3_t origin, float radius );
 
-void R_SetupProjection(viewParms_t *dest, float zProj, qboolean computeFrustum);
+void R_SetupProjection( viewParms_t *dest, float zProj, qboolean computeFrustum );
 void R_RotateForEntity( const trRefEntity_t * ent, const viewParms_t * viewParms, orientationr_t * or );
 
 /*
@@ -1371,7 +1371,7 @@ model_t     *R_AllocModel( void );
 void        R_Init( void );
 image_t  *R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags );
 image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
-		imgType_t type, imgFlags_t flags, int internalFormat );
+						imgType_t type, imgFlags_t flags, int internalFormat );
 
 qboolean    R_GetModeInfo( int *width, int *height, float *windowAspect, int mode );
 
@@ -1419,14 +1419,14 @@ IMPLEMENTATION SPECIFIC FUNCTIONS
 ====================================================================
 */
 
-void	GLimp_Init( void );
-void	GLimp_Shutdown( void );
-void	GLimp_EndFrame( void );
+void    GLimp_Init( void );
+void    GLimp_Shutdown( void );
+void    GLimp_EndFrame( void );
 
-void	GLimp_LogComment( char *comment );
-void	GLimp_Minimize(void);
+void    GLimp_LogComment( char *comment );
+void    GLimp_Minimize( void );
 
-void	GLimp_SetGamma( unsigned char red[256],
+void GLimp_SetGamma( unsigned char red[256],
 					 unsigned char green[256],
 					 unsigned char blue[256] );
 
@@ -1448,16 +1448,16 @@ typedef struct stageVars
 
 typedef struct shaderCommands_s
 {
-	glIndex_t	indexes[SHADER_MAX_INDEXES] QALIGN(16);
-	vec4_t		xyz[SHADER_MAX_VERTEXES] QALIGN(16);
-	vec4_t		normal[SHADER_MAX_VERTEXES] QALIGN(16);
-	vec2_t		texCoords[SHADER_MAX_VERTEXES][2] QALIGN(16);
-	color4ub_t	vertexColors[SHADER_MAX_VERTEXES] QALIGN(16);
-	int			vertexDlightBits[SHADER_MAX_VERTEXES] QALIGN(16);
+	glIndex_t indexes[SHADER_MAX_INDEXES] QALIGN( 16 );
+	vec4_t xyz[SHADER_MAX_VERTEXES] QALIGN( 16 );
+	vec4_t normal[SHADER_MAX_VERTEXES] QALIGN( 16 );
+	vec2_t texCoords[SHADER_MAX_VERTEXES][2] QALIGN( 16 );
+	color4ub_t vertexColors[SHADER_MAX_VERTEXES] QALIGN( 16 );
+	int vertexDlightBits[SHADER_MAX_VERTEXES] QALIGN( 16 );
 
-	stageVars_t	svars QALIGN(16);
+	stageVars_t svars QALIGN( 16 );
 
-	color4ub_t	constantColor255[SHADER_MAX_VERTEXES] QALIGN(16);
+	color4ub_t constantColor255[SHADER_MAX_VERTEXES] QALIGN( 16 );
 
 	shader_t    *shader;
 	float shaderTime;
@@ -1477,12 +1477,12 @@ typedef struct shaderCommands_s
 extern shaderCommands_t tess;
 
 #ifdef USE_BLOOM
-void RB_SetGL2D (void);
+void RB_SetGL2D( void );
 #endif
 void RB_BeginSurface( shader_t *shader, int fogNum );
 void RB_EndSurface( void );
 void RB_CheckOverflow( int verts, int indexes );
-#define RB_CHECKOVERFLOW( v,i ) if ( tess.numVertexes + ( v ) >= SHADER_MAX_VERTEXES || tess.numIndexes + ( i ) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow( v,i );}
+#define RB_CHECKOVERFLOW( v,i ) if ( tess.numVertexes + ( v ) >= SHADER_MAX_VERTEXES || tess.numIndexes + ( i ) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow( v,i ); }
 
 void RB_StageIteratorGeneric( void );
 void RB_StageIteratorSky( void );
@@ -1621,16 +1621,16 @@ UNCOMPRESSING BONES
 =============================================================
 */
 
-#define MC_BITS_X (16)
-#define MC_BITS_Y (16)
-#define MC_BITS_Z (16)
-#define MC_BITS_VECT (16)
+#define MC_BITS_X ( 16 )
+#define MC_BITS_Y ( 16 )
+#define MC_BITS_Z ( 16 )
+#define MC_BITS_VECT ( 16 )
 
-#define MC_SCALE_X (1.0f/64)
-#define MC_SCALE_Y (1.0f/64)
-#define MC_SCALE_Z (1.0f/64)
+#define MC_SCALE_X ( 1.0f / 64 )
+#define MC_SCALE_Y ( 1.0f / 64 )
+#define MC_SCALE_Z ( 1.0f / 64 )
 
-void MC_UnCompress(float mat[3][4],const unsigned char * comp);
+void MC_UnCompress( float mat[3][4],const unsigned char * comp );
 
 /*
 =============================================================
@@ -1645,12 +1645,12 @@ void RB_SurfaceAnim( mdsSurface_t *surfType );
 int R_GetBoneTag( orientation_t *outTag, mdsHeader_t *mds, int startTagIndex, const refEntity_t *refent, const char *tagName );
 void R_MDRAddAnimSurfaces( trRefEntity_t *ent );
 void RB_MDRSurfaceAnim( mdrSurface_t *surface );
-qboolean R_LoadIQM (model_t *mod, void *buffer, int filesize, const char *name );
+qboolean R_LoadIQM( model_t *mod, void *buffer, int filesize, const char *name );
 void R_AddIQMSurfaces( trRefEntity_t *ent );
 void RB_IQMSurfaceAnim( surfaceType_t *surface );
 int R_IQMLerpTag( orientation_t *tag, iqmData_t *data,
-                  int startFrame, int endFrame,
-                  float frac, const char *tagName, int startIndex );
+				  int startFrame, int endFrame,
+				  float frac, const char *tagName, int startIndex );
 
 /*
 =============================================================
@@ -1783,12 +1783,12 @@ typedef struct {
 } screenshotCommand_t;
 
 typedef struct {
-	int						commandId;
-	int						width;
-	int						height;
-	byte					*captureBuffer;
-	byte					*encodeBuffer;
-	qboolean			motionJpeg;
+	int commandId;
+	int width;
+	int height;
+	byte                    *captureBuffer;
+	byte                    *encodeBuffer;
+	qboolean motionJpeg;
 } videoFrameCommand_t;
 
 typedef struct
@@ -1863,12 +1863,12 @@ void RE_StretchPicGradient( float x, float y, float w, float h,
 							float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType );
 void RE_BeginFrame( stereoFrame_t stereoFrame );
 void RE_EndFrame( int *frontEndMsec, int *backEndMsec );
-void RE_SaveJPG(char * filename, int quality, int image_width, int image_height,
-                unsigned char *image_buffer, int padding);
-size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality,
-		          int image_width, int image_height, byte *image_buffer, int padding);
+void RE_SaveJPG( char * filename, int quality, int image_width, int image_height,
+				 unsigned char *image_buffer, int padding );
+size_t RE_SaveJPGToBuffer( byte *buffer, size_t bufSize, int quality,
+						   int image_width, int image_height, byte *image_buffer, int padding );
 void RE_TakeVideoFrame( int width, int height,
-		byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
+						byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
 
 // font stuff
 void R_InitFreeType( void );
@@ -1890,7 +1890,7 @@ extern float r_anormals[NUMMDCVERTEXNORMALS][3];
 // NOTE: MDC_MAX_ERROR is effectively the compression level. the lower this value, the higher
 // the accuracy, but with lower compression ratios.
 #define MDC_MAX_ERROR       0.1     // if any compressed vert is off by more than this from the
-									// actual vert, make this a baseframe
+                                    // actual vert, make this a baseframe
 
 #define MDC_DIST_SCALE      0.05    // lower for more accuracy, but less range
 

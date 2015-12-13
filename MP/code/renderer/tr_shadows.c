@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ static int facing[SHADER_MAX_INDEXES / 3];
 static vec3_t shadowXyz[SHADER_MAX_VERTEXES];
 
 #ifdef USE_OPENGLES
-static unsigned short indexes[6*MAX_EDGE_DEFS*SHADER_MAX_VERTEXES];
+static unsigned short indexes[6 * MAX_EDGE_DEFS * SHADER_MAX_VERTEXES];
 static int idx = 0;
 #endif
 
@@ -165,7 +165,7 @@ void R_RenderShadowEdges( void ) {
 	}
 
 #ifdef USE_OPENGLES
-	qglDrawElements(GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes);
+	qglDrawElements( GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes );
 #endif
 
 #endif
@@ -242,20 +242,22 @@ void RB_ShadowTessEnd( void ) {
 	qglColor3f( 0.2f, 0.2f, 0.2f );
 
 	// don't write to the color buffer
-	qglGetBooleanv(GL_COLOR_WRITEMASK, rgba);
+	qglGetBooleanv( GL_COLOR_WRITEMASK, rgba );
 	qglColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
 
 	qglEnable( GL_STENCIL_TEST );
 	qglStencilFunc( GL_ALWAYS, 1, 255 );
 
 #ifdef USE_OPENGLES
-	qglVertexPointer (3, GL_FLOAT, 16, tess.xyz);
-	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-	if (text)
+	qglVertexPointer( 3, GL_FLOAT, 16, tess.xyz );
+	GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+	GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+	if ( text ) {
 		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
-	if (glcol)
+	}
+	if ( glcol ) {
 		qglDisableClientState( GL_COLOR_ARRAY );
+	}
 #endif
 
 	GL_Cull( CT_BACK_SIDED );
@@ -267,20 +269,22 @@ void RB_ShadowTessEnd( void ) {
 	qglStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
 
 #ifdef USE_OPENGLES
-	qglDrawElements(GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes);
+	qglDrawElements( GL_TRIANGLES, idx, GL_UNSIGNED_SHORT, indexes );
 #else
 	R_RenderShadowEdges();
 #endif
 
 #ifdef USE_OPENGLES
-	if (text)
+	if ( text ) {
 		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
-	if (glcol)
+	}
+	if ( glcol ) {
 		qglEnableClientState( GL_COLOR_ARRAY );
+	}
 #endif
 
 	// reenable writing to the color buffer
-	qglColorMask(rgba[0], rgba[1], rgba[2], rgba[3]);
+	qglColorMask( rgba[0], rgba[1], rgba[2], rgba[3] );
 }
 
 
@@ -318,24 +322,28 @@ void RB_ShadowFinish( void ) {
 //	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
 
 #ifdef USE_OPENGLES
-	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-	if (text)
+	GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+	GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+	if ( text ) {
 		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
-	if (glcol)
+	}
+	if ( glcol ) {
 		qglDisableClientState( GL_COLOR_ARRAY );
+	}
 	GLfloat vtx[] = {
-	 -100,  100, -10,
-	  100,  100, -10,
-	  100, -100, -10,
-	 -100, -100, -10
+		-100,  100, -10,
+		100,  100, -10,
+		100, -100, -10,
+		-100, -100, -10
 	};
-	qglVertexPointer  ( 3, GL_FLOAT, 0, vtx );
+	qglVertexPointer( 3, GL_FLOAT, 0, vtx );
 	qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
-	if (text)
+	if ( text ) {
 		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
-	if (glcol)
+	}
+	if ( glcol ) {
 		qglEnableClientState( GL_COLOR_ARRAY );
+	}
 #else
 	qglBegin( GL_QUADS );
 	qglVertex3f( -100, 100, -10 );

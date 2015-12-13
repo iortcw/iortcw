@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ static void AddSkyPolygon( int nump, vec3_t vecs ) {
 		} else {
 			axis = 0;
 		}
-	} else if ( av[1] > av[2] && av[1] > av[0] )     {
+	} else if ( av[1] > av[2] && av[1] > av[0] ) {
 		if ( v[1] < 0 ) {
 			axis = 3;
 		} else {
@@ -187,7 +187,7 @@ static void ClipSkyPolygon( int nump, vec3_t vecs, int stage ) {
 		if ( d > ON_EPSILON ) {
 			front = qtrue;
 			sides[i] = SIDE_FRONT;
-		} else if ( d < -ON_EPSILON )     {
+		} else if ( d < -ON_EPSILON ) {
 			back = qtrue;
 			sides[i] = SIDE_BACK;
 		} else {
@@ -352,13 +352,13 @@ static void MakeSkyVec( float s, float t, int axis, float outSt[2], vec3_t outXY
 	t = ( t + 1 ) * 0.5;
 	if ( s < sky_min ) {
 		s = sky_min;
-	} else if ( s > sky_max )     {
+	} else if ( s > sky_max ) {
 		s = sky_max;
 	}
 
 	if ( t < sky_min ) {
 		t = sky_min;
-	} else if ( t > sky_max )     {
+	} else if ( t > sky_max ) {
 		t = sky_max;
 	}
 
@@ -381,22 +381,24 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 	GL_Bind( image );
 
 #ifdef USE_OPENGLES
-	GLfloat vtx[3*1024];	// arbitrary sized
-	GLfloat tex[2*1024];
+	GLfloat vtx[3 * 1024];    // arbitrary sized
+	GLfloat tex[2 * 1024];
 	int idx;
-	
-	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-	if (glcol)
-		qglDisableClientState(GL_COLOR_ARRAY);
-	if (!text)
+
+	GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+	GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+	if ( glcol ) {
+		qglDisableClientState( GL_COLOR_ARRAY );
+	}
+	if ( !text ) {
 		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	}
 #endif
 
 	for ( t = mins[1] + HALF_SKY_SUBDIVISIONS; t < maxs[1] + HALF_SKY_SUBDIVISIONS; t++ )
 	{
 #ifdef USE_OPENGLES
-		idx=0;
+		idx = 0;
 #else
 		qglBegin( GL_TRIANGLE_STRIP );
 #endif
@@ -404,11 +406,11 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 		for ( s = mins[0] + HALF_SKY_SUBDIVISIONS; s <= maxs[0] + HALF_SKY_SUBDIVISIONS; s++ )
 		{
 #ifdef USE_OPENGLES
-			memcpy(tex+idx*2, s_skyTexCoords[t][s], sizeof(GLfloat)*2);
-			memcpy(vtx+idx*3, s_skyPoints[t][s], sizeof(GLfloat)*3);
+			memcpy( tex + idx * 2, s_skyTexCoords[t][s], sizeof( GLfloat ) * 2 );
+			memcpy( vtx + idx * 3, s_skyPoints[t][s], sizeof( GLfloat ) * 3 );
 			idx++;
-			memcpy(tex+idx*2, s_skyTexCoords[t+1][s], sizeof(GLfloat)*2);
-			memcpy(vtx+idx*3, s_skyPoints[t+1][s], sizeof(GLfloat)*3);
+			memcpy( tex + idx * 2, s_skyTexCoords[t + 1][s], sizeof( GLfloat ) * 2 );
+			memcpy( vtx + idx * 3, s_skyPoints[t + 1][s], sizeof( GLfloat ) * 3 );
 			idx++;
 #else
 			qglTexCoord2fv( s_skyTexCoords[t][s] );
@@ -421,19 +423,21 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 
 #ifdef USE_OPENGLES
 		//*TODO* Try to switch from many DrawArrays of GL_TRIANGLE_STRIP to a single DrawArrays of TRIANGLES to see if it perform better
-		qglVertexPointer (3, GL_FLOAT, 0, vtx);
-		qglTexCoordPointer(2, GL_FLOAT, 0, tex);
-		qglDrawArrays(GL_TRIANGLE_STRIP, 0, idx);
+		qglVertexPointer( 3, GL_FLOAT, 0, vtx );
+		qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
+		qglDrawArrays( GL_TRIANGLE_STRIP, 0, idx );
 #else
 		qglEnd();
 #endif
 	}
 
 #ifdef USE_OPENGLES
-	if (glcol)
-		qglEnableClientState(GL_COLOR_ARRAY);
-	if (!text)
+	if ( glcol ) {
+		qglEnableClientState( GL_COLOR_ARRAY );
+	}
+	if ( !text ) {
 		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	}
 #endif
 }
 
@@ -443,16 +447,18 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 	GL_Bind( image );
 
 #ifdef USE_OPENGLES
-	GLfloat vtx[3*1024];	// arbitrary sized
-	GLfloat tex[2*1024];
+	GLfloat vtx[3 * 1024];    // arbitrary sized
+	GLfloat tex[2 * 1024];
 	int idx;
-	
-	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-	if (glcol)
-		qglDisableClientState(GL_COLOR_ARRAY);
-	if (!text)
+
+	GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+	GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+	if ( glcol ) {
+		qglDisableClientState( GL_COLOR_ARRAY );
+	}
+	if ( !text ) {
 		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	}
 #endif
 
 	//qglDisable (GL_BLEND);
@@ -463,7 +469,7 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 	for ( t = mins[1] + HALF_SKY_SUBDIVISIONS; t < maxs[1] + HALF_SKY_SUBDIVISIONS; t++ )
 	{
 #ifdef USE_OPENGLES
-		idx=0;
+		idx = 0;
 #else
 		qglBegin( GL_TRIANGLE_STRIP );
 #endif
@@ -471,11 +477,11 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 		for ( s = mins[0] + HALF_SKY_SUBDIVISIONS; s <= maxs[0] + HALF_SKY_SUBDIVISIONS; s++ )
 		{
 #ifdef USE_OPENGLES
-			memcpy(tex+idx*2, s_skyTexCoords[t][s], sizeof(GLfloat)*2);
-			memcpy(vtx+idx*3, s_skyPoints[t][s], sizeof(GLfloat)*3);
+			memcpy( tex + idx * 2, s_skyTexCoords[t][s], sizeof( GLfloat ) * 2 );
+			memcpy( vtx + idx * 3, s_skyPoints[t][s], sizeof( GLfloat ) * 3 );
 			idx++;
-			memcpy(tex+idx*2, s_skyTexCoords[t+1][s], sizeof(GLfloat)*2);
-			memcpy(vtx+idx*3, s_skyPoints[t+1][s], sizeof(GLfloat)*3);
+			memcpy( tex + idx * 2, s_skyTexCoords[t + 1][s], sizeof( GLfloat ) * 2 );
+			memcpy( vtx + idx * 3, s_skyPoints[t + 1][s], sizeof( GLfloat ) * 3 );
 			idx++;
 #else
 			qglTexCoord2fv( s_skyTexCoords[t][s] );
@@ -488,9 +494,9 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 
 #ifdef USE_OPENGLES
 		//*TODO* Try to switch from many DrawArrays of GL_TRIANGLE_STRIP to a single DrawArrays of TRIANGLES to see if it perform better
-		qglVertexPointer (3, GL_FLOAT, 0, vtx);
-		qglTexCoordPointer(2, GL_FLOAT, 0, tex);
-		qglDrawArrays(GL_TRIANGLE_STRIP, 0, idx);
+		qglVertexPointer( 3, GL_FLOAT, 0, vtx );
+		qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
+		qglDrawArrays( GL_TRIANGLE_STRIP, 0, idx );
 #else
 		qglEnd();
 #endif
@@ -499,10 +505,12 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 	qglDisable( GL_BLEND );
 
 #ifdef USE_OPENGLES
-	if (glcol)
-		qglEnableClientState(GL_COLOR_ARRAY);
-	if (!text)
+	if ( glcol ) {
+		qglEnableClientState( GL_COLOR_ARRAY );
+	}
+	if ( !text ) {
 		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	}
 #endif
 }
 
@@ -886,15 +894,15 @@ void R_InitSkyTexCoords( float heightCloud ) {
 /*
 ==============
 RB_DrawSun
-	(SA) FIXME: sun should render behind clouds, so passing dark areas cover it up
+    (SA) FIXME: sun should render behind clouds, so passing dark areas cover it up
 ==============
 */
 void RB_DrawSun( float scale, shader_t *shader ) {
-	float	size;
-	float	dist;
-	vec3_t	origin, vec1, vec2;
-	vec3_t	temp;
-	byte	sunColor[4] = { 255, 255, 255, 255 };
+	float size;
+	float dist;
+	vec3_t origin, vec1, vec2;
+	vec3_t temp;
+	byte sunColor[4] = { 255, 255, 255, 255 };
 
 	if ( !shader ) {
 		return;
@@ -990,7 +998,7 @@ void RB_StageIteratorSky( void ) {
 		if ( !backEnd.viewParms.glFog.drawsky ) {
 			return;
 		}
-	} else if ( glfogNum > FOG_NONE )      {
+	} else if ( glfogNum > FOG_NONE ) {
 		if ( !glfogsettings[FOG_CURRENT].drawsky ) {
 			return;
 		}
@@ -1056,4 +1064,3 @@ void RB_StageIteratorSky( void ) {
 	// note that sky was drawn so we will draw a sun later
 	backEnd.skyRenderedThisView = qtrue;
 }
-

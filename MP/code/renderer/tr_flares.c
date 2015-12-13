@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -104,10 +104,11 @@ R_SetFlareCoeff
 */
 static void R_SetFlareCoeff( void ) {
 
-	if(r_flareCoeff->value == 0.0f)
-		flareCoeff = atof(FLARE_STDCOEFF);
-	else
+	if ( r_flareCoeff->value == 0.0f ) {
+		flareCoeff = atof( FLARE_STDCOEFF );
+	} else {
 		flareCoeff = r_flareCoeff->value;
+	}
 }
 
 /*
@@ -140,22 +141,22 @@ This is called at surface tesselation time
 */
 void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float scale, vec3_t normal, int id, qboolean cgvisible ) { //----(SA)	added scale. added id.  added visible
 	int i;
-	flare_t			*f;
+	flare_t         *f;
 	vec3_t local;
 	float d = 1;
 	vec4_t eye, clip, normalized, window;
 
 	backEnd.pc.c_flareAdds++;
 
-	if(normal && (normal[0] || normal[1] || normal[2]))
-	{
+	if ( normal && ( normal[0] || normal[1] || normal[2] ) ) {
 		VectorSubtract( backEnd.viewParms.or.origin, point, local );
-		VectorNormalizeFast(local);
-		d = DotProduct(local, normal);
+		VectorNormalizeFast( local );
+		d = DotProduct( local, normal );
 
 		// If the viewer is behind the flare don't add it.
-		if(d < 0)
+		if ( d < 0 ) {
 			return;
+		}
 	}
 
 	// if the point is off the screen, don't bother adding it
@@ -220,7 +221,7 @@ void RB_AddFlare( void *surface, int fogNum, vec3_t point, vec3_t color, float s
 	f->addedFrame = backEnd.viewParms.frameCount;
 	f->fogNum = fogNum;
 
-	VectorCopy(point, f->origin);
+	VectorCopy( point, f->origin );
 	VectorCopy( color, f->color );
 
 	f->scale = scale;   //----(SA)
@@ -253,15 +254,15 @@ void RB_AddDlightFlares( void ) {
 
 	l = backEnd.refdef.dlights;
 
-	if(tr.world)
+	if ( tr.world ) {
 		fog = tr.world->fogs;
+	}
 
 	for ( i = 0 ; i < backEnd.refdef.num_dlights ; i++, l++ ) {
 
 		// find which fog volume the light is in
-		if(fog)
-		{
-			// find which fog volume the light is in 
+		if ( fog ) {
+			// find which fog volume the light is in
 			for ( j = 1 ; j < tr.world->numfogs ; j++ ) {
 				fog = &tr.world->fogs[j];
 				for ( k = 0 ; k < 3 ; k++ ) {
@@ -276,9 +277,9 @@ void RB_AddDlightFlares( void ) {
 			if ( j == tr.world->numfogs ) {
 				j = 0;
 			}
-		}
-		else
+		} else {
 			j = 0;
+		}
 
 		RB_AddFlare( (void *)l, j, l->origin, l->color, 1.0f, NULL, id++, qtrue );  //----(SA)	also set scale
 	}
@@ -387,19 +388,20 @@ void RB_RenderFlare( flare_t *f ) {
 	backEnd.pc.c_flareRenders++;
 
 	// We don't want too big values anyways when dividing by distance.
-	if(f->eyeZ > -1.0f)
+	if ( f->eyeZ > -1.0f ) {
 		distance = 1.0f;
-	else
+	} else {
 		distance = -f->eyeZ;
+	}
 
 	// calculate the flare size..
-	size = backEnd.viewParms.viewportWidth * ( r_flareSize->value/640.0f + 8 / distance );
+	size = backEnd.viewParms.viewportWidth * ( r_flareSize->value / 640.0f + 8 / distance );
 
 /*
  * This is an alternative to intensity scaling. It changes the size of the flare on screen instead
  * with growing distance. See in the description at the top why this is not the way to go.
-	// size will change ~ 1/r.
-	size = backEnd.viewParms.viewportWidth * (r_flareSize->value / (distance * -2.0f));
+    // size will change ~ 1/r.
+    size = backEnd.viewParms.viewportWidth * (r_flareSize->value / (distance * -2.0f));
 */
 
 /*
@@ -416,24 +418,24 @@ void RB_RenderFlare( flare_t *f ) {
  * The coefficient flareCoeff will determine the falloff speed with increasing distance.
  */
 
-	factor = distance + size * sqrt(flareCoeff);
-	
-	intensity = flareCoeff * size * size / (factor * factor);
+	factor = distance + size * sqrt( flareCoeff );
 
-	VectorScale(f->color, f->drawIntensity * intensity, color);
+	intensity = flareCoeff * size * size / ( factor * factor );
+
+	VectorScale( f->color, f->drawIntensity * intensity, color );
 
 	// Calculations for fogging
-	if(tr.world && f->fogNum > 0 && f->fogNum < tr.world->numfogs)
-	{
+	if ( tr.world && f->fogNum > 0 && f->fogNum < tr.world->numfogs ) {
 		tess.numVertexes = 1;
-		VectorCopy(f->origin, tess.xyz[0]);
+		VectorCopy( f->origin, tess.xyz[0] );
 		tess.fogNum = f->fogNum;
-	
-		RB_CalcModulateColorsByFog(fogFactors);
-		
+
+		RB_CalcModulateColorsByFog( fogFactors );
+
 		// We don't need to render the flare if colors are 0 anyways.
-		if(!(fogFactors[0] || fogFactors[1] || fogFactors[2]))
+		if ( !( fogFactors[0] || fogFactors[1] || fogFactors[2] ) ) {
 			return;
+		}
 	}
 
 	iColor[0] = color[0] * fogFactors[0];
@@ -522,9 +524,8 @@ void RB_RenderFlares( void ) {
 		return;
 	}
 
-	if(r_flareCoeff->modified)
-	{
-		R_SetFlareCoeff();			
+	if ( r_flareCoeff->modified ) {
+		R_SetFlareCoeff();
 		r_flareCoeff->modified = qfalse;
 	}
 
@@ -597,4 +598,3 @@ void RB_RenderFlares( void ) {
 	qglMatrixMode( GL_MODELVIEW );
 	qglPopMatrix();
 }
-

@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ void R_FogOn( void ) {
 		if ( !( glfogsettings[FOG_PORTALVIEW].registered ) ) {
 			return;
 		}
-	} else if ( !glfogNum )     {
+	} else if ( !glfogNum ) {
 		return;
 	}
 
@@ -169,16 +169,16 @@ void R_FogOn( void ) {
 R_SetFog
 
   if fogvar == FOG_CMD_SWITCHFOG {
-	fogvar is the command
-	var1 is the fog to switch to
-	var2 is the time to transition
+    fogvar is the command
+    var1 is the fog to switch to
+    var2 is the time to transition
   }
   else {
-	fogvar is the fog that's being set
-	var1 is the near fog z value
-	var2 is the far fog z value
-	rgb = color
-	density is density, and is used to derive the values of 'mode', 'drawsky', and 'clearscreen'
+    fogvar is the fog that's being set
+    var1 is the near fog z value
+    var2 is the far fog z value
+    rgb = color
+    density is density, and is used to derive the values of 'mode', 'drawsky', and 'clearscreen'
   }
 ==============
 */
@@ -335,7 +335,7 @@ int R_CullPointAndRadius( vec3_t pt, float radius ) {
 		dist = DotProduct( pt, frust->normal ) - frust->dist;
 		if ( dist < -radius ) {
 			return CULL_OUT;
-		} else if ( dist <= radius )   {
+		} else if ( dist <= radius ) {
 			mightBeClipped = qtrue;
 		}
 	}
@@ -543,17 +543,17 @@ void R_RotateForViewer( void ) {
 	viewerMatrix[0] = tr.viewParms.or.axis[0][0];
 	viewerMatrix[4] = tr.viewParms.or.axis[0][1];
 	viewerMatrix[8] = tr.viewParms.or.axis[0][2];
-	viewerMatrix[12] = -origin[0] * viewerMatrix[0] + - origin[1] * viewerMatrix[4] + - origin[2] * viewerMatrix[8];
+	viewerMatrix[12] = -origin[0] * viewerMatrix[0] + -origin[1] * viewerMatrix[4] + -origin[2] * viewerMatrix[8];
 
 	viewerMatrix[1] = tr.viewParms.or.axis[1][0];
 	viewerMatrix[5] = tr.viewParms.or.axis[1][1];
 	viewerMatrix[9] = tr.viewParms.or.axis[1][2];
-	viewerMatrix[13] = -origin[0] * viewerMatrix[1] + - origin[1] * viewerMatrix[5] + - origin[2] * viewerMatrix[9];
+	viewerMatrix[13] = -origin[0] * viewerMatrix[1] + -origin[1] * viewerMatrix[5] + -origin[2] * viewerMatrix[9];
 
 	viewerMatrix[2] = tr.viewParms.or.axis[2][0];
 	viewerMatrix[6] = tr.viewParms.or.axis[2][1];
 	viewerMatrix[10] = tr.viewParms.or.axis[2][2];
-	viewerMatrix[14] = -origin[0] * viewerMatrix[2] + - origin[1] * viewerMatrix[6] + - origin[2] * viewerMatrix[10];
+	viewerMatrix[14] = -origin[0] * viewerMatrix[2] + -origin[1] * viewerMatrix[6] + -origin[2] * viewerMatrix[10];
 
 	viewerMatrix[3] = 0;
 	viewerMatrix[7] = 0;
@@ -745,57 +745,54 @@ Set up the culling frustum planes for the current view using the results we got 
 the projection matrix.
 =================
 */
-void R_SetupFrustum (viewParms_t *dest, float xmin, float xmax, float ymax, float zProj, float stereoSep)
-{
+void R_SetupFrustum( viewParms_t *dest, float xmin, float xmax, float ymax, float zProj, float stereoSep ) {
 	vec3_t ofsorigin;
 	float oppleg, adjleg, length;
 	int i;
-	
-	if(stereoSep == 0 && xmin == -xmax)
-	{
-		// symmetric case can be simplified
-		VectorCopy(dest->or.origin, ofsorigin);
 
-		length = sqrt(xmax * xmax + zProj * zProj);
+	if ( stereoSep == 0 && xmin == -xmax ) {
+		// symmetric case can be simplified
+		VectorCopy( dest->or.origin, ofsorigin );
+
+		length = sqrt( xmax * xmax + zProj * zProj );
 		oppleg = xmax / length;
 		adjleg = zProj / length;
 
-		VectorScale(dest->or.axis[0], oppleg, dest->frustum[0].normal);
-		VectorMA(dest->frustum[0].normal, adjleg, dest->or.axis[1], dest->frustum[0].normal);
+		VectorScale( dest->or.axis[0], oppleg, dest->frustum[0].normal );
+		VectorMA( dest->frustum[0].normal, adjleg, dest->or.axis[1], dest->frustum[0].normal );
 
-		VectorScale(dest->or.axis[0], oppleg, dest->frustum[1].normal);
-		VectorMA(dest->frustum[1].normal, -adjleg, dest->or.axis[1], dest->frustum[1].normal);
-	}
-	else
+		VectorScale( dest->or.axis[0], oppleg, dest->frustum[1].normal );
+		VectorMA( dest->frustum[1].normal, -adjleg, dest->or.axis[1], dest->frustum[1].normal );
+	} else
 	{
 		// In stereo rendering, due to the modification of the projection matrix, dest->or.origin is not the
 		// actual origin that we're rendering so offset the tip of the view pyramid.
-		VectorMA(dest->or.origin, stereoSep, dest->or.axis[1], ofsorigin);
-	
+		VectorMA( dest->or.origin, stereoSep, dest->or.axis[1], ofsorigin );
+
 		oppleg = xmax + stereoSep;
-		length = sqrt(oppleg * oppleg + zProj * zProj);
-		VectorScale(dest->or.axis[0], oppleg / length, dest->frustum[0].normal);
-		VectorMA(dest->frustum[0].normal, zProj / length, dest->or.axis[1], dest->frustum[0].normal);
+		length = sqrt( oppleg * oppleg + zProj * zProj );
+		VectorScale( dest->or.axis[0], oppleg / length, dest->frustum[0].normal );
+		VectorMA( dest->frustum[0].normal, zProj / length, dest->or.axis[1], dest->frustum[0].normal );
 
 		oppleg = xmin + stereoSep;
-		length = sqrt(oppleg * oppleg + zProj * zProj);
-		VectorScale(dest->or.axis[0], -oppleg / length, dest->frustum[1].normal);
-		VectorMA(dest->frustum[1].normal, -zProj / length, dest->or.axis[1], dest->frustum[1].normal);
+		length = sqrt( oppleg * oppleg + zProj * zProj );
+		VectorScale( dest->or.axis[0], -oppleg / length, dest->frustum[1].normal );
+		VectorMA( dest->frustum[1].normal, -zProj / length, dest->or.axis[1], dest->frustum[1].normal );
 	}
 
-	length = sqrt(ymax * ymax + zProj * zProj);
+	length = sqrt( ymax * ymax + zProj * zProj );
 	oppleg = ymax / length;
 	adjleg = zProj / length;
 
-	VectorScale(dest->or.axis[0], oppleg, dest->frustum[2].normal);
-	VectorMA(dest->frustum[2].normal, adjleg, dest->or.axis[2], dest->frustum[2].normal);
+	VectorScale( dest->or.axis[0], oppleg, dest->frustum[2].normal );
+	VectorMA( dest->frustum[2].normal, adjleg, dest->or.axis[2], dest->frustum[2].normal );
 
-	VectorScale(dest->or.axis[0], oppleg, dest->frustum[3].normal);
-	VectorMA(dest->frustum[3].normal, -adjleg, dest->or.axis[2], dest->frustum[3].normal);
-	
-	for (i=0 ; i<4 ; i++) {
+	VectorScale( dest->or.axis[0], oppleg, dest->frustum[3].normal );
+	VectorMA( dest->frustum[3].normal, -adjleg, dest->or.axis[2], dest->frustum[3].normal );
+
+	for ( i = 0 ; i < 4 ; i++ ) {
 		dest->frustum[i].type = PLANE_NON_AXIAL;
-		dest->frustum[i].dist = DotProduct (ofsorigin, dest->frustum[i].normal);
+		dest->frustum[i].dist = DotProduct( ofsorigin, dest->frustum[i].normal );
 		SetPlaneSignbits( &dest->frustum[i] );
 	}
 }
@@ -805,53 +802,53 @@ void R_SetupFrustum (viewParms_t *dest, float xmin, float xmax, float ymax, floa
 R_SetupProjection
 ===============
 */
-void R_SetupProjection(viewParms_t *dest, float zProj, qboolean computeFrustum)
-{
-	float	xmin, xmax, ymin, ymax;
-	float	width, height, stereoSep = r_stereoSeparation->value;
+void R_SetupProjection( viewParms_t *dest, float zProj, qboolean computeFrustum ) {
+	float xmin, xmax, ymin, ymax;
+	float width, height, stereoSep = r_stereoSeparation->value;
 
 	/*
-	 * offset the view origin of the viewer for stereo rendering 
+	 * offset the view origin of the viewer for stereo rendering
 	 * by setting the projection matrix appropriately.
 	 */
 
-	if(stereoSep != 0)
-	{
-		if(dest->stereoFrame == STEREO_LEFT)
+	if ( stereoSep != 0 ) {
+		if ( dest->stereoFrame == STEREO_LEFT ) {
 			stereoSep = zProj / stereoSep;
-		else if(dest->stereoFrame == STEREO_RIGHT)
+		} else if ( dest->stereoFrame == STEREO_RIGHT ) {
 			stereoSep = zProj / -stereoSep;
-		else
+		} else {
 			stereoSep = 0;
+		}
 	}
 
-	ymax = zProj * tan(dest->fovY * M_PI / 360.0f);
+	ymax = zProj * tan( dest->fovY * M_PI / 360.0f );
 	ymin = -ymax;
 
-	xmax = zProj * tan(dest->fovX * M_PI / 360.0f);
+	xmax = zProj * tan( dest->fovX * M_PI / 360.0f );
 	xmin = -xmax;
 
 	width = xmax - xmin;
 	height = ymax - ymin;
-	
+
 	dest->projectionMatrix[0] = 2 * zProj / width;
 	dest->projectionMatrix[4] = 0;
-	dest->projectionMatrix[8] = (xmax + xmin + 2 * stereoSep) / width;
+	dest->projectionMatrix[8] = ( xmax + xmin + 2 * stereoSep ) / width;
 	dest->projectionMatrix[12] = 2 * zProj * stereoSep / width;
 
 	dest->projectionMatrix[1] = 0;
 	dest->projectionMatrix[5] = 2 * zProj / height;
-	dest->projectionMatrix[9] = ( ymax + ymin ) / height;	// normally 0
+	dest->projectionMatrix[9] = ( ymax + ymin ) / height;   // normally 0
 	dest->projectionMatrix[13] = 0;
 
 	dest->projectionMatrix[3] = 0;
 	dest->projectionMatrix[7] = 0;
 	dest->projectionMatrix[11] = -1;
 	dest->projectionMatrix[15] = 0;
-	
+
 	// Now that we have all the data for the projection matrix we can also setup the view frustum.
-	if(computeFrustum)
-		R_SetupFrustum(dest, xmin, xmax, ymax, zProj, stereoSep);
+	if ( computeFrustum ) {
+		R_SetupFrustum( dest, xmin, xmax, ymax, zProj, stereoSep );
+	}
 }
 
 /*
@@ -861,13 +858,12 @@ R_SetupProjectionZ
 Sets the z-component transformation part in the projection matrix
 ===============
 */
-void R_SetupProjectionZ(viewParms_t *dest)
-{
+void R_SetupProjectionZ( viewParms_t *dest ) {
 	float zNear, zFar, depth;
-	
-	zNear	= r_znear->value;
-	zFar	= dest->zFar;	
-	depth	= zFar - zNear;
+
+	zNear   = r_znear->value;
+	zFar    = dest->zFar;
+	depth   = zFar - zNear;
 
 	dest->projectionMatrix[2] = 0;
 	dest->projectionMatrix[6] = 0;
@@ -1055,7 +1051,7 @@ qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 				RotatePointAroundVector( camera->axis[1], camera->axis[0], transformed, d );
 				CrossProduct( camera->axis[0], camera->axis[1], camera->axis[2] );
 			}
-		} else if ( e->e.skinNum )   {
+		} else if ( e->e.skinNum ) {
 			d = e->e.skinNum;
 			VectorCopy( camera->axis[1], transformed );
 			RotatePointAroundVector( camera->axis[1], camera->axis[0], transformed, d );
@@ -1168,7 +1164,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 		{
 			if ( clip[j] >= clip[3] ) {
 				pointFlags |= ( 1 << ( j * 2 ) );
-			} else if ( clip[j] <= -clip[3] )   {
+			} else if ( clip[j] <= -clip[3] ) {
 				pointFlags |= ( 1 << ( j * 2 + 1 ) );
 			}
 		}
@@ -1200,8 +1196,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t *drawSurf, vec4_t clipDest[128
 			shortest = len;
 		}
 
-		if ( DotProduct( normal, tess.normal[tess.indexes[i]] ) >= 0 )
- 		{
+		if ( DotProduct( normal, tess.normal[tess.indexes[i]] ) >= 0 ) {
 			numTriangles--;
 		}
 	}
@@ -1330,27 +1325,26 @@ DRAWSURF SORTING
 R_Radix
 ===============
 */
-static ID_INLINE void R_Radix( int byte, int size, drawSurf_t *source, drawSurf_t *dest )
-{
-  int           count[ 256 ] = { 0 };
-  int           index[ 256 ];
-  int           i;
-  unsigned char *sortKey = NULL;
-  unsigned char *end = NULL;
+static ID_INLINE void R_Radix( int byte, int size, drawSurf_t *source, drawSurf_t *dest ) {
+	int count[ 256 ] = { 0 };
+	int index[ 256 ];
+	int i;
+	unsigned char *sortKey = NULL;
+	unsigned char *end = NULL;
 
-  sortKey = ( (unsigned char *)&source[ 0 ].sort ) + byte;
-  end = sortKey + ( size * sizeof( drawSurf_t ) );
-  for( ; sortKey < end; sortKey += sizeof( drawSurf_t ) )
-    ++count[ *sortKey ];
+	sortKey = ( (unsigned char *)&source[ 0 ].sort ) + byte;
+	end = sortKey + ( size * sizeof( drawSurf_t ) );
+	for ( ; sortKey < end; sortKey += sizeof( drawSurf_t ) )
+		++count[ *sortKey ];
 
-  index[ 0 ] = 0;
+	index[ 0 ] = 0;
 
-  for( i = 1; i < 256; ++i )
-    index[ i ] = index[ i - 1 ] + count[ i - 1 ];
+	for ( i = 1; i < 256; ++i )
+		index[ i ] = index[ i - 1 ] + count[ i - 1 ];
 
-  sortKey = ( (unsigned char *)&source[ 0 ].sort ) + byte;
-  for( i = 0; i < size; ++i, sortKey += sizeof( drawSurf_t ) )
-    dest[ index[ *sortKey ]++ ] = source[ i ];
+	sortKey = ( (unsigned char *)&source[ 0 ].sort ) + byte;
+	for ( i = 0; i < size; ++i, sortKey += sizeof( drawSurf_t ) )
+		dest[ index[ *sortKey ]++ ] = source[ i ];
 }
 
 /*
@@ -1360,19 +1354,18 @@ R_RadixSort
 Radix sort with 4 byte size buckets
 ===============
 */
-static void R_RadixSort( drawSurf_t *source, int size )
-{
-  static drawSurf_t scratch[ MAX_DRAWSURFS ];
+static void R_RadixSort( drawSurf_t *source, int size ) {
+	static drawSurf_t scratch[ MAX_DRAWSURFS ];
 #ifdef Q3_LITTLE_ENDIAN
-  R_Radix( 0, size, source, scratch );
-  R_Radix( 1, size, scratch, source );
-  R_Radix( 2, size, source, scratch );
-  R_Radix( 3, size, scratch, source );
+	R_Radix( 0, size, source, scratch );
+	R_Radix( 1, size, scratch, source );
+	R_Radix( 2, size, source, scratch );
+	R_Radix( 3, size, scratch, source );
 #else
-  R_Radix( 3, size, source, scratch );
-  R_Radix( 2, size, scratch, source );
-  R_Radix( 1, size, source, scratch );
-  R_Radix( 0, size, scratch, source );
+	R_Radix( 3, size, source, scratch );
+	R_Radix( 2, size, scratch, source );
+	R_Radix( 1, size, source, scratch );
+	R_Radix( 0, size, scratch, source );
 #endif //Q3_LITTLE_ENDIAN
 }
 
@@ -1526,11 +1519,11 @@ void R_AddEntitySurfaces( void ) {
 				case MOD_MESH:
 					R_AddMD3Surfaces( ent );
 					break;
-					// Ridah
+				// Ridah
 				case MOD_MDC:
 					R_AddMDCSurfaces( ent );
 					break;
-					// done.
+				// done.
 				case MOD_MDS:
 					R_AddAnimSurfaces( ent );
 					break;
@@ -1583,7 +1576,7 @@ void R_GenerateDrawSurfs( void ) {
 	R_SetFarClip();
 
 	// we know the size of the clipping volume. Now set the rest of the projection matrix.
-	R_SetupProjectionZ (&tr.viewParms);
+	R_SetupProjectionZ( &tr.viewParms );
 
 	R_AddEntitySurfaces();
 }
@@ -1603,8 +1596,8 @@ void R_DebugPolygon( int color, int numPoints, float *points ) {
 	// draw solid shade
 
 #ifdef USE_OPENGLES
-	qglColor4f( color&1, (color>>1)&1, (color>>2)&1, 1.0f );
-	qglVertexPointer  ( 3, GL_FLOAT, 0, points );
+	qglColor4f( color & 1, ( color >> 1 ) & 1, ( color >> 2 ) & 1, 1.0f );
+	qglVertexPointer( 3, GL_FLOAT, 0, points );
 	qglDrawArrays( GL_TRIANGLE_FAN, 0, numPoints );
 #else
 	qglColor3f( color & 1, ( color >> 1 ) & 1, ( color >> 2 ) & 1 );
@@ -1622,7 +1615,7 @@ void R_DebugPolygon( int color, int numPoints, float *points ) {
 	qglDepthRange( 0, 0 );
 #ifdef USE_OPENGLES
 	qglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	qglVertexPointer  ( 3, GL_FLOAT, 0, points );
+	qglVertexPointer( 3, GL_FLOAT, 0, points );
 	qglDrawArrays( GL_LINES, 0, numPoints );
 #else
 	qglColor3f( 1, 1, 1 );
@@ -1686,7 +1679,7 @@ void R_RenderView( viewParms_t *parms ) {
 	// set viewParms.world
 	R_RotateForViewer();
 
-	R_SetupProjection(&tr.viewParms, r_zproj->value, qtrue);
+	R_SetupProjection( &tr.viewParms, r_zproj->value, qtrue );
 
 	R_GenerateDrawSurfs();
 

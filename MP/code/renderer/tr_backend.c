@@ -2,9 +2,9 @@
 ===========================================================================
 
 Return to Castle Wolfenstein multiplayer GPL Source Code
-Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).  
+This file is part of the Return to Castle Wolfenstein multiplayer GPL Source Code (RTCW MP Source Code).
 
 RTCW MP Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ void GL_SelectTexture( int unit ) {
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE0_ARB )\n" );
 		qglClientActiveTextureARB( GL_TEXTURE0_ARB );
 		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE0_ARB )\n" );
-	} else if ( unit == 1 )   {
+	} else if ( unit == 1 ) {
 		qglActiveTextureARB( GL_TEXTURE1_ARB );
 		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE1_ARB )\n" );
 		qglClientActiveTextureARB( GL_TEXTURE1_ARB );
@@ -133,18 +133,15 @@ void GL_Cull( int cullType ) {
 
 	glState.faceCulling = cullType;
 
-	if ( cullType == CT_TWO_SIDED ) 
-	{
+	if ( cullType == CT_TWO_SIDED ) {
 		qglDisable( GL_CULL_FACE );
-	} 
-	else 
+	} else
 	{
 		qboolean cullFront;
 		qglEnable( GL_CULL_FACE );
 
-		cullFront = (cullType == CT_FRONT_SIDED);
-		if ( backEnd.viewParms.isMirror )
-		{
+		cullFront = ( cullType == CT_FRONT_SIDED );
+		if ( backEnd.viewParms.isMirror ) {
 			cullFront = !cullFront;
 		}
 
@@ -448,7 +445,7 @@ void RB_BeginDrawingView( void ) {
 				clearBits |= GL_COLOR_BUFFER_BIT;
 				if ( glfogsettings[FOG_PORTALVIEW].registered ) {
 					qglClearColor( glfogsettings[FOG_PORTALVIEW].color[0], glfogsettings[FOG_PORTALVIEW].color[1], glfogsettings[FOG_PORTALVIEW].color[2], glfogsettings[FOG_PORTALVIEW].color[3] );
-				} else if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered )      {
+				} else if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered ) {
 					qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
 				} else {
 //					qglClearColor ( 1.0, 0.0, 0.0, 1.0 );	// red clear for testing portal sky clear
@@ -603,7 +600,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// a "entityMergable" shader is a shader that can have surfaces from seperate
 		// entities merged into a single batch, like smoke and blood puff sprites
 		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted
-			 || ( entityNum != oldEntityNum && !shader->entityMergable) ) ) {
+								 || ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) {
 			if ( oldShader != NULL ) {
 				RB_EndSurface();
 			}
@@ -639,8 +636,9 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					// hack the depth range to prevent view model from poking into walls
 					depthRange = qtrue;
 
-					if(backEnd.currentEntity->e.renderfx & RF_CROSSHAIR)
+					if ( backEnd.currentEntity->e.renderfx & RF_CROSSHAIR ) {
 						isCrosshair = qtrue;
+					}
 				}
 			} else {
 				backEnd.currentEntity = &tr.worldEntity;
@@ -660,44 +658,37 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 			// change depthrange. Also change projection matrix so first person weapon does not look like coming
 			// out of the screen.
 			//
-			if (oldDepthRange != depthRange || wasCrosshair != isCrosshair)
-			{
-				if (depthRange)
-				{
-					if(backEnd.viewParms.stereoFrame != STEREO_CENTER)
-					{
-						if(isCrosshair)
-						{
-							if(oldDepthRange)
-							{
+			if ( oldDepthRange != depthRange || wasCrosshair != isCrosshair ) {
+				if ( depthRange ) {
+					if ( backEnd.viewParms.stereoFrame != STEREO_CENTER ) {
+						if ( isCrosshair ) {
+							if ( oldDepthRange ) {
 								// was not a crosshair but now is, change back proj matrix
-								qglMatrixMode(GL_PROJECTION);
-								qglLoadMatrixf(backEnd.viewParms.projectionMatrix);
-								qglMatrixMode(GL_MODELVIEW);
+								qglMatrixMode( GL_PROJECTION );
+								qglLoadMatrixf( backEnd.viewParms.projectionMatrix );
+								qglMatrixMode( GL_MODELVIEW );
 							}
-						}
-						else
+						} else
 						{
 							viewParms_t temp = backEnd.viewParms;
 
-							R_SetupProjection(&temp, r_znear->value, qfalse);
+							R_SetupProjection( &temp, r_znear->value, qfalse );
 
-							qglMatrixMode(GL_PROJECTION);
-							qglLoadMatrixf(temp.projectionMatrix);
-							qglMatrixMode(GL_MODELVIEW);
+							qglMatrixMode( GL_PROJECTION );
+							qglLoadMatrixf( temp.projectionMatrix );
+							qglMatrixMode( GL_MODELVIEW );
 						}
 					}
 
-					if(!oldDepthRange)
-						qglDepthRange (0, 0.3);
-				}
-				else
+					if ( !oldDepthRange ) {
+						qglDepthRange( 0, 0.3 );
+					}
+				} else
 				{
-					if(!wasCrosshair && backEnd.viewParms.stereoFrame != STEREO_CENTER)
-					{
-						qglMatrixMode(GL_PROJECTION);
-						qglLoadMatrixf(backEnd.viewParms.projectionMatrix);
-						qglMatrixMode(GL_MODELVIEW);
+					if ( !wasCrosshair && backEnd.viewParms.stereoFrame != STEREO_CENTER ) {
+						qglMatrixMode( GL_PROJECTION );
+						qglLoadMatrixf( backEnd.viewParms.projectionMatrix );
+						qglMatrixMode( GL_MODELVIEW );
 					}
 					qglDepthRange( 0, 1 );
 				}
@@ -729,8 +720,8 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		qglDepthRange( 0, 1 );
 	}
 
-	if (r_drawSun->integer) {
-		RB_DrawSun(0.2, tr.sunShader);
+	if ( r_drawSun->integer ) {
+		RB_DrawSun( 0.2, tr.sunShader );
 	}
 
 	// darken down any stencil shadows
@@ -854,28 +845,34 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *
 
 #ifdef USE_OPENGLES
 	GLfloat tex[] = {
-	 0.5f / cols,  0.5f / rows,
-	 ( cols - 0.5f ) / cols ,  0.5f / rows,
-	 ( cols - 0.5f ) / cols, ( rows - 0.5f ) / rows,
-	 0.5f / cols, ( rows - 0.5f ) / rows };
+		0.5f / cols,  0.5f / rows,
+		( cols - 0.5f ) / cols,  0.5f / rows,
+		( cols - 0.5f ) / cols, ( rows - 0.5f ) / rows,
+		0.5f / cols, ( rows - 0.5f ) / rows
+	};
 	GLfloat vtx[] = {
-	 x, y,
-	 x+w, y,
-	 x+w, y+h,
-	 x, y+h };
-	GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-	GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-	if (glcol)
-		qglDisableClientState(GL_COLOR_ARRAY);
-	if (!text)
+		x, y,
+		x + w, y,
+		x + w, y + h,
+		x, y + h
+	};
+	GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+	GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+	if ( glcol ) {
+		qglDisableClientState( GL_COLOR_ARRAY );
+	}
+	if ( !text ) {
 		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	}
 	qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
-	qglVertexPointer  ( 2, GL_FLOAT, 0, vtx );
+	qglVertexPointer( 2, GL_FLOAT, 0, vtx );
 	qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
-	if (!text)
+	if ( !text ) {
 		qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
-	if (glcol)
-		qglEnableClientState(GL_COLOR_ARRAY);
+	}
+	if ( glcol ) {
+		qglEnableClientState( GL_COLOR_ARRAY );
+	}
 #else
 	qglBegin( GL_QUADS );
 	qglTexCoord2f( 0.5f / cols,  0.5f / rows );
@@ -1274,28 +1271,34 @@ void RB_ShowImages( void ) {
 
 #ifdef USE_OPENGLES
 		GLfloat tex[] = {
-		 0, 0, 
-		 1, 0,
-		 1, 1, 
-		 0, 1 };
+			0, 0,
+			1, 0,
+			1, 1,
+			0, 1
+		};
 		GLfloat vtx[] = {
-		 x, y,
-		 x + w, y,
-		 x + w, y + h,
-		 x, y + h };
-		GLboolean text = qglIsEnabled(GL_TEXTURE_COORD_ARRAY);
-		GLboolean glcol = qglIsEnabled(GL_COLOR_ARRAY);
-		if (glcol)
-			qglDisableClientState(GL_COLOR_ARRAY);
-		if (!text)
+			x, y,
+			x + w, y,
+			x + w, y + h,
+			x, y + h
+		};
+		GLboolean text = qglIsEnabled( GL_TEXTURE_COORD_ARRAY );
+		GLboolean glcol = qglIsEnabled( GL_COLOR_ARRAY );
+		if ( glcol ) {
+			qglDisableClientState( GL_COLOR_ARRAY );
+		}
+		if ( !text ) {
 			qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+		}
 		qglTexCoordPointer( 2, GL_FLOAT, 0, tex );
-		qglVertexPointer  ( 2, GL_FLOAT, 0, vtx );
+		qglVertexPointer( 2, GL_FLOAT, 0, vtx );
 		qglDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
-		if (glcol)
-			qglEnableClientState(GL_COLOR_ARRAY);
-		if (!text)
+		if ( glcol ) {
+			qglEnableClientState( GL_COLOR_ARRAY );
+		}
+		if ( !text ) {
 			qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		}
 #else
 		GL_Bind( image );
 		qglBegin( GL_QUADS );
@@ -1324,13 +1327,12 @@ RB_ColorMask
 
 =============
 */
-const void *RB_ColorMask(const void *data)
-{
+const void *RB_ColorMask( const void *data ) {
 	const colorMaskCommand_t *cmd = data;
-	
-	qglColorMask(cmd->rgba[0], cmd->rgba[1], cmd->rgba[2], cmd->rgba[3]);
-	
-	return (const void *)(cmd + 1);
+
+	qglColorMask( cmd->rgba[0], cmd->rgba[1], cmd->rgba[2], cmd->rgba[3] );
+
+	return (const void *)( cmd + 1 );
 }
 
 /*
@@ -1339,20 +1341,21 @@ RB_ClearDepth
 
 =============
 */
-const void *RB_ClearDepth(const void *data)
-{
+const void *RB_ClearDepth( const void *data ) {
 	const clearDepthCommand_t *cmd = data;
-	
-	if(tess.numIndexes)
+
+	if ( tess.numIndexes ) {
 		RB_EndSurface();
+	}
 
 	// texture swapping test
-	if (r_showImages->integer)
+	if ( r_showImages->integer ) {
 		RB_ShowImages();
+	}
 
-	qglClear(GL_DEPTH_BUFFER_BIT);
-	
-	return (const void *)(cmd + 1);
+	qglClear( GL_DEPTH_BUFFER_BIT );
+
+	return (const void *)( cmd + 1 );
 }
 
 /*
@@ -1426,7 +1429,7 @@ void RB_ExecuteRenderCommands( const void *data ) {
 	t1 = ri.Milliseconds();
 
 	while ( 1 ) {
-		data = PADP(data, sizeof(void *));
+		data = PADP( data, sizeof( void * ) );
 
 		switch ( *(const int *)data ) {
 		case RC_SET_COLOR:
@@ -1473,10 +1476,10 @@ void RB_ExecuteRenderCommands( const void *data ) {
 			data = RB_TakeVideoFrameCmd( data );
 			break;
 		case RC_COLORMASK:
-			data = RB_ColorMask(data);
+			data = RB_ColorMask( data );
 			break;
 		case RC_CLEARDEPTH:
-			data = RB_ClearDepth(data);
+			data = RB_ClearDepth( data );
 			break;
 		case RC_END_OF_LIST:
 		default:
@@ -1488,4 +1491,3 @@ void RB_ExecuteRenderCommands( const void *data ) {
 	}
 
 }
-
