@@ -326,13 +326,12 @@ If a larger shrinking is needed, use the mipmap function
 before or after.
 ================
 */
-static void ResampleTexture( unsigned *in, int inwidth, int inheight, unsigned *out,
-							 int outwidth, int outheight ) {
+static void ResampleTexture( unsigned *in, int inwidth, int inheight, unsigned *out, int outwidth, int outheight ) {
 	int i, j;
-	unsigned    *inrow, *inrow2;
+	unsigned *inrow, *inrow2;
 	unsigned frac, fracstep;
 	unsigned p1[2048], p2[2048];
-	byte        *pix1, *pix2, *pix3, *pix4;
+	byte *pix1, *pix2, *pix3, *pix4;
 
 	if ( outwidth > 2048 ) {
 		ri.Error( ERR_DROP, "ResampleTexture: max width" );
@@ -391,8 +390,7 @@ void R_LightScaleTexture( unsigned *in, int inwidth, int inheight, qboolean only
 				p[2] = s_gammatable[p[2]];
 			}
 		}
-	} else
-	{
+	} else {
 		int i, c;
 		byte    *p;
 
@@ -407,8 +405,7 @@ void R_LightScaleTexture( unsigned *in, int inwidth, int inheight, qboolean only
 				p[1] = s_intensitytable[p[1]];
 				p[2] = s_intensitytable[p[2]];
 			}
-		} else
-		{
+		} else {
 			for ( i = 0 ; i < c ; i++, p += 4 )
 			{
 				p[0] = s_gammatable[s_intensitytable[p[0]]];
@@ -633,7 +630,7 @@ byte * gles_convertRGB( byte * data, int width, int height ) {
 
 	return temp;
 }
-byte *  gles_convertRGBA4( byte * data, int width, int height ) {
+byte * gles_convertRGBA4( byte * data, int width, int height ) {
 	byte * temp = (byte *) ri.Z_Malloc( width * height * 2 );
 	int i;
 
@@ -722,20 +719,20 @@ Upload32
 
 ===============
 */
-static void Upload32(   unsigned *data,
-						int width, int height,
-						qboolean mipmap,
-						qboolean picmip,
-						qboolean lightMap,
-						int *format,
-						int *pUploadWidth, int *pUploadHeight,
-						qboolean noCompress ) {
+static void Upload32( unsigned *data,
+					int width, int height,
+					qboolean mipmap,
+					qboolean picmip,
+					qboolean lightMap,
+					int *format,
+					int *pUploadWidth, int *pUploadHeight,
+					qboolean noCompress ) {
 	int samples;
 	int scaled_width, scaled_height;
-	unsigned    *scaledBuffer = NULL;
-	unsigned    *resampledBuffer = NULL;
+	unsigned *scaledBuffer = NULL;
+	unsigned *resampledBuffer = NULL;
 	int i, c;
-	byte        *scan;
+	byte *scan;
 	GLenum internalFormat = GL_RGB;
 	float rMax = 0, gMax = 0, bMax = 0;
 	static int rmse_saved = 0;
@@ -797,8 +794,7 @@ static void Upload32(   unsigned *data,
 	// scale both axis down equally so we don't have to
 	// deal with a half mip resampling
 	//
-	while ( scaled_width > glConfig.maxTextureSize
-			|| scaled_height > glConfig.maxTextureSize ) {
+	while ( scaled_width > glConfig.maxTextureSize || scaled_height > glConfig.maxTextureSize ) {
 		scaled_width >>= 1;
 		scaled_height >>= 1;
 	}
@@ -821,7 +817,7 @@ static void Upload32(   unsigned *data,
 			scan[i * 4 + 1] = luma;
 			scan[i * 4 + 2] = luma;
 		}
-	} else if ( r_greyscale->value )    {
+	} else if ( r_greyscale->value ) {
 		for ( i = 0; i < c; i++ )
 		{
 			float luma = LUMA( scan[i * 4], scan[i * 4 + 1], scan[i * 4 + 2] );
@@ -837,8 +833,7 @@ static void Upload32(   unsigned *data,
 		} else {
 			internalFormat = GL_RGB;
 		}
-	} else
-	{
+	} else {
 		for ( i = 0; i < c; i++ )
 		{
 			if ( scan[i * 4 + 0] > rMax ) {
@@ -866,14 +861,13 @@ static void Upload32(   unsigned *data,
 					internalFormat = GL_LUMINANCE16;
 				} else
 #endif
-				internalFormat = GL_LUMINANCE;
-			} else
-			{
+					internalFormat = GL_LUMINANCE;
+			} else {
 #ifndef USE_OPENGLES
 				if ( !noCompress && glConfig.textureCompression == TC_EXT_COMP_S3TC ) {
 					// TODO: which format is best for which textures?
 					internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-				} else if ( !noCompress && glConfig.textureCompression == TC_S3TC )   {
+				} else if ( !noCompress && glConfig.textureCompression == TC_S3TC ) {
 					internalFormat = GL_RGB4_S3TC;
 				} else
 #endif
@@ -890,7 +884,7 @@ static void Upload32(   unsigned *data,
 					internalFormat = GL_RGB;
 				}
 			}
-		} else if ( samples == 4 )   {
+		} else if ( samples == 4 ) {
 
 			if ( r_greyscale->integer ) {
 #ifndef USE_OPENGLES
@@ -900,9 +894,8 @@ static void Upload32(   unsigned *data,
 					internalFormat = GL_LUMINANCE16_ALPHA16;
 				} else
 #endif
-				internalFormat = GL_LUMINANCE_ALPHA;
-			} else
-			{
+					internalFormat = GL_LUMINANCE_ALPHA;
+			} else {
 #ifndef USE_OPENGLES
 				if ( !noCompress && glConfig.textureCompression == TC_EXT_COMP_S3TC ) {
 					// TODO: which format is best for which textures?
@@ -927,11 +920,9 @@ static void Upload32(   unsigned *data,
 
 	// copy or resample data as appropriate for first MIP level
 #ifdef USE_OPENGLES
-	if ( ( scaled_width == width ) &&
-		 ( scaled_height == height ) ) {
+	if ( ( scaled_width == width ) && ( scaled_height == height ) ) {
 		Com_Memcpy( scaledBuffer, data, width * height * 4 );
-	} else
-	{
+	} else {
 		// use the normal mip-mapping function to go down from here
 		while ( width > scaled_width || height > scaled_height ) {
 			R_MipMap( (byte *)data, width, height );
@@ -988,11 +979,10 @@ static void Upload32(   unsigned *data,
 	*pUploadHeight = scaled_height;
 	*format = internalFormat;
 
-	//	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	//	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	//qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	//qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 #else
-	if ( ( scaled_width == width ) &&
-		 ( scaled_height == height ) ) {
+	if ( ( scaled_width == width ) && ( scaled_height == height ) ) {
 		if ( !mipmap ) {
 			qglTexImage2D( GL_TEXTURE_2D, 0, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 			*pUploadWidth = scaled_width;
@@ -1002,8 +992,7 @@ static void Upload32(   unsigned *data,
 			goto done;
 		}
 		memcpy( scaledBuffer, data, width * height * 4 );
-	} else
-	{
+	} else {
 		// use the normal mip-mapping function to go down from here
 		while ( width > scaled_width || height > scaled_height ) {
 			R_MipMap( (byte *)data, width, height );
@@ -1057,12 +1046,11 @@ done:
 	if ( mipmap ) {
 		if ( textureFilterAnisotropic ) {
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-							  (GLint)Com_Clamp( 1, maxAnisotropy, r_ext_max_anisotropy->integer ) );
+						(GLint)Com_Clamp( 1, maxAnisotropy, r_ext_max_anisotropy->integer ) );
 		}
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
-	} else
-	{
+	} else {
 		if ( textureFilterAnisotropic ) {
 			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1 );
 		}
@@ -1087,10 +1075,8 @@ R_CreateImage
 This is the only way any image_t are created
 ================
 */
-image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
-						imgType_t type, imgFlags_t flags, int internalFormat ) {
-
-	image_t     *image;
+image_t *R_CreateImage( const char *name, byte *pic, int width, int height, imgType_t type, imgFlags_t flags, int internalFormat ) {
+	image_t *image;
 	qboolean isLightmap = qfalse;
 	long hash;
 	int glWrapClampMode;
@@ -1151,14 +1137,14 @@ image_t *R_CreateImage( const char *name, byte *pic, int width, int height,
 	GL_Bind( image );
 
 	Upload32( (unsigned *)pic,
-			  image->width, image->height,
-			  image->flags & IMGFLAG_MIPMAP,
-			  image->flags & IMGFLAG_PICMIP,
-			  isLightmap,
-			  &image->internalFormat,
-			  &image->uploadWidth,
-			  &image->uploadHeight,
-			  noCompress );
+			image->width, image->height,
+			image->flags & IMGFLAG_MIPMAP,
+			image->flags & IMGFLAG_PICMIP,
+			isLightmap,
+			&image->internalFormat,
+			&image->uploadWidth,
+			&image->uploadHeight,
+			noCompress );
 
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode );
@@ -1246,8 +1232,7 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height ) {
 				orgNameFailed = qtrue;
 				orgLoader = i;
 				COM_StripExtension( name, localName, MAX_QPATH );
-			} else
-			{
+			} else {
 				// Something loaded
 				return;
 			}
@@ -1269,8 +1254,7 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height ) {
 
 		if ( *pic ) {
 			if ( orgNameFailed ) {
-				ri.Printf( PRINT_DEVELOPER, "WARNING: %s not present, using %s instead\n",
-						   name, altName );
+				ri.Printf( PRINT_DEVELOPER, "WARNING: %s not present, using %s instead\n", name, altName );
 			}
 
 			break;
@@ -1286,10 +1270,10 @@ Finds or loads the given image.
 Returns NULL if it fails, not a default image.
 ==============
 */
-image_t  *R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags ) {
+image_t *R_FindImageFile( const char *name, imgType_t type, imgFlags_t flags ) {
 	image_t *image;
 	int width, height;
-	byte    *pic;
+	byte *pic;
 	long hash;
 
 	if ( !name ) {
@@ -1606,7 +1590,7 @@ void R_SetColorMappings( void ) {
 R_InitImages
 ===============
 */
-void    R_InitImages( void ) {
+void R_InitImages( void ) {
 	memset( hashTable, 0, sizeof( hashTable ) );
 
 	// build brightness translation tables
@@ -1700,8 +1684,7 @@ static char *CommaParse( char **data_p ) {
 			if ( *data ) {
 				data += 2;
 			}
-		} else
-		{
+		} else {
 			break;
 		}
 	}
@@ -1865,7 +1848,6 @@ qhandle_t RE_RegisterSkin( const char *name ) {
 		return 0;
 	}
 
-
 	// see if the skin is already loaded
 	for ( hSkin = 1; hSkin < tr.numSkins ; hSkin++ ) {
 		skin = tr.skins[hSkin];
@@ -1885,8 +1867,8 @@ qhandle_t RE_RegisterSkin( const char *name ) {
 
 
 //----(SA)	moved things around slightly to fix the problem where you restart
-//			a map that has ai characters who had invalid skin names entered
-//			in thier "skin" or "head" field
+//		a map that has ai characters who had invalid skin names entered
+//		in thier "skin" or "head" field
 
 	R_IssuePendingRenderCommands();
 
@@ -2003,7 +1985,7 @@ qhandle_t RE_RegisterSkin( const char *name ) {
 R_InitSkins
 ===============
 */
-void    R_InitSkins( void ) {
+void R_InitSkins( void ) {
 	skin_t      *skin;
 
 	tr.numSkins = 1;
@@ -2021,7 +2003,7 @@ void    R_InitSkins( void ) {
 R_GetSkinByHandle
 ===============
 */
-skin_t  *R_GetSkinByHandle( qhandle_t hSkin ) {
+skin_t *R_GetSkinByHandle( qhandle_t hSkin ) {
 	if ( hSkin < 1 || hSkin >= tr.numSkins ) {
 		return tr.skins[0];
 	}
@@ -2033,7 +2015,7 @@ skin_t  *R_GetSkinByHandle( qhandle_t hSkin ) {
 R_SkinList_f
 ===============
 */
-void    R_SkinList_f( void ) {
+void R_SkinList_f( void ) {
 	int i, j;
 	skin_t      *skin;
 
@@ -2060,8 +2042,10 @@ SaveTGA
 =============
 */
 void SaveTGA( char *name, byte **pic, int width, int height ) {
-	byte    *inpixel, *outpixel;
-	byte    *outbuf, *b;
+	byte *inpixel, *outpixel;
+	byte *outbuf, *b;
+	int row, col;
+	int rows, cols;
 
 	outbuf = ri.Hunk_AllocateTempMemory( width * height * 4 + 18 );
 	b = outbuf;
@@ -2074,28 +2058,23 @@ void SaveTGA( char *name, byte **pic, int width, int height ) {
 	b[15] = height >> 8;
 	b[16] = 24; // pixel size
 
+	rows = ( height );
+	cols = ( width );
+
+	outpixel = b + 18;
+
+	for ( row = ( rows - 1 ); row >= 0; row-- )
 	{
-		int row, col;
-		int rows, cols;
+		inpixel = ( ( *pic ) + ( row * cols ) * 4 );
 
-		rows = ( height );
-		cols = ( width );
-
-		outpixel = b + 18;
-
-		for ( row = ( rows - 1 ); row >= 0; row-- )
+		for ( col = 0; col < cols; col++ )
 		{
-			inpixel = ( ( *pic ) + ( row * cols ) * 4 );
+			*outpixel++ = *( inpixel + 2 );   // blue
+			*outpixel++ = *( inpixel + 1 );   // green
+			*outpixel++ = *( inpixel + 0 );   // red
+			//*outpixel++ = *(inpixel + 3);	// alpha
 
-			for ( col = 0; col < cols; col++ )
-			{
-				*outpixel++ = *( inpixel + 2 );   // blue
-				*outpixel++ = *( inpixel + 1 );   // green
-				*outpixel++ = *( inpixel + 0 );   // red
-				//*outpixel++ = *(inpixel + 3);	// alpha
-
-				inpixel += 4;
-			}
+			inpixel += 4;
 		}
 	}
 
@@ -2113,8 +2092,10 @@ SaveTGAAlpha
 =============
 */
 void SaveTGAAlpha( char *name, byte **pic, int width, int height ) {
-	byte    *inpixel, *outpixel;
-	byte    *outbuf, *b;
+	byte *inpixel, *outpixel;
+	byte *outbuf, *b;
+	int row, col;
+	int rows, cols;
 
 	outbuf = ri.Hunk_AllocateTempMemory( width * height * 4 + 18 );
 	b = outbuf;
@@ -2127,28 +2108,23 @@ void SaveTGAAlpha( char *name, byte **pic, int width, int height ) {
 	b[15] = height >> 8;
 	b[16] = 32; // pixel size
 
+	rows = ( height );
+	cols = ( width );
+
+	outpixel = b + 18;
+
+	for ( row = ( rows - 1 ); row >= 0; row-- )
 	{
-		int row, col;
-		int rows, cols;
+		inpixel = ( ( *pic ) + ( row * cols ) * 4 );
 
-		rows = ( height );
-		cols = ( width );
-
-		outpixel = b + 18;
-
-		for ( row = ( rows - 1 ); row >= 0; row-- )
+		for ( col = 0; col < cols; col++ )
 		{
-			inpixel = ( ( *pic ) + ( row * cols ) * 4 );
+			*outpixel++ = *( inpixel + 2 );   // blue
+			*outpixel++ = *( inpixel + 1 );   // green
+			*outpixel++ = *( inpixel + 0 );   // red
+			*outpixel++ = *( inpixel + 3 );   // alpha
 
-			for ( col = 0; col < cols; col++ )
-			{
-				*outpixel++ = *( inpixel + 2 );   // blue
-				*outpixel++ = *( inpixel + 1 );   // green
-				*outpixel++ = *( inpixel + 0 );   // red
-				*outpixel++ = *( inpixel + 3 );   // alpha
-
-				inpixel += 4;
-			}
+			inpixel += 4;
 		}
 	}
 
@@ -2230,7 +2206,9 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 					f -= fCol[i];
 					if ( f <= 0 ) {
 						f = 0;
-					} else { f *= fScale[i]; }
+					} else {
+						f *= fScale[i];
+					}
 					if ( f > 255 ) {
 						f = 255;
 					}
@@ -2288,9 +2266,9 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 #endif
 
 			if ( !skip ) {
-				if (    ( *( inpixel + 0 ) > 20 )       // blue
-						||  ( *( inpixel + 1 ) > 20 ) // green
-						||  ( *( inpixel + 2 ) > 20 ) ) { // red
+				if ( ( *( inpixel + 0 ) > 20 ) ||	// blue
+						( *( inpixel + 1 ) > 20 ) ||	// green
+						( *( inpixel + 2 ) > 20 ) ) {	// red
 
 					if ( col < mins[0] ) {
 						mins[0] = col;
@@ -2347,15 +2325,18 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 	// convert it so that the center is the center of the image
 	// this is used for some explosions
 	/*
-	for (i=0; i<2; i++) {
-	    if (i==0)	center = width;
-	    else		center = height;
+	for ( i = 0; i < 2; i++ ) {
+		if ( i == 0 ) {
+			center = width;
+		} else {
+			center = height;
+		}
 
-	    if ((*center/2 - mins[i]) > (maxs[i] - *center/2)) {
-	        maxs[i] = *center/2 + (*center/2 - mins[i]);
-	    } else {
-	        mins[i] = *center/2 - (maxs[i] - *center/2);
-	    }
+		if ( ( *center / 2 - mins[i] ) > ( maxs[i] - *center / 2 ) ) {
+			maxs[i] = *center / 2 + ( *center / 2 - mins[i] );
+		} else {
+			mins[i] = *center / 2 - ( maxs[i] - *center / 2 );
+		}
 	}
 	*/
 
@@ -2430,7 +2411,9 @@ qboolean R_CropImage( char *name, byte **pic, int border, int *width, int *heigh
 		if ( ( maxs[i] - mins[i] ) < lastBox[i] ) {
 			if ( i == 0 ) {
 				center = width;
-			} else { center = height; }
+			} else {
+				center = height;
+			}
 
 			maxs[i] = *center / 2 + ( lastBox[i] / 2 );
 			mins[i] = maxs[i] - lastBox[i];
@@ -2486,14 +2469,14 @@ R_CropAndNumberImagesInDirectory
 */
 void    R_CropAndNumberImagesInDirectory( char *dir, char *ext, int maxWidth, int maxHeight, int withAlpha ) {
 #ifdef CROPIMAGES_ENABLED
-	char    **fileList;
+	char **fileList;
 	int numFiles, j;
 #ifndef RESIZE
 	int i;
 #endif
-	byte    *pic, *temppic;
+	byte *pic, *temppic;
 	int width, height, newWidth, newHeight;
-	char    *pch;
+	char *pch;
 	int b,c,d,lastNumber;
 	int lastBox[2] = {0,0};
 

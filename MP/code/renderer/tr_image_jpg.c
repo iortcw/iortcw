@@ -157,16 +157,15 @@ void R_LoadJPG( const char *filename, unsigned char **pic, int *width, int *heig
 
 	pixelcount = cinfo.output_width * cinfo.output_height;
 
-	if ( !cinfo.output_width || !cinfo.output_height
-		 || ( ( pixelcount * 4 ) / cinfo.output_width ) / 4 != cinfo.output_height
-		 || pixelcount > 0x1FFFFFFF || cinfo.output_components != 3
-		 ) {
+	if ( !cinfo.output_width || !cinfo.output_height ||
+			( ( pixelcount * 4 ) / cinfo.output_width ) / 4 != cinfo.output_height ||
+			pixelcount > 0x1FFFFFFF || cinfo.output_components != 3 ) {
 		// Free the memory to make sure we don't leak memory
 		ri.FS_FreeFile( fbuffer.v );
 		jpeg_destroy_decompress( &cinfo );
 
 		ri.Error( ERR_DROP, "LoadJPG: %s has an invalid image format: %dx%d*4=%d, components: %d", filename,
-				  cinfo.output_width, cinfo.output_height, pixelcount * 4, cinfo.output_components );
+				cinfo.output_width, cinfo.output_height, pixelcount * 4, cinfo.output_components );
 	}
 
 	memcount = pixelcount * 4;
@@ -253,8 +252,7 @@ typedef my_destination_mgr * my_dest_ptr;
  * before any data is actually written.
  */
 
-static void
-init_destination( j_compress_ptr cinfo ) {
+static void init_destination( j_compress_ptr cinfo ) {
 	my_dest_ptr dest = (my_dest_ptr) cinfo->dest;
 
 	dest->pub.next_output_byte = dest->outfile;
@@ -285,15 +283,13 @@ init_destination( j_compress_ptr cinfo ) {
  * write it out when emptying the buffer externally.
  */
 
-static boolean
-empty_output_buffer( j_compress_ptr cinfo ) {
+static boolean empty_output_buffer( j_compress_ptr cinfo ) {
 	my_dest_ptr dest = (my_dest_ptr) cinfo->dest;
 
 	jpeg_destroy_compress( cinfo );
 
 	// Make crash fatal or we would probably leak memory.
-	ri.Error( ERR_FATAL, "Output buffer for encoded JPEG image has insufficient size of %d bytes",
-			  dest->size );
+	ri.Error( ERR_FATAL, "Output buffer for encoded JPEG image has insufficient size of %d bytes",  dest->size );
 
 	return FALSE;
 }
@@ -317,8 +313,7 @@ static void term_destination( j_compress_ptr cinfo ) {
  * for closing it after finishing compression.
  */
 
-static void
-jpegDest( j_compress_ptr cinfo, byte* outfile, int size ) {
+static void jpegDest( j_compress_ptr cinfo, byte* outfile, int size ) {
 	my_dest_ptr dest;
 
 	/* The destination object is made permanent so that multiple JPEG images
@@ -328,9 +323,7 @@ jpegDest( j_compress_ptr cinfo, byte* outfile, int size ) {
 	 * sizes may be different.  Caveat programmer.
 	 */
 	if ( cinfo->dest == NULL ) { /* first time for this JPEG object? */
-		cinfo->dest = (struct jpeg_destination_mgr *)
-					  ( *cinfo->mem->alloc_small )( (j_common_ptr) cinfo, JPOOL_PERMANENT,
-													sizeof( my_destination_mgr ) );
+		cinfo->dest = (struct jpeg_destination_mgr *)( *cinfo->mem->alloc_small )( (j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof( my_destination_mgr ) );
 	}
 
 	dest = (my_dest_ptr) cinfo->dest;
@@ -349,8 +342,7 @@ Encodes JPEG from image in image_buffer and writes to buffer.
 Expects RGB input data
 =================
 */
-size_t RE_SaveJPGToBuffer( byte *buffer, size_t bufSize, int quality,
-						   int image_width, int image_height, byte *image_buffer, int padding ) {
+size_t RE_SaveJPGToBuffer( byte *buffer, size_t bufSize, int quality, int image_width, int image_height, byte *image_buffer, int padding ) {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 	JSAMPROW row_pointer[1]; /* pointer to JSAMPLE row[s] */

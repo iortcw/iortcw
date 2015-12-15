@@ -45,17 +45,17 @@ typedef struct
 void R_LoadBMP( const char *name, byte **pic, int *width, int *height ) {
 	int columns, rows;
 	unsigned numPixels;
-	byte    *pixbuf;
+	byte *pixbuf;
 	int row, column;
-	byte    *buf_p;
-	byte    *end;
+	byte *buf_p;
+	byte *end;
 	union {
 		byte *b;
 		void *v;
 	} buffer;
 	int length;
 	BMPHeader_t bmpHeader;
-	byte        *bmpRGBA;
+	byte *bmpRGBA;
 
 	*pic = NULL;
 
@@ -230,5 +230,4 @@ void R_LoadBMP( const char *name, byte **pic, int *width, int *height ) {
 	}
 
 	ri.FS_FreeFile( buffer.v );
-
 }

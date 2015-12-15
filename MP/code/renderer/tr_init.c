@@ -235,13 +235,13 @@ The tessellation level and normal generation mode are specified with:
     An INVALID_VALUE error will be generated if the value for <param> is less than zero or greater than the max value.
 
 Associated 'gets':
-Get Value                               Get Command Type     Minimum Value								Attribute
----------                               ----------- ----     ------------								---------
-PN_TRIANGLES_ATI						IsEnabled   B		False                                       PN Triangles/enable
-PN_TRIANGLES_NORMAL_MODE_ATI			GetIntegerv Z2		PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI		PN Triangles
-PN_TRIANGLES_POINT_MODE_ATI				GetIntegerv Z2		PN_TRIANGLES_POINT_MODE_CUBIC_ATI			PN Triangles
-PN_TRIANGLES_TESSELATION_LEVEL_ATI		GetIntegerv Z+		1											PN Triangles
-MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI	GetIntegerv Z+		1											-
+Get Value                               Get Command Type     Minimum Value	                        Attribute
+---------                               ----------- ----     ------------				---------
+PN_TRIANGLES_ATI                        IsEnabled   B        False                                      PN Triangles/enable
+PN_TRIANGLES_NORMAL_MODE_ATI            GetIntegerv Z2       PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI     PN Triangles
+PN_TRIANGLES_POINT_MODE_ATI             GetIntegerv Z2       PN_TRIANGLES_POINT_MODE_CUBIC_ATI          PN Triangles
+PN_TRIANGLES_TESSELATION_LEVEL_ATI      GetIntegerv Z+       1                                          PN Triangles
+MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI  GetIntegerv Z+       1											-
 
 
 
@@ -411,7 +411,7 @@ static void R_ModeList_f( void ) {
 /*
 ==============================================================================
 
-                        SCREEN SHOTS
+SCREEN SHOTS
 
 NOTE TTimo
 some thoughts about the screenshots system:
@@ -630,8 +630,7 @@ void R_ScreenshotFilename( int lastNumber, char *fileName ) {
 	lastNumber -= c * 10;
 	d = lastNumber;
 
-	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.tga"
-				 , a, b, c, d );
+	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.tga", a, b, c, d ); 
 }
 
 /*
@@ -655,8 +654,7 @@ void R_ScreenshotFilenameJPEG( int lastNumber, char *fileName ) {
 	lastNumber -= c * 10;
 	d = lastNumber;
 
-	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.jpg"
-				 , a, b, c, d );
+	Com_sprintf( fileName, MAX_OSPATH, "screenshots/shot%i%i%i%i.jpg", a, b, c, d );
 }
 
 /*
@@ -871,8 +869,7 @@ const void *RB_TakeVideoFrameCmd( const void *data ) {
 
 	cBuf = PADP( cmd->captureBuffer, packAlign );
 
-	qglReadPixels( 0, 0, cmd->width, cmd->height, GL_RGB,
-				   GL_UNSIGNED_BYTE, cBuf );
+	qglReadPixels( 0, 0, cmd->width, cmd->height, GL_RGB, GL_UNSIGNED_BYTE, cBuf );
 
 	memcount = padwidth * cmd->height;
 
@@ -883,11 +880,10 @@ const void *RB_TakeVideoFrameCmd( const void *data ) {
 
 	if ( cmd->motionJpeg ) {
 		memcount = RE_SaveJPGToBuffer( cmd->encodeBuffer, linelen * cmd->height,
-									   r_aviMotionJpegQuality->integer,
-									   cmd->width, cmd->height, cBuf, padlen );
+							r_aviMotionJpegQuality->integer,
+							cmd->width, cmd->height, cBuf, padlen );
 		ri.CL_WriteAVIVideoFrame( cmd->encodeBuffer, memcount );
-	} else
-	{
+	} else {
 		byte *lineend, *memend;
 		byte *srcptr, *destptr;
 
@@ -1050,14 +1046,12 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "MODE: %d, %d x %d %s hz:", r_mode->integer, glConfig.vidWidth, glConfig.vidHeight, fsstrings[r_fullscreen->integer == 1] );
 	if ( glConfig.displayFrequency ) {
 		ri.Printf( PRINT_ALL, "%d\n", glConfig.displayFrequency );
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "N/A\n" );
 	}
 	if ( glConfig.deviceSupportsGamma ) {
 		ri.Printf( PRINT_ALL, "GAMMA: hardware w/ %d overbright bits\n", tr.overbrightBits );
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "GAMMA: software w/ %d overbright bits\n", tr.overbrightBits );
 	}
 
@@ -1223,8 +1217,7 @@ void R_Register( void ) {
 	r_finish = ri.Cvar_Get( "r_finish", "0", CVAR_ARCHIVE );
 	r_textureMode = ri.Cvar_Get( "r_textureMode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE );
 
-	r_swapInterval = ri.Cvar_Get( "r_swapInterval", "0",
-								  CVAR_ARCHIVE | CVAR_LATCH );
+	r_swapInterval = ri.Cvar_Get( "r_swapInterval", "0", CVAR_ARCHIVE | CVAR_LATCH );
 
 	r_gamma = ri.Cvar_Get( "r_gamma", "1", CVAR_ARCHIVE ); // Varies by system and platform, so just default to 1
 	r_facePlaneCull = ri.Cvar_Get( "r_facePlaneCull", "1", CVAR_ARCHIVE );
@@ -1374,12 +1367,10 @@ void R_Init( void ) {
 		if ( i < FUNCTABLE_SIZE / 2 ) {
 			if ( i < FUNCTABLE_SIZE / 4 ) {
 				tr.triangleTable[i] = ( float ) i / ( FUNCTABLE_SIZE / 4 );
-			} else
-			{
+			} else {
 				tr.triangleTable[i] = 1.0f - tr.triangleTable[i - FUNCTABLE_SIZE / 4];
 			}
-		} else
-		{
+		} else {
 			tr.triangleTable[i] = -tr.triangleTable[i - FUNCTABLE_SIZE / 2];
 		}
 	}

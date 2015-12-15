@@ -143,11 +143,6 @@ void R_FogOn( void ) {
 		return;
 	}
 
-//	if(backEnd.viewParms.isGLFogged) {
-//		if(!(backEnd.viewParms.glFog.registered))
-//			return;
-//	}
-
 	if ( backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) { // don't force world fog on portal sky
 		if ( !( glfogsettings[FOG_PORTALVIEW].registered ) ) {
 			return;
@@ -162,7 +157,6 @@ void R_FogOn( void ) {
 // done.
 
 
-
 //----(SA)
 /*
 ==============
@@ -172,8 +166,7 @@ R_SetFog
     fogvar is the command
     var1 is the fog to switch to
     var2 is the time to transition
-  }
-  else {
+  } else {
     fogvar is the fog that's being set
     var1 is the near fog z value
     var2 is the far fog z value
@@ -201,8 +194,7 @@ void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float 
 			glfogsettings[fogvar].drawsky       = qfalse;
 			glfogsettings[fogvar].clearscreen   = qtrue;
 			glfogsettings[fogvar].density       = 1.0;
-		} else
-		{
+		} else {
 			glfogsettings[fogvar].mode          = GL_EXP;
 			glfogsettings[fogvar].drawsky       = qtrue;
 			glfogsettings[fogvar].clearscreen   = qfalse;
@@ -390,8 +382,7 @@ R_TransformModelToClip
 
 ==========================
 */
-void R_TransformModelToClip( const vec3_t src, const float *modelMatrix, const float *projectionMatrix,
-							 vec4_t eye, vec4_t dst ) {
+void R_TransformModelToClip( const vec3_t src, const float *modelMatrix, const float *projectionMatrix, vec4_t eye, vec4_t dst ) {
 	int i;
 
 	for ( i = 0 ; i < 4 ; i++ ) {
@@ -443,10 +434,10 @@ void myGlMultMatrix( const float *a, const float *b, float *out ) {
 	for ( i = 0 ; i < 4 ; i++ ) {
 		for ( j = 0 ; j < 4 ; j++ ) {
 			out[ i * 4 + j ] =
-				a [ i * 4 + 0 ] * b [ 0 * 4 + j ]
-				+ a [ i * 4 + 1 ] * b [ 1 * 4 + j ]
-				+ a [ i * 4 + 2 ] * b [ 2 * 4 + j ]
-				+ a [ i * 4 + 3 ] * b [ 3 * 4 + j ];
+				a [ i * 4 + 0 ] * b [ 0 * 4 + j ] +
+				a [ i * 4 + 1 ] * b [ 1 * 4 + j ] +
+				a [ i * 4 + 2 ] * b [ 2 * 4 + j ] +
+				a [ i * 4 + 3 ] * b [ 3 * 4 + j ];
 		}
 	}
 }
@@ -460,8 +451,7 @@ Does NOT produce any GL calls
 Called by both the front end and the back end
 =================
 */
-void R_RotateForEntity( const trRefEntity_t *ent, const viewParms_t *viewParms,
-						orientationr_t *or ) {
+void R_RotateForEntity( const trRefEntity_t *ent, const viewParms_t *viewParms, orientationr_t *or ) {
 	float glMatrix[16];
 	vec3_t delta;
 	float axisLength;
@@ -620,20 +610,20 @@ void R_SetFrameFog( void ) {
 			}
 
 			// lerp near/far
-			glfogsettings[FOG_CURRENT].start        = glfogsettings[FOG_LAST].start + ( ( glfogsettings[FOG_TARGET].start - glfogsettings[FOG_LAST].start ) * lerpPos );
-			glfogsettings[FOG_CURRENT].end          = glfogsettings[FOG_LAST].end + ( ( glfogsettings[FOG_TARGET].end - glfogsettings[FOG_LAST].end ) * lerpPos );
+			glfogsettings[FOG_CURRENT].start = glfogsettings[FOG_LAST].start + ( ( glfogsettings[FOG_TARGET].start - glfogsettings[FOG_LAST].start ) * lerpPos );
+			glfogsettings[FOG_CURRENT].end = glfogsettings[FOG_LAST].end + ( ( glfogsettings[FOG_TARGET].end - glfogsettings[FOG_LAST].end ) * lerpPos );
 
 			// lerp color
-			glfogsettings[FOG_CURRENT].color[0]     = glfogsettings[FOG_LAST].color[0] + ( ( glfogsettings[FOG_TARGET].color[0] - glfogsettings[FOG_LAST].color[0] ) * lerpPos );
-			glfogsettings[FOG_CURRENT].color[1]     = glfogsettings[FOG_LAST].color[1] + ( ( glfogsettings[FOG_TARGET].color[1] - glfogsettings[FOG_LAST].color[1] ) * lerpPos );
-			glfogsettings[FOG_CURRENT].color[2]     = glfogsettings[FOG_LAST].color[2] + ( ( glfogsettings[FOG_TARGET].color[2] - glfogsettings[FOG_LAST].color[2] ) * lerpPos );
+			glfogsettings[FOG_CURRENT].color[0] = glfogsettings[FOG_LAST].color[0] + ( ( glfogsettings[FOG_TARGET].color[0] - glfogsettings[FOG_LAST].color[0] ) * lerpPos );
+			glfogsettings[FOG_CURRENT].color[1] = glfogsettings[FOG_LAST].color[1] + ( ( glfogsettings[FOG_TARGET].color[1] - glfogsettings[FOG_LAST].color[1] ) * lerpPos );
+			glfogsettings[FOG_CURRENT].color[2] = glfogsettings[FOG_LAST].color[2] + ( ( glfogsettings[FOG_TARGET].color[2] - glfogsettings[FOG_LAST].color[2] ) * lerpPos );
 
-			glfogsettings[FOG_CURRENT].density      = glfogsettings[FOG_TARGET].density;
-			glfogsettings[FOG_CURRENT].mode         = glfogsettings[FOG_TARGET].mode;
-			glfogsettings[FOG_CURRENT].registered   = qtrue;
+			glfogsettings[FOG_CURRENT].density = glfogsettings[FOG_TARGET].density;
+			glfogsettings[FOG_CURRENT].mode = glfogsettings[FOG_TARGET].mode;
+			glfogsettings[FOG_CURRENT].registered = qtrue;
 
 			// if either fog in the transition clears the screen, clear the background this frame to avoid hall of mirrors
-			glfogsettings[FOG_CURRENT].clearscreen  = ( glfogsettings[FOG_TARGET].clearscreen || glfogsettings[FOG_LAST].clearscreen );
+			glfogsettings[FOG_CURRENT].clearscreen = ( glfogsettings[FOG_TARGET].clearscreen || glfogsettings[FOG_LAST].clearscreen );
 		}
 	} else {
 		// probably usually not necessary to copy the whole thing.
@@ -705,22 +695,19 @@ static void R_SetFarClip( void ) {
 
 		if ( i & 1 ) {
 			v[0] = tr.viewParms.visBounds[0][0];
-		} else
-		{
+		} else {
 			v[0] = tr.viewParms.visBounds[1][0];
 		}
 
 		if ( i & 2 ) {
 			v[1] = tr.viewParms.visBounds[0][1];
-		} else
-		{
+		} else {
 			v[1] = tr.viewParms.visBounds[1][1];
 		}
 
 		if ( i & 4 ) {
 			v[2] = tr.viewParms.visBounds[0][2];
-		} else
-		{
+		} else {
 			v[2] = tr.viewParms.visBounds[1][2];
 		}
 
@@ -763,8 +750,7 @@ void R_SetupFrustum( viewParms_t *dest, float xmin, float xmax, float ymax, floa
 
 		VectorScale( dest->or.axis[0], oppleg, dest->frustum[1].normal );
 		VectorMA( dest->frustum[1].normal, -adjleg, dest->or.axis[1], dest->frustum[1].normal );
-	} else
-	{
+	} else {
 		// In stereo rendering, due to the modification of the projection matrix, dest->or.origin is not the
 		// actual origin that we're rendering so offset the tip of the view pyramid.
 		VectorMA( dest->or.origin, stereoSep, dest->or.axis[1], ofsorigin );
@@ -861,9 +847,9 @@ Sets the z-component transformation part in the projection matrix
 void R_SetupProjectionZ( viewParms_t *dest ) {
 	float zNear, zFar, depth;
 
-	zNear   = r_znear->value;
-	zFar    = dest->zFar;
-	depth   = zFar - zNear;
+	zNear = r_znear->value;
+	zFar = dest->zFar;
+	depth = zFar - zNear;
 
 	dest->projectionMatrix[2] = 0;
 	dest->projectionMatrix[6] = 0;
@@ -957,9 +943,7 @@ be moving and rotating.
 Returns qtrue if it should be mirrored
 =================
 */
-qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
-								  orientation_t *surface, orientation_t *camera,
-								  vec3_t pvsOrigin, qboolean *mirror ) {
+qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum, orientation_t *surface, orientation_t *camera, vec3_t pvsOrigin, qboolean *mirror ) {
 	int i;
 	cplane_t originalPlane, plane;
 	trRefEntity_t   *e;
@@ -1011,8 +995,8 @@ qboolean R_GetPortalOrientations( drawSurf_t *drawSurf, int entityNum,
 
 		// if the entity is just a mirror, don't use as a camera point
 		if ( e->e.oldorigin[0] == e->e.origin[0] &&
-			 e->e.oldorigin[1] == e->e.origin[1] &&
-			 e->e.oldorigin[2] == e->e.origin[2] ) {
+				e->e.oldorigin[1] == e->e.origin[1] &&
+				e->e.oldorigin[2] == e->e.origin[2] ) {
 			VectorScale( plane.normal, plane.dist, surface->origin );
 			VectorCopy( surface->origin, camera->origin );
 			VectorSubtract( vec3_origin, surface->axis[0], camera->axis[0] );
@@ -1251,8 +1235,7 @@ qboolean R_MirrorViewBySurface( drawSurf_t *drawSurf, int entityNum ) {
 
 	newParms = tr.viewParms;
 	newParms.isPortal = qtrue;
-	if ( !R_GetPortalOrientations( drawSurf, entityNum, &surface, &camera,
-								   newParms.pvsOrigin, &newParms.isMirror ) ) {
+	if ( !R_GetPortalOrientations( drawSurf, entityNum, &surface, &camera, newParms.pvsOrigin, &newParms.isMirror ) ) {
 		return qfalse;      // bad portal, no portalentity
 	}
 
@@ -1376,8 +1359,7 @@ static void R_RadixSort( drawSurf_t *source, int size ) {
 R_AddDrawSurf
 =================
 */
-void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
-					int fogIndex, int dlightMap ) {
+void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader, int fogIndex, int dlightMap ) {
 	int index;
 
 	// instead of checking for overflow, we just mask the index
@@ -1385,8 +1367,7 @@ void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
 	index = tr.refdef.numDrawSurfs & DRAWSURF_MASK;
 	// the sort data is packed into a single 32 bit value so it can be
 	// compared quickly during the qsorting process
-	tr.refdef.drawSurfs[index].sort = ( shader->sortedIndex << QSORT_SHADERNUM_SHIFT )
-									  | tr.shiftedEntityNum | ( fogIndex << QSORT_FOGNUM_SHIFT ) | (int)dlightMap;
+	tr.refdef.drawSurfs[index].sort = ( shader->sortedIndex << QSORT_SHADERNUM_SHIFT ) | tr.shiftedEntityNum | ( fogIndex << QSORT_FOGNUM_SHIFT ) | (int)dlightMap;
 	tr.refdef.drawSurfs[index].surface = surface;
 	tr.refdef.numDrawSurfs++;
 }
@@ -1396,8 +1377,7 @@ void R_AddDrawSurf( surfaceType_t *surface, shader_t *shader,
 R_DecomposeSort
 =================
 */
-void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader,
-					  int *fogNum, int *dlightMap ) {
+void R_DecomposeSort( unsigned sort, int *entityNum, shader_t **shader, int *fogNum, int *dlightMap ) {
 	*fogNum = ( sort >> QSORT_FOGNUM_SHIFT ) & 31;
 	*shader = tr.sortedShaders[ ( sort >> QSORT_SHADERNUM_SHIFT ) & ( MAX_SHADERS - 1 ) ];
 //	*entityNum = ( sort >> QSORT_ENTITYNUM_SHIFT ) & ( MAX_GENTITIES - 1 );   // (SA) uppded entity count for Wolf to 11 bits
@@ -1411,7 +1391,7 @@ R_SortDrawSurfs
 =================
 */
 void R_SortDrawSurfs( drawSurf_t *drawSurfs, int numDrawSurfs ) {
-	shader_t        *shader;
+	shader_t *shader;
 	int fogNum;
 	int entityNum;
 	int dlighted;
@@ -1460,16 +1440,14 @@ R_AddEntitySurfaces
 =============
 */
 void R_AddEntitySurfaces( void ) {
-	trRefEntity_t   *ent;
-	shader_t        *shader;
+	trRefEntity_t *ent;
+	shader_t *shader;
 
 	if ( !r_drawentities->integer ) {
 		return;
 	}
 
-	for ( tr.currentEntityNum = 0;
-		  tr.currentEntityNum < tr.refdef.num_entities;
-		  tr.currentEntityNum++ ) {
+	for ( tr.currentEntityNum = 0; tr.currentEntityNum < tr.refdef.num_entities; tr.currentEntityNum++ ) {
 		ent = tr.currentEntity = &tr.refdef.entities[tr.currentEntityNum];
 
 		ent->needDlights = qfalse;
@@ -1594,7 +1572,6 @@ void R_DebugPolygon( int color, int numPoints, float *points ) {
 	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
 
 	// draw solid shade
-
 #ifdef USE_OPENGLES
 	qglColor4f( color & 1, ( color >> 1 ) & 1, ( color >> 2 ) & 1, 1.0f );
 	qglVertexPointer( 3, GL_FLOAT, 0, points );

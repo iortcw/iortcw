@@ -66,7 +66,7 @@ static void AddSkyPolygon( int nump, vec3_t vecs ) {
 	vec3_t v, av;
 	float s, t, dv;
 	int axis;
-	float   *vp;
+	float *vp;
 	// s = [0]/[2], t = [1]/[2]
 	static int vec_to_st[6][3] =
 	{
@@ -79,8 +79,8 @@ static void AddSkyPolygon( int nump, vec3_t vecs ) {
 		{-2,-1,3},
 		{-2,1,-3}
 
-		//	{-1,2,3},
-		//	{1,2,-3}
+		//{-1,2,3},
+		//{1,2,-3}
 	};
 
 	// decide which face it maps to
@@ -104,8 +104,7 @@ static void AddSkyPolygon( int nump, vec3_t vecs ) {
 		} else {
 			axis = 2;
 		}
-	} else
-	{
+	} else {
 		if ( v[2] < 0 ) {
 			axis = 5;
 		} else {
@@ -161,8 +160,8 @@ ClipSkyPolygon
 ================
 */
 static void ClipSkyPolygon( int nump, vec3_t vecs, int stage ) {
-	float   *norm;
-	float   *v;
+	float *norm;
+	float *v;
 	qboolean front, back;
 	float d, e;
 	float dists[MAX_CLIP_VERTS];
@@ -341,8 +340,7 @@ static void MakeSkyVec( float s, float t, int axis, float outSt[2], vec3_t outXY
 		k = st_to_vec[axis][j];
 		if ( k < 0 ) {
 			outXYZ[j] = -b[-k - 1];
-		} else
-		{
+		} else {
 			outXYZ[j] = b[k - 1];
 		}
 	}
@@ -572,16 +570,14 @@ static void DrawSkyBox( shader_t *shader ) {
 			for ( s = sky_mins_subd[0] + HALF_SKY_SUBDIVISIONS; s <= sky_maxs_subd[0] + HALF_SKY_SUBDIVISIONS; s++ )
 			{
 				MakeSkyVec( ( s - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
-							( t - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
-							i,
-							s_skyTexCoords[t][s],
-							s_skyPoints[t][s] );
+						( t - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
+						i,
+						s_skyTexCoords[t][s],
+						s_skyPoints[t][s] );
 			}
 		}
 
-		DrawSkySide( shader->sky.outerbox[sky_texorder[i]],
-					 sky_mins_subd,
-					 sky_maxs_subd );
+		DrawSkySide( shader->sky.outerbox[sky_texorder[i]], sky_mins_subd, sky_maxs_subd );
 	}
 
 }
@@ -642,16 +638,14 @@ static void DrawSkyBoxInner( shader_t *shader ) {
 			for ( s = sky_mins_subd[0] + HALF_SKY_SUBDIVISIONS; s <= sky_maxs_subd[0] + HALF_SKY_SUBDIVISIONS; s++ )
 			{
 				MakeSkyVec( ( s - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
-							( t - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
-							i,
-							s_skyTexCoords[t][s],
-							s_skyPoints[t][s] );
+						( t - HALF_SKY_SUBDIVISIONS ) / ( float ) HALF_SKY_SUBDIVISIONS,
+						i,
+						s_skyTexCoords[t][s],
+						s_skyPoints[t][s] );
 			}
 		}
 
-		DrawSkySideInner( shader->sky.innerbox[sky_texorder[i]],
-						  sky_mins_subd,
-						  sky_maxs_subd );
+		DrawSkySideInner( shader->sky.innerbox[sky_texorder[i]], sky_mins_subd, sky_maxs_subd );
 	}
 
 }
@@ -720,8 +714,7 @@ static void FillCloudBox( const shader_t *shader, int stage ) {
 			if ( i == 5 ) {
 				continue;
 			}
-		} else
-		{
+		} else {
 			switch ( i )
 			{
 			case 0:
@@ -861,8 +854,8 @@ void R_InitSkyTexCoords( float heightCloud ) {
 
 				// compute parametric value 'p' that intersects with cloud layer
 				p = ( 1.0f / ( 2 * DotProduct( skyVec, skyVec ) ) ) *
-					( -2 * skyVec[2] * radiusWorld +
-					  2 * sqrt( SQR( skyVec[2] ) * SQR( radiusWorld ) +
+								( -2 * skyVec[2] * radiusWorld +
+								2 * sqrt( SQR( skyVec[2] ) * SQR( radiusWorld ) +
 								2 * SQR( skyVec[0] ) * radiusWorld * heightCloud +
 								SQR( skyVec[0] ) * SQR( heightCloud ) +
 								2 * SQR( skyVec[1] ) * radiusWorld * heightCloud +
@@ -939,7 +932,7 @@ void RB_DrawSun( float scale, shader_t *shader ) {
 
 	if ( r_drawSun->integer > 1 ) { // draw flare effect
 		// (SA) FYI:	This is cheezy and was only a test so far.
-		//				If we decide to use the flare business I will /definatly/ improve all this
+		//		If we decide to use the flare business I will /definatly/ improve all this
 
 		// get a point a little closer
 		dist = dist * 0.7;

@@ -87,12 +87,10 @@ static qboolean R_CullGrid( srfGridMesh_t *cv ) {
 			return qtrue;
 		} else if ( boxCull == CULL_IN ) {
 			tr.pc.c_box_cull_patch_in++;
-		} else
-		{
+		} else {
 			tr.pc.c_box_cull_patch_clip++;
 		}
-	} else
-	{
+	} else {
 		tr.pc.c_sphere_cull_patch_in++;
 	}
 
@@ -162,7 +160,7 @@ static qboolean R_CullSurface( surfaceType_t *surface, shader_t *shader ) {
 static int R_DlightFace( srfSurfaceFace_t *face, int dlightBits ) {
 	float d;
 	int i;
-	dlight_t    *dl;
+	dlight_t *dl;
 
 	for ( i = 0 ; i < tr.refdef.num_dlights ; i++ ) {
 		if ( !( dlightBits & ( 1 << i ) ) ) {
@@ -186,19 +184,19 @@ static int R_DlightFace( srfSurfaceFace_t *face, int dlightBits ) {
 
 static int R_DlightGrid( srfGridMesh_t *grid, int dlightBits ) {
 	int i;
-	dlight_t    *dl;
+	dlight_t *dl;
 
 	for ( i = 0 ; i < tr.refdef.num_dlights ; i++ ) {
 		if ( !( dlightBits & ( 1 << i ) ) ) {
 			continue;
 		}
 		dl = &tr.refdef.dlights[i];
-		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0]
-			 || dl->origin[0] + dl->radius < grid->meshBounds[0][0]
-			 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
-			 || dl->origin[1] + dl->radius < grid->meshBounds[0][1]
-			 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
-			 || dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
+		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0] ||
+				dl->origin[0] + dl->radius < grid->meshBounds[0][0] ||
+				dl->origin[1] - dl->radius > grid->meshBounds[1][1] ||
+				dl->origin[1] + dl->radius < grid->meshBounds[0][1] ||
+				dl->origin[2] - dl->radius > grid->meshBounds[1][2] ||
+				dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
 			// dlight doesn't reach the bounds
 			dlightBits &= ~( 1 << i );
 		}
@@ -226,12 +224,12 @@ static int R_DlightTrisurf( srfTriangles_t *surf, int dlightBits ) {
 			continue;
 		}
 		dl = &tr.refdef.dlights[i];
-		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0]
-			 || dl->origin[0] + dl->radius < grid->meshBounds[0][0]
-			 || dl->origin[1] - dl->radius > grid->meshBounds[1][1]
-			 || dl->origin[1] + dl->radius < grid->meshBounds[0][1]
-			 || dl->origin[2] - dl->radius > grid->meshBounds[1][2]
-			 || dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
+		if ( dl->origin[0] - dl->radius > grid->meshBounds[1][0] ||
+				dl->origin[0] + dl->radius < grid->meshBounds[0][0] ||
+				dl->origin[1] - dl->radius > grid->meshBounds[1][1] ||
+				dl->origin[1] + dl->radius < grid->meshBounds[0][1] ||
+				dl->origin[2] - dl->radius > grid->meshBounds[1][2] ||
+				dl->origin[2] + dl->radius < grid->meshBounds[0][2] ) {
 			// dlight doesn't reach the bounds
 			dlightBits &= ~( 1 << i );
 		}
@@ -322,7 +320,7 @@ Return positive with /any part/ of the brush falling within a fog volume
 */
 int R_BmodelFogNum( trRefEntity_t *re, bmodel_t *bmodel ) {
 	int i, j;
-	fog_t           *fog;
+	fog_t *fog;
 
 	for ( i = 1 ; i < tr.world->numfogs ; i++ ) {
 		fog = &tr.world->fogs[i];
@@ -362,9 +360,9 @@ R_AddBrushModelSurfaces
 =================
 */
 void R_AddBrushModelSurfaces( trRefEntity_t *ent ) {
-	bmodel_t    *bmodel;
+	bmodel_t *bmodel;
 	int clip;
-	model_t     *pModel;
+	model_t *pModel;
 	int i;
 	int fognum;
 
@@ -483,7 +481,7 @@ static void R_RecursiveWorldNode( mnode_t *node, int planeBits, int dlightBits )
 			int i;
 
 			for ( i = 0 ; i < tr.refdef.num_dlights ; i++ ) {
-				dlight_t    *dl;
+				dlight_t *dl;
 				float dist;
 
 				if ( dlightBits & ( 1 << i ) ) {
@@ -560,9 +558,9 @@ R_PointInLeaf
 ===============
 */
 static mnode_t *R_PointInLeaf( vec3_t p ) {
-	mnode_t     *node;
+	mnode_t *node;
 	float d;
-	cplane_t    *plane;
+	cplane_t *plane;
 
 	if ( !tr.world ) {
 		ri.Error( ERR_DROP, "R_PointInLeaf: bad model" );

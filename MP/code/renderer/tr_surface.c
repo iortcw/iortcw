@@ -135,10 +135,10 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, byte *color, flo
 	// constant color all the way around
 	// should this be identity and let the shader specify from entity?
 	*( unsigned int * ) &tess.vertexColors[ndx] =
-		*( unsigned int * ) &tess.vertexColors[ndx + 1] =
-			*( unsigned int * ) &tess.vertexColors[ndx + 2] =
-				*( unsigned int * ) &tess.vertexColors[ndx + 3] =
-					*( unsigned int * )color;
+	*( unsigned int * ) &tess.vertexColors[ndx + 1] =
+	*( unsigned int * ) &tess.vertexColors[ndx + 2] =
+	*( unsigned int * ) &tess.vertexColors[ndx + 3] =
+	*( unsigned int * )color;
 
 
 	tess.numVertexes += 4;
@@ -663,8 +663,8 @@ static void VectorArrayNormalize( vec4_t *normals, unsigned int count ) {
 */
 #if idppc_altivec
 static void LerpMeshVertexes_altivec( md3Surface_t *surf, float backlerp ) {
-	short   *oldXyz, *newXyz, *oldNormals, *newNormals;
-	float   *outXyz, *outNormal;
+	short *oldXyz, *newXyz, *oldNormals, *newNormals;
+	float *outXyz, *outNormal;
 	float oldXyzScale QALIGN( 16 );
 	float newXyzScale QALIGN( 16 );
 	float oldNormalScale QALIGN( 16 );
@@ -791,8 +791,8 @@ static void LerpMeshVertexes_altivec( md3Surface_t *surf, float backlerp ) {
 #endif
 
 static void LerpMeshVertexes_scalar( md3Surface_t *surf, float backlerp ) {
-	short   *oldXyz, *newXyz, *oldNormals, *newNormals;
-	float   *outXyz, *outNormal;
+	short *oldXyz, *newXyz, *oldNormals, *newNormals;
+	float *outXyz, *outNormal;
 	float oldXyzScale, newXyzScale;
 	float oldNormalScale, newNormalScale;
 	int vertNum;
@@ -907,8 +907,8 @@ RB_SurfaceMesh
 static void RB_SurfaceMesh( md3Surface_t *surface ) {
 	int j;
 	float backlerp;
-	int             *triangles;
-	float           *texCoords;
+	int *triangles;
+	float *texCoords;
 	int indexes;
 	int Bob, Doug;
 	int numVerts;
@@ -977,8 +977,8 @@ void R_LatLongToNormal( vec3_t outNormal, short latLong ) {
 ** LerpCMeshVertexes
 */
 static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
-	short   *oldXyz, *newXyz, *oldNormals, *newNormals;
-	float   *outXyz, *outNormal;
+	short *oldXyz, *newXyz, *oldNormals, *newNormals;
+	float *outXyz, *outNormal;
 	float oldXyzScale, newXyzScale;
 	float oldNormalScale, newNormalScale;
 	int vertNum;
@@ -1004,8 +1004,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 	if ( hasComp ) {
 		newComp = ( ( short * )( (byte *)surf + surf->ofsFrameCompFrames ) + backEnd.currentEntity->e.frame );
 		if ( *newComp >= 0 ) {
-			newXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed )
-						 + ( *newComp * surf->numVerts );
+			newXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed ) + ( *newComp * surf->numVerts );
 		}
 	}
 
@@ -1055,8 +1054,7 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 		if ( hasComp ) {
 			oldComp = ( ( short * )( (byte *)surf + surf->ofsFrameCompFrames ) + backEnd.currentEntity->e.oldframe );
 			if ( *oldComp >= 0 ) {
-				oldXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed )
-							 + ( *oldComp * surf->numVerts );
+				oldXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed ) + ( *oldComp * surf->numVerts );
 			}
 		}
 
@@ -1064,8 +1062,8 @@ static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
 		oldNormalScale = backlerp;
 
 		for ( vertNum = 0 ; vertNum < numVerts ; vertNum++,
-			  oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
-			  outXyz += 4, outNormal += 4 )
+				oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
+				outXyz += 4, outNormal += 4 )
 		{
 			vec3_t uncompressedOldNormal, uncompressedNewNormal;
 
@@ -1122,8 +1120,8 @@ RB_SurfaceCMesh
 void RB_SurfaceCMesh( mdcSurface_t *surface ) {
 	int j;
 	float backlerp;
-	int             *triangles;
-	float           *texCoords;
+	int *triangles;
+	float *texCoords;
 	int indexes;
 	int Bob, Doug;
 	int numVerts;
@@ -1175,10 +1173,10 @@ RB_SurfaceFace
 */
 static void RB_SurfaceFace( srfSurfaceFace_t *surf ) {
 	int i;
-	unsigned    *indices;
-	glIndex_t   *tessIndexes;
-	float       *v;
-	float       *normal;
+	unsigned *indices;
+	glIndex_t *tessIndexes;
+	float *v;
+	float *normal;
 	int ndx;
 	int Bob;
 	int numPoints;
@@ -1223,7 +1221,7 @@ static void RB_SurfaceFace( srfSurfaceFace_t *surf ) {
 }
 
 
-static float    LodErrorForVolume( vec3_t local, float radius ) {
+static float LodErrorForVolume( vec3_t local, float radius ) {
 	vec3_t world;
 	float d;
 
@@ -1232,12 +1230,9 @@ static float    LodErrorForVolume( vec3_t local, float radius ) {
 		return 0;
 	}
 
-	world[0] = local[0] * backEnd.or.axis[0][0] + local[1] * backEnd.or.axis[1][0] +
-			   local[2] * backEnd.or.axis[2][0] + backEnd.or.origin[0];
-	world[1] = local[0] * backEnd.or.axis[0][1] + local[1] * backEnd.or.axis[1][1] +
-			   local[2] * backEnd.or.axis[2][1] + backEnd.or.origin[1];
-	world[2] = local[0] * backEnd.or.axis[0][2] + local[1] * backEnd.or.axis[1][2] +
-			   local[2] * backEnd.or.axis[2][2] + backEnd.or.origin[2];
+	world[0] = local[0] * backEnd.or.axis[0][0] + local[1] * backEnd.or.axis[1][0] + local[2] * backEnd.or.axis[2][0] + backEnd.or.origin[0];
+	world[1] = local[0] * backEnd.or.axis[0][1] + local[1] * backEnd.or.axis[1][1] + local[2] * backEnd.or.axis[2][1] + backEnd.or.origin[1];
+	world[2] = local[0] * backEnd.or.axis[0][2] + local[1] * backEnd.or.axis[1][2] + local[2] * backEnd.or.axis[2][2] + backEnd.or.origin[2];
 
 	VectorSubtract( world, backEnd.viewParms.or.origin, world );
 	d = DotProduct( world, backEnd.viewParms.or.axis[0] );
@@ -1262,11 +1257,11 @@ Just copy the grid of points and triangulate
 */
 static void RB_SurfaceGrid( srfGridMesh_t *cv ) {
 	int i, j;
-	float   *xyz;
-	float   *texCoords;
-	float   *normal;
+	float *xyz;
+	float *texCoords;
+	float *normal;
 	unsigned char *color;
-	drawVert_t  *dv;
+	drawVert_t *dv;
 	int rows, irows, vrows;
 	int used;
 	int widthTable[MAX_GRID_SIZE];
@@ -1275,7 +1270,7 @@ static void RB_SurfaceGrid( srfGridMesh_t *cv ) {
 	int lodWidth, lodHeight;
 	int numVertexes;
 	int dlightBits;
-	int     *vDlightBits;
+	int *vDlightBits;
 	qboolean needsNormal;
 
 	dlightBits = cv->dlightBits;
@@ -1347,8 +1342,7 @@ static void RB_SurfaceGrid( srfGridMesh_t *cv ) {
 
 		for ( i = 0 ; i < rows ; i++ ) {
 			for ( j = 0 ; j < lodWidth ; j++ ) {
-				dv = cv->verts + heightTable[ used + i ] * cv->width
-					 + widthTable[ j ];
+				dv = cv->verts + heightTable[ used + i ] * cv->width + widthTable[ j ];
 
 				xyz[0] = dv->xyz[0];
 				xyz[1] = dv->xyz[1];

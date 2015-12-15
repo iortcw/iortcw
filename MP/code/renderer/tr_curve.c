@@ -105,7 +105,6 @@ static void Transpose( int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX
 			}
 		}
 	}
-
 }
 
 
@@ -256,7 +255,6 @@ static void InvertErrorTable( float errorTable[2][MAX_GRID_SIZE], int width, int
 	for ( i = 0 ; i < height ; i++ ) {
 		errorTable[0][i] = copy[1][height - 1 - i];
 	}
-
 }
 
 /*
@@ -264,8 +262,7 @@ static void InvertErrorTable( float errorTable[2][MAX_GRID_SIZE], int width, int
 PutPointsOnCurve
 ==================
 */
-static void PutPointsOnCurve( drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE],
-							  int width, int height ) {
+static void PutPointsOnCurve( drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE], int width, int height ) {
 	int i, j;
 	drawVert_t prev, next;
 
@@ -293,8 +290,7 @@ static void PutPointsOnCurve( drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE],
 R_CreateSurfaceGridMesh
 =================
 */
-srfGridMesh_t *R_CreateSurfaceGridMesh( int width, int height,
-										drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE], float errorTable[2][MAX_GRID_SIZE] ) {
+srfGridMesh_t *R_CreateSurfaceGridMesh( int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE], float errorTable[2][MAX_GRID_SIZE] ) {
 	int i, j, size;
 	drawVert_t  *vert;
 	vec3_t tmpVec;
@@ -363,8 +359,7 @@ void R_FreeSurfaceGridMesh( srfGridMesh_t *grid ) {
 R_SubdividePatchToGrid
 =================
 */
-srfGridMesh_t *R_SubdividePatchToGrid( int width, int height,
-									   drawVert_t points[MAX_PATCH_SIZE * MAX_PATCH_SIZE] ) {
+srfGridMesh_t *R_SubdividePatchToGrid( int width, int height, drawVert_t points[MAX_PATCH_SIZE * MAX_PATCH_SIZE] ) {
 	int i, j, k, l;
 	drawVert_t_cleared( prev );
 	drawVert_t_cleared( next );

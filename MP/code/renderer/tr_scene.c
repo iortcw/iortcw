@@ -252,12 +252,12 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t *vert
 			}
 			for ( fogIndex = 1 ; fogIndex < tr.world->numfogs ; fogIndex++ ) {
 				fog = &tr.world->fogs[fogIndex];
-				if ( bounds[1][0] >= fog->bounds[0][0]
-					 && bounds[1][1] >= fog->bounds[0][1]
-					 && bounds[1][2] >= fog->bounds[0][2]
-					 && bounds[0][0] <= fog->bounds[1][0]
-					 && bounds[0][1] <= fog->bounds[1][1]
-					 && bounds[0][2] <= fog->bounds[1][2] ) {
+				if ( bounds[1][0] >= fog->bounds[0][0] &&
+						bounds[1][1] >= fog->bounds[0][1] &&
+						bounds[1][2] >= fog->bounds[0][2] &&
+						bounds[0][0] <= fog->bounds[1][0] &&
+						bounds[0][1] <= fog->bounds[1][1] &&
+						bounds[0][2] <= fog->bounds[1][2] ) {
 					break;
 				}
 			}
@@ -480,8 +480,8 @@ void RE_RenderScene( const refdef_t *fd ) {
 
 	// turn off dynamic lighting globally by clearing all the
 	// dlights if it needs to be disabled or if vertex lighting is enabled
-	if ( /*r_dynamiclight->integer == 0 ||	// RF, disabled so we can force things like lightning dlights
-	     r_vertexLight->integer == 1 ||*/
+	if ( /*r_dynamiclight->integer == 0 || // RF, disabled so we can force things like lightning dlights
+		r_vertexLight->integer == 1 ||*/
 		glConfig.hardwareType == GLHW_PERMEDIA2 ) {
 		tr.refdef.num_dlights = 0;
 	}

@@ -43,33 +43,31 @@ void R_PerformanceCounters( void ) {
 
 	if ( r_speeds->integer == 1 ) {
 		ri.Printf( PRINT_ALL, "%i/%i shaders/surfs %i leafs %i verts %i/%i tris %.2f mtex %.2f dc\n",
-				   backEnd.pc.c_shaders, backEnd.pc.c_surfaces, tr.pc.c_leafs, backEnd.pc.c_vertexes,
-				   backEnd.pc.c_indexes / 3, backEnd.pc.c_totalIndexes / 3,
-				   R_SumOfUsedImages() / ( 1000000.0f ), backEnd.pc.c_overDraw / (float)( glConfig.vidWidth * glConfig.vidHeight ) );
+				backEnd.pc.c_shaders, backEnd.pc.c_surfaces, tr.pc.c_leafs, backEnd.pc.c_vertexes,
+				backEnd.pc.c_indexes / 3, backEnd.pc.c_totalIndexes / 3,
+				R_SumOfUsedImages() / ( 1000000.0f ), backEnd.pc.c_overDraw / (float)( glConfig.vidWidth * glConfig.vidHeight ) );
 	} else if ( r_speeds->integer == 2 ) {
 		ri.Printf( PRINT_ALL, "(patch) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
-				   tr.pc.c_sphere_cull_patch_in, tr.pc.c_sphere_cull_patch_clip, tr.pc.c_sphere_cull_patch_out,
-				   tr.pc.c_box_cull_patch_in, tr.pc.c_box_cull_patch_clip, tr.pc.c_box_cull_patch_out );
+				tr.pc.c_sphere_cull_patch_in, tr.pc.c_sphere_cull_patch_clip, tr.pc.c_sphere_cull_patch_out,
+				tr.pc.c_box_cull_patch_in, tr.pc.c_box_cull_patch_clip, tr.pc.c_box_cull_patch_out );
+
 		ri.Printf( PRINT_ALL, "(md3) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
-				   tr.pc.c_sphere_cull_md3_in, tr.pc.c_sphere_cull_md3_clip, tr.pc.c_sphere_cull_md3_out,
-				   tr.pc.c_box_cull_md3_in, tr.pc.c_box_cull_md3_clip, tr.pc.c_box_cull_md3_out );
+				tr.pc.c_sphere_cull_md3_in, tr.pc.c_sphere_cull_md3_clip, tr.pc.c_sphere_cull_md3_out,
+				tr.pc.c_box_cull_md3_in, tr.pc.c_box_cull_md3_clip, tr.pc.c_box_cull_md3_out );
 	} else if ( r_speeds->integer == 3 ) {
 		ri.Printf( PRINT_ALL, "viewcluster: %i\n", tr.viewCluster );
 	} else if ( r_speeds->integer == 4 ) {
 		if ( backEnd.pc.c_dlightVertexes ) {
 			ri.Printf( PRINT_ALL, "dlight srf:%i  culled:%i  verts:%i  tris:%i\n",
-					   tr.pc.c_dlightSurfaces, tr.pc.c_dlightSurfacesCulled,
-					   backEnd.pc.c_dlightVertexes, backEnd.pc.c_dlightIndexes / 3 );
+					tr.pc.c_dlightSurfaces, tr.pc.c_dlightSurfacesCulled,
+					backEnd.pc.c_dlightVertexes, backEnd.pc.c_dlightIndexes / 3 );
 		}
-	}
 //----(SA)	this is unnecessary since it will always show 2048.  I moved this to where it is accurate for the world
-//	else if (r_speeds->integer == 5 )
-//	{
+//	} else if (r_speeds->integer == 5 ) {
 //		ri.Printf( PRINT_ALL, "zFar: %.0f\n", tr.viewParms.zFar );
-//	}
-	else if ( r_speeds->integer == 6 ) {
+	} else if ( r_speeds->integer == 6 ) {
 		ri.Printf( PRINT_ALL, "flare adds:%i tests:%i renders:%i\n",
-				   backEnd.pc.c_flareAdds, backEnd.pc.c_flareTests, backEnd.pc.c_flareRenders );
+				backEnd.pc.c_flareAdds, backEnd.pc.c_flareTests, backEnd.pc.c_flareRenders );
 	}
 
 	memset( &tr.pc, 0, sizeof( tr.pc ) );
@@ -171,7 +169,7 @@ R_AddDrawSurfCmd
 
 =============
 */
-void    R_AddDrawSurfCmd( drawSurf_t *drawSurfs, int numDrawSurfs ) {
+void R_AddDrawSurfCmd( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	drawSurfsCommand_t  *cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -194,7 +192,7 @@ RE_SetColor
 Passing NULL will set the color to white
 =============
 */
-void    RE_SetColor( const float *rgba ) {
+void RE_SetColor( const float *rgba ) {
 	setColorCommand_t   *cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -220,8 +218,7 @@ void    RE_SetColor( const float *rgba ) {
 RE_StretchPic
 =============
 */
-void RE_StretchPic( float x, float y, float w, float h,
-					float s1, float t1, float s2, float t2, qhandle_t hShader ) {
+void RE_StretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader ) {
 	stretchPicCommand_t *cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -240,11 +237,11 @@ void RE_StretchPic( float x, float y, float w, float h,
 	cmd->t2 = t2;
 }
 
-#define MODE_RED_CYAN   1
-#define MODE_RED_BLUE   2
-#define MODE_RED_GREEN  3
-#define MODE_GREEN_MAGENTA 4
-#define MODE_MAX    MODE_GREEN_MAGENTA
+#define MODE_RED_CYAN		1
+#define MODE_RED_BLUE		2
+#define MODE_RED_GREEN		3
+#define MODE_GREEN_MAGENTA	4
+#define MODE_MAX		MODE_GREEN_MAGENTA
 
 void R_SetColorMode( GLboolean *rgba, stereoFrame_t stereoFrame, int colormode ) {
 	rgba[0] = rgba[1] = rgba[2] = rgba[3] = GL_TRUE;
@@ -265,8 +262,7 @@ void R_SetColorMode( GLboolean *rgba, stereoFrame_t stereoFrame, int colormode )
 		} else if ( stereoFrame == STEREO_RIGHT ) {
 			rgba[1] = GL_FALSE;
 		}
-	} else
-	{
+	} else {
 		if ( stereoFrame == STEREO_LEFT ) {
 			rgba[1] = rgba[2] = GL_FALSE;
 		} else if ( stereoFrame == STEREO_RIGHT ) {
@@ -286,8 +282,7 @@ void R_SetColorMode( GLboolean *rgba, stereoFrame_t stereoFrame, int colormode )
 RE_RotatedPic
 =============
 */
-void RE_RotatedPic( float x, float y, float w, float h,
-					float s1, float t1, float s2, float t2, qhandle_t hShader, float angle ) {
+void RE_RotatedPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle ) {
 	stretchPicCommand_t *cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -322,8 +317,7 @@ void RE_RotatedPic( float x, float y, float w, float h,
 RE_StretchPicGradient
 ==============
 */
-void RE_StretchPicGradient( float x, float y, float w, float h,
-							float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType ) {
+void RE_StretchPicGradient( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType ) {
 	stretchPicCommand_t *cmd;
 
 	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
@@ -391,8 +385,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			ri.Printf( PRINT_ALL, "Warning: stencil shadows and overdraw measurement are mutually exclusive\n" );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
-		} else
-		{
+		} else {
 			R_IssuePendingRenderCommands();
 			qglEnable( GL_STENCIL_TEST );
 			qglStencilMask( ~0U );
@@ -401,8 +394,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			qglStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 		}
 		r_measureOverdraw->modified = qfalse;
-	} else
-	{
+	} else {
 		// this is only reached if it was on and is now off
 		if ( r_measureOverdraw->modified ) {
 			R_IssuePendingRenderCommands();
@@ -478,8 +470,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		} else {
 			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame );
 		}
-	} else
-	{
+	} else {
 		if ( r_anaglyphMode->integer ) {
 			if ( r_anaglyphMode->modified ) {
 				// clear both, front and backbuffer.
@@ -522,33 +513,35 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			colcmd->commandId = RC_COLORMASK;
 		} else
 #endif
-	{
-		if ( stereoFrame != STEREO_CENTER ) {
-			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
+		{
+			if ( stereoFrame != STEREO_CENTER ) {
+				ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
+			}
+
+			if ( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) ) {
+				return;
+			}
 		}
 
-		if ( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) ) {
-			return;
-		}
-	}
-
-	if ( cmd ) {
-		cmd->commandId = RC_DRAW_BUFFER;
+		if ( cmd ) {
+			cmd->commandId = RC_DRAW_BUFFER;
 
 #ifndef USE_OPENGLES
-		if ( r_anaglyphMode->modified ) {
-			qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-			r_anaglyphMode->modified = qfalse;
-		}
+			if ( r_anaglyphMode->modified ) {
+				qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+				r_anaglyphMode->modified = qfalse;
+			}
 
-		if ( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) ) {
-			cmd->buffer = (int)GL_FRONT;
-		} else
+			if ( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) ) {
+				cmd->buffer = (int)GL_FRONT;
+			} else
 #endif
-		cmd->buffer = (int)GL_BACK;
-	}
+			{
+				cmd->buffer = (int)GL_BACK;
+			}
+		}
 #ifndef USE_OPENGLES
-}
+	}
 #endif
 
 	tr.refdef.stereoFrame = stereoFrame;
@@ -592,8 +585,7 @@ void RE_EndFrame( int *frontEndMsec, int *backEndMsec ) {
 RE_TakeVideoFrame
 =============
 */
-void RE_TakeVideoFrame( int width, int height,
-						byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg ) {
+void RE_TakeVideoFrame( int width, int height, byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg ) {
 	videoFrameCommand_t *cmd;
 
 	if ( !tr.registered ) {

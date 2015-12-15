@@ -35,7 +35,7 @@ static cvar_t *r_bloom_diamond_size;
 /*
 ==============================================================================
 
-                        LIGHT BLOOMS
+LIGHT BLOOMS
 
 ==============================================================================
 */
@@ -131,17 +131,17 @@ static void ID_INLINE R_Bloom_Quad( int width, int height, float texX, float tex
 	}
 #else
 	qglBegin( GL_QUADS );
-	qglTexCoord2f(  texX,                       texHeight   );
-	qglVertex2f(    x,                          y   );
+	qglTexCoord2f( texX, texHeight );
+	qglVertex2f( x, y );
 
-	qglTexCoord2f(  texX,                       texY    );
-	qglVertex2f(    x,                          height  );
+	qglTexCoord2f( texX, texY );
+	qglVertex2f( x, height );
 
-	qglTexCoord2f(  texWidth,                   texY    );
-	qglVertex2f(    width,                      height  );
+	qglTexCoord2f( texWidth, texY );
+	qglVertex2f( width, height );
 
-	qglTexCoord2f(  texWidth,                   texHeight   );
-	qglVertex2f(    width,                      y   );
+	qglTexCoord2f( texWidth, texHeight );
+	qglVertex2f( width, y );
 	qglEnd();
 #endif
 }
@@ -175,12 +175,11 @@ static void R_Bloom_InitTextures( void ) {
 
 	// disable blooms if we can't handle a texture of that size
 	if ( bloom.screen.width > glConfig.maxTextureSize ||
-		 bloom.screen.height > glConfig.maxTextureSize ||
-		 bloom.effect.width > glConfig.maxTextureSize ||
-		 bloom.effect.height > glConfig.maxTextureSize ||
-		 bloom.work.width > glConfig.vidWidth ||
-		 bloom.work.height > glConfig.vidHeight
-		 ) {
+			bloom.screen.height > glConfig.maxTextureSize ||
+			bloom.effect.width > glConfig.maxTextureSize ||
+			bloom.effect.height > glConfig.maxTextureSize ||
+			bloom.work.width > glConfig.vidWidth ||
+			bloom.work.height > glConfig.vidHeight ) {
 		ri.Cvar_Set( "r_bloom", "0" );
 		Com_Printf( S_COLOR_YELLOW "WARNING: 'R_InitBloomTextures' too high resolution for light bloom, effect disabled\n" );
 		return;
@@ -251,9 +250,7 @@ static void R_Bloom_WarsowEffect( void ) {
 		GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
 
 		for ( i = 0; i < r_bloom_darken->integer; i++ ) {
-			R_Bloom_Quad( bloom.work.width, bloom.work.height,
-						  0, 0,
-						  bloom.effect.readW, bloom.effect.readH );
+			R_Bloom_Quad( bloom.work.width, bloom.work.height, 0, 0, bloom.effect.readW, bloom.effect.readH );
 		}
 		qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
 	}
@@ -335,8 +332,8 @@ static void R_Bloom_RestoreScreen( void ) {
 	GL_Bind( bloom.screen.texture );
 	qglColor4f( 1, 1, 1, 1 );
 	R_Bloom_Quad( bloom.work.width, bloom.work.height, 0, 0,
-				  bloom.work.width / (float)bloom.screen.width,
-				  bloom.work.height / (float)bloom.screen.height );
+			bloom.work.width / (float)bloom.screen.width,
+			bloom.work.height / (float)bloom.screen.height );
 }
 
 
@@ -346,78 +343,80 @@ R_Bloom_DownsampleView
 Scale the copied screen back to the sample size used for subsequent passes
 =================
 */
-/*static void R_Bloom_DownsampleView( void )
-{
-    // TODO, Provide option to control the color strength here /
-//	qglColor4f( r_bloom_darken->value, r_bloom_darken->value, r_bloom_darken->value, 1.0f );
-    qglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-    GL_Bind( bloom.screen.texture );
-    GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-    //Downscale it
-    R_Bloom_Quad( bloom.work.width, bloom.work.height, 0, 0, bloom.screen.readW, bloom.screen.readH );
-#if 1
-    GL_Bind( bloom.effect.texture );
-    qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
-    // darkening passes
-    if( r_bloom_darken->integer ) {
-        int i;
-        GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
+/*static void R_Bloom_DownsampleView( void ) {
+	// TODO, Provide option to control the color strength here
+	//qglColor4f( r_bloom_darken->value, r_bloom_darken->value, r_bloom_darken->value, 1.0f );
+	qglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	GL_Bind( bloom.screen.texture );
+	GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
 
-        for( i = 0; i < r_bloom_darken->integer; i++ ) {
-            R_Bloom_Quad( bloom.work.width, bloom.work.height,
-                0, 0,
-                bloom.effect.readW, bloom.effect.readH );
-        }
-        qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
-    }
+	//Downscale it
+	R_Bloom_Quad( bloom.work.width, bloom.work.height, 0, 0, bloom.screen.readW, bloom.screen.readH );
+#if 1
+	GL_Bind( bloom.effect.texture );
+	qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
+
+	// darkening passes
+	if( r_bloom_darken->integer ) {
+		int i;
+
+		GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
+
+		for( i = 0; i < r_bloom_darken->integer; i++ ) {
+			R_Bloom_Quad( bloom.work.width, bloom.work.height, 0, 0, bloom.effect.readW, bloom.effect.readH );
+		}
+
+		qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
+	}
 #endif
-    // Copy the result to the effect texture /
-    GL_Bind( bloom.effect.texture );
-    qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
+	// Copy the result to the effect texture /
+	GL_Bind( bloom.effect.texture );
+	qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
 }
 
 static void R_Bloom_CreateEffect( void ) {
-    int dir, x;
-    int range;
+	int dir, x;
+	int range;
 
-    //First step will zero dst, rest will one add
-    GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-//	GL_Bind( bloom.screen.texture );
-    GL_Bind( bloom.effect.texture );
-    range = 4;
-    for (dir = 0;dir < 2;dir++)
-    {
-        // blend on at multiple vertical offsets to achieve a vertical blur
-        // TODO: do offset blends using GLSL
-        for (x = -range;x <= range;x++)
-        {
-            float xoffset, yoffset, r;
-            if (!dir){
-                xoffset = 0;
-                yoffset = x*1.5;
-            } else {
-                xoffset = x*1.5;
-                yoffset = 0;
-            }
-            xoffset /= bloom.work.width;
-            yoffset /= bloom.work.height;
-            // this r value looks like a 'dot' particle, fading sharply to
-            // black at the edges
-            // (probably not realistic but looks good enough)
-            //r = ((range*range+1)/((float)(x*x+1)))/(range*2+1);
-            //r = (dir ? 1.0f : brighten)/(range*2+1);
-            r = 2.0f /(range*2+1)*(1 - x*x/(float)(range*range));
-//			r *= r_bloom_darken->value;
-            qglColor4f(r, r, r, 1);
-            R_Bloom_Quad( bloom.work.width, bloom.work.height,
-                xoffset, yoffset,
-                bloom.effect.readW, bloom.effect.readH );
-//				bloom.screen.readW, bloom.screen.readH );
-            GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
-        }
-    }
-    GL_Bind( bloom.effect.texture );
-    qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
+	//First step will zero dst, rest will one add
+	GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
+	//GL_Bind( bloom.screen.texture );
+	GL_Bind( bloom.effect.texture );
+	range = 4;
+
+	for (dir = 0;dir < 2;dir++) {
+		// blend on at multiple vertical offsets to achieve a vertical blur
+		// TODO: do offset blends using GLSL
+		for ( x = -range; x <= range; x++ ) {
+			float xoffset, yoffset, r;
+
+			if ( !dir ) {
+				xoffset = 0;
+				yoffset = x * 1.5;
+			} else {
+				xoffset = x * 1.5;
+				yoffset = 0;
+			}
+
+			xoffset /= bloom.work.width;
+			yoffset /= bloom.work.height;
+
+			// this r value looks like a 'dot' particle, fading sharply to
+			// black at the edges
+			// (probably not realistic but looks good enough)
+			//r = ( ( range * range + 1 ) / ( (float)( x * x + 1 ) ) ) / ( range * 2 + 1 );
+			//r = ( dir ? 1.0f : brighten ) / ( range * 2 + 1 );
+			r = 2.0f / ( range * 2 + 1 ) * ( 1 - x * x / (float)( range * range ) );
+			//r *= r_bloom_darken->value;
+			qglColor4f(r, r, r, 1);
+			R_Bloom_Quad( bloom.work.width, bloom.work.height, xoffset, yoffset, bloom.effect.readW, bloom.effect.readH );
+			//R_Bloom_Quad( bloom.work.width, bloom.work.height, xoffset, yoffset, bloom.screen.readW, bloom.screen.readH );
+			GL_State( GLS_DEPTHTEST_DISABLE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
+		}
+	}
+
+	GL_Bind( bloom.effect.texture );
+	qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, bloom.work.width, bloom.work.height );
 }*/
 
 /*

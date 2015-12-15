@@ -40,10 +40,10 @@ typedef struct _TargaHeader {
 
 void R_LoadTGA( const char *name, byte **pic, int *width, int *height ) {
 	unsigned columns, rows, numPixels;
-	byte    *pixbuf;
+	byte *pixbuf;
 	int row, column;
-	byte    *buf_p;
-	byte    *end;
+	byte *buf_p;
+	byte *end;
 	union {
 		byte *b;
 		void *v;
@@ -99,9 +99,7 @@ void R_LoadTGA( const char *name, byte **pic, int *width, int *height ) {
 
 	buf_p += 18;
 
-	if ( targa_header.image_type != 2
-		 && targa_header.image_type != 10
-		 && targa_header.image_type != 3 ) {
+	if ( targa_header.image_type != 2 && targa_header.image_type != 10 && targa_header.image_type != 3 ) {
 		ri.Error( ERR_DROP, "LoadTGA: Only type 2 (RGB), 3 (gray), and 10 (RGB) TGA images supported" );
 	}
 
@@ -182,7 +180,7 @@ void R_LoadTGA( const char *name, byte **pic, int *width, int *height ) {
 				}
 			}
 		}
-	} else if ( targa_header.image_type == 10 )       { // Runlength encoded RGB images
+	} else if ( targa_header.image_type == 10 ) { // Runlength encoded RGB images
 		unsigned char red,green,blue,alphabyte,packetHeader,packetSize,j;
 
 		for ( row = rows - 1; row >= 0; row-- ) {

@@ -53,14 +53,14 @@ void R_LoadPCX( const char *filename, byte **pic, int *width, int *height ) {
 		byte *b;
 		void *v;
 	} raw;
-	byte    *end;
-	pcx_t   *pcx;
+	byte *end;
+	pcx_t *pcx;
 	int len;
 	unsigned char dataByte = 0, runLength = 0;
-	byte    *out, *pix;
+	byte *out, *pix;
 	unsigned short w, h;
-	byte    *pic8;
-	byte    *palette;
+	byte *pic8;
+	byte *palette;
 	int i;
 	unsigned size = 0;
 
@@ -96,13 +96,13 @@ void R_LoadPCX( const char *filename, byte **pic, int *width, int *height ) {
 	h = LittleShort( pcx->ymax ) + 1;
 	size = w * h;
 
-	if ( pcx->manufacturer != 0x0a
-		 || pcx->version != 5
-		 || pcx->encoding != 1
-		 || pcx->color_planes != 1
-		 || pcx->bits_per_pixel != 8
-		 || w >= 1024
-		 || h >= 1024 ) {
+	if ( pcx->manufacturer != 0x0a ||
+			pcx->version != 5 ||
+			pcx->encoding != 1 ||
+			pcx->color_planes != 1 ||
+			pcx->bits_per_pixel != 8 ||
+			w >= 1024 ||
+			h >= 1024 ) {
 		ri.Printf( PRINT_ALL, "Bad or unsupported pcx file %s (%dx%d@%d)\n", filename, w, h, pcx->bits_per_pixel );
 		return;
 	}

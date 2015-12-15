@@ -59,8 +59,8 @@ typedef struct {
 	void ( *RegisterFont )( const char *fontName, int pointSize, fontInfo_t *font );
 
 	void ( *LoadWorld )( const char *name );
-	qboolean ( *GetSkinModel )( qhandle_t skinid, const char *type, char *name );    //----(SA)	added
-	qhandle_t ( *GetShaderFromModel )( qhandle_t modelid, int surfnum, int withlightmap );                //----(SA)	added
+	qboolean ( *GetSkinModel )( qhandle_t skinid, const char *type, char *name );			//----(SA)	added
+	qhandle_t ( *GetShaderFromModel )( qhandle_t modelid, int surfnum, int withlightmap );		//----(SA)	added
 
 	// the vis data is a large enough block of data that we go to the trouble
 	// of sharing it with the clipmodel subsystem
@@ -87,12 +87,9 @@ typedef struct {
 	void ( *RenderScene )( const refdef_t *fd );
 
 	void ( *SetColor )( const float *rgba );    // NULL = 1,1,1,1
-	void ( *DrawStretchPic )( float x, float y, float w, float h,
-							  float s1, float t1, float s2, float t2, qhandle_t hShader ); // 0 = white
-	void ( *DrawRotatedPic )( float x, float y, float w, float h,
-							  float s1, float t1, float s2, float t2, qhandle_t hShader, float angle ); // NERVE - SMF
-	void ( *DrawStretchPicGradient )( float x, float y, float w, float h,
-									  float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType );
+	void ( *DrawStretchPic )( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader ); // 0 = white
+	void ( *DrawRotatedPic )( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, float angle ); // NERVE - SMF
+	void ( *DrawStretchPicGradient )( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor, int gradientType );
 
 	// Draw images for cinematic rendering, pass as 32 bit rgba
 	void ( *DrawStretchRaw )( int x, int y, int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty );
@@ -103,9 +100,7 @@ typedef struct {
 	// if the pointers are not NULL, timing info will be returned
 	void ( *EndFrame )( int *frontEndMsec, int *backEndMsec );
 
-
-	int ( *MarkFragments )( int numPoints, const vec3_t *points, const vec3_t projection,
-							int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer );
+	int ( *MarkFragments )( int numPoints, const vec3_t *points, const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer );
 
 	int ( *LerpTag )( orientation_t *tag,  const refEntity_t *refent, const char *tagName, int startIndex );
 	void ( *ModelBounds )( qhandle_t model, vec3_t mins, vec3_t maxs );
@@ -135,23 +130,23 @@ typedef struct {
 	// won't be freed
 	void ( *Hunk_Clear )( void );
 #ifdef HUNK_DEBUG
-	void    *( *Hunk_AllocDebug )( int size, ha_pref pref, char *label, char *file, int line );
+	void *( *Hunk_AllocDebug )( int size, ha_pref pref, char *label, char *file, int line );
 #else
-	void    *( *Hunk_Alloc )( int size, ha_pref pref );
+	void *( *Hunk_Alloc )( int size, ha_pref pref );
 #endif
-	void    *( *Hunk_AllocateTempMemory )( int size );
+	void *( *Hunk_AllocateTempMemory )( int size );
 	void ( *Hunk_FreeTempMemory )( void *block );
 
 	// dynamic memory allocator for things that need to be freed
 #ifdef ZONE_DEBUG
-	void    *( *Z_MallocDebug )( int bytes, char *label, char *file, int line );
+	void *( *Z_MallocDebug )( int bytes, char *label, char *file, int line );
 #else
-	void    *( *Z_Malloc )( int bytes );
+	void *( *Z_Malloc )( int bytes );
 #endif
 	void ( *Free )( void *buf );
 	void ( *Tag_Free )( void );
 
-	cvar_t  *( *Cvar_Get )( const char *name, const char *value, int flags );
+	cvar_t *( *Cvar_Get )( const char *name, const char *value, int flags );
 	void ( *Cvar_Set )( const char *name, const char *value );
 	void ( *Cvar_SetValue )( const char *name, float value );
 	void ( *Cvar_CheckRange )( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral );
@@ -162,11 +157,11 @@ typedef struct {
 	void ( *Cmd_RemoveCommand )( const char *name );
 
 	int ( *Cmd_Argc )( void );
-	char    *( *Cmd_Argv )( int i );
+	char *( *Cmd_Argv )( int i );
 
 	void ( *Cmd_ExecuteText )( int exec_when, const char *text );
 
-	byte    *( *CM_ClusterPVS )( int cluster );
+	byte *( *CM_ClusterPVS )( int cluster );
 
 	// visualization for debugging collision detection
 	void ( *CM_DrawDebugSurface )( void ( *drawPoly )( int color, int numPoints, float *points ) );

@@ -135,8 +135,7 @@ void GL_Cull( int cullType ) {
 
 	if ( cullType == CT_TWO_SIDED ) {
 		qglDisable( GL_CULL_FACE );
-	} else
-	{
+	} else {
 		qboolean cullFront;
 		qglEnable( GL_CULL_FACE );
 
@@ -199,8 +198,7 @@ void GL_State( unsigned long stateBits ) {
 	if ( diff & GLS_DEPTHFUNC_EQUAL ) {
 		if ( stateBits & GLS_DEPTHFUNC_EQUAL ) {
 			qglDepthFunc( GL_EQUAL );
-		} else
-		{
+		} else {
 			qglDepthFunc( GL_LEQUAL );
 		}
 	}
@@ -279,8 +277,7 @@ void GL_State( unsigned long stateBits ) {
 
 			qglEnable( GL_BLEND );
 			qglBlendFunc( srcFactor, dstFactor );
-		} else
-		{
+		} else {
 			qglDisable( GL_BLEND );
 		}
 	}
@@ -291,8 +288,7 @@ void GL_State( unsigned long stateBits ) {
 	if ( diff & GLS_DEPTHMASK_TRUE ) {
 		if ( stateBits & GLS_DEPTHMASK_TRUE ) {
 			qglDepthMask( GL_TRUE );
-		} else
-		{
+		} else {
 			qglDepthMask( GL_FALSE );
 		}
 	}
@@ -304,8 +300,7 @@ void GL_State( unsigned long stateBits ) {
 #ifndef USE_OPENGLES
 		if ( stateBits & GLS_POLYMODE_LINE ) {
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		} else
-		{
+		} else {
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		}
 #endif
@@ -317,8 +312,7 @@ void GL_State( unsigned long stateBits ) {
 	if ( diff & GLS_DEPTHTEST_DISABLE ) {
 		if ( stateBits & GLS_DEPTHTEST_DISABLE ) {
 			qglDisable( GL_DEPTH_TEST );
-		} else
-		{
+		} else {
 			qglEnable( GL_DEPTH_TEST );
 		}
 	}
@@ -517,8 +511,7 @@ void RB_BeginDrawingView( void ) {
 	if ( ( backEnd.refdef.rdflags & RDF_HYPERSPACE ) ) {
 		RB_Hyperspace();
 		return;
-	} else
-	{
+	} else {
 		backEnd.isHyperspace = qfalse;
 	}
 
@@ -600,7 +593,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// a "entityMergable" shader is a shader that can have surfaces from seperate
 		// entities merged into a single batch, like smoke and blood puff sprites
 		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted
-								 || ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) {
+				|| ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) {
 			if ( oldShader != NULL ) {
 				RB_EndSurface();
 			}
@@ -668,8 +661,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 								qglLoadMatrixf( backEnd.viewParms.projectionMatrix );
 								qglMatrixMode( GL_MODELVIEW );
 							}
-						} else
-						{
+						} else {
 							viewParms_t temp = backEnd.viewParms;
 
 							R_SetupProjection( &temp, r_znear->value, qfalse );
@@ -683,8 +675,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					if ( !oldDepthRange ) {
 						qglDepthRange( 0, 0.3 );
 					}
-				} else
-				{
+				} else {
 					if ( !wasCrosshair && backEnd.viewParms.stereoFrame != STEREO_CENTER ) {
 						qglMatrixMode( GL_PROJECTION );
 						qglLoadMatrixf( backEnd.viewParms.projectionMatrix );

@@ -50,14 +50,14 @@ Out must have space for two more vertexes than in
 #define SIDE_BACK   1
 #define SIDE_ON     2
 static void R_ChopPolyBehindPlane( int numInPoints, vec3_t inPoints[MAX_VERTS_ON_POLY],
-								   int *numOutPoints, vec3_t outPoints[MAX_VERTS_ON_POLY],
-								   vec3_t normal, vec_t dist, vec_t epsilon ) {
+					int *numOutPoints, vec3_t outPoints[MAX_VERTS_ON_POLY],
+					vec3_t normal, vec_t dist, vec_t epsilon ) {
 	float dists[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int sides[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int counts[3];
 	float dot;
 	int i, j;
-	float       *p1, *p2, *clip;
+	float *p1, *p2, *clip;
 	float d;
 
 	// don't clip if it might overflow
@@ -195,8 +195,7 @@ void R_BoxSurfaces_r( mnode_t *node, vec3_t mins, vec3_t maxs, surfaceType_t **l
 				// don't add faces that make sharp angles with the projection direction
 				surf->viewCount = tr.viewCount;
 			}
-		} else if ( *(surfaceType_t *) ( surf->data ) != SF_GRID &&
-					*(surfaceType_t *) ( surf->data ) != SF_TRIANGLES ) {
+		} else if ( *(surfaceType_t *) ( surf->data ) != SF_GRID && *(surfaceType_t *) ( surf->data ) != SF_TRIANGLES ) {
 			surf->viewCount = tr.viewCount;
 		}
 		// check the viewCount because the surface may have
@@ -217,11 +216,11 @@ R_AddMarkFragments
 =================
 */
 void R_AddMarkFragments( int numClipPoints, vec3_t clipPoints[2][MAX_VERTS_ON_POLY],
-						 int numPlanes, vec3_t *normals, float *dists,
-						 int maxPoints, vec3_t pointBuffer,
-						 int maxFragments, markFragment_t *fragmentBuffer,
-						 int *returnedPoints, int *returnedFragments,
-						 vec3_t mins, vec3_t maxs ) {
+						int numPlanes, vec3_t *normals, float *dists,
+						int maxPoints, vec3_t pointBuffer,
+						int maxFragments, markFragment_t *fragmentBuffer,
+						int *returnedPoints, int *returnedFragments,
+						vec3_t mins, vec3_t maxs ) {
 	int pingPong, i;
 	markFragment_t  *mf;
 
@@ -250,14 +249,23 @@ void R_AddMarkFragments( int numClipPoints, vec3_t clipPoints[2][MAX_VERTS_ON_PO
 	/*
 	// all the clip points should be within the bounding box
 	for ( i = 0 ; i < numClipPoints ; i++ ) {
-	    int j;
-	    for ( j = 0 ; j < 3 ; j++ ) {
-	        if (clipPoints[pingPong][i][j] < mins[j] - 0.5) break;
-	        if (clipPoints[pingPong][i][j] > maxs[j] + 0.5) break;
-	    }
-	    if (j < 3) break;
+		int j;
+
+		for ( j = 0 ; j < 3 ; j++ ) {
+			if ( clipPoints[pingPong][i][j] < mins[j] - 0.5 ) {
+				break;
+			}
+			if ( clipPoints[pingPong][i][j] > maxs[j] + 0.5 ) {
+				break;
+			}
+		}
+		if ( j < 3 ) {
+			break;
+		}
 	}
-	if (i < numClipPoints) return;
+	if ( i < numClipPoints ) {
+		return;
+	}
 	*/
 
 	mf = fragmentBuffer + ( *returnedFragments );
@@ -279,7 +287,7 @@ R_OldMarkFragments
 =================
 */
 int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projection,
-						int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer ) {
+				int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer ) {
 	int numsurfaces, numPlanes;
 	int i, j, k, m, n;
 	surfaceType_t   *surfaces[64];
@@ -290,13 +298,13 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 	float dists[MAX_VERTS_ON_POLY + 2];
 	vec3_t clipPoints[2][MAX_VERTS_ON_POLY];
 	int numClipPoints;
-	float           *v;
-	srfGridMesh_t   *cv;
-	drawVert_t      *dv;
+	float *v;
+	srfGridMesh_t *cv;
+	drawVert_t *dv;
 	vec3_t normal;
 	vec3_t projectionDir;
 	vec3_t v1, v2;
-	int             *indexes;
+	int *indexes;
 
 	if ( numPoints <= 0 ) {
 		return 0;
@@ -430,7 +438,6 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 				}
 			}
 		} else if ( *surfaces[i] == SF_FACE ) {
-
 			srfSurfaceFace_t *surf = ( srfSurfaceFace_t * ) surfaces[i];
 			// check the normal of this face
 			if ( DotProduct( surf->plane.normal, projectionDir ) > -0.5 ) {
@@ -445,15 +452,15 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 				}
 				// add the fragments of this face
 				R_AddMarkFragments( 3, clipPoints,
-									numPlanes, normals, dists,
-									maxPoints, pointBuffer,
-									maxFragments, fragmentBuffer,
-									&returnedPoints, &returnedFragments, mins, maxs );
+								numPlanes, normals, dists,
+								maxPoints, pointBuffer,
+								maxFragments, fragmentBuffer,
+								&returnedPoints, &returnedFragments, mins, maxs );
 				if ( returnedFragments == maxFragments ) {
 					return returnedFragments;   // not enough space for more fragments
 				}
 			}
-		} else if ( *surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer )      {
+		} else if ( *surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer ) {
 
 			srfTriangles_t *surf = (srfTriangles_t *) surfaces[i];
 
@@ -467,9 +474,9 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 
 				// add the fragments of this face
 				R_AddMarkFragments( 3, clipPoints,
-									numPlanes, normals, dists,
-									maxPoints, pointBuffer,
-									maxFragments, fragmentBuffer, &returnedPoints, &returnedFragments, mins, maxs );
+								numPlanes, normals, dists,
+								maxPoints, pointBuffer,
+								maxFragments, fragmentBuffer, &returnedPoints, &returnedFragments, mins, maxs );
 				if ( returnedFragments == maxFragments ) {
 					return returnedFragments;   // not enough space for more fragments
 				}
@@ -486,7 +493,7 @@ R_MarkFragments
 =================
 */
 int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t projection,
-					 int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer ) {
+				int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer ) {
 	int numsurfaces, numPlanes;
 	int i, j, k, m, n;
 	surfaceType_t   *surfaces[4096];
@@ -497,13 +504,13 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	float dists[MAX_VERTS_ON_POLY + 2];
 	vec3_t clipPoints[2][MAX_VERTS_ON_POLY];
 	int numClipPoints;
-	float           *v;
-	srfGridMesh_t   *cv;
-	drawVert_t      *dv;
+	float *v;
+	srfGridMesh_t *cv;
+	drawVert_t *dv;
 	vec3_t normal;
 	vec3_t projectionDir;
 	vec3_t v1, v2;
-	int             *indexes;
+	int *indexes;
 	float radius;
 	vec3_t center;      // center of original mark
 	int numPoints = 4;  // Ridah, we were only ever passing in 4, so I made this local and used the parameter for the orientation
@@ -576,29 +583,32 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 	// find the closest surface to center the decal there, and wrap around other surfaces
 	if ( !oldMapping ) {
 /*
-        for ( i = 0 ; i < numsurfaces ; i++ ) {
-            if (*surfaces[i] == SF_FACE) {
-                surf = ( srfSurfaceFace_t * ) surfaces[i];
-                // Ridah, check if this is the closest surface
-                dot = DotProduct( center, surf->plane.normal );
-                dot -= surf->plane.dist;
-                if (!bestdist) {
-                    if (dot < 0)
-                        bestdist = fabs(dot) + 1000;	// avoid this surface, since the point is behind it
-                    else
-                        bestdist = dot;
-                    VectorCopy( surf->plane.normal, bestnormal );
-                    VectorMA( center, -dot, surf->plane.normal, bestCenter );
-                } else if (dot >= 0 && dot < bestdist) {
-                    bestdist = dot;
-                    VectorCopy( surf->plane.normal, bestnormal );
-                    VectorMA( center, -dot, surf->plane.normal, bestCenter );
-                }
-            }
+	for ( i = 0 ; i < numsurfaces ; i++ ) {
+		if ( *surfaces[i] == SF_FACE ) {
+			surf = ( srfSurfaceFace_t * ) surfaces[i];
+		
+			// Ridah, check if this is the closest surface
+			dot = DotProduct( center, surf->plane.normal );
+			dot -= surf->plane.dist;
+			if ( !bestdist ) {
+				if ( dot < 0 ) {
+					bestdist = fabs(dot) + 1000;	// avoid this surface, since the point is behind it
+				} else {
+					bestdist = dot;
+				}
+				VectorCopy( surf->plane.normal, bestnormal );
+				VectorMA( center, -dot, surf->plane.normal, bestCenter );
+			} else if ( dot >= 0 && dot < bestdist ) {
+				bestdist = dot;
+				VectorCopy( surf->plane.normal, bestnormal );
+				VectorMA( center, -dot, surf->plane.normal, bestCenter );
+			}
+		}
         }
-        // bestCenter is now the real center
-        VectorCopy( bestCenter, center );
-Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bestnormal[2] );
+
+	// bestCenter is now the real center
+	VectorCopy( bestCenter, center );
+	Com_Printf( "bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bestnormal[2] );
 */
 		VectorNegate( bestnormal, bestnormal );
 	}
@@ -769,10 +779,10 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 
 					// add the fragments of this face
 					R_AddMarkFragments( 3, clipPoints,
-										numPlanes, lnormals, ldists,
-										maxPoints, pointBuffer,
-										maxFragments, fragmentBuffer,
-										&returnedPoints, &returnedFragments, lmins, lmaxs );
+									numPlanes, lnormals, ldists,
+									maxPoints, pointBuffer,
+									maxFragments, fragmentBuffer,
+									&returnedPoints, &returnedFragments, lmins, lmaxs );
 
 					if ( oldNumPoints != returnedPoints ) {
 						// flag this surface as already having computed ST's
@@ -790,7 +800,6 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 						return returnedFragments;   // not enough space for more fragments
 					}
 				}
-
 			} else {    // old mapping
 
 				// check the normal of this face
@@ -806,18 +815,16 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 					}
 					// add the fragments of this face
 					R_AddMarkFragments( 3, clipPoints,
-										numPlanes, normals, dists,
-										maxPoints, pointBuffer,
-										maxFragments, fragmentBuffer,
-										&returnedPoints, &returnedFragments, mins, maxs );
+									numPlanes, normals, dists,
+									maxPoints, pointBuffer,
+									maxFragments, fragmentBuffer,
+									&returnedPoints, &returnedFragments, mins, maxs );
 					if ( returnedFragments == maxFragments ) {
 						return returnedFragments;   // not enough space for more fragments
 					}
 				}
-
 			}
-
-		} else if ( *surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer )      {
+		} else if ( *surfaces[i] == SF_TRIANGLES && r_marksOnTriangleMeshes->integer ) {
 
 			srfTriangles_t *surf = (srfTriangles_t *) surfaces[i];
 
@@ -831,9 +838,9 @@ Com_Printf("bestnormal: %1.1f %1.1f %1.1f \n", bestnormal[0], bestnormal[1], bes
 
 				// add the fragments of this face
 				R_AddMarkFragments( 3, clipPoints,
-									numPlanes, normals, dists,
-									maxPoints, pointBuffer,
-									maxFragments, fragmentBuffer, &returnedPoints, &returnedFragments, mins, maxs );
+								numPlanes, normals, dists,
+								maxPoints, pointBuffer,
+								maxFragments, fragmentBuffer, &returnedPoints, &returnedFragments, mins, maxs );
 				if ( returnedFragments == maxFragments ) {
 					return returnedFragments;   // not enough space for more fragments
 				}

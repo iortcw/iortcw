@@ -64,7 +64,7 @@ static float *TableForFunc( genFunc_t func ) {
 ** Evaluates a given waveForm_t, referencing backEnd.refdef.time directly
 */
 static float EvalWaveForm( const waveForm_t *wf ) {
-	float   *table;
+	float *table;
 
 	table = TableForFunc( wf->func );
 
@@ -72,7 +72,7 @@ static float EvalWaveForm( const waveForm_t *wf ) {
 }
 
 static float EvalWaveFormClamped( const waveForm_t *wf ) {
-	float glow  = EvalWaveForm( wf );
+	float glow = EvalWaveForm( wf );
 
 	if ( glow < 0 ) {
 		return 0;
@@ -123,9 +123,9 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 	int i;
 	vec3_t offset;
 	float scale;
-	float   *xyz = ( float * ) tess.xyz;
-	float   *normal = ( float * ) tess.normal;
-	float   *table;
+	float *xyz = ( float * ) tess.xyz;
+	float *normal = ( float * ) tess.normal;
+	float *table;
 
 	// Ridah
 	if ( ds->deformationWave.frequency < 0 ) {
@@ -159,10 +159,7 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 			float off = ( xyz[0] + xyz[1] + xyz[2] ) * ds->deformationSpread;
 			float dot;
 
-			scale = WAVEVALUE( table, ds->deformationWave.base,
-							   ds->deformationWave.amplitude,
-							   ds->deformationWave.phase + off,
-							   ds->deformationWave.frequency );
+			scale = WAVEVALUE( table, ds->deformationWave.base, ds->deformationWave.amplitude, ds->deformationWave.phase + off, ds->deformationWave.frequency );
 
 			dot = DotProduct( worldUp, normal );
 
@@ -191,18 +188,14 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 			xyz[1] += offset[1];
 			xyz[2] += offset[2];
 		}
-	} else
-	{
+	} else {
 		table = TableForFunc( ds->deformationWave.func );
 
 		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 )
 		{
 			float off = ( xyz[0] + xyz[1] + xyz[2] ) * ds->deformationSpread;
 
-			scale = WAVEVALUE( table, ds->deformationWave.base,
-							   ds->deformationWave.amplitude,
-							   ds->deformationWave.phase + off,
-							   ds->deformationWave.frequency );
+			scale = WAVEVALUE( table, ds->deformationWave.base, ds->deformationWave.amplitude, ds->deformationWave.phase + off, ds->deformationWave.frequency );
 
 			VectorScale( normal, scale, offset );
 
@@ -223,23 +216,20 @@ Wiggle the normals for wavy environment mapping
 void RB_CalcDeformNormals( deformStage_t *ds ) {
 	int i;
 	float scale;
-	float   *xyz = ( float * ) tess.xyz;
-	float   *normal = ( float * ) tess.normal;
+	float *xyz = ( float * ) tess.xyz;
+	float *normal = ( float * ) tess.normal;
 
 	for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 ) {
 		scale = 0.98f;
-		scale = R_NoiseGet4f( xyz[0] * scale, xyz[1] * scale, xyz[2] * scale,
-							  tess.shaderTime * ds->deformationWave.frequency );
+		scale = R_NoiseGet4f( xyz[0] * scale, xyz[1] * scale, xyz[2] * scale, tess.shaderTime * ds->deformationWave.frequency );
 		normal[ 0 ] += ds->deformationWave.amplitude * scale;
 
 		scale = 0.98f;
-		scale = R_NoiseGet4f( 100 + xyz[0] * scale, xyz[1] * scale, xyz[2] * scale,
-							  tess.shaderTime * ds->deformationWave.frequency );
+		scale = R_NoiseGet4f( 100 + xyz[0] * scale, xyz[1] * scale, xyz[2] * scale, tess.shaderTime * ds->deformationWave.frequency );
 		normal[ 1 ] += ds->deformationWave.amplitude * scale;
 
 		scale = 0.98f;
-		scale = R_NoiseGet4f( 200 + xyz[0] * scale, xyz[1] * scale, xyz[2] * scale,
-							  tess.shaderTime * ds->deformationWave.frequency );
+		scale = R_NoiseGet4f( 200 + xyz[0] * scale, xyz[1] * scale, xyz[2] * scale, tess.shaderTime * ds->deformationWave.frequency );
 		normal[ 2 ] += ds->deformationWave.amplitude * scale;
 
 		VectorNormalizeFast( normal );
@@ -255,8 +245,8 @@ RB_CalcBulgeVertexes
 void RB_CalcBulgeVertexes( deformStage_t *ds ) {
 	int i;
 	const float *st = ( const float * ) tess.texCoords[0];
-	float       *xyz = ( float * ) tess.xyz;
-	float       *normal = ( float * ) tess.normal;
+	float *xyz = ( float * ) tess.xyz;
+	float *normal = ( float * ) tess.normal;
 	float now;
 
 	now = backEnd.refdef.time * ds->bulgeSpeed * 0.001f;
@@ -285,17 +275,14 @@ A deformation that can move an entire surface along a wave path
 */
 void RB_CalcMoveVertexes( deformStage_t *ds ) {
 	int i;
-	float       *xyz;
-	float       *table;
+	float *xyz;
+	float *table;
 	float scale;
 	vec3_t offset;
 
 	table = TableForFunc( ds->deformationWave.func );
 
-	scale = WAVEVALUE( table, ds->deformationWave.base,
-					   ds->deformationWave.amplitude,
-					   ds->deformationWave.phase,
-					   ds->deformationWave.frequency );
+	scale = WAVEVALUE( table, ds->deformationWave.base, ds->deformationWave.amplitude, ds->deformationWave.phase, ds->deformationWave.frequency );
 
 	VectorScale( ds->moveVector, scale, offset );
 
@@ -403,7 +390,7 @@ quads, rebuild them as forward facing sprites
 static void AutospriteDeform( void ) {
 	int i;
 	int oldVerts;
-	float   *xyz;
+	float *xyz;
 	vec3_t mid, delta;
 	float radius;
 	vec3_t left, up;
@@ -483,7 +470,7 @@ int edgeVerts[6][2] = {
 static void Autosprite2Deform( void ) {
 	int i, j, k;
 	int indexes;
-	float   *xyz;
+	float *xyz;
 	vec3_t forward;
 
 	if ( tess.numVertexes & 3 ) {
@@ -565,8 +552,7 @@ static void Autosprite2Deform( void ) {
 			// we need to see which direction this edge
 			// is used to determine direction of projection
 			for ( k = 0 ; k < 5 ; k++ ) {
-				if ( tess.indexes[ indexes + k ] == i + edgeVerts[nums[j]][0]
-					 && tess.indexes[ indexes + k + 1 ] == i + edgeVerts[nums[j]][1] ) {
+				if ( tess.indexes[ indexes + k ] == i + edgeVerts[nums[j]][0] && tess.indexes[ indexes + k + 1 ] == i + edgeVerts[nums[j]][1] ) {
 					break;
 				}
 			}
@@ -591,7 +577,7 @@ RB_DeformTessGeometry
 */
 void RB_DeformTessGeometry( void ) {
 	int i;
-	deformStage_t   *ds;
+	deformStage_t *ds;
 
 	for ( i = 0 ; i < tess.shader->numDeforms ; i++ ) {
 		ds = &tess.shader->deforms[ i ];
@@ -855,11 +841,11 @@ doesn't fit our shader data.
 */
 void RB_CalcFogTexCoords( float *st ) {
 	int i;
-	float       *v;
+	float *v;
 	float s, t;
 	float eyeT;
 	qboolean eyeOutside;
-	fog_t       *fog;
+	fog_t *fog;
 	vec3_t local;
 	vec4_t fogDistanceVector, fogDepthVector = {0, 0, 0, 0};
 
@@ -880,12 +866,9 @@ void RB_CalcFogTexCoords( float *st ) {
 
 	// rotate the gradient vector for this orientation
 	if ( fog->hasSurface ) {
-		fogDepthVector[0] = fog->surface[0] * backEnd.or.axis[0][0] +
-							fog->surface[1] * backEnd.or.axis[0][1] + fog->surface[2] * backEnd.or.axis[0][2];
-		fogDepthVector[1] = fog->surface[0] * backEnd.or.axis[1][0] +
-							fog->surface[1] * backEnd.or.axis[1][1] + fog->surface[2] * backEnd.or.axis[1][2];
-		fogDepthVector[2] = fog->surface[0] * backEnd.or.axis[2][0] +
-							fog->surface[1] * backEnd.or.axis[2][1] + fog->surface[2] * backEnd.or.axis[2][2];
+		fogDepthVector[0] = fog->surface[0] * backEnd.or.axis[0][0] + fog->surface[1] * backEnd.or.axis[0][1] + fog->surface[2] * backEnd.or.axis[0][2];
+		fogDepthVector[1] = fog->surface[0] * backEnd.or.axis[1][0] + fog->surface[1] * backEnd.or.axis[1][1] + fog->surface[2] * backEnd.or.axis[1][2];
+		fogDepthVector[2] = fog->surface[0] * backEnd.or.axis[2][0] + fog->surface[1] * backEnd.or.axis[2][1] + fog->surface[2] * backEnd.or.axis[2][2];
 		fogDepthVector[3] = -fog->surface[3] + DotProduct( backEnd.or.origin, fog->surface );
 
 		eyeT = DotProduct( backEnd.or.viewOrigin, fogDepthVector ) + fogDepthVector[3];
@@ -938,7 +921,7 @@ void RB_CalcFogTexCoords( float *st ) {
 */
 void RB_CalcEnvironmentTexCoords( float *st ) {
 	int i;
-	float       *v, *normal;
+	float *v, *normal;
 	vec3_t viewer, reflected;
 	float d;
 
@@ -966,7 +949,7 @@ void RB_CalcEnvironmentTexCoords( float *st ) {
 */
 void RB_CalcFireRiseEnvTexCoords( float *st ) {
 	int i;
-	float       *v, *normal;
+	float *v, *normal;
 	vec3_t viewer, reflected;
 	float d;
 
@@ -1114,8 +1097,8 @@ vec3_t lightOrigin = { -960, 1980, 96 };        // FIXME: track dynamically
 
 void RB_CalcSpecularAlpha( unsigned char *alphas ) {
 	int i;
-	float       *v, *normal;
-	vec3_t viewer,  reflected;
+	float *v, *normal;
+	vec3_t viewer, reflected;
 	float l, d;
 	int b;
 	vec3_t lightDir;
@@ -1172,15 +1155,15 @@ void RB_CalcSpecularAlpha( unsigned char *alphas ) {
 #if idppc_altivec
 static void RB_CalcDiffuseColor_altivec( unsigned char *colors ) {
 	int i;
-	float           *v, *normal;
-	trRefEntity_t   *ent;
+	float *v, *normal;
+	trRefEntity_t *ent;
 	int ambientLightInt;
 	vec3_t lightDir;
 	int numVertexes;
 	vector unsigned char vSel = VECCONST_UINT8( 0x00, 0x00, 0x00, 0xff,
-												0x00, 0x00, 0x00, 0xff,
-												0x00, 0x00, 0x00, 0xff,
-												0x00, 0x00, 0x00, 0xff );
+							0x00, 0x00, 0x00, 0xff,
+							0x00, 0x00, 0x00, 0xff,
+							0x00, 0x00, 0x00, 0xff );
 	vector float ambientLightVec;
 	vector float directedLightVec;
 	vector float lightDirVec;
@@ -1241,7 +1224,7 @@ static void RB_CalcDiffuseColor_altivec( unsigned char *colors ) {
 
 static void RB_CalcDiffuseColor_scalar( unsigned char *colors ) {
 	int i, j;
-	float           *v, *normal;
+	float *v, *normal;
 	float incoming;
 	trRefEntity_t   *ent;
 	int ambientLightInt;

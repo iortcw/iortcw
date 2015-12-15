@@ -57,25 +57,25 @@ static int *boneRefs;
 static int indexes;
 static int baseIndex, baseVertex, oldIndexes;
 static int numVerts;
-static mdsVertex_t     *v;
+static mdsVertex_t *v;
 static mdsBoneFrame_t bones[MDS_MAX_BONES], rawBones[MDS_MAX_BONES], oldBones[MDS_MAX_BONES];
 static char validBones[MDS_MAX_BONES];
 static char newBones[ MDS_MAX_BONES ];
-static mdsBoneFrame_t  *bonePtr, *bone, *parentBone;
-static mdsBoneFrameCompressed_t    *cBonePtr, *cTBonePtr, *cOldBonePtr, *cOldTBonePtr, *cBoneList, *cOldBoneList, *cBoneListTorso, *cOldBoneListTorso;
-static mdsBoneInfo_t   *boneInfo, *thisBoneInfo, *parentBoneInfo;
-static mdsFrame_t      *frame, *torsoFrame;
-static mdsFrame_t      *oldFrame, *oldTorsoFrame;
+static mdsBoneFrame_t *bonePtr, *bone, *parentBone;
+static mdsBoneFrameCompressed_t *cBonePtr, *cTBonePtr, *cOldBonePtr, *cOldTBonePtr, *cBoneList, *cOldBoneList, *cBoneListTorso, *cOldBoneListTorso;
+static mdsBoneInfo_t *boneInfo, *thisBoneInfo, *parentBoneInfo;
+static mdsFrame_t *frame, *torsoFrame;
+static mdsFrame_t *oldFrame, *oldTorsoFrame;
 static int frameSize;
-static short           *sh, *sh2;
-static float           *pf;
+static short *sh, *sh2;
+static float *pf;
 static vec3_t angles, tangles, torsoParentOffset, torsoAxis[3], tmpAxis[3];
-static float           *tempVert, *tempNormal;
+static float *tempVert, *tempNormal;
 static vec3_t vec, v2, dir;
 static float diff, a1, a2;
 static int render_count;
 static float lodRadius, lodScale;
-static int             *collapse_map, *pCollapseMap;
+static int *collapse_map, *pCollapseMap;
 static int collapse[ MDS_MAX_VERTS ], *pCollapse;
 static int p0, p1, p2;
 static qboolean isTorso, fullTorso;
@@ -108,24 +108,24 @@ static float RB_ProjectRadius( float r, vec3_t location ) {
 	p[2] = -dist;
 
 	projected[0] = p[0] * backEnd.viewParms.projectionMatrix[0] +
-				   p[1] * backEnd.viewParms.projectionMatrix[4] +
-				   p[2] * backEnd.viewParms.projectionMatrix[8] +
-				   backEnd.viewParms.projectionMatrix[12];
+			p[1] * backEnd.viewParms.projectionMatrix[4] +
+			p[2] * backEnd.viewParms.projectionMatrix[8] +
+			backEnd.viewParms.projectionMatrix[12];
 
 	projected[1] = p[0] * backEnd.viewParms.projectionMatrix[1] +
-				   p[1] * backEnd.viewParms.projectionMatrix[5] +
-				   p[2] * backEnd.viewParms.projectionMatrix[9] +
-				   backEnd.viewParms.projectionMatrix[13];
+			p[1] * backEnd.viewParms.projectionMatrix[5] +
+			p[2] * backEnd.viewParms.projectionMatrix[9] +
+			backEnd.viewParms.projectionMatrix[13];
 
 	projected[2] = p[0] * backEnd.viewParms.projectionMatrix[2] +
-				   p[1] * backEnd.viewParms.projectionMatrix[6] +
-				   p[2] * backEnd.viewParms.projectionMatrix[10] +
-				   backEnd.viewParms.projectionMatrix[14];
+			p[1] * backEnd.viewParms.projectionMatrix[6] +
+			p[2] * backEnd.viewParms.projectionMatrix[10] +
+			backEnd.viewParms.projectionMatrix[14];
 
 	projected[3] = p[0] * backEnd.viewParms.projectionMatrix[3] +
-				   p[1] * backEnd.viewParms.projectionMatrix[7] +
-				   p[2] * backEnd.viewParms.projectionMatrix[11] +
-				   backEnd.viewParms.projectionMatrix[15];
+			p[1] * backEnd.viewParms.projectionMatrix[7] +
+			p[2] * backEnd.viewParms.projectionMatrix[11] +
+			backEnd.viewParms.projectionMatrix[15];
 
 
 	pr = projected[1] / projected[3];
@@ -170,8 +170,7 @@ static int R_CullModel( mdsHeader_t *header, trRefEntity_t *ent ) {
 				tr.pc.c_sphere_cull_md3_clip++;
 				break;
 			}
-		} else
-		{
+		} else {
 			int sphereCull, sphereCullB;
 
 			sphereCull  = R_CullLocalPointAndRadius( newFrame->localOrigin, newFrame->radius );
@@ -188,8 +187,7 @@ static int R_CullModel( mdsHeader_t *header, trRefEntity_t *ent ) {
 				} else if ( sphereCull == CULL_IN ) {
 					tr.pc.c_sphere_cull_md3_in++;
 					return CULL_IN;
-				} else
-				{
+				} else {
 					tr.pc.c_sphere_cull_md3_clip++;
 				}
 			}
@@ -236,8 +234,7 @@ float RB_CalcMDSLod( refEntity_t *refent, vec3_t origin, float radius, float mod
 
 		lodScale = r_lodscale->value;   // fudge factor since MDS uses a much smoother method of LOD
 		flod = projectedRadius * lodScale * modelScale;
-	} else
-	{
+	} else {
 		// object intersects near view plane, e.g. view weapon
 		flod = 1.0f;
 	}
@@ -609,7 +606,6 @@ void R_CalcBone( mdsHeader_t *header, const refEntity_t *refent, int boneNum ) {
 			LocalAngleVector( angles, vec );
 			LocalVectorMA( parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation );
 		} else {
-
 			angles[0] = cBonePtr->ofsAngles[0];
 			angles[1] = cBonePtr->ofsAngles[1];
 			angles[2] = 0;
@@ -624,7 +620,6 @@ void R_CalcBone( mdsHeader_t *header, const refEntity_t *refent, int boneNum ) {
 				// blend the angles together
 				SLerp_Normal( vec, v2, thisBoneInfo->torsoWeight, vec );
 				LocalVectorMA( parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation );
-
 			} else {    // legs bone
 				LocalVectorMA( parentBone->translation, thisBoneInfo->parentDist, vec, bonePtr->translation );
 			}
@@ -853,7 +848,7 @@ void R_CalcBoneLerp( mdsHeader_t *header, const refEntity_t *refent, int boneNum
 ==============
 R_CalcBones
 
-    The list of bones[] should only be built and modified from within here
+The list of bones[] should only be built and modified from within here
 ==============
 */
 void R_CalcBones( mdsHeader_t *header, const refEntity_t *refent, int *boneList, int numBones ) {
@@ -950,7 +945,6 @@ void R_CalcBones( mdsHeader_t *header, const refEntity_t *refent, int *boneList,
 		}
 
 	} else {    // interpolated
-
 		cOldBoneList = oldFrame->bones;
 		cOldBoneListTorso = oldTorsoFrame->bones;
 
@@ -1006,7 +1000,6 @@ void R_CalcBones( mdsHeader_t *header, const refEntity_t *refent, int *boneList,
 				Matrix4MultiplyInto3x3AndTranslation( m2, m1, bonePtr->matrix, bonePtr->translation );
 
 			} else {    // tag's require special handling
-
 				// rotate each of the axis by the torsoAngles
 				LocalScaledMatrixTransformVector( bonePtr->matrix[0], thisBoneInfo->torsoWeight, torsoAxis, tmpAxis[0] );
 				LocalScaledMatrixTransformVector( bonePtr->matrix[1], thisBoneInfo->torsoWeight, torsoAxis, tmpAxis[1] );
@@ -1078,7 +1071,6 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 			lodScale = 0.35;
 		}
 		render_count = (int)( (float) surface->numVerts * lodScale );
-
 	} else {
 		render_count = (int)( (float) surface->numVerts * lodScale );
 		if ( render_count < surface->minLod ) {
@@ -1120,8 +1112,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 		for ( j = 0; j < indexes; j++ )
 			pIndexes[j] = triangles[j] + baseVertex;
 		tess.numIndexes += indexes;
-	} else
-	{
+	} else {
 		int *collapseEnd;
 
 		pCollapse = collapse;
@@ -1348,27 +1339,6 @@ int R_GetBoneTag( orientation_t *outTag, mdsHeader_t *mds, int startTagIndex, co
 	memcpy( outTag->axis, bones[ pTag->boneIndex ].matrix, sizeof( outTag->axis ) );
 	VectorCopy( bones[ pTag->boneIndex ].translation, outTag->origin );
 
-/* code not functional, not in backend
-    if (r_bonesDebug->integer == 4) {
-        int j;
-        // DEBUG: show the tag position/axis
-        GL_Bind( tr.whiteImage );
-        qglLineWidth( 2 );
-        qglBegin( GL_LINES );
-        for (j=0; j<3; j++) {
-            VectorClear(vec);
-            vec[j] = 1;
-            qglColor3fv( vec );
-            qglVertex3fv( outTag->origin );
-            VectorMA( outTag->origin, 8, outTag->axis[j], vec );
-            qglVertex3fv( vec );
-        }
-        qglEnd();
-
-        qglLineWidth( 1 );
-    }
-*/
-
 	return i;
 }
 
@@ -1411,8 +1381,7 @@ static int R_MDRCullModel( mdrHeader_t *header, trRefEntity_t *ent ) {
 				tr.pc.c_sphere_cull_md3_clip++;
 				break;
 			}
-		} else
-		{
+		} else {
 			int sphereCull, sphereCullB;
 
 			sphereCull  = R_CullLocalPointAndRadius( newFrame->localOrigin, newFrame->radius );
@@ -1426,11 +1395,10 @@ static int R_MDRCullModel( mdrHeader_t *header, trRefEntity_t *ent ) {
 				if ( sphereCull == CULL_OUT ) {
 					tr.pc.c_sphere_cull_md3_out++;
 					return CULL_OUT;
-				} else if ( sphereCull == CULL_IN )   {
+				} else if ( sphereCull == CULL_IN ) {
 					tr.pc.c_sphere_cull_md3_in++;
 					return CULL_IN;
-				} else
-				{
+				} else {
 					tr.pc.c_sphere_cull_md3_clip++;
 				}
 			}
@@ -1537,12 +1505,11 @@ void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
 	// when the surfaces are rendered, they don't need to be
 	// range checked again.
 	//
-	if ( ( ent->e.frame >= header->numFrames )
-		 || ( ent->e.frame < 0 )
-		 || ( ent->e.oldframe >= header->numFrames )
-		 || ( ent->e.oldframe < 0 ) ) {
-		ri.Printf( PRINT_DEVELOPER, "R_MDRAddAnimSurfaces: no such frame %d to %d for '%s'\n",
-				   ent->e.oldframe, ent->e.frame, tr.currentModel->name );
+	if ( ( ent->e.frame >= header->numFrames ) ||
+			( ent->e.frame < 0 ) ||
+			( ent->e.oldframe >= header->numFrames ) ||
+			( ent->e.oldframe < 0 ) ) {
+		ri.Printf( PRINT_DEVELOPER, "R_MDRAddAnimSurfaces: no such frame %d to %d for '%s'\n", ent->e.oldframe, ent->e.frame, tr.currentModel->name );
 		ent->e.frame = 0;
 		ent->e.oldframe = 0;
 	}
@@ -1598,7 +1565,7 @@ void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
 					break;
 				}
 			}
-		} else if ( surface->shaderIndex > 0 )      {
+		} else if ( surface->shaderIndex > 0 ) {
 			shader = R_GetShaderByHandle( surface->shaderIndex );
 		} else {
 			shader = tr.defaultShader;
@@ -1607,19 +1574,19 @@ void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
 		// we will add shadows even if the main object isn't visible in the view
 
 		// stencil shadows can't do personal models unless I polyhedron clip
-		if ( !personalModel
-			 && r_shadows->integer == 2
-			 && fogNum == 0
-			 && !( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) )
-			 && shader->sort == SS_OPAQUE ) {
+		if ( !personalModel &&
+				r_shadows->integer == 2 &&
+				fogNum == 0 &&
+				!( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) ) &&
+				shader->sort == SS_OPAQUE ) {
 			R_AddDrawSurf( (void *)surface, tr.shadowShader, 0, qfalse );
 		}
 
 		// projection shadows work fine with personal models
-		if ( r_shadows->integer == 3
-			 && fogNum == 0
-			 && ( ent->e.renderfx & RF_SHADOW_PLANE )
-			 && shader->sort == SS_OPAQUE ) {
+		if ( r_shadows->integer == 3 &&
+				fogNum == 0 &&
+				( ent->e.renderfx & RF_SHADOW_PLANE ) &&
+				shader->sort == SS_OPAQUE ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
 		}
 
@@ -1656,8 +1623,7 @@ void RB_MDRSurfaceAnim( mdrSurface_t *surface ) {
 	if ( backEnd.currentEntity->e.oldframe == backEnd.currentEntity->e.frame ) {
 		backlerp    = 0;    // if backlerp is 0, lerping is off and frontlerp is never used
 		frontlerp   = 1;
-	} else
-	{
+	} else {
 		backlerp    = backEnd.currentEntity->e.backlerp;
 		frontlerp   = 1.0f - backlerp;
 	}
@@ -1691,8 +1657,7 @@ void RB_MDRSurfaceAnim( mdrSurface_t *surface ) {
 	if ( !backlerp ) {
 		// no lerping needed
 		bonePtr = frame->bones;
-	} else
-	{
+	} else {
 		bonePtr = bones;
 
 		for ( i = 0 ; i < header->numBones * 12 ; i++ )

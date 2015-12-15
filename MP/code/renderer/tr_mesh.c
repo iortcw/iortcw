@@ -111,8 +111,7 @@ static int R_CullModel( md3Header_t *header, trRefEntity_t *ent ) {
 				tr.pc.c_sphere_cull_md3_clip++;
 				break;
 			}
-		} else
-		{
+		} else {
 			int sphereCull, sphereCullB;
 
 			sphereCull  = R_CullLocalPointAndRadius( newFrame->localOrigin, newFrame->radius );
@@ -129,8 +128,7 @@ static int R_CullModel( md3Header_t *header, trRefEntity_t *ent ) {
 				} else if ( sphereCull == CULL_IN ) {
 					tr.pc.c_sphere_cull_md3_in++;
 					return CULL_IN;
-				} else
-				{
+				} else {
 					tr.pc.c_sphere_cull_md3_clip++;
 				}
 			}
@@ -177,8 +175,7 @@ int R_ComputeLOD( trRefEntity_t *ent ) {
 	if ( tr.currentModel->numLods < 2 ) {
 		// model has only 1 LOD level, skip computations and bias
 		lod = 0;
-	} else
-	{
+	} else {
 		// multiple LODs exist, so compute projected bounding sphere
 		// and use that as a criteria for selecting LOD
 
@@ -190,8 +187,7 @@ int R_ComputeLOD( trRefEntity_t *ent ) {
 			mdrframe = (mdrFrame_t *) ( (byte *) mdr + mdr->ofsFrames + frameSize * ent->e.frame );
 
 			radius = RadiusFromBounds( mdrframe->bounds[0], mdrframe->bounds[1] );
-		} else
-		{
+		} else {
 			// RF, checked for a forced lowest LOD
 			if ( ent->e.reFlags & REFLAG_FORCE_LOD ) {
 				return ( tr.currentModel->numLods - 1 );
@@ -205,9 +201,9 @@ int R_ComputeLOD( trRefEntity_t *ent ) {
 
 			//----(SA)	testing
 			if ( ent->e.reFlags & REFLAG_ORIENT_LOD ) {
-				// right now this is for trees, and pushes the lod distance way in.
-				// this is not the intended purpose, but is helpful for the new
-				// terrain level that has loads of trees
+			// right now this is for trees, and pushes the lod distance way in.
+			// this is not the intended purpose, but is helpful for the new
+			// terrain level that has loads of trees
 //			radius = radius/2.0f;
 			}
 			//----(SA)	end
@@ -220,8 +216,7 @@ int R_ComputeLOD( trRefEntity_t *ent ) {
 				lodscale = 20;
 			}
 			flod = 1.0f - projectedRadius * lodscale;
-		} else
-		{
+		} else {
 			// object intersects near view plane, e.g. view weapon
 			flod = 0;
 		}
@@ -316,13 +311,13 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 	// when the surfaces are rendered, they don't need to be
 	// range checked again.
 	//
-	if ( ( ent->e.frame >= tr.currentModel->md3[0]->numFrames )
-		 || ( ent->e.frame < 0 )
-		 || ( ent->e.oldframe >= tr.currentModel->md3[0]->numFrames )
-		 || ( ent->e.oldframe < 0 ) ) {
+	if ( ( ent->e.frame >= tr.currentModel->md3[0]->numFrames ) ||
+			( ent->e.frame < 0 ) ||
+			( ent->e.oldframe >= tr.currentModel->md3[0]->numFrames ) ||
+			( ent->e.oldframe < 0 ) ) {
 		ri.Printf( PRINT_DEVELOPER, "R_AddMD3Surfaces: no such frame %d to %d for '%s'\n",
-				   ent->e.oldframe, ent->e.frame,
-				   tr.currentModel->name );
+				ent->e.oldframe, ent->e.frame,
+				tr.currentModel->name );
 		ent->e.frame = 0;
 		ent->e.oldframe = 0;
 	}
@@ -412,19 +407,19 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 		// we will add shadows even if the main object isn't visible in the view
 
 		// stencil shadows can't do personal models unless I polyhedron clip
-		if ( !personalModel
-			 && r_shadows->integer == 2
-			 && fogNum == 0
-			 && !( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) )
-			 && shader->sort == SS_OPAQUE ) {
+		if ( !personalModel &&
+				r_shadows->integer == 2 &&
+				fogNum == 0 &&
+				!( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) ) &&
+				shader->sort == SS_OPAQUE ) {
 			R_AddDrawSurf( (void *)surface, tr.shadowShader, 0, qfalse );
 		}
 
 		// projection shadows work fine with personal models
-		if ( r_shadows->integer == 3
-			 && fogNum == 0
-			 && ( ent->e.renderfx & RF_SHADOW_PLANE )
-			 && shader->sort == SS_OPAQUE ) {
+		if ( r_shadows->integer == 3 &&
+				fogNum == 0 &&
+				( ent->e.renderfx & RF_SHADOW_PLANE ) &&
+				shader->sort == SS_OPAQUE ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
 		}
 
@@ -442,5 +437,4 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 
 		surface = ( md3Surface_t * )( (byte *)surface + surface->ofsEnd );
 	}
-
 }
