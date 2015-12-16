@@ -58,8 +58,7 @@ static void SNDDMA_AudioCallback( void *userdata, Uint8 *stream, int len ) {
 	if ( !snd_inited ) { /* shouldn't happen, but just in case... */
 		memset( stream, '\0', len );
 		return;
-	} else
-	{
+	} else {
 		int tobufend = dmasize - pos;  /* bytes to buffer's end. */
 		int len1 = len;
 		int len2 = 0;
@@ -71,8 +70,7 @@ static void SNDDMA_AudioCallback( void *userdata, Uint8 *stream, int len ) {
 		memcpy( stream, dma.buffer + pos, len1 );
 		if ( len2 <= 0 ) {
 			dmapos += ( len1 / ( dma.samplebits / 8 ) );
-		} else /* wraparound? */
-		{
+		} else { /* wraparound? */
 			memcpy( stream + len1, dma.buffer, len2 );
 			dmapos = ( len2 / ( dma.samplebits / 8 ) );
 		}
@@ -180,8 +178,7 @@ qboolean SNDDMA_Init( void ) {
 	//  should probably check a cvar for this...
 	if ( s_sdlDevSamps->value ) {
 		desired.samples = s_sdlDevSamps->value;
-	} else
-	{
+	} else {
 		// just pick a sane default.
 		if ( desired.freq <= 11025 ) {
 			desired.samples = 256;

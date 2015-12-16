@@ -283,12 +283,10 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 		displayAspect = (float)desktopMode.w / (float)desktopMode.h;
 
 		ri.Printf( PRINT_ALL, "Display aspect: %.3f\n", displayAspect );
-	} else
-	{
+	} else {
 		Com_Memset( &desktopMode, 0, sizeof( SDL_DisplayMode ) );
 
-		ri.Printf( PRINT_ALL,
-				   "Cannot determine display aspect, assuming 1.333\n" );
+		ri.Printf( PRINT_ALL, "Cannot determine display aspect, assuming 1.333\n" );
 	}
 
 	ri.Printf( PRINT_ALL, "...setting mode %d:", mode );
@@ -298,16 +296,14 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 		if ( desktopMode.h > 0 ) {
 			glConfig.vidWidth = desktopMode.w;
 			glConfig.vidHeight = desktopMode.h;
-		} else
-		{
+		} else {
 			glConfig.vidWidth = 640;
 			glConfig.vidHeight = 480;
-			ri.Printf( PRINT_ALL,
-					   "Cannot determine display resolution, assuming 640x480\n" );
+			ri.Printf( PRINT_ALL, "Cannot determine display resolution, assuming 640x480\n" );
 		}
 
 		glConfig.windowAspect = (float)glConfig.vidWidth / (float)glConfig.vidHeight;
-	} else if ( !R_GetModeInfo( &glConfig.vidWidth, &glConfig.vidHeight, &glConfig.windowAspect, mode ) )   {
+	} else if ( !R_GetModeInfo( &glConfig.vidWidth, &glConfig.vidHeight, &glConfig.windowAspect, mode ) ) {
 		ri.Printf( PRINT_ALL, " invalid mode\n" );
 		return RSERR_INVALID_MODE;
 	}
@@ -329,8 +325,7 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 	if ( fullscreen ) {
 		flags |= SDL_WINDOW_FULLSCREEN;
 		glConfig.isFullscreen = qtrue;
-	} else
-	{
+	} else {
 		if ( noborder ) {
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
@@ -443,8 +438,7 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 		if ( r_stereoEnabled->integer ) {
 			glConfig.stereoEnabled = qtrue;
 			SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
-		} else
-		{
+		} else {
 			glConfig.stereoEnabled = qfalse;
 			SDL_GL_SetAttribute( SDL_GL_STEREO, 0 );
 		}
@@ -465,20 +459,19 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 
 		if ( r_centerWindow->integer && !fullscreen ) {
 			if ( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-												  glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
+								glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
 				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError() );
 				continue;
 			}
-		} else if ( ( r_windowPosx->integer || r_windowPosy->integer ) && !fullscreen )   {
+		} else if ( ( r_windowPosx->integer || r_windowPosy->integer ) && !fullscreen ) {
 			if ( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, r_windowPosx->integer, r_windowPosy->integer,
-												  glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
+								glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
 				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError() );
 				continue;
 			}
-		} else
-		{
+		} else {
 			if ( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
-												  glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
+								glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL ) {
 				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError() );
 				continue;
 			}
@@ -525,7 +518,7 @@ static int GLimp_SetMode( int mode, qboolean fullscreen, qboolean noborder ) {
 		glConfig.stencilBits = testStencilBits;
 
 		ri.Printf( PRINT_ALL, "Using %d color bits, %d depth, %d stencil display.\n",
-				   glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
+					glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
 		break;
 	}
 
@@ -620,12 +613,10 @@ static void GLimp_InitExtensions( void ) {
 		if ( r_ext_compressed_textures->value ) {
 			glConfig.textureCompression = TC_S3TC_ARB;
 			ri.Printf( PRINT_ALL, "...using GL_EXT_texture_compression_s3tc\n" );
-		} else
-		{
+		} else {
 			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_compression_s3tc\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_EXT_texture_compression_s3tc not found\n" );
 	}
 
@@ -635,12 +626,10 @@ static void GLimp_InitExtensions( void ) {
 			if ( r_ext_compressed_textures->value ) {
 				glConfig.textureCompression = TC_S3TC;
 				ri.Printf( PRINT_ALL, "...using GL_S3_s3tc\n" );
-			} else
-			{
+			} else {
 				ri.Printf( PRINT_ALL, "...ignoring GL_S3_s3tc\n" );
 			}
-		} else
-		{
+		} else {
 			ri.Printf( PRINT_ALL, "...GL_S3_s3tc not found\n" );
 		}
 	}
@@ -656,13 +645,11 @@ static void GLimp_InitExtensions( void ) {
 		if ( r_ext_texture_env_add->integer ) {
 			glConfig.textureEnvAddAvailable = qtrue;
 			ri.Printf( PRINT_ALL, "...using GL_EXT_texture_env_add\n" );
-		} else
-		{
+		} else {
 			glConfig.textureEnvAddAvailable = qfalse;
 			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_env_add\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_EXT_texture_env_add not found\n" );
 	}
 #endif
@@ -680,8 +667,7 @@ static void GLimp_InitExtensions( void ) {
 	qglClientActiveTextureARB = glClientActiveTexture;
 	if ( glConfig.numTextureUnits > 1 ) {
 		ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture (%i texture units)\n", glConfig.numTextureUnits );
-	} else
-	{
+	} else {
 		qglMultiTexCoord2fARB = NULL;
 		qglActiveTextureARB = NULL;
 		qglClientActiveTextureARB = NULL;
@@ -700,20 +686,17 @@ static void GLimp_InitExtensions( void ) {
 				glConfig.numTextureUnits = (int) glint;
 				if ( glConfig.numTextureUnits > 1 ) {
 					ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture\n" );
-				} else
-				{
+				} else {
 					qglMultiTexCoord2fARB = NULL;
 					qglActiveTextureARB = NULL;
 					qglClientActiveTextureARB = NULL;
 					ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
 				}
 			}
-		} else
-		{
+		} else {
 			ri.Printf( PRINT_ALL, "...ignoring GL_ARB_multitexture\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
 	}
 #endif
@@ -727,12 +710,10 @@ static void GLimp_InitExtensions( void ) {
 			if ( !qglLockArraysEXT || !qglUnlockArraysEXT ) {
 				ri.Error( ERR_FATAL, "bad getprocaddress" );
 			}
-		} else
-		{
+		} else {
 			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_compiled_vertex_array\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n" );
 	}
 
@@ -743,17 +724,14 @@ static void GLimp_InitExtensions( void ) {
 			if ( maxAnisotropy <= 0 ) {
 				ri.Printf( PRINT_ALL, "...GL_EXT_texture_filter_anisotropic not properly supported!\n" );
 				maxAnisotropy = 0;
-			} else
-			{
+			} else {
 				ri.Printf( PRINT_ALL, "...using GL_EXT_texture_filter_anisotropic (max: %i)\n", maxAnisotropy );
 				textureFilterAnisotropic = qtrue;
 			}
-		} else
-		{
+		} else {
 			ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_filter_anisotropic\n" );
 		}
-	} else
-	{
+	} else {
 		ri.Printf( PRINT_ALL, "...GL_EXT_texture_filter_anisotropic not found\n" );
 	}
 }
@@ -801,8 +779,7 @@ void GLimp_Init( void ) {
 
 	// Finally, try the default screen resolution
 	if ( r_mode->integer != R_MODE_FALLBACK ) {
-		ri.Printf( PRINT_ALL, "Setting r_mode %d failed, falling back on r_mode %d\n",
-				   r_mode->integer, R_MODE_FALLBACK );
+		ri.Printf( PRINT_ALL, "Setting r_mode %d failed, falling back on r_mode %d\n", r_mode->integer, R_MODE_FALLBACK );
 
 		if ( GLimp_StartDriverAndSetMode( R_MODE_FALLBACK, qfalse, qfalse ) ) {
 			goto success;
@@ -818,8 +795,7 @@ success:
 	glConfig.hardwareType = GLHW_GENERIC;
 
 	// Only using SDL_SetWindowBrightness to determine if hardware gamma is supported
-	glConfig.deviceSupportsGamma = !r_ignorehwgamma->integer &&
-								   SDL_SetWindowBrightness( SDL_window, 1.0f ) >= 0;
+	glConfig.deviceSupportsGamma = !r_ignorehwgamma->integer && SDL_SetWindowBrightness( SDL_window, 1.0f ) >= 0;
 
 	// get our config strings
 	Q_strncpyz( glConfig.vendor_string, (char *) qglGetString( GL_VENDOR ), sizeof( glConfig.vendor_string ) );

@@ -33,19 +33,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../client/client.h"
 #include "../sys/sys_local.h"
 
-static cvar_t *in_keyboardDebug     = NULL;
+static cvar_t *in_keyboardDebug = NULL;
 
 static SDL_Joystick *stick = NULL;
 
 static qboolean mouseAvailable = qfalse;
 static qboolean mouseActive = qfalse;
 
-static cvar_t *in_mouse             = NULL;
+static cvar_t *in_mouse = NULL;
 static cvar_t *in_nograb;
 
-static cvar_t *in_joystick          = NULL;
+static cvar_t *in_joystick = NULL;
 static cvar_t *in_joystickThreshold = NULL;
-static cvar_t *in_joystickNo        = NULL;
+static cvar_t *in_joystickNo = NULL;
 static cvar_t *in_joystickUseAnalog = NULL;
 
 static int vidRestartTime = 0;
@@ -67,8 +67,8 @@ static void IN_PrintKey( const SDL_Keysym *keysym, keyNum_t key, qboolean down )
 	}
 
 	Com_Printf( "Scancode: 0x%02x(%s) Sym: 0x%02x(%s)",
-				keysym->scancode, SDL_GetScancodeName( keysym->scancode ),
-				keysym->sym, SDL_GetKeyName( keysym->sym ) );
+			keysym->scancode, SDL_GetScancodeName( keysym->scancode ),
+			keysym->sym, SDL_GetKeyName( keysym->sym ) );
 
 	if ( keysym->mod & KMOD_LSHIFT ) {
 		Com_Printf( " KMOD_LSHIFT" );
@@ -165,8 +165,7 @@ static qboolean IN_IsConsoleKey( keyNum_t key, int character ) {
 			if ( charCode > 0 ) {
 				c->type = CHARACTER;
 				c->u.character = charCode;
-			} else
-			{
+			} else {
 				c->type = QUAKE_KEY;
 				c->u.key = Key_StringToKeynum( token );
 
@@ -219,8 +218,7 @@ static keyNum_t IN_TranslateSDLToQ3Key( SDL_Keysym *keysym, qboolean down ) {
 	if ( keysym->sym >= SDLK_SPACE && keysym->sym < SDLK_DELETE ) {
 		// These happen to match the ASCII chars
 		key = (int)keysym->sym;
-	} else
-	{
+	} else {
 		switch ( keysym->sym )
 		{
 		case SDLK_PAGEUP:       key = K_PGUP;          break;
@@ -329,8 +327,7 @@ static void IN_GobbleMotionEvents( void ) {
 
 	// Gobble any mouse motion events
 	SDL_PumpEvents();
-	while ( ( val = SDL_PeepEvents( dummy, 1, SDL_GETEVENT,
-									SDL_MOUSEMOTION, SDL_MOUSEMOTION ) ) > 0 ) { }
+	while ( ( val = SDL_PeepEvents( dummy, 1, SDL_GETEVENT, SDL_MOUSEMOTION, SDL_MOUSEMOTION ) ) > 0 ) { }
 
 	if ( val < 0 ) {
 		Com_Printf( "IN_GobbleMotionEvents failed: %s\n", SDL_GetError() );
@@ -696,8 +693,7 @@ static void IN_JoyMove( void ) {
 					stick_state.oldaaxes[i] = axis;
 				}
 			}
-		} else
-		{
+		} else {
 			if ( total > 16 ) {
 				total = 16;
 			}
@@ -789,17 +785,16 @@ static void IN_ProcessEvents( void ) {
 					} else if ( ( *c & 0xE0 ) == 0xC0 ) { // 110x xxxx
 						utf32 |= ( *c++ & 0x1F ) << 6;
 						utf32 |= ( *c++ & 0x3F );
-					} else if ( ( *c & 0xF0 ) == 0xE0 )    {// 1110 xxxx
+					} else if ( ( *c & 0xF0 ) == 0xE0 ) { // 1110 xxxx
 						utf32 |= ( *c++ & 0x0F ) << 12;
 						utf32 |= ( *c++ & 0x3F ) << 6;
 						utf32 |= ( *c++ & 0x3F );
-					} else if ( ( *c & 0xF8 ) == 0xF0 )    {// 1111 0xxx
+					} else if ( ( *c & 0xF8 ) == 0xF0 ) { // 1111 0xxx
 						utf32 |= ( *c++ & 0x07 ) << 18;
 						utf32 |= ( *c++ & 0x3F ) << 12;
 						utf32 |= ( *c++ & 0x3F ) << 6;
 						utf32 |= ( *c++ & 0x3F );
-					} else
-					{
+					} else {
 						Com_DPrintf( "Unrecognised UTF-8 lead byte: 0x%x\n", (unsigned int)*c );
 						c++;
 					}
@@ -838,8 +833,7 @@ static void IN_ProcessEvents( void ) {
 			case SDL_BUTTON_X2:     b = K_MOUSE5;     break;
 			default:                b = K_AUX1 + ( e.button.button - SDL_BUTTON_X2 + 1 ) % 16; break;
 			}
-			Com_QueueEvent( 0, SE_KEY, b,
-							( e.type == SDL_MOUSEBUTTONDOWN ? qtrue : qfalse ), 0, NULL );
+			Com_QueueEvent( 0, SE_KEY, b, ( e.type == SDL_MOUSEBUTTONDOWN ? qtrue : qfalse ), 0, NULL );
 		}
 		break;
 
@@ -847,7 +841,7 @@ static void IN_ProcessEvents( void ) {
 			if ( e.wheel.y > 0 ) {
 				Com_QueueEvent( 0, SE_KEY, K_MWHEELUP, qtrue, 0, NULL );
 				Com_QueueEvent( 0, SE_KEY, K_MWHEELUP, qfalse, 0, NULL );
-			} else if ( e.wheel.y < 0 )    {
+			} else if ( e.wheel.y < 0 ) {
 				Com_QueueEvent( 0, SE_KEY, K_MWHEELDOWN, qtrue, 0, NULL );
 				Com_QueueEvent( 0, SE_KEY, K_MWHEELDOWN, qfalse, 0, NULL );
 			}
@@ -883,11 +877,19 @@ static void IN_ProcessEvents( void ) {
 			}
 			break;
 
-			case SDL_WINDOWEVENT_MINIMIZED:    Cvar_SetValue( "com_minimized", 1 ); break;
+			case SDL_WINDOWEVENT_MINIMIZED:
+				Cvar_SetValue( "com_minimized", 1 );
+				break;
 			case SDL_WINDOWEVENT_RESTORED:
-			case SDL_WINDOWEVENT_MAXIMIZED:    Cvar_SetValue( "com_minimized", 0 ); break;
-			case SDL_WINDOWEVENT_FOCUS_LOST:   Cvar_SetValue( "com_unfocused", 1 ); break;
-			case SDL_WINDOWEVENT_FOCUS_GAINED: Cvar_SetValue( "com_unfocused", 0 ); break;
+			case SDL_WINDOWEVENT_MAXIMIZED:
+				Cvar_SetValue( "com_minimized", 0 );
+				break;
+			case SDL_WINDOWEVENT_FOCUS_LOST:
+				Cvar_SetValue( "com_unfocused", 1 );
+				break;
+			case SDL_WINDOWEVENT_FOCUS_GAINED:
+				Cvar_SetValue( "com_unfocused", 0 );
+				break;
 			}
 			break;
 
@@ -913,10 +915,10 @@ void IN_Frame( void ) {
 	if ( !cls.glconfig.isFullscreen && ( Key_GetCatcher() & KEYCATCH_CONSOLE ) ) {
 		// Console is down in windowed mode
 		IN_DeactivateMouse();
-	} else if ( !cls.glconfig.isFullscreen && loading )    {
+	} else if ( !cls.glconfig.isFullscreen && loading ) {
 		// Loading in windowed mode
 		IN_DeactivateMouse();
-	} else if ( !( SDL_GetWindowFlags( SDL_window ) & SDL_WINDOW_INPUT_FOCUS ) )    {
+	} else if ( !( SDL_GetWindowFlags( SDL_window ) & SDL_WINDOW_INPUT_FOCUS ) ) {
 		// Window not got focus
 		IN_DeactivateMouse();
 	} else {
