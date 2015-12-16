@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #ifdef USE_LOCAL_HEADERS
-#	include "SDL.h"
+#   include "SDL.h"
 #else
-#	include <SDL.h>
+#   include <SDL.h>
 #endif
 
 #include "../renderer/tr_local.h"
@@ -36,15 +36,15 @@ extern SDL_Window *SDL_window;
 GLimp_SetGamma
 =================
 */
-void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned char blue[256] )
-{
+void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned char blue[256] ) {
 	Uint16 table[3][256];
 	int i, j;
 
-	if( !glConfig.deviceSupportsGamma || r_ignorehwgamma->integer > 0 )
+	if ( !glConfig.deviceSupportsGamma || r_ignorehwgamma->integer > 0 ) {
 		return;
+	}
 
-	for (i = 0; i < 256; i++)
+	for ( i = 0; i < 256; i++ )
 	{
 		table[0][i] = ( ( ( Uint16 ) red[i] ) << 8 ) | red[i];
 		table[1][i] = ( ( ( Uint16 ) green[i] ) << 8 ) | green[i];
@@ -56,41 +56,41 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 
 	// Win2K and newer put this odd restriction on gamma ramps...
 	{
-		OSVERSIONINFO	vinfo;
+		OSVERSIONINFO vinfo;
 
 		vinfo.dwOSVersionInfoSize = sizeof( vinfo );
 		GetVersionEx( &vinfo );
-		if( vinfo.dwMajorVersion >= 5 && vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT )
-		{
+		if ( vinfo.dwMajorVersion >= 5 && vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT ) {
 			ri.Printf( PRINT_DEVELOPER, "performing gamma clamp.\n" );
-			for( j = 0 ; j < 3 ; j++ )
+			for ( j = 0 ; j < 3 ; j++ )
 			{
-				for( i = 0 ; i < 128 ; i++ )
+				for ( i = 0 ; i < 128 ; i++ )
 				{
-					if( table[ j ] [ i] > ( ( 128 + i ) << 8 ) )
+					if ( table[ j ] [ i] > ( ( 128 + i ) << 8 ) ) {
 						table[ j ][ i ] = ( 128 + i ) << 8;
+					}
 				}
 
-				if( table[ j ] [127 ] > 254 << 8 )
+				if ( table[ j ] [127 ] > 254 << 8 ) {
 					table[ j ][ 127 ] = 254 << 8;
+				}
 			}
 		}
 	}
 #endif
 
 	// enforce constantly increasing
-	for (j = 0; j < 3; j++)
+	for ( j = 0; j < 3; j++ )
 	{
-		for (i = 1; i < 256; i++)
+		for ( i = 1; i < 256; i++ )
 		{
-			if (table[j][i] < table[j][i-1])
-				table[j][i] = table[j][i-1];
+			if ( table[j][i] < table[j][i - 1] ) {
+				table[j][i] = table[j][i - 1];
+			}
 		}
 	}
 
-	if (SDL_SetWindowGammaRamp(SDL_window, table[0], table[1], table[2]) < 0)
-	{
+	if ( SDL_SetWindowGammaRamp( SDL_window, table[0], table[1], table[2] ) < 0 ) {
 		ri.Printf( PRINT_DEVELOPER, "SDL_SetWindowGammaRamp() failed: %s\n", SDL_GetError() );
 	}
 }
-
