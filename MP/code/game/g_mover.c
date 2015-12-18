@@ -3067,7 +3067,7 @@ radius = maximum distance from center of entity to place each bat (default=32)
 speed = speed to travel to next waypoint (default=300)
 */
 void FuncBatsReached( gentity_t *self ) {
-	if ( self->active == 2 ) {
+	if ( !self->active ) {
 		self->nextthink = -1;
 		self->think = 0;
 		return;
@@ -3080,7 +3080,7 @@ void FuncBatsReached( gentity_t *self ) {
 	self->r.contents = 0;
 
 	if ( !self->nextTrain || !self->nextTrain->target ) {
-		self->active = 2;   // remove the bats at next point
+		self->active = qfalse;   // remove the bats at next point
 		return;
 	}
 }
@@ -3094,7 +3094,7 @@ void BatMoveThink( gentity_t *bat ) {
 	trace_t tr;
 
 	owner = &g_entities[bat->r.ownerNum];
-	if ( owner->active == qtrue ) { // move towards the owner
+	if ( owner->active == qtrue && owner->inuse ) { // move towards the owner
 		BG_EvaluateTrajectory( &owner->s.pos, level.time, goalpos );
 
 		// randomize ther movedir as we go
@@ -3127,7 +3127,7 @@ void BatMoveThink( gentity_t *bat ) {
 			}
 		}
 
-	} else if ( owner->active == 2 ) {
+	} else if ( owner->active || !owner->inuse ) {
 		// owner has finished
 		G_FreeEntity( bat );
 		return;
