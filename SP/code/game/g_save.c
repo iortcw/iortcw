@@ -1514,7 +1514,8 @@ void G_LoadGame( char *filename ) {
 	// reset all AAS blocking entities
 	trap_AAS_SetAASBlockingEntity( vec3_origin, vec3_origin, -1 );
 
-	if ( Q_stricmpn( mapstr, "cutscene", 8 ) ) { // Don't read in this stuff for cutscenes
+	// Don't read in this stuff for mid-game cutscenes
+	if ( !( !Q_stricmpn( mapstr, "cutscene6", 9 ) || !Q_stricmpn( mapstr, "cutscene9", 9 ) || !Q_stricmpn( mapstr, "cutscene11", 10 ) || !Q_stricmpn( mapstr, "cutscene14", 10 ) ) ) {
 		// read the entity structures
 		trap_FS_Read( &i, sizeof( i ), f );
 		size = i;
