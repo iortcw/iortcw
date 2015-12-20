@@ -958,6 +958,7 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 		return 0;
 	}
 
+#ifndef UPDATE_SERVER
 	// CVE-2006-2082
 	// validate the download against the list of pak files
 	if ( !FS_VerifyPak( cl->downloadName ) ) {
@@ -965,6 +966,7 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 		SV_DropClient( cl, "illegal download request" );
 		return 0;
 	}
+#endif
 
 	if(!cl->download)
 	{
@@ -1004,8 +1006,6 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 			}
 		}
 
-		cl->download = 0;
-
 		// DHM - Nerve :: Update server only allows files that are in versionmap.cfg to download
 #ifdef UPDATE_SERVER
 		for ( i = 0; i < numVersions; i++ ) {
@@ -1034,10 +1034,15 @@ int SV_WriteDownloadToClient( client_t *cl, msg_t *msg ) {
 #endif
 		// DHM - Nerve
 
+		cl->download = 0;
+
 		// We open the file here
 		if ( !(sv_allowDownload->integer & DLF_ENABLE) ||
 			(sv_allowDownload->integer & DLF_NO_UDP) ||
-			idPack || unreferenced ||
+			idPack ||
+#ifndef UPDATE_SERVER
+			unreferenced ||
+#endif
 			( cl->downloadSize = FS_SV_FOpenFileRead( cl->downloadName, &cl->download ) ) < 0 ) {
 			// cannot auto-download file
 			if(unreferenced)

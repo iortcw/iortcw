@@ -4204,7 +4204,9 @@ void FS_InitFilesystem( void ) {
 	FS_Startup(com_basegame->string);
 
 #ifndef STANDALONE
+#ifndef UPDATE_SERVER
 	FS_CheckPak0( );
+#endif
 #endif
 
 #ifndef UPDATE_SERVER

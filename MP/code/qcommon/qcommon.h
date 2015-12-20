@@ -295,14 +295,14 @@ You or the server may be running older versions of the game. Press the auto-upda
 // NOTE: that stuff only works with two digits protocols
 extern int demo_protocols[];
 
-#if !defined UPDATE_SERVER_NAME && !defined STANDALONE
 // NERVE - SMF - wolf multiplayer master servers
-#define UPDATE_SERVER_NAME      "wolfmotd.idsoftware.com"            // 192.246.40.65
+#if !defined UPDATE_SERVER_NAME && !defined STANDALONE
+#define UPDATE_SERVER_NAME		"wolfmotd.idsoftware.com"	// 192.246.40.65
 #endif
 
 #ifndef MASTER_SERVER_NAME
-//#define MASTER_SERVER_NAME      "wolfmaster.idsoftware.com"	// Official master server decommissioned
-#define MASTER_SERVER_NAME      "dpmaster.deathmask.net"
+//#define MASTER_SERVER_NAME		"wolfmaster.idsoftware.com"	// Official master server decommissioned
+#define MASTER_SERVER_NAME		"dpmaster.deathmask.net"
 #endif
 
 #ifndef STANDALONE
@@ -310,9 +310,11 @@ extern int demo_protocols[];
     #define	AUTHORIZE_SERVER_NAME	"wolfauthorize.idsoftware.com"
   #endif
   #ifndef PORT_AUTHORIZE
-  #define	PORT_AUTHORIZE		27952
+    #define	PORT_AUTHORIZE		27952
   #endif
 #endif
+
+//#define AUTOUPDATE_SERVER_NAME	"foobar"
 
 #if !defined AUTOUPDATE_SERVER_NAME && !defined STANDALONE
 // TTimo: allow override for easy dev/testing..
