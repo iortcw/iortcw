@@ -260,6 +260,21 @@ void CG_DrawInformation( void ) {
 		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
 	}
 	trap_R_SetColor( NULL );
+
+	// Pillarboxes
+	if ( cg_fixedAspect.integer ) {
+		if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
+			vec4_t col = { 0, 0, 0, 1 };
+			float pillar = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 640.0 ) ) / cgs.screenXScale );
+
+			CG_SetScreenPlacement( PLACE_LEFT, PLACE_CENTER );
+			CG_FillRect( 0, 0, pillar + 1, 480, col );
+			CG_SetScreenPlacement( PLACE_RIGHT, PLACE_CENTER );
+			CG_FillRect( 640 - pillar, 0, pillar + 1, 480, col );
+			CG_SetScreenPlacement( PLACE_CENTER, PLACE_CENTER );
+		}
+	}
+
 	CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, levelshot );
 
 	// show the server motd
