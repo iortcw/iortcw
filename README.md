@@ -27,8 +27,7 @@ Some of the major features currently implemented are:
   * PNG support
   * Many, many bug fixes
 
-The map editor and associated compiling tools are not included. We suggest you
-use a modern copy from http://icculus.org/gtkradiant/.
+The map editor and associated compiling tools are not included. We suggest you use a modern copy from http://icculus.org/gtkradiant/.
 
 The original id software readme that accompanied the RTCW source release is named README.txt and is contained within the source tree of both MP and SP games.
 
@@ -105,7 +104,6 @@ The defaults for these variables differ depending on the target platform.
 #### New cvars
 * cg_fixedAspect ( 0 ) - Use aspect corrected FOV/HUD/UI ( 0 = Off, 1 = 4:3 style, 2 = Widescreen style )
 
-
 * cl_autoRecordDemo ( 0 ) - record a new demo on each map change
 * cl_aviFrameRate ( 25 )- the framerate to use when capturing video
 * cl_aviMotionJpeg ( 1 ) - use the mjpeg codec when capturing video
@@ -115,10 +113,8 @@ The defaults for these variables differ depending on the target platform.
 * cl_mouseAccelStyle ( 0 )- Set to 1 for QuakeLive mouse acceleration behaviour, 0 for standard
 * cl_mouseAccelOffset ( 5 ) - Tuning the acceleration curve, see below
 
-
 * in_availableJoysticks - list of available Joysticks
 * in_keyboardDebug - print keyboard debug info
- 
  
 * j_forward - Joystick analogue to m_forward, for forward movement speed/direction.
 * j_side - Joystick analogue to m_side, for side movement speed/direction.
@@ -130,7 +126,6 @@ The defaults for these variables differ depending on the target platform.
 * j_up_axis - Selects which joystick axis controls up/down.
 * j_pitch_axis - Selects which joystick axis controls pitch.
 * j_yaw_axis - Selects which joystick axis controls yaw.
-
 
 * s_useOpenAL ( 1 ) - use the OpenAL sound backend if available
 * s_alPrecache ( 1 ) - cache OpenAL sounds before use
@@ -148,7 +143,6 @@ The defaults for these variables differ depending on the target platform.
 * s_alInputDevice - which OpenAL input device to use
 * s_alAvailableInputDevices - list of available OpenAL input devices
 
-
 * s_sdlBits - SDL bit resolution
 * s_sdlSpeed - SDL sample rate
 * s_sdlChannels - SDL number of channels
@@ -162,7 +156,6 @@ The defaults for these variables differ depending on the target platform.
 
 * sv_dlRate - bandwidth allotted to PK3 file downloads via UDP, in kbyte/s
 * sv_dlURL - the base of the HTTP or FTP site that holds custom pk3 files for your server
-
 
 * com_ansiColor - enable use of ANSI escape codes in the terminal
 * com_altivec - enable use of altivec on PowerPC systems
@@ -179,7 +172,6 @@ The defaults for these variables differ depending on the target platform.
 * com_protocol - Specify protocol version number for current iortcw protocol, see "Network protocols" section below (startup only)
 
 * sv_banFile - Name of the file that is used for storing the server bans
-
 
 * net_ip6 - IPv6 address to bind to
 * net_port6 - port to bind to using the ipv6 address
@@ -204,9 +196,9 @@ The defaults for these variables differ depending on the target platform.
 * r_anaglyphMode - Enable rendering of anaglyph images
 
 	red-cyan glasses:    1
-    red-blue:            2
-    red-green:           3
-    green-magenta:       4
+	red-blue:            2
+	red-green:           3
+	green-magenta:       4
     
 	To swap the colors for left and right eye just add 4 to the value for the wanted color combination. For red-blue and red-green you probably want to enable r_greyscale
 
@@ -274,7 +266,7 @@ missing "test.pk3", it will attempt to download from the URL
     
   	4 - do not use UDP downloads
     
-    8 - do not ask the client to disconnect when using HTTP/FTP
+	8 - do not ask the client to disconnect when using HTTP/FTP
 
 
 Server operators who are concerned about potential "leeching" from their HTTP servers from other iortcw servers can make use of the HTTP_REFERER that iortcw sets which is "ioQ3://{SERVER_IP}:{SERVER_PORT}". For example, Apache's mod_rewrite can restrict access based on HTTP_REFERER.
@@ -287,8 +279,8 @@ assuming iortcw was compiled with USE_CURL=1 (the default).
 
 * Like sv_allowDownload, cl_allowDownload also uses a bitmask value supporting the following flags:
 	1 - ENABLE
-    2 - do not use HTTP/FTP downloads
-    4 - do not use UDP downloads
+	2 - do not use HTTP/FTP downloads
+	4 - do not use UDP downloads
 
 When iortcw is built with USE_CURL_DLOPEN=1 (default), it will use the value of the cvar cl_cURLLib as the filename of the cURL library to dynamically load.
 
@@ -303,11 +295,11 @@ On Windows Vista, Windows 7, and Windows 10 will use a directory like:
 
 You can revert to the old single-user behaviour by setting the fs_homepath cvar to the directory where iortcw is installed.  For example:
 
-    iowolfmp.exe +set fs_homepath "c:\iortcw"
+	ioWolfMP.exe +set fs_homepath "c:\iortcw"
     
 or
 
-	iowolfsp.exe +set fs_homepath "c:\iortcw"
+	ioWolfSP.exe +set fs_homepath "c:\iortcw"
     
 Note that this cvar MUST be set as a command line parameter.
 
@@ -490,20 +482,20 @@ accepted as long as they are entirely optional, do not require new media and are
 ### Credits
 
 Maintainers
-  Donny Springer <M4N4T4RMS@gmail.com>
-  Zack Middleton <zturtleman@gmail.com>
-  James Canete <use.less01@gmail.com>
+  * Donny Springer <M4N4T4RMS@gmail.com>
+  * Zack Middleton <zturtleman@gmail.com>
+  * James Canete <use.less01@gmail.com>
 
 Significant contributions from
-  Ryan C. Gordon <icculus@icculus.org>
-  Andreas Kohn <andreas@syndrom23.de>
-  Joerg Dietrich <Dietrich_Joerg@t-online.de>
-  Stuart Dalton <badcdev@gmail.com>
-  Vincent S. Cojot <vincent at cojot dot name>
-  optical <alex@rigbo.se>
-  Aaron Gyes <floam@aaron.gy>
-  Ludwig Nussel <ludwig.nussel@suse.de>
-  Thilo Schulz <arny@ats.s.bawue.de>
-  Tim Angus <tim@ngus.net>
-  Tony J. White <tjw@tjw.org>
-  Zachary J. Slater <zachary@ioquake.org>
+  * Ryan C. Gordon <icculus@icculus.org>
+  * Andreas Kohn <andreas@syndrom23.de>
+  * Joerg Dietrich <Dietrich_Joerg@t-online.de>
+  * Stuart Dalton <badcdev@gmail.com>
+  * Vincent S. Cojot <vincent at cojot dot name>
+  * optical <alex@rigbo.se>
+  * Aaron Gyes <floam@aaron.gy>
+  * Ludwig Nussel <ludwig.nussel@suse.de>
+  * Thilo Schulz <arny@ats.s.bawue.de>
+  * Tim Angus <tim@ngus.net>
+  * Tony J. White <tjw@tjw.org>
+  * Zachary J. Slater <zachary@ioquake.org>
