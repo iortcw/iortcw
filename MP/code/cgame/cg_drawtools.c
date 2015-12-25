@@ -67,7 +67,7 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		if (cg_horizontalPlacement == PLACE_STRETCH) {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
-				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
+				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.0 );
 
 				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
 				( *w ) *= xscale;
@@ -80,9 +80,10 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		} else {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
-				float xscale = ( ( cg.refdef.width / cgs.screenXScaleStretch ) / 640.f );
+				float limboxscale = ( 640.0 / 480.0 ) / ( (float)LIMBO_3D_W / (float)LIMBO_3D_H ); // Limbo is not quite 4:3
+				float xscale = ( ( cg.refdef.width / cgs.screenXScale ) / ( 640.0 * limboxscale ) );
 
-				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScaleStretch );
+				( *x ) = ( *x ) * xscale + ( cg.refdef.x / cgs.screenXScale ) - ( cgs.screenXBias / cgs.screenXScale);
 				( *w ) *= xscale;
 			}
 			// -NERVE - SMF
@@ -101,7 +102,7 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		if (cg_verticalPlacement == PLACE_STRETCH) {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
-				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
+				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.0 );
 
 				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
 				( *h ) *= yscale;
@@ -113,9 +114,10 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		} else {
 			// NERVE - SMF - hack to make images display properly in small view / limbo mode
 			if ( cg.limboMenu && cg.refdef.width ) {
-				float yscale = ( ( cg.refdef.height / cgs.screenYScaleStretch ) / 480.f );
+				float limboyscale = ( 480.0 / 640.0 ) / ( (float)LIMBO_3D_H / (float)LIMBO_3D_W ); // Limbo is not quite 4:3
+				float yscale = ( ( cg.refdef.height / cgs.screenYScale ) / ( 480.0 * limboyscale ) );
 
-				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScaleStretch );
+				( *y ) = ( *y ) * yscale + ( cg.refdef.y / cgs.screenYScale ) - ( cgs.screenYBias / cgs.screenYScale);
 				( *h ) *= yscale;
 			}
 			// -NERVE - SMF

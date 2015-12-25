@@ -3882,7 +3882,7 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 		w = LIMBO_3D_W;
 		h = LIMBO_3D_H;
 
-		if ( cg_fixedAspect.integer ) { //FIXME:MAN-AT-ARMS...Use correct view
+		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		}
 
