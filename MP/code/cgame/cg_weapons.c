@@ -2925,7 +2925,7 @@ void CG_DrawWeaponSelect( void ) {
 	}
 	trap_R_SetColor( color );
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
 	}
 

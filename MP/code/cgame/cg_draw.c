@@ -865,7 +865,7 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 
 	y = 0; // JPW NERVE move team overlay below obits, even with timer on left
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
 	}
 
@@ -919,7 +919,7 @@ static void CG_DrawTeamInfo( void ) {
 		return; // disabled
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement( PLACE_LEFT, PLACE_BOTTOM );
 	}
 
@@ -954,7 +954,7 @@ static void CG_DrawTeamInfo( void ) {
 			hcolor[3] = 0.33f * alphapercent;
 
 			trap_R_SetColor( hcolor );
-			if ( cg_fixedAspect.integer == 2 ) {
+			if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 				CG_DrawPic( CHATLOC_X, CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT, cgs.glconfig.vidWidth, TINYCHAR_HEIGHT, cgs.media.teamStatusBar );
 			} else {
 				CG_DrawPic( CHATLOC_X, CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT, 640, TINYCHAR_HEIGHT, cgs.media.teamStatusBar );
@@ -985,7 +985,7 @@ static void CG_DrawPickupItem( void ) {
 	float color[4];
 	const char *s;
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_BOTTOM);
 	}
 
@@ -1039,7 +1039,7 @@ static void CG_DrawNotify( void ) {
 	char var[MAX_TOKEN_CHARS];
 	float notifytime = 1.0f;
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	}
 
@@ -1181,7 +1181,7 @@ static void CG_DrawDisconnect( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
@@ -1213,7 +1213,7 @@ static void CG_DrawLagometer( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_BOTTOM);
 	}
 
@@ -2332,7 +2332,7 @@ CG_DrawSpectator
 =================
 */
 static void CG_DrawSpectator( void ) {
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
@@ -2356,7 +2356,7 @@ static void CG_DrawVote( void ) {
 	float color[4] = { 1, 1, 0, 1 };
 	int sec;
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_CENTER);
 	}
 
@@ -2635,7 +2635,7 @@ static qboolean CG_DrawFollow( void ) {
 		return qfalse;
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	}
 
@@ -2692,7 +2692,7 @@ static void CG_DrawWarmup( void ) {
 		return;     // (SA) don't bother with this stuff in sp
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_TOP);
 	}
 
@@ -3250,7 +3250,7 @@ void CG_DrawObjectiveIcons( void ) {
 	vec4_t hcolor = { 0.2f, 0.2f, 0.2f, 1.f };
 	int msec, mins, seconds, tens; // JPW NERVE
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_LEFT, PLACE_TOP);
 	}
 
@@ -3508,7 +3508,7 @@ void CG_Draw2D2( void ) {
 	hcolor[3] = cg_hudAlpha.value;
 	trap_R_SetColor( hcolor );
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
@@ -3599,7 +3599,7 @@ static void CG_DrawCompass( void ) {
 		return;
 	}
 
-	if ( cg_fixedAspect.integer == 2 ) {
+	if ( cg_fixedAspect.integer == 2 && !cg.limboMenu ) {
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_BOTTOM);
 	}
 
