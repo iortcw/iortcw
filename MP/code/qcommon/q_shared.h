@@ -60,7 +60,7 @@ If you have questions concerning this license or the applicable additional terms
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"Return To Castle Wolfenstein"
   #define CLIENT_WINDOW_MIN_TITLE 	"iowolfmp"
-  #define HOMEPATH_NAME_UNIX		".iortcw"
+  #define HOMEPATH_NAME_UNIX		".wolf"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define STEAMPATH_NAME		"Return To Castle Wolfenstein"
   #define STEAMPATH_APPID		"9010"
