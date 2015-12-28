@@ -2899,10 +2899,10 @@ void Com_Init( char *commandLine ) {
 	Cvar_Set( "com_recommendedSet", "1" );
 
 	if ( !com_dedicated->integer ) {
-		Cbuf_AddText( "cinematic gmlogo.RoQ\n" );
+		Cbuf_AddText( "cinematic " CINEMATICS_LOGO "\n" );
 		if ( !com_introPlayed->integer ) {
 			Cvar_Set( com_introPlayed->name, "1" );
-			Cvar_Set( "nextmap", "cinematic wolfintro.RoQ" );
+			Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
 		}
 	}
 

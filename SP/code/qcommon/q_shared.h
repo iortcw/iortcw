@@ -51,6 +51,8 @@ If you have questions concerning this license or the applicable additional terms
 //  #define STEAMPATH_APPID		""
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
+  #define CINEMATICS_LOGO		"foologo.roq"
+  #define CINEMATICS_INTRO		"foointro.roq"
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
 #else
   #define PRODUCT_NAME			"iortcw"
@@ -63,6 +65,8 @@ If you have questions concerning this license or the applicable additional terms
   #define STEAMPATH_APPID		"9010"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfsp"
+  #define CINEMATICS_LOGO		"gmlogo.RoQ"	// non-existent
+  #define CINEMATICS_INTRO		"wolfintro.RoQ"	// SP only
   #define LEGACY_PROTOCOL
 #endif
 

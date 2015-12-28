@@ -2437,11 +2437,11 @@ void Com_Init( char *commandLine ) {
 	}
 
 	if ( !com_dedicated->integer ) {
-		//Cbuf_AddText ("cinematic gmlogo.RoQ\n");
+		//Cbuf_AddText ("cinematic " CINEMATICS_LOGO "\n");
 		if ( !com_introPlayed->integer ) {
 			//Cvar_Set( com_introPlayed->name, "1" );		//----(SA)	force this to get played every time (but leave cvar for override)
-			Cbuf_AddText( "cinematic wolfintro.RoQ 3\n" );
-			//Cvar_Set( "nextmap", "cinematic wolfintro.RoQ" );
+			Cbuf_AddText( "cinematic " CINEMATICS_INTRO " 3\n" );
+			//Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
 		}
 	}
 
