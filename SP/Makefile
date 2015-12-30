@@ -614,7 +614,7 @@ ifdef MINGW
     endif
 
     ifndef CXX
-      CC=g++
+      CXX=g++
     endif
 
     ifndef WINDRES
@@ -966,7 +966,7 @@ ifndef CC
 endif
 
 ifndef CXX
-  CC=g++
+  CXX=g++
 endif
 
 ifndef RANLIB
