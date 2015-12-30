@@ -1461,7 +1461,7 @@ void R_Register( void ) {
 	r_lightmap = ri.Cvar_Get( "r_lightmap", "0", CVAR_CHEAT ); // DHM - NERVE :: cheat protect
 	r_portalOnly = ri.Cvar_Get( "r_portalOnly", "0", CVAR_CHEAT );
 
-	r_cgenVertexLit = ri.Cvar_Get( "r_cgenVertexLit", "1", CVAR_ARCHIVE | CVAR_LATCH );
+	r_cgenVertexLit = ri.Cvar_Get( "r_cgenVertexLit", "0", CVAR_ARCHIVE | CVAR_LATCH );
 
 	r_flareSize = ri.Cvar_Get( "r_flareSize", "40", CVAR_CHEAT );
 	ri.Cvar_Set( "r_flareFade", "5" ); // to force this when people already have "7" in their config
