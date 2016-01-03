@@ -3250,7 +3250,7 @@ qboolean FS_idPak(char *pak, char *base, int numPaks) {
 		if ( !FS_FilenameCompare( pak, va( "%s/mp_pak%d",base,i ) ) ) {
 			break;
 		}
-		if ( !FS_FilenameCompare( pak, va( "%s/sp_pak%d",base,i ) ) ) {
+		if ( !FS_FilenameCompare( pak, va( "%s/sp_pak%d",base,i + 1) ) ) {
 			break;
 		}
 // jpw
