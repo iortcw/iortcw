@@ -458,7 +458,7 @@ extern void     (APIENTRY * qglDrawRangeElementsEXT) (GLenum mode, GLuint start,
 
 // GL_EXT_multi_draw_arrays
 extern void (APIENTRY * qglMultiDrawArraysEXT) (GLenum mode, const GLint *first, const GLsizei *count, GLsizei primcount);
-extern void (APIENTRY * qglMultiDrawElementsEXT) (GLenum mode, const GLsizei *count, GLenum type, const GLvoid* *indices, GLsizei primcount);
+extern void (APIENTRY * qglMultiDrawElementsEXT) (GLenum mode, const GLsizei *count, GLenum type, const void *const*indices, GLsizei primcount);
 
 // rend2
 

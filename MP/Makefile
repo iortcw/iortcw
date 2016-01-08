@@ -421,11 +421,11 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     ifeq ($(CROSS_COMPILING),1)
       ifeq ($(ARCH),x86)
       SDL_LIBS = $(LIBSDIR)/linux32/libSDL2main.a \
-                 $(LIBSDIR)/linux32/libSDL2.so
+                 $(LIBSDIR)/linux32/libSDL2-2.0.so.0.4.0
       endif
       ifeq ($(ARCH),x86_64)
       SDL_LIBS = $(LIBSDIR)/linux64/libSDL2main.a \
-                 $(LIBSDIR)/linux64/libSDL2.so
+                 $(LIBSDIR)/linux64/libSDL2-2.0.so.0.4.0
       endif
     endif
   endif
