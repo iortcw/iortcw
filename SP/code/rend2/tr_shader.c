@@ -1116,24 +1116,17 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 			} else if ( !Q_stricmp( token, "oneMinusEntity" ) )    {
 				stage->rgbGen = CGEN_ONE_MINUS_ENTITY;
 			} else if ( !Q_stricmp( token, "vertex" ) )    {
-				if ( r_cgenVertexLit->integer ) {
-					stage->rgbGen = CGEN_VERTEX_LIT;
-				} else {
-					stage->rgbGen = CGEN_VERTEX;
-				}
+				stage->rgbGen = CGEN_VERTEX;
 				if ( stage->alphaGen == 0 ) {
 					stage->alphaGen = AGEN_VERTEX;
 				}
 			} else if ( !Q_stricmp( token, "exactVertex" ) )    {
-				if ( r_cgenVertexLit->integer ) {
-					stage->rgbGen = CGEN_EXACT_VERTEX_LIT;
-				} else {
-					stage->rgbGen = CGEN_EXACT_VERTEX;
-				}
+				stage->rgbGen = CGEN_EXACT_VERTEX;
 			} else if ( !Q_stricmp( token, "vertexLit" ) )	{
 				stage->rgbGen = CGEN_VERTEX_LIT;
-				if ( stage->alphaGen == 0 )
+				if ( stage->alphaGen == 0 ) {
 					stage->alphaGen = AGEN_VERTEX;
+				}
 			} else if ( !Q_stricmp( token, "exactVertexLit" ) )	{
 				stage->rgbGen = CGEN_EXACT_VERTEX_LIT;
 			} else if ( !Q_stricmp( token, "lightingDiffuse" ) )    {

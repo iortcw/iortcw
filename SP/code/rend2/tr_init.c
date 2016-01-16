@@ -207,7 +207,6 @@ cvar_t  *r_ext_multisample;
 cvar_t  *r_drawBuffer;
 cvar_t  *r_glIgnoreWicked3D;
 cvar_t  *r_lightmap;
-cvar_t  *r_cgenVertexLit;
 cvar_t  *r_vertexLight;
 cvar_t  *r_uiFullScreen;
 cvar_t  *r_shadows;
@@ -1486,8 +1485,6 @@ void R_Register( void ) {
 	r_drawworld = ri.Cvar_Get( "r_drawworld", "1", CVAR_CHEAT );
 	r_lightmap = ri.Cvar_Get( "r_lightmap", "0", CVAR_CHEAT );
 	r_portalOnly = ri.Cvar_Get( "r_portalOnly", "0", CVAR_CHEAT );
-
-	r_cgenVertexLit = ri.Cvar_Get( "r_cgenVertexLit", "0", CVAR_ARCHIVE | CVAR_LATCH );
 
 	r_flareSize = ri.Cvar_Get( "r_flareSize", "40", CVAR_CHEAT );
 	r_flareFade = ri.Cvar_Get( "r_flareFade", "5", CVAR_CHEAT );

@@ -1948,7 +1948,6 @@ extern cvar_t  *r_offsetUnits;
 
 extern cvar_t  *r_fullbright;                   // avoid lightmap pass
 extern cvar_t  *r_lightmap;                     // render lightmaps only
-extern cvar_t  *r_cgenVertexLit;		// Use CGEN_VERTEX_LIT and CGEN_EXACT_VERTEX_LIT instead of CGEN_VERTEX and CGEN_EXACT_VERTEX
 extern cvar_t  *r_vertexLight;                  // vertex lighting mode for better performance
 extern cvar_t  *r_uiFullScreen;                 // ui is running fullscreen
 
