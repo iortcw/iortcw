@@ -340,19 +340,34 @@ RB_TestFlare
 ==================
 */
 void RB_TestFlare( flare_t *f ) {
-	qboolean visible;
-	float fade;
+	float			depth;
+	qboolean		visible;
+	float			fade;
+	float			screenZ;
 
 	backEnd.pc.c_flareTests++;
 
+	// doing a readpixels is as good as doing a glFinish(), so
+	// don't bother with another sync
+	glState.finishCalled = qfalse;
+
+	// read back the z buffer contents
+	qglReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
+
+	screenZ = backEnd.viewParms.projectionMatrix[14] / 
+		( ( 2*depth - 1 ) * backEnd.viewParms.projectionMatrix[11] - backEnd.viewParms.projectionMatrix[10] );
+
 	visible = f->cgvisible;
+
+	if ( -f->eyeZ - -screenZ  > 24 )
+		visible = qfalse;
 
 	if ( visible ) {
 		if ( !f->visible ) {
 			f->visible = qtrue;
 			f->fadeTime = backEnd.refdef.time - 1;
 		}
-		fade = ( ( backEnd.refdef.time - f->fadeTime ) / 1000.0f ) * r_flareFade->value;
+		fade = ( ( backEnd.refdef.time - f->fadeTime ) /1000.0f ) * r_flareFade->value;
 	} else {
 		if ( f->visible ) {
 			f->visible = qfalse;
