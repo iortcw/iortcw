@@ -1180,7 +1180,6 @@ static void RB_CalcDiffuseColor_altivec( unsigned char *colors )
 	int				i;
 	float			*v, *normal;
 	trRefEntity_t	*ent;
-	int				ambientLightInt;
 	vec3_t			lightDir;
 	int				numVertexes;
 	vector unsigned char vSel = VECCONST_UINT8(0x00, 0x00, 0x00, 0xff,
@@ -1197,7 +1196,6 @@ static void RB_CalcDiffuseColor_altivec( unsigned char *colors )
 	vector signed short jVecShort;
 	vector unsigned char jVecChar, normalPerm;
 	ent = backEnd.currentEntity;
-	ambientLightInt = ent->ambientLightInt;
 	// A lot of this could be simplified if we made sure
 	// entities light info was 16-byte aligned.
 	jVecChar = vec_lvsl(0, ent->ambientLight);
@@ -1251,14 +1249,12 @@ static void RB_CalcDiffuseColor_scalar( unsigned char *colors )
 	float			*v, *normal;
 	float			incoming;
 	trRefEntity_t	*ent;
-	int				ambientLightInt;
 	vec3_t			ambientLight;
 	vec3_t			lightDir;
 	vec3_t			directedLight;
 	int				numVertexes;
 
 	ent = backEnd.currentEntity;
-	ambientLightInt = ent->ambientLightInt;
 	VectorCopy( ent->ambientLight, ambientLight );
 	VectorCopy( ent->directedLight, directedLight );
 	VectorCopy( ent->lightDir, lightDir );
@@ -1270,7 +1266,10 @@ static void RB_CalcDiffuseColor_scalar( unsigned char *colors )
 	for (i = 0 ; i < numVertexes ; i++, v += 4, normal += 4) {
 		incoming = DotProduct (normal, lightDir);
 		if ( incoming <= 0 ) {
-			*(int *)&colors[i * 4] = ambientLightInt;
+			colors[i * 4 + 0] = ri.ftol( ent->ambientLight[0] );
+			colors[i * 4 + 1] = ri.ftol( ent->ambientLight[1] );
+			colors[i * 4 + 2] = ri.ftol( ent->ambientLight[2] );
+			colors[i * 4 + 3] = 255;
 			continue;
 		}
 		j = ri.ftol( ambientLight[0] + incoming * directedLight[0] );

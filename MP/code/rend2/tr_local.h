@@ -78,7 +78,6 @@ typedef struct {
 	vec3_t		lightDir;		// normalized direction towards light, in world space
 	vec3_t      modelLightDir;  // normalized direction towards light, in model space
 	vec3_t ambientLight;        // color normalized to 0-255
-	int ambientLightInt;            // 32 bit rgba packed
 	vec3_t directedLight;
 	float brightness;
 } trRefEntity_t;
