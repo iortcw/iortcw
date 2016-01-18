@@ -1266,11 +1266,7 @@ static void RB_CalcDiffuseColor_scalar( unsigned char *colors )
 	for (i = 0 ; i < numVertexes ; i++, v += 4, normal += 4) {
 		incoming = DotProduct (normal, lightDir);
 		if ( incoming <= 0 ) {
-			colors[i * 4 + 0] = ri.ftol( ent->ambientLight[0] );
-			colors[i * 4 + 1] = ri.ftol( ent->ambientLight[1] );
-			colors[i * 4 + 2] = ri.ftol( ent->ambientLight[2] );
-			colors[i * 4 + 3] = 255;
-			continue;
+			incoming = 0.0;
 		}
 		j = ri.ftol( ambientLight[0] + incoming * directedLight[0] );
 		if ( j > 255 ) {
