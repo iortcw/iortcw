@@ -619,7 +619,7 @@ static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel,
 	int		inplay, allowed;
 	qboolean	fullVolume;
 
-	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
+	if ( !s_soundStarted || s_soundMuted ) {
 		return;
 	}
 
@@ -730,13 +730,12 @@ static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel,
 					continue;
 				}
 			}
-
 		}
 	}
 
 	// re-use channel if applicable
 	for ( i = 0 ; i < MAX_CHANNELS ; i++ ) {
-		if ( s_channels[i].entnum == entityNum && s_channels[i].entchannel == entchannel ) {
+		if ( s_channels[i].entnum == entityNum && s_channels[i].entchannel == entchannel && entchannel != CHAN_AUTO ) {
 			if ( !( s_channels[i].flags & SND_NOCUT ) && s_channels[i].thesfx == sfx ) {
 				ch = &s_channels[i];
 				break;

@@ -615,7 +615,7 @@ static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel,
 	int		inplay, allowed;
 	qboolean	fullVolume;
 
-	if ( !s_soundStarted || s_soundMuted || ( clc.state != CA_ACTIVE && clc.state != CA_DISCONNECTED ) ) {
+	if ( !s_soundStarted || s_soundMuted ) {
 		return;
 	}
 
@@ -720,7 +720,6 @@ static void S_Base_MainStartSound( vec3_t origin, int entityNum, int entchannel,
 					continue;
 				}
 			}
-
 		}
 	}
 

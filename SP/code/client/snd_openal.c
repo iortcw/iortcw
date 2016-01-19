@@ -1112,15 +1112,6 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 				continue;
 			}
 
-			// re-use channel if applicable
-			if ( curSource->sfx == sfx && !cutDuplicateSound ) {
-				cutDuplicateSound = qtrue;
-				S_AL_SrcKill(i);
-				if (empty == -1)
-					empty = i;
-				continue;
-			}
-
 			// RF, let client voice sounds be overwritten
 			if ( entnum < MAX_CLIENTS && curSource->channel != -1 && curSource->channel != CHAN_AUTO && curSource->channel != CHAN_WEAPON ) {
 				S_AL_SrcKill(i);
@@ -1145,6 +1136,15 @@ srcHandle_t S_AL_SrcAlloc( sfxHandle_t sfx, alSrcPriority_t priority, int entnum
 						empty = i;
 					continue;
 				}
+			}
+
+			// re-use channel if applicable
+			if ( curSource->channel != -1 && curSource->channel != CHAN_AUTO && curSource->sfx == sfx && !cutDuplicateSound ) {
+				cutDuplicateSound = qtrue;
+				S_AL_SrcKill(i);
+				if (empty == -1)
+					empty = i;
+				continue;
 			}
 		}
 	}
