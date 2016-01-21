@@ -116,8 +116,10 @@ vmCvar_t cg_drawIcons;
 vmCvar_t cg_youGotMail;         //----(SA)	added
 vmCvar_t cg_drawAmmoWarning;
 vmCvar_t cg_drawCrosshair;
+vmCvar_t cg_drawCrosshairBinoc;
 vmCvar_t cg_drawCrosshairNames;
 vmCvar_t cg_drawCrosshairPickups;
+vmCvar_t cg_drawCrosshairReticle;
 vmCvar_t cg_hudAlpha;
 vmCvar_t cg_weaponCycleDelay;       //----(SA)	added
 vmCvar_t cg_cycleAllWeaps;
@@ -317,8 +319,10 @@ cvarTable_t cvarTable[] = {
 	{ &cg_drawAmmoWarning, "cg_drawAmmoWarning", "1", CVAR_ARCHIVE  },
 	{ &cg_drawAttacker, "cg_drawAttacker", "1", CVAR_ARCHIVE  },
 	{ &cg_drawCrosshair, "cg_drawCrosshair", "4", CVAR_ARCHIVE },
+	{ &cg_drawCrosshairBinoc, "cg_drawCrosshairBinoc", "0", CVAR_ARCHIVE },
 	{ &cg_drawCrosshairNames, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE },
 	{ &cg_drawCrosshairPickups, "cg_drawCrosshairPickups", "1", CVAR_ARCHIVE },
+	{ &cg_drawCrosshairReticle, "cg_drawCrosshairReticle", "1", CVAR_ARCHIVE },
 	{ &cg_drawRewards, "cg_drawRewards", "1", CVAR_ARCHIVE },
 	{ &cg_hudAlpha, "cg_hudAlpha", "0.8", CVAR_ARCHIVE },
 	{ &cg_useWeapsForZoom,  "cg_useWeapsForZoom", "1", CVAR_ARCHIVE },

@@ -2141,11 +2141,17 @@ static void CG_DrawWeapReticle( void ) {
 			}
 		}
 
+		if ( cg_drawCrosshairReticle.integer ) {
+			CG_FillRect( 80, 239, 480, 1, color );	// horiz
+			CG_FillRect( 319, 0, 1, 480, color );   // vert
+		}
+
 		// hairs
 		CG_FillRect( 84, 239, 177, 2, color );   // left
 		CG_FillRect( 320, 242, 1, 58, color );   // center top
 		CG_FillRect( 319, 300, 2, 178, color );  // center bot
 		CG_FillRect( 380, 239, 177, 2, color );  // right
+
 	} else if ( weap == WP_SNOOPERSCOPE ) {
 		// sides
 		if ( cg_fixedAspect.integer ) {
@@ -2335,6 +2341,11 @@ static void CG_DrawBinocReticle( void ) {
 			trap_R_DrawStretchPic( 0, h, w, h, 0, 1, 1, 0, cgs.media.binocShaderSimpleQ );  // bl
 			trap_R_DrawStretchPic( w, h, w, h, 1, 1, 0, 0, cgs.media.binocShaderSimpleQ );  // br
 		}
+	}
+
+	if ( cg_drawCrosshairBinoc.integer ) {
+		CG_FillRect( 0, 239, 640, 1, color );	// horiz
+		CG_FillRect( 320, 0, 1, 480, color );   // vert
 	}
 			
 

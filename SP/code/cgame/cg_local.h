@@ -1633,8 +1633,10 @@ extern vmCvar_t cg_drawIcons;
 extern vmCvar_t cg_youGotMail;          //----(SA)	added
 extern vmCvar_t cg_drawAmmoWarning;
 extern vmCvar_t cg_drawCrosshair;
+extern vmCvar_t cg_drawCrosshairBinoc;
 extern vmCvar_t cg_drawCrosshairNames;
 extern vmCvar_t cg_drawCrosshairPickups;
+extern vmCvar_t cg_drawCrosshairReticle;
 extern vmCvar_t cg_hudAlpha;
 extern vmCvar_t cg_useWeapsForZoom;
 extern vmCvar_t cg_weaponCycleDelay;            //----(SA)	added
