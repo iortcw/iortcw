@@ -32,7 +32,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // includes for the OGG codec
 #include <errno.h>
 #define OV_EXCLUDE_STATIC_CALLBACKS
-#include <vorbis/vorbisfile.h>
+#ifdef USE_LOCAL_HEADERS
+  #include "../libvorbis-1.3.5/include/vorbis/vorbisfile.h"
+#else
+  #include <vorbis/vorbisfile.h>
+#endif
 
 // The OGG codec can return the samples in a number of different formats,
 // we use the standard signed short format.
