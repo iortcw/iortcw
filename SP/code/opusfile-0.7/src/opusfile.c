@@ -319,7 +319,7 @@ struct OpusSeekRecord{
 static int op_get_prev_page_serial(OggOpusFile *_of,OpusSeekRecord *_sr,
  opus_int64 _offset,ogg_uint32_t _serialno,
  const ogg_uint32_t *_serialnos,int _nserialnos){
-  OpusSeekRecord preferred_sr;
+  OpusSeekRecord preferred_sr={0};
   ogg_page       og;
   opus_int64     begin;
   opus_int64     end;
@@ -927,7 +927,7 @@ static int op_find_initial_pcm_offset(OggOpusFile *_of,
   prev_packet_gp=pcm_start;
   for(pi=0;pi<op_count;pi++){
     if(cur_page_eos){
-      ogg_int64_t diff;
+      ogg_int64_t diff=0;
       OP_ALWAYS_TRUE(!op_granpos_diff(&diff,cur_page_gp,prev_packet_gp));
       diff=durations[pi]-diff;
       /*If we have samples to trim...*/
@@ -2127,7 +2127,7 @@ int op_raw_seek(OggOpusFile *_of,opus_int64 _pos){
 static ogg_int64_t op_get_granulepos(const OggOpusFile *_of,
  ogg_int64_t _pcm_offset,int *_li){
   const OggOpusLink *links;
-  ogg_int64_t        duration;
+  ogg_int64_t        duration=0;
   int                nlinks;
   int                li;
   OP_ASSERT(_pcm_offset>=0);
@@ -2204,7 +2204,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
   ogg_int64_t        pcm_start;
   ogg_int64_t        pcm_end;
   ogg_int64_t        best_gp;
-  ogg_int64_t        diff;
+  ogg_int64_t        diff=0;
   ogg_uint32_t       serialno;
   opus_int32         pre_skip;
   opus_int64         begin;
@@ -2342,7 +2342,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
       d2=end-begin>>1;
       if(force_bisect)bisect=begin+(end-begin>>1);
       else{
-        ogg_int64_t diff2;
+        ogg_int64_t diff2=0;
         OP_ALWAYS_TRUE(!op_granpos_diff(&diff,_target_gp,pcm_start));
         OP_ALWAYS_TRUE(!op_granpos_diff(&diff2,pcm_end,pcm_start));
         /*Take a (pretty decent) guess.*/
@@ -2617,7 +2617,7 @@ static ogg_int64_t op_get_pcm_offset(const OggOpusFile *_of,
  ogg_int64_t _gp,int _li){
   const OggOpusLink *links;
   ogg_int64_t        pcm_offset;
-  ogg_int64_t        delta;
+  ogg_int64_t        delta=0;
   int                li;
   links=_of->links;
   pcm_offset=0;
