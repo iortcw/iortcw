@@ -80,7 +80,11 @@ If you have questions concerning this license or the applicable additional terms
 #include "../qcommon/qcommon.h"
 
 #ifdef BUILD_FREETYPE
-#include <ft2build.h>
+#ifdef USE_LOCAL_HEADERS
+  #include "../freetype-2.6.2/include/ft2build.h"
+#else
+  #include <ft2build.h>
+#endif
 #include FT_FREETYPE_H
 #include FT_ERRORS_H
 #include FT_SYSTEM_H
