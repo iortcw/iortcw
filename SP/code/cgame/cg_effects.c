@@ -1452,8 +1452,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 
 
 	if ( cent->currentState.frame == 1 ) {    // dead
-		startAlpha = 0.0;
-		endAlpha = 0.0;
+		return;
 	}
 
 
