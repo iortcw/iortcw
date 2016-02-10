@@ -27,7 +27,6 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 
-
 #ifndef TR_LOCAL_H
 #define TR_LOCAL_H
 

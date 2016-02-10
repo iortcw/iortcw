@@ -1711,6 +1711,7 @@ Q3R2OBJ = \
   $(B)/rend2/tr_bsp.o \
   $(B)/rend2/tr_cmds.o \
   $(B)/rend2/tr_curve.o \
+  $(B)/rend2/tr_dsa.o \
   $(B)/rend2/tr_extramath.o \
   $(B)/rend2/tr_extensions.o \
   $(B)/rend2/tr_fbo.o \

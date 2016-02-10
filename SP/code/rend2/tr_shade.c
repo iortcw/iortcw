@@ -100,11 +100,9 @@ static void R_BindAnimatedImageToTMU( textureBundle_t *bundle, int tmu ) {
 	int		index;
 
 	if ( bundle->isVideoMap ) {
-		int oldtmu = glState.currenttmu;
-		GL_SelectTexture(tmu);
 		ri.CIN_RunCinematic(bundle->videoMapHandle);
 		ri.CIN_UploadCinematic(bundle->videoMapHandle);
-		GL_SelectTexture(oldtmu);
+		GL_BindToTMU(tr.scratchImage[bundle->videoMapHandle], tmu);
 		return;
 	}
 
@@ -143,7 +141,7 @@ Draws triangle outlines for debugging
 ================
 */
 static void DrawTris (shaderCommands_t *input) {
-	GL_Bind( tr.whiteImage );
+	GL_BindToTMU( tr.whiteImage, TB_COLORMAP );
 
 	GL_State( GLS_POLYMODE_LINE | GLS_DEPTHMASK_TRUE );
 	qglDepthRange( 0, 0 );
@@ -443,7 +441,7 @@ static void ProjectDlightTexture( void ) {
 		vector[3] = scale;
 		GLSL_SetUniformVec4(sp, UNIFORM_DLIGHTINFO, vector);
 	  
-		GL_Bind( tr.dlightImage );
+		GL_BindToTMU( tr.dlightImage, TB_COLORMAP );
 
 		// include GLS_DEPTHFUNC_EQUAL so alpha tested surfaces don't add light
 		// where they aren't rendered
@@ -954,11 +952,7 @@ static void ForwardDlight( void ) {
 		}
 
 		if (r_dlightMode->integer >= 2)
-		{
-			GL_SelectTexture(TB_SHADOWMAP);
-			GL_Bind(tr.shadowCubemaps[l]);
-			GL_SelectTexture(0);
-		}
+			GL_BindToTMU(tr.shadowCubemaps[l], TB_SHADOWMAP);
 
 		ComputeTexMods( pStage, TB_DIFFUSEMAP, texMatrix, texOffTurb );
 		GLSL_SetUniformVec4(sp, UNIFORM_DIFFUSETEXMATRIX, texMatrix);
@@ -1556,7 +1550,7 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		if ( backEnd.depthFill )
 		{
 			if (!(pStage->stateBits & GLS_ATEST_BITS))
-				GL_BindToTMU( tr.whiteImage, 0 );
+				GL_BindToTMU( tr.whiteImage, TB_COLORMAP );
 			else if ( pStage->bundle[TB_COLORMAP].image[0] != 0 )
 				R_BindAnimatedImageToTMU( &pStage->bundle[TB_COLORMAP], TB_COLORMAP );
 		}
