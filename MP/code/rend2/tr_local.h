@@ -27,7 +27,6 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 
-
 #ifndef TR_LOCAL_H
 #define TR_LOCAL_H
 
@@ -35,10 +34,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../qcommon/qfiles.h"
 #include "../qcommon/qcommon.h"
 #include "../renderer/tr_public.h"
-#include "tr_extratypes.h"
-#include "tr_extramath.h"
-#include "tr_fbo.h"
-#include "tr_postprocess.h"
 #include "qgl.h"
 #include "../renderer/iqm.h"
 
@@ -129,6 +124,11 @@ typedef struct image_s {
 
 	struct image_s* next;
 } image_t;
+
+#include "tr_extratypes.h"
+#include "tr_extramath.h"
+#include "tr_fbo.h"
+#include "tr_postprocess.h"
 
 // Ensure this is >= the ATTR_INDEX_COUNT enum below
 #define VAO_MAX_ATTRIBS 16
@@ -1483,8 +1483,6 @@ typedef struct {
 
 // the renderer front end should never modify glstate_t
 typedef struct {
-	int			currenttextures[NUM_TEXTURE_BUNDLES];
-	int currenttmu;
 	qboolean finishCalled;
 	int texEnv[2];
 	int faceCulling;
@@ -1494,7 +1492,6 @@ typedef struct {
 	float           vertexAttribsInterpolation;
 	qboolean        vertexAnimation;
 	uint32_t        vertexAttribsEnabled;  // global if no VAOs, tess only otherwise
-	shaderProgram_t *currentProgram;
 	FBO_t          *currentFBO;
 	vao_t          *currentVao;
 	mat4_t        modelview;
@@ -1552,6 +1549,7 @@ typedef struct {
 
 	qboolean floatLightmap;
 	qboolean vertexArrayObject;
+	qboolean directStateAccess;
 } glRefConfig_t;
 
 typedef struct {
@@ -1898,6 +1896,7 @@ extern  cvar_t  *r_ext_framebuffer_multisample;
 extern  cvar_t  *r_arb_seamless_cube_map;
 extern  cvar_t  *r_arb_vertex_type_2_10_10_10_rev;
 extern  cvar_t  *r_arb_vertex_array_object;
+extern  cvar_t  *r_ext_direct_state_access;
 
 //----(SA)	added
 extern cvar_t   *r_ext_NV_fog_dist;
@@ -1975,11 +1974,6 @@ extern  cvar_t  *r_forceAutoExposureMax;
 
 extern  cvar_t  *r_cameraExposure;
 
-extern  cvar_t  *r_materialGamma;
-extern  cvar_t  *r_lightGamma;
-extern  cvar_t  *r_framebufferGamma;
-extern  cvar_t  *r_tonemapGamma;
-
 extern  cvar_t  *r_depthPrepass;
 extern  cvar_t  *r_ssao;
 
@@ -1989,8 +1983,7 @@ extern  cvar_t  *r_deluxeMapping;
 extern  cvar_t  *r_parallaxMapping;
 extern  cvar_t  *r_cubeMapping;
 extern  cvar_t  *r_cubemapSize;
-extern  cvar_t  *r_specularIsMetallic;
-extern  cvar_t  *r_glossIsRoughness;
+extern  cvar_t  *r_pbr;
 extern  cvar_t  *r_baseNormalX;
 extern  cvar_t  *r_baseNormalY;
 extern  cvar_t  *r_baseParallax;
@@ -2095,17 +2088,14 @@ void R_RotateForEntity( const trRefEntity_t * ent, const viewParms_t * viewParms
 /*
 ** GL wrapper/helper functions
 */
-void    GL_Bind( image_t *image );
 void	GL_BindToTMU( image_t *image, int tmu );
 void    GL_SetDefaultState( void );
-void    GL_SelectTexture( int unit );
 void    GL_TextureMode( const char *string );
 void	GL_CheckErrs( char *file, int line );
 #define GL_CheckErrors(...) GL_CheckErrs(__FILE__, __LINE__)
 void    GL_State( unsigned long stateVector );
 void    GL_SetProjectionMatrix(mat4_t matrix);
 void    GL_SetModelviewMatrix(mat4_t matrix);
-void    GL_TexEnv( int env );
 void    GL_Cull( int cullType );
 
 #define GLS_SRCBLEND_ZERO                       0x00000001
@@ -2453,7 +2443,6 @@ void GLSL_InitGPUShaders(void);
 void GLSL_ShutdownGPUShaders(void);
 void GLSL_VertexAttribPointers(uint32_t attribBits);
 void GLSL_BindProgram(shaderProgram_t * program);
-void GLSL_BindNullProgram(void);
 
 void GLSL_SetUniformInt(shaderProgram_t *program, int uniformNum, GLint value);
 void GLSL_SetUniformFloat(shaderProgram_t *program, int uniformNum, GLfloat value);

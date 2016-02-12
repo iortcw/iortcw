@@ -1659,9 +1659,11 @@ void R_DeleteTextures( void ) {
 	for ( i = 0; i < tr.numImages ; i++ ) {
 		qglDeleteTextures( 1, &tr.images[i]->texnum );
 	}
-	memset( tr.images, 0, sizeof( tr.images ) );
+	Com_Memset( tr.images, 0, sizeof( tr.images ) );
 
-	memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
+	tr.numImages = 0;
+
+	Com_Memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
 	if ( qglActiveTextureARB ) {
 		GL_SelectTexture( 1 );
 		qglBindTexture( GL_TEXTURE_2D, 0 );

@@ -1198,7 +1198,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 			for ( i = 0; i < surface->numBoneReferences; i++, boneRefs++ ) {
 				bonePtr = &bones[*boneRefs];
 
-				GL_Bind( tr.whiteImage );
+				GL_BindToTMU( tr.whiteImage, TB_COLORMAP );
 				qglLineWidth( 1 );
 				qglBegin( GL_LINES );
 				for ( j = 0; j < 3; j++ ) {
@@ -1232,7 +1232,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 			tempVert = ( float * )( tess.xyz + baseVertex );
 			tempNormal = ( uint32_t * )( tess.normal + baseVertex );
 
-			GL_Bind( tr.whiteImage );
+			GL_BindToTMU( tr.whiteImage, TB_COLORMAP );
 			qglLineWidth( 1 );
 			qglBegin( GL_LINES );
 			qglColor3f( .0,.0,.8 );
@@ -1352,7 +1352,7 @@ int R_GetBoneTag( orientation_t *outTag, mdsHeader_t *mds, int startTagIndex, co
 	if (r_bonesDebug->integer == 4) {
 		int j;
 		// DEBUG: show the tag position/axis
-		GL_Bind( tr.whiteImage );
+		GL_BindToTMU( tr.whiteImage, TB_COLORMAP );
 		qglLineWidth( 2 );
 		qglBegin( GL_LINES );
 		for (j=0; j<3; j++) {
