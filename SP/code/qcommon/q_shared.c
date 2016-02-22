@@ -644,26 +644,27 @@ void COM_MatchToken( char **buf_p, char *match ) {
 =================
 SkipBracedSection
 
-The next token should be an open brace.
+The next token should be an open brace or set depth to 1 if already parsed it.
 Skips until a matching close brace is found.
 Internal brace depths are properly skipped.
 =================
 */
-void SkipBracedSection( char **program ) {
-	char            *token;
-	int depth;
+qboolean SkipBracedSection (char **program, int depth) {
+	char			*token;
 
-	depth = 0;
 	do {
 		token = COM_ParseExt( program, qtrue );
-		if ( token[1] == 0 ) {
-			if ( token[0] == '{' ) {
+		if( token[1] == 0 ) {
+			if( token[0] == '{' ) {
 				depth++;
-			} else if ( token[0] == '}' )     {
+			}
+			else if( token[0] == '}' ) {
 				depth--;
 			}
 		}
-	} while ( depth && *program );
+	} while( depth && *program );
+
+	return ( depth == 0 );
 }
 
 /*

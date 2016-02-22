@@ -2496,7 +2496,6 @@ static char *FindShaderInShaderText( const char *shadername ) {
 			pShaderString = pShaderString->next;
 		}
 	}
-
 	// done.
 
 	/*
@@ -2511,7 +2510,7 @@ static char *FindShaderInShaderText( const char *shadername ) {
 
 		if ( token[0] == '{' ) {
 			// skip the definition
-			SkipBracedSection( &p );
+			SkipBracedSection( &p, 0 );
 		} else if ( !Q_stricmp( token, shadername ) ) {
 			return p;
 		} else {
@@ -3060,7 +3059,7 @@ static void BuildShaderChecksumLookup( void ) {
 
 		if ( !Q_stricmp( token, "{" ) ) {
 			// skip braced section
-			SkipBracedSection( &p );
+			SkipBracedSection( &p, 0 );
 			continue;
 		}
 
@@ -3103,7 +3102,9 @@ static void ScanAndLoadShaderFiles( void ) {
 	char *p;
 	int numShaderFiles;
 	int i;
-	char *oldp, *token, *textEnd;
+	char *token, *textEnd;
+	char shaderName[MAX_QPATH];
+	int shaderLine;
 
 	long sum = 0, summand;
 	// scan for shader files
@@ -3129,33 +3130,58 @@ static void ScanAndLoadShaderFiles( void ) {
 		
 		if ( !buffers[i] )
 			ri.Error( ERR_DROP, "Couldn't load %s", filename );
-
+		
 		// Do a simple check on the shader structure in that file to make sure one bad shader file cannot fuck up all other shaders.
 		p = buffers[i];
+		COM_BeginParseSession(filename);
 		while(1)
 		{
 			token = COM_ParseExt(&p, qtrue);
 			
 			if(!*token)
 				break;
-			
-			oldp = p;
-			
+
+			Q_strncpyz(shaderName, token, sizeof(shaderName));
+			shaderLine = COM_GetCurrentParseLine();
+
 			token = COM_ParseExt(&p, qtrue);
-			if(token[0] != '{' && token[1] != '\0')
+			if( !Q_stricmp( shaderName, token ) ) {
+				ri.Printf(PRINT_WARNING, "WARNING: In shader file %s...Invalid shader name \"%s\" on line %d.\n",
+							filename, shaderName, shaderLine);
+				break;
+			}
+
+			if(token[0] != '{' || token[1] != '\0')
 			{
-				ri.Printf(PRINT_WARNING, "WARNING: Bad shader file %s has incorrect syntax.\n", filename);
+				ri.Printf(PRINT_WARNING, "WARNING: In shader file %s...Shader \"%s\" on line %d is missing opening brace",
+							filename, shaderName, shaderLine);
+				if (token[0])
+				{
+					ri.Printf(PRINT_WARNING, " (found \"%s\" on line %d)", token, COM_GetCurrentParseLine());
+				}
+				ri.Printf(PRINT_WARNING, "...Ignored\n");
 				ri.FS_FreeFile(buffers[i]);
 				buffers[i] = NULL;
 				break;
 			}
 
-			SkipBracedSection(&oldp);
-			p = oldp;
+			if(!SkipBracedSection(&p, 1))
+			{
+				ri.Printf(PRINT_WARNING, "WARNING: In shader file %s...Shader \"%s\" on line %d is missing closing brace",
+							filename, shaderName, shaderLine);
+				if( !Q_stricmp( filename, "common.shader" ) ) { // HACK...Broken shader in pak0.pk3
+					ri.Printf(PRINT_WARNING, "...Ignored\n");
+					ri.FS_FreeFile(buffers[i]);
+					buffers[i] = NULL;
+					break;
+				} else {
+					ri.Printf(PRINT_WARNING, ".\n");
+				}
+			}
 		}
-
+		
 		if (buffers[i])
-			sum += summand;
+			sum += summand;		
 	}
 
 	// build single large buffer

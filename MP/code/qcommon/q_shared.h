@@ -840,8 +840,7 @@ typedef struct pc_token_s
 
 void    COM_MatchToken( char**buf_p, char *match );
 
-void SkipBracedSection( char **program );
-void SkipBracedSection_Depth( char **program, int depth ); // start at given depth if already matching stuff
+qboolean SkipBracedSection( char **program, int depth );
 void SkipRestOfLine( char **data );
 
 void Parse1DMatrix( char **buf_p, int x, float *m );
