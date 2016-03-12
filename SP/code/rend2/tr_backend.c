@@ -1475,6 +1475,9 @@ const void  *RB_DrawSurfs( const void *data ) {
 	if (glRefConfig.framebufferObject && !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL) && (r_depthPrepass->integer || (backEnd.viewParms.flags & VPF_DEPTHSHADOW)))
 	{
 		FBO_t *oldFbo = glState.currentFBO;
+		vec4_t viewInfo;
+
+		VectorSet4(viewInfo, backEnd.viewParms.zFar / r_znear->value, backEnd.viewParms.zFar, 0.0, 0.0);
 
 		backEnd.depthFill = qtrue;
 		qglColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -1493,10 +1496,14 @@ const void  *RB_DrawSurfs( const void *data ) {
 			qglCopyTextureImage2D(tr.renderDepthImage->texnum, GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 0, 0, glConfig.vidWidth, glConfig.vidHeight, 0);
 		}
 
-		if (r_ssao->integer)
+		if (tr.hdrDepthFbo)
 		{
 			// need the depth in a texture we can do GL_LINEAR sampling on, so copy it to an HDR image
-			FBO_BlitFromTexture(tr.renderDepthImage, NULL, NULL, tr.hdrDepthFbo, NULL, NULL, NULL, 0);
+			ivec4_t srcBox;
+
+			VectorSet4(srcBox, 0, tr.renderDepthImage->height, tr.renderDepthImage->width, -tr.renderDepthImage->height);
+
+			FBO_BlitFromTexture(tr.renderDepthImage, srcBox, NULL, tr.hdrDepthFbo, NULL, NULL, NULL, 0);
 		}
 
 		if (r_sunlightMode->integer && backEnd.viewParms.flags & VPF_USESUNLIGHT)
@@ -1561,14 +1568,11 @@ const void  *RB_DrawSurfs( const void *data ) {
 			
 			GLSL_SetUniformVec3(&tr.shadowmaskShader, UNIFORM_VIEWORIGIN,  backEnd.refdef.vieworg);
 			{
-				vec4_t viewInfo;
 				vec3_t viewVector;
 
 				float zmax = backEnd.viewParms.zFar;
 				float ymax = zmax * tan(backEnd.viewParms.fovY * M_PI / 360.0f);
 				float xmax = zmax * tan(backEnd.viewParms.fovX * M_PI / 360.0f);
-
-				float zmin = r_znear->value;
 
 				VectorScale(backEnd.refdef.viewaxis[0], zmax, viewVector);
 				GLSL_SetUniformVec3(&tr.shadowmaskShader, UNIFORM_VIEWFORWARD, viewVector);
@@ -1577,19 +1581,49 @@ const void  *RB_DrawSurfs( const void *data ) {
 				VectorScale(backEnd.refdef.viewaxis[2], ymax, viewVector);
 				GLSL_SetUniformVec3(&tr.shadowmaskShader, UNIFORM_VIEWUP,      viewVector);
 
-				VectorSet4(viewInfo, zmax / zmin, zmax, 0.0, 0.0);
-
 				GLSL_SetUniformVec4(&tr.shadowmaskShader, UNIFORM_VIEWINFO, viewInfo);
 			}
 
 
 			RB_InstantQuad2(quadVerts, texCoords); //, color, shaderProgram, invTexRes);
+
+			if (r_shadowBlur->integer)
+			{
+				viewInfo[2] = 1.0f / (float)(tr.screenScratchFbo->width);
+				viewInfo[3] = 1.0f / (float)(tr.screenScratchFbo->height);
+
+				FBO_Bind(tr.screenScratchFbo);
+
+				GLSL_BindProgram(&tr.depthBlurShader[0]);
+
+				GL_BindToTMU(tr.screenShadowImage, TB_COLORMAP);
+				GL_BindToTMU(tr.hdrDepthImage, TB_LIGHTMAP);
+
+				GLSL_SetUniformVec4(&tr.depthBlurShader[0], UNIFORM_VIEWINFO, viewInfo);
+
+				RB_InstantQuad2(quadVerts, texCoords);
+
+				FBO_Bind(tr.screenShadowFbo);
+
+				GLSL_BindProgram(&tr.depthBlurShader[1]);
+
+				GL_BindToTMU(tr.screenScratchImage, TB_COLORMAP);
+				GL_BindToTMU(tr.hdrDepthImage, TB_LIGHTMAP);
+
+				GLSL_SetUniformVec4(&tr.depthBlurShader[1], UNIFORM_VIEWINFO, viewInfo);
+
+				RB_InstantQuad2(quadVerts, texCoords);
+			}
 		}
 
 		if (r_ssao->integer)
 		{
 			vec4_t quadVerts[4];
 			vec2_t texCoords[4];
+
+			viewInfo[2] = 1.0f / ((float)(tr.quarterImage[0]->width)  * tan(backEnd.viewParms.fovX * M_PI / 360.0f) * 2.0f);
+			viewInfo[3] = 1.0f / ((float)(tr.quarterImage[0]->height) * tan(backEnd.viewParms.fovY * M_PI / 360.0f) * 2.0f);
+			viewInfo[3] *= (float)backEnd.viewParms.viewportHeight / (float)backEnd.viewParms.viewportWidth;
 
 			FBO_Bind(tr.quarterFbo[0]);
 
@@ -1612,19 +1646,13 @@ const void  *RB_DrawSurfs( const void *data ) {
 
 			GL_BindToTMU(tr.hdrDepthImage, TB_COLORMAP);
 
-			{
-				vec4_t viewInfo;
-
-				float zmax = backEnd.viewParms.zFar;
-				float zmin = r_znear->value;
-
-				VectorSet4(viewInfo, zmax / zmin, zmax, 0.0, 0.0);
-
-				GLSL_SetUniformVec4(&tr.ssaoShader, UNIFORM_VIEWINFO, viewInfo);
-			}
+			GLSL_SetUniformVec4(&tr.ssaoShader, UNIFORM_VIEWINFO, viewInfo);
 
 			RB_InstantQuad2(quadVerts, texCoords); //, color, shaderProgram, invTexRes);
 
+
+			viewInfo[2] = 1.0f / (float)(tr.quarterImage[0]->width);
+			viewInfo[3] = 1.0f / (float)(tr.quarterImage[0]->height);
 
 			FBO_Bind(tr.quarterFbo[1]);
 
@@ -1636,16 +1664,7 @@ const void  *RB_DrawSurfs( const void *data ) {
 			GL_BindToTMU(tr.quarterImage[0],  TB_COLORMAP);
 			GL_BindToTMU(tr.hdrDepthImage, TB_LIGHTMAP);
 
-			{
-				vec4_t viewInfo;
-
-				float zmax = backEnd.viewParms.zFar;
-				float zmin = r_znear->value;
-
-				VectorSet4(viewInfo, zmax / zmin, zmax, 0.0, 0.0);
-
-				GLSL_SetUniformVec4(&tr.depthBlurShader[0], UNIFORM_VIEWINFO, viewInfo);
-			}
+			GLSL_SetUniformVec4(&tr.depthBlurShader[0], UNIFORM_VIEWINFO, viewInfo);
 
 			RB_InstantQuad2(quadVerts, texCoords); //, color, shaderProgram, invTexRes);
 
@@ -1660,16 +1679,7 @@ const void  *RB_DrawSurfs( const void *data ) {
 			GL_BindToTMU(tr.quarterImage[1],  TB_COLORMAP);
 			GL_BindToTMU(tr.hdrDepthImage, TB_LIGHTMAP);
 
-			{
-				vec4_t viewInfo;
-
-				float zmax = backEnd.viewParms.zFar;
-				float zmin = r_znear->value;
-
-				VectorSet4(viewInfo, zmax / zmin, zmax, 0.0, 0.0);
-
-				GLSL_SetUniformVec4(&tr.depthBlurShader[1], UNIFORM_VIEWINFO, viewInfo);
-			}
+			GLSL_SetUniformVec4(&tr.depthBlurShader[1], UNIFORM_VIEWINFO, viewInfo);
 
 
 			RB_InstantQuad2(quadVerts, texCoords); //, color, shaderProgram, invTexRes);
@@ -2054,10 +2064,6 @@ const void *RB_PostProcess(const void *data)
 		srcBox[1] = backEnd.viewParms.viewportY      * tr.screenSsaoImage->height / (float)glConfig.vidHeight;
 		srcBox[2] = backEnd.viewParms.viewportWidth  * tr.screenSsaoImage->width  / (float)glConfig.vidWidth;
 		srcBox[3] = backEnd.viewParms.viewportHeight * tr.screenSsaoImage->height / (float)glConfig.vidHeight;
-
-		//FBO_BlitFromTexture(tr.screenSsaoImage, srcBox, NULL, srcFbo, dstBox, NULL, NULL, GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO);
-		srcBox[1] = tr.screenSsaoImage->height - srcBox[1];
-		srcBox[3] = -srcBox[3];
 
 		FBO_Blit(tr.screenSsaoFbo, srcBox, NULL, srcFbo, dstBox, NULL, NULL, GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO);
 	}
