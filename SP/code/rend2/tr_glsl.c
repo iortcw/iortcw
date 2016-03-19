@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // tr_glsl.c
 #include "tr_local.h"
 
-void GLSL_BindNullProgram(void);
+#include "tr_dsa.h"
 
 extern const char *fallbackShader_bokeh_vp;
 extern const char *fallbackShader_bokeh_fp;
@@ -328,17 +328,8 @@ static void GLSL_GetShaderHeader( GLenum shaderType, const GLcharARB *extra, cha
 	Q_strcat(dest, size,
 			 va("#ifndef r_FBufScale\n#define r_FBufScale vec2(%f, %f)\n#endif\n", fbufWidthScale, fbufHeightScale));
 
-	if (r_materialGamma->value != 1.0f)
-		Q_strcat(dest, size, va("#ifndef r_materialGamma\n#define r_materialGamma %f\n#endif\n", r_materialGamma->value));
-
-	if (r_lightGamma->value != 1.0f)
-		Q_strcat(dest, size, va("#ifndef r_lightGamma\n#define r_lightGamma %f\n#endif\n", r_lightGamma->value));
-
-	if (r_framebufferGamma->value != 1.0f)
-		Q_strcat(dest, size, va("#ifndef r_framebufferGamma\n#define r_framebufferGamma %f\n#endif\n", r_framebufferGamma->value));
-
-	if (r_tonemapGamma->value != 1.0f)
-		Q_strcat(dest, size, va("#ifndef r_tonemapGamma\n#define r_tonemapGamma %f\n#endif\n", r_tonemapGamma->value));
+	if (r_pbr->integer)
+		Q_strcat(dest, size, "#define USE_PBR\n");
 
 	if (extra)
 	{
@@ -488,11 +479,6 @@ static void GLSL_ShowProgramUniforms(GLhandleARB program)
 	GLenum			type;
 	char            uniformName[1000];
 
-	// install the executables in the program object as part of current state.
-	qglUseProgramObjectARB(program);
-
-	// check for GL Errors
-
 	// query the number of active uniforms
 	qglGetObjectParameterivARB(program, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &count);
 
@@ -503,8 +489,6 @@ static void GLSL_ShowProgramUniforms(GLhandleARB program)
 
 		ri.Printf(PRINT_DEVELOPER, "active uniform: '%s'\n", uniformName);
 	}
-
-	qglUseProgramObjectARB(0);
 }
 
 static int GLSL_InitGPUShader2(shaderProgram_t * program, const char *name, int attribs, const char *vpCode, const char *fpCode)
@@ -709,7 +693,7 @@ void GLSL_SetUniformInt(shaderProgram_t *program, int uniformNum, GLint value)
 
 	*compare = value;
 
-	qglUniform1iARB(uniforms[uniformNum], value);
+	qglProgramUniform1i(program->program, uniforms[uniformNum], value);
 }
 
 void GLSL_SetUniformFloat(shaderProgram_t *program, int uniformNum, GLfloat value)
@@ -733,7 +717,7 @@ void GLSL_SetUniformFloat(shaderProgram_t *program, int uniformNum, GLfloat valu
 
 	*compare = value;
 	
-	qglUniform1fARB(uniforms[uniformNum], value);
+	qglProgramUniform1f(program->program, uniforms[uniformNum], value);
 }
 
 void GLSL_SetUniformVec2(shaderProgram_t *program, int uniformNum, const vec2_t v)
@@ -758,7 +742,7 @@ void GLSL_SetUniformVec2(shaderProgram_t *program, int uniformNum, const vec2_t 
 	compare[0] = v[0];
 	compare[1] = v[1];
 
-	qglUniform2fARB(uniforms[uniformNum], v[0], v[1]);
+	qglProgramUniform2f(program->program, uniforms[uniformNum], v[0], v[1]);
 }
 
 void GLSL_SetUniformVec3(shaderProgram_t *program, int uniformNum, const vec3_t v)
@@ -782,7 +766,7 @@ void GLSL_SetUniformVec3(shaderProgram_t *program, int uniformNum, const vec3_t 
 
 	VectorCopy(v, compare);
 
-	qglUniform3fARB(uniforms[uniformNum], v[0], v[1], v[2]);
+	qglProgramUniform3f(program->program, uniforms[uniformNum], v[0], v[1], v[2]);
 }
 
 void GLSL_SetUniformVec4(shaderProgram_t *program, int uniformNum, const vec4_t v)
@@ -806,7 +790,7 @@ void GLSL_SetUniformVec4(shaderProgram_t *program, int uniformNum, const vec4_t 
 
 	VectorCopy4(v, compare);
 
-	qglUniform4fARB(uniforms[uniformNum], v[0], v[1], v[2], v[3]);
+	qglProgramUniform4f(program->program, uniforms[uniformNum], v[0], v[1], v[2], v[3]);
 }
 
 void GLSL_SetUniformFloat5(shaderProgram_t *program, int uniformNum, const vec5_t v)
@@ -830,7 +814,7 @@ void GLSL_SetUniformFloat5(shaderProgram_t *program, int uniformNum, const vec5_
 
 	VectorCopy5(v, compare);
 
-	qglUniform1fvARB(uniforms[uniformNum], 5, v);
+	qglProgramUniform1fv(program->program, uniforms[uniformNum], 5, v);
 }
 
 void GLSL_SetUniformMat4(shaderProgram_t *program, int uniformNum, const mat4_t matrix)
@@ -854,7 +838,7 @@ void GLSL_SetUniformMat4(shaderProgram_t *program, int uniformNum, const mat4_t 
 
 	Mat4Copy(matrix, compare);
 
-	qglUniformMatrix4fvARB(uniforms[uniformNum], 1, GL_FALSE, matrix);
+	qglProgramUniformMatrix4fv(program->program, uniforms[uniformNum], 1, GL_FALSE, matrix);
 }
 
 void GLSL_DeleteGPUShader(shaderProgram_t *program)
@@ -937,10 +921,8 @@ void GLSL_InitGPUShaders(void)
 
 		GLSL_InitUniforms(&tr.genericShader[i]);
 
-		qglUseProgramObjectARB(tr.genericShader[i].program);
 		GLSL_SetUniformInt(&tr.genericShader[i], UNIFORM_DIFFUSEMAP, TB_DIFFUSEMAP);
 		GLSL_SetUniformInt(&tr.genericShader[i], UNIFORM_LIGHTMAP,   TB_LIGHTMAP);
-		qglUseProgramObjectARB(0);
 
 		GLSL_FinishGPUShader(&tr.genericShader[i]);
 
@@ -957,9 +939,7 @@ void GLSL_InitGPUShaders(void)
 	
 	GLSL_InitUniforms(&tr.textureColorShader);
 
-	qglUseProgramObjectARB(tr.textureColorShader.program);
 	GLSL_SetUniformInt(&tr.textureColorShader, UNIFORM_TEXTUREMAP, TB_DIFFUSEMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.textureColorShader);
 
@@ -1011,9 +991,7 @@ void GLSL_InitGPUShaders(void)
 
 		GLSL_InitUniforms(&tr.dlightShader[i]);
 		
-		qglUseProgramObjectARB(tr.dlightShader[i].program);
 		GLSL_SetUniformInt(&tr.dlightShader[i], UNIFORM_DIFFUSEMAP, TB_DIFFUSEMAP);
-		qglUseProgramObjectARB(0);
 
 		GLSL_FinishGPUShader(&tr.dlightShader[i]);
 
@@ -1039,12 +1017,6 @@ void GLSL_InitGPUShaders(void)
 		attribs = ATTR_POSITION | ATTR_TEXCOORD | ATTR_COLOR | ATTR_NORMAL;
 
 		extradefines[0] = '\0';
-
-		if (r_specularIsMetallic->value)
-			Q_strcat(extradefines, 1024, "#define SPECULAR_IS_METALLIC\n");
-
-		if (r_glossIsRoughness->value)
-			Q_strcat(extradefines, 1024, "#define GLOSS_IS_ROUGHNESS\n");
 
 		if (r_dlightMode->integer >= 2)
 			Q_strcat(extradefines, 1024, "#define USE_SHADOWMAP\n");
@@ -1103,6 +1075,23 @@ void GLSL_InitGPUShaders(void)
 
 			if (r_cubeMapping->integer)
 				Q_strcat(extradefines, 1024, "#define USE_CUBEMAP\n");
+
+			switch (r_glossType->integer)
+			{
+				case 0:
+				default:
+					Q_strcat(extradefines, 1024, "#define GLOSS_IS_GLOSS\n");
+					break;
+				case 1:
+					Q_strcat(extradefines, 1024, "#define GLOSS_IS_SMOOTHNESS\n");
+					break;
+				case 2:
+					Q_strcat(extradefines, 1024, "#define GLOSS_IS_ROUGHNESS\n");
+					break;
+				case 3:
+					Q_strcat(extradefines, 1024, "#define GLOSS_IS_SHININESS\n");
+					break;
+			}
 		}
 
 		if (i & LIGHTDEF_USE_SHADOWMAP)
@@ -1141,7 +1130,6 @@ void GLSL_InitGPUShaders(void)
 
 		GLSL_InitUniforms(&tr.lightallShader[i]);
 
-		qglUseProgramObjectARB(tr.lightallShader[i].program);
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_DIFFUSEMAP,  TB_DIFFUSEMAP);
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_LIGHTMAP,    TB_LIGHTMAP);
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_NORMALMAP,   TB_NORMALMAP);
@@ -1149,7 +1137,6 @@ void GLSL_InitGPUShaders(void)
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_SPECULARMAP, TB_SPECULARMAP);
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_SHADOWMAP,   TB_SHADOWMAP);
 		GLSL_SetUniformInt(&tr.lightallShader[i], UNIFORM_CUBEMAP,     TB_CUBEMAP);
-		qglUseProgramObjectARB(0);
 
 		GLSL_FinishGPUShader(&tr.lightallShader[i]);
 
@@ -1182,9 +1169,7 @@ void GLSL_InitGPUShaders(void)
 	
 	GLSL_InitUniforms(&tr.pshadowShader);
 
-	qglUseProgramObjectARB(tr.pshadowShader.program);
 	GLSL_SetUniformInt(&tr.pshadowShader, UNIFORM_SHADOWMAP, TB_DIFFUSEMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.pshadowShader);
 
@@ -1201,9 +1186,7 @@ void GLSL_InitGPUShaders(void)
 	
 	GLSL_InitUniforms(&tr.down4xShader);
 
-	qglUseProgramObjectARB(tr.down4xShader.program);
 	GLSL_SetUniformInt(&tr.down4xShader, UNIFORM_TEXTUREMAP, TB_DIFFUSEMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.down4xShader);
 
@@ -1220,9 +1203,7 @@ void GLSL_InitGPUShaders(void)
 
 	GLSL_InitUniforms(&tr.bokehShader);
 
-	qglUseProgramObjectARB(tr.bokehShader.program);
 	GLSL_SetUniformInt(&tr.bokehShader, UNIFORM_TEXTUREMAP, TB_DIFFUSEMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.bokehShader);
 
@@ -1239,10 +1220,8 @@ void GLSL_InitGPUShaders(void)
 
 	GLSL_InitUniforms(&tr.tonemapShader);
 
-	qglUseProgramObjectARB(tr.tonemapShader.program);
 	GLSL_SetUniformInt(&tr.tonemapShader, UNIFORM_TEXTUREMAP, TB_COLORMAP);
 	GLSL_SetUniformInt(&tr.tonemapShader, UNIFORM_LEVELSMAP,  TB_LEVELSMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.tonemapShader);
 
@@ -1264,9 +1243,7 @@ void GLSL_InitGPUShaders(void)
 
 		GLSL_InitUniforms(&tr.calclevels4xShader[i]);
 
-		qglUseProgramObjectARB(tr.calclevels4xShader[i].program);
 		GLSL_SetUniformInt(&tr.calclevels4xShader[i], UNIFORM_TEXTUREMAP, TB_DIFFUSEMAP);
-		qglUseProgramObjectARB(0);
 
 		GLSL_FinishGPUShader(&tr.calclevels4xShader[i]);
 
@@ -1297,13 +1274,11 @@ void GLSL_InitGPUShaders(void)
 	
 	GLSL_InitUniforms(&tr.shadowmaskShader);
 
-	qglUseProgramObjectARB(tr.shadowmaskShader.program);
 	GLSL_SetUniformInt(&tr.shadowmaskShader, UNIFORM_SCREENDEPTHMAP, TB_COLORMAP);
 	GLSL_SetUniformInt(&tr.shadowmaskShader, UNIFORM_SHADOWMAP,  TB_SHADOWMAP);
 	GLSL_SetUniformInt(&tr.shadowmaskShader, UNIFORM_SHADOWMAP2, TB_SHADOWMAP2);
 	GLSL_SetUniformInt(&tr.shadowmaskShader, UNIFORM_SHADOWMAP3, TB_SHADOWMAP3);
 	GLSL_SetUniformInt(&tr.shadowmaskShader, UNIFORM_SHADOWMAP4, TB_SHADOWMAP4);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.shadowmaskShader);
 
@@ -1320,9 +1295,7 @@ void GLSL_InitGPUShaders(void)
 
 	GLSL_InitUniforms(&tr.ssaoShader);
 
-	qglUseProgramObjectARB(tr.ssaoShader.program);
 	GLSL_SetUniformInt(&tr.ssaoShader, UNIFORM_SCREENDEPTHMAP, TB_COLORMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.ssaoShader);
 
@@ -1347,10 +1320,8 @@ void GLSL_InitGPUShaders(void)
 		
 		GLSL_InitUniforms(&tr.depthBlurShader[i]);
 
-		qglUseProgramObjectARB(tr.depthBlurShader[i].program);
 		GLSL_SetUniformInt(&tr.depthBlurShader[i], UNIFORM_SCREENIMAGEMAP, TB_COLORMAP);
 		GLSL_SetUniformInt(&tr.depthBlurShader[i], UNIFORM_SCREENDEPTHMAP, TB_LIGHTMAP);
-		qglUseProgramObjectARB(0);
 
 		GLSL_FinishGPUShader(&tr.depthBlurShader[i]);
 
@@ -1368,9 +1339,7 @@ void GLSL_InitGPUShaders(void)
 
 	GLSL_InitUniforms(&tr.testcubeShader);
 
-	qglUseProgramObjectARB(tr.testcubeShader.program);
 	GLSL_SetUniformInt(&tr.testcubeShader, UNIFORM_TEXTUREMAP, TB_COLORMAP);
-	qglUseProgramObjectARB(0);
 
 	GLSL_FinishGPUShader(&tr.testcubeShader);
 
@@ -1394,7 +1363,7 @@ void GLSL_ShutdownGPUShaders(void)
 	for (i = 0; i < ATTR_INDEX_COUNT; i++)
 		qglDisableVertexAttribArrayARB(i);
 
-	GLSL_BindNullProgram();
+	GL_BindNullProgram();
 
 	for ( i = 0; i < GENERICDEF_COUNT; i++)
 		GLSL_DeleteGPUShader(&tr.genericShader[i]);
@@ -1424,48 +1393,24 @@ void GLSL_ShutdownGPUShaders(void)
 
 	for ( i = 0; i < 2; i++)
 		GLSL_DeleteGPUShader(&tr.depthBlurShader[i]);
-
-	glState.currentProgram = 0;
-	qglUseProgramObjectARB(0);
 }
 
 
 void GLSL_BindProgram(shaderProgram_t * program)
 {
-	if(!program)
-	{
-		GLSL_BindNullProgram();
-		return;
-	}
+	GLuint programObject = program ? program->program : 0;
+	char *name = program ? program->name : "NULL";
 
 	if(r_logFile->integer)
 	{
 		// don't just call LogComment, or we will get a call to va() every frame!
-		GLimp_LogComment(va("--- GL_BindProgram( %s ) ---\n", program->name));
+		GLimp_LogComment(va("--- GLSL_BindProgram( %s ) ---\n", name));
 	}
 
-	if(glState.currentProgram != program)
-	{
-		qglUseProgramObjectARB(program->program);
-		glState.currentProgram = program;
+	if (GL_UseProgramObject(programObject))
 		backEnd.pc.c_glslShaderBinds++;
-	}
 }
 
-
-void GLSL_BindNullProgram(void)
-{
-	if(r_logFile->integer)
-	{
-		GLimp_LogComment("--- GL_BindNullProgram ---\n");
-	}
-
-	if(glState.currentProgram)
-	{
-		qglUseProgramObjectARB(0);
-		glState.currentProgram = NULL;
-	}
-}
 
 
 shaderProgram_t *GLSL_GetGenericShaderProgram(int stage, glfog_t *glFog)

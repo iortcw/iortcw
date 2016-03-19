@@ -219,6 +219,12 @@ Cvars for advanced material usage:
                                      0.05 - Standard depth. (default)
                                      0.1  - Looks broken.
 
+  r_pbr                          - Enable physically based rendering.
+                                   Experimental, will not look correct without
+                                   assets meant for it.
+                                     0 - No. (default)
+                                     1 - Yes.
+
 Cvars for image interpolation and generation:
   r_imageUpsample                - Use interpolation to artifically increase
                                    the resolution of all textures.  Looks good
@@ -337,21 +343,6 @@ Cvars that you probably don't care about or shouldn't mess with:
   r_shadowCascadeZBias           - Z-bias for shadow cascade frustums.
                                      -256 - Default.
 
-  r_materialGamma                - Gamma level for material textures.
-                                   (diffuse, specular)
-                                     1.0 - RTCW, fastest. (default)
-
-  r_lightGamma                   - Gamma level for light.
-                                   (lightmap, lightgrid, vertex lights)
-                                     1.0 - RTCW, fastest. (default)
-
-  r_framebufferGamma             - Gamma level for framebuffers.
-                                     1.0 - RTCW, fastest. (default)
-
-  r_tonemapGamma                 - Gamma applied after tonemapping.
-                                     1.0 - RTCW, fastest. (default)
-
-  
 Cvars that have broken bits:
   r_dlightMode                   - Change how dynamic lights look.
                                      0 - RTCW style dlights, fake

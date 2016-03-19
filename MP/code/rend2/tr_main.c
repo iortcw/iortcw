@@ -2299,7 +2299,7 @@ void R_DebugGraphics( void ) {
 
 	R_IssuePendingRenderCommands();
 
-	GL_Bind( tr.whiteImage );
+	GL_BindToTMU(tr.whiteImage, TB_COLORMAP);
 	GL_Cull( CT_FRONT_SIDED );
 	ri.CM_DrawDebugSurface( R_DebugPolygon );
 }
@@ -3216,7 +3216,7 @@ void R_RenderCubemapSide( int cubemapIndex, int cubemapSide, qboolean subscene )
 		// only print message for first side
 		if (directed[0] + directed[1] + directed[2] == 0 && cubemapSide == 0)
 		{
-			ri.Printf(PRINT_ALL, "cubemap %d (%f, %f, %f) is outside the lightgrid!\n", cubemapIndex, tr.refdef.vieworg[0], tr.refdef.vieworg[1], tr.refdef.vieworg[2]);
+			ri.Printf(PRINT_ALL, "cubemap %d %s (%f, %f, %f) is outside the lightgrid!\n", cubemapIndex, tr.cubemaps[cubemapIndex].name, tr.refdef.vieworg[0], tr.refdef.vieworg[1], tr.refdef.vieworg[2]);
 		}
 	}
 
