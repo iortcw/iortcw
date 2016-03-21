@@ -2703,7 +2703,7 @@ void Com_Init( char *commandLine ) {
 	// TTimo gcc warning: variable `safeMode' might be clobbered by `longjmp' or `vfork'
 	volatile qboolean safeMode = qtrue;
 
-	Com_Printf( "%s %s %s\n", Q3_VERSION, PLATFORM_STRING, __DATE__ );
+	Com_Printf( "%s %s %s\n", Q3_VERSION, PLATFORM_STRING, PRODUCT_DATE );
 
 	if ( setjmp( abortframe ) ) {
 		Sys_Error( "Error during initialization" );
@@ -2829,8 +2829,8 @@ void Com_Init( char *commandLine ) {
 #endif
 	com_recommendedSet = Cvar_Get( "com_recommendedSet", "0", CVAR_ARCHIVE );
 
-	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
-	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, __DATE__ );
+	s = va( "%s %s %s", Q3_VERSION, PLATFORM_STRING, PRODUCT_DATE );
+	t = va( "%s %s %s", OLDVERSION, PLATFORM_STRING, PRODUCT_DATE );
 	com_fsgame = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
 	com_legacyversion = Cvar_Get( "com_legacyversion", "0", CVAR_ARCHIVE );
 

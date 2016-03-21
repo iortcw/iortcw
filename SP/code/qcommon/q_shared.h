@@ -87,6 +87,10 @@ If you have questions concerning this license or the applicable additional terms
   #define PRODUCT_VERSION "1.42e"
 #endif
 
+#ifndef PRODUCT_DATE
+#  define PRODUCT_DATE __DATE__
+#endif
+
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
 
 #define MAX_TEAMNAME		32
