@@ -1167,7 +1167,7 @@ void AICast_PredictMovement( cast_state_t *cs, int numframes, float frametime, a
 				//VectorCopy( thisHitVec, startHitVec );
 				VectorCopy( pm.ps->origin, lastOrg );
 			}
-			// if we didnt reach the marker, then check for something that blocked us
+			// if we didn't reach the marker, then check for something that blocked us
 			for ( i = 0; i < pm.numtouch; i++ ) {
 				if ( pm.touchents[i] == pm.ps->groundEntityNum ) {
 					continue;

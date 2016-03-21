@@ -202,7 +202,7 @@ void Team_FragBonuses( gentity_t *targ, gentity_t *inflictor, gentity_t *attacke
 
 			attacker->client->pers.teamState.carrierdefense++;
 			team = attacker->client->sess.sessionTeam;
-			PrintMsg( NULL, "%s" S_COLOR_WHITE " defends %s's flag carrier against an agressive enemy\n",
+			PrintMsg( NULL, "%s" S_COLOR_WHITE " defends %s's flag carrier against an aggressive enemy\n",
 					  attacker->client->pers.netname, TeamName( team ) );
 			return;
 		}

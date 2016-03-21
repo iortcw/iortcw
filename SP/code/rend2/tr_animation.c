@@ -44,7 +44,7 @@ frame.
 //#define DBG_PROFILE_BONES
 
 //-----------------------------------------------------------------------------
-// Static Vars, ugly but easiest (and fastest) means of seperating RB_SurfaceAnim
+// Static Vars, ugly but easiest (and fastest) means of separating RB_SurfaceAnim
 // and R_CalcBones
 
 static float frontlerp, backlerp;
