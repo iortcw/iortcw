@@ -481,11 +481,12 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 		|| ((blend & GLS_SRCBLEND_BITS) == GLS_SRCBLEND_ONE_MINUS_DST_COLOR)
 		|| ((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_SRC_COLOR)
 		|| ((blend & GLS_DSTBLEND_BITS) == GLS_DSTBLEND_ONE_MINUS_SRC_COLOR);
+	qboolean isWorldDraw = !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL);
+	float scale = 1.0f;
 
 #if defined(USE_OVERBRIGHT)
 	float exactLight = 1.0f;
 #else
-	qboolean isWorldDraw = !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL);
 	float exactLight = (isBlend || !isWorldDraw) ? 1.0f : (float)(1 << r_mapOverBrightBits->integer);
 #endif
 
@@ -653,17 +654,16 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 			break;
 	}
 
-	// multiply color by overbrightbits if this isn't a blend
 	if (tr.overbrightBits && !isBlend)
-	{
-		float scale = 1 << tr.overbrightBits;
+		scale *= 1 << tr.overbrightBits;
 
-		baseColor[0] *= scale;
-		baseColor[1] *= scale;
-		baseColor[2] *= scale;
-		vertColor[0] *= scale;
-		vertColor[1] *= scale;
-		vertColor[2] *= scale;
+	if ((backEnd.refdef.colorScale != 1.0f) && !isBlend && isWorldDraw)
+		scale *= backEnd.refdef.colorScale;
+
+	if (scale != 1.0f)
+	{
+		VectorScale(baseColor, scale, baseColor);
+		VectorScale(vertColor, scale, vertColor);
 	}
 
 	// FIXME: find some way to implement this.
@@ -1241,6 +1241,8 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 	int deformGen;
 	vec5_t deformParams;
 
+	qboolean renderToCubemap = tr.renderCubeFbo && glState.currentFBO == tr.renderCubeFbo;
+
 	ComputeDeformValues(&deformGen, deformParams);
 
 	for ( stage = 0; stage < MAX_SHADER_STAGES; stage++ )
@@ -1446,13 +1448,6 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			}
 			//----(SA)	end
 
-			if ((backEnd.refdef.colorScale != 1.0f) && !(backEnd.refdef.rdflags & RDF_NOWORLDMODEL))
-			{
-				// use VectorScale to only scale first three values, not alpha
-				VectorScale(baseColor, backEnd.refdef.colorScale, baseColor);
-				VectorScale(vertColor, backEnd.refdef.colorScale, vertColor);
-			}
-
 			GLSL_SetUniformVec4(sp, UNIFORM_BASECOLOR, baseColor);
 			GLSL_SetUniformVec4(sp, UNIFORM_VERTCOLOR, vertColor);
 		}
@@ -1559,7 +1554,20 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		GLSL_SetUniformMat4(sp, UNIFORM_MODELMATRIX, backEnd.or.transformMatrix);
 
 		GLSL_SetUniformVec4(sp, UNIFORM_NORMALSCALE, pStage->normalScale);
-		GLSL_SetUniformVec4(sp, UNIFORM_SPECULARSCALE, pStage->specularScale);
+
+		{
+			vec4_t specularScale;
+			Vector4Copy(pStage->specularScale, specularScale);
+
+			if (renderToCubemap)
+			{
+				// force specular to nonmetal if rendering cubemaps
+				if (r_pbr->integer)
+					specularScale[1] = 0.0f;
+			}
+
+			GLSL_SetUniformVec4(sp, UNIFORM_SPECULARSCALE, pStage->specularScale);
+		}
 
 		//GLSL_SetUniformFloat(sp, UNIFORM_MAPLIGHTSCALE, backEnd.refdef.mapLightScale);
 
