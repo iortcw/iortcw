@@ -43,6 +43,7 @@ qboolean stdinIsATTY;
 
 // Used to determine where to store user-specific files
 static char homePath[ MAX_OSPATH ] = { 0 };
+static const char DEFAULT_XDG_DATA_HOME[] = {'.', 'l', 'o', 'c', 'a', 'l', PATH_SEP, 's', 'h', 'a', 'r', 'e', '\0'};
 
 #ifndef STANDALONE
 // Used to store the Steam RTCW installation path
@@ -56,14 +57,17 @@ Sys_DefaultHomePath
 */
 char *Sys_DefaultHomePath(void)
 {
-	char *p;
+	char *p1;
+	char *p2;
 
 	if( !*homePath && com_homepath != NULL )
 	{
-		if( ( p = getenv( "HOME" ) ) != NULL )
-		{
-			Com_sprintf(homePath, sizeof(homePath), "%s%c", p, PATH_SEP);
+
 #ifdef MACOS_X
+		if( ( p1 = getenv( "HOME" ) ) != NULL )
+		{
+			Com_sprintf(homePath, sizeof(homePath), "%s%c", p1, PATH_SEP);
+
 			Q_strcat(homePath, sizeof(homePath),
 				"Library/Application Support/");
 
@@ -71,13 +75,26 @@ char *Sys_DefaultHomePath(void)
 				Q_strcat(homePath, sizeof(homePath), com_homepath->string);
 			else
 				Q_strcat(homePath, sizeof(homePath), HOMEPATH_NAME_MACOSX);
+		}
 #else
+		if( ( p1 = getenv( "XDG_DATA_HOME" ) ) != NULL )
+		{
+			Com_sprintf(homePath, sizeof(homePath), "%s%c", p1, PATH_SEP);
+
+		}
+		else if( ( p2 = getenv( "HOME" ) ) != NULL)
+		{
+			Com_sprintf(homePath, sizeof(homePath), "%s%c%s%c", p2, PATH_SEP, DEFAULT_XDG_DATA_HOME, PATH_SEP);
+		}
+
+		if (p1 || p2)
+		{
 			if(com_homepath->string[0])
 				Q_strcat(homePath, sizeof(homePath), com_homepath->string);
 			else
 				Q_strcat(homePath, sizeof(homePath), HOMEPATH_NAME_UNIX);
-#endif
 		}
+#endif
 	}
 
 	return homePath;

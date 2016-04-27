@@ -58,7 +58,7 @@ If you have questions concerning this license or the applicable additional terms
   #define BASEGAME			"main"
   #define CLIENT_WINDOW_TITLE     	"Return To Castle Wolfenstein"
   #define CLIENT_WINDOW_MIN_TITLE 	"iowolfmp"
-  #define HOMEPATH_NAME_UNIX		".iortcw"
+  #define HOMEPATH_NAME_UNIX		"return-to-castle-wolfenstein"
   #define HOMEPATH_NAME_WIN		"RTCW"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
   #define GAMENAME_FOR_MASTER		"wolfmp"
