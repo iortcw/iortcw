@@ -345,6 +345,7 @@ void SV_DirectConnect( netadr_t from ) {
 	intptr_t		denied;
 	int count;
 	char		*ip;
+	char		*guid;
 #ifdef LEGACY_PROTOCOL
 	qboolean	compat = qfalse;
 #endif
@@ -359,6 +360,16 @@ void SV_DirectConnect( netadr_t from ) {
 	}
 
 	Q_strncpyz( userinfo, Cmd_Argv( 1 ), sizeof( userinfo ) );
+
+	// Check for GUID
+	guid = Info_ValueForKey( userinfo, "cl_guid" );
+
+	if ( !sv_allowAnonymous->integer ) {
+		if ( !Q_stricmp( guid, "NO_GUID" ) ) {
+			NET_OutOfBandPrint(NS_SERVER, from, "print\nEmpty CD-Key or GUID not permitted on server.\n");
+			return;
+		}
+	}
 
 	// DHM - Nerve :: Update Server allows any protocol to connect
 #ifndef UPDATE_SERVER
