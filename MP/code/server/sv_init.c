@@ -930,6 +930,8 @@ void SV_Init( void ) {
 
 	sv_onlyVisibleClients = Cvar_Get( "sv_onlyVisibleClients", "0", 0 );       // DHM - Nerve
 
+	sv_forceNameUniq = Cvar_Get( "sv_forceNameUniq", "0", CVAR_ARCHIVE );
+
 	sv_showAverageBPS = Cvar_Get( "sv_showAverageBPS", "0", 0 );           // NERVE - SMF - net debugging
 
 	// NERVE - SMF - create user set cvars

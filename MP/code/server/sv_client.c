@@ -1467,11 +1467,27 @@ into a more C friendly form.
 void SV_UserinfoChanged( client_t *cl ) {
 	char    *val;
 	char	*ip;
+	char	*guid;
+	char	*name;
+	char	gname[MAX_QPATH];
 	int i;
 	int	len;
 
 	// name for C code
-	Q_strncpyz( cl->name, Info_ValueForKey( cl->userinfo, "name" ), sizeof( cl->name ) );
+	name = Info_ValueForKey( cl->userinfo, "name" );
+	guid = Info_ValueForKey( cl->userinfo, "cl_guid" );
+
+	if ( sv_forceNameUniq->integer == 1 ) {
+		if ( !Q_stricmp( name, "" ) || !Q_stricmp( name, "WolfPlayer" ) || !Q_stricmp( name, "UnnamedPlayer" ) ) {
+			Com_sprintf( gname, sizeof( gname ), "%s %s", name, guid + 24 );
+			Info_SetValueForKey( cl->userinfo, "name", gname );
+		}
+	} else if ( sv_forceNameUniq->integer == 2 ) {
+		Com_sprintf( gname, sizeof( gname ), "%s %s", name, guid + 24 );
+		Info_SetValueForKey( cl->userinfo, "name", gname );
+	}
+
+	Q_strncpyz( cl->name, name, sizeof( cl->name ) );
 
 	// rate command
 
