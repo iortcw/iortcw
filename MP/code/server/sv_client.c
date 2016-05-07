@@ -364,7 +364,7 @@ void SV_DirectConnect( netadr_t from ) {
 	// Check for GUID
 	guid = Info_ValueForKey( userinfo, "cl_guid" );
 
-	if ( !sv_allowAnonymous->integer ) {
+	if ( !sv_allowAnonymous->integer && !Sys_IsLANAddress( from ) ) {
 		if ( !Q_stricmp( guid, "NO_GUID" ) ) {
 			NET_OutOfBandPrint(NS_SERVER, from, "print\nEmpty CD-Key or GUID not permitted on server.\n");
 			return;
