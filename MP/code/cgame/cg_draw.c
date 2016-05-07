@@ -2927,6 +2927,10 @@ static void CG_DrawFlashDamage( void ) {
 		return;
 	}
 
+	if (!cg_blood.integer) {
+		return;
+	}
+
 	if ( cg.v_dmg_time > cg.time ) {
 		redFlash = fabs( cg.v_dmg_pitch * ( ( cg.v_dmg_time - cg.time ) / DAMAGE_TIME ) );
 
