@@ -345,6 +345,7 @@ void SV_DirectConnect( netadr_t from ) {
 	intptr_t		denied;
 	int count;
 	char		*ip;
+	char		*guid;
 #ifdef LEGACY_PROTOCOL
 	qboolean	compat = qfalse;
 #endif
@@ -359,6 +360,16 @@ void SV_DirectConnect( netadr_t from ) {
 	}
 
 	Q_strncpyz( userinfo, Cmd_Argv( 1 ), sizeof( userinfo ) );
+
+	// Check for GUID
+	guid = Info_ValueForKey( userinfo, "cl_guid" );
+
+	if ( !sv_allowAnonymous->integer && !Sys_IsLANAddress( from ) ) {
+		if ( !Q_stricmp( guid, "NO_GUID" ) ) {
+			NET_OutOfBandPrint(NS_SERVER, from, "print\nEmpty CD-Key or GUID not permitted on server.\n");
+			return;
+		}
+	}
 
 	// DHM - Nerve :: Update Server allows any protocol to connect
 #ifndef UPDATE_SERVER
@@ -1467,11 +1478,27 @@ into a more C friendly form.
 void SV_UserinfoChanged( client_t *cl ) {
 	char    *val;
 	char	*ip;
+	char	*guid;
+	char	*name;
+	char	gname[MAX_QPATH];
 	int i;
 	int	len;
 
 	// name for C code
-	Q_strncpyz( cl->name, Info_ValueForKey( cl->userinfo, "name" ), sizeof( cl->name ) );
+	name = Info_ValueForKey( cl->userinfo, "name" );
+	guid = Info_ValueForKey( cl->userinfo, "cl_guid" );
+
+	if ( sv_forceNameUniq->integer == 1 ) {
+		if ( !Q_stricmp( name, "" ) || !Q_stricmp( name, "WolfPlayer" ) || !Q_stricmp( name, "UnnamedPlayer" ) ) {
+			Com_sprintf( gname, sizeof( gname ), "%s %s", name, guid + 24 );
+			Info_SetValueForKey( cl->userinfo, "name", gname );
+		}
+	} else if ( sv_forceNameUniq->integer == 2 ) {
+		Com_sprintf( gname, sizeof( gname ), "%s %s", name, guid + 24 );
+		Info_SetValueForKey( cl->userinfo, "name", gname );
+	}
+
+	Q_strncpyz( cl->name, name, sizeof( cl->name ) );
 
 	// rate command
 

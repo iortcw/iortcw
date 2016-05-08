@@ -72,6 +72,9 @@ cvar_t  *sv_floodProtect;
 cvar_t  *sv_allowAnonymous;
 cvar_t  *sv_lanForceRate; // TTimo - dedicated 1 (LAN) server forces local client rates to 99999 (bug #491)
 cvar_t  *sv_onlyVisibleClients; // DHM - Nerve
+
+cvar_t  *sv_forceNameUniq;
+
 cvar_t  *sv_friendlyFire;       // NERVE - SMF
 cvar_t  *sv_maxlives;           // NERVE - SMF
 cvar_t  *sv_tourney;            // NERVE - SMF
