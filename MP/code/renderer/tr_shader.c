@@ -989,6 +989,12 @@ static qboolean ParseStage( shaderStage_t *stage, char **text ) {
 		}
 	}
 
+	// allow crosshairs to be colorized for cg_crosshairHealth
+	if ( strstr( shader.name, "crosshair" ) && shader.lightmapIndex == LIGHTMAP_2D ) {
+		if ( stage->rgbGen == CGEN_IDENTITY || stage->rgbGen == CGEN_IDENTITY_LIGHTING ) {
+			stage->rgbGen = CGEN_VERTEX;
+		}
+	}
 
 	//
 	// implicitly assume that a GL_ONE GL_ZERO blend mask disables blending
