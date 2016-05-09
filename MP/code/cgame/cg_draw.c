@@ -1723,6 +1723,7 @@ static void CG_DrawCrosshair( void ) {
 	float f;
 	float x, y;
 	int weapnum;                // DHM - Nerve
+	vec4_t hcolor = {1, 1, 1, 1};
 
 	if ( cg.renderingThirdPerson ) {
 		return;
@@ -1793,8 +1794,6 @@ static void CG_DrawCrosshair( void ) {
 
 	// set color based on health
 	if ( cg_crosshairHealth.integer ) {
-		vec4_t hcolor;
-
 		CG_ColorForHealth( hcolor );
 		trap_R_SetColor( hcolor );
 	} else {
@@ -1875,7 +1874,6 @@ static void CG_DrawCrosshair3D( void ) {
 	qhandle_t hShader;
 	float f;
 	int weapnum;                // DHM - Nerve
-
 	trace_t trace;
 	vec3_t endpos;
 	float stereoSep, zProj, maxdist, xmax;
@@ -1980,7 +1978,23 @@ static void CG_DrawCrosshair3D( void ) {
 	ent.radius = w / 640 * xmax * trace.fraction * maxdist / zProj;
 	ent.customShader = hShader;
 
+	ent.shaderRGBA[0]=255;
+	ent.shaderRGBA[1]=255;
+	ent.shaderRGBA[2]=255;
+	ent.shaderRGBA[3]=255;
+
 	trap_R_AddRefEntityToScene(&ent);
+
+	if ( cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ] ) {
+		ent.customShader = cg.crosshairShaderAlt[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ];
+
+		ent.shaderRGBA[0]=255;
+		ent.shaderRGBA[1]=255;
+		ent.shaderRGBA[2]=255;
+		ent.shaderRGBA[3]=255;
+
+		trap_R_AddRefEntityToScene(&ent);
+	}
 }
 
 
