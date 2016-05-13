@@ -1884,11 +1884,20 @@ void SV_ExecuteClientMessage( client_t *cl, msg_t *msg ) {
 	// gamestate it was at.  This allows it to keep downloading even when
 	// the gamestate changes.  After the download is finished, we'll
 	// notice and send it a new game state
-	if ( serverId != sv.serverId &&
-		 !*cl->downloadName ) {
-		if ( serverId == sv.restartedServerId ) {
-			// they just haven't caught the map_restart yet
-			return;
+	//
+	// show_bug.cgi?id=536
+	// don't drop as long as previous command was a nextdl, after a dl is done, downloadName is set back to ""
+	// but we still need to read the next message to move to next download or send gamestate
+	// I don't like this hack though, it must have been working fine at some point, suspecting the fix is somewhere else
+	if ( serverId != sv.serverId && !*cl->downloadName && !strstr( cl->lastClientCommandString, "nextdl" ) ) {
+		if ( serverId >= sv.restartedServerId && serverId < sv.serverId ) { // TTimo - use a comparison here to catch multiple map_restart
+			if ( strstr( cl->lastClientCommandString, "donedl" ) ) {
+				SV_DoneDownload_f( cl );
+			} else {	
+				// they just haven't caught the map_restart yet
+				Com_DPrintf( "%s : ignoring pre map_restart / outdated client message\n", cl->name );
+				return;
+			}
 		}
 		// if we can tell that the client has dropped the last
 		// gamestate we sent them, resend it
