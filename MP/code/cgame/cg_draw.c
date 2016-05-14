@@ -1521,7 +1521,7 @@ static void CG_DrawWeapReticle( void ) {
 		if ( cg_reticles.integer ) {
 
 			// sides
-			if ( cg_fixedAspect.integer ) {
+			if ( cg_fixedAspect.integer && !cg.limboMenu ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
 					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
@@ -1573,7 +1573,7 @@ static void CG_DrawWeapReticle( void ) {
 		if ( cg_reticles.integer ) {
 
 			// sides
-			if ( cg_fixedAspect.integer ) {
+			if ( cg_fixedAspect.integer && !cg.limboMenu ) {
 				if ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) {
 					mask = 0.5 * ( ( cgs.glconfig.vidWidth - ( cgs.screenXScale * 480.0 ) ) / cgs.screenXScale );
 
