@@ -4,9 +4,9 @@
 
 if [ "$ARCH" = "x86_64" ];
 then
-    CMD_PREFIX="amd64-mingw32msvc x86_64-w64-mingw32"
+    CMD_PREFIX="x86_64-w64-mingw32 amd64-mingw32msvc"
 else
-    CMD_PREFIX="i586-mingw32msvc i686-w64-mingw32"
+    CMD_PREFIX="i686-w64-mingw32 i586-mingw32msvc i686-pc-mingw32"
     export ARCH=x86
 fi
 

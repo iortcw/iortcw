@@ -586,25 +586,25 @@ ifdef MINGW
 
     # We need to figure out the correct gcc and windres
     ifeq ($(ARCH),x86_64)
-      MINGW_PREFIXES=amd64-mingw32msvc x86_64-w64-mingw32
+      MINGW_PREFIXES=x86_64-w64-mingw32 amd64-mingw32msvc
     endif
     ifeq ($(ARCH),x86)
-      MINGW_PREFIXES=i586-mingw32msvc i686-w64-mingw32 i686-pc-mingw32
+      MINGW_PREFIXES=i686-w64-mingw32 i586-mingw32msvc i686-pc-mingw32
     endif
 
     ifndef CC
-      CC=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
-         $(call bin_path, $(MINGW_PREFIX)-gcc)))
+      CC=$(firstword $(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-gcc))))
     endif
 
     ifndef CXX
-      CXX=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
-         $(call bin_path, $(MINGW_PREFIX)-g++)))
+      CXX=$(firstword $(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-g++))))
     endif
 
     ifndef WINDRES
-      WINDRES=$(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
-         $(call bin_path, $(MINGW_PREFIX)-windres)))
+      WINDRES=$(firstword $(strip $(foreach MINGW_PREFIX, $(MINGW_PREFIXES), \
+         $(call bin_path, $(MINGW_PREFIX)-windres))))
     endif
   else
     # Some MinGW installations define CC to cc, but don't actually provide cc,
