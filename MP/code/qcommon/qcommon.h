@@ -301,8 +301,8 @@ extern int demo_protocols[];
 #endif
 
 #ifndef MASTER_SERVER_NAME
-//#define MASTER_SERVER_NAME		"wolfmaster.idsoftware.com"	// Official master server decommissioned
-#define MASTER_SERVER_NAME		"dpmaster.deathmask.net"
+#define MASTER_SERVER_NAME		"wolfmaster.idsoftware.com"	// Official master server
+//#define MASTER_SERVER_NAME		"dpmaster.deathmask.net"
 #endif
 
 #ifndef STANDALONE
