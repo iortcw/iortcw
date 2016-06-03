@@ -731,54 +731,10 @@ ifdef MINGW
 else # ifdef MINGW
 
 #############################################################################
-# SETUP AND BUILD -- FREEBSD
+# SETUP AND BUILD -- *BSD (is dying)
 #############################################################################
 
-ifeq ($(PLATFORM),freebsd)
-
-  # flags
-  BASE_CFLAGS = $(shell env MACHINE_ARCH=$(ARCH) make -f /dev/null -VCFLAGS) \
-    -Wall -fno-strict-aliasing \
-    -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
-  CLIENT_CFLAGS += $(SDL_CFLAGS)
-
-  OPTIMIZEVM = -O3
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-
-  SHLIBEXT=so
-  SHLIBCFLAGS=-fPIC
-  SHLIBLDFLAGS=-shared $(LDFLAGS)
-
-  THREAD_LIBS=-lpthread
-  # don't need -ldl (FreeBSD)
-  LIBS=-lm
-
-  CLIENT_LIBS =
-
-  CLIENT_LIBS += $(SDL_LIBS)
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
-
-  # optional features/libraries
-  ifeq ($(USE_OPENAL),1)
-    ifeq ($(USE_OPENAL_DLOPEN),1)
-      CLIENT_LIBS += $(THREAD_LIBS) $(OPENAL_LIBS)
-    endif
-  endif
-
-  ifeq ($(USE_CURL),1)
-    CLIENT_CFLAGS += $(CURL_CFLAGS)
-    ifeq ($(USE_CURL_DLOPEN),1)
-      CLIENT_LIBS += $(CURL_LIBS)
-    endif
-  endif
-
-else # ifeq freebsd
-
-#############################################################################
-# SETUP AND BUILD -- OPENBSD
-#############################################################################
-
-ifeq ($(PLATFORM),openbsd)
+ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
 
   BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
@@ -790,6 +746,7 @@ ifeq ($(PLATFORM),openbsd)
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    FILE_ARCH = amd64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
@@ -820,9 +777,6 @@ ifeq ($(PLATFORM),openbsd)
     USE_CURL_DLOPEN=0
   endif
 
-  # no shm_open on OpenBSD
-  USE_MUMBLE=0
-
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
   SHLIBLDFLAGS=-shared $(LDFLAGS)
@@ -846,24 +800,7 @@ ifeq ($(PLATFORM),openbsd)
       CLIENT_LIBS += $(CURL_LIBS)
     endif
   endif
-else # ifeq openbsd
-
-#############################################################################
-# SETUP AND BUILD -- NETBSD
-#############################################################################
-
-ifeq ($(PLATFORM),netbsd)
-
-  LIBS=-lm
-  SHLIBEXT=so
-  SHLIBCFLAGS=-fPIC
-  SHLIBLDFLAGS=-shared $(LDFLAGS)
-  THREAD_LIBS=-lpthread
-
-  BASE_CFLAGS = -Wall -fno-strict-aliasing
-
-  BUILD_CLIENT = 0
-else # ifeq netbsd
+else # ifeq *BSD
 
 #############################################################################
 # SETUP AND BUILD -- IRIX
@@ -955,9 +892,7 @@ else # ifeq sunos
 endif #Linux
 endif #darwin
 endif #MINGW
-endif #FreeBSD
-endif #OpenBSD
-endif #NetBSD
+endif #*BSD
 endif #IRIX
 endif #SunOS
 
