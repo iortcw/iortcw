@@ -248,13 +248,13 @@ void SV_MasterHeartbeat(const char *message)
 	int		res;
 	int		netenabled;
 
-	Com_Memset(adr, 0, sizeof(netadr_t) * 2);
-	netenabled = Cvar_VariableIntegerValue("net_enabled");
-
 	// DHM - Nerve :: Update Server doesn't send heartbeat
 #ifdef UPDATE_SERVER
 	return;
 #endif
+
+	Com_Memset(adr, 0, sizeof(netadr_t) * 2);
+	netenabled = Cvar_VariableIntegerValue("net_enabled");
 
 	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
 	if (!com_dedicated || com_dedicated->integer != 2 || !(netenabled & (NET_ENABLEV4 | NET_ENABLEV6)))
@@ -348,17 +348,16 @@ void SV_MasterGameCompleteStatus() {
 	int		res;
 	int		netenabled;
 
-	Com_Memset(adr, 0, sizeof(netadr_t) * 2);
-	netenabled = Cvar_VariableIntegerValue("net_enabled");
-
 	// DHM - Nerve :: Update Server doesn't send gameCompleteStatus 
 #ifdef UPDATE_SERVER
 	return;
 #endif
+	Com_Memset(adr, 0, sizeof(netadr_t) * 2);
+	netenabled = Cvar_VariableIntegerValue("net_enabled");
 
 	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
 	if (!com_dedicated || com_dedicated->integer != 2 || !(netenabled & (NET_ENABLEV4 | NET_ENABLEV6)))
-		return;		// only dedicated servers send heartbeats
+		return;		// only dedicated servers send gameCompleteStatus
 
 	// send to group masters
 	for (i = 0; i < MAX_MASTER_SERVERS; i++)
