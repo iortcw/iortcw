@@ -2968,7 +2968,7 @@ static qboolean UI_Effects_HandleKey(int flags, float *special, int key) {
 			uiInfo.effectsColor = 6;
 		}
 
-		trap_Cvar_SetValue( "color1", uitogamecode[uiInfo.effectsColor] );
+		trap_Cvar_SetValue( "color", uitogamecode[uiInfo.effectsColor] );
 		return qtrue;
 	}
 	return qfalse;
