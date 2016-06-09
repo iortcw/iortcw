@@ -55,7 +55,7 @@
 #define ftello64 ftell
 #define fseeko64 fseek
 #else
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 #define fopen64 fopen
 #define ftello64 ftello
 #define fseeko64 fseeko

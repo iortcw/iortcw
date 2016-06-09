@@ -1128,6 +1128,7 @@ void RB_StageIteratorSky( void ) {
 		mat4_t oldmodelview;
 
 		GL_State( 0 );
+		GL_Cull( CT_FRONT_SIDED );
 		//qglTranslatef( backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2] );
 
 		{
@@ -1158,6 +1159,7 @@ void RB_StageIteratorSky( void ) {
 		mat4_t oldmodelview;
 
 		GL_State( 0 );
+		GL_Cull( CT_FRONT_SIDED );
 		//qglTranslatef( backEnd.viewParms.or.origin[0], backEnd.viewParms.or.origin[1], backEnd.viewParms.or.origin[2] );
 
 		{
