@@ -4627,7 +4627,9 @@ static void UI_RunMenuScript( char **args ) {
 //			trap_Cmd_ExecuteText( EXEC_APPEND, "exec default.cfg\n");
 //			trap_Cmd_ExecuteText( EXEC_APPEND, "cvar_restart\n");
 //			Controls_SetDefaults();
+#ifdef CINEMATICS_INTRO
 //			trap_Cvar_Set("com_introPlayed", "1" );
+#endif
 //			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 
 // from MP 11/12/01
@@ -4636,7 +4638,9 @@ static void UI_RunMenuScript( char **args ) {
 			trap_Cmd_ExecuteText( EXEC_NOW, "exec language.cfg\n" );       // NERVE - SMF
 			trap_Cmd_ExecuteText( EXEC_NOW, "setRecommended\n" );     // NERVE - SMF
 			Controls_SetDefaults();
+#ifdef CINEMATICS_INTRO
 			trap_Cvar_Set( "com_introPlayed", "1" );
+#endif
 			trap_Cvar_Set( "com_recommendedSet", "1" );                   // NERVE - SMF
 			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 // end from MP
