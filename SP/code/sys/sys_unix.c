@@ -1027,7 +1027,11 @@ void Sys_OpenURL( char *url, qboolean doexit ) {
 	// build the command line
 	Com_sprintf( cmdline, MAX_CMD, "%s '%s' &", fn, url );
 
-	Sys_StartProcess( cmdline, doexit );
+	if ( doexit ) {
+		Sys_StartProcess( cmdline, qtrue );
+	} else {
+		Sys_StartProcess( cmdline, qfalse );
+	}
 
 }
 
