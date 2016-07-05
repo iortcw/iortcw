@@ -937,7 +937,12 @@ double _atof( const char **stringPtr ) {
 
 	// read digits
 	value = 0;
-	if ( string[0] != '.' ) {
+	if ( string[0] == '.' ) {
+		// read decimal point if followed by a digit
+		if ( string[1] >= '0' && string[1] <= '9' ) {
+			c = *string++;
+		}
+	} else {
 		do {
 			c = *string++;
 			if ( c < '0' || c > '9' ) {
