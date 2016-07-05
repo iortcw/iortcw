@@ -2841,11 +2841,6 @@ GL FOG
 extern glfog_t glfogsettings[NUM_FOGS];         // [0] never used (FOG_NONE)
 extern glfogType_t glfogNum;                    // fog type to use (from the fog_t enum list)
 
-extern qboolean fogIsOn;
-
-extern void         R_FogOff( void );
-extern void         R_FogOn( void );
-
 extern void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density );
 
 extern int skyboxportal;

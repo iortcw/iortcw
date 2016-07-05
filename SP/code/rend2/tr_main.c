@@ -58,89 +58,6 @@ surfaceType_t entitySurface = SF_ENTITY;
 // fog stuff
 glfog_t glfogsettings[NUM_FOGS];
 glfogType_t glfogNum = FOG_NONE;
-qboolean fogIsOn = qfalse;
-
-
-/*
-=================
-R_Fog (void)
-=================
-*/
-void R_Fog( glfog_t *curfog ) {
-
-	if ( !r_wolffog->integer ) {
-		R_FogOff();
-		return;
-	}
-
-	if ( !curfog->registered ) {   //----(SA)
-		R_FogOff();
-		return;
-	}
-
-	//----(SA) assme values of '0' for these parameters means 'use default'
-	if ( !curfog->density ) {
-		curfog->density = 1;
-	}
-	if ( !curfog->hint ) {
-		curfog->hint = GL_DONT_CARE;
-	}
-	if ( !curfog->mode ) {
-		curfog->mode = GL_LINEAR;
-	}
-	//----(SA)	end
-
-
-	R_FogOn();
-}
-
-// Ridah, allow disabling fog temporarily
-void R_FogOff( void ) {
-	if ( !fogIsOn ) {
-		return;
-	}
-	//qglDisable( GL_FOG );
-	fogIsOn = qfalse;
-}
-
-void R_FogOn( void ) {
-	if ( fogIsOn ) {
-		return;
-	}
-
-//	if(r_uiFullScreen->integer) {	// don't fog in the menu
-//		R_FogOff();
-//		return;
-//	}
-
-	if ( backEnd.projection2D ) {  // no fog in 2d
-		R_FogOff();
-		return;
-	}
-
-	if ( !r_wolffog->integer ) {
-		return;
-	}
-
-//	if(backEnd.viewParms.isGLFogged) {
-//		if(!(backEnd.viewParms.glFog.registered))
-//			return;
-//	}
-
-	if ( backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) { // don't force world fog on portal sky
-		if ( !( glfogsettings[FOG_PORTALVIEW].registered ) ) {
-			return;
-		}
-	} else if ( !glfogNum )     {
-		return;
-	}
-
-	//qglEnable( GL_FOG );
-	fogIsOn = qtrue;
-}
-// done.
-
-
 
 //----(SA)
 /*
@@ -2344,8 +2261,6 @@ void R_DebugGraphics( void ) {
 		return;
 	}
 
-	R_FogOff(); // moved this in here to keep from /always/ doing the fog state change
-
 	R_IssuePendingRenderCommands();
 
 	GL_BindToTMU(tr.whiteImage, TB_COLORMAP);
@@ -2398,10 +2313,7 @@ void R_RenderView( viewParms_t *parms ) {
 	R_SortDrawSurfs( tr.refdef.drawSurfs + firstDrawSurf, numDrawSurfs - firstDrawSurf );
 
 	// draw main system development information (surface outlines, etc)
-	R_FogOff();
 	R_DebugGraphics();
-	R_FogOn();
-
 }
 
 void R_RenderDlightCubemaps(const refdef_t *fd)

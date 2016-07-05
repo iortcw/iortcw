@@ -1060,8 +1060,6 @@ static void ProjectPshadowVBOGLSL( void ) {
 	}
 }
 
-extern qboolean fogIsOn;
-
 /*
 ===================
 RB_FogPass
@@ -1084,12 +1082,8 @@ static void RB_FogPass( int wolfFog ) {
 		return;
 	}
 
-	if (!fogIsOn)
-		return;
- 
 	if (wolfFog)
 	{
-		// from R_Fog(), altered slightly
 		if ( backEnd.projection2D ) {
 			return;
 		}
