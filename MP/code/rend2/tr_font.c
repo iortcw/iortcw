@@ -81,7 +81,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef BUILD_FREETYPE
 #ifdef USE_LOCAL_HEADERS
-  #include "../freetype-2.6.2/include/ft2build.h"
+  #include "../freetype-2.6.4/include/ft2build.h"
 #else
   #include <ft2build.h>
 #endif
