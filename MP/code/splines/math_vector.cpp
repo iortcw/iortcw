@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <time.h>
 #include <ctype.h>
 
-#ifndef MACOS_X
+#ifndef __APPLE__
 #define M_PI        3.14159265358979323846  // matches value in gcc v2 math.h
 #endif
 

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // os x game bundles have no standard library links, and the defines are not always defined!
 
-#ifdef MACOS_X
+#ifdef __APPLE__
 int qmax( int x, int y ) {
 	return ( ( ( x ) > ( y ) ) ? ( x ) : ( y ) );
 }

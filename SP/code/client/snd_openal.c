@@ -585,7 +585,7 @@ typedef struct src_s
 	int			flags;			// flags from StartSoundEx
 } src_t;
 
-#ifdef MACOS_X
+#ifdef __APPLE__
 	#define MAX_SRC 128
 #else
 	#define MAX_SRC 256
@@ -2363,7 +2363,7 @@ static cvar_t *s_alCapture;
 
 #ifdef _WIN32
 #define ALDRIVER_DEFAULT "OpenAL32.dll"
-#elif defined(MACOS_X)
+#elif defined(__APPLE__)
 #define ALDRIVER_DEFAULT "libopenal.dylib"
 #elif defined(__OpenBSD__)
 #define ALDRIVER_DEFAULT "libopenal.so"
@@ -2588,7 +2588,7 @@ static void S_AL_SoundInfo(void)
 #ifdef USE_VOIP
 	if(capture_ext)
 	{
-#ifdef MACOS_X
+#ifdef __APPLE__
 		Com_Printf("  Input Device:   %s\n", qalcGetString(alCaptureDevice, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER));
 #else
 		Com_Printf("  Input Device:   %s\n", qalcGetString(alCaptureDevice, ALC_CAPTURE_DEVICE_SPECIFIER));
@@ -2685,7 +2685,7 @@ qboolean S_AL_Init( soundInterface_t *si )
  	{
 #if defined( _WIN32 )
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
-#elif defined ( MACOS_X )
+#elif defined ( __APPLE__ )
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "/System/Library/Frameworks/OpenAL.framework/OpenAL" ) ) {
 #else
 		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
@@ -2813,7 +2813,7 @@ qboolean S_AL_Init( soundInterface_t *si )
 #endif
 	else
 	{
-#ifdef MACOS_X
+#ifdef __APPLE__
 		// !!! FIXME: Apple has a 1.1-compliant OpenAL, which includes
 		// !!! FIXME:  capture support, but they don't list it in the
 		// !!! FIXME:  extension string. We need to check the version string,

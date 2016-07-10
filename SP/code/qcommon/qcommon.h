@@ -1150,7 +1150,7 @@ char    *Sys_DefaultInstallPath( void );
 char    *Sys_SteamPath(void);
 #endif
 
-#ifdef MACOS_X
+#ifdef __APPLE__
 char    *Sys_DefaultAppPath(void);
 #endif
 

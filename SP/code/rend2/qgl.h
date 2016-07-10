@@ -60,7 +60,7 @@ extern void ( APIENTRY * qglUnlockArraysEXT )( void );
 // GL_ATI_pn_triangles
 #ifndef GL_ATI_pn_triangles
 #define GL_ATI_pn_triangles 1
-#ifndef MACOS_X		//DAJ BUGFIX changed the numbers
+#ifndef __APPLE__		//DAJ BUGFIX changed the numbers
 #define GL_PN_TRIANGLES_ATI                         0x6090
 #define GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI   0x6091
 #define GL_PN_TRIANGLES_POINT_MODE_ATI              0x6092
