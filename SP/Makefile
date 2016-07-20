@@ -250,6 +250,10 @@ ifndef USE_RENDERER_DLOPEN
 USE_RENDERER_DLOPEN=1
 endif
 
+ifndef USE_XDG
+USE_XDG=0
+endif
+
 ifndef USE_YACC
 USE_YACC=0
 endif
@@ -1058,6 +1062,11 @@ endif
 
 ifeq ($(USE_RENDERER_DLOPEN),1)
   CLIENT_CFLAGS += -DUSE_RENDERER_DLOPEN
+endif
+
+ifeq ($(USE_XDG),1)
+  CLIENT_CFLAGS += -DUSE_XDG
+  SERVER_CFLAGS += -DUSE_XDG
 endif
 
 ifeq ($(USE_MUMBLE),1)
