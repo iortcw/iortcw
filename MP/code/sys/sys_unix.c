@@ -78,6 +78,7 @@ char *Sys_DefaultHomePath(void)
 				Q_strcat(homePath, sizeof(homePath), com_homepath->string);
 			else
 				Q_strcat(homePath, sizeof(homePath), HOMEPATH_NAME_MACOSX);
+		}
 #else
 #ifdef USE_XDG
 		if( ( p1 = getenv( "XDG_DATA_HOME" ) ) != NULL )
@@ -108,7 +109,7 @@ char *Sys_DefaultHomePath(void)
 				Q_strcat(homePath, sizeof(homePath), HOMEPATH_NAME_UNIX);
 		}
 #endif // USE_XDG
-#endif
+#endif // __APPLE__
 	}
 
 	return homePath;
