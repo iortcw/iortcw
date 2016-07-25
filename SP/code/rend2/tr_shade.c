@@ -43,7 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 void R_DrawElementsVao( int numIndexes, glIndex_t firstIndex, glIndex_t minIndex, glIndex_t maxIndex )
 {
 	if (glRefConfig.drawRangeElements)
-		qglDrawRangeElementsEXT(GL_TRIANGLES, minIndex, maxIndex, numIndexes, GL_INDEX_TYPE, BUFFER_OFFSET(firstIndex * sizeof(glIndex_t)));
+		qglDrawRangeElements(GL_TRIANGLES, minIndex, maxIndex, numIndexes, GL_INDEX_TYPE, BUFFER_OFFSET(firstIndex * sizeof(glIndex_t)));
 	else
 		qglDrawElements(GL_TRIANGLES, numIndexes, GL_INDEX_TYPE, BUFFER_OFFSET(firstIndex * sizeof(glIndex_t)));
 	
@@ -55,7 +55,7 @@ static void R_DrawMultiElementsVao( int multiDrawPrimitives, glIndex_t *multiDra
 {
 	if (glRefConfig.multiDrawArrays && multiDrawPrimitives > 1)
 	{
-		qglMultiDrawElementsEXT(GL_TRIANGLES, multiDrawNumIndexes, GL_INDEX_TYPE, (const GLvoid **)multiDrawFirstIndex, multiDrawPrimitives);
+		qglMultiDrawElements(GL_TRIANGLES, multiDrawNumIndexes, GL_INDEX_TYPE, (const GLvoid **)multiDrawFirstIndex, multiDrawPrimitives);
 	}
 	else
 	{
@@ -65,7 +65,7 @@ static void R_DrawMultiElementsVao( int multiDrawPrimitives, glIndex_t *multiDra
 		{
 			for (i = 0; i < multiDrawPrimitives; i++)
 			{
-				qglDrawRangeElementsEXT(GL_TRIANGLES, multiDrawMinIndex[i], multiDrawMaxIndex[i], multiDrawNumIndexes[i], GL_INDEX_TYPE, multiDrawFirstIndex[i]);
+				qglDrawRangeElements(GL_TRIANGLES, multiDrawMinIndex[i], multiDrawMaxIndex[i], multiDrawNumIndexes[i], GL_INDEX_TYPE, multiDrawFirstIndex[i]);
 			}
 		}
 		else

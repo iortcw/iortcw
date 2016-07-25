@@ -1046,8 +1046,8 @@ void GL_SetDefaultState( void ) {
 	if (glRefConfig.vertexArrayObject)
 		qglBindVertexArrayARB(0);
 
-	qglBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-	qglBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	qglBindBuffer(GL_ARRAY_BUFFER, 0);
+	qglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glState.currentVao = NULL;
 	glState.vertexAttribsEnabled = 0;
 
@@ -1532,7 +1532,7 @@ void R_InitQueries(void)
 		return;
 
 	if (r_drawSunRays->integer)
-		qglGenQueriesARB(ARRAY_LEN(tr.sunFlareQuery), tr.sunFlareQuery);
+		qglGenQueries(ARRAY_LEN(tr.sunFlareQuery), tr.sunFlareQuery);
 }
 
 void R_ShutDownQueries(void)
@@ -1541,7 +1541,7 @@ void R_ShutDownQueries(void)
 		return;
 
 	if (r_drawSunRays->integer)
-		qglDeleteQueriesARB(ARRAY_LEN(tr.sunFlareQuery), tr.sunFlareQuery);
+		qglDeleteQueries(ARRAY_LEN(tr.sunFlareQuery), tr.sunFlareQuery);
 }
 
 /*
