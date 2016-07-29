@@ -134,8 +134,8 @@ void GL_TextureMode( const char *string ) {
 	for ( i = 0 ; i < tr.numImages ; i++ ) {
 		glt = tr.images[ i ];
 		if ( glt->flags & IMGFLAG_MIPMAP && !(glt->flags & IMGFLAG_CUBEMAP) ) {
-			qglTextureParameterf(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			qglTextureParameterf(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+			qglTextureParameterfEXT(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+			qglTextureParameterfEXT(glt->texnum, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
 	}
 }
@@ -2014,7 +2014,7 @@ static void RawImage_UploadToRgtc2Texture(GLuint texture, byte *data, int width,
 		}
 	}
 
-	qglCompressedTextureImage2D(texture, GL_TEXTURE_2D, mip, GL_COMPRESSED_RG_RGTC2, width, height, 0, size, compressedData);
+	qglCompressedTextureImage2DEXT(texture, GL_TEXTURE_2D, mip, GL_COMPRESSED_RG_RGTC2, width, height, 0, size, compressedData);
 
 	ri.Hunk_FreeTempMemory(compressedData);
 }
@@ -2093,7 +2093,7 @@ static void RawImage_UploadTexture(GLuint texture, byte *data, int x, int y, int
 		do
 		{
 			lastMip = (width == 1 && height == 1) || !mipmap;
-			qglTextureImage2D(texture, target, miplevel, internalFormat, width, height, 0, dataFormat, dataType, NULL);
+			qglTextureImage2DEXT(texture, target, miplevel, internalFormat, width, height, 0, dataFormat, dataType, NULL);
 
 			width = MAX(1, width >> 1);
 			height = MAX(1, height >> 1);
@@ -2126,9 +2126,9 @@ static void RawImage_UploadTexture(GLuint texture, byte *data, int x, int y, int
 		if (compressed)
 		{
 			if (subtexture)
-				qglCompressedTextureSubImage2D(texture, target, miplevel, x, y, width, height, picFormat, size, data);
+				qglCompressedTextureSubImage2DEXT(texture, target, miplevel, x, y, width, height, picFormat, size, data);
 			else
-				qglCompressedTextureImage2D(texture, target, miplevel, picFormat, width, height, 0, size, data);
+				qglCompressedTextureImage2DEXT(texture, target, miplevel, picFormat, width, height, 0, size, data);
 		}
 		else
 		{
@@ -2138,9 +2138,9 @@ static void RawImage_UploadTexture(GLuint texture, byte *data, int x, int y, int
 			if (rgtc)
 				RawImage_UploadToRgtc2Texture(texture, data, width, height, miplevel);
 			else if (subtexture)
-				qglTextureSubImage2D(texture, target, miplevel, x, y, width, height, dataFormat, dataType, data);
+				qglTextureSubImage2DEXT(texture, target, miplevel, x, y, width, height, dataFormat, dataType, data);
 			else
-				qglTextureImage2D(texture, target, miplevel, internalFormat, width, height, 0, dataFormat, dataType, data);
+				qglTextureImage2DEXT(texture, target, miplevel, internalFormat, width, height, 0, dataFormat, dataType, data);
 
 			if (!lastMip && numMips < 2)
 			{
@@ -2280,19 +2280,19 @@ done:
 	if (mipmap)
 	{
 		if (textureFilterAnisotropic && !cubemap)
-			qglTextureParameteri(image->texnum, textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+			qglTextureParameteriEXT(image->texnum, textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT,
 			(GLint)Com_Clamp(1, maxAnisotropy, r_ext_max_anisotropy->integer));
 
-		qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 	else
 	{
 		if (textureFilterAnisotropic && !cubemap)
-			qglTextureParameteri(image->texnum, textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
+			qglTextureParameteriEXT(image->texnum, textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
 
-		qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 
 	// Fix for sampling depth buffer on old nVidia cards
@@ -2303,9 +2303,9 @@ done:
 		case GL_DEPTH_COMPONENT16_ARB:
 		case GL_DEPTH_COMPONENT24_ARB:
 		case GL_DEPTH_COMPONENT32_ARB:
-			qglTextureParameterf(image->texnum, textureTarget, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
-			qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			qglTextureParameterf(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			qglTextureParameterfEXT(image->texnum, textureTarget, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
+			qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			qglTextureParameterfEXT(image->texnum, textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			break;
 		default:
 			break;
@@ -2369,14 +2369,14 @@ image_t *R_CreateImageExt2( const char *name, byte *pic, int width, int height, 
 
 	if (image->flags & IMGFLAG_CUBEMAP)
 	{
-		qglTextureParameterf(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, glWrapClampMode);
-		qglTextureParameterf(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, glWrapClampMode);
-		qglTextureParameteri(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, glWrapClampMode);
+		qglTextureParameterfEXT(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, glWrapClampMode);
+		qglTextureParameterfEXT(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, glWrapClampMode);
+		qglTextureParameteriEXT(image->texnum, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, glWrapClampMode);
 	}
 	else
 	{
-		qglTextureParameterf(image->texnum, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode);
-		qglTextureParameterf(image->texnum, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode);
+		qglTextureParameterfEXT(image->texnum, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode);
+		qglTextureParameterfEXT(image->texnum, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode);
 	}
 
 	hash = generateHashValue( name );
@@ -2945,11 +2945,8 @@ void R_CreateBuiltinImages( void ) {
 		if (r_drawSunRays->integer)
 			tr.sunRaysImage = R_CreateImage("*sunRays", NULL, width, height, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, rgbFormat);
 
-		if (glRefConfig.framebufferObject)
-		{
-			tr.renderDepthImage  = R_CreateImage("*renderdepth",  NULL, width, height, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_DEPTH_COMPONENT24_ARB);
-			tr.textureDepthImage = R_CreateImage("*texturedepth", NULL, PSHADOW_MAP_SIZE, PSHADOW_MAP_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_DEPTH_COMPONENT24_ARB);
-		}
+		tr.renderDepthImage  = R_CreateImage("*renderdepth",  NULL, width, height, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_DEPTH_COMPONENT24_ARB);
+		tr.textureDepthImage = R_CreateImage("*texturedepth", NULL, PSHADOW_MAP_SIZE, PSHADOW_MAP_SIZE, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_DEPTH_COMPONENT24_ARB);
 
 		{
 			unsigned short sdata[4];
@@ -3004,8 +3001,9 @@ void R_CreateBuiltinImages( void ) {
 			for ( x = 0; x < 4; x++)
 			{
 				tr.sunShadowDepthImage[x] = R_CreateImage(va("*sunshadowdepth%i", x), NULL, r_shadowMapSize->integer, r_shadowMapSize->integer, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_DEPTH_COMPONENT24_ARB);
-				qglTextureParameterf(tr.sunShadowDepthImage[x]->texnum, GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-				qglTextureParameterf(tr.sunShadowDepthImage[x]->texnum, GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+				qglTextureParameterfEXT(tr.sunShadowDepthImage[x]->texnum, GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+				qglTextureParameterfEXT(tr.sunShadowDepthImage[x]->texnum, GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 			}
 
 			tr.screenShadowImage = R_CreateImage("*screenShadow", NULL, width, height, IMGTYPE_COLORALPHA, IMGFLAG_NO_COMPRESSION | IMGFLAG_CLAMPTOEDGE, GL_RGBA8);

@@ -1044,7 +1044,7 @@ void GL_SetDefaultState( void ) {
 	GL_BindNullProgram();
 
 	if (glRefConfig.vertexArrayObject)
-		qglBindVertexArrayARB(0);
+		qglBindVertexArray(0);
 
 	qglBindBuffer(GL_ARRAY_BUFFER, 0);
 	qglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
