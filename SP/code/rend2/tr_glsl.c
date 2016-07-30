@@ -1022,9 +1022,6 @@ void GLSL_InitGPUShaders(void)
 		if ((i & LIGHTDEF_USE_PARALLAXMAP) && !r_parallaxMapping->integer)
 			continue;
 
-		if (!lightType && (i & LIGHTDEF_USE_PARALLAXMAP))
-			continue;
-
 		if (!lightType && (i & LIGHTDEF_USE_SHADOWMAP))
 			continue;
 
