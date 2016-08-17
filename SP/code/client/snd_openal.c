@@ -786,6 +786,7 @@ void S_AL_SrcShutdown( void )
 	}
 
 	memset(srcList, 0, sizeof(srcList));
+	memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
 
 	alSourcesInitialised = qfalse;
 }
@@ -1324,7 +1325,8 @@ static void S_AL_MainStartSound( vec3_t origin, int entnum, int entchannel, sfxH
 	}
 
 	// Talk anims default to ZERO amplitude
-	memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
+	if ( entchannel == CHAN_VOICE )
+		memset( s_entityTalkAmplitude, 0, sizeof( s_entityTalkAmplitude ) );
 
 	if ( entnum < MAX_CLIENTS && entchannel == CHAN_VOICE )
 	{
