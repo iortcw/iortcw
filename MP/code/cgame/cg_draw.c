@@ -2861,6 +2861,7 @@ static void CG_DrawFlashFade( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		 	CG_FillRect( -10, -10, 650, 490, col );
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {	
 			CG_FillRect( -10, -10, 650, 490, col );
 		}
@@ -2920,6 +2921,7 @@ static void CG_DrawFlashZoomTransition( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( -10, -10, 650, 490, color );
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {
 			CG_FillRect( -10, -10, 650, 490, color );
 		}
@@ -2959,6 +2961,7 @@ static void CG_DrawFlashDamage( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( -10, -10, 650, 490, col );
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {
 			CG_FillRect( -10, -10, 650, 490, col );
 		}
@@ -3012,6 +3015,7 @@ static void CG_DrawFlashFire( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {
 			CG_DrawPic( -10, -10, 650, 490, cgs.media.viewFlashFire[( cg.time / 50 ) % 16] );
 		}
@@ -3056,6 +3060,7 @@ static void CG_DrawFlashLightning( void ) {
 	if ( cg_fixedAspect.integer ) {
 		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		CG_DrawPic( -10, -10, 650, 490, shader );
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	} else {
 		CG_DrawPic( -10, -10, 650, 490, shader );
 	}
@@ -3493,6 +3498,7 @@ static void CG_ScreenFade( void ) {
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
+			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {
 			CG_FillRect( 0, 0, 640, 480, cg.fadeColor1 );
 		}
@@ -3508,7 +3514,8 @@ static void CG_ScreenFade( void ) {
 		if ( color[ 3 ] ) {
 			if ( cg_fixedAspect.integer ) {
 				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
-				CG_FillRect( 0, 0, 640, 480, color );
+				CG_FillRect( 0, 0, 640, 480, color ):
+				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 			} else {
 				CG_FillRect( 0, 0, 640, 480, color );
 			}
