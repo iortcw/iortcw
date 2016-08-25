@@ -3514,7 +3514,7 @@ static void CG_ScreenFade( void ) {
 		if ( color[ 3 ] ) {
 			if ( cg_fixedAspect.integer ) {
 				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
-				CG_FillRect( 0, 0, 640, 480, color ):
+				CG_FillRect( 0, 0, 640, 480, color );
 				CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 			} else {
 				CG_FillRect( 0, 0, 640, 480, color );
