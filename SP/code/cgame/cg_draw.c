@@ -1216,12 +1216,12 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame) {
 		y = CG_DrawFPS( y );
 	}
 	if ( cg_drawTimer.integer ) {
-		CG_DrawTimer( y );
+		y = CG_DrawTimer( y );
 	}
 // (SA) disabling drawattacker for the time being
 	if ( cg_oldWolfUI.integer ) {
 		if ( cg_drawAttacker.integer ) {
-			y = CG_DrawAttacker( y );
+			CG_DrawAttacker( y );
 		}
 	}
 //----(SA)	end
@@ -1249,9 +1249,7 @@ static float CG_DrawScores( float y ) {
 	int v;
 	vec4_t color;
 
-	s = CG_ConfigString( CS_SCORES1 );
 	s1 = cgs.scores1;
-	s = CG_ConfigString( CS_SCORES2 );
 	s2 = cgs.scores2;
 
 	y -=  BIGCHAR_HEIGHT + 8;
@@ -1482,7 +1480,7 @@ static void CG_DrawLowerRight( void ) {
 	}
 
 	y = CG_DrawScores( y );
-	y = CG_DrawPowerups( y );
+	CG_DrawPowerups( y );
 }
 
 //===========================================================================================

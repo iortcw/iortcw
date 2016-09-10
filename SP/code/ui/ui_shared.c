@@ -1433,7 +1433,7 @@ void Script_NotebookShowpage( itemDef_t *item, char **args ) {
 						continue;
 					}
 
-					if ( pages & ( 1 << ( newpage - 1 ) ) ) {
+					if ( pages & ( 1 << ( abs( newpage - 1 ) ) ) ) {
 						dec++;
 //						if(dec == inc)
 //							break;
@@ -1451,7 +1451,7 @@ void Script_NotebookShowpage( itemDef_t *item, char **args ) {
 						newpage = newpage + NOTEBOOK_MAX_PAGES;
 					}
 
-					if ( pages & ( 1 << ( newpage - 1 ) ) ) {
+					if ( pages & ( 1 << ( abs( newpage - 1 ) ) ) ) {
 						break;
 					}
 				}

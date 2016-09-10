@@ -3010,6 +3010,9 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		fovOffset[2] = -0.2 * ( cg_fov.integer - 90 );
  	}
 
+	memset( &hand, 0, sizeof( hand ) );
+	VectorCopy( hand.origin, hand.lightingOrigin );
+
 	if ( ps->weapon > WP_NONE ) {
 		// DHM - Nerve :: handle WP_CLASS_SPECIAL for different classes
 		if ( cgs.gametype == GT_WOLF && ps->weapon == WP_CLASS_SPECIAL ) {
@@ -3036,8 +3039,6 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 			weapon = &cg_weapons[ ps->weapon ];
 		}
 		// dhm - end
-
-		memset( &hand, 0, sizeof( hand ) );
 
 		// set up gun position
 		CG_CalculateWeaponPosition( hand.origin, angles );

@@ -375,9 +375,6 @@ Draw all the status / pacifier stuff during level loading
 ====================
 */
 void CG_DrawInformation( void ) {
-	const char  *s;
-	const char  *info;
-	qhandle_t levelshot = 0;   // TTimo: init
 	static int callCount = 0;
 	float percentDone;
 
@@ -396,22 +393,10 @@ void CG_DrawInformation( void ) {
 
 	callCount++;
 
-	info = CG_ConfigString( CS_SERVERINFO );
-
 	trap_Cvar_VariableStringBuffer( "com_expectedhunkusage", hunkBuf, MAX_QPATH );
 	expectedHunk = atoi( hunkBuf );
 
-	s = Info_ValueForKey( info, "mapname" );
-
 	//----(SA)	just the briefing now
-
-	if ( s && s[0] != 0 ) {  // there is often no 's'
-		levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", s ) );
-	}
-
-	if ( !levelshot ) {
-		levelshot = trap_R_RegisterShaderNoMip( "levelshots/unknownmap.jpg" );
-	}
 
 	trap_R_SetColor( NULL );
 
