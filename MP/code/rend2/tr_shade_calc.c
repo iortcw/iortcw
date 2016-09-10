@@ -117,7 +117,7 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 	vec3_t offset;
 	float scale;
 	float   *xyz = ( float * ) tess.xyz;
-	uint32_t	*normal = tess.normal;
+	int16_t	*normal = tess.normal[0];
 	float   *table;
 
 	// Ridah
@@ -147,13 +147,13 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 
 		table = TableForFunc( ds->deformationWave.func );
 
-		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal++ )
+		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 )
 		{
 			float off = ( xyz[0] + xyz[1] + xyz[2] ) * ds->deformationSpread;
 			float dot;
 			vec3_t fNormal;
 
-			R_VaoUnpackNormal(fNormal, *normal);
+			R_VaoUnpackNormal(fNormal, normal);
 
 			scale = WAVEVALUE( table, ds->deformationWave.base,
 							   ds->deformationWave.amplitude,
@@ -179,19 +179,19 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 	else if ( ds->deformationWave.frequency == 0 ) {
 		scale = EvalWaveForm( &ds->deformationWave );
 
-		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal++ )
+		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 )
 		{
-			R_VaoUnpackNormal(offset, *normal);
+			R_VaoUnpackNormal(offset, normal);
 
 			xyz[0] += offset[0] * scale;
 			xyz[1] += offset[1] * scale;
 			xyz[2] += offset[2] * scale;
 		}
-	} else
-	{
+	}
+	else {
 		table = TableForFunc( ds->deformationWave.func );
 
-		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal++ )
+		for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 )
 		{
 			float off = ( xyz[0] + xyz[1] + xyz[2] ) * ds->deformationSpread;
 
@@ -200,7 +200,7 @@ void RB_CalcDeformVertexes( deformStage_t *ds ) {
 							   ds->deformationWave.phase + off,
 							   ds->deformationWave.frequency );
 
-			R_VaoUnpackNormal(offset, *normal);
+			R_VaoUnpackNormal(offset, normal);
 
 			xyz[0] += offset[0] * scale;
 			xyz[1] += offset[1] * scale;
@@ -220,12 +220,12 @@ void RB_CalcDeformNormals( deformStage_t *ds ) {
 	int i;
 	float scale;
 	float   *xyz = ( float * ) tess.xyz;
-	uint32_t *normal = tess.normal;
+	int16_t *normal = tess.normal[0];
 
-	for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal++ ) {
+	for ( i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4 ) {
 		vec3_t fNormal;
 
-		R_VaoUnpackNormal(fNormal, *normal);
+		R_VaoUnpackNormal(fNormal, normal);
 
 		scale = 0.98f;
 		scale = R_NoiseGet4f( xyz[0] * scale, xyz[1] * scale, xyz[2] * scale,
@@ -244,7 +244,7 @@ void RB_CalcDeformNormals( deformStage_t *ds ) {
 
 		VectorNormalizeFast( fNormal );
 
-		R_VaoPackNormal((byte *)normal, fNormal);
+		R_VaoPackNormal(normal, fNormal);
 	}
 }
 
@@ -258,17 +258,17 @@ void RB_CalcBulgeVertexes( deformStage_t *ds ) {
 	int i;
 	const float	*st = ( const float * ) tess.texCoords[0];
 	float		*xyz = ( float * ) tess.xyz;
-	uint32_t		*normal = tess.normal;
+	int16_t	*normal = tess.normal[0];
 	float now;
 
 	now = backEnd.refdef.time * ds->bulgeSpeed * 0.001f;
 
-	for ( i = 0; i < tess.numVertexes; i++, xyz += 4, st += 4, normal++ ) {
+	for ( i = 0; i < tess.numVertexes; i++, xyz += 4, st += 4, normal += 4 ) {
 		int off;
 		float scale;
 		vec3_t fNormal;
 
-		R_VaoUnpackNormal(fNormal, *normal);
+		R_VaoUnpackNormal(fNormal, normal);
 
 		off = (float)( FUNCTABLE_SIZE / ( M_PI * 2 ) ) * ( st[0] * ds->bulgeWidth + now );
 
@@ -810,18 +810,18 @@ void RB_CalcFogTexCoords( float *st ) {
 void RB_CalcFireRiseEnvTexCoords( float *st ) {
 	int i;
 	float       *v;
-	uint32_t *normal = tess.normal;
+	int16_t *normal = tess.normal[0];
 	vec3_t fNormal, viewer, reflected;
 	float d;
 
 	v = tess.xyz[0];
 	VectorNegate( backEnd.currentEntity->e.fireRiseDir, viewer );
 
-	for ( i = 0 ; i < tess.numVertexes ; i++, v += 4, normal++, st += 2 )
+	for ( i = 0 ; i < tess.numVertexes ; i++, v += 4, normal += 4, st += 2 )
 	{
 		VectorNormalizeFast( viewer );
 
-		R_VaoUnpackNormal(fNormal, *normal);
+		R_VaoUnpackNormal(fNormal, normal);
 
 		d = DotProduct( fNormal, viewer );
 

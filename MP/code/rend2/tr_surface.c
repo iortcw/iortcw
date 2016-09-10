@@ -94,7 +94,7 @@ RB_AddQuadStampExt
 */
 void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], float s1, float t1, float s2, float t2 ) {
 	vec3_t normal;
-	uint32_t    pNormal;
+	int16_t     iNormal[4];
 	int ndx;
 
 	RB_CheckVao(tess.vao);
@@ -132,11 +132,12 @@ void RB_AddQuadStampExt( vec3_t origin, vec3_t left, vec3_t up, float color[4], 
 	// constant normal all the way around
 	VectorSubtract( vec3_origin, backEnd.viewParms.or.axis[0], normal );
 
-	R_VaoPackNormal((byte *)&pNormal, normal);
-	tess.normal[ndx] =
-	tess.normal[ndx+1] =
-	tess.normal[ndx+2] =
-	tess.normal[ndx+3] = pNormal;
+	R_VaoPackNormal(iNormal, normal);
+
+	VectorCopy4(tess.normal[ndx], iNormal);
+	VectorCopy4(tess.normal[ndx+1], iNormal);
+	VectorCopy4(tess.normal[ndx+2], iNormal);
+	VectorCopy4(tess.normal[ndx+3], iNormal);
 
 	// standard square texture coordinates
 	VectorSet2(tess.texCoords[ndx  ][0], s1, t1);
@@ -348,10 +349,10 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	glIndex_t      *inIndex;
 	srfVert_t      *dv;
 	float          *xyz, *texCoords, *lightCoords;
-	uint32_t        *lightdir;
-	uint32_t        *normal;
+	int16_t        *lightdir;
+	int16_t        *normal;
 #ifdef USE_VERT_TANGENT_SPACE
-	uint32_t        *tangent;
+	int16_t        *tangent;
 #endif
 	glIndex_t      *outIndex;
 	float		*color;
@@ -378,18 +379,18 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	if ( tess.shader->vertexAttribs & ATTR_NORMAL )
 	{
 		dv = verts;
-		normal = &tess.normal[ tess.numVertexes ];
-		for ( i = 0 ; i < numVerts ; i++, dv++, normal++ )
-			R_VaoPackNormal((byte *)normal, dv->normal);
+		normal = tess.normal[ tess.numVertexes ];
+		for ( i = 0 ; i < numVerts ; i++, dv++, normal+=4 )
+			VectorCopy4(dv->normal, normal);
 	}
 
 #ifdef USE_VERT_TANGENT_SPACE
 	if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 	{
 		dv = verts;
-		tangent = &tess.tangent[ tess.numVertexes ];
-		for ( i = 0 ; i < numVerts ; i++, dv++, tangent++ )
-			R_VaoPackTangent((byte *)tangent, dv->tangent);
+		tangent = tess.tangent[ tess.numVertexes ];
+		for ( i = 0 ; i < numVerts ; i++, dv++, tangent+=4 )
+			VectorCopy4(dv->tangent, tangent);
 	}
 #endif
 
@@ -420,9 +421,9 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	if ( tess.shader->vertexAttribs & ATTR_LIGHTDIRECTION )
 	{
 		dv = verts;
-		lightdir = &tess.lightdir[ tess.numVertexes ];
-		for ( i = 0 ; i < numVerts ; i++, dv++, lightdir++ )
-			R_VaoPackNormal((byte *)lightdir, dv->lightdir);
+		lightdir = tess.lightdir[ tess.numVertexes ];
+		for ( i = 0 ; i < numVerts ; i++, dv++, lightdir+=4 )
+			VectorCopy4(dv->lightdir, lightdir);
 	}
 
 #if 0  // nothing even uses vertex dlightbits
@@ -868,306 +869,18 @@ static void RB_SurfaceLightningBolt( void ) {
 	}
 }
 
-/*
-** VectorArrayNormalize
-*
-* The inputs to this routing seem to always be close to length = 1.0 (about 0.6 to 2.0)
-* This means that we don't have to worry about zero length or enormously long vectors.
-*/
-#if 0 // Unused in rend2
-static void VectorArrayNormalize( vec4_t *normals, unsigned int count ) {
-//    assert(count);
-
-#if idppc
-	{
-		register float half = 0.5;
-		register float one  = 1.0;
-		float *components = (float *)normals;
-
-		// Vanilla PPC code, but since PPC has a reciprocal square root estimate instruction,
-		// runs *much* faster than calling sqrt().  We'll use a single Newton-Raphson
-		// refinement step to get a little more precision.  This seems to yeild results
-		// that are correct to 3 decimal places and usually correct to at least 4 (sometimes 5).
-		// (That is, for the given input range of about 0.6 to 2.0).
-		do {
-			float x, y, z;
-			float B, y0, y1;
-
-			x = components[0];
-			y = components[1];
-			z = components[2];
-			components += 4;
-			B = x * x + y * y + z * z;
-
-#ifdef __GNUC__
-			asm ( "frsqrte %0,%1" : "=f" ( y0 ) : "f" ( B ) );
-#else
-			y0 = __frsqrte( B );
-#endif
-			y1 = y0 + half * y0 * ( one - B * y0 * y0 );
-
-			x = x * y1;
-			y = y * y1;
-			components[-4] = x;
-			z = z * y1;
-			components[-3] = y;
-			components[-2] = z;
-		} while ( count-- );
-	}
-#else // No assembly version for this architecture, or C_ONLY defined
-	  // given the input, it's safe to call VectorNormalizeFast
-	while ( count-- ) {
-		VectorNormalizeFast( normals[0] );
-		normals++;
-	}
-#endif
-}
-#endif
-
-
-
-/*
-** LerpMeshVertexes
-*/
-#if 0 // Unused
-#if idppc_altivec
-static void LerpMeshVertexes_altivec(md3Surface_t *surf, float backlerp)
+static void LerpMeshVertexes(mdvSurface_t *surf, float backlerp)
 {
-	short	*oldXyz, *newXyz, *oldNormals, *newNormals;
-	float	*outXyz, *outNormal;
-	float	oldXyzScale QALIGN(16);
-	float   newXyzScale QALIGN(16);
-	float	oldNormalScale QALIGN(16);
-	float newNormalScale QALIGN(16);
-	int		vertNum;
-	unsigned lat, lng;
-	int		numVerts;
-
-	outXyz = tess.xyz[tess.numVertexes];
-	outNormal = tess.normal[tess.numVertexes];
-
-	newXyz = (short *)((byte *)surf + surf->ofsXyzNormals)
-		+ (backEnd.currentEntity->e.frame * surf->numVerts * 4);
-	newNormals = newXyz + 3;
-
-	newXyzScale = MD3_XYZ_SCALE * (1.0 - backlerp);
-	newNormalScale = 1.0 - backlerp;
-
-	numVerts = surf->numVerts;
-
-	if ( backlerp == 0 ) {
-		vector signed short newNormalsVec0;
-		vector signed short newNormalsVec1;
-		vector signed int newNormalsIntVec;
-		vector float newNormalsFloatVec;
-		vector float newXyzScaleVec;
-		vector unsigned char newNormalsLoadPermute;
-		vector unsigned char newNormalsStorePermute;
-		vector float zero;
-		
-		newNormalsStorePermute = vec_lvsl(0,(float *)&newXyzScaleVec);
-		newXyzScaleVec = *(vector float *)&newXyzScale;
-		newXyzScaleVec = vec_perm(newXyzScaleVec,newXyzScaleVec,newNormalsStorePermute);
-		newXyzScaleVec = vec_splat(newXyzScaleVec,0);		
-		newNormalsLoadPermute = vec_lvsl(0,newXyz);
-		newNormalsStorePermute = vec_lvsr(0,outXyz);
-		zero = (vector float)vec_splat_s8(0);
-		//
-		// just copy the vertexes
-		//
-		for (vertNum=0 ; vertNum < numVerts ; vertNum++,
-			newXyz += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4) 
-		{
-			newNormalsLoadPermute = vec_lvsl(0,newXyz);
-			newNormalsStorePermute = vec_lvsr(0,outXyz);
-			newNormalsVec0 = vec_ld(0,newXyz);
-			newNormalsVec1 = vec_ld(16,newXyz);
-			newNormalsVec0 = vec_perm(newNormalsVec0,newNormalsVec1,newNormalsLoadPermute);
-			newNormalsIntVec = vec_unpackh(newNormalsVec0);
-			newNormalsFloatVec = vec_ctf(newNormalsIntVec,0);
-			newNormalsFloatVec = vec_madd(newNormalsFloatVec,newXyzScaleVec,zero);
-			newNormalsFloatVec = vec_perm(newNormalsFloatVec,newNormalsFloatVec,newNormalsStorePermute);
-			//outXyz[0] = newXyz[0] * newXyzScale;
-			//outXyz[1] = newXyz[1] * newXyzScale;
-			//outXyz[2] = newXyz[2] * newXyzScale;
-
-			lat = ( newNormals[0] >> 8 ) & 0xff;
-			lng = ( newNormals[0] & 0xff );
-			lat *= (FUNCTABLE_SIZE/256);
-			lng *= (FUNCTABLE_SIZE/256);
-
-			// decode X as cos( lat ) * sin( long )
-			// decode Y as sin( lat ) * sin( long )
-			// decode Z as cos( long )
-
-			outNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			outNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			outNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-
-			vec_ste(newNormalsFloatVec,0,outXyz);
-			vec_ste(newNormalsFloatVec,4,outXyz);
-			vec_ste(newNormalsFloatVec,8,outXyz);
-		}
-	} else {
-		//
-		// interpolate and copy the vertex and normal
-		//
-		oldXyz = (short *)((byte *)surf + surf->ofsXyzNormals)
-			+ (backEnd.currentEntity->e.oldframe * surf->numVerts * 4);
-		oldNormals = oldXyz + 3;
-
-		oldXyzScale = MD3_XYZ_SCALE * backlerp;
-		oldNormalScale = backlerp;
-
-		for (vertNum=0 ; vertNum < numVerts ; vertNum++,
-			oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4) 
-		{
-			vec3_t uncompressedOldNormal, uncompressedNewNormal;
-
-			// interpolate the xyz
-			outXyz[0] = oldXyz[0] * oldXyzScale + newXyz[0] * newXyzScale;
-			outXyz[1] = oldXyz[1] * oldXyzScale + newXyz[1] * newXyzScale;
-			outXyz[2] = oldXyz[2] * oldXyzScale + newXyz[2] * newXyzScale;
-
-			// FIXME: interpolate lat/long instead?
-			lat = ( newNormals[0] >> 8 ) & 0xff;
-			lng = ( newNormals[0] & 0xff );
-			lat *= 4;
-			lng *= 4;
-			uncompressedNewNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedNewNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedNewNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-
-			lat = ( oldNormals[0] >> 8 ) & 0xff;
-			lng = ( oldNormals[0] & 0xff );
-			lat *= 4;
-			lng *= 4;
-
-			uncompressedOldNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedOldNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedOldNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-
-			outNormal[0] = uncompressedOldNormal[0] * oldNormalScale + uncompressedNewNormal[0] * newNormalScale;
-			outNormal[1] = uncompressedOldNormal[1] * oldNormalScale + uncompressedNewNormal[1] * newNormalScale;
-			outNormal[2] = uncompressedOldNormal[2] * oldNormalScale + uncompressedNewNormal[2] * newNormalScale;
-
-//			VectorNormalize (outNormal);
-		}
-    	VectorArrayNormalize((vec4_t *)tess.normal[tess.numVertexes], numVerts);
-   	}
-}
-#endif
-#endif
-
-static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
-{
-#if 0
-	short	*oldXyz, *newXyz, *oldNormals, *newNormals;
-	float	*outXyz, *outNormal;
-	float	oldXyzScale, newXyzScale;
-	float	oldNormalScale, newNormalScale;
-	int		vertNum;
-	unsigned lat, lng;
-	int		numVerts;
-
-	outXyz = tess.xyz[tess.numVertexes];
-	outNormal = tess.normal[tess.numVertexes];
-
-	newXyz = (short *)((byte *)surf + surf->ofsXyzNormals)
-		+ (backEnd.currentEntity->e.frame * surf->numVerts * 4);
-	newNormals = newXyz + 3;
-
-	newXyzScale = MD3_XYZ_SCALE * (1.0 - backlerp);
-	newNormalScale = 1.0 - backlerp;
-
-	numVerts = surf->numVerts;
-
-	if ( backlerp == 0 ) {
-		//
-		// just copy the vertexes
-		//
-		for (vertNum=0 ; vertNum < numVerts ; vertNum++,
-			newXyz += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4) 
-		{
-
-			outXyz[0] = newXyz[0] * newXyzScale;
-			outXyz[1] = newXyz[1] * newXyzScale;
-			outXyz[2] = newXyz[2] * newXyzScale;
-
-			lat = ( newNormals[0] >> 8 ) & 0xff;
-			lng = ( newNormals[0] & 0xff );
-			lat *= (FUNCTABLE_SIZE/256);
-			lng *= (FUNCTABLE_SIZE/256);
-
-			// decode X as cos( lat ) * sin( long )
-			// decode Y as sin( lat ) * sin( long )
-			// decode Z as cos( long )
-
-			outNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			outNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			outNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-		}
-	} else {
-		//
-		// interpolate and copy the vertex and normal
-		//
-		oldXyz = (short *)((byte *)surf + surf->ofsXyzNormals)
-			+ (backEnd.currentEntity->e.oldframe * surf->numVerts * 4);
-		oldNormals = oldXyz + 3;
-
-		oldXyzScale = MD3_XYZ_SCALE * backlerp;
-		oldNormalScale = backlerp;
-
-		for (vertNum=0 ; vertNum < numVerts ; vertNum++,
-			oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4) 
-		{
-			vec3_t uncompressedOldNormal, uncompressedNewNormal;
-
-			// interpolate the xyz
-			outXyz[0] = oldXyz[0] * oldXyzScale + newXyz[0] * newXyzScale;
-			outXyz[1] = oldXyz[1] * oldXyzScale + newXyz[1] * newXyzScale;
-			outXyz[2] = oldXyz[2] * oldXyzScale + newXyz[2] * newXyzScale;
-
-			// FIXME: interpolate lat/long instead?
-			lat = ( newNormals[0] >> 8 ) & 0xff;
-			lng = ( newNormals[0] & 0xff );
-			lat *= 4;
-			lng *= 4;
-			uncompressedNewNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedNewNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedNewNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-
-			lat = ( oldNormals[0] >> 8 ) & 0xff;
-			lng = ( oldNormals[0] & 0xff );
-			lat *= 4;
-			lng *= 4;
-
-			uncompressedOldNormal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedOldNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedOldNormal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
-
-			outNormal[0] = uncompressedOldNormal[0] * oldNormalScale + uncompressedNewNormal[0] * newNormalScale;
-			outNormal[1] = uncompressedOldNormal[1] * oldNormalScale + uncompressedNewNormal[1] * newNormalScale;
-			outNormal[2] = uncompressedOldNormal[2] * oldNormalScale + uncompressedNewNormal[2] * newNormalScale;
-
-//			VectorNormalize (outNormal);
-		}
-    	VectorArrayNormalize((vec4_t *)tess.normal[tess.numVertexes], numVerts);
-   	}
-#endif
 	float *outXyz;
-	uint32_t *outNormal;
+	int16_t *outNormal, *outTangent;
 	mdvVertex_t *newVerts;
 	int		vertNum;
 
 	newVerts = surf->verts + backEnd.currentEntity->e.frame * surf->numVerts;
 
-	outXyz =    tess.xyz[tess.numVertexes];
-	outNormal = &tess.normal[tess.numVertexes];
+	outXyz =     tess.xyz[tess.numVertexes];
+	outNormal =  tess.normal[tess.numVertexes];
+	outTangent = tess.tangent[tess.numVertexes];
 
 	if (backlerp == 0)
 	{
@@ -1177,16 +890,15 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 
 		for (vertNum=0 ; vertNum < surf->numVerts ; vertNum++)
 		{
-			vec3_t normal;
-
 			VectorCopy(newVerts->xyz,    outXyz);
-			VectorCopy(newVerts->normal, normal);
 
-			R_VaoPackNormal((byte *)outNormal, normal);
+			VectorCopy4(newVerts->normal, outNormal);
+			VectorCopy4(newVerts->tangent, outTangent);
 
 			newVerts++;
 			outXyz += 4;
-			outNormal++;
+			outNormal += 4;
+			outTangent += 4;
 		}
 	}
 	else
@@ -1201,34 +913,25 @@ static void LerpMeshVertexes_scalar(mdvSurface_t *surf, float backlerp)
 
 		for (vertNum=0 ; vertNum < surf->numVerts ; vertNum++)
 		{
-			vec3_t normal;
-
 			VectorLerp(newVerts->xyz,    oldVerts->xyz,    backlerp, outXyz);
-			VectorLerp(newVerts->normal, oldVerts->normal, backlerp, normal);
-			VectorNormalize(normal);
 
-			R_VaoPackNormal((byte *)outNormal, normal);
+			outNormal[0] = (int16_t)(newVerts->normal[0] * (1.0f - backlerp) + oldVerts->normal[0] * backlerp);
+			outNormal[1] = (int16_t)(newVerts->normal[1] * (1.0f - backlerp) + oldVerts->normal[1] * backlerp);
+			outNormal[2] = (int16_t)(newVerts->normal[2] * (1.0f - backlerp) + oldVerts->normal[2] * backlerp);
+			outNormal[3] = 0;
+
+			outTangent[0] = (int16_t)(newVerts->tangent[0] * (1.0f - backlerp) + oldVerts->tangent[0] * backlerp);
+			outTangent[1] = (int16_t)(newVerts->tangent[1] * (1.0f - backlerp) + oldVerts->tangent[1] * backlerp);
+			outTangent[2] = (int16_t)(newVerts->tangent[2] * (1.0f - backlerp) + oldVerts->tangent[2] * backlerp);
+			outTangent[3] = newVerts->tangent[3];
 
 			newVerts++;
 			oldVerts++;
 			outXyz += 4;
-			outNormal++;
+			outNormal += 4;
+			outTangent += 4;
 		}
 	}
-}
-
-static void LerpMeshVertexes(mdvSurface_t *surf, float backlerp)
-{
-#if 0
-#if idppc_altivec
-	if (com_altivec->integer) {
-		// must be in a seperate function or G3 systems will crash.
-		LerpMeshVertexes_altivec( surf, backlerp );
-		return;
-	}
-#endif // idppc_altivec
-#endif
-	LerpMeshVertexes_scalar( surf, backlerp );
 }
 
 
@@ -1283,229 +986,6 @@ static void RB_SurfaceMesh(mdvSurface_t *surface) {
 
 }
 
-/*
-** R_LatLongToNormal
-*/
-void R_LatLongToNormal( vec3_t outNormal, short latLong ) {
-	unsigned lat, lng;
-
-	lat = ( latLong >> 8 ) & 0xff;
-	lng = ( latLong & 0xff );
-	lat *= ( FUNCTABLE_SIZE / 256 );
-	lng *= ( FUNCTABLE_SIZE / 256 );
-
-	// decode X as cos( lat ) * sin( long )
-	// decode Y as sin( lat ) * sin( long )
-	// decode Z as cos( long )
-
-	outNormal[0] = tr.sinTable[( lat + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK] * tr.sinTable[lng];
-	outNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-	outNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
-}
-
-// Ridah
-/*
-** LerpCMeshVertexes
-*/
-static void LerpCMeshVertexes( mdcSurface_t *surf, float backlerp ) {
-	short   *oldXyz, *newXyz, *oldNormals, *newNormals;
-	float   *outXyz;
-	uint32_t *outNormal;
-	vec3_t fNormal;
-	float oldXyzScale, newXyzScale;
-	float oldNormalScale, newNormalScale;
-	int vertNum;
-	unsigned lat, lng;
-	int numVerts;
-
-	int oldBase, newBase;
-	short   *oldComp = NULL, *newComp = NULL; // TTimo: init
-	mdcXyzCompressed_t *oldXyzComp = NULL, *newXyzComp = NULL; // TTimo: init
-	vec3_t oldOfsVec, newOfsVec;
-
-	qboolean hasComp;
-
-	outXyz = tess.xyz[tess.numVertexes];
-	outNormal = &tess.normal[tess.numVertexes];
-
-	newBase = (int)*( ( short * )( (byte *)surf + surf->ofsFrameBaseFrames ) + backEnd.currentEntity->e.frame );
-	newXyz = ( short * )( (byte *)surf + surf->ofsXyzNormals )
-			 + ( newBase * surf->numVerts * 4 );
-	newNormals = newXyz + 3;
-
-	hasComp = ( surf->numCompFrames > 0 );
-	if ( hasComp ) {
-		newComp = ( ( short * )( (byte *)surf + surf->ofsFrameCompFrames ) + backEnd.currentEntity->e.frame );
-		if ( *newComp >= 0 ) {
-			newXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed )
-						 + ( *newComp * surf->numVerts );
-		}
-	}
-
-	newXyzScale = MD3_XYZ_SCALE * ( 1.0 - backlerp );
-	newNormalScale = 1.0 - backlerp;
-
-	numVerts = surf->numVerts;
-
-	if ( backlerp == 0 ) {
-		//
-		// just copy the vertexes
-		//
-		for ( vertNum = 0 ; vertNum < numVerts ; vertNum++,
-			  newXyz += 4, newNormals += 4,
-			  outXyz += 4, outNormal++ )
-		{
-
-			outXyz[0] = newXyz[0] * newXyzScale;
-			outXyz[1] = newXyz[1] * newXyzScale;
-			outXyz[2] = newXyz[2] * newXyzScale;
-
-			// add the compressed ofsVec
-			if ( hasComp && *newComp >= 0 ) {
-				R_MDC_DecodeXyzCompressed( newXyzComp->ofsVec, newOfsVec, fNormal );
-				newXyzComp++;
-				VectorAdd( outXyz, newOfsVec, outXyz );
-			} else {
-				lat = ( newNormals[0] >> 8 ) & 0xff;
-				lng = ( newNormals[0] & 0xff );
-				lat *= 4;
-				lng *= 4;
-
-				fNormal[0] = tr.sinTable[( lat + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK] * tr.sinTable[lng];
-				fNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-				fNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
-			}
-
-			R_VaoPackNormal((byte *)outNormal, fNormal);
-		}
-	} else {
-		//
-		// interpolate and copy the vertex and normal
-		//
-		oldBase = (int)*( ( short * )( (byte *)surf + surf->ofsFrameBaseFrames ) + backEnd.currentEntity->e.oldframe );
-		oldXyz = ( short * )( (byte *)surf + surf->ofsXyzNormals )
-				 + ( oldBase * surf->numVerts * 4 );
-		oldNormals = oldXyz + 3;
-
-		if ( hasComp ) {
-			oldComp = ( ( short * )( (byte *)surf + surf->ofsFrameCompFrames ) + backEnd.currentEntity->e.oldframe );
-			if ( *oldComp >= 0 ) {
-				oldXyzComp = ( mdcXyzCompressed_t * )( (byte *)surf + surf->ofsXyzCompressed )
-							 + ( *oldComp * surf->numVerts );
-			}
-		}
-
-		oldXyzScale = MD3_XYZ_SCALE * backlerp;
-		oldNormalScale = backlerp;
-
-		for ( vertNum = 0 ; vertNum < numVerts ; vertNum++,
-			  oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
-			  outXyz += 4, outNormal++ )
-		{
-			vec3_t uncompressedOldNormal, uncompressedNewNormal;
-
-			// interpolate the xyz
-			outXyz[0] = oldXyz[0] * oldXyzScale + newXyz[0] * newXyzScale;
-			outXyz[1] = oldXyz[1] * oldXyzScale + newXyz[1] * newXyzScale;
-			outXyz[2] = oldXyz[2] * oldXyzScale + newXyz[2] * newXyzScale;
-
-			// add the compressed ofsVec
-			if ( hasComp && *newComp >= 0 ) {
-				R_MDC_DecodeXyzCompressed( newXyzComp->ofsVec, newOfsVec, uncompressedNewNormal );
-				newXyzComp++;
-				VectorMA( outXyz, 1.0 - backlerp, newOfsVec, outXyz );
-			} else {
-				lat = ( newNormals[0] >> 8 ) & 0xff;
-				lng = ( newNormals[0] & 0xff );
-				lat *= 4;
-				lng *= 4;
-
-				uncompressedNewNormal[0] = tr.sinTable[( lat + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK] * tr.sinTable[lng];
-				uncompressedNewNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-				uncompressedNewNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
-			}
-
-			if ( hasComp && *oldComp >= 0 ) {
-				R_MDC_DecodeXyzCompressed( oldXyzComp->ofsVec, oldOfsVec, uncompressedOldNormal );
-				oldXyzComp++;
-				VectorMA( outXyz, backlerp, oldOfsVec, outXyz );
-			} else {
-				lat = ( oldNormals[0] >> 8 ) & 0xff;
-				lng = ( oldNormals[0] & 0xff );
-				lat *= 4;
-				lng *= 4;
-
-				uncompressedOldNormal[0] = tr.sinTable[( lat + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK] * tr.sinTable[lng];
-				uncompressedOldNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-				uncompressedOldNormal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) ) & FUNCTABLE_MASK];
-			}
-
-			fNormal[0] = uncompressedOldNormal[0] * oldNormalScale + uncompressedNewNormal[0] * newNormalScale;
-			fNormal[1] = uncompressedOldNormal[1] * oldNormalScale + uncompressedNewNormal[1] * newNormalScale;
-			fNormal[2] = uncompressedOldNormal[2] * oldNormalScale + uncompressedNewNormal[2] * newNormalScale;
-
-			VectorNormalize( fNormal );
-			
-			R_VaoPackNormal((byte *)outNormal, fNormal);
-		}
-	}
-}
-
-/*
-=============
-RB_SurfaceCMesh
-=============
-*/
-void RB_SurfaceCMesh( mdcSurface_t *surface ) {
-	int j;
-	float backlerp;
-	int             *triangles;
-	float           *texCoords;
-	int indexes;
-	int Bob, Doug;
-	int numVerts;
-
-	// RF, check for REFLAG_HANDONLY
-	if ( backEnd.currentEntity->e.reFlags & REFLAG_ONLYHAND ) {
-		if ( !strstr( surface->name, "hand" ) ) {
-			return;
-		}
-	}
-
-	if (  backEnd.currentEntity->e.oldframe == backEnd.currentEntity->e.frame ) {
-		backlerp = 0;
-	} else  {
-		backlerp = backEnd.currentEntity->e.backlerp;
-	}
-
-	RB_CheckVao(tess.vao);
-
-	RB_CHECKOVERFLOW( surface->numVerts, surface->numTriangles * 3 );
-
-	LerpCMeshVertexes( surface, backlerp );
-
-	triangles = ( int * )( (byte *)surface + surface->ofsTriangles );
-	indexes = surface->numTriangles * 3;
-	Bob = tess.numIndexes;
-	Doug = tess.numVertexes;
-	for ( j = 0 ; j < indexes ; j++ ) {
-		tess.indexes[Bob + j] = Doug + triangles[j];
-	}
-	tess.numIndexes += indexes;
-
-	texCoords = ( float * )( (byte *)surface + surface->ofsSt );
-
-	numVerts = surface->numVerts;
-	for ( j = 0; j < numVerts; j++ ) {
-		tess.texCoords[Doug + j][0][0] = texCoords[j * 2 + 0];
-		tess.texCoords[Doug + j][0][1] = texCoords[j * 2 + 1];
-		// FIXME: fill in lightmapST for completeness?
-	}
-
-	tess.numVertexes += surface->numVerts;
-
-}
-// done.
 
 /*
 ==============
@@ -1565,12 +1045,12 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 	int i, j;
 	float   *xyz;
 	float	*texCoords, *lightCoords;
-	uint32_t *normal;
+	int16_t *normal;
 #ifdef USE_VERT_TANGENT_SPACE
-	uint32_t *tangent;
+	int16_t *tangent;
 #endif
 	float   *color;
-	uint32_t *lightdir;
+	int16_t *lightdir;
 	srfVert_t	*dv;
 	int rows, irows, vrows;
 	int used;
@@ -1655,14 +1135,14 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 		numVertexes = tess.numVertexes;
 
 		xyz = tess.xyz[numVertexes];
-		normal = &tess.normal[numVertexes];
+		normal = tess.normal[numVertexes];
 #ifdef USE_VERT_TANGENT_SPACE
-		tangent = &tess.tangent[numVertexes];
+		tangent = tess.tangent[numVertexes];
 #endif
 		texCoords = tess.texCoords[numVertexes][0];
 		lightCoords = tess.texCoords[numVertexes][1];
 		color = tess.vertexColors[numVertexes];
-		lightdir = &tess.lightdir[numVertexes];
+		lightdir = tess.lightdir[numVertexes];
 		//vDlightBits = &tess.vertexDlightBits[numVertexes];
 
 		for ( i = 0 ; i < rows ; i++ ) {
@@ -1678,13 +1158,15 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_NORMAL )
 				{
-					R_VaoPackNormal((byte *)normal++, dv->normal);
+					VectorCopy4(normal, dv->normal);
+					normal += 4;
 				}
 
 #ifdef USE_VERT_TANGENT_SPACE
 				if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 				{
-					R_VaoPackTangent((byte *)tangent++, dv->tangent);
+					VectorCopy4(tangent, dv->tangent);
+					tangent += 4;
 				}
 #endif
 
@@ -1708,7 +1190,8 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 				if ( tess.shader->vertexAttribs & ATTR_LIGHTDIRECTION )
 				{
-					R_VaoPackNormal((byte *)lightdir++, dv->lightdir);
+					VectorCopy4(lightdir, dv->lightdir);
+					lightdir += 4;
 				}
 
 				//*vDlightBits++ = dlightBits;
@@ -1938,7 +1421,6 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * ) = {
 	( void( * ) ( void* ) )RB_SurfaceTriangles,    // SF_TRIANGLES,
 	( void( * ) ( void* ) )RB_SurfacePolychain,    // SF_POLY,
 	( void( * ) ( void* ) )RB_SurfaceMesh,         // SF_MDV,
-	( void( * ) ( void* ) )RB_SurfaceCMesh,        // SF_MDC,
 	( void( * ) ( void* ) )RB_SurfaceAnim,         // SF_MDS,
 	( void( * ) ( void* ) )RB_MDRSurfaceAnim,	// SF_MDR,
 	( void( * ) ( void* ) )RB_IQMSurfaceAnim,	// SF_IQM,
