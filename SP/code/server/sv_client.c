@@ -152,6 +152,7 @@ void SV_GetChallenge(netadr_t from)
 	challenge->time = svs.time;
 
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
 	// Drop the authorize stuff if this client is coming in via v6 as the auth server does not support ipv6.
 	// Drop also for addresses coming in on local LAN and for stand-alone games independent from id's assets.
 	if(challenge->adr.type == NA_IP && !com_standalone->integer && !Sys_IsLANAddress(from))
@@ -203,6 +204,7 @@ void SV_GetChallenge(netadr_t from)
 		}
 	}
 #endif
+#endif
 
 	challenge->pingTime = svs.time;
 	NET_OutOfBandPrint(NS_SERVER, challenge->adr, "challengeResponse %d %d %d",
@@ -210,6 +212,7 @@ void SV_GetChallenge(netadr_t from)
 }
 
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
 /*
 ====================
 SV_AuthorizeIpPacket
@@ -283,6 +286,7 @@ void SV_AuthorizeIpPacket( netadr_t from ) {
 	// clear the challenge record so it won't timeout and let them through
 	Com_Memset( challengeptr, 0, sizeof(*challengeptr) );
 }
+#endif
 #endif
 
 /*

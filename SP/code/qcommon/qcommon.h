@@ -294,12 +294,14 @@ extern int demo_protocols[];
 #endif
 
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
   #ifndef AUTHORIZE_SERVER_NAME
     #define	AUTHORIZE_SERVER_NAME	"authorize.gmistudios.com"
   #endif
   #ifndef PORT_AUTHORIZE
     #define	PORT_AUTHORIZE		27952
   #endif
+#endif
 #endif
 
 #define PORT_MASTER         27950

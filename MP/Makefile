@@ -285,6 +285,10 @@ ifndef USE_PBMD5
 USE_PBMD5=1
 endif
 
+ifndef USE_AUTHORIZE_SERVER
+USE_AUTHORIZE_SERVER=0
+endif
+
 
 #############################################################################
 
@@ -1138,6 +1142,10 @@ endif
 
 ifeq ($(BUILD_STANDALONE),1)
   BASE_CFLAGS += -DSTANDALONE
+endif
+
+ifeq ($(USE_AUTHORIZE_SERVER),1)
+  BASE_CFLAGS += -DUSE_AUTHORIZE_SERVER
 endif
 
 ifeq ($(GENERATE_DEPENDENCIES),1)

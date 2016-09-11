@@ -1686,6 +1686,7 @@ in anyway.
 ===================
 */
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
 void CL_RequestAuthorization( void ) {
 	char	nums[64];
 	int		i, j, l;
@@ -1729,6 +1730,7 @@ void CL_RequestAuthorization( void ) {
 
 	NET_OutOfBandPrint(NS_CLIENT, cls.authorizeServer, "getKeyAuthorize %i %s", fs->integer, nums );
 }
+#endif
 #endif
 
 /*
@@ -2506,8 +2508,10 @@ void CL_CheckForResend( void ) {
 	case CA_CONNECTING:
 		// requesting a challenge .. IPv6 users always get in as authorize server supports no ipv6.
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
 		if (!com_standalone->integer && clc.serverAddress.type == NA_IP && !Sys_IsLANAddress( clc.serverAddress ) )
 			CL_RequestAuthorization();
+#endif
 #endif
 
 		// The challenge request shall be followed by a client challenge so no malicious server can hijack this connection.

@@ -306,12 +306,14 @@ extern int demo_protocols[];
 #endif
 
 #ifndef STANDALONE
+#ifdef USE_AUTHORIZE_SERVER
   #ifndef AUTHORIZE_SERVER_NAME
-    #define	AUTHORIZE_SERVER_NAME	"wolfauthorize.idsoftware.com"
+    #define	AUTHORIZE_SERVER_NAME	"wolfauthorize.idsoftware.com"	// Decommissioned
   #endif
   #ifndef PORT_AUTHORIZE
     #define	PORT_AUTHORIZE		27952
   #endif
+#endif
 #endif
 
 //#define AUTOUPDATE_SERVER_NAME	"foobar"
