@@ -2831,11 +2831,11 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		fovOffset[2] = -0.2 * ( cg_fov.integer - 90 );
  	}
 
+	memset( &hand, 0, sizeof( hand ) );
+
 	if ( ps->weapon > WP_NONE ) {
 		CG_RegisterWeapon( ps->weapon );
 		weapon = &cg_weapons[ ps->weapon ];
-
-		memset( &hand, 0, sizeof( hand ) );
 
 		// set up gun position
 		CG_CalculateWeaponPosition( hand.origin, angles );
@@ -2859,6 +2859,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 			CG_WeaponAnimation( ps, weapon, &hand.oldframe, &hand.frame, &hand.backlerp );   //----(SA)	changed
 		}
 
+		VectorCopy( hand.origin, hand.lightingOrigin );
 
 		hand.hModel = weapon->handsModel;
 		hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;   //----(SA)

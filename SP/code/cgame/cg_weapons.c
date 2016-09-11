@@ -3011,7 +3011,6 @@ void CG_AddViewWeapon( playerState_t *ps ) {
  	}
 
 	memset( &hand, 0, sizeof( hand ) );
-	VectorCopy( hand.origin, hand.lightingOrigin );
 
 	if ( ps->weapon > WP_NONE ) {
 		// DHM - Nerve :: handle WP_CLASS_SPECIAL for different classes
@@ -3062,6 +3061,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 			CG_WeaponAnimation( ps, weapon, &hand.oldframe, &hand.frame, &hand.backlerp );   //----(SA)	changed
 		}
 
+		VectorCopy( hand.origin, hand.lightingOrigin );
 
 		hand.hModel = weapon->handsModel;
 		hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;   //----(SA)
