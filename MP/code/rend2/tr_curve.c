@@ -439,7 +439,7 @@ void R_CreateSurfaceGridMesh(srfBspSurface_t *grid, int width, int height,
 R_FreeSurfaceGridMeshData
 =================
 */
-void R_FreeSurfaceGridMeshData( srfBspSurface_t *grid ) {
+static void R_FreeSurfaceGridMeshData( srfBspSurface_t *grid ) {
 	ri.Free( grid->widthLodError );
 	ri.Free( grid->heightLodError );
 	ri.Free( grid->indexes );
