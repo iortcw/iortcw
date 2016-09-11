@@ -599,7 +599,7 @@ void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitD
 
 void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNumVerts, int numSurfVerts ) {
 	float *xyzTrav;
-	uint32_t *normTrav;
+	int16_t *normTrav;
 	vec3_t hitPos, hitDir, v, testDir;
 	float bestHitDist, thisDist;
 	qboolean foundHit;
@@ -627,9 +627,9 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 		foundHit = qfalse;
 
 		// for each vertex
-		for (   j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = &tess.normal[oldNumVerts];
+		for (   j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = tess.normal[oldNumVerts];
 				j < numSurfVerts;
-				j++, xyzTrav += 4, normTrav++ ) {
+				j++, xyzTrav += 4, normTrav += 4 ) {
 			vec3_t fNormTrav;
 
 			// if this vert has been hit enough times already
@@ -637,7 +637,7 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t *fleshHitVerts, int oldN
 				continue;
 			}
 
-			R_VaoUnpackNormal(fNormTrav, *normTrav);
+			R_VaoUnpackNormal(fNormTrav, normTrav);
 
 			// if this normal faces the wrong way, reject it
 			if ( DotProduct( fNormTrav, hitDir ) > 0 ) {
@@ -723,16 +723,16 @@ void RB_ZombieFXShowFleshHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNu
 void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeScale ) {
 	byte *vertColors;
 	float   *xyz;
-	uint32_t *norm;
+	int16_t *norm;
 	vec3_t fNorm;
 	int i;
 	float alpha;
 
 	vertColors = (byte *)tess.vertexColors[oldNumVerts];
 	xyz = tess.xyz[oldNumVerts];
-	norm = &tess.normal[oldNumVerts];
+	norm = tess.normal[oldNumVerts];
 
-	for ( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm++ ) {
+	for ( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm += 4 ) {
 		alpha = 255.0 * ( (float)( 1 + i % 3 ) / 3.0 ) * deltaTimeScale * 2;
 		if ( alpha > 255.0 ) {
 			alpha = 255.0;
@@ -743,7 +743,7 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
 			vertColors[3] -= (byte)alpha;
 		}
 
-		R_VaoUnpackNormal(fNorm, *norm);
+		R_VaoUnpackNormal(fNorm, norm);
 
 		// skin shrinks with age
 		VectorMA( xyz, -2.0 * deltaTimeScale, fNorm, xyz );
@@ -771,8 +771,6 @@ void RB_ZombieFX( int part, drawSurf_t *drawSurf, int oldNumVerts, int oldNumInd
 
 	if ( *drawSurf->surface == SF_MDV ) {
 		surfName = ( (mdvSurface_t *)drawSurf->surface )->name;
-	} else if ( *drawSurf->surface == SF_MDC ) {
-		surfName = ( (mdcSurface_t *)drawSurf->surface )->name;
 	} else {
 		Com_Printf( "RB_ZombieFX: unknown surface type\n" );
 		return;

@@ -373,17 +373,21 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 					// The offset is added in the vertex normal vector direction
 					// so all triangles will still fit together.
 					// The 2 unit offset should avoid pretty much all LOD problems.
+					vec3_t fNormal;
 
 					numClipPoints = 3;
 
 					dv = cv->verts + m * cv->width + n;
 
 					VectorCopy( dv[0].xyz, clipPoints[0][0] );
-					VectorMA( clipPoints[0][0], MARKER_OFFSET, dv[0].normal, clipPoints[0][0] );
+					R_VaoUnpackNormal(fNormal, dv[0].normal);
+					VectorMA(clipPoints[0][0], MARKER_OFFSET, fNormal, clipPoints[0][0]);
 					VectorCopy( dv[cv->width].xyz, clipPoints[0][1] );
-					VectorMA( clipPoints[0][1], MARKER_OFFSET, dv[cv->width].normal, clipPoints[0][1] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width].normal);
+					VectorMA(clipPoints[0][1], MARKER_OFFSET, fNormal, clipPoints[0][1]);
 					VectorCopy( dv[1].xyz, clipPoints[0][2] );
-					VectorMA( clipPoints[0][2], MARKER_OFFSET, dv[1].normal, clipPoints[0][2] );
+					R_VaoUnpackNormal(fNormal, dv[1].normal);
+					VectorMA(clipPoints[0][2], MARKER_OFFSET, fNormal, clipPoints[0][2]);
 					// check the normal of this triangle
 					VectorSubtract( clipPoints[0][0], clipPoints[0][1], v1 );
 					VectorSubtract( clipPoints[0][2], clipPoints[0][1], v2 );
@@ -403,11 +407,14 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 					}
 
 					VectorCopy( dv[1].xyz, clipPoints[0][0] );
-					VectorMA( clipPoints[0][0], MARKER_OFFSET, dv[1].normal, clipPoints[0][0] );
+					R_VaoUnpackNormal(fNormal, dv[1].normal);
+					VectorMA(clipPoints[0][0], MARKER_OFFSET, fNormal, clipPoints[0][0]);
 					VectorCopy( dv[cv->width].xyz, clipPoints[0][1] );
-					VectorMA( clipPoints[0][1], MARKER_OFFSET, dv[cv->width].normal, clipPoints[0][1] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width].normal);
+					VectorMA(clipPoints[0][1], MARKER_OFFSET, fNormal, clipPoints[0][1]);
 					VectorCopy( dv[cv->width + 1].xyz, clipPoints[0][2] );
-					VectorMA( clipPoints[0][2], MARKER_OFFSET, dv[cv->width + 1].normal, clipPoints[0][2] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width + 1].normal);
+					VectorMA(clipPoints[0][2], MARKER_OFFSET, fNormal, clipPoints[0][2]);
 					// check the normal of this triangle
 					VectorSubtract( clipPoints[0][0], clipPoints[0][1], v1 );
 					VectorSubtract( clipPoints[0][2], clipPoints[0][1], v2 );
@@ -462,8 +469,10 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 			{
 				for(j = 0; j < 3; j++)
 				{
+					vec3_t fNormal;
 					v = surf->verts[tri[j]].xyz;
-					VectorMA(v, MARKER_OFFSET, surf->verts[tri[j]].normal, clipPoints[0][j]);
+					R_VaoUnpackNormal(fNormal, surf->verts[tri[j]].normal);
+					VectorMA(v, MARKER_OFFSET, fNormal, clipPoints[0][j]);
 				}
 
 				// add the fragments of this face
@@ -604,17 +613,21 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 					// The offset is added in the vertex normal vector direction
 					// so all triangles will still fit together.
 					// The 2 unit offset should avoid pretty much all LOD problems.
+					vec3_t fNormal;
 
 					numClipPoints = 3;
 
 					dv = cv->verts + m * cv->width + n;
 
 					VectorCopy( dv[0].xyz, clipPoints[0][0] );
-					VectorMA( clipPoints[0][0], MARKER_OFFSET, dv[0].normal, clipPoints[0][0] );
+					R_VaoUnpackNormal(fNormal, dv[0].normal);
+					VectorMA(clipPoints[0][0], MARKER_OFFSET, fNormal, clipPoints[0][0]);
 					VectorCopy( dv[cv->width].xyz, clipPoints[0][1] );
-					VectorMA( clipPoints[0][1], MARKER_OFFSET, dv[cv->width].normal, clipPoints[0][1] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width].normal);
+					VectorMA(clipPoints[0][1], MARKER_OFFSET, fNormal, clipPoints[0][1]);
 					VectorCopy( dv[1].xyz, clipPoints[0][2] );
-					VectorMA( clipPoints[0][2], MARKER_OFFSET, dv[1].normal, clipPoints[0][2] );
+					R_VaoUnpackNormal(fNormal, dv[1].normal);
+					VectorMA(clipPoints[0][2], MARKER_OFFSET, fNormal, clipPoints[0][2]);
 					// check the normal of this triangle
 					VectorSubtract( clipPoints[0][0], clipPoints[0][1], v1 );
 					VectorSubtract( clipPoints[0][2], clipPoints[0][1], v2 );
@@ -634,11 +647,14 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 					}
 
 					VectorCopy( dv[1].xyz, clipPoints[0][0] );
-					VectorMA( clipPoints[0][0], MARKER_OFFSET, dv[1].normal, clipPoints[0][0] );
+					R_VaoUnpackNormal(fNormal, dv[1].normal);
+					VectorMA(clipPoints[0][0], MARKER_OFFSET, fNormal, clipPoints[0][0]);
 					VectorCopy( dv[cv->width].xyz, clipPoints[0][1] );
-					VectorMA( clipPoints[0][1], MARKER_OFFSET, dv[cv->width].normal, clipPoints[0][1] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width].normal);
+					VectorMA(clipPoints[0][1], MARKER_OFFSET, fNormal, clipPoints[0][1]);
 					VectorCopy( dv[cv->width + 1].xyz, clipPoints[0][2] );
-					VectorMA( clipPoints[0][2], MARKER_OFFSET, dv[cv->width + 1].normal, clipPoints[0][2] );
+					R_VaoUnpackNormal(fNormal, dv[cv->width + 1].normal);
+					VectorMA(clipPoints[0][2], MARKER_OFFSET, fNormal, clipPoints[0][2]);
 					// check the normal of this triangle
 					VectorSubtract( clipPoints[0][0], clipPoints[0][1], v1 );
 					VectorSubtract( clipPoints[0][2], clipPoints[0][1], v2 );
@@ -802,8 +818,10 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 			{
 				for(j = 0; j < 3; j++)
 				{
+					vec3_t fNormal;
 					v = surf->verts[tri[j]].xyz;
-					VectorMA(v, MARKER_OFFSET, surf->verts[tri[j]].normal, clipPoints[0][j]);
+					R_VaoUnpackNormal(fNormal, surf->verts[tri[j]].normal);
+					VectorMA(v, MARKER_OFFSET, fNormal, clipPoints[0][j]);
 				}
 
 				// add the fragments of this face

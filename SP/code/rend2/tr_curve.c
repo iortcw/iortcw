@@ -214,7 +214,11 @@ static void MakeMeshNormals( int width, int height, srfVert_t ctrl[MAX_GRID_SIZE
 			//if ( count == 0 ) {
 			//printf("bad normal\n");
 			//}
-			VectorNormalize2( sum, dv->normal );
+			{
+				vec3_t fNormal;
+				VectorNormalize2(sum, fNormal);
+				R_VaoPackNormal(dv->normal, fNormal);
+			}
 		}
 	}
 }

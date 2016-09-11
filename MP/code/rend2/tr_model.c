@@ -862,9 +862,12 @@ static qboolean R_LoadMDC( model_t *mod, int lod, void *buffer, const char *modN
 				for(k = 0; k < mdcSurf->numVerts; k++, mdcxyzComp++, v++)
 				{
 					vec3_t ofsVec;
-					R_MDC_DecodeXyzCompressed( mdcxyzComp->ofsVec, ofsVec, v->normal );
+					vec3_t fNormal;
+
+					R_MDC_DecodeXyzCompressed(mdcxyzComp->ofsVec, ofsVec, fNormal);
 					VectorAdd( v->xyz, ofsVec, v->xyz );
 
+					R_VaoPackNormal(v->normal, fNormal);
 				}
 			}
 		}
