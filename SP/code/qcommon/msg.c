@@ -105,12 +105,9 @@ bit functions
 =============================================================================
 */
 
-int overflows;
-
 // negative bit values include signs
 void MSG_WriteBits( msg_t *msg, int value, int bits ) {
 	int i;
-//	FILE*	fp;
 
 	oldsize += bits;
 
@@ -124,22 +121,6 @@ void MSG_WriteBits( msg_t *msg, int value, int bits ) {
 		Com_Error( ERR_DROP, "MSG_WriteBits: bad bits %i", bits );
 	}
 
-	// check for overflows
-	if ( bits != 32 ) {
-		if ( bits > 0 ) {
-			if ( value > ( ( 1 << bits ) - 1 ) || value < 0 ) {
-				overflows++;
-			}
-		} else {
-			int r;
-
-			r = 1 << ( bits - 1 );
-
-			if ( value >  r - 1 || value < -r ) {
-				overflows++;
-			}
-		}
-	}
 	if ( bits < 0 ) {
 		bits = -bits;
 	}
@@ -162,7 +143,6 @@ void MSG_WriteBits( msg_t *msg, int value, int bits ) {
 			Com_Error( ERR_DROP, "can't read %d bits", bits );
 		}
 	} else {
-//		fp = fopen("c:\\netchan.bin", "a");
 		value &= ( 0xffffffff >> ( 32 - bits ) );
 		if ( bits & 7 ) {
 			int nbits;
@@ -175,13 +155,11 @@ void MSG_WriteBits( msg_t *msg, int value, int bits ) {
 		}
 		if ( bits ) {
 			for ( i = 0; i < bits; i += 8 ) {
-//				fwrite(bp, 1, 1, fp);
 				Huff_offsetTransmit( &msgHuff.compressor, ( value & 0xff ), msg->data, &msg->bit );
 				value = ( value >> 8 );
 			}
 		}
 		msg->cursize = ( msg->bit >> 3 ) + 1;
-//		fclose(fp);
 	}
 }
 
