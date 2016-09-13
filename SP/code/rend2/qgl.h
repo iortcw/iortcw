@@ -1,24 +1,31 @@
 /*
 ===========================================================================
-Copyright (C) 1999-2005 Id Software, Inc.
 
-This file is part of Quake III Arena source code.
+Return to Castle Wolfenstein single player GPL Source Code
+Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company. 
 
-Quake III Arena source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
+This file is part of the Return to Castle Wolfenstein single player GPL Source Code (RTCW SP Source Code).  
 
-Quake III Arena source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+RTCW SP Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+RTCW SP Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Quake III Arena source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+along with RTCW SP Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the RTCW SP Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the RTCW SP Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
 ===========================================================================
 */
+
 /*
 ** QGL.H
 */
@@ -453,24 +460,23 @@ extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 #define qglVertexPointer glVertexPointer
 #define qglViewport glViewport
 
-// rend2
 
 // GL function loader, based on https://gist.github.com/rygorous/16796a0c876cf8a5f542caddb55bce8a
 
- // OpenGL 1.2, was GL_EXT_draw_range_elements
+// OpenGL 1.2, was GL_EXT_draw_range_elements
 #define QGL_1_2_PROCS \
 	GLE(void, DrawRangeElements, GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) \
- 
- // OpenGL 1.3, was GL_ARB_texture_compression
+
+// OpenGL 1.3, was GL_ARB_texture_compression
 #define QGL_1_3_PROCS \
 	GLE(void, CompressedTexImage2D, GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void *data) \
 	GLE(void, CompressedTexSubImage2D, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *data) \
- 
- // OpenGL 1.4, was GL_EXT_multi_draw_arrays
+
+// OpenGL 1.4, was GL_EXT_multi_draw_arrays
 #define QGL_1_4_PROCS \
 	GLE(void, MultiDrawElements, GLenum mode, const GLsizei *count, GLenum type, const GLvoid* *indices, GLsizei primcount) \
- 
- // OpenGL 1.5, was GL_ARB_vertex_buffer_object and GL_ARB_occlusion_query
+
+// OpenGL 1.5, was GL_ARB_vertex_buffer_object and GL_ARB_occlusion_query
 #define QGL_1_5_PROCS \
 	GLE(void, GenQueries, GLsizei n, GLuint *ids) \
 	GLE(void, DeleteQueries, GLsizei n, const GLuint *ids) \
@@ -483,8 +489,8 @@ extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 	GLE(void, GenBuffers, GLsizei n, GLuint *buffers) \
 	GLE(void, BufferData, GLenum target, GLsizeiptr size, const void *data, GLenum usage) \
 	GLE(void, BufferSubData, GLenum target, GLintptr offset, GLsizeiptr size, const void *data) \
- 
- // OpenGL 2.0, was GL_ARB_shading_language_100, GL_ARB_vertex_program, GL_ARB_shader_objects, and GL_ARB_vertex_shader
+
+// OpenGL 2.0, was GL_ARB_shading_language_100, GL_ARB_vertex_program, GL_ARB_shader_objects, and GL_ARB_vertex_shader
 #define QGL_2_0_PROCS \
 	GLE(void, AttachShader, GLuint program, GLuint shader) \
 	GLE(void, BindAttribLocation, GLuint program, GLuint index, const GLchar *name) \
@@ -564,7 +570,6 @@ extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 #define GL_HALF_FLOAT_ARB                   0x140B
 #endif
 
-// GL_EXT_framebuffer_object
 #define QGL_EXT_framebuffer_object_PROCS \
 	GLE(void, BindRenderbufferEXT, GLenum target, GLuint renderbuffer) \
 	GLE(void, DeleteRenderbuffersEXT, GLsizei n, const GLuint *renderbuffers) \
@@ -731,3 +736,4 @@ QGL_EXT_direct_state_access_PROCS;
 #undef GLE
 
 #endif // __QGL_H__
+
