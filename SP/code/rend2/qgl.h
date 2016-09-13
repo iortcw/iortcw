@@ -39,12 +39,12 @@ If you have questions concerning this license or the applicable additional terms
 #	include <SDL_opengl.h>
 #endif
 
-extern void ( APIENTRY * qglActiveTextureARB )( GLenum texture );
-extern void ( APIENTRY * qglClientActiveTextureARB )( GLenum texture );
-extern void ( APIENTRY * qglMultiTexCoord2fARB )( GLenum texture, GLfloat s, GLfloat t );
+extern void (APIENTRYP qglActiveTextureARB) (GLenum texture);
+extern void (APIENTRYP qglClientActiveTextureARB) (GLenum texture);
+extern void (APIENTRYP qglMultiTexCoord2fARB) (GLenum target, GLfloat s, GLfloat t);
 
-extern void ( APIENTRY * qglLockArraysEXT )( GLint, GLint );
-extern void ( APIENTRY * qglUnlockArraysEXT )( void );
+extern void (APIENTRYP qglLockArraysEXT) (GLint first, GLsizei count);
+extern void (APIENTRYP qglUnlockArraysEXT) (void);
 
 //===========================================================================
 
@@ -88,13 +88,13 @@ extern void ( APIENTRY * qglUnlockArraysEXT )( void );
 #define GL_PN_TRIANGLES_NORMAL_MODE_LINEAR_ATI      0x87F7
 #define GL_PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI   0x87F8
 #endif
-typedef void ( APIENTRY * PFNGLPNTRIANGLESIATIPROC )( GLenum pname, GLint param );
-typedef void ( APIENTRY * PFNGLPNTRIANGLESFATIPROC )( GLenum pname, GLfloat param );
+typedef void (APIENTRYP PFNGLPNTRIANGLESIATIPROC)(GLenum pname, GLint param);
+typedef void (APIENTRYP PFNGLPNTRIANGLESFATIPROC)(GLenum pname, GLfloat param);
 #endif
 
 //----(SA)	added
-extern void ( APIENTRY * qglPNTrianglesiATI )( GLenum pname, GLint param );
-extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
+extern void (APIENTRYP qglPNTrianglesiATI)(GLenum pname, GLint param);
+extern void (APIENTRYP qglPNTrianglesfATI)(GLenum pname, GLfloat param);
 //----(SA)	end
 
 // for NV fog distance
@@ -460,7 +460,6 @@ extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 #define qglVertexPointer glVertexPointer
 #define qglViewport glViewport
 
-
 // GL function loader, based on https://gist.github.com/rygorous/16796a0c876cf8a5f542caddb55bce8a
 
 // OpenGL 1.2, was GL_EXT_draw_range_elements
@@ -570,6 +569,7 @@ extern void ( APIENTRY * qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 #define GL_HALF_FLOAT_ARB                   0x140B
 #endif
 
+// GL_EXT_framebuffer_object
 #define QGL_EXT_framebuffer_object_PROCS \
 	GLE(void, BindRenderbufferEXT, GLenum target, GLuint renderbuffer) \
 	GLE(void, DeleteRenderbuffersEXT, GLsizei n, const GLuint *renderbuffers) \
@@ -736,4 +736,3 @@ QGL_EXT_direct_state_access_PROCS;
 #undef GLE
 
 #endif // __QGL_H__
-
