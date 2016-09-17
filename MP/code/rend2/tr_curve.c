@@ -223,7 +223,6 @@ static void MakeMeshNormals( int width, int height, srfVert_t ctrl[MAX_GRID_SIZE
 	}
 }
 
-#ifdef USE_VERT_TANGENT_SPACE
 static void MakeMeshTangentVectors(int width, int height, srfVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE], int numIndexes,
 								   glIndex_t indexes[(MAX_GRID_SIZE-1)*(MAX_GRID_SIZE-1)*2*3])
 {
@@ -262,7 +261,6 @@ static void MakeMeshTangentVectors(int width, int height, srfVert_t ctrl[MAX_GRI
 		}
 	}
 }
-#endif
 
 static int MakeMeshIndexes(int width, int height, glIndex_t indexes[(MAX_GRID_SIZE-1)*(MAX_GRID_SIZE-1)*2*3])
 {
@@ -621,9 +619,7 @@ void R_SubdividePatchToGrid( srfBspSurface_t *grid, int width, int height,
 
 	// calculate normals
 	MakeMeshNormals( width, height, ctrl );
-#ifdef USE_VERT_TANGENT_SPACE
 	MakeMeshTangentVectors(width, height, ctrl, numIndexes, indexes);
-#endif
 
 	R_CreateSurfaceGridMesh(grid, width, height, ctrl, errorTable, numIndexes, indexes);
 }
@@ -678,9 +674,7 @@ void R_GridInsertColumn( srfBspSurface_t *grid, int column, int row, vec3_t poin
 
 	// calculate normals
 	MakeMeshNormals( width, height, ctrl );
-#ifdef USE_VERT_TANGENT_SPACE
 	MakeMeshTangentVectors(width, height, ctrl, numIndexes, indexes);
-#endif
 
 	VectorCopy( grid->lodOrigin, lodOrigin );
 	lodRadius = grid->lodRadius;
@@ -742,9 +736,7 @@ void R_GridInsertRow( srfBspSurface_t *grid, int row, int column, vec3_t point, 
 
 	// calculate normals
 	MakeMeshNormals( width, height, ctrl );
-#ifdef USE_VERT_TANGENT_SPACE
 	MakeMeshTangentVectors(width, height, ctrl, numIndexes, indexes);
-#endif
 
 	VectorCopy( grid->lodOrigin, lodOrigin );
 	lodRadius = grid->lodRadius;

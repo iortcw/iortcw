@@ -1186,9 +1186,7 @@ static unsigned int RB_CalcShaderVertexAttribs( shaderCommands_t *input )
 		if (vertexAttribs & ATTR_NORMAL)
 		{
 			vertexAttribs |= ATTR_NORMAL2;
-#ifdef USE_VERT_TANGENT_SPACE
 			vertexAttribs |= ATTR_TANGENT2;
-#endif
 		}
 	}
 

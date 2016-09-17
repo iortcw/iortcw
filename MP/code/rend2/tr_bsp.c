@@ -856,7 +856,6 @@ static void ParseFace( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors, 
 
 	surf->data = (surfaceType_t *)cv;
 
-#ifdef USE_VERT_TANGENT_SPACE
 	// Calculate tangent spaces
 	{
 		srfVert_t      *dv[3];
@@ -870,7 +869,6 @@ static void ParseFace( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors, 
 			R_CalcTangentVectors(dv);
 		}
 	}
-#endif
 }
 
 
@@ -1010,7 +1008,6 @@ static void ParseTriSurf( dsurface_t *ds, drawVert_t *verts, float *hdrVertColor
 		cv->numIndexes -= badTriangles * 3;
 	}
 
-#ifdef USE_VERT_TANGENT_SPACE
 	// Calculate tangent spaces
 	{
 		srfVert_t      *dv[3];
@@ -1024,7 +1021,6 @@ static void ParseTriSurf( dsurface_t *ds, drawVert_t *verts, float *hdrVertColor
 			R_CalcTangentVectors(dv);
 		}
 	}
-#endif
 }
 
 /*
@@ -2005,9 +2001,7 @@ static int BSPSurfaceCompare(const void *a, const void *b)
 static void CopyVert(const srfVert_t * in, srfVert_t * out)
 {
 	VectorCopy(in->xyz,      out->xyz);
-#ifdef USE_VERT_TANGENT_SPACE
 	VectorCopy4(in->tangent, out->tangent);
-#endif
 	VectorCopy4(in->normal,   out->normal);
 	VectorCopy4(in->lightdir, out->lightdir);
 

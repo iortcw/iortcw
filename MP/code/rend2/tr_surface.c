@@ -351,9 +351,7 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 	float          *xyz, *texCoords, *lightCoords;
 	int16_t        *lightdir;
 	int16_t        *normal;
-#ifdef USE_VERT_TANGENT_SPACE
 	int16_t        *tangent;
-#endif
 	glIndex_t      *outIndex;
 	float		*color;
 
@@ -384,7 +382,6 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 			VectorCopy4(dv->normal, normal);
 	}
 
-#ifdef USE_VERT_TANGENT_SPACE
 	if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 	{
 		dv = verts;
@@ -392,7 +389,6 @@ static void RB_SurfaceVertsAndIndexes( int numVerts, srfVert_t *verts, int numIn
 		for ( i = 0 ; i < numVerts ; i++, dv++, tangent+=4 )
 			VectorCopy4(dv->tangent, tangent);
 	}
-#endif
 
 	if ( tess.shader->vertexAttribs & ATTR_TEXCOORD )
 	{
@@ -1046,9 +1042,7 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 	float   *xyz;
 	float	*texCoords, *lightCoords;
 	int16_t *normal;
-#ifdef USE_VERT_TANGENT_SPACE
 	int16_t *tangent;
-#endif
 	float   *color;
 	int16_t *lightdir;
 	srfVert_t	*dv;
@@ -1136,9 +1130,7 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 
 		xyz = tess.xyz[numVertexes];
 		normal = tess.normal[numVertexes];
-#ifdef USE_VERT_TANGENT_SPACE
 		tangent = tess.tangent[numVertexes];
-#endif
 		texCoords = tess.texCoords[numVertexes][0];
 		lightCoords = tess.texCoords[numVertexes][1];
 		color = tess.vertexColors[numVertexes];
@@ -1162,13 +1154,11 @@ static void RB_SurfaceGrid( srfBspSurface_t *srf ) {
 					normal += 4;
 				}
 
-#ifdef USE_VERT_TANGENT_SPACE
 				if ( tess.shader->vertexAttribs & ATTR_TANGENT )
 				{
 					VectorCopy4(dv->tangent, tangent);
 					tangent += 4;
 				}
-#endif
 
 				if ( tess.shader->vertexAttribs & ATTR_TEXCOORD )
 				{

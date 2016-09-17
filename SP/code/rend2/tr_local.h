@@ -57,8 +57,6 @@ typedef unsigned int glIndex_t;
 #define MAX_DRAWN_PSHADOWS    32 // do not increase past 32, because bit flags are used on surfaces
 #define PSHADOW_MAP_SIZE      512
  
-#define USE_VERT_TANGENT_SPACE
-
 // a trRefEntity_t has all the information passed in by
 // the client game, as well as some locally derived info
 typedef struct {
@@ -1012,9 +1010,7 @@ typedef struct
 	vec2_t          st;
 	vec2_t          lightmap;
 	int16_t         normal[4];
-#ifdef USE_VERT_TANGENT_SPACE
 	int16_t         tangent[4];
-#endif
 	int16_t         lightdir[4];
 	vec4_t			vertexColors;
 
@@ -1023,11 +1019,7 @@ typedef struct
 #endif
 } srfVert_t;
 
-#ifdef USE_VERT_TANGENT_SPACE
 #define srfVert_t_cleared(x) srfVert_t (x) = {{0, 0, 0}, {0, 0}, {0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
-#else
-#define srfVert_t_cleared(x) srfVert_t (x) = {{0, 0, 0}, {0, 0}, {0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
-#endif
 
 // srfBspSurface_t covers SF_GRID, SF_TRIANGLES, SF_POLY, and SF_VAO_MESH
 typedef struct srfBspSurface_s
@@ -1316,9 +1308,7 @@ typedef struct
 {
 	vec3_t          xyz;
 	int16_t         normal[4];
-#ifdef USE_VERT_TANGENT_SPACE
 	int16_t         tangent[4];
-#endif
 } mdvVertex_t;
 
 typedef struct
@@ -2267,9 +2257,7 @@ typedef struct shaderCommands_s
 	glIndex_t	indexes[SHADER_MAX_INDEXES] QALIGN(16);
 	vec4_t		xyz[SHADER_MAX_VERTEXES] QALIGN(16);
 	int16_t		normal[SHADER_MAX_VERTEXES][4] QALIGN(16);
-#ifdef USE_VERT_TANGENT_SPACE
 	int16_t		tangent[SHADER_MAX_VERTEXES][4] QALIGN(16);
-#endif
 	vec2_t		texCoords[SHADER_MAX_VERTEXES][2] QALIGN(16);
 	vec4_t		vertexColors[SHADER_MAX_VERTEXES] QALIGN(16);
 	int16_t		lightdir[SHADER_MAX_VERTEXES][4] QALIGN(16);
