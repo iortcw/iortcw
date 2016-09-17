@@ -1418,26 +1418,11 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 		if (pStage->rgbGen == CGEN_LIGHTING_DIFFUSE)
 		{
 			vec4_t vec;
-			vec_t cap = 1.0f / (1 << tr.overbrightBits);
 
 			VectorScale(backEnd.currentEntity->ambientLight, 1.0f / 255.0f, vec);
-			if ((vec[0] > cap) || (vec[1] > cap) || (vec[2] > cap))
-			{
-				vec_t hi = MAX(vec[0], vec[1]);
-				hi = MAX(hi, vec[2]);
-				
-				VectorScale(vec, cap / hi, vec);
-			}
 			GLSL_SetUniformVec3(sp, UNIFORM_AMBIENTLIGHT, vec);
 
 			VectorScale(backEnd.currentEntity->directedLight, 1.0f / 255.0f, vec);
-			if ((vec[0] > cap) || (vec[1] > cap) || (vec[2] > cap))
-			{
-				vec_t hi = MAX(vec[0], vec[1]);
-				hi = MAX(hi, vec[2]);
-				
-				VectorScale(vec, cap / hi, vec);
-			}
 			GLSL_SetUniformVec3(sp, UNIFORM_DIRECTEDLIGHT, vec);
 			
 			VectorCopy(backEnd.currentEntity->lightDir, vec);
