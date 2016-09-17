@@ -544,6 +544,7 @@ static void ComputeShaderColors( shaderStage_t *pStage, vec4_t baseColor, vec4_t
 			break;
 		case CGEN_FOG:
 			fog = tr.world->fogs + tess.fogNum;
+
 			baseColor[0] = ((unsigned char *)(&fog->colorInt))[0] / 255.0f;
 			baseColor[1] = ((unsigned char *)(&fog->colorInt))[1] / 255.0f;
 			baseColor[2] = ((unsigned char *)(&fog->colorInt))[2] / 255.0f;
