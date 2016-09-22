@@ -94,6 +94,10 @@ If you have questions concerning this license or the applicable additional terms
   #define OLD_PRODUCT_VERSION "1.41-MP"
 #endif
 
+#ifndef PRODUCT_DATE
+#  define PRODUCT_DATE __DATE__
+#endif
+
 #define Q3_VERSION PRODUCT_NAME " " PRODUCT_VERSION
 #define OLDVERSION OLD_PRODUCT_NAME " " OLD_PRODUCT_VERSION
 
