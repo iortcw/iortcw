@@ -1035,7 +1035,7 @@ char *AIFunc_InspectBulletImpact( cast_state_t *cs ) {
 				cs->scriptPauseTime = 0;
 				return AIFunc_IdleStart( cs );
 			}
-			// make sure we didnt change thinkfunc
+			// make sure we didn't change thinkfunc
 			if ( cs->aifunc != AIFunc_InspectBulletImpact ) {
 				//G_Error( "scripting passed control out of AIFunc_InspectBulletImpact(), this is bad" );
 				return NULL;
@@ -1715,7 +1715,7 @@ char *AIFunc_ChaseGoal( cast_state_t *cs ) {
 			AICast_PredictMovement( cs, 10, frameTime, &move, &ucmd, cs->followEntity );
 
 			if ( move.stopevent == PREDICTSTOP_HITENT ) { // success!
-				// make sure we didnt spend a lot of time sliding along an obstacle
+				// make sure we didn't spend a lot of time sliding along an obstacle
 				if ( ( move.frames * frameTime ) < ( 1.0 + ( goaldist / ( bs->cur_ps.speed * bs->cur_ps.runSpeedScale ) ) ) ) {
 					trap_EA_Move( cs->entityNum, dir, 400 );
 					vectoangles( dir, cs->ideal_viewangles );

@@ -872,7 +872,7 @@ char *AIFunc_InspectBulletImpact( cast_state_t *cs ) {
 				cs->scriptPauseTime = 0;
 				return AIFunc_IdleStart( cs );
 			}
-			// make sure we didnt change thinkfunc
+			// make sure we didn't change thinkfunc
 			if ( cs->aifunc != AIFunc_InspectBulletImpact ) {
 				//G_Error( "scripting passed control out of AIFunc_InspectBulletImpact(), this is bad" );
 				return NULL;

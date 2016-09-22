@@ -152,7 +152,7 @@ int AAS_UpdatePortal( int areanum, int clusternum ) {
 	} //end else if
 	else
 	{
-		Log_Write( "portal using area %d is seperating more than two clusters\r\n", areanum );
+		Log_Write( "portal using area %d is separating more than two clusters\r\n", areanum );
 		//remove the cluster portal flag contents
 		( *aasworld ).areasettings[areanum].contents &= ~AREACONTENTS_CLUSTERPORTAL;
 		return qfalse;

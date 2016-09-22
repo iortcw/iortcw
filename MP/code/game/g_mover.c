@@ -390,7 +390,7 @@ qboolean G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move, v
 					break;
 				}
 			}
-		// didnt work, so set the position back
+		// didn't work, so set the position back
 		VectorCopy( org, check->s.pos.trBase );
 		if ( check->client ) {
 			VectorCopy( org, check->client->ps.origin );

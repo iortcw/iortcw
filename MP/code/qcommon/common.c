@@ -421,7 +421,7 @@ void Com_ParseCommandLine( char *commandLine ) {
 	com_numConsoleLines = 1;
 
 	while ( *commandLine ) {
-		// look for a + seperating character
+		// look for a + separating character
 		// if commandLine came from a file, we might have real line seperators
 		if ( *commandLine == '+' || *commandLine == '\n' ) {
 			if ( com_numConsoleLines == MAX_CONSOLE_LINES ) {

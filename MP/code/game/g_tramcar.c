@@ -293,7 +293,7 @@ void GetNextTrack( gentity_t *ent ) {
 	}
 
 	if ( !num_choices ) {
-		G_Printf( "GetNextTrack didnt find a track\n" );
+		G_Printf( "GetNextTrack didn't find a track\n" );
 		return;
 	}
 

@@ -1293,7 +1293,7 @@ void AIChar_Pain( gentity_t *ent, gentity_t *attacker, int damage, vec3_t point 
 			}
 		}
 
-		// if we didnt just play a scripted sound, then play one of the default sounds
+		// if we didn't just play a scripted sound, then play one of the default sounds
 		if ( cs->lastScriptSound < level.time ) {
 			G_AddEvent( ent, EV_GENERAL_SOUND, G_SoundIndex( aiDefaults[ent->aiCharacter].painSoundScript ) );
 		}
