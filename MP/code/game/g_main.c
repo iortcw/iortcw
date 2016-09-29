@@ -1947,9 +1947,6 @@ void LogExit( const char *string ) {
 					 level.teamScores[TEAM_RED], level.teamScores[TEAM_BLUE] );
 	}
 
-	// NERVE - SMF - send gameCompleteStatus message to master servers
-	trap_SendConsoleCommand( EXEC_APPEND, "gameCompleteStatus\n" );
-
 	for ( i = 0 ; i < numSorted ; i++ ) {
 		int ping;
 

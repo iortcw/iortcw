@@ -1580,16 +1580,6 @@ static void SV_KillServer_f( void ) {
 	SV_Shutdown( "killserver" );
 }
 
-/*
-=================
-SV_GameCompleteStatus_f
-
-NERVE - SMF
-=================
-*/
-void SV_GameCompleteStatus_f( void ) {
-	SV_MasterGameCompleteStatus();
-}
 
 //===========================================================
 
@@ -1640,7 +1630,6 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand( "sectorlist", SV_SectorList_f );
 	Cmd_AddCommand( "map", SV_Map_f );
 	Cmd_SetCommandCompletionFunc( "map", SV_CompleteMapName );
-	Cmd_AddCommand( "gameCompleteStatus", SV_GameCompleteStatus_f );      // NERVE - SMF
 #ifndef PRE_RELEASE_DEMO
 	Cmd_AddCommand( "devmap", SV_Map_f );
 	Cmd_SetCommandCompletionFunc( "devmap", SV_CompleteMapName );

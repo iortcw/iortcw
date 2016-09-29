@@ -98,8 +98,6 @@ cvar_t *awh_bbox_horz;
 cvar_t *awh_bbox_vert;
 #endif
 
-void SVC_GameCompleteStatus( netadr_t from );       // NERVE - SMF
-
 /*
 =============================================================================
 
@@ -332,95 +330,6 @@ void SV_MasterHeartbeat(const char *message)
 			NET_OutOfBandPrint( NS_SERVER, adr[0], "heartbeat %s\n", message);
 		if(adr[1].type != NA_BAD)
 			NET_OutOfBandPrint( NS_SERVER, adr[1], "heartbeat %s\n", message);
-	}
-}
-
-/*
-=================
-SV_MasterGameCompleteStatus
-
-NERVE - SMF - Sends gameCompleteStatus messages to all master servers
-=================
-*/
-void SV_MasterGameCompleteStatus() {
-	netadr_t	adr[2]; // [2] for v4 and v6 address for the same address string.
-	int		i;
-	int		res;
-	int		netenabled;
-
-	// DHM - Nerve :: Update Server doesn't send gameCompleteStatus 
-#ifdef UPDATE_SERVER
-	return;
-#endif
-	Com_Memset(adr, 0, sizeof(netadr_t) * 2);
-	netenabled = Cvar_VariableIntegerValue("net_enabled");
-
-	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
-	if (!com_dedicated || com_dedicated->integer != 2 || !(netenabled & (NET_ENABLEV4 | NET_ENABLEV6)))
-		return;		// only dedicated servers send gameCompleteStatus
-
-	// send to group masters
-	for (i = 0; i < MAX_MASTER_SERVERS; i++)
-	{
-		if(!sv_master[i]->string[0])
-			continue;
-
-		// Enforce IP check everytime in case master moves to a new IP
-		sv_master[i]->modified = qfalse;
-
-		if(netenabled & NET_ENABLEV4)
-		{
-			Com_Printf("Resolving %s (IPv4)\n", sv_master[i]->string);
-			res = NET_StringToAdr(sv_master[i]->string, &adr[0], NA_IP);
-
-			if(res == 2)
-			{
-				// if no port was specified, use the default master port
-				adr[0].port = BigShort(PORT_MASTER);
-			}
-
-			if(res)
-				Com_Printf( "%s resolved to %s\n", sv_master[i]->string, NET_AdrToStringwPort(adr[0]));
-			else
-				Com_Printf( "%s has no IPv4 address.\n", sv_master[i]->string);
-		}
-
-		if(netenabled & NET_ENABLEV6)
-		{
-			Com_Printf("Resolving %s (IPv6)\n", sv_master[i]->string);
-			res = NET_StringToAdr(sv_master[i]->string, &adr[1], NA_IP6);
-
-			if(res == 2)
-			{
-				// if no port was specified, use the default master port
-				adr[1].port = BigShort(PORT_MASTER);
-			}
-
-			if(res)
-				Com_Printf( "%s resolved to %s\n", sv_master[i]->string, NET_AdrToStringwPort(adr[1]));
-			else
-				Com_Printf( "%s has no IPv6 address.\n", sv_master[i]->string);
-		}
-
-		if(adr[0].type == NA_BAD && adr[1].type == NA_BAD)
-		{
-			// if the address failed to resolve, clear it
-			// so we don't take repeated dns hits
-			Com_Printf("Couldn't resolve address: %s\n", sv_master[i]->string);
-			Cvar_Set(sv_master[i]->name, "");
-			sv_master[i]->modified = qfalse;
-			continue;
-		}
-
-
-		Com_Printf( "Sending gameCompleteStatus to %s\n", sv_master[i]->string );
-		// this command should be changed if the server info / status format
-		// ever incompatably changes
-
-		if(adr[0].type != NA_BAD)
-			SVC_GameCompleteStatus( adr[0] );
-		if(adr[1].type != NA_BAD)
-			SVC_GameCompleteStatus( adr[1] );
 	}
 }
 
@@ -686,74 +595,6 @@ static void SVC_Status( netadr_t from ) {
 	}
 
 	NET_OutOfBandPrint( NS_SERVER, from, "statusResponse\n%s\n%s", infostring, status );
-}
-
-/*
-=================
-SVC_GameCompleteStatus
-
-NERVE - SMF - Send serverinfo cvars, etc to master servers when
-game complete. Useful for tracking global player stats.
-=================
-*/
-void SVC_GameCompleteStatus( netadr_t from ) {
-	char player[1024];
-	char status[MAX_MSGLEN];
-	int i;
-	client_t    *cl;
-	playerState_t   *ps;
-	int statusLength;
-	int playerLength;
-	char infostring[MAX_INFO_STRING];
-
-	// ignore if we are in single player
-	if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive")) {
-		return;
-	}
-
-	// Prevent using getstatus as an amplifier
-	if ( SVC_RateLimitAddress( from, 10, 1000 ) ) {
-		Com_DPrintf( "SVC_Status: rate limit from %s exceeded, dropping request\n",
-			NET_AdrToString( from ) );
-		return;
-	}
-
-	// Allow getstatus to be DoSed relatively easily, but prevent
-	// excess outbound bandwidth usage when being flooded inbound
-	if ( SVC_RateLimit( &outboundLeakyBucket, 10, 100 ) ) {
-		Com_DPrintf( "SVC_Status: rate limit exceeded, dropping request\n" );
- 		return;
- 	}
-
-	// A maximum challenge length of 128 should be more than plenty.
-	if(strlen(Cmd_Argv(1)) > 128)
-		return;
-
-	strcpy( infostring, Cvar_InfoString( CVAR_SERVERINFO ) );
-
-	// echo back the parameter to status. so master servers can use it as a challenge
-	// to prevent timed spoofed reply packets that add ghost servers
-	Info_SetValueForKey( infostring, "challenge", Cmd_Argv( 1 ) );
-
-	status[0] = 0;
-	statusLength = 0;
-
-	for ( i = 0 ; i < sv_maxclients->integer ; i++ ) {
-		cl = &svs.clients[i];
-		if ( cl->state >= CS_CONNECTED ) {
-			ps = SV_GameClientNum( i );
-			Com_sprintf( player, sizeof( player ), "%i %i \"%s\"\n",
-						 ps->persistant[PERS_SCORE], cl->ping, cl->name );
-			playerLength = strlen( player );
-			if ( statusLength + playerLength >= sizeof( status ) ) {
-				break;      // can't hold any more
-			}
-			strcpy( status + statusLength, player );
-			statusLength += playerLength;
-		}
-	}
-
-	NET_OutOfBandPrint( NS_SERVER, from, "gameCompleteStatus\n%s\n%s", infostring, status );
 }
 
 /*
