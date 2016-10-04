@@ -5657,11 +5657,11 @@ static void UI_BuildFindPlayerList( qboolean force ) {
 	} else {
 		// add a line that shows the number of servers found
 		if ( !uiInfo.numFoundPlayerServers ) {
-			Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerAddresses[0] ), "no servers found" );
+			Com_sprintf( uiInfo.foundPlayerServerNames[0], sizeof( uiInfo.foundPlayerServerNames[0] ), "no servers found" );
 		} else {
-			Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerAddresses[0] ),
-						 "%d server%s found with player %s", uiInfo.numFoundPlayerServers - 1,
-						 uiInfo.numFoundPlayerServers == 2 ? "" : "s", uiInfo.findPlayerName );
+			Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1], sizeof( uiInfo.foundPlayerServerNames[0] ),
+						"%d server%s found with player %s", uiInfo.numFoundPlayerServers - 1,
+						uiInfo.numFoundPlayerServers == 2 ? "" : "s", uiInfo.findPlayerName );
 		}
 		uiInfo.nextFindPlayerRefresh = 0;
 		// show the server status info for the selected server
