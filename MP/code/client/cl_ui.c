@@ -673,11 +673,11 @@ static void CLUI_SetCDKey( char *buf ) {
 	if ( UI_usesUniqueCDKey() && fs && fs->string[0] != 0 ) {
 		memcpy( &cl_cdkey[16], buf, 16 );
 		cl_cdkey[32] = 0;
-		// set the flag so the fle will be written at the next opportunity
+		// set the flag so the file will be written at the next opportunity
 		cvar_modifiedFlags |= CVAR_ARCHIVE;
 	} else {
 		memcpy( cl_cdkey, buf, 16 );
-		// set the flag so the fle will be written at the next opportunity
+		// set the flag so the file will be written at the next opportunity
 		cvar_modifiedFlags |= CVAR_ARCHIVE;
 	}
 }

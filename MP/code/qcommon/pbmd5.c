@@ -323,16 +323,16 @@ char *Com_PBMD5File( char *key ) {
 
 	k = key;
 
-//	Com_DPrintf( "GUID of cdkey %s: ", k );
+//	Com_DPrintf( "cdkey: %s\n", k );
 
 	// Process first seed
-	k = do_md5x( k, strlen( k ), get_num( "0x00b684a3", NULL ) );
+	k = do_md5x( k, 16, get_num( "0x00b684a3", NULL ) );
 
 	// Process second seed
 	k = do_md5x( k, 32, get_num( "0x00051a56", NULL ) );
 
 	guid = Q_strupr( k );
-//	Com_DPrintf( "%s\n", guid );
+//	Com_DPrintf( "guid: %s\n", guid );
 
 	return guid;
 }
