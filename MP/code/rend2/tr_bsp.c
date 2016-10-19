@@ -141,11 +141,11 @@ R_ColorShiftLightingFloats
 
 ===============
 */
-static void R_ColorShiftLightingFloats(float in[4], float out[4], float scale )
+static void R_ColorShiftLightingFloats(float in[4], float out[4])
 {
 	float	r, g, b;
 
-	scale *= 1 << (r_mapOverBrightBits->integer - tr.overbrightBits);
+	float   scale = (1 << (r_mapOverBrightBits->integer - tr.overbrightBits)) / 255.0f;
 
 	r = in[0] * scale;
 	g = in[1] * scale;
@@ -192,12 +192,11 @@ void ColorToRGBM(const vec3_t color, unsigned char rgbm[4])
 }
 
 
-void ColorToRGBA16F(const vec3_t color, unsigned short rgba16f[4])
+void ColorToRGB16(const vec3_t color, uint16_t rgb16[3])
 {
-	rgba16f[0] = FloatToHalf(color[0]);
-	rgba16f[1] = FloatToHalf(color[1]);
-	rgba16f[2] = FloatToHalf(color[2]);
-	rgba16f[3] = FloatToHalf(1.0f);
+	rgb16[0] = color[0] * 65535.0f + 0.5f;
+	rgb16[1] = color[1] * 65535.0f + 0.5f;
+	rgb16[2] = color[2] * 65535.0f + 0.5f;
 }
 
 /*
@@ -283,10 +282,16 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 	if (tr.worldDeluxeMapping)
 		tr.deluxemaps = ri.Hunk_Alloc( tr.numLightmaps * sizeof(image_t *), h_low );
 
-	if (glRefConfig.floatLightmap)
-		textureInternalFormat = GL_RGBA16F_ARB;
-	else
-		textureInternalFormat = GL_RGBA8;
+	textureInternalFormat = GL_RGBA8;
+	if (r_hdr->integer)
+	{
+		// Check for the first hdr lightmap, if it exists, use GL_RGBA16 for textures.
+		char filename[MAX_QPATH];
+
+		Com_sprintf(filename, sizeof(filename), "maps/%s/lm_0000.hdr", s_worldData.baseName);
+		if (ri.FS_FileExists(filename))
+			textureInternalFormat = GL_RGBA16;
+	}
 
 	if (r_mergeLightmaps->integer)
 	{
@@ -324,7 +329,7 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 			int size = 0;
 
 			// look for hdr lightmaps
-			if (r_hdr->integer)
+			if (textureInternalFormat == GL_RGBA16)
 			{
 				Com_sprintf( filename, sizeof( filename ), "maps/%s/lm_%04d.hdr", s_worldData.baseName, i * (tr.worldDeluxeMapping ? 2 : 1) );
 				//ri.Printf(PRINT_ALL, "looking for %s\n", filename);
@@ -387,14 +392,12 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 #endif
 					color[3] = 1.0f;
 
-					R_ColorShiftLightingFloats(color, color, 1.0f/255.0f);
+					R_ColorShiftLightingFloats(color, color);
 
-					if (glRefConfig.floatLightmap)
-						ColorToRGBA16F(color, (unsigned short *)(&image[j*8]));
-					else
-						ColorToRGBM(color, &image[j*4]);
+					ColorToRGB16(color, (uint16_t *)(&image[j * 8]));
+					((uint16_t *)(&image[j * 8]))[3] = 65535;
 				}
-				else if (glRefConfig.floatLightmap)
+				else if (textureInternalFormat == GL_RGBA16)
 				{
 					vec4_t color;
 
@@ -414,9 +417,10 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 					}
 					color[3] = 1.0f;
 
-					R_ColorShiftLightingFloats(color, color, 1.0f/255.0f);
-
-					ColorToRGBA16F(color, (unsigned short *)(&image[j*8]));
+					R_ColorShiftLightingFloats(color, color);
+ 
+					ColorToRGB16(color, (uint16_t *)(&image[j * 8]));
+					((uint16_t *)(&image[j * 8]))[3] = 65535;
 				}
 				else
 				{
@@ -726,7 +730,8 @@ void LoadDrawVertToSrfVert(srfVert_t *s, drawVert_t *d, int realLightmapNum, flo
 	}
 	v[3] = d->color[3] / 255.0f;
 
-	R_ColorShiftLightingFloats(v, s->vertexColors, 1.0f / 255.0f);
+	R_ColorShiftLightingFloats(v, v);
+	R_VaoPackColor(s->color, v);
 }
 
 
@@ -1970,7 +1975,7 @@ static void CopyVert(const srfVert_t * in, srfVert_t * out)
 	VectorCopy2(in->st,       out->st);
 	VectorCopy2(in->lightmap, out->lightmap);
 
-	VectorCopy4(in->vertexColors, out->vertexColors);
+	VectorCopy4(in->color,    out->color);
 }
 
 
@@ -2985,25 +2990,47 @@ void R_LoadLightGrid( lump_t *l ) {
 
 		if (hdrLightGrid)
 		{
-			float lightScale = 1 << (r_mapOverBrightBits->integer - tr.overbrightBits);
-
 			//ri.Printf(PRINT_ALL, "found!\n");
 
 			if (size != sizeof(float) * 6 * numGridPoints)
-			{
 				ri.Error(ERR_DROP, "Bad size for %s (%i, expected %i)!", filename, size, (int)(sizeof(float)) * 6 * numGridPoints);
-			}
 
-			w->hdrLightGrid = ri.Hunk_Alloc(size, h_low);
+			w->lightGrid16 = ri.Hunk_Alloc(sizeof(w->lightGrid16) * 6 * numGridPoints, h_low);
 
 			for (i = 0; i < numGridPoints ; i++)
 			{
-				w->hdrLightGrid[i * 6    ] = hdrLightGrid[i * 6    ] * lightScale;
-				w->hdrLightGrid[i * 6 + 1] = hdrLightGrid[i * 6 + 1] * lightScale;
-				w->hdrLightGrid[i * 6 + 2] = hdrLightGrid[i * 6 + 2] * lightScale;
-				w->hdrLightGrid[i * 6 + 3] = hdrLightGrid[i * 6 + 3] * lightScale;
-				w->hdrLightGrid[i * 6 + 4] = hdrLightGrid[i * 6 + 4] * lightScale;
-				w->hdrLightGrid[i * 6 + 5] = hdrLightGrid[i * 6 + 5] * lightScale;
+				vec4_t c;
+
+				c[0] = hdrLightGrid[i * 6];
+				c[1] = hdrLightGrid[i * 6 + 1];
+				c[2] = hdrLightGrid[i * 6 + 2];
+				c[3] = 1.0f;
+
+				R_ColorShiftLightingFloats(c, c);
+				ColorToRGB16(c, &w->lightGrid16[i * 6]);
+
+				c[0] = hdrLightGrid[i * 6 + 3];
+				c[1] = hdrLightGrid[i * 6 + 4];
+				c[2] = hdrLightGrid[i * 6 + 5];
+				c[3] = 1.0f;
+
+				R_ColorShiftLightingFloats(c, c);
+				ColorToRGB16(c, &w->lightGrid16[i * 6 + 3]);
+			}
+		}
+		else if (0)
+		{
+			// promote 8-bit lightgrid to 16-bit
+			w->lightGrid16 = ri.Hunk_Alloc(sizeof(w->lightGrid16) * 6 * numGridPoints, h_low);
+
+			for (i = 0; i < numGridPoints; i++)
+			{
+				w->lightGrid16[i * 6]     = w->lightGridData[i * 8] * 257;
+				w->lightGrid16[i * 6 + 1] = w->lightGridData[i * 8 + 1] * 257;
+				w->lightGrid16[i * 6 + 2] = w->lightGridData[i * 8 + 2] * 257;
+				w->lightGrid16[i * 6 + 3] = w->lightGridData[i * 8 + 3] * 257;
+				w->lightGrid16[i * 6 + 4] = w->lightGridData[i * 8 + 4] * 257;
+				w->lightGrid16[i * 6 + 5] = w->lightGridData[i * 8 + 5] * 257;
 			}
 		}
 

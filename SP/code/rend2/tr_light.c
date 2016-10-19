@@ -195,7 +195,9 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 		byte    *data;
 		int lat, lng;
 		vec3_t normal;
-
+		#if idppc
+		float d0, d1, d2, d3, d4, d5;
+		#endif
 		factor = 1.0;
 		data = gridData;
 		for ( j = 0 ; j < 3 ; j++ ) {
@@ -213,10 +215,10 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 		if ( j != 3 )
 			continue;
 
-		if (world->hdrLightGrid)
+		if (world->lightGrid16)
 		{
-			float *hdrData = world->hdrLightGrid + (int)(data - world->lightGridData) / 8 * 6;
-			if (!(hdrData[0]+hdrData[1]+hdrData[2]+hdrData[3]+hdrData[4]+hdrData[5]) ) {
+			uint16_t *data16 = world->lightGrid16 + (int)(data - world->lightGridData) / 8 * 6;
+			if (!(data16[0]+data16[1]+data16[2]+data16[3]+data16[4]+data16[5])) {
 				continue;	// ignore samples in walls
 			}
 		}
@@ -227,19 +229,30 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 			}
 		}
 		totalFactor += factor;
+		#if idppc
+		d0 = data[0]; d1 = data[1]; d2 = data[2];
+		d3 = data[3]; d4 = data[4]; d5 = data[5];
 
-		if (world->hdrLightGrid)
+		ent->ambientLight[0] += factor * d0;
+		ent->ambientLight[1] += factor * d1;
+		ent->ambientLight[2] += factor * d2;
+
+		ent->directedLight[0] += factor * d3;
+		ent->directedLight[1] += factor * d4;
+		ent->directedLight[2] += factor * d5;
+		#else
+		if (world->lightGrid16)
 		{
 			// FIXME: this is hideous
-			float *hdrData = world->hdrLightGrid + (int)(data - world->lightGridData) / 8 * 6;
+			uint16_t *data16 = world->lightGrid16 + (int)(data - world->lightGridData) / 8 * 6;
 
-			ent->ambientLight[0] += factor * hdrData[0];
-			ent->ambientLight[1] += factor * hdrData[1];
-			ent->ambientLight[2] += factor * hdrData[2];
+			ent->ambientLight[0] += factor * data16[0] / 257.0f;
+			ent->ambientLight[1] += factor * data16[1] / 257.0f;
+			ent->ambientLight[2] += factor * data16[2] / 257.0f;
 
-			ent->directedLight[0] += factor * hdrData[3];
-			ent->directedLight[1] += factor * hdrData[4];
-			ent->directedLight[2] += factor * hdrData[5];
+			ent->directedLight[0] += factor * data16[3] / 257.0f;
+			ent->directedLight[1] += factor * data16[4] / 257.0f;
+			ent->directedLight[2] += factor * data16[5] / 257.0f;
 		}
 		else
 		{
@@ -251,7 +264,7 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent, world_t *world ) {
 			ent->directedLight[1] += factor * data[4];
 			ent->directedLight[2] += factor * data[5];
 		}
-
+		#endif
 		lat = data[7];
 		lng = data[6];
 		lat *= ( FUNCTABLE_SIZE / 256 );

@@ -1046,9 +1046,6 @@ void GLSL_InitGPUShaders(void)
 		if (glRefConfig.swizzleNormalmap)
 			Q_strcat(extradefines, 1024, "#define SWIZZLE_NORMALMAP\n");
 
-		if (r_hdr->integer && !glRefConfig.floatLightmap)
-			Q_strcat(extradefines, 1024, "#define RGBM_LIGHTMAP\n");
-
 		if (lightType)
 		{
 			Q_strcat(extradefines, 1024, "#define USE_LIGHT\n");
