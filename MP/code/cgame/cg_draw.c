@@ -3160,6 +3160,10 @@ static void CG_DrawObjectiveInfo( void ) {
 		return;
 	}
 
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+	}
+
 	trap_R_SetColor( color );
 
 	start = cg.oidPrint;
