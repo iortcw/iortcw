@@ -703,39 +703,39 @@ hitCheckDone:
 }
 
 void RB_ZombieFXShowFleshHits( trZombieFleshHitverts_t *fleshHitVerts, int oldNumVerts, int numSurfVerts ) {
-	byte *vertColors;
+	uint16_t *vertColors;
 	unsigned short *vertHits;
 	int i;
 
-	vertColors = (byte *)tess.color[oldNumVerts];
+	vertColors = tess.color[oldNumVerts];
 	vertHits = fleshHitVerts->vertHits;
 
 	// for each hit entry, adjust that verts alpha component
 	for ( i = 0; i < fleshHitVerts->numHits; i++, vertHits++ ) {
-		if ( vertColors[( *vertHits ) * 4 + 3] < ZOMBIEFX_PERHIT_TAKEALPHA ) {
+		if ( vertColors[( *vertHits ) * 4 + 3] < ZOMBIEFX_PERHIT_TAKEALPHA * 257 ) {
 			vertColors[( *vertHits ) * 4 + 3] = 0;
 		} else {
-			vertColors[( *vertHits ) * 4 + 3] -= ZOMBIEFX_PERHIT_TAKEALPHA;
+			vertColors[( *vertHits ) * 4 + 3] -= ZOMBIEFX_PERHIT_TAKEALPHA * 257;
 		}
 	}
 }
 
 void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeScale ) {
-	byte *vertColors;
+	uint16_t *vertColors;
 	float   *xyz;
 	int16_t *norm;
 	vec3_t fNorm;
 	int i;
 	float alpha;
 
-	vertColors = (byte *)tess.color[oldNumVerts];
+	vertColors = tess.color[oldNumVerts];
 	xyz = tess.xyz[oldNumVerts];
 	norm = tess.normal[oldNumVerts];
 
 	for ( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm += 4 ) {
-		alpha = 255.0 * ( (float)( 1 + i % 3 ) / 3.0 ) * deltaTimeScale * 2;
-		if ( alpha > 255.0 ) {
-			alpha = 255.0;
+		alpha = 65535.0 * ( (float)( 1 + i % 3 ) / 3.0 ) * deltaTimeScale * 2;
+		if ( alpha > 65535.0 ) {
+			alpha = 65535.0;
 		}
 		if ( (float)vertColors[3] - alpha < 0 ) {
 			vertColors[3] = 0;
@@ -751,13 +751,13 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
 }
 
 void RB_ZombieFXFullAlpha( int oldNumVerts, int numSurfVerts ) {
-	byte *vertColors;
+	uint16_t *vertColors;
 	int i;
 
-	vertColors = (byte *)tess.color[oldNumVerts];
+	vertColors = tess.color[oldNumVerts];
 
 	for ( i = 0; i < numSurfVerts; i++, vertColors += 4 ) {
-		vertColors[3] = 255;
+		vertColors[3] = 65535;
 	}
 }
 
@@ -1397,16 +1397,19 @@ const void *RB_StretchPicGradient( const void *data ) {
 	tess.indexes[ numIndexes + 4 ] = numVerts + 0;
 	tess.indexes[ numIndexes + 5 ] = numVerts + 1;
 
-//	*(int *)tess.color[ numVerts ] =
-//		*(int *)tess.color[ numVerts + 1 ] =
-//		*(int *)tess.color[ numVerts + 2 ] =
-//		*(int *)tess.color[ numVerts + 3 ] = *(int *)backEnd.color2D;
+	{
+		uint16_t color[4];
+ 
+		VectorScale4(backEnd.color2D, 257, color);
+ 
+		VectorCopy4(color, tess.color[ numVerts ]);
+		VectorCopy4(color, tess.color[ numVerts + 1]);
+		
+		VectorScale4(cmd->gradientColor, 257, color);
 
-	*(int *)tess.color[ numVerts ] =
-		*(int *)tess.color[ numVerts + 1 ] = *(int *)backEnd.color2D;
-
-	*(int *)tess.color[ numVerts + 2 ] =
-		*(int *)tess.color[ numVerts + 3 ] = *(int *)cmd->gradientColor;
+		VectorCopy4(color, tess.color[ numVerts + 2]);
+		VectorCopy4(color, tess.color[ numVerts + 3 ]);
+	}
 
 	tess.xyz[ numVerts ][0] = cmd->x;
 	tess.xyz[ numVerts ][1] = cmd->y;

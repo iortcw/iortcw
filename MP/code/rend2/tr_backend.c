@@ -1147,16 +1147,19 @@ const void *RB_StretchPicGradient( const void *data ) {
 	tess.indexes[ numIndexes + 4 ] = numVerts + 0;
 	tess.indexes[ numIndexes + 5 ] = numVerts + 1;
 
-//	*(int *)tess.color[ numVerts ] =
-//		*(int *)tess.color[ numVerts + 1 ] =
-//		*(int *)tess.color[ numVerts + 2 ] =
-//		*(int *)tess.color[ numVerts + 3 ] = *(int *)backEnd.color2D;
+	{
+		uint16_t color[4];
+ 
+		VectorScale4(backEnd.color2D, 257, color);
+ 
+		VectorCopy4(color, tess.color[ numVerts ]);
+		VectorCopy4(color, tess.color[ numVerts + 1]);
+		
+		VectorScale4(cmd->gradientColor, 257, color);
 
-	*(int *)tess.color[ numVerts ] =
-		*(int *)tess.color[ numVerts + 1 ] = *(int *)backEnd.color2D;
-
-	*(int *)tess.color[ numVerts + 2 ] =
-		*(int *)tess.color[ numVerts + 3 ] = *(int *)cmd->gradientColor;
+		VectorCopy4(color, tess.color[ numVerts + 2]);
+		VectorCopy4(color, tess.color[ numVerts + 3 ]);
+	}
 
 	tess.xyz[ numVerts ][0] = cmd->x;
 	tess.xyz[ numVerts ][1] = cmd->y;
