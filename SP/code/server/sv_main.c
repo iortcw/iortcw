@@ -353,8 +353,8 @@ void SV_MasterShutdown( void ) {
 	SV_MasterHeartbeat(FLATLINE_FOR_MASTER);
 
 	// send it again to minimize chance of drops
-	svs.nextHeartbeatTime = -9999;
-	SV_MasterHeartbeat(FLATLINE_FOR_MASTER);
+//	svs.nextHeartbeatTime = -9999;
+//	SV_MasterHeartbeat(FLATLINE_FOR_MASTER);
 
 	// when the master tries to poll the server, it won't respond, so
 	// it will be removed from the list
