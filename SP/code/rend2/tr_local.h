@@ -1530,7 +1530,6 @@ typedef struct {
 	int maxRenderbufferSize;
 	int maxColorAttachments;
 
-	qboolean textureNonPowerOfTwo;
 	qboolean textureFloat;
 	textureCompressionRef_t textureCompression;
 	qboolean swizzleNormalmap;
