@@ -129,9 +129,9 @@ void statement(int loop, Swtch swp, int lev) {
 		       				needconst--;
 		       				caselabel(swp, p->u.v.i, lab);
 		       			}
-		       		} else
+		       		} else {
 		       			error("case label must be a constant integer expression\n");
-
+		       		}
 		       		test(':', stop);
 		       	}
 		       	statement(loop, swp, lev);
@@ -183,8 +183,9 @@ void statement(int loop, Swtch swp, int lev) {
 		       	use(p, src);
 		       	branch(p->u.l.label);
 		       	t = gettok();
-		       } else
-		       	error("missing label in goto\n"); expect(';');
+		       } else {
+		       	error("missing label in goto\n");
+		       } expect(';');
 					  break;
 
 	case ID:       if (getchr() == ':') {
@@ -201,7 +202,8 @@ void statement(int loop, Swtch swp, int lev) {
 		       	listnodes(e, 0, 0);
 		       	if (nodecount == 0 || nodecount > 200)
 		       		walk(NULL, 0, 0);
-		       	else if (glevel) walk(NULL, 0, 0);
+		       	else if (glevel)
+				walk(NULL, 0, 0);
 		       	deallocate(STMT);
 		       } expect(';');
 						break;
