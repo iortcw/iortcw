@@ -518,8 +518,9 @@ void emitcode(void) {
 			       if (glevel > 0 && IR->stabline) {
 			       	(*IR->stabline)(&cp->u.point.src); swtoseg(CODE); } break;
 		case Gen: case Jump:
-		case Label:    if (cp->u.forest)
-			       	(*IR->emit)(cp->u.forest); break;
+		case Label:    if (cp->u.forest) {
+			       	(*IR->emit)(cp->u.forest);
+			       } break;
 		case Local:    if (glevel && IR->stabsym) {
 			       	(*IR->stabsym)(cp->u.var);
 			       	swtoseg(CODE);

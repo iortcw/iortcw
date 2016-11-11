@@ -2507,8 +2507,7 @@ static void PM_Weapon( void ) {
 			}
 			return;
 		}
-	} else
-	{
+	} else {
 		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
 	}
 
@@ -2607,11 +2606,8 @@ static void PM_Weapon( void ) {
 				}
 			}
 		}
-// jpw
-
+		// jpw
 	}
-
-
 
 	// check for weapon change
 	// can't change if weapon is firing, but can change
@@ -2735,8 +2731,7 @@ static void PM_Weapon( void ) {
 	}
 
 	// start the animation even if out of ammo
-	switch ( pm->ps->weapon )
-	{
+	switch ( pm->ps->weapon ) {
 	default:
 		if ( !weaponstateFiring ) {
 			// delay so the weapon can get up into position before firing (and showing the flash)
@@ -2745,7 +2740,7 @@ static void PM_Weapon( void ) {
 			BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
 		}
 		break;
-		// machineguns should continue the anim, rather than start each fire
+	// machineguns should continue the anim, rather than start each fire
 	case WP_MP40:
 	case WP_THOMPSON:
 	case WP_STEN:
@@ -2796,7 +2791,7 @@ static void PM_Weapon( void ) {
 		}
 		break;
 
-		// melee
+	// melee
 	case WP_KNIFE:
 	case WP_KNIFE2:
 		if ( !delayedFire ) {
@@ -2809,7 +2804,7 @@ static void PM_Weapon( void ) {
 		}
 		break;
 
-		// throw
+	// throw
 	case WP_DYNAMITE:
 	case WP_DYNAMITE2:
 	case WP_GRENADE_LAUNCHER:
@@ -2967,7 +2962,7 @@ static void PM_Weapon( void ) {
 
 	default:
 		// RF, testing
-//			PM_ContinueWeaponAnim(weapattackanim);
+//		PM_ContinueWeaponAnim(weapattackanim);
 		PM_StartWeaponAnim( weapattackanim );
 		break;
 	}
@@ -3121,9 +3116,8 @@ static void PM_Weapon( void ) {
 		break;
 
 	default:
-	case WP_GAUNTLET:
-		switch ( pm->ps->aiChar )
-		{
+		case WP_GAUNTLET:
+		switch ( pm->ps->aiChar ) {
 		case AICHAR_LOPER:      // delay 'til next attack
 		case AICHAR_SEALOPER:
 			addTime = 1000;
@@ -3155,7 +3149,8 @@ static void PM_Weapon( void ) {
 
 	// add the recoil amount to the aimSpreadScale
 //	pm->ps->aimSpreadScale += 3.0*aimSpreadScaleAdd;
-//	if (pm->ps->aimSpreadScale > 255) pm->ps->aimSpreadScale = 255;
+//		if (pm->ps->aimSpreadScale > 255)
+//			pm->ps->aimSpreadScale = 255;
 	pm->ps->aimSpreadScaleFloat += 3.0 * aimSpreadScaleAdd;
 	if ( pm->ps->aimSpreadScaleFloat > 255 ) {
 		pm->ps->aimSpreadScaleFloat = 255;
