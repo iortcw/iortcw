@@ -87,7 +87,7 @@ If you have questions concerning this license or the applicable additional terms
 #define LEGACY_HEARTBEAT_FOR_MASTER	"Wolfenstein-1"
 
 #ifndef PRODUCT_VERSION
-  #define PRODUCT_VERSION "1.42e"
+  #define PRODUCT_VERSION "1.5a"
 #endif
 
 #ifndef OLD_PRODUCT_VERSION
