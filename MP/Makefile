@@ -684,7 +684,7 @@ ifdef MINGW
   LIBS= -lws2_32 -lwinmm -lpsapi
   # clang 3.5 doesn't support this
   ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
-    CLIENT_LDFLAGS += -mwindows -static-libgcc -static-libstdc++
+    CLIENT_LDFLAGS += -mwindows -static -static-libgcc -static-libstdc++
   endif
   CLIENT_LIBS = -lgdi32 -lole32
   RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
