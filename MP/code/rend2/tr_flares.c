@@ -474,8 +474,8 @@ void RB_RenderFlare( flare_t *f ) {
 	// FIXME: use quadstamp?
 	tess.xyz[tess.numVertexes][0] = f->windowX - size;
 	tess.xyz[tess.numVertexes][1] = f->windowY - size;
-	tess.texCoords[tess.numVertexes][0][0] = 0;
-	tess.texCoords[tess.numVertexes][0][1] = 0;
+	tess.texCoords[tess.numVertexes][0] = 0;
+	tess.texCoords[tess.numVertexes][1] = 0;
 	tess.color[tess.numVertexes][0] = iColor[0];
 	tess.color[tess.numVertexes][1] = iColor[1];
 	tess.color[tess.numVertexes][2] = iColor[2];
@@ -485,8 +485,8 @@ void RB_RenderFlare( flare_t *f ) {
 
 	tess.xyz[tess.numVertexes][0] = f->windowX - size;
 	tess.xyz[tess.numVertexes][1] = f->windowY + size;
-	tess.texCoords[tess.numVertexes][0][0] = 0;
-	tess.texCoords[tess.numVertexes][0][1] = 1;
+	tess.texCoords[tess.numVertexes][0] = 0;
+	tess.texCoords[tess.numVertexes][1] = 1;
 	tess.color[tess.numVertexes][0] = iColor[0];
 	tess.color[tess.numVertexes][1] = iColor[1];
 	tess.color[tess.numVertexes][2] = iColor[2];
@@ -496,8 +496,8 @@ void RB_RenderFlare( flare_t *f ) {
 
 	tess.xyz[tess.numVertexes][0] = f->windowX + size;
 	tess.xyz[tess.numVertexes][1] = f->windowY + size;
-	tess.texCoords[tess.numVertexes][0][0] = 1;
-	tess.texCoords[tess.numVertexes][0][1] = 1;
+	tess.texCoords[tess.numVertexes][0] = 1;
+	tess.texCoords[tess.numVertexes][1] = 1;
 	tess.color[tess.numVertexes][0] = iColor[0];
 	tess.color[tess.numVertexes][1] = iColor[1];
 	tess.color[tess.numVertexes][2] = iColor[2];
@@ -507,8 +507,8 @@ void RB_RenderFlare( flare_t *f ) {
 
 	tess.xyz[tess.numVertexes][0] = f->windowX + size;
 	tess.xyz[tess.numVertexes][1] = f->windowY - size;
-	tess.texCoords[tess.numVertexes][0][0] = 1;
-	tess.texCoords[tess.numVertexes][0][1] = 0;
+	tess.texCoords[tess.numVertexes][0] = 1;
+	tess.texCoords[tess.numVertexes][1] = 0;
 	tess.color[tess.numVertexes][0] = iColor[0];
 	tess.color[tess.numVertexes][1] = iColor[1];
 	tess.color[tess.numVertexes][2] = iColor[2];
