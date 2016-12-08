@@ -1504,6 +1504,8 @@ typedef struct {
 	int openglMajorVersion;
 	int openglMinorVersion;
 
+	qboolean    intelGraphics;
+
 	qboolean    drawRangeElements;
 	qboolean    multiDrawArrays;
 	qboolean	occlusionQuery;
