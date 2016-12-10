@@ -617,15 +617,6 @@ static qboolean GLimp_StartDriverAndSetMode(int mode, qboolean fullscreen, qbool
 	return qtrue;
 }
 
-static qboolean GLimp_HaveExtension(const char *ext)
-{
-	const char *ptr = Q_stristr( (char *)qglGetString(GL_EXTENSIONS), ext );
-	if (ptr == NULL)
-		return qfalse;
-	ptr += strlen(ext);
-	return ((*ptr == ' ') || (*ptr == '\0'));  // verify it's complete string.
-}
-
 
 /*
 ===============
@@ -645,8 +636,8 @@ static void GLimp_InitExtensions( void )
 	glConfig.textureCompression = TC_NONE;
 
 	// GL_EXT_texture_compression_s3tc
-	if ( GLimp_HaveExtension( "GL_ARB_texture_compression" ) &&
-	     GLimp_HaveExtension( "GL_EXT_texture_compression_s3tc" ) )
+	if ( SDL_GL_ExtensionSupported( "GL_ARB_texture_compression" ) &&
+	     SDL_GL_ExtensionSupported( "GL_EXT_texture_compression_s3tc" ) )
 	{
 		if ( r_ext_compressed_textures->value )
 		{
@@ -666,7 +657,7 @@ static void GLimp_InitExtensions( void )
 	// GL_S3_s3tc ... legacy extension before GL_EXT_texture_compression_s3tc.
 	if (glConfig.textureCompression == TC_NONE)
 	{
-		if ( GLimp_HaveExtension( "GL_S3_s3tc" ) )
+		if ( SDL_GL_ExtensionSupported( "GL_S3_s3tc" ) )
 		{
 			if ( r_ext_compressed_textures->value )
 			{
@@ -691,7 +682,7 @@ static void GLimp_InitExtensions( void )
 	ri.Printf( PRINT_ALL, "...using GL_EXT_texture_env_add\n" );
 #else
 	glConfig.textureEnvAddAvailable = qfalse;
-	if ( GLimp_HaveExtension( "EXT_texture_env_add" ) )
+	if ( SDL_GL_ExtensionSupported( "EXT_texture_env_add" ) )
 	{
 		if ( r_ext_texture_env_add->integer )
 		{
@@ -733,7 +724,7 @@ static void GLimp_InitExtensions( void )
 		ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
 	}
 #else
-	if ( GLimp_HaveExtension( "GL_ARB_multitexture" ) )
+	if ( SDL_GL_ExtensionSupported( "GL_ARB_multitexture" ) )
 	{
 		if ( r_ext_multitexture->value )
 		{
@@ -771,7 +762,7 @@ static void GLimp_InitExtensions( void )
 #endif
 
 	// GL_EXT_compiled_vertex_array
-	if ( GLimp_HaveExtension( "GL_EXT_compiled_vertex_array" ) )
+	if ( SDL_GL_ExtensionSupported( "GL_EXT_compiled_vertex_array" ) )
 	{
 		if ( r_ext_compiled_vertex_array->value )
 		{
@@ -794,7 +785,7 @@ static void GLimp_InitExtensions( void )
 	}
 
 	textureFilterAnisotropic = qfalse;
-	if ( GLimp_HaveExtension( "GL_EXT_texture_filter_anisotropic" ) )
+	if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )
 	{
 		if ( r_ext_texture_filter_anisotropic->integer ) {
 			qglGetIntegerv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLint *)&maxAnisotropy );
