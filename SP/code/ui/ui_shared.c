@@ -5815,6 +5815,49 @@ void Item_SetupKeywordHash( void ) {
 	}
 }
 
+typedef struct vidmode_s
+{
+	const char *description;
+	int mode;
+} vidmode_t;
+
+vidmode_t r_vidModes[] =
+{
+	{ "320x240 (4:3)",          0 },
+	{ "400x300 (4:3)",          1 },
+	{ "512x384 (4:3)",          2 },
+	{ "640x480 (4:3)",          3 },
+	{ "800x600 (4:3)",          4 },
+	{ "960x720 (4:3)",          5 },
+	{ "1024x768 (4:3)",         6 },
+	{ "1152x864 (4:3)",         7 },
+	{ "1280x1024 (5:4)",        8 },
+	{ "1600x1200 (4:3)",        9 },
+	{ "2048x1536 (4:3)",       10 },
+	{ "856x480 (16:9)",        11 },
+	{ "640x360 (16:9)",        12 },
+	{ "640x400 (16:10)",       13 },
+	{ "800x450 (16:9)",        14 },
+	{ "800x500 (16:10)",       15 },
+	{ "1024x640 (16:10)",      16 },
+	{ "1024x576 (16:9)",       17 },
+	{ "1280x720 (16:9)",       18 },
+	{ "1280x768 (16:10)",      19 },
+	{ "1280x800 (16:10)",      20 },
+	{ "1280x960 (4:3)",        21 },
+	{ "1440x900 (16:10)",      22 },
+	{ "1600x900 (16:9)",       23 },
+	{ "1600x1000 (16:10)",     24 },
+	{ "1680x1050 (16:10)",     25 },
+	{ "1920x1080 (16:9)",      26 },
+	{ "1920x1200 (16:10)",     27 },
+	{ "1920x1440 (4:3)",       28 },
+	{ "2560x1600 (16:10)",     29 },
+	{ "Automatic (Native)",    -2 },
+	{ "Custom",                -1 }
+};
+static int	s_numVidModes = ARRAY_LEN( r_vidModes );
+
 /*
 ===============
 UI_ApplyItemHacks
@@ -5823,7 +5866,25 @@ Hacks to fix issues with menu scripts
 ===============
 */
 static void Item_ApplyHacks( itemDef_t *item ) {
-	// Stub - Not used in SP
+
+	// Add video modes to system menu
+	if ( item->type == ITEM_TYPE_MULTI && item->cvar && !Q_stricmp( item->cvar, "r_mode" ) ) {
+		int i;
+		multiDef_t *multiPtr = (multiDef_t*)item->typeData;;
+
+		Com_Printf( "Found modelist with %d modes, extending list to %d modes\n", multiPtr->count, s_numVidModes );
+
+		multiPtr->count = 0;
+		for ( i = 0; i < s_numVidModes; i++ ) {
+			multiPtr->cvarList[multiPtr->count] = String_Alloc( r_vidModes[i].description );
+			multiPtr->cvarValue[multiPtr->count] = r_vidModes[i].mode;
+			multiPtr->count++;
+
+			if ( multiPtr->count >= MAX_MULTI_CVARS ) {
+				break;
+			}
+		}
+	}
 }
 
 /*
