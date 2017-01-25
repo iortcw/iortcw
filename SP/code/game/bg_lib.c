@@ -77,15 +77,15 @@ static void  swapfunc( char *, char *, int, int );
 /*
  * Qsort routine from Bentley & McIlroy's "Engineering a Sort Function".
  */
-#define swapcode( TYPE, parmi, parmj, n ) {		  \
-		long i = ( n ) / sizeof( TYPE );		   \
-		register TYPE *pi = (TYPE *) ( parmi );		  \
-		register TYPE *pj = (TYPE *) ( parmj );		  \
-		do {						\
-			register TYPE t = *pi;		  \
-			*pi++ = *pj;				\
-			*pj++ = t;				\
-		} while ( --i > 0 );			  \
+#define swapcode( TYPE, parmi, parmj, n ) { 		\
+		long i = ( n ) / sizeof( TYPE );	\
+		TYPE *pi = (TYPE *) ( parmi );		\
+		TYPE *pj = (TYPE *) ( parmj );		\
+		do {					\
+			TYPE t = *pi;			\
+			*pi++ = *pj;			\
+			*pj++ = t;			\
+		} while ( --i > 0 );			\
 }
 
 #define SWAPINIT( a, es ) swaptype = ( (char *)a - (char *)0 ) % sizeof( long ) || \
