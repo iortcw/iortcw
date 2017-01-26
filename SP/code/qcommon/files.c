@@ -3558,10 +3558,10 @@ static void FS_Startup( const char *gameName )
 		FS_AddGameDirectory( fs_steampath->string, gameName );
 	}
 #endif
+
 	if ( fs_basepath->string[0] ) {
 		FS_AddGameDirectory( fs_basepath->string, gameName );
 	}
-	// fs_homepath is somewhat particular to *nix systems, only add if relevant
 
 #ifdef __APPLE__
 	fs_apppath = Cvar_Get ("fs_apppath", Sys_DefaultAppPath(), CVAR_INIT|CVAR_PROTECTED );
@@ -3583,9 +3583,11 @@ static void FS_Startup( const char *gameName )
 			FS_AddGameDirectory( fs_steampath->string, fs_basegame->string );
 		}
 #endif
+
 		if ( fs_basepath->string[0] ) {
 			FS_AddGameDirectory( fs_basepath->string, fs_basegame->string );
 		}
+
 		if ( fs_homepath->string[0] && Q_stricmp( fs_homepath->string,fs_basepath->string ) ) {
 			FS_AddGameDirectory( fs_homepath->string, fs_basegame->string );
 		}

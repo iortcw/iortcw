@@ -1548,6 +1548,13 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
                                 }
 		        }
 
+			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
+			{
+				*startSearch = search;
+
+				return VMI_COMPILED;
+			}
+
 #ifndef DEDICATED
 			// extract the dlls from the mp_bin.pk3 so
 			// that they can be referenced
@@ -1566,13 +1573,6 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 				}
 			}
 #endif
-
-			if(enableQvm && FS_FOpenFileReadDir(qvmName, search, NULL, qfalse, unpure) > 0)
-			{
-				*startSearch = search;
-
-				return VMI_COMPILED;
-			}
 		}
 		
 		search = search->next;
@@ -1669,7 +1669,7 @@ qboolean FS_CL_ExtractFromPakFile( void *searchpath, const char *fullpath, const
 	if ( needToCopy ) {
 		fileHandle_t f;
 
-		// Com_DPrintf("FS_ExtractFromPakFile: FS_FOpenFileWrite '%s'\n", filename);
+		Com_DPrintf("FS_ExtractFromPakFile: FS_FOpenFileWrite '%s'\n", filename);
 		f = FS_FOpenFileWrite( filename );
 		if ( !f ) {
 			Com_Printf( "Failed to open %s\n", filename );
@@ -3525,22 +3525,22 @@ static void FS_Startup( const char *gameName ) {
 		FS_AddGameDirectory( fs_steampath->string, gameName, qtrue );
 	}
 #endif
+
 	if ( fs_basepath->string[0] ) {
 		FS_AddGameDirectory( fs_basepath->string, gameName, qtrue );
 	}
-	// fs_homepath is somewhat particular to *nix systems, only add if relevant
-	
-	#ifdef __APPLE__
+
+#ifdef __APPLE__
 	fs_apppath = Cvar_Get ("fs_apppath", Sys_DefaultAppPath(), CVAR_INIT|CVAR_PROTECTED );
 	// Make MacOSX also include the base path included with the .app bundle
 	if (fs_apppath->string[0])
 		FS_AddGameDirectory(fs_apppath->string, gameName, qtrue);
-	#endif
+#endif
 	
 	// NOTE: same filtering below for mods and basegame
 	if (fs_homepath->string[0] && Q_stricmp(fs_homepath->string,fs_basepath->string)) {
 		FS_CreatePath ( fs_homepath->string );
-		FS_AddGameDirectory( fs_homepath->string, gameName, qfalse );
+		FS_AddGameDirectory( fs_homepath->string, gameName, qtrue );
 	}
 
 	// check for additional base game so mods can be based upon other mods
@@ -3550,11 +3550,13 @@ static void FS_Startup( const char *gameName ) {
 			FS_AddGameDirectory( fs_steampath->string, fs_basegame->string, qtrue );
 		}
 #endif
+
 		if ( fs_basepath->string[0] ) {
 			FS_AddGameDirectory( fs_basepath->string, fs_basegame->string, qtrue );
 		}
+
 		if ( fs_homepath->string[0] && Q_stricmp( fs_homepath->string,fs_basepath->string ) ) {
-			FS_AddGameDirectory( fs_homepath->string, fs_basegame->string, qfalse );
+			FS_AddGameDirectory( fs_homepath->string, fs_basegame->string, qtrue );
 		}
 	}
 
@@ -3565,11 +3567,13 @@ static void FS_Startup( const char *gameName ) {
 			FS_AddGameDirectory( fs_steampath->string, fs_gamedirvar->string, qtrue );
 		}
 #endif
+
 		if ( fs_basepath->string[0] ) {
 			FS_AddGameDirectory( fs_basepath->string, fs_gamedirvar->string, qtrue );
 		}
+
 		if ( fs_homepath->string[0] && Q_stricmp( fs_homepath->string,fs_basepath->string ) ) {
-			FS_AddGameDirectory( fs_homepath->string, fs_gamedirvar->string, qfalse );
+			FS_AddGameDirectory( fs_homepath->string, fs_gamedirvar->string, qtrue );
 		}
 	}
 
