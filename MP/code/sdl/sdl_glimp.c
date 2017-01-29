@@ -910,7 +910,6 @@ void GLimp_EndFrame( void )
 	{
 		int         fullscreen;
 		qboolean    needToToggle;
-		qboolean    sdlToggled = qfalse;
 
 		// Find out the current state
 		fullscreen = !!( SDL_GetWindowFlags( SDL_window ) & SDL_WINDOW_FULLSCREEN );
@@ -927,11 +926,14 @@ void GLimp_EndFrame( void )
 
 		if( needToToggle )
 		{
-			sdlToggled = SDL_SetWindowFullscreen( SDL_window, r_fullscreen->integer ) >= 0;
-
-			// SDL_WM_ToggleFullScreen didn't work, so do it the slow way
-			if( !sdlToggled )
+			// Need the vid_restart here since r_fullscreen is only latched
+			if( fullscreen ) {
+				Com_Printf( "Switching to windowed rendering\n" );
 				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
+			} else {
+				Com_Printf( "Switching to fullscreen rendering\n" );
+				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
+			}
 
 			ri.IN_Restart( );
 		}
