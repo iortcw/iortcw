@@ -136,7 +136,7 @@ static qboolean IN_IsConsoleKey( keyNum_t key, int character )
 			if( !token[ 0 ] )
 				break;
 
-			if( strlen( token ) >= 4 )
+			if ( !Q_strncmp( token, "0x", 2 ) )
 				charCode = Com_HexStrToInt( token );
 
 			if( charCode > 0 )
