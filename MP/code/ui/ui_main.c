@@ -4414,14 +4414,12 @@ static void UI_Update( const char *name ) {
 	} else if ( Q_stricmp( name, "ui_glCustom" ) == 0 ) {
 		switch ( val ) {
 		case 0:     // high quality
-			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 4 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
 			trap_Cvar_SetValue( "r_lodbias", 0 );
 			trap_Cvar_SetValue( "r_colorbits", 32 );
 			trap_Cvar_SetValue( "r_depthbits", 24 );
 			trap_Cvar_SetValue( "r_picmip", 0 );
-			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 32 );
 			trap_Cvar_SetValue( "r_fastSky", 0 );
 			trap_Cvar_SetValue( "r_dynamiclight", 1 );
@@ -4443,16 +4441,17 @@ static void UI_Update( const char *name ) {
 			trap_Cvar_SetValue( "r_drawSunRays", 1 );
 			trap_Cvar_SetValue( "r_sunShadows", 1 );
 			trap_Cvar_SetValue( "r_shadowFilter", 1 );
+#ifdef USE_BLOOM
+			trap_Cvar_SetValue( "r_bloom", 1 );
+#endif
 			break;
 		case 1:     // normal
-			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 4 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
 			trap_Cvar_SetValue( "r_lodbias", 0 );
 			trap_Cvar_SetValue( "r_colorbits", 0 );
 			trap_Cvar_SetValue( "r_depthbits", 0 );
 			trap_Cvar_SetValue( "r_picmip", 0 );
-			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "r_fastSky", 0 );
 			trap_Cvar_SetValue( "r_dynamiclight", 1 );
@@ -4463,17 +4462,17 @@ static void UI_Update( const char *name ) {
 			trap_Cvar_SetValue( "r_ext_compressed_textures", 0 );
 			trap_Cvar_SetValue( "r_overBrightBits", 0 );
 			trap_Cvar_Set( "cl_renderer", "opengl1" );
+#ifdef USE_BLOOM
 			trap_Cvar_SetValue( "r_bloom", 1 );
+#endif
 			break;
 		case 2:     // fast
-			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 12 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
 			trap_Cvar_SetValue( "r_lodbias", 1 );
 			trap_Cvar_SetValue( "r_colorbits", 0 );
 			trap_Cvar_SetValue( "r_depthbits", 0 );
 			trap_Cvar_SetValue( "r_picmip", 1 );
-			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "cg_shadows", 0 );
 			trap_Cvar_SetValue( "r_fastSky", 1 );
@@ -4484,16 +4483,16 @@ static void UI_Update( const char *name ) {
 			trap_Cvar_SetValue( "r_ext_compressed_textures", 1 );
 			trap_Cvar_SetValue( "r_overBrightBits", 0 );
 			trap_Cvar_Set( "cl_renderer", "opengl1" );
+#ifdef USE_BLOOM
 			trap_Cvar_SetValue( "r_bloom", 0 );
+#endif
 			break;
 		case 3:     // fastest
-			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 20 );
 			trap_Cvar_SetValue( "r_vertexlight", 1 );
 			trap_Cvar_SetValue( "r_lodbias", 2 );
 			trap_Cvar_SetValue( "r_colorbits", 0 );
 			trap_Cvar_SetValue( "r_depthbits", 0 );
-			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_picmip", 2 );
 			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "cg_shadows", 0 );
@@ -4505,7 +4504,9 @@ static void UI_Update( const char *name ) {
 			trap_Cvar_SetValue( "r_ext_compressed_textures", 1 );
 			trap_Cvar_SetValue( "r_overBrightBits", 0 );
 			trap_Cvar_Set( "cl_renderer", "opengl1" );
+#ifdef USE_BLOOM
 			trap_Cvar_SetValue( "r_bloom", 0 );
+#endif
 			break;
 		}
 	} else if ( Q_stricmp( name, "ui_mousePitch" ) == 0 ) {
