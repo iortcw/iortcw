@@ -4455,7 +4455,7 @@ static void UI_Update( const char *name ) {
 		}
 	} else if ( Q_stricmp( name, "ui_glCustom" ) == 0 ) {
 		switch ( val ) {
-		case 0: // high quality
+		case 0:     // high quality
 			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 4 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
@@ -4464,64 +4464,94 @@ static void UI_Update( const char *name ) {
 			trap_Cvar_SetValue( "r_depthbits", 24 );
 			trap_Cvar_SetValue( "r_picmip", 0 );
 			trap_Cvar_SetValue( "r_picmip2", 0 );
-			trap_Cvar_SetValue( "r_mode", 4 );
+			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 32 );
 			trap_Cvar_SetValue( "r_fastSky", 0 );
+			trap_Cvar_SetValue( "r_dynamiclight", 1 );
 			trap_Cvar_SetValue( "r_inGameVideo", 1 );
 			trap_Cvar_SetValue( "cg_shadows", 1 );
 			trap_Cvar_SetValue( "cg_brassTime", 2500 );
 			trap_Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_LINEAR" );
+			trap_Cvar_SetValue( "r_ext_compressed_textures", 0 );
+			trap_Cvar_SetValue( "r_overBrightBits", 0 );
+			trap_Cvar_Set( "cl_renderer", "rend2" );
+			trap_Cvar_SetValue( "r_hdr", 1 );
+			trap_Cvar_SetValue( "r_postProcess", 1 );
+			trap_Cvar_SetValue( "r_toneMap", 1 );
+			trap_Cvar_SetValue( "r_autoExposure", 1 );
+			trap_Cvar_SetValue( "r_normalMapping", 1 );
+			trap_Cvar_SetValue( "r_specularMapping", 1 );
+			trap_Cvar_SetValue( "r_deluxeMapping", 1 );
+			trap_Cvar_SetValue( "r_forceSun", 1 );
+			trap_Cvar_SetValue( "r_drawSunRays", 1 );
+			trap_Cvar_SetValue( "r_sunShadows", 1 );
+			trap_Cvar_SetValue( "r_shadowFilter", 1 );
 			break;
-		case 1: // normal
+		case 1:     // normal
 			trap_Cvar_SetValue( "r_fullScreen", 1 );
-			trap_Cvar_SetValue( "r_subdivisions", 12 );
+			trap_Cvar_SetValue( "r_subdivisions", 4 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
 			trap_Cvar_SetValue( "r_lodbias", 0 );
 			trap_Cvar_SetValue( "r_colorbits", 0 );
-			trap_Cvar_SetValue( "r_depthbits", 24 );
+			trap_Cvar_SetValue( "r_depthbits", 0 );
 			trap_Cvar_SetValue( "r_picmip", 0 );
 			trap_Cvar_SetValue( "r_picmip2", 1 );
-			trap_Cvar_SetValue( "r_mode", 3 );
+			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "r_fastSky", 0 );
+			trap_Cvar_SetValue( "r_dynamiclight", 1 );
 			trap_Cvar_SetValue( "r_inGameVideo", 1 );
+			trap_Cvar_SetValue( "cg_shadows", 1 );
 			trap_Cvar_SetValue( "cg_brassTime", 2500 );
-			trap_Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_NEAREST" ); //----(SA)	modified so wolf never sets trilinear automatically
-			trap_Cvar_SetValue( "cg_shadows", 0 );
+			trap_Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_NEAREST" );
+			trap_Cvar_SetValue( "r_ext_compressed_textures", 0 );
+			trap_Cvar_SetValue( "r_overBrightBits", 0 );
+			trap_Cvar_Set( "cl_renderer", "opengl1" );
+			trap_Cvar_SetValue( "r_bloom", 1 );
 			break;
-		case 2: // fast
+		case 2:     // fast
 			trap_Cvar_SetValue( "r_fullScreen", 1 );
-			trap_Cvar_SetValue( "r_subdivisions", 8 );
+			trap_Cvar_SetValue( "r_subdivisions", 12 );
 			trap_Cvar_SetValue( "r_vertexlight", 0 );
 			trap_Cvar_SetValue( "r_lodbias", 1 );
 			trap_Cvar_SetValue( "r_colorbits", 0 );
 			trap_Cvar_SetValue( "r_depthbits", 0 );
 			trap_Cvar_SetValue( "r_picmip", 1 );
 			trap_Cvar_SetValue( "r_picmip2", 2 );
-			trap_Cvar_SetValue( "r_mode", 3 );
+			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "cg_shadows", 0 );
 			trap_Cvar_SetValue( "r_fastSky", 1 );
+			trap_Cvar_SetValue( "r_dynamiclight", 0 );
 			trap_Cvar_SetValue( "r_inGameVideo", 0 );
 			trap_Cvar_SetValue( "cg_brassTime", 0 );
 			trap_Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_NEAREST" );
+			trap_Cvar_SetValue( "r_ext_compressed_textures", 1 );
+			trap_Cvar_SetValue( "r_overBrightBits", 0 );
+			trap_Cvar_Set( "cl_renderer", "opengl1" );
+			trap_Cvar_SetValue( "r_bloom", 0 );
 			break;
-		case 3: // fastest
+		case 3:     // fastest
 			trap_Cvar_SetValue( "r_fullScreen", 1 );
 			trap_Cvar_SetValue( "r_subdivisions", 20 );
 			trap_Cvar_SetValue( "r_vertexlight", 1 );
 			trap_Cvar_SetValue( "r_lodbias", 2 );
-			trap_Cvar_SetValue( "r_colorbits", 16 );
-			trap_Cvar_SetValue( "r_depthbits", 16 );
-			trap_Cvar_SetValue( "r_mode", 3 );
+			trap_Cvar_SetValue( "r_colorbits", 0 );
+			trap_Cvar_SetValue( "r_depthbits", 0 );
+			trap_Cvar_SetValue( "r_mode", -2 );
 			trap_Cvar_SetValue( "r_picmip", 2 );
 			trap_Cvar_SetValue( "r_picmip2", 3 );
-			trap_Cvar_SetValue( "r_texturebits", 16 );
+			trap_Cvar_SetValue( "r_texturebits", 0 );
 			trap_Cvar_SetValue( "cg_shadows", 0 );
 			trap_Cvar_SetValue( "cg_brassTime", 0 );
 			trap_Cvar_SetValue( "r_fastSky", 1 );
+			trap_Cvar_SetValue( "r_dynamiclight", 0 );
 			trap_Cvar_SetValue( "r_inGameVideo", 0 );
 			trap_Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_NEAREST" );
+			trap_Cvar_SetValue( "r_ext_compressed_textures", 1 );
+			trap_Cvar_SetValue( "r_overBrightBits", 0 );
+			trap_Cvar_Set( "cl_renderer", "opengl1" );
+			trap_Cvar_SetValue( "r_bloom", 0 );
 			break;
 
 		case 999:   // 999 is reserved for having set default values ("recommended")
