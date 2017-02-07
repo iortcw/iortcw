@@ -460,7 +460,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 			glConfig.stereoEnabled = qfalse;
 			SDL_GL_SetAttribute( SDL_GL_STEREO, 0 );
 		}
-		
+
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
 		// If not allowing software GL, demand accelerated
@@ -474,6 +474,8 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 			if( SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, &value ) != 1 )
 				SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, -1 );
 		}
+
+		flags |= SDL_WINDOW_RESIZABLE;
 
 		if( r_centerWindow->integer && !fullscreen )
  		{
@@ -599,7 +601,7 @@ static qboolean GLimp_StartDriverAndSetMode(int mode, qboolean fullscreen, qbool
 		r_fullscreen->modified = qfalse;
 		fullscreen = qfalse;
 	}
-	
+
 	err = GLimp_SetMode(mode, fullscreen, noborder);
 
 	switch ( err )
