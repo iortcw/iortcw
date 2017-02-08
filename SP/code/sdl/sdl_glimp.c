@@ -908,7 +908,7 @@ void GLimp_EndFrame( void )
 
 	if( r_fullscreen->modified )
 	{
-		int         fullscreen;
+		qboolean    fullscreen;
 		qboolean    needToToggle;
 
 		// Find out the current state
@@ -926,16 +926,26 @@ void GLimp_EndFrame( void )
 
 		if( needToToggle )
 		{
-			// Need the vid_restart here since r_fullscreen is only latched
-			if( fullscreen ) {
-				Com_Printf( "Switching to windowed rendering\n" );
-				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
-			} else {
+			// Always issue a vid_restart when going to windowed instead of calling SDL_SetWindowFullscreen()
+			// Otherwise sdl_input.c::IN_ProcessEvents() will catch a SDL_WINDOWEVENT_RESIZED event
+			// That will alter user resolution cvars and issue a vid_restart anyway
+			qboolean needVidRestart = qtrue;
+ 
+			if (!fullscreen)
+			{
+				// Issue a vid_restart if SDL_SetWindowFullscreen() doesn't work
+				needVidRestart = SDL_SetWindowFullscreen(SDL_window, SDL_WINDOW_FULLSCREEN) < 0;
 				Com_Printf( "Switching to fullscreen rendering\n" );
-				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
+			}
+			else
+			{
+				Com_Printf( "Switching to windowed rendering\n" );
 			}
 
-			ri.IN_Restart( );
+			if (needVidRestart)
+ 				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
+ 
+ 			ri.IN_Restart( );
 		}
 
 		r_fullscreen->modified = qfalse;
