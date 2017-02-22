@@ -226,7 +226,8 @@ static void CG_TellAttacker_f( void ) {
 	trap_SendClientCommand( command );
 }
 
-// TTimo: unused
+
+// TTimo: defined but not used
 /*
 static void CG_NextTeamMember_f( void ) {
   CG_SelectNextPlayer();
@@ -270,19 +271,19 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 	//if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 )	// don't allow camera to start if you're dead
 	//	return;
 
-	COM_StripExtension( name, lname, sizeof(lname) );    //----(SA)	added
+	COM_StripExtension( name, lname, sizeof( lname ) );    //----(SA)	added
 	Q_strcat( lname, sizeof( lname ), ".camera" );
 
 	if ( trap_loadCamera( CAM_PRIMARY, va( "cameras/%s", lname ) ) ) {
-		cg.cameraMode = qtrue;                  // camera on in cgame
+		cg.cameraMode = qtrue;				// camera on in cgame
 		if ( startBlack ) {
-			CG_Fade( 0, 0, 0, 255, cg.time, 0 );  // go black
+			CG_Fade( 0, 0, 0, 255, cg.time, 0 );		// go black
 		}
 		trap_Cvar_Set( "cg_letterbox", "1" ); // go letterbox
-		trap_SendClientCommand( "startCamera" );   // camera on in game
-		trap_startCamera( CAM_PRIMARY, cg.time ); // camera on in client
+		trap_SendClientCommand( "startCamera" );	// camera on in game
+		trap_startCamera( CAM_PRIMARY, cg.time );	// camera on in client
 	} else {
-//----(SA)	removed check for cams in main dir
+		//----(SA)	removed check for cams in main dir
 		cg.cameraMode = qfalse;                 // camera off in cgame
 		trap_SendClientCommand( "stopCamera" );    // camera off in game
 		trap_stopCamera( CAM_PRIMARY );           // camera off in client
@@ -311,6 +312,7 @@ void CG_StopCamera( void ) {
 
 static void CG_Camera_f( void ) {
 	char name[MAX_QPATH];
+
 	trap_Argv( 1, name, sizeof( name ) );
 
 	CG_StartCamera( name, qfalse );
@@ -334,48 +336,7 @@ static void CG_Fade_f( void ) {
 	CG_Fade( r, g, b, a, cg.time, duration );
 }
 
-// TTimo unused
-/*
 // NERVE - SMF
-static void CG_PickTeam_f( void ) {
-	const char	*s;
-	char buf[144];
-
-	if(cgs.gametype != GT_WOLF)
-		return;
-
-	// set map title
-	trap_Cvar_VariableStringBuffer( "sv_mapname", buf, sizeof( buf ) );
-	trap_Cvar_Set( "mp_mapTitle", "MAP" ); //buf );
-
-	// set map description
-	s = CG_ConfigString( CS_MULTI_MAPDESC );
-	if ( s )
-		trap_Cvar_Set( "mp_mapDesc", s );
-
-	trap_UI_Popup( "UIMENU_WM_PICKTEAM" );
-}
-
-static void CG_PickPlayer_f( void ) {
-	const char	*s;
-	char buf[144];
-
-	if(cgs.gametype != GT_WOLF)
-		return;
-
-	// set map title
-	trap_Cvar_VariableStringBuffer( "sv_mapname", buf, sizeof( buf ) );
-	trap_Cvar_Set( "mp_mapTitle", "MAP" ); //buf );
-
-	// set map description
-	s = CG_ConfigString( CS_MULTI_MAPDESC );
-	if ( s )
-		trap_Cvar_Set( "mp_mapDesc", s );
-
-	trap_UI_Popup( "UIMENU_WM_PICKPLAYER" );
-}
-*/
-
 static void CG_QuickMessage_f( void ) {
 	if ( cgs.gametype != GT_WOLF ) {
 		return;
@@ -513,31 +474,31 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand( "say_team" );
 	trap_AddCommand( "say_limbo" );           // NERVE - SMF
 	trap_AddCommand( "tell" );
-//	trap_AddCommand ("vsay");
-//	trap_AddCommand ("vsay_team");
-//	trap_AddCommand ("vtell");
-//	trap_AddCommand ("vtaunt");
-//	trap_AddCommand ("vosay");
-//	trap_AddCommand ("vosay_team");
-//	trap_AddCommand ("votell");
+//	trap_AddCommand( "vsay" );
+//	trap_AddCommand( "vsay_team" );
+//	trap_AddCommand( "vtell" );
+//	trap_AddCommand( "vtaunt" );
+//	trap_AddCommand( "vosay" );
+//	trap_AddCommand( "vosay_team" );
+//	trap_AddCommand( "votell" );
 	trap_AddCommand( "give" );
 	trap_AddCommand( "god" );
 	trap_AddCommand( "notarget" );
 	trap_AddCommand( "noclip" );
-	trap_AddCommand ("where");
+	trap_AddCommand( "where" );
 	trap_AddCommand( "team" );
 	trap_AddCommand( "follow" );
-	trap_AddCommand ("follownext");
-	trap_AddCommand ("followprev");
+	trap_AddCommand( "follownext" );
+	trap_AddCommand( "followprev" );
 	trap_AddCommand( "levelshot" );
 	trap_AddCommand( "addbot" );
 	trap_AddCommand( "setviewpos" );
 	trap_AddCommand( "callvote" );
 	trap_AddCommand( "vote" );
-//	trap_AddCommand ("callteamvote");
-//	trap_AddCommand ("teamvote");
+//	trap_AddCommand( "callteamvote" );
+//	trap_AddCommand( "teamvote" );
 	trap_AddCommand( "stats" );
-//	trap_AddCommand ("teamtask");
+//	trap_AddCommand( "teamtask" );
 	trap_AddCommand( "loaddeferred" );        // spelling fixed (SA)
 
 	trap_AddCommand( "startCamera" );
@@ -547,5 +508,7 @@ void CG_InitConsoleCommands( void ) {
 	// Rafael
 	trap_AddCommand( "nofatigue" );
 
-	trap_AddCommand( "setspawnpt" );          // NERVE - SMF
+	// NERVE - SMF
+	trap_AddCommand( "setspawnpt" );
+	// NERVE - SMF
 }

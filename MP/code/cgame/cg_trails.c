@@ -454,7 +454,7 @@ void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs ) {
 	int k, i, n, l, numOutVerts;
 	polyVert_t mid;
 	float mod[4];
-	float sInc, s;
+	float sInc = 0.0f, s = 0.0f;   // TTimo: init
 	trailJunc_t *j, *jNext;
 	vec3_t up, p, v;
 	// clipping vars
@@ -517,8 +517,6 @@ void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs ) {
 //		iteration = 1;
 //	}
 
-	sInc = 0;
-
 	if ( !numJuncs ) {
 		// first count the number of juncs in the trail
 		j = trail;
@@ -547,7 +545,6 @@ void CG_AddTrailToScene( trailJunc_t *trail, int iteration, int numJuncs ) {
 		return;
 	}
 
-	s = 0;
 	if ( trail->sType == STYPE_STRETCH ) {
 		//sInc = ((1.0 - 0.1) / (float)(numJuncs));	// hack, the end of funnel shows a bit of the start (looping)
 		s = 0.05;

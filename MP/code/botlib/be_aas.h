@@ -71,12 +71,14 @@ If you have questions concerning this license or the applicable additional terms
 //default travel flags
 
 //----(SA)	modified since slime is no longer deadly
-#define TFL_DEFAULT ( TFL_WALK | TFL_CROUCH | TFL_BARRIERJUMP |	\
-					  TFL_JUMP | TFL_LADDER | \
-					  TFL_WALKOFFLEDGE | TFL_SWIM | TFL_WATERJUMP |	\
-					  TFL_TELEPORT | TFL_ELEVATOR | TFL_AIR | \
-					  TFL_WATER | TFL_SLIME | \
-					  TFL_JUMPPAD | TFL_FUNCBOB )
+#define TFL_DEFAULT ( ( TFL_WALK | TFL_CROUCH | TFL_BARRIERJUMP | \
+						TFL_JUMP | TFL_LADDER |	\
+						TFL_WALKOFFLEDGE | TFL_SWIM | TFL_WATERJUMP | \
+						TFL_TELEPORT | TFL_ELEVATOR | TFL_AIR |	\
+						TFL_WATER | TFL_SLIME |	\
+						TFL_JUMPPAD | TFL_FUNCBOB )	\
+					  & ~( TFL_JUMPPAD | TFL_ROCKETJUMP | TFL_BFGJUMP | TFL_GRAPPLEHOOK | TFL_DOUBLEJUMP | TFL_RAMPJUMP | TFL_STRAFEJUMP | TFL_LAVA ) )
+// RF, added that bottom line so it's the same as AICAST_TFL_DEFAULT
 
 typedef enum
 {

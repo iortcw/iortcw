@@ -131,18 +131,18 @@ static void CG_LoadHud_f( void ) {
 	String_Init();
 	Menu_Reset();
 
-//	trap_Cvar_VariableStringBuffer("cg_hudFiles", buff, sizeof(buff));
+//	trap_Cvar_VariableStringBuffer( "cg_hudFiles", buff, sizeof( buff ) );
 //	hudSet = buff;
-//	if (hudSet[0] == '\0') {
-	hudSet = "ui_mp/hud.txt";
+//	if ( hudSet[0] == '\0' ) {
+		hudSet = "ui_mp/hud.txt";
 //	}
 
 	CG_LoadMenus( hudSet );
 	menuScoreboard = NULL;
 }
 
-/*
 // TTimo: defined but not used
+/*
 static void CG_scrollScoresDown_f( void) {
 	if (menuScoreboard && cg.scoreBoardShowing) {
 		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
@@ -150,10 +150,8 @@ static void CG_scrollScoresDown_f( void) {
 		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
 	}
 }
-*/
 
-/*
-// TTimo: defined but not used
+
 static void CG_scrollScoresUp_f( void) {
 	if (menuScoreboard && cg.scoreBoardShowing) {
 		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
@@ -161,10 +159,8 @@ static void CG_scrollScoresUp_f( void) {
 		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
 	}
 }
-*/
 
-/*
-// TTimo: defined but not used
+
 static void CG_spWin_f( void) {
 	trap_Cvar_Set("cg_cameraOrbit", "2");
 	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
@@ -175,10 +171,7 @@ static void CG_spWin_f( void) {
 	//trap_S_StartLocalSound(cgs.media.winnerSound, CHAN_ANNOUNCER);
 	CG_CenterPrint("YOU WIN!", SCREEN_HEIGHT * .30, 0);
 }
-*/
 
-/*
-// TTimo: defined but not used
 static void CG_spLose_f( void) {
 	trap_Cvar_Set("cg_cameraOrbit", "2");
 	trap_Cvar_Set("cg_cameraOrbitDelay", "35");
@@ -233,15 +226,13 @@ static void CG_TellAttacker_f( void ) {
 	trap_SendClientCommand( command );
 }
 
-/*
+
 // TTimo: defined but not used
+/*
 static void CG_NextTeamMember_f( void ) {
   CG_SelectNextPlayer();
 }
-*/
 
-/*
-// TTimo: defined but not used
 static void CG_PrevTeamMember_f( void ) {
   CG_SelectPrevPlayer();
 }
@@ -282,18 +273,17 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 	}
 
 	COM_StripExtension( name, lname, sizeof( lname ) );    //----(SA)	added
-	strcat( lname, ".camera" );
+	Q_strcat( lname, sizeof( lname ), ".camera" );
 
 	if ( trap_loadCamera( CAM_PRIMARY, va( "cameras/%s", lname ) ) ) {
-		cg.cameraMode = qtrue;
+		cg.cameraMode = qtrue;				// camera on in cgame
 		if ( startBlack ) {
-			CG_Fade( 0, 0, 0, 255, 0 );           // go black
+			CG_Fade( 0, 0, 0, 255, 0 );		// go black
 		}
 		trap_Cvar_Set( "cg_letterbox", "1" ); // go letterbox
-		trap_SendClientCommand( "startCamera" );
-		trap_startCamera( CAM_PRIMARY, cg.time );
+		trap_SendClientCommand( "startCamera" );	// camera on in game
+		trap_startCamera( CAM_PRIMARY, cg.time );	// camera on in client
 	} else {
-
 		//----(SA)	temp until radiant stores cameras in own directory
 		//			check cameras dir then main dir
 		if ( trap_loadCamera( CAM_PRIMARY, name ) ) {
@@ -303,17 +293,16 @@ void CG_StartCamera( const char *name, qboolean startBlack ) {
 			return;
 		}
 		//----(SA)	end (remove when radiant stores cameras...)
-
+		cg.cameraMode = qfalse;
 		trap_SendClientCommand( "stopCamera" );
 		CG_Fade( 0, 0, 0, 0, 0 );             // ensure fadeup
 		trap_Cvar_Set( "cg_letterbox", "0" );
-		cg.cameraMode = qfalse;
 		CG_Printf( "Unable to load camera %s\n",lname );
 	}
 }
 
-/*
 // TTimo: defined but not used
+/*
 static void CG_Camera_f( void ) {
 	char name[MAX_QPATH];
 
@@ -328,7 +317,7 @@ static void CG_Camera_f( void ) {
 
 static void CG_Fade_f( void ) {
 	int r, g, b, a;
-	float time;
+	float duration;
 
 	if ( trap_Argc() < 6 ) {
 		return;
@@ -339,9 +328,9 @@ static void CG_Fade_f( void ) {
 	b = atof( CG_Argv( 3 ) );
 	a = atof( CG_Argv( 4 ) );
 
-	time = atof( CG_Argv( 5 ) ) * 1000;
+	duration = atof( CG_Argv( 5 ) ) * 1000;
 
-	CG_Fade( r, g, b, a, time );
+	CG_Fade( r, g, b, a, duration );
 }
 
 // NERVE - SMF
@@ -638,13 +627,13 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand( "say_team" );
 	trap_AddCommand( "say_limbo" );           // NERVE - SMF
 	trap_AddCommand( "tell" );
-//	trap_AddCommand ("vsay");
-//	trap_AddCommand ("vsay_team");
-//	trap_AddCommand ("vtell");
-//	trap_AddCommand ("vtaunt");
-//	trap_AddCommand ("vosay");
-//	trap_AddCommand ("vosay_team");
-//	trap_AddCommand ("votell");
+//	trap_AddCommand( "vsay" );
+//	trap_AddCommand( "vsay_team" );
+//	trap_AddCommand( "vtell" );
+//	trap_AddCommand( "vtaunt" );
+//	trap_AddCommand( "vosay" );
+//	trap_AddCommand( "vosay_team" );
+//	trap_AddCommand( "votell" );
 	trap_AddCommand( "give" );
 	trap_AddCommand( "god" );
 	trap_AddCommand( "notarget" );
@@ -659,15 +648,15 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand( "setviewpos" );
 	trap_AddCommand( "callvote" );
 	trap_AddCommand( "vote" );
-//	trap_AddCommand ("callteamvote");
-//	trap_AddCommand ("teamvote");
+//	trap_AddCommand( "callteamvote" );
+//	trap_AddCommand( "teamvote" );
 	trap_AddCommand( "stats" );
-//	trap_AddCommand ("teamtask");
+//	trap_AddCommand( "teamtask" );
 	trap_AddCommand( "loaddeferred" );        // spelling fixed (SA)
 
-//	trap_AddCommand ("startCamera");
-//	trap_AddCommand ("stopCamera");
-//	trap_AddCommand ("setCameraOrigin");
+//	trap_AddCommand( "startCamera" );
+//	trap_AddCommand( "stopCamera" );
+//	trap_AddCommand( "setCameraOrigin" );
 
 	// Rafael
 	trap_AddCommand( "nofatigue" );
@@ -680,5 +669,5 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand( "start_match" );
 	trap_AddCommand( "reset_match" );
 	trap_AddCommand( "swap_teams" );
-	// -NERVE - SMF
+	// NERVE - SMF
 }

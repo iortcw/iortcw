@@ -374,7 +374,7 @@ void CG_AddFragment( localEntity_t *le ) {
 	vec3_t newOrigin;
 	trace_t trace;
 	refEntity_t     *re;
-	float flameAlpha = 0.0;   // TTimo: init
+	float flameAlpha = 0.0f;   // TTimo: init
 	vec3_t flameDir;
 	qboolean hasFlame = qfalse;
 	int i;
@@ -424,7 +424,6 @@ void CG_AddFragment( localEntity_t *le ) {
 //----(SA)	end
 
 	if ( le->pos.trType == TR_STATIONARY ) {
-
 		// Ridah, add the flame
 		if ( hasFlame ) {
 			refEntity_t backupEnt;
@@ -449,7 +448,6 @@ void CG_AddFragment( localEntity_t *le ) {
 		return;
 
 	} else if ( le->pos.trType == TR_GRAVITY_PAUSED ) {
-
 		// Ridah, add the flame
 		if ( hasFlame ) {
 			refEntity_t backupEnt;
@@ -1028,18 +1026,9 @@ void CG_AddClientCritter( localEntity_t *le ) {
 	}
 
 	trap_R_AddRefEntityToScene( &le->refEntity );
-/*
-	// HACK: the skull is slightly higher than the origin
-	if (le->leType == LE_ZOMBIE_SPIRIT) {
-		// set the size scale
-		for (i=0; i<3; i++)
-			VectorScale( le->refEntity.axis[i], 1.0/0.35, le->refEntity.axis[i] );
-		VectorMA( le->refEntity.origin,  10, le->refEntity.axis[2], le->refEntity.origin );
-	}
-*/
+
 	// Bats, add the flame
 	if ( le->leType == LE_ZOMBIE_BAT ) {
-//		float lightSize, alpha;
 		//
 		le->refEntity.shaderRGBA[3] = 255;
 		VectorNormalize2( le->pos.trDelta, v );
@@ -1051,21 +1040,9 @@ void CG_AddClientCritter( localEntity_t *le ) {
 		trap_R_AddRefEntityToScene( &le->refEntity );
 		le->refEntity.shaderTime = 1434;
 		trap_R_AddRefEntityToScene( &le->refEntity );
-//		le->refEntity.customShader = cgs.media.onFireShader;
-//		le->refEntity.shaderTime = 0;
-//		trap_R_AddRefEntityToScene( &le->refEntity );
 
 		le->refEntity.customShader = 0;
 		le->refEntity.shaderTime = 0;
-/*
-		// drop a dlight
-		lightSize = 1.0 + 0.2*(sin(1.0*cg.time/50.0) * cos(1.0*cg.time/43.0));
-		alpha = 0.2 * (lightSize / 1.2);
-		trap_R_AddLightToScene( le->refEntity.origin, 150.0 + 80.0*lightSize, 1.000000*alpha, 0.603922*alpha, 0.207843*alpha, 0 );
-		// add some sound
-		CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameSound, 100 );
-		CG_S_AddLoopingSound( -1, le->refEntity.origin, vec3_origin, cgs.media.flameBlowSound, 100 );
-*/
 	}
 }
 

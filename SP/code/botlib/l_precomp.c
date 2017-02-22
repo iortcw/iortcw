@@ -26,8 +26,6 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
 
 /*****************************************************************************
  * name:		l_precomp.c
@@ -91,10 +89,18 @@ typedef enum {qfalse, qtrue}    qboolean;
 
 #define qtrue   true
 #define qfalse  false
-#define Q_stricmp   strcasecmp
+#define Q_stricmp   stricmp
 
 #define MAX_TOKENLENGTH     1024
 
+typedef struct pc_token_s
+{
+	int type;
+	int subtype;
+	int intvalue;
+	float floatvalue;
+	char string[MAX_TOKENLENGTH];
+} pc_token_t;
 #endif //BSPC
 
 #if defined( QUAKE ) && !defined( BSPC )
@@ -661,7 +667,7 @@ void PC_AddBuiltinDefines( source_t *source ) {
 		{ "__FILE__",    BUILTIN_FILE },
 		{ "__DATE__",    BUILTIN_DATE },
 		{ "__TIME__",    BUILTIN_TIME },
-//		"__STDC__", BUILTIN_STDC,
+//		{ "__STDC__",    BUILTIN_STDC },
 		{ NULL, 0 }
 	};
 
@@ -692,7 +698,6 @@ int PC_ExpandBuiltinDefine( source_t *source, token_t *deftoken, define_t *defin
 							token_t **firsttoken, token_t **lasttoken ) {
 	token_t *token;
 	time_t t;
-
 	char *curtime;
 
 	token = PC_CopyToken( deftoken );
@@ -1011,7 +1016,7 @@ int PC_Directive_include( source_t *source ) {
 		memset( &file, 0, sizeof( foundfile_t ) );
 		script = LoadScriptFile( path );
 		if ( script ) {
-			strncpy( script->filename, path, _MAX_PATH );
+			Q_strncpyz( script->filename, path, sizeof( script->filename ) );
 		}
 	} //end if
 #endif //QUAKE
@@ -1167,18 +1172,17 @@ int PC_Directive_define( source_t *source ) {
 #else
 	define = PC_FindDefine( source->defines, token.string );
 #endif //DEFINEHASHING
-	if ( define )
-	{
-		if ( define->flags & DEFINE_FIXED )
-		{
+	if ( define ) {
+		if ( define->flags & DEFINE_FIXED ) {
 			SourceError( source, "can't redefine %s", token.string );
 			return qfalse;
 		} //end if
 		SourceWarning( source, "redefinition of %s", token.string );
 		//unread the define name before executing the #undef directive
 		PC_UnreadSourceToken( source, &token );
-		if ( !PC_Directive_undef( source ) )
+		if ( !PC_Directive_undef( source ) ) {
 			return qfalse;
+		}
 	} //end if
 	//allocate define
 	define = (define_t *) GetMemory(sizeof(define_t));
@@ -1637,7 +1641,7 @@ int PC_OperatorPriority( int op ) {
 #define FreeOperator( op )
 
 int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intvalue,
-						float *floatvalue, int integer) {
+						float *floatvalue, int integer ) {
 	operator_t *o, *firstoperator, *lastoperator;
 	value_t *v, *firstvalue, *lastvalue, *v1, *v2;
 	token_t *t;
@@ -2949,7 +2953,7 @@ void PC_UnreadToken( source_t *source, token_t *token ) {
 void PC_SetIncludePath( source_t *source, char *path ) {
 	size_t len;
 
-	Q_strncpyz(source->includepath, path, _MAX_PATH-1);
+	Q_strncpyz( source->includepath, path, sizeof( source->includepath ) - 1 );
 
 	len = strlen(source->includepath);
 	//add trailing path seperator
@@ -2990,7 +2994,7 @@ source_t *LoadSourceFile( const char *filename ) {
 	source = (source_t *) GetMemory( sizeof( source_t ) );
 	memset( source, 0, sizeof( source_t ) );
 
-	strncpy( source->filename, filename, _MAX_PATH );
+	Q_strncpyz( source->filename, filename, sizeof( source->filename ) );
 	source->scriptstack = script;
 	source->tokens = NULL;
 	source->defines = NULL;
@@ -3024,7 +3028,7 @@ source_t *LoadSourceMemory( char *ptr, int length, char *name ) {
 	source = (source_t *) GetMemory( sizeof( source_t ) );
 	memset( source, 0, sizeof( source_t ) );
 
-	strncpy( source->filename, name, _MAX_PATH );
+	Q_strncpyz( source->filename, name, sizeof( source->filename ) );
 	source->scriptstack = script;
 	source->tokens = NULL;
 	source->defines = NULL;

@@ -30,12 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "cg_local.h"
 
-#if 0
-#define MAX_LOADING_ITEM_ICONS      26
-
-static int loadingItemIconCount;
-static qhandle_t loadingItemIcons[MAX_LOADING_ITEM_ICONS];
-#endif
 
 /*
 ======================
@@ -145,21 +139,22 @@ typedef struct {
 // this defines the layout of the mission stats
 // NOTE: these must match the stats sent in AICast_ScriptAction_ChangeLevel()
 static statsItem_t statsItems[] = {
-	//{ "MISSION STATS",		110, 40,		UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW,		&colorWhite,		"",		600,	UI_SMALLFONT|UI_DROPSHADOW|UI_RIGHT,		&colorWhite,	0 },
-
 	{ "Kills",       170, 40,        UI_SMALLFONT | UI_DROPSHADOW,     &colorWhite,        "%3i/%3i",       600,    UI_SMALLFONT | UI_DROPSHADOW | UI_RIGHT,        &colorWhite,    2 },
 	{ " Nazis",      40, 40,     UI_EXSMALLFONT | UI_DROPSHADOW,   &colorWhite,        "%3i/%3i",       600,    UI_EXSMALLFONT | UI_DROPSHADOW | UI_RIGHT,      &colorWhite,    2 },
 	{ " Monsters",   15, 40,     UI_EXSMALLFONT | UI_DROPSHADOW,   &colorWhite,        "%3i/%3i",       600,    UI_EXSMALLFONT | UI_DROPSHADOW | UI_RIGHT,      &colorWhite,    2 },
-
 	{ "Time",        30, 40,     UI_SMALLFONT | UI_DROPSHADOW,     &colorWhite,        "%2ih %2im %2is",    600,    UI_SMALLFONT | UI_DROPSHADOW | UI_RIGHT,        &colorWhite,    3 },
-
 	{ "Secrets", 30, 40,     UI_SMALLFONT | UI_DROPSHADOW,     &colorWhite,        "%i/%i",         600,    UI_SMALLFONT | UI_DROPSHADOW | UI_RIGHT,        &colorWhite,    2 },
-
 	{ "Attempts",    30, 40,     UI_SMALLFONT | UI_DROPSHADOW,     &colorWhite,        "%i",            600,    UI_SMALLFONT | UI_DROPSHADOW | UI_RIGHT,        &colorWhite,    1 },
 
 	{ NULL }
 };
 
+
+/*
+==============
+CG_DrawStats
+==============
+*/
 void CG_DrawStats( char *stats ) {
 	int i, y, v, j;
 	#define MAX_STATS_VARS  64

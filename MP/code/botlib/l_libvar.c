@@ -100,12 +100,13 @@ libvar_t *LibVarAlloc( char *var_name ) {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void LibVarDeAlloc(libvar_t *v)
- {
- 	if (v->string) FreeMemory(v->string);
+void LibVarDeAlloc( libvar_t *v ) {
+	if ( v->string ) {
+		FreeMemory( v->string );
+	}
 	FreeMemory(v->name);
- 	FreeMemory(v);
- } //end of the function LibVarDeAlloc
+	FreeMemory( v );
+} //end of the function LibVarDeAlloc
 //===========================================================================
 //
 // Parameter:				-

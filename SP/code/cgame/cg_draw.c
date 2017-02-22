@@ -58,7 +58,6 @@ int CG_Text_Width( const char *text, int font, float scale, int limit ) {
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
-
 	fontInfo_t *fnt = &cgDC.Assets.textFont;
 
 	if ( font == UI_FONT_DEFAULT ) {
@@ -104,8 +103,8 @@ int CG_Text_Height( const char *text, int font, float scale, int limit ) {
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
-
 	fontInfo_t *fnt = &cgDC.Assets.textFont;
+
 	if ( font == UI_FONT_DEFAULT ) {
 		if ( scale <= cg_smallFont.value ) {
 			fnt = &cgDC.Assets.smallFont;
@@ -348,7 +347,6 @@ void CG_Draw3DModel( float x, float y, float w, float h, qhandle_t model, qhandl
 	trap_R_AddRefEntityToScene( &ent );
 	trap_R_RenderScene( &refdef );
 }
-
 
 /*
 ================
@@ -600,7 +598,6 @@ void CG_DrawTeamBackground( int x, int y, int w, int h, float alpha, int team ) 
 	} else {
 		return;
 	}
-
 	trap_R_SetColor( hcolor );
 	CG_DrawPic( x, y, w, h, cgs.media.teamStatusBar );
 	trap_R_SetColor( NULL );
@@ -1504,7 +1501,6 @@ static void CG_DrawTeamInfo( void ) {
 	} else {
 		chatHeight = TEAMCHAT_HEIGHT;
 	}
-
 	if ( chatHeight <= 0 ) {
 		return; // disabled
 	}
@@ -1553,9 +1549,6 @@ static void CG_DrawTeamInfo( void ) {
 							  CHATLOC_Y - ( cgs.teamChatPos - i ) * TINYCHAR_HEIGHT,
 							  cgs.teamChatMsgs[i % chatHeight], hcolor, qfalse, qfalse,
 							  TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
-//			CG_DrawSmallString( CHATLOC_X + SMALLCHAR_WIDTH,
-//				CHATLOC_Y - (cgs.teamChatPos - i)*SMALLCHAR_HEIGHT,
-//				cgs.teamChatMsgs[i % TEAMCHAT_HEIGHT], 1.0F );
 		}
 	}
 }
@@ -1582,11 +1575,6 @@ static void CG_DrawPickupItem( void ) {
 		if ( fadeColor ) {
 			CG_RegisterItemVisuals( value );
 
-//----(SA) commented out
-//			trap_R_SetColor( fadeColor );
-//			CG_DrawPic( 8, 380, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
-//----(SA) end
-
 			//----(SA)	so we don't pick up all sorts of items and have it print "0 <itemname>"
 			if ( bg_itemlist[ value ].giType == IT_AMMO || bg_itemlist[ value ].giType == IT_HEALTH || bg_itemlist[value].giType == IT_POWERUP ) {
 				if ( bg_itemlist[ value ].world_model[2] ) {   // this is a multi-stage item
@@ -1603,19 +1591,15 @@ static void CG_DrawPickupItem( void ) {
 				Com_sprintf( pickupText, sizeof( pickupText ), "%s", cgs.itemPrintNames[value] );
 			}
 
-			//----(SA)	trying smaller text
 			color[0] = color[1] = color[2] = 1.0;
 			color[3] = fadeColor[0];
 			CG_DrawStringExt2( ICON_SIZE + 16, 398, pickupText, color, qfalse, qtrue, 10, 10, 0 );
-//			CG_Text_Paint(ICON_SIZE + 16, 398, 2, 0.3f, color, pickupText, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
-
 
 			trap_R_SetColor( NULL );
 		}
 	}
 }
 //----(SA)	end
-
 
 /*
 ===================
@@ -1651,15 +1635,9 @@ void CG_DrawHoldableItem_old( void ) {
 		if ( cg.holdableSelect == HI_WINE ) {
 			if ( value > 3 ) {
 				value = 3;  // 3 stages to icon, just draw full if beyond 'full'
-
 			}
-			//----(SA)	trying smaller text
-			//----(SA)	and off to the right side of the HUD
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[2-(value-1)] );
 			CG_DrawPic( 606, 366, 24, 24, cg_items[item - bg_itemlist].icons[2 - ( value - 1 )] );
-
 		} else {
-//			CG_DrawPic( 100, (SCREEN_HEIGHT-ICON_SIZE)-8, ICON_SIZE/2, ICON_SIZE, cg_items[item - bg_itemlist].icons[0] );
 			CG_DrawPic( 606, 366, 24, 24, cg_items[item - bg_itemlist].icons[0] );
 
 		}
@@ -1788,13 +1766,13 @@ static void CG_DrawDisconnect( void ) {
 	int cmdNum;
 	usercmd_t cmd;
 	const char      *s;
-	int w;          // bk010215 - FIXME char message[1024];
+	int w;
 
 	// draw the phone jack if we are completely past our buffers
 	cmdNum = trap_GetCurrentCmdNumber() - CMD_BACKUP + 1;
 	trap_GetUserCmd( cmdNum, &cmd );
 	if ( cmd.serverTime <= cg.snap->ps.commandTime
-		 || cmd.serverTime > cg.time ) { // special check for map_restart // bk 0102165 - FIXME
+		 || cmd.serverTime > cg.time ) { // special check for map_restart
 		return;
 	}
 
@@ -1803,7 +1781,7 @@ static void CG_DrawDisconnect( void ) {
 	}
 
 	// also add text in center of screen
-	s = "Connection Interrupted"; // bk 010215 - FIXME
+	s = "Connection Interrupted";
 	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 	CG_DrawBigString( 320 - w / 2, 100, s, 1.0F );
 
@@ -1947,6 +1925,7 @@ CENTER PRINTING
 ===============================================================================
 */
 
+
 /*
 ==============
 CG_CenterPrint
@@ -2029,12 +2008,9 @@ static void CG_DrawCenterString( void ) {
 		x = ( SCREEN_WIDTH - w ) / 2;
 
 		CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue, cg.centerPrintCharWidth, (int)( cg.centerPrintCharWidth * 1.5 ), 0 );
-//		CG_Text_Paint(x, y, 2, 0.3f, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 
-//		y += cg.centerPrintCharWidth * 1.5;
 		y += cg.centerPrintCharWidth * 2;
 
-//		while ( *start && ( *start != '\n' ) && !Q_strncmp(start, "\\n", 1) ) {
 		while ( *start && ( *start != '\n' ) ) {
 			if ( !Q_strncmp( start, "\\n", 1 ) ) {
 				start++;
@@ -2290,9 +2266,6 @@ static void CG_DrawWeapReticle( void ) {
 	}
 }
 
-
-//----(SA)	removed (9/8/2001)
-
 /*
 ==============
 CG_DrawBinocReticle
@@ -2439,7 +2412,6 @@ static void CG_DrawCrosshair( void ) {
 			}
 			return;
 		}
-
 		break;
 
 	case WP_SNIPERRIFLE:
@@ -2474,7 +2446,6 @@ static void CG_DrawCrosshair( void ) {
 		return;
 	}
 
-
 	// mauser only gets crosshair if you don't have the scope (I don't like this, but it's a test)
 	if ( cg.weaponSelect == WP_MAUSER ) {
 		if ( COM_BitCheck( cg.predictedPlayerState.weapons, WP_SNIPERRIFLE ) ) {
@@ -2482,8 +2453,7 @@ static void CG_DrawCrosshair( void ) {
 		}
 	}
 
-
-	if ( !cg_drawCrosshair.integer ) {  //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+	if ( !cg_drawCrosshair.integer ) {	//----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
 		return;
 	}
 
@@ -2543,6 +2513,7 @@ static void CG_DrawCrosshair( void ) {
 
 	trap_R_SetColor( NULL );
 }
+
 
 /*
 =================
@@ -2624,7 +2595,6 @@ static void CG_DrawCrosshair3D( void ) {
 			}
 			return;
 		}
-
 		break;
 
 	case WP_SNIPERRIFLE:
@@ -2659,7 +2629,6 @@ static void CG_DrawCrosshair3D( void ) {
 		return;
 	}
 
-
 	// mauser only gets crosshair if you don't have the scope (I don't like this, but it's a test)
 	if ( cg.weaponSelect == WP_MAUSER ) {
 		if ( COM_BitCheck( cg.predictedPlayerState.weapons, WP_SNIPERRIFLE ) ) {
@@ -2668,7 +2637,7 @@ static void CG_DrawCrosshair3D( void ) {
 	}
 
 
-	if ( !cg_drawCrosshair.integer ) {  //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+	if ( !cg_drawCrosshair.integer ) {	//----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
 		return;
 	}
 
@@ -2754,12 +2723,11 @@ static void CG_ScanForCrosshairEntity( void ) {
 
 	}
 	VectorCopy( cg.refdef.vieworg, start );
-	VectorMA( start, 4096, cg.refdef.viewaxis[0], end );    //----(SA)	changed from 8192
+	VectorMA( start, 8192, cg.refdef.viewaxis[0], end );
 
 	CG_Trace( &trace, start, vec3_origin, vec3_origin, end,
 			  cg.snap->ps.clientNum, CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM );
 
-//----(SA)	allow targets that aren't clients
 //	if ( trace.entityNum >= MAX_CLIENTS ) {
 //		return;
 //	}
@@ -2781,6 +2749,9 @@ static void CG_ScanForCrosshairEntity( void ) {
 	// update the fade timer
 	cg.crosshairClientNum = trace.entityNum;
 	cg.crosshairClientTime = cg.time;
+//	if ( cg.crosshairClientNum != cg.identifyClientNum && cg.crosshairClientNum != ENTITYNUM_WORLD ) {
+//		cg.identifyClientRequest = cg.crosshairClientNum;
+//	}
 }
 
 
@@ -3263,16 +3234,14 @@ static void CG_DrawFlashFade( void ) {
 	}
 	// now draw the fade
 	if ( cgs.scrFadeAlphaCurrent > 0.0 ) {
-//		CG_Printf("fade: %f\n", cgs.scrFadeAlphaCurrent);
 		VectorClear( col );
 		col[3] = cgs.scrFadeAlphaCurrent;
-//		CG_FillRect( -10, -10, 650, 490, col );
 		if ( cg_fixedAspect.integer ) {
 			CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		 	CG_FillRect( 0, 0, 640, 480, col );
 			CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 		} else {	
-			CG_FillRect( 0, 0, 640, 480, col ); // why do a bunch of these extend outside 640x480?
+			CG_FillRect( 0, 0, 640, 480, col );
 		}
 	}
 }
@@ -3469,6 +3438,7 @@ static void CG_DrawFlashLightning( void ) {
 	} else {
 		shader = cgs.media.viewTeslaDamageEffectShader;
 	}
+
 	if ( cg_fixedAspect.integer ) {
 		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
 		CG_DrawPic( -10, -10, 650, 490, shader );
@@ -3477,7 +3447,6 @@ static void CG_DrawFlashLightning( void ) {
 		CG_DrawPic( -10, -10, 650, 490, shader );
 	}
 }
-
 
 
 /*
@@ -3596,6 +3565,8 @@ static void CG_DrawObjectiveInfo( void ) {
 
 	VectorSet( backColor, 0, 0, 0 );
 	CG_DrawRect( x1, y1, x2 - x1, y2 - y1, 1, backColor );
+
+	//trap_R_SetColor( color );
 
 	// do the actual drawing
 	start = cg.oidPrint;
@@ -3782,7 +3753,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 	}
 
 	CG_ScreenFade();
-
 
 	if ( cg.snap->ps.pm_type == PM_INTERMISSION ) {
 		CG_DrawIntermission();
@@ -3989,11 +3959,11 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	}
 
 	// clear around the rendered view if sized down
-//	CG_TileClear();	// (SA) moved down
+	//CG_TileClear();	// (SA) moved down
 
 	if(stereoView != STEREO_CENTER)
 		CG_DrawCrosshair3D();
-	
+
 	cg.refdef.glfog.registered = 0; // make sure it doesn't use fog from another scene
 /*
 	// NERVE - SMF - activate limbo menu and draw small 3d window

@@ -363,9 +363,6 @@ void CG_AddEmitter( localEntity_t *le ) {
 	//else if(wine) {}
 
 	switch ( le->headJuncIndex ) {
-//		CG_ParticleImpactSmokePuff (cgs.media.oilParticle, le->pos.trBase);
-//		CG_Particle_Bleed(cgs.media.smokePuffShader, le->pos.trBase, dir, 0, 200);
-
 	case 1:     // oil
 		VectorScale( le->angles.trBase, le->radius, dir );
 		CG_Particle_OilParticle( cgs.media.oilParticle, le->pos.trBase, dir,  10000, le->ownerNum );
@@ -376,7 +373,6 @@ void CG_AddEmitter( localEntity_t *le ) {
 		break;
 	case 3:     // steam
 		nextTime = 100;
-//			CG_ParticleImpactSmokePuffExtended(cgs.media.smokeParticleShader, le->pos.trBase, 8, 1000, 8, 20, 20, 0.25f);
 		CG_ParticleImpactSmokePuffExtended( cgs.media.smokeParticleShader, le->pos.trBase, le->angles.trBase, 8, 1000, 8, le->radius, 20, 0.25f );
 		break;
 	case 4:     // wine
@@ -390,7 +386,6 @@ void CG_AddEmitter( localEntity_t *le ) {
 	case 6:     // electrical
 		nextTime = 100;
 		CG_AddBulletParticles( le->pos.trBase, dir, 2, 800, 4, 16.0f );
-//			CG_AddBulletParticles( le->pos.trBase, dir, 1, 800, 4, 0 );
 		break;
 
 	case 0:
@@ -583,7 +578,6 @@ void CG_AddFragment( localEntity_t *le ) {
 	}
 
 	if ( trace.fraction == 1.0 ) {
-
 		// still in free fall
 		VectorCopy( newOrigin, le->refEntity.origin );
 
@@ -636,15 +630,6 @@ void CG_AddFragment( localEntity_t *le ) {
 
 	// reflect the velocity on the trace plane
 	CG_ReflectVelocity( le, &trace );
-
-
-	// (SA) disabled since it caused debris to get stuck in walls (flags mostly)
-	// RF, if it has come to a halt, pause velocity
-//	if (VectorLength( le->pos.trDelta ) < 1) {
-//		le->pos.trType = TR_STATIONARY;
-//		VectorCopy( trace.endpos, le->pos.trBase );
-//		VectorClear( le->pos.trDelta );
-//	}
 
 	// break on contact?
 	if ( le->breakCount ) {
@@ -1151,7 +1136,7 @@ void CG_AddClientCritter( localEntity_t *le ) {
 		// set the angles
 		VectorNormalize2( oDelta, v );
 		// HACK!!! skull model is back-to-front, need to fix
-		if ( le->leType == LE_ZOMBIE_SPIRIT /*|| le->leType == LE_HELGA_SPIRIT*/ ) {
+		if ( le->leType == LE_ZOMBIE_SPIRIT ) {
 			VectorInverse( v );
 		}
 		vectoangles( v, ang );
@@ -1205,32 +1190,8 @@ void CG_AddClientCritter( localEntity_t *le ) {
 			CG_S_AddLoopingSound( 0, le->refEntity.origin, vec3_origin, le->loopingSound, 255 - (int)( 255.0 * ( 1.0 - alpha ) ) );
 		}
 	}
-/*
-	if (le->leType == LE_HELGA_SPIRIT) {
-		int cnt=1;
-		float alpha;
-		refEntity_t re;
 
-		// add the "motion blur" ghosts
-		re = le->refEntity;
-		i = le->oldPosHead - 1;
-		if (i < 0) i = MAX_OLD_POS-1;
-		while (i != le->oldPosHead && le->validOldPos[i]) {
-			alpha = 1.0 - ((float)cnt / (float)MAX_OLD_POS);
-			if (alpha > 1.0) alpha = 1.0;
-			if (alpha < 0.0) alpha = 0.0;
-
-			re.shaderTime = le->refEntity.shaderTime - cnt*100;
-			VectorCopy( le->oldPos[i], re.origin );
-			re.shaderRGBA[3] = (unsigned char)(255.0 * alpha);
-			trap_R_AddRefEntityToScene( &re );
-
-			if (--i<0) i=MAX_OLD_POS-1;
-			cnt++;
-		}
-	} else {
-*/  trap_R_AddRefEntityToScene( &le->refEntity );
-//	}
+	trap_R_AddRefEntityToScene( &le->refEntity );
 
 	// Bats, add the flame
 	if ( le->leType == LE_ZOMBIE_BAT ) {
@@ -1668,6 +1629,7 @@ static void CG_AddSpriteExplosion( localEntity_t *le ) {
 		// done.
 	}
 }
+
 
 //==============================================================================
 

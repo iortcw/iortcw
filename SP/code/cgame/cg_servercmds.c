@@ -158,11 +158,6 @@ void CG_ParseServerinfo( void ) {
 	trap_Cvar_Set( "g_redlimbotime",Info_ValueForKey( info,"g_redlimbotime" ) );
 	trap_Cvar_Set( "g_bluelimbotime",Info_ValueForKey( info,"g_bluelimbotime" ) );
 // jpw
-
-	//	Q_strncpyz( cgs.redTeam, Info_ValueForKey( info, "g_redTeam" ), sizeof(cgs.redTeam) );
-//	trap_Cvar_Set("g_redTeam", cgs.redTeam);
-//	Q_strncpyz( cgs.blueTeam, Info_ValueForKey( info, "g_blueTeam" ), sizeof(cgs.blueTeam) );
-//	trap_Cvar_Set("g_blueTeam", cgs.blueTeam);
 }
 
 
@@ -472,7 +467,6 @@ static void CG_ConfigStringModified( void ) {
 	} else if ( num == CS_SHADERSTATE )   {
 		CG_ShaderStateChanged();
 	}
-
 }
 
 
@@ -589,9 +583,8 @@ CG_SendMoveSpeeds
 */
 #if 0
 void CG_SendMoveSpeeds( void ) {
-	int i,j;
+	int i;
 	animModelInfo_t *modelInfo;
-	clientInfo_t *ci;
 
 	for ( i = 0; i < MAX_ANIMSCRIPT_MODELS; i++ ) {
 
@@ -604,25 +597,13 @@ void CG_SendMoveSpeeds( void ) {
 		if ( !modelInfo->modelname[0] ) {
 			continue;
 		}
-/*
-		// recalc them
-		// find a client that uses this model
-		for (ci = cgs.clientinfo, j=0; j<MAX_CLIENTS; j++, ci++) {
-			if (ci->modelInfo && ci->modelInfo == modelInfo) {
-				CG_CalcMoveSpeeds( ci );
-				break;
-			}
-		}
-*/
-//		if (j==MAX_CLIENTS)
-//			CG_Error( "CG_SendMoveSpeeds: cannot find client with modelName \"%s\" for moveSpeed calc", modelInfo->modelname );
 
 		// send this model
-		//CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, modelInfo->modelname );
+//		CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, modelInfo->modelname );
 	}
-
 }
 #endif
+
 
 /*
 ===============
@@ -636,7 +617,6 @@ require a reload of all the media
 ===============
 */
 static void CG_MapRestart( void ) {
-//	char buff[64];
 	int i;
 	if ( cg_showmiss.integer ) {
 		CG_Printf( "CG_MapRestart\n" );
@@ -1037,7 +1017,6 @@ static void CG_ServerCommand( void ) {
 		trap_FS_FCloseFile( f );
 		return;
 	}
-
 
 	CG_Printf( "Unknown client game command: %s\n", cmd );
 }

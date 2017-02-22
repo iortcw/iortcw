@@ -476,7 +476,8 @@ name:						default:			module(s):			description:
 "autolaunchbspc"			"0"					be_aas_load.c		automatically launch (Win)BSPC
 "log"						"0"					l_log.c				enable/disable creating a log file
 "maxclients"				"4"					be_interface.c		maximum number of clients
-"maxentities"				"1024"				be_interface.c		maximum number of entities
+"maxentities"				"2048"				be_interface.c		maximum number of entities
+"bot_developer"				"0"					be_interface.c		bot developer mode (it's "botDeveloper" in C to prevent symbol clash).
 
 "sv_friction"				"6"					be_aas_move.c		ground friction
 "sv_stopspeed"				"100"				be_aas_move.c		stop speed

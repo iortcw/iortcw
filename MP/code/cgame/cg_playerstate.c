@@ -253,7 +253,6 @@ void CG_Respawn( void ) {
 
 	if ( cgs.gametype == GT_SINGLE_PLAYER ) {
 		cg.centerPrintTime = 0;     //----(SA)	reset centerprint counter so previous messages don't re-appear
-
 	}
 	cg.cursorHintIcon = 0;
 	cg.cursorHintTime = 0;
@@ -284,10 +283,8 @@ void CG_Respawn( void ) {
 	trap_R_SetFog( FOG_CMD_SWITCHFOG, FOG_MAP,20,0,0,0,0 );
 	// dhm - end
 
-	trap_Cvar_Set( "cg_notebookpages", "3" );           // (SA) TEMP: clear notebook pages on spawn (cept for page 1)  this is temporary
-	trap_Cvar_Set( "ui_notebookCurrentPage", "0" ); // (SA) TEMP: clear notebook pages on spawn (cept for page 1)  this is temporary
-
-
+	trap_Cvar_Set( "cg_notebookpages", "3" );		// (SA) TEMP: clear notebook pages on spawn (except for pages 1 and 2)	this is temporary
+	trap_Cvar_Set( "ui_notebookCurrentPage", "0" );	// (SA) TEMP: clear notebook pages on spawn (except for page 1)  this is temporary
 }
 
 extern char *eventnames[];
@@ -400,7 +397,7 @@ CG_CheckLocalSounds
 */
 void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 //	const char	*s;
-//	int			highScore;
+//	int	highScore;
 
 /* JPW NERVE pulled from wolf MP
 	// hit changes
@@ -417,7 +414,6 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH], qfalse );
 		}
 	}
-
 
 /*	// NERVE - SMF - don't do this in wolfMP
 	// if we are going into the intermission, don't start any voices
@@ -484,6 +480,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		}
 	}
 */
+
 	// timelimit warnings
 	if ( cgs.timelimit > 0 ) {
 		int msec;
@@ -520,15 +517,15 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	// fraglimit warnings
 	if ( cgs.fraglimit > 0 && cgs.gametype != GT_CTF ) {
 		highScore = cgs.scores1;
-		if ( cgs.fraglimit > 3 && !( cg.fraglimitWarnings & 1 ) && highScore == (cgs.fraglimit - 3) ) {
+		if ( cgs.fraglimit > 3 && !( cg.fraglimitWarnings & 1 ) && highScore == ( cgs.fraglimit - 3 ) ) {
 			cg.fraglimitWarnings |= 1;
 			trap_S_StartLocalSound( cgs.media.threeFragSound, CHAN_ANNOUNCER );
 		}
-		if ( cgs.fraglimit > 2 && !( cg.fraglimitWarnings & 2 ) && highScore == (cgs.fraglimit - 2) ) {
+		if ( cgs.fraglimit > 2 && !( cg.fraglimitWarnings & 2 ) && highScore == ( cgs.fraglimit - 2 ) ) {
 			cg.fraglimitWarnings |= 2;
 			trap_S_StartLocalSound( cgs.media.twoFragSound, CHAN_ANNOUNCER );
 		}
-		if ( !( cg.fraglimitWarnings & 4 ) && highScore == (cgs.fraglimit - 1) ) {
+		if ( !( cg.fraglimitWarnings & 4 ) && highScore == ( cgs.fraglimit - 1 ) ) {
 			cg.fraglimitWarnings |= 4;
 			trap_S_StartLocalSound( cgs.media.oneFragSound, CHAN_ANNOUNCER );
 		}

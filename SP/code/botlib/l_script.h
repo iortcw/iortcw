@@ -59,8 +59,7 @@ If you have questions concerning this license or the applicable additional terms
 #define MAX_TOKEN                   1024
 //maximum path length
 #ifndef _MAX_PATH
-// TTimo: used to be MAX_QPATH, which is the game filesystem max len, and not the OS max len
-	#define _MAX_PATH               1024
+	#define _MAX_PATH               MAX_QPATH
 #endif
 
 
@@ -263,4 +262,3 @@ void PS_SetBaseFolder( char *path );
 void QDECL ScriptError(script_t *script, char *str, ...) __attribute__ ((format (printf, 2, 3)));
 //print a script warning with filename and line number
 void QDECL ScriptWarning(script_t *script, char *str, ...) __attribute__ ((format (printf, 2, 3)));
-

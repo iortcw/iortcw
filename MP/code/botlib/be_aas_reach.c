@@ -3397,7 +3397,7 @@ void AAS_Reachability_JumpPad( void ) {
 #ifdef REACHDEBUG
 		botimport.Print( PRT_MESSAGE, "absmins = %f %f %f\n", absmins[0], absmins[1], absmins[2] );
 		botimport.Print( PRT_MESSAGE, "absmaxs = %f %f %f\n", absmaxs[0], absmaxs[1], absmaxs[2] );
-#endif
+#endif //REACHDEBUG
 		VectorAdd( absmins, absmaxs, origin );
 		VectorScale( origin, 0.5, origin );
 
@@ -3660,7 +3660,7 @@ int AAS_Reachability_Grapple( int area1num, int area2num ) {
 	aas_face_t *face2;
 	aas_area_t *area1, *area2;
 	aas_lreachability_t *lreach;
-	vec3_t areastart = {0, 0, 0}, facecenter, start, end, dir, down = {0, 0, -1};
+	vec3_t areastart = { 0, 0, 0 }, facecenter, start, end, dir, down = { 0, 0, -1 };
 	vec_t *v;
 
 	//only grapple when on the ground or swimming

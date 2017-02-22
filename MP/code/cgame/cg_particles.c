@@ -126,7 +126,6 @@ static float shaderAnimSTRatio[MAX_SHADER_ANIMS] = {
 	1,
 };
 static int numShaderAnims;
-// done.
 
 #define     PARTICLE_GRAVITY    40
 #define     MAX_PARTICLES   1024 * 8
@@ -1422,8 +1421,8 @@ void CG_ParticleDirtBulletDebris_Core( vec3_t org, vec3_t vel, int duration,
 
 	p->type = P_SMOKE;
 
-// JPW NERVE
 	p->pshader = trap_R_RegisterShader( shadername ); // JPW NERVE was "dirt_splash"
+// JPW NERVE
 	if ( cg_fxflags & 1 ) {
 		p->pshader = getTestShader();
 		p->rotate = 0;
@@ -1431,7 +1430,6 @@ void CG_ParticleDirtBulletDebris_Core( vec3_t org, vec3_t vel, int duration,
 		p->type = P_SPRITE;
 	}
 // jpw
-
 
 	VectorCopy( org, p->org );
 	VectorCopy( vel, p->vel );
@@ -1444,8 +1442,6 @@ void CG_ParticleDirtBulletDebris_Core( vec3_t org, vec3_t vel, int duration,
 	p->accel[2] = -330;
 //	p->vel[2] += -20;
 }
-
-// DHM - Nerve :: end
 
 /*
 ======================
@@ -1616,6 +1612,7 @@ void CG_ParticleBat( centity_t *cent ) {
 	if ( !free_particles ) {
 		return;
 	}
+
 	p = free_particles;
 	free_particles = p->next;
 	p->next = active_particles;
@@ -1980,8 +1977,8 @@ qboolean ValidBloodPool( vec3_t start ) {
 	vec3_t angles;
 	vec3_t right, up;
 	vec3_t this_pos, x_pos, center_pos, end_pos;
-	int x, y;
-	int fwidth, fheight;
+	int	x, y;
+	int	fwidth, fheight;
 	trace_t trace;
 	vec3_t normal;
 

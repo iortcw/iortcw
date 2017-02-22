@@ -418,11 +418,11 @@ Predict push triggers and items
 */
 static void CG_TouchTriggerPrediction( void ) {
 	int i;
-	trace_t trace;
-	entityState_t   *ent;
-	clipHandle_t cmodel;
-	centity_t   *cent;
-	qboolean spectator;
+	trace_t	trace;
+	entityState_t	*ent;
+	clipHandle_t	cmodel;
+	centity_t	*cent;
+	qboolean	spectator;
 
 	// dead clients don't activate triggers
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
@@ -618,14 +618,10 @@ void CG_PredictPlayerState( void ) {
 
 //----(SA)	added
 	// restore persistant client-side playerstate variables before doing the pmove
-	// this could be done as suggested in qshared.h ~line 991, but right now I copy each variable individually
+	// this could be done as suggested in qshared.h ~line 1444, but right now I copy each variable individually
 	cg.predictedPlayerState.weapAnim                = oldPlayerState.weapAnim;
 	cg.predictedPlayerState.weapAnimTimer           = oldPlayerState.weapAnimTimer;
 	cg.predictedPlayerState.venomTime               = oldPlayerState.venomTime;
-	// show_bug.cgi?id=416
-	// FIXME TTimo this causing a double weapon reload sound if you hit reload at the same time you run out of ammo
-	// cg.predictedPlayerState.weaponstate				= oldPlayerState.weaponstate;	// RF, added this, since they can become unsynched on loadgame, leaving incorrect anims
-
 //----(SA)	end
 
 	// RF, anim system
@@ -674,7 +670,7 @@ void CG_PredictPlayerState( void ) {
 			} else {
 				vec3_t adjusted, new_angles;
 				CG_AdjustPositionForMover( cg.predictedPlayerState.origin,
-					cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles, deltaAngles );
+				cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime, adjusted, cg.predictedPlayerState.viewangles, new_angles, deltaAngles );
 				// RF, add the deltaAngles (fixes jittery view while riding trains)
 				cg.predictedPlayerState.delta_angles[YAW] += ANGLE2SHORT( deltaAngles[YAW] );
 

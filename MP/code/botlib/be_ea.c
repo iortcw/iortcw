@@ -46,7 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_USERMOVE                400
 #define MAX_COMMANDARGUMENTS        10
-#define ACTION_JUMPEDLASTFRAME	128
+#define ACTION_JUMPEDLASTFRAME		128
 
 bot_input_t *botinputs;
 

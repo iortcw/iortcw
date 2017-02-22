@@ -35,19 +35,14 @@ If you have questions concerning this license or the applicable additional terms
  *
  *****************************************************************************/
 
-//#define SCREWUP
-//#define BOTLIB
-//#define MEQCC
-//#define BSPC
-
 #ifdef SCREWUP
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
 #include <stdarg.h>
-#include "../botlib/l_memory.h"
-#include "../botlib/l_script.h"
+#include "l_memory.h"
+#include "l_script.h"
 
 typedef enum {qfalse, qtrue}    qboolean;
 
@@ -80,7 +75,6 @@ typedef enum {qfalse, qtrue}    qboolean;
 #include "../bspc/qbsp.h"
 #include "../bspc/l_log.h"
 #include "../bspc/l_mem.h"
-int COM_Compress( char *data_p );
 
 #define qtrue   true
 #define qfalse  false
@@ -590,8 +584,7 @@ void NumberValue( char *string, int subtype, unsigned long int *intvalue,
 				string++;
 			} //end if
 			if ( dotfound ) {
-				*floatvalue = *floatvalue + ( float )( *string - '0' ) /
-							  ( float ) dotfound;
+				*floatvalue = *floatvalue + (float)(*string - '0') / (float) dotfound;
 				dotfound *= 10;
 			} //end if
 			else
@@ -724,20 +717,12 @@ int PS_ReadNumber( script_t *script, token_t *token ) {
 	{
 		c = *script->script_p;
 		//check for a LONG number
-		// TTimo: gcc: suggest parentheses around && within ||
-		// initial line:
-		// if (c == 'l' || c == 'L' && !(token->subtype & TT_LONG))
-		// changed behaviour
 		if ( ( c == 'l' || c == 'L' ) &&
 			 !( token->subtype & TT_LONG ) ) {
 			script->script_p++;
 			token->subtype |= TT_LONG;
 		} //end if
 		  //check for an UNSIGNED number
-		// TTimo: gcc: suggest parentheses around && within ||
-		// initial line:
-		// else if (c == 'u' || c == 'U' && !(token->subtype & (TT_UNSIGNED | TT_FLOAT)))
-		// changed behaviour
 		else if ( ( c == 'u' || c == 'U' ) &&
 				  !( token->subtype & ( TT_UNSIGNED | TT_FLOAT ) ) ) {
 			script->script_p++;
@@ -850,7 +835,7 @@ int PS_ReadPrimitive( script_t *script, token_t *token ) {
 	len = 0;
 	while ( *script->script_p > ' ' && *script->script_p != ';' )
 	{
-		if ( len >= MAX_TOKEN -1 ) {
+		if ( len >= MAX_TOKEN - 1 ) {
 			ScriptError( script, "primitive token longer than MAX_TOKEN = %d", MAX_TOKEN );
 			return 0;
 		} //end if
@@ -1030,7 +1015,7 @@ int PS_ExpectTokenType( script_t *script, int type, int subtype, token_t *token 
 		} //end if
 		if ( token->subtype != subtype ) {
 			ScriptError( script, "expected %s, found %s",
-						 script->punctuations[subtype].p, token->string );
+					script->punctuations[subtype].p, token->string);
 			return 0;
 		} //end if
 	} //end else if
@@ -1180,7 +1165,7 @@ void StripSingleQuotes( char *string ) {
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-float ReadSignedFloat(script_t *script) {
+float ReadSignedFloat( script_t *script ) {
 	token_t token;
 	float sign = 1.0;
 
@@ -1195,7 +1180,8 @@ float ReadSignedFloat(script_t *script) {
 		sign = -1.0;
 	}
 	
-	if (token.type != TT_NUMBER) {
+	if (token.type != TT_NUMBER)
+	{
 		ScriptError(script, "expected float value, found %s", token.string);
 		return 0;
 	}
@@ -1223,7 +1209,7 @@ signed long int ReadSignedInt( script_t *script ) {
 		sign = -1;
 	}
 
-	if (token.type != TT_NUMBER || token.subtype == TT_FLOAT) {
+	if ( token.type != TT_NUMBER || token.subtype == TT_FLOAT ) {
 		ScriptError(script, "expected integer value, found %s", token.string);
 		return 0;
 	}

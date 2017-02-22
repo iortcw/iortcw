@@ -701,7 +701,7 @@ void weapon_callAirStrike( gentity_t *ent ) {
 	if ( ( tr.fraction < 1.0 ) && ( !( tr.surfaceFlags & SURF_NOIMPACT ) ) ) { //SURF_SKY)) ) { // JPW NERVE changed for trenchtoast foggie prollem
 		G_SayTo( ent->parent, ent->parent, 2, COLOR_YELLOW, "Pilot: ", "Aborting, can't see target.", qtrue );
 
-		if ( ent->parent->client->sess.sessionTeam == TEAM_BLUE ) {
+		if ( ent->parent->client && ent->parent->client->sess.sessionTeam == TEAM_BLUE ) {
 			te = G_TempEntity( ent->parent->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND );
 			te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-aborting.wav" );
 			te->s.teamNum = ent->parent->s.clientNum;
@@ -714,7 +714,7 @@ void weapon_callAirStrike( gentity_t *ent ) {
 		return;
 	}
 
-	if ( ent->parent->client->sess.sessionTeam == TEAM_BLUE ) {
+	if ( ent->parent->client && ent->parent->client->sess.sessionTeam == TEAM_BLUE ) {
 		te = G_TempEntity( ent->parent->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND );
 		te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-affirmative_omw.wav" );
 		te->s.teamNum = ent->parent->s.clientNum;

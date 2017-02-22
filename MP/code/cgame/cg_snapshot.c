@@ -357,8 +357,8 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 			// Ridah, savegame: we should use this as our new base snapshot
 			// server has been restarted
 			if ( cg.snap && ( dest->snapFlags ^ cg.snap->snapFlags ) & SNAPFLAG_SERVERCOUNT ) {
-//				int i; // TTimo: unused
-//				centity_t backupCent; // TTimo: unused
+//				int i;
+//				centity_t backupCent;
 //				CG_SetInitialSnapshot( dest );
 //				cg.nextFrameTeleport = qtrue;
 				cg.damageTime = 0;
@@ -367,9 +367,9 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 				cg.stepTime = -1;
 				// go through an reset the cent's
 /* // JPW NERVE -- return NULL mighta been bad, q3ta doesn't include this stuff
-				for (i=0; i<MAX_GENTITIES; i++) {
+				for ( i = 0; i < MAX_GENTITIES; i++ ) {
 					backupCent = cg_entities[i];
-					memset( &cg_entities[i], 0, sizeof(centity_t) );
+					memset( &cg_entities[i], 0, sizeof( centity_t ) );
 					cg_entities[i].currentState = backupCent.currentState;
 					cg_entities[i].nextState = backupCent.nextState;
 					cg_entities[i].currentValid = backupCent.currentValid;
@@ -377,7 +377,7 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 				}
 				// reset the predicted cent
 				backupCent = cg.predictedPlayerEntity;				// NERVE - SMF
-				memset( &cg.predictedPlayerEntity, 0, sizeof(centity_t) );
+				memset( &cg.predictedPlayerEntity, 0, sizeof( centity_t ) );
 				cg.predictedPlayerEntity.currentState = backupCent.currentState;
 				cg.predictedPlayerEntity.nextState = backupCent.nextState;
 				cg.predictedPlayerEntity.currentValid = backupCent.currentValid;
@@ -385,7 +385,7 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 				return NULL;
 // jpw */
 			}
-//
+
 			return dest;
 		}
 
@@ -471,7 +471,6 @@ void CG_ProcessSnapshots( void ) {
 			}
 
 			CG_SetNextSnap( snap );
-
 
 			// if time went backwards, we have a level restart
 			if ( cg.nextSnap->serverTime < cg.snap->serverTime ) {

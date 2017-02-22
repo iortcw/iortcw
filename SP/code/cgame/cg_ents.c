@@ -40,8 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 extern int propellerModel;
 ///////////////////////
 
-
-
 /*
 ======================
 CG_PositionEntityOnTag
@@ -252,7 +250,6 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 	}
 }
 
-
 /*
 ==============
 CG_AttachedPartChange
@@ -287,9 +284,6 @@ void CG_AttachedPartChange( centity_t *cent ) {
 }
 
 //----(SA)	end
-
-
-
 
 /*
 ==========================================================================
@@ -407,7 +401,6 @@ Add continuous entity effects, like local entity emission and lighting
 ==================
 */
 static void CG_EntityEffects( centity_t *cent ) {
-
 	// update sound origins
 	CG_SetEntitySoundPosition( cent );
 
@@ -433,7 +426,6 @@ static void CG_EntityEffects( centity_t *cent ) {
 
 			v = cgs.inlineModelMidpoints[ cent->currentState.modelindex ];
 			VectorAdd( cent->lerpOrigin, v, origin );
-
 			if ( cgs.gameSoundTypes[ cent->currentState.loopSound ] == 1 ) {   // old style
 				CG_S_AddLoopingSound( cent->currentState.number, origin, vec3_origin, cgs.gameSounds[ cent->currentState.loopSound ], 255 );
 			} else {                                                        // from script
@@ -482,6 +474,7 @@ static void CG_EntityEffects( centity_t *cent ) {
 	}
 
 }
+
 
 /*
 ==================
@@ -539,17 +532,6 @@ static void CG_General( centity_t *cent ) {
 		VectorScale( ent.axis[2], cent->currentState.angles2[2], ent.axis[2] );
 		ent.nonNormalizedAxes = qtrue;
 
-//		if( (cent->currentState.angles2[0] * cent->currentState.angles2[1] * cent->currentState.angles2[2]) != 1) {
-//			ent.reFlags |= REFLAG_SCALEDSPHERECULL;
-//
-//			// find greatest scaled axis
-//			ent.radius = cent->currentState.angles2[0];
-//			if(cent->currentState.angles2[1] > ent.radius)
-//				ent.radius = cent->currentState.angles2[1];
-//			if(cent->currentState.angles2[2] > ent.radius)
-//				ent.radius = cent->currentState.angles2[2];
-//		}
-
 //----(SA)	testing
 //		if(cent->currentState.apos.trType) {
 //			ent.reFlags |= REFLAG_ORIENT_LOD;
@@ -596,13 +578,13 @@ CG_DrawHoldableSelect
 ==============
 */
 void CG_DrawHoldableSelect( void ) {
-	int bits;
-	int count;
-	int amount;
-	int i, x, y, w;
-	float   *color;
-	char    *name;
-	gitem_t     *item;
+	int	bits;
+	int	count;
+	int	amount;
+	int	i, x, y, w;
+	float	*color;
+	char	*name;
+	gitem_t	*item;
 
 	// don't display if dead
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
@@ -628,12 +610,11 @@ void CG_DrawHoldableSelect( void ) {
 
 	for ( i = 1 ; i <= HI_BOOK3; i++ ) {
 		if ( bits & ( 1 << i ) ) {
-			if ( cg.predictedPlayerState.holdable[i] ) {   // don't show ones we're out of
+			if ( cg.predictedPlayerState.holdable[i] ) {	// don't show ones we're out of
 				count++;
 			}
 		}
 	}
-
 
 	if ( !count ) {
 		return;
@@ -698,7 +679,6 @@ void CG_DrawHoldableSelect( void ) {
 				x = ( SCREEN_WIDTH - w ) / 2;
 //				CG_DrawBigStringColor(x, y - 22, name, color);
 				CG_DrawStringExt2( x, y + 74, name, color, qfalse, qtrue, 10, 10, 0 );
-//				CG_Text_Paint(x, y + 74, 2, 0.3f, color, name, 0, 0, 6); // ITEM_TEXTSTYLE_SHADOWEDMORE
 			}
 		}
 	}
@@ -714,8 +694,8 @@ CG_NextItem_f
 */
 
 void CG_NextItem_f( void ) {
-	int i;
-	int original, next;
+	int	i;
+	int	original, next;
 
 	if ( !cg.snap ) {
 		return;
@@ -726,7 +706,7 @@ void CG_NextItem_f( void ) {
 	}
 
 	cg.holdableSelectTime = cg.time;
-	cg.weaponSelectTime = 0;    // (SA) clear weapon selection drawing
+	cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
 
 	next = original = cg.holdableSelect;
 
@@ -737,7 +717,7 @@ void CG_NextItem_f( void ) {
 			next = 0;
 		}
 
-		if ( cg.predictedPlayerState.holdable[next] ) {    //----(SA)
+		if ( cg.predictedPlayerState.holdable[next] ) {	//----(SA)
 			break;
 		}
 	}
@@ -755,8 +735,8 @@ CG_PrevItem_f
 ==============
 */
 void CG_PrevItem_f( void ) {
-	int i;
-	int original, next;
+	int	i;
+	int	original, next;
 
 	if ( !cg.snap ) {
 		return;
@@ -766,7 +746,7 @@ void CG_PrevItem_f( void ) {
 		return;
 	}
 
-	cg.weaponSelectTime = 0;    // (SA) clear weapon selection drawing
+	cg.weaponSelectTime = 0;	// (SA) clear weapon selection drawing
 	cg.holdableSelectTime = cg.time;
 
 	next = original = cg.holdableSelect;
@@ -778,7 +758,7 @@ void CG_PrevItem_f( void ) {
 			next = HI_NUM_HOLDABLE - 1;
 		}
 
-		if ( cg.predictedPlayerState.holdable[next] ) {    //----(SA)
+		if ( cg.predictedPlayerState.holdable[next] ) {	//----(SA)
 			break;
 		}
 	}
@@ -796,7 +776,7 @@ CG_Item_f
 ==============
 */
 void CG_Item_f( void ) {
-	int num;
+	int	num;
 	num = atoi( CG_Argv( 1 ) );
 
 	cg.holdableSelectTime = cg.time;
@@ -1013,7 +993,7 @@ static void CG_Item( centity_t *cent ) {
 							   // try to load it first, and if it fails, default to the itemlist model
 		ent.hModel = cgs.gameModels[ es->modelindex2 ];
 	} else {
-		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) {   // check if there's a specific model for weapon pickup placement
+		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) {	// check if there's a specific model for weapon pickup placement
 			ent.hModel = cg_items[es->modelindex].models[2];
 		} else if ( item->giType == IT_HEALTH || item->giType == IT_AMMO || item->giType == IT_POWERUP ) {
 			if ( es->density < ( 1 << 9 ) ) {  // (10 bits of data transmission for density)
@@ -1341,7 +1321,6 @@ static void CG_Crowbar( centity_t *cent ) {
 
 }
 
-
 //----(SA)	animation_t struct changed, so changes are to keep this working
 static animation_t grabberAnims[] = {
 	{"", 0,  6,  6,  1000 / 5,     1000 / 5  },  // (main idle)
@@ -1441,7 +1420,6 @@ static void CG_RunAnim( centity_t *cent, int *frame, int *oldframe, float *backl
 	*oldframe   = cent->lerpFrame.oldFrame;
 	*backlerp   = cent->lerpFrame.backlerp;
 }
-
 
 /*
 ==============
@@ -1844,7 +1822,6 @@ static void CG_Mover( centity_t *cent ) {
 
 	// flicker between two skins (FIXME?)
 	ent.skinNum = 0;
-//	ent.skinNum = ( cg.time >> 6 ) & 1;
 
 	// get the model, either as a bmodel or a modelindex
 	if ( s1->solid == SOLID_BMODEL ) {
@@ -1852,10 +1829,6 @@ static void CG_Mover( centity_t *cent ) {
 	} else {
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
-
-	// add to refresh list
-	//trap_R_AddRefEntityToScene(&ent);
-
 
 	// Rafael
 	//  testing for mike to get movers to scale
@@ -2102,9 +2075,6 @@ static void CG_Prop( centity_t *cent ) {
 		ent.hModel = cgs.gameModels[s1->modelindex];
 	}
 
-	// add to refresh list
-	//trap_R_AddRefEntityToScene(&ent);
-
 	// add the secondary model
 	if ( s1->modelindex2 ) {
 		ent.skinNum = 0;
@@ -2274,7 +2244,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	// player state
 	if ( cent != &cg.predictedPlayerEntity ) {
 		CG_AdjustPositionForMover( cent->lerpOrigin, cent->currentState.groundEntityNum,
-								   cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles, NULL );
+									cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles, NULL );
 	}
 }
 
@@ -2311,7 +2281,6 @@ static void CG_ProcessEntity( centity_t *cent ) {
 				}
 			}
 		}
-
 	case ET_FOOTLOCKER:
 	case ET_GENERAL:
 		CG_General( cent );
@@ -2431,11 +2400,6 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 
 	s1 = &cent->currentState;
 
-	// if set to invisible, skip
-	//if (!s1->modelindex) {
-	//	return;
-	//}
-
 	// find us in the list of tagged entities
 	sParent = NULL;
 	centParent = NULL;
@@ -2468,7 +2432,6 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 	}
 
 	if ( !sParent ) {
-		//return;	// assume the configstring hasn't arrived yet?
 		CG_Error( "CG_EntityTagConnected: unable to find configstring to perform connection" );
 	}
 
@@ -2493,20 +2456,18 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 
 	// start with default axis
 	AnglesToAxis( vec3_origin, ent.axis );
-	//AnglesToAxis( cent->lerpAngles, ent.axis );
 
 	// get the tag position from parent
 	CG_PositionEntityOnTag( &ent, &centParent->refEnt, token, 0, NULL );
-//	CG_PositionRotatedEntityOnTag( &ent, &centParent->refEnt, centParent->refEnt.hModel, token );
 
 	VectorCopy( ent.origin, cent->lerpOrigin );
 	// we need to add the child's angles to the tag angles
-	//if (!cent->currentState.density) {	// this entity should rotate with it's parent, but can turn around using it's own angles
-	AxisToAngles( ent.axis, ang );
-	VectorAdd( cent->lerpAngles, ang, cent->lerpAngles );
-	//} else {	// face our angles exactly
-	//	BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
-	//}
+//	if ( !cent->currentState.density ) {	// this entity should rotate with it's parent, but can turn around using it's own angles
+		AxisToAngles( ent.axis, ang );
+		VectorAdd( cent->lerpAngles, ang, cent->lerpAngles );
+//	} else {	// face our angles exactly
+//		BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
+//	}
 
 	// add automatic effects
 	CG_EntityEffects( cent );
@@ -2525,7 +2486,7 @@ void CG_AddPacketEntities( void ) {
 	int num;
 	centity_t           *cent;
 	playerState_t       *ps;
-	int clcount;
+	int	clcount;
 
 	// set cg.frameInterpolation
 	if ( cg.nextSnap ) {
@@ -2585,13 +2546,6 @@ void CG_AddPacketEntities( void ) {
 	for ( num = 0 ; num < cg.snap->numEntities ; num++ ) {
 		cent = &cg_entities[ cg.snap->entities[ num ].number ];
 		if ( !( cent->currentState.eFlags & EF_TAGCONNECT ) ) {
-//----(SA)	commented this out for DM and Dom
-//			if (cent->currentState.number < MAX_CLIENTS) {
-//				if ((clcount > 2) && (cent->currentState.eFlags & EF_DEAD)) {
-//					cent->pe.forceLOD = qtrue;
-//				}
-//			}
-//----(SA)	end
 			CG_AddCEntity( cent );
 		}
 	}

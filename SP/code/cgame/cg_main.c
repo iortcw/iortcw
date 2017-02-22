@@ -268,6 +268,7 @@ vmCvar_t mp_team;
 vmCvar_t mp_weapon;
 vmCvar_t mp_pistol;
 vmCvar_t mp_item1;
+
 vmCvar_t mp_item2;
 vmCvar_t mp_mapDesc;
 vmCvar_t mp_mapTitle;
@@ -339,7 +340,7 @@ cvarTable_t cvarTable[] = {
 	{ &cg_reticles, "cg_reticles", "1", CVAR_CHEAT },
 	{ &cg_reticleBrightness, "cg_reticleBrightness", "0.7", CVAR_ARCHIVE },
 	{ &cg_markTime, "cg_marktime", "20000", CVAR_ARCHIVE },
-	{ &cg_lagometer, "cg_lagometer", "1", CVAR_ARCHIVE },
+	{ &cg_lagometer, "cg_lagometer", "0", CVAR_ARCHIVE },
 	{ &cg_railTrailTime, "cg_railTrailTime", "400", CVAR_ARCHIVE  },
 	{ &cg_gun_x, "cg_gunX", "0", CVAR_CHEAT },
 	{ &cg_gun_y, "cg_gunY", "0", CVAR_CHEAT },
@@ -443,7 +444,7 @@ cvarTable_t cvarTable[] = {
 	{ &cg_engineerChargeTime,   "g_engineerChargeTime", "30000", 0 }, // communicated by systeminfo
 	{ &cg_soldierChargeTime,    "g_soldierChargeTime", "20000", 0 }, // communicated by systeminfo
 	{ &cg_bluelimbotime,        "g_bluelimbotime", "30000", 0 }, // communicated by systeminfo
-	{ &cg_redlimbotime,         "g_redlimbotime","30000", 0 }, // communicated by systeminfo
+	{ &cg_redlimbotime,         "g_redlimbotime", "30000", 0 }, // communicated by systeminfo
 	// jpw
 
 	{ &cg_notebook, "cl_notebook", "0", CVAR_ROM },
@@ -465,6 +466,7 @@ cvarTable_t cvarTable[] = {
 	{ &mp_weapon, "mp_weapon", "0", 0 },
 	{ &mp_pistol, "mp_pistol", "0", 0 },
 	{ &mp_item1, "mp_item1", "0", 0 },
+
 	{ &mp_item2, "mp_item2", "0", 0 },
 	{ &mp_mapDesc, "mp_mapDesc", "", 0 },
 	{ &mp_mapTitle, "mp_mapTitle", "", 0 },
@@ -509,15 +511,14 @@ void CG_RegisterCvars( void ) {
 CG_ForceModelChange
 ===================
 */
-// TTimo: unused
 /*
 static void CG_ForceModelChange( void ) {
-	int		i;
+	int	i;
 
-	for (i=0 ; i<MAX_CLIENTS ; i++) {
-		const char		*clientInfo;
+	for ( i = 0 ; i < MAX_CLIENTS ; i++ ) {
+		const char      *clientInfo;
 
-		clientInfo = CG_ConfigString( CS_PLAYERS+i );
+		clientInfo = CG_ConfigString( CS_PLAYERS + i );
 		if ( !clientInfo[0] ) {
 			continue;
 		}
@@ -538,6 +539,7 @@ void CG_UpdateCvars( void ) {
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Update( cv->vmCvar );
 	}
+
 /* RF, disabled this, not needed anymore
 	// if force model changed
 	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
@@ -545,6 +547,7 @@ void CG_UpdateCvars( void ) {
 		CG_ForceModelChange();
 	}
 */
+
 }
 
 
@@ -567,7 +570,7 @@ void QDECL CG_Printf( const char *msg, ... ) {
 	char text[1024];
 
 	va_start( argptr, msg );
-	Q_vsnprintf (text, sizeof(text), msg, argptr);
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
 	trap_Print( text );
@@ -578,7 +581,7 @@ void QDECL CG_Error( const char *msg, ... ) {
 	char text[1024];
 
 	va_start( argptr, msg );
-	Q_vsnprintf (text, sizeof(text), msg, argptr);
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
 	trap_Error( text );
@@ -589,7 +592,7 @@ void QDECL Com_Error( int level, const char *error, ... ) {
 	char text[1024];
 
 	va_start( argptr, error );
-	Q_vsnprintf (text, sizeof(text), error, argptr);
+	Q_vsnprintf( text, sizeof( text ), error, argptr );
 	va_end( argptr );
 
 	trap_Error( text );
@@ -600,12 +603,11 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	char text[1024];
 
 	va_start( argptr, msg );
-	Q_vsnprintf (text, sizeof(text), msg, argptr);
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
 	trap_Print( text );
 }
-
 
 /*
 ================
@@ -882,11 +884,9 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.fbarrelexp1 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrela.wav" );
 	cgs.media.fbarrelexp2 = trap_S_RegisterSound( "sound/weapons/flamebarrel/fbarrelb.wav" );
 
-
 	cgs.media.fkickwall = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
 	cgs.media.fkickflesh = trap_S_RegisterSound( "sound/weapons/melee/fstatck.wav" );
 	cgs.media.fkickmiss = trap_S_RegisterSound( "sound/weapons/melee/fstmiss.wav" );
-
 
 	cgs.media.noAmmoSound = trap_S_RegisterSound( "sound/weapons/noammo.wav" );
 
@@ -1017,7 +1017,7 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );
 	cgs.media.sfx_ric3 = trap_S_RegisterSound( "sound/weapons/machinegun/ric3.wav" );
-//	cgs.media.sfx_railg = trap_S_RegisterSound ("sound/weapons/railgun/railgf1a.wav");
+//	cgs.media.sfx_railg = trap_S_RegisterSound( "sound/weapons/railgun/railgf1a.wav" );
 	cgs.media.sfx_rockexp = trap_S_RegisterSound( "sound/weapons/rocket/rocklx1a.wav" );
 	cgs.media.sfx_dynamiteexp = trap_S_RegisterSound( "sound/weapons/dynamite/dynamite_exp.wav" );
 	cgs.media.sfx_dynamiteexpDist = trap_S_RegisterSound( "sound/weapons/dynamite/dynamite_exp_dist.wav" );   //----(SA)	added
@@ -1066,7 +1066,6 @@ static void CG_RegisterSounds( void ) {
 
 	trap_S_RegisterSound( "sound/Loogie/spit.wav" );
 	trap_S_RegisterSound( "sound/Loogie/sizzle.wav" );
-
 }
 
 
@@ -1100,7 +1099,6 @@ static void CG_RegisterGraphics( void ) {
 		"gfx/2d/numbers/minus_32b",
 	};
 
-
 	// clear any references to old media
 	memset( &cg.refdef, 0, sizeof( cg.refdef ) );
 	trap_R_ClearScene();
@@ -1112,13 +1110,11 @@ static void CG_RegisterGraphics( void ) {
 	// precache status bar pics
 	CG_LoadingString( "game media" );
 
-
 	CG_LoadingString( " - textures" );
 
 	for ( i = 0 ; i < 11 ; i++ ) {
 		cgs.media.numberShaders[i] = trap_R_RegisterShader( sb_nums[i] );
 	}
-
 
 	cgs.media.smokePuffShader = trap_R_RegisterShader( "smokePuff" );
 
@@ -1162,15 +1158,12 @@ static void CG_RegisterGraphics( void ) {
 
 	cgs.media.nailPuffShader = trap_R_RegisterShader( "nailtrail" );
 
-
 //	cgs.media.reticleShaderSimple = trap_R_RegisterShader( "gfx/misc/reticlesimple" );		// TODO: remove
 	cgs.media.reticleShaderSimpleQ = trap_R_RegisterShader( "gfx/misc/reticlesimple_quarter" );
-
 	cgs.media.snooperShaderSimple = trap_R_RegisterShader( "gfx/misc/snoopersimple" );
 
 //	cgs.media.binocShaderSimple = trap_R_RegisterShader( "gfx/misc/binocsimple" );			// TODO: remove
 	cgs.media.binocShaderSimpleQ = trap_R_RegisterShader( "gfx/misc/binocsimple_quarter" );  //----(SA)	added
-
 
 	// Rafael
 	// cgs.media.snowShader = trap_R_RegisterShader ( "snowPuff" );
@@ -1251,7 +1244,6 @@ static void CG_RegisterGraphics( void ) {
 	// DHM - Nerve :: Allow flags again, will change later to more appropriate models
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_WOLF || cg_buildScript.integer ) {
 		cgs.media.redFlagModel = trap_R_RegisterModel( "models/flags/r_flag.md3" );
-		//cgs.media.redFlagModel = trap_R_RegisterModel( "models/powerups/keys/chalice.md3" );
 		cgs.media.blueFlagModel = trap_R_RegisterModel( "models/flags/b_flag.md3" );
 	}
 
@@ -1267,6 +1259,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.panzerfaustBrassModel = trap_R_RegisterModel( "models/weapons2/shells/pf_shell.md3" );
 	cgs.media.smallgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/sm_shell.md3" );
 
+	//----(SA) wolf debris
 	cgs.media.debBlock[0] = trap_R_RegisterModel( "models/mapobjects/debris/brick1.md3" );
 	cgs.media.debBlock[1] = trap_R_RegisterModel( "models/mapobjects/debris/brick2.md3" );
 	cgs.media.debBlock[2] = trap_R_RegisterModel( "models/mapobjects/debris/brick3.md3" );
@@ -1307,15 +1300,15 @@ static void CG_RegisterGraphics( void ) {
 	//cgs.media.bleedExplosionShader = trap_R_RegisterShader( "bleedExplosion" );
 
 	//----(SA)	water splash
-	//cgs.media.waterSplashModel = trap_R_RegisterModel("models/weaphits/bullet.md3");
-	//cgs.media.waterSplashShader = trap_R_RegisterShader( "waterSplash" );
+//	cgs.media.waterSplashModel = trap_R_RegisterModel( "models/weaphits/bullet.md3" );
+//	cgs.media.waterSplashShader = trap_R_RegisterShader( "waterSplash" );
 	//----(SA)	end
 
-	//cgs.media.spearModel = trap_R_RegisterModel("models/weaphits/spear.md3");	//----(SA)
+//	cgs.media.spearModel = trap_R_RegisterModel( "models/weaphits/spear.md3" );	//----(SA)
 
-	//cgs.media.bulletFlashModel = trap_R_RegisterModel("models/weaphits/bullet.md3");
-	//cgs.media.ringFlashModel = trap_R_RegisterModel("models/weaphits/ring02.md3");
-	//cgs.media.dishFlashModel = trap_R_RegisterModel("models/weaphits/boom01.md3");
+//	cgs.media.bulletFlashModel = trap_R_RegisterModel( "models/weaphits/bullet.md3" );
+//	cgs.media.ringFlashModel = trap_R_RegisterModel( "models/weaphits/ring02.md3" );
+//	cgs.media.dishFlashModel = trap_R_RegisterModel( "models/weaphits/boom01.md3" );
 //	cgs.media.teleportEffectModel = trap_R_RegisterModel( "models/misc/telep.md3" );
 //	cgs.media.teleportEffectShader = trap_R_RegisterShader( "teleportEffect" );
 
@@ -1330,7 +1323,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.smokeTrailShader = trap_R_RegisterShader( "smokeTrail" );
 //	cgs.media.fireTrailShader = trap_R_RegisterShader( "fireTrail" );
 	cgs.media.lightningBoltShader = trap_R_RegisterShader( "lightningBolt" );
-	//cgs.media.lightningBoltShaderGreen = trap_R_RegisterShader( "lightningBoltGreen" );	//----(SA)	alternate lightning color
+//	cgs.media.lightningBoltShaderGreen = trap_R_RegisterShader( "lightningBoltGreen" );	//----(SA)	alternate lightning color
 	cgs.media.flamethrowerFireStream = trap_R_RegisterShader( "flamethrowerFireStream" );
 	cgs.media.flamethrowerBlueStream = trap_R_RegisterShader( "flamethrowerBlueStream" );
 	//cgs.media.flamethrowerFuelStream = trap_R_RegisterShader( "flamethrowerFuelStream" );
@@ -1351,7 +1344,6 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.spotLightBaseModel = trap_R_RegisterModel( "models/mapobjects/light/searchlight1_b.md3" );
 	cgs.media.spotLightLightModel = trap_R_RegisterModel( "models/mapobjects/light/searchlight1_l.md3" );
 	cgs.media.spotLightLightModelBroke = trap_R_RegisterModel( "models/mapobjects/light/searchlight_l_broke.md3" );
-
 	// end spotlight
 
 	cgs.media.lightningHitWallShader = trap_R_RegisterShader( "lightningHitWall" );
@@ -1372,7 +1364,6 @@ static void CG_RegisterGraphics( void ) {
 
 	cgs.media.railCoreShader = trap_R_RegisterShader( "railCore" );  // (SA) for debugging server traces
 
-
 	cgs.media.thirdPersonBinocModel = trap_R_RegisterModel( "models/powerups/holdable/binocs_thirdperson.md3" ); //----(SA)	added
 	cgs.media.cigModel = trap_R_RegisterModel( "models/players/infantryss/acc/cig.md3" );    //----(SA)	added
 
@@ -1390,7 +1381,6 @@ static void CG_RegisterGraphics( void ) {
 	// cgs.media.mg42muzzleflashgg = trap_R_RegisterModel ("models/weapons2/machinegun/mg42_flash_gg.md3" );
 
 	cgs.media.planemuzzleflash = trap_R_RegisterModel( "models/mapobjects/vehicles/gunflare.md3" );
-
 	cgs.media.crowbar = trap_R_RegisterModel( "models/weapons2/wrench/wrench.md3" );
 
 	// Rafael shards
@@ -1419,21 +1409,21 @@ static void CG_RegisterGraphics( void ) {
 
 	CG_LoadTranslateStrings();  //----(SA)	added.  for localization, read on-screen print names from text file
 
-// TODO: FIXME:  REMOVE REGISTRATION OF EACH MODEL FOR EVERY LEVEL LOAD
+	// TODO: FIXME:  REMOVE REGISTRATION OF EACH MODEL FOR EVERY LEVEL LOAD
 
 
 	//----(SA)	okay, new stuff to intialize rather than doing it at level load time (or "give all" time)
 	//			(I'm certainly not against being efficient here, but I'm tired of the rocket launcher effect only registering
 	//			sometimes and want it to work for sure for this demo)
 
-///////////
+
 // code is almost complete for doing this correctly.  will remove when that is complete.
 	CG_LoadingString( " - weapons" );
 	for ( i = WP_KNIFE; i < WP_GAUNTLET; i++ ) {
 //		CG_LoadingString( va("   - %d", i) );
 		CG_RegisterWeapon( i );
 	}
-///////////
+
 // END
 
 
@@ -1441,11 +1431,9 @@ static void CG_RegisterGraphics( void ) {
 	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
 
 	CG_LoadingString( " - items" );
-
 	for ( i = 1 ; i < bg_numItems ; i++ ) {
 		if ( items[ i ] == '1' || cg_buildScript.integer ) {
-
-// TODO: get weapons added to the list that are 'set' from a script
+			// TODO: get weapons added to the list that are 'set' from a script
 			CG_LoadingItem( i );
 			CG_RegisterItemVisuals( i );
 		}
@@ -1461,6 +1449,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.wakeMarkShader = trap_R_RegisterShader( "wake" );
 	cgs.media.wakeMarkShaderAnim = trap_R_RegisterShader( "wakeAnim" ); // (SA)
 
+	//----(SA)	added
 	cgs.media.bulletMarkShaderMetal = trap_R_RegisterShader( "gfx/damage/metal_mrk" );
 	cgs.media.bulletMarkShaderWood = trap_R_RegisterShader( "gfx/damage/wood_mrk" );
 	cgs.media.bulletMarkShaderCeramic = trap_R_RegisterShader( "gfx/damage/ceramic_mrk" );
@@ -1603,9 +1592,7 @@ void CG_QueueMusic( void ) {
 	//				it doesn't have to go through startbackgroundtrack() (which is stupid)
 	trap_S_StartBackgroundTrack( parm, "", -2 );  // '-2' for 'queue looping track' (QUEUED_PLAY_LOOPED)
 }
-
 //----(SA)	end
-
 
 char *CG_GetMenuBuffer( const char *filename ) {
 	int len;
@@ -2226,10 +2213,8 @@ void CG_LoadHudMenu( void ) {
 	//cgDC.setBinding = &trap_Key_SetBinding;
 	//cgDC.getBindingBuf = &trap_Key_GetBindingBuf;
 	//cgDC.keynumToStringBuf = &trap_Key_KeynumToStringBuf;
-	//cgDC.executeText = &trap_Cmd_ExecuteText;
-
 	cgDC.getTranslatedString = &CG_translateString;     //----(SA)	added
-
+	//cgDC.executeText = &trap_Cmd_ExecuteText;
 	cgDC.Error = &Com_Error;
 	cgDC.Print = &Com_Printf;
 	cgDC.ownerDrawWidth = &CG_OwnerDrawWidth;
@@ -2428,7 +2413,6 @@ void CG_Init( int serverMessageNum, int serverCommandSequence ) {
 
 	if ( cgs.gametype == GT_WOLF ) {
 		trap_Cvar_Set( "cg_drawTimer", "0" ); // jpw
-
 	}
 	// jpw
 	// -NERVE - SMF
@@ -2442,20 +2426,18 @@ Called before every level change or subsystem restart
 =================
 */
 void CG_Shutdown( void ) {
-
 	// some mods may need to do cleanup work here,
 	// like closing files or archiving session data
 }
 
 void CG_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume ) {
-	trap_S_AddLoopingSound( entityNum, origin, velocity, 1250, sfx, volume ); // volume was previously removed from CG_S_ADDLOOPINGSOUND. I added 'range'
+	trap_S_AddLoopingSound( entityNum, origin, velocity, 1250, sfx, volume );	// volume was previously removed from CG_S_ADDLOOPINGSOUND. I added 'range'
 }
 
 void CG_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range ) {
-	trap_S_AddLoopingSound( entityNum, origin, velocity, range, sfx, 255 ); // RF, assume full volume, since thats how it worked before
+	trap_S_AddLoopingSound( entityNum, origin, velocity, range, sfx, 255 );		// RF, assume full volume, since thats how it worked before
 }
 
 void CG_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
-	//trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 ); //----(SA) modified
+	//trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 );	//----(SA) modified
 }
-

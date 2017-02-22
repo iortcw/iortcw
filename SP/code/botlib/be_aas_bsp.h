@@ -59,7 +59,6 @@ qboolean AAS_EntityCollision( int entnum,
 //for debugging
 void AAS_PrintFreeBSPLinks( char *str );
 //
-
 #endif //AASINTERN
 
 #define MAX_EPAIRKEY        128

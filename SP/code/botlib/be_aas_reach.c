@@ -238,7 +238,7 @@ int AAS_BestReachableArea( vec3_t origin, vec3_t mins, vec3_t maxs, vec3_t goalo
 				AAS_DrawPermanentCross(start, 4, LINECOLOR_RED);
 			} //end if
 			botimport.Print(PRT_MESSAGE, "AAS_BestReachableArea: start solid\n");
-	  */
+			*/
 			VectorCopy( start, goalorigin );
 			return areanum;
 		} //end else
@@ -341,7 +341,7 @@ int AAS_AreaReachability( int areanum ) {
 		AAS_Error( "AAS_AreaReachability: areanum %d out of range\n", areanum );
 		return 0;
 	} //end if
-	  // RF, if this area is disabled, then fail
+	// RF, if this area is disabled, then fail
 	if ( ( *aasworld ).areasettings[areanum].areaflags & AREA_DISABLED ) {
 		return 0;
 	}
@@ -1487,7 +1487,8 @@ int AAS_Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num, int area
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-/* Ridah, moved to q_math.c
+// Ridah, moved to q_math.c
+/*
 float VectorDistance(vec3_t v1, vec3_t v2)
 {
 	vec3_t dir;
@@ -2378,7 +2379,7 @@ int AAS_Reachability_Ladder( int area1num, int area2num ) {
 			lreach->edgenum = abs( sharededgenum );
 			VectorCopy( area2point, lreach->start );
 			//VectorCopy(area1point, lreach->end);
-			VectorMA( area1point, -3, plane2->normal, lreach->end );
+			VectorMA( area1point, -3, plane1->normal, lreach->end );
 			lreach->traveltype = TRAVEL_LADDER;
 			lreach->traveltime = 10;
 			lreach->next = areareachability[area2num];
@@ -3360,7 +3361,6 @@ void AAS_Reachability_FuncBobbing( void ) {
 void AAS_Reachability_JumpPad( void ) {
 	int face2num, i, ret, modelnum, area2num, visualize;
 	float speed, zvel, dist, time, height, gravity, forward;
-	//float hordist;
 	aas_face_t *face2;
 	aas_area_t *area2;
 	aas_lreachability_t *lreach;
@@ -3474,7 +3474,7 @@ void AAS_Reachability_JumpPad( void ) {
 			AAS_UnlinkFromAreas( areas );
 			continue;
 		} //end if
-		  //
+		//
 		botimport.Print( PRT_MESSAGE, "found a trigger_push with velocity %f %f %f\n", velocity[0], velocity[1], velocity[2] );
 		//if there is a horizontal velocity check for a reachability without air control
 		if ( velocity[0] || velocity[1] ) {
@@ -3665,7 +3665,7 @@ int AAS_Reachability_Grapple( int area1num, int area2num ) {
 	aas_face_t *face2;
 	aas_area_t *area1, *area2;
 	aas_lreachability_t *lreach;
-	vec3_t areastart = { 0, 0, 0 }, facecenter, start, end, dir, down = {0, 0, -1};
+	vec3_t areastart = { 0, 0, 0 }, facecenter, start, end, dir, down = { 0, 0, -1 };
 	vec_t *v;
 
 	//only grapple when on the ground or swimming
@@ -3916,7 +3916,6 @@ void AAS_SetWeaponJumpAreaFlags( void ) {
 int AAS_Reachability_WeaponJump( int area1num, int area2num ) {
 	int face2num, i, n, ret;
 	float speed, zvel;
-	//float hordist;
 	aas_face_t *face2;
 	aas_area_t *area1, *area2;
 	aas_lreachability_t *lreach;

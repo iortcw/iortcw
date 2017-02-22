@@ -36,7 +36,9 @@ If you have questions concerning this license or the applicable additional terms
  *****************************************************************************/
 
 #ifdef _DEBUG
+#ifndef BSPC
 	#define MEMDEBUG
+#endif
 #endif
 
 #ifdef MEMDEBUG

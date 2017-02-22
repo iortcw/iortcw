@@ -199,8 +199,6 @@ qboolean CG_SoundPlaySoundScript( const char *name, vec3_t org, int entnum ) {
 	return qfalse;
 }
 
-
-
 /*
 ==============
 CG_SoundPlayIndexedScript

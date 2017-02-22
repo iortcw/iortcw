@@ -77,7 +77,6 @@ int ReadValue( source_t *source, float *value ) {
 			return qfalse;
 		}
 	}
-
 	if ( token.type != TT_NUMBER ) {
 		SourceError( source, "invalid return value %s", token.string );
 		return qfalse;
@@ -659,7 +658,7 @@ float FuzzyWeight_r( int *inventory, fuzzyseperator_t *fs ) {
 			} else { w2 = fs->next->weight;}
 			//the scale factor
 			if(fs->next->value == MAX_INVENTORYVALUE) // is fs->next the default case?
-	       		return w2;      // can't interpolate, return default weight
+				return w2;      // can't interpolate, return default weight
 			else
 				scale = (float) (inventory[fs->index] - fs->value) / (fs->next->value - fs->value);
 			//scale between the two weights
@@ -695,7 +694,7 @@ float FuzzyWeightUndecided_r( int *inventory, fuzzyseperator_t *fs ) {
 			} else { w2 = fs->next->minweight + random() * ( fs->next->maxweight - fs->next->minweight );}
 			//the scale factor
 			if(fs->next->value == MAX_INVENTORYVALUE) // is fs->next the default case?
-	       		return w2;      // can't interpolate, return default weight
+				return w2;      // can't interpolate, return default weight
 			else
 				scale = (float) (inventory[fs->index] - fs->value) / (fs->next->value - fs->value);
 			//scale between the two weights

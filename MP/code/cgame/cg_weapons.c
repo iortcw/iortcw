@@ -732,7 +732,6 @@ CG_NailgunEjectBrass
 ==========================
 */
 /*
-// TTimo: defined but not used
 static void CG_NailgunEjectBrass( centity_t *cent ) {
 	localEntity_t	*smoke;
 	vec3_t			origin;
@@ -758,10 +757,7 @@ static void CG_NailgunEjectBrass( centity_t *cent ) {
 	// use the optimized local entity add
 	smoke->leType = LE_SCALE_FADE;
 }
-*/
 
-/*
-// TTimo: defined but not used
 static void CG_NailTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	int		step;
 	vec3_t	origin, lastPos;
@@ -1106,7 +1102,6 @@ void CG_RegisterWeapon( int weaponNum ) {
 		}
 	}
 // jpw
-
 
 	if ( !weaponInfo->weaponModel[W_FP_MODEL] || !cg_drawFPGun.integer ) {
 		weaponInfo->weaponModel[W_FP_MODEL] = weaponInfo->weaponModel[W_TP_MODEL];
@@ -1491,13 +1486,13 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 	itemInfo->registered = qtrue;   //----(SA)	moved this down after the registerweapon()
 
-	//wolfkickModel = trap_R_RegisterModel( "models/weapons2/foot/v_wolfoot_10f.md3" );
+//	wolfkickModel = trap_R_RegisterModel( "models/weapons2/foot/v_wolfoot_10f.md3" );
 	hWeaponSnd = trap_S_RegisterSound( "sound/weapons/mg42/37mm.wav" );
 	hWeaponEchoSnd = trap_S_RegisterSound( "sound/multiplayer/mg42_far.wav" ); // JPW NERVE for mg42 echo
 
-	//hflakWeaponSnd = trap_S_RegisterSound ("sound/weapons/flak/flak.wav");
-	//notebookModel = trap_R_RegisterModel( "models/mapobjects/book/book.md3" );
-	//propellerModel = trap_R_RegisterModel( "models/mapobjects/vehicles/m109_prop.md3" );
+//	hflakWeaponSnd = trap_S_RegisterSound( "sound/weapons/flak/flak.wav" );
+//	notebookModel = trap_R_RegisterModel( "models/mapobjects/book/book.md3" );
+//	propellerModel = trap_R_RegisterModel( "models/mapobjects/vehicles/m109_prop.md3" );
 
 // JPW NERVE had to put this somewhere, this seems OK
 	if ( cg_gameType.integer < GT_WOLF ) {
@@ -1855,11 +1850,11 @@ CG_MachinegunSpinAngle
 ======================
 */
 /*
-// TTimo: unused
 //#define		SPIN_SPEED	0.9
 //#define		COAST_TIME	1000
 #define		SPIN_SPEED	1
 #define		COAST_TIME	2000
+
 static float	CG_MachinegunSpinAngle( centity_t *cent ) {
 	int		delta;
 	float	angle;
@@ -1898,9 +1893,9 @@ CG_TeslaSpinAngle
 #define TESLA_IDLESPEED .15
 #define TESLA_COASTTIME 1000
 /*
-// TTimo: unused
+
 static float CG_TeslaSpinAngle( centity_t *cent ) {
-	int		delta;
+	int	delta;
 	float	angle;
 	float	speed;
 
@@ -1908,16 +1903,17 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 
 	angle = cent->pe.barrelAngle;
 
-	if(cent->currentState.eFlags & EF_FIRING)
+	if ( cent->currentState.eFlags & EF_FIRING ) {
 		angle += delta * TESLA_SPINSPEED;
-	else
+	} else {
 		angle += delta * TESLA_IDLESPEED;
+	}
 
 	cent->pe.barrelAngle = AngleMod( angle );
 
 	cent->pe.barrelTime = cg.time;
 
-	return AngleMod(angle);
+	return AngleMod( angle );
 
 //----(SA)	trying new tesla effect scheme for MK
 //	angle = -(cent->pe.barrelAngle + delta * TESLA_SPINSPEED);
@@ -1928,30 +1924,26 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 //	else
 //		cent->pe.barrelAngle += delta * TESLA_IDLESPEED;
 
-	return AngleMod(cent->pe.barrelAngle);
+	return AngleMod( cent->pe.barrelAngle );
 
-
-
-
-
-return angle;
+	return angle;
 
 
 	if ( cent->pe.barrelSpinning ) {
-		angle = -(cent->pe.barrelAngle + delta * TESLA_SPINSPEED);
+		angle = -( cent->pe.barrelAngle + delta * TESLA_SPINSPEED );
 	} else {
 		if ( delta > TESLA_COASTTIME ) {
 			delta = TESLA_COASTTIME;
 		}
 
 		speed = 0.5 * ( TESLA_SPINSPEED + (float)( TESLA_COASTTIME - delta ) / TESLA_COASTTIME );
-		angle = - (cent->pe.barrelAngle + delta * speed);
+		angle = -( cent->pe.barrelAngle + delta * speed );
 	}
 
-	if ( cent->pe.barrelSpinning == !(cent->currentState.eFlags & EF_FIRING) ) {
+	if ( cent->pe.barrelSpinning == !( cent->currentState.eFlags & EF_FIRING ) ) {
 		cent->pe.barrelTime = cg.time;
 		cent->pe.barrelAngle = AngleMod( angle );
-		cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
+		cent->pe.barrelSpinning = !!( cent->currentState.eFlags & EF_FIRING );
 	}
 
 	return angle;
@@ -2032,34 +2024,37 @@ CG_PlayerTeslaCoilFire
 ==============
 */
 void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
-/*
+#if 0
+
 #define	TESLA_LIGHTNING_POINT_TIMEOUT	3000
 #define	TESLA_LIGHTNING_MAX_DIST		TESLA_RANGE		// use these to perhaps vary the distance according to aiming
 #define	TESLA_LIGHTNING_NORMAL_DIST		TESLA_RANGE
 #define	TESLA_MAX_POINT_TESTS			10
 #define	TESLA_MAX_POINT_TESTS_PERFRAME	20
 
-	int i, j, pointTests=0;
-	vec3_t	testPos, tagPos, vec;
-	trace_t	tr;
-	float	maxDist;
-	int		numPoints;
-	vec3_t	viewAngles, viewDir;
+	int i, j, pointTests = 0;
+	vec3_t testPos, tagPos, vec;
+	trace_t tr;
+	float maxDist;
+	int numPoints;
+	vec3_t viewAngles, viewDir;
 	int visEnemies[16];
 	float visDists[16];
 	int visEnemiesSorted[MAX_TESLA_BOLTS];
-	int numEnemies, numSorted, best;
+	int numEnemies, numSorted = 0, best;
 	float bestDist;
 	centity_t *ctrav;
-	vec3_t	traceOrg;
-	int	playerTeam;
+	vec3_t traceOrg;
+	int playerTeam;
 
-	if (cent->currentState.weapon != WP_TESLA)
+	if ( cent->currentState.weapon != WP_TESLA ) {
 		return;
+	}
 
 // JPW NERVE no tesla in multiplayer
-	if ( cg_gameType.integer != GT_SINGLE_PLAYER )
+	if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
 		return;
+	}
 
 	//if (cent->currentState.number == cg.snap->ps.clientNum)
 	//	VectorCopy( cg.snap->ps.viewangles, viewAngles );
@@ -2068,7 +2063,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 
 	AngleVectors( viewAngles, viewDir, NULL, NULL );
 
-	if (cent->currentState.number == cg.snap->ps.clientNum) {
+	if ( cent->currentState.number == cg.snap->ps.clientNum ) {
 		VectorCopy( cg.snap->ps.origin, traceOrg );
 		playerTeam = cg.snap->ps.teamNum;
 	} else {
@@ -2082,45 +2077,44 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 	VectorCopy( flashorigin, tagPos );
 
 	// first, build a list of visible enemies that can be hurt by this tesla, then filter by distance
-	if (!cent->pe.teslaDamageApplyTime || cent->pe.teslaDamageApplyTime < cg.time - 200) {
+	if ( !cent->pe.teslaDamageApplyTime || cent->pe.teslaDamageApplyTime < cg.time - 200 ) {
 		numEnemies = 0;
 		// check the local playing client
 		VectorSubtract( cg.snap->ps.origin, traceOrg, vec );
 		VectorNormalize( vec );
-		if ((cent != &cg_entities[cg.snap->ps.clientNum]) &&
-			(cg.snap->ps.teamNum != playerTeam) &&
-			(Distance( tagPos, cg.snap->ps.origin ) < TESLA_LIGHTNING_MAX_DIST) &&
-			(DotProduct(viewDir, vec) > 0.8)) {
-			CG_Trace( &tr, traceOrg, NULL, NULL, cg.snap->ps.origin, cg.snap->ps.clientNum, MASK_SHOT & ~CONTENTS_BODY );
-			if (tr.fraction == 1 || tr.entityNum == cg.snap->ps.clientNum) {
+		if ( ( cent != &cg_entities[cg.snap->ps.clientNum] ) &&
+			 ( cg.snap->ps.teamNum != playerTeam ) &&
+			 ( Distance( tagPos, cg.snap->ps.origin ) < TESLA_LIGHTNING_MAX_DIST ) &&
+			 ( DotProduct( viewDir, vec ) > 0.8 ) ) {
+			CG_Trace( &tr, traceOrg, NULL, NULL, cg.snap->ps.origin, cg.snap->ps.clientNum, MASK_SHOT & ~( CONTENTS_BODY ) );
+			if ( tr.fraction == 1 || tr.entityNum == cg.snap->ps.clientNum ) {
 				visDists[numEnemies] = Distance( tagPos, cg.snap->ps.origin );
 				visEnemies[numEnemies++] = cg.snap->ps.clientNum;
 			}
 		}
 
-		if (cgs.localServer && cgs.gametype == GT_SINGLE_PLAYER) {
+		if ( cgs.localServer && cgs.gametype == GT_SINGLE_PLAYER ) {
 			// check for AI's getting hurt (TODO: bot support?)
-			for (ctrav=cg_entities, i=0; i<cgs.maxclients && numEnemies<16; ctrav++, i++) {
+			for ( ctrav = cg_entities, i = 0; i < cgs.maxclients && numEnemies < 16; ctrav++, i++ ) {
 				// RF, proto and supersoldier are invulnerable to tesla
-				switch (ctrav->currentState.aiChar) {
+/*				switch ( ctrav->currentState.aiChar ) {
 				case AICHAR_SUPERSOLDIER:
 				case AICHAR_PROTOSOLDIER:
 					continue;
 				}
-
-				if (ctrav->currentState.aiChar &&
-					(ctrav != cent) &&
-					(ctrav->currentState.teamNum != playerTeam) &&
-					!(ctrav->currentState.eFlags & EF_DEAD) &&
-					ctrav->currentValid &&	// is in the visible frame
-					(Distance( tagPos, ctrav->lerpOrigin ) < TESLA_LIGHTNING_MAX_DIST))
-				{
+*/                                                                                                                              //
+				if ( ctrav->currentState.aiChar &&
+					 ( ctrav != cent ) &&
+					 ( ctrav->currentState.teamNum != playerTeam ) &&
+					 !( ctrav->currentState.eFlags & EF_DEAD ) &&
+					 ctrav->currentValid && // is in the visible frame
+					 ( Distance( tagPos, ctrav->lerpOrigin ) < TESLA_LIGHTNING_MAX_DIST ) ) {
 					VectorSubtract( ctrav->lerpOrigin, traceOrg, vec );
 					VectorNormalize( vec );
 
-					if (DotProduct(viewDir, vec) > 0.8) {
+					if ( DotProduct( viewDir, vec ) > 0.8 ) {
 						CG_Trace( &tr, traceOrg, NULL, NULL, ctrav->lerpOrigin, ctrav->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
-						if (tr.fraction == 1 || tr.entityNum == ctrav->currentState.number) {
+						if ( tr.fraction == 1 || tr.entityNum == ctrav->currentState.number ) {
 							visDists[numEnemies] = Distance( tagPos, ctrav->lerpOrigin );
 							visEnemies[numEnemies++] = ctrav->currentState.number;
 						}
@@ -2130,39 +2124,40 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 		}
 
 		// now sort by distance
-		for (j=0; j<MAX_TESLA_BOLTS; j++) {
+		for ( j = 0; j < MAX_TESLA_BOLTS; j++ ) {
 			visEnemiesSorted[j] = -1;
 
 			bestDist = 99999;
 			best = -1;
-			for (i=0; i<numEnemies; i++) {
-				if (visEnemies[i] < 0)
+			for ( i = 0; i < numEnemies; i++ ) {
+				if ( visEnemies[i] < 0 ) {
 					continue;
-				if (visDists[i] < bestDist) {
+				}
+				if ( visDists[i] < bestDist ) {
 					bestDist = visDists[i];
 					visEnemiesSorted[j] = visEnemies[i];
 					best = i;
 				}
 			}
 
-			if (best >= 0) {
+			if ( best >= 0 ) {
 				visEnemies[best] = -1;
-				numSorted = j+1;
+				numSorted = j + 1;
 			}
 		}
 
 		// now fill in the teslaEnemy[]'s
-		for (i=0; i<MAX_TESLA_BOLTS; i++) {
-			if (numSorted && i/numSorted < (MAX_TESLA_BOLTS/2)) {	// no more than half the bolts per enemy
-				j = i%numSorted;
+		for ( i = 0; i < MAX_TESLA_BOLTS; i++ ) {
+			if ( numSorted && i / numSorted < ( MAX_TESLA_BOLTS / 2) ) {	// no more than half the bolts per enemy
+				j = i % numSorted;
 				cent->pe.teslaEnemy[i] = visEnemiesSorted[j];
 				// apply damage
 				CG_ClientDamage( visEnemiesSorted[j], cent->currentState.number, CLDMG_TESLA );
 				// show the effect
 				cg_entities[ visEnemiesSorted[j] ].pe.teslaDamagedTime = cg.time;
 			} else {
-				if (cent->pe.teslaEnemy[i] >= 0) {
-					cent->pe.teslaEndPointTimes[i] = 0;	// make sure we find a new spot
+				if ( cent->pe.teslaEnemy[i] >= 0 ) {
+					cent->pe.teslaEndPointTimes[i] = 0; // make sure we find a new spot
 				}
 				cent->pe.teslaEnemy[i] = -1;
 			}
@@ -2170,7 +2165,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 		cent->pe.teslaDamageApplyTime = cg.time;
 	}
 
-	for (i=0; i<numPoints; i++) {
+	for ( i = 0; i < numPoints; i++ ) {
 
 		//if (!(rand()%3))
 		//	continue;
@@ -2179,77 +2174,76 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 		VectorNormalize( vec );
 
 		// if this point has timed out, find a new spot
-		if (cent->pe.teslaEnemy[i] >= 0)
-		{
+		if ( cent->pe.teslaEnemy[i] >= 0 ) {
 			// attacking the player
-			VectorSet( testPos, 6*crandom(),
-								6*crandom(),
-								20*crandom() - 8 );
+			VectorSet( testPos, 6 * crandom(),
+					   6 * crandom(),
+					   20 * crandom() - 8 );
 			//VectorClear( testPos );
-			if (cent->pe.teslaEnemy[i] != cg.snap->ps.clientNum) {
+			if ( cent->pe.teslaEnemy[i] != cg.snap->ps.clientNum ) {
 				VectorAdd( testPos, cg_entities[cent->pe.teslaEnemy[i]].lerpOrigin, testPos );
 			} else {
 				VectorAdd( testPos, cg.snap->ps.origin, testPos );
 			}
-			cent->pe.teslaEndPointTimes[i] = cg.time;// - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
+			cent->pe.teslaEndPointTimes[i] = cg.time; // - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
 			VectorCopy( testPos, cent->pe.teslaEndPoints[i] );
-		} else if (	(!cent->pe.teslaEndPointTimes[i]) ||
-				(cent->pe.teslaEndPointTimes[i] > cg.time) ||
-				(cent->pe.teslaEndPointTimes[i] < cg.time - TESLA_LIGHTNING_POINT_TIMEOUT) ||
-				(VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) > maxDist) ||
-				(DotProduct(viewDir, vec) < 0.7)) {
+		} else if ( ( !cent->pe.teslaEndPointTimes[i] ) ||
+					( cent->pe.teslaEndPointTimes[i] > cg.time ) ||
+					( cent->pe.teslaEndPointTimes[i] < cg.time - TESLA_LIGHTNING_POINT_TIMEOUT ) ||
+					( VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) > maxDist ) ||
+					( DotProduct( viewDir, vec ) < 0.7 ) ) {
 
 			//if (cent->currentState.groundEntityNum == ENTITYNUM_NONE)
 			//	continue;	// must be on the ground
 
 			// find a new spot
-			for (j=0; j<TESLA_MAX_POINT_TESTS; j++) {
-				VectorSet( testPos, cg.refdef.fov_y*crandom()*0.5,
-									cg.refdef.fov_x*crandom()*0.5,
-									0 );
+			for ( j = 0; j < TESLA_MAX_POINT_TESTS; j++ ) {
+				VectorSet( testPos, cg.refdef.fov_y * crandom() * 0.5,
+						   cg.refdef.fov_x * crandom() * 0.5,
+						   0 );
 				VectorAdd( viewAngles, testPos, testPos );
 				AngleVectors( testPos, vec, NULL, NULL );
 				VectorMA( tagPos, maxDist, vec, testPos );
 				// try a trace to find a world collision
 				CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SHOT & ~CONTENTS_BODY );
-				if (tr.fraction < 1 && tr.entityNum == ENTITYNUM_WORLD && !(tr.surfaceFlags & (SURF_NOIMPACT|SURF_SKY))) {
+				if ( tr.fraction < 1 && tr.entityNum == ENTITYNUM_WORLD && !( tr.surfaceFlags & ( SURF_NOIMPACT | SURF_SKY ) ) ) {
 					// found a valid spot!
-					cent->pe.teslaEndPointTimes[i] = cg.time - rand()%(TESLA_LIGHTNING_POINT_TIMEOUT/2);
+					cent->pe.teslaEndPointTimes[i] = cg.time - rand() % ( TESLA_LIGHTNING_POINT_TIMEOUT / 2 );
 					VectorCopy( tr.endpos, cent->pe.teslaEndPoints[i] );
 					break;
 				}
-				if (pointTests++ > TESLA_MAX_POINT_TESTS_PERFRAME) {
-					j=TESLA_MAX_POINT_TESTS;
+				if ( pointTests++ > TESLA_MAX_POINT_TESTS_PERFRAME ) {
+					j = TESLA_MAX_POINT_TESTS;
 					continue;
 				}
 			}
-			if (j==TESLA_MAX_POINT_TESTS) {
-				continue;	// just don't draw this point
+			if ( j == TESLA_MAX_POINT_TESTS ) {
+				continue;   // just don't draw this point
 			}
 
 			// add an impact mark on the wall
 			VectorSubtract( cent->pe.teslaEndPoints[i], tagPos, vec );
 			VectorNormalize( vec );
 			VectorInverse( vec );
-			CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random()*360, 0.2, 0.2, 0.2, 1.0, qtrue, 4, qfalse, 300 );
+			CG_ImpactMark( cgs.media.lightningHitWallShader, cent->pe.teslaEndPoints[i], vec, random() * 360, 0.2, 0.2, 0.2, 1.0, qtrue, 4, qfalse, 300 );
 		}
 		//
 		// we have a valid lightning point, so draw it
 		// sanity check though to make sure it's valid
-		if (VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) <= maxDist) {
+		if ( VectorDistance( tagPos, cent->pe.teslaEndPoints[i] ) <= maxDist ) {
 			CG_DynamicLightningBolt( cgs.media.lightningBoltShader, tagPos, cent->pe.teslaEndPoints[i], 1+((cg.time%((i+2)*(i+3)))+i)%2, 20 + (float)(i%3)*5 + 6.0*random(), qtrue, 1.0, 0, i*i*3 );
 
 			// play a zap sound
-			if (cent->pe.lightningSoundTime < cg.time - 200) {
+			if ( cent->pe.lightningSoundTime < cg.time - 200 ) {
 				CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD );
 				CG_SoundPlayIndexedScript( cgs.media.teslaZapScript, cent->lerpOrigin, ENTITYNUM_WORLD );
 				//trap_S_StartSound( cent->pe.teslaEndPoints[i], ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.lightningSounds[rand()%3] );
-				cent->pe.lightningSoundTime = cg.time + rand()%200;
+				cent->pe.lightningSoundTime = cg.time + rand() % 200;
 			}
 		}
 	}
 
-	if (cg.time % 3) {	// break it up a bit
+	if ( cg.time % 3 ) {  // break it up a bit
 		// add the looping sound
 		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.teslaLoopSound, 255 );
 	}
@@ -2260,17 +2254,17 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 	// try a trace to find a world collision
 	CG_Trace( &tr, tagPos, NULL, NULL, testPos, cent->currentState.number, MASK_SOLID );
 
-	if ((cg.time/50)%(4+(cg.time%4)) == 0) {
+	if ( ( cg.time / 50 ) % ( 4 + ( cg.time % 4 ) ) == 0 ) {
 		// alt light
-		trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 2 );
-	} else if ((cg.time/50)%(4+(cg.time%4)) == 1) {
+		trap_R_AddLightToScene( tr.endpos, 256 + 600 * tr.fraction, 0.2, 0.6, 1, 2 );
+	} else if ( ( cg.time / 50 ) % ( 4 + ( cg.time % 4 ) ) == 1 ) {
 		// no light
 		//trap_R_AddLightToScene( tr.endpos, 128 + 500*tr.fraction, 1, 1, 1, 10 );
 	} else {
 		// blue light
-		trap_R_AddLightToScene( tr.endpos, 256 + 600*tr.fraction, 0.2, 0.6, 1, 1 );
+		trap_R_AddLightToScene( tr.endpos, 256 + 600 * tr.fraction, 0.2, 0.6, 1, 1 );
 	}
-	*/
+#endif
 }
 
 
@@ -2420,7 +2414,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 									 // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
 			VectorScale( gun.axis[i], 1.0 / ( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[i] ), gun.axis[i] );
 		}
-
 	}
 
 	if ( ps ) {
@@ -2667,8 +2660,8 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		if ( weaponNum != WP_FLAMETHROWER && weaponNum != WP_TESLA ) {    //Ridah, hide the flash also for now
 			// RF, changed this so the muzzle flash stays onscreen for long enough to be seen
 			if ( cg.time - cent->muzzleFlashTime < MUZZLE_FLASH_TIME ) {
-				//if (firing) {	// Ridah
-				trap_R_AddRefEntityToScene( &flash );
+//				if ( firing )	// Ridah
+					trap_R_AddRefEntityToScene( &flash );
 			}
 		}
 	}
@@ -2872,7 +2865,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 	// Rafael
 	// add the foot
-	//CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
+//	CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
 
 	cg.predictedPlayerEntity.lastWeaponClientFrame = cg.clientFrame;
 }
@@ -3344,8 +3337,7 @@ static int getPrevBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
 	bank--;
 
 	if ( bank < 0 ) {    // don't go below 0, cycle up to top
-		bank += maxWeapBanks; // JPW NERVE
-
+		bank += maxWeapBanks;
 	}
 	bank = bank % maxWeapBanks;
 
@@ -4532,8 +4524,9 @@ void CG_FireWeapon( centity_t *cent ) {
 				  ent->weapon == WP_DYNAMITE ||
 				  ent->weapon == WP_DYNAMITE2 ||
 				  ent->weapon == WP_SMOKE_GRENADE ) { // JPW NERVE
-//		if (ent->weapon == WP_SMOKE_GRENADE)
-//			CG_Printf("smoke grenade!\n");
+//		if ( ent->weapon == WP_SMOKE_GRENADE ) {
+//			CG_Printf( "smoke grenade!\n" );
+//		}
 		if ( ent->apos.trBase[0] > 0 ) { // underhand
 			return;
 		}
@@ -5084,9 +5077,6 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 					}
 
 */
-
-
-//				CG_Explodef(origin, dir, mass, type, sound, lowgrav, shader);
 
 
 				} else if ( surfFlags & SURF_CERAMIC ) {

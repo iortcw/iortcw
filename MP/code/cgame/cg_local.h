@@ -176,7 +176,7 @@ typedef struct {
 	int painAnimLegs;
 	int lightningFiring;
 
-	int railFireTime;
+	int	railFireTime;
 
 	// machinegun spinning
 	float barrelAngle;
@@ -515,7 +515,7 @@ typedef enum {
 				// (SA) No, really?  that's not true is it?  isn't this client-side only?
 } accType_t;
 
-#define ACC_NUM_MOUTH 3 // matches the above count
+#define ACC_NUM_MOUTH 3 // matches the above count (hat/mouth2/mouth3)
 
 
 
@@ -946,7 +946,6 @@ typedef struct {
 	qboolean cameraMode;        // if rendering from a camera
 	// Duffy end
 
-	// NERVE - SMF - Objective info display
 	qboolean limboMenu;
 
 	int oidTeam;
@@ -990,7 +989,6 @@ typedef struct {
 } cg_t;
 
 #define NUM_FUNNEL_SPRITES  21
-
 #define MAX_LOCKER_DEBRIS   5
 
 // all of the model, shader, and sound references that are
@@ -1101,7 +1099,7 @@ typedef struct {
 
 	qhandle_t nailPuffShader;
 
-//----(SA)	cursor hints
+	//----(SA)	cursor hints
 	// would be nice to specify these in the menu scripts instead of permanent handles...
 	qhandle_t usableHintShader;
 	qhandle_t notUsableHintShader;
@@ -1372,14 +1370,13 @@ typedef struct {
 	sfxHandle_t fallSound;
 	sfxHandle_t jumpPadSound;
 
-// JPW NERVE
 //	sfxHandle_t oneMinuteSound;
 //	sfxHandle_t fiveMinuteSound;
 //	sfxHandle_t suddenDeathSound;
 
 	sfxHandle_t twoMinuteSound_g, twoMinuteSound_a;
 	sfxHandle_t thirtySecondSound_g, thirtySecondSound_a;
-// jpw
+
 	sfxHandle_t threeFragSound;
 	sfxHandle_t twoFragSound;
 	sfxHandle_t oneFragSound;
@@ -2107,7 +2104,6 @@ void CG_ClearTrails( void );
 // Ridah, sound scripting
 int CG_SoundScriptPrecache( const char *name );
 qboolean CG_SoundPlaySoundScript( const char *name, vec3_t org, int entnum );
-// TTimo: prototype must match animScriptData_t::playSound
 void CG_SoundPlayIndexedScript( int index, vec3_t org, int entnum );
 void CG_SoundInit( void );
 // done.
@@ -2459,7 +2455,7 @@ e_status trap_CIN_RunCinematic( int handle );
 void trap_CIN_DrawCinematic( int handle );
 void trap_CIN_SetExtents( int handle, int x, int y, int w, int h );
 
-int trap_RealTime(qtime_t *qtime);
+int	trap_RealTime(qtime_t *qtime);
 void trap_SnapVector( float *v );
 
 qboolean    trap_GetEntityToken( char *buffer, int bufferSize );

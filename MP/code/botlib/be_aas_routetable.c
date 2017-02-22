@@ -968,7 +968,6 @@ void AAS_RT_BuildRouteTable( void ) {
 
 				AAS_RT_FreeMemory( trav->routeindexes );
 				AAS_RT_FreeMemory( trav );
-
 			}
 
 			AAS_RT_FreeMemory( area_childlocaldata[i]->localroutes );

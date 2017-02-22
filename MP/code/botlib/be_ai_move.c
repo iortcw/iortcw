@@ -697,12 +697,12 @@ int BotGetReachabilityToGoal( vec3_t origin, int areanum, int entnum,
 		}
 
 		// Ridah, if this sends us to a looped route, ignore it
-//		if (AAS_AreaTravelTimeToGoalArea(areanum, reach.start, goal->areanum, travelflags) + reach.traveltime == t)
-//			continue;
+		//if (AAS_AreaTravelTimeToGoalArea(areanum, reach.start, goal->areanum, travelflags) + reach.traveltime == t)
+		//	continue;
 
 		//add the travel time towards the area
 		// Ridah, not sure why this was disabled, but it causes looped links in the route-cache
-		//t += reach.traveltime;// + AAS_AreaTravelTime(areanum, origin, reach.start);
+		//t += reach.traveltime; // + AAS_AreaTravelTime( areanum, origin, reach.start );
 		t += reach.traveltime + AAS_AreaTravelTime( areanum, origin, reach.start );
 
 		// Ridah, if there exists other entities in this area, avoid it
@@ -746,7 +746,7 @@ int BotAddToTarget( vec3_t start, vec3_t end, float maxdist, float *dist, vec3_t
 
 int BotMovementViewTarget( int movestate, bot_goal_t *goal, int travelflags, float lookahead, vec3_t target ) {
 	aas_reachability_t reach;
-	int reachnum = 0, lastareanum;
+	int reachnum, lastareanum;
 	bot_movestate_t *ms;
 	vec3_t end;
 	float dist;
@@ -1312,8 +1312,8 @@ bot_moveresult_t BotTravel_Walk( bot_movestate_t *ms, aas_reachability_t *reach 
 bot_moveresult_t BotFinishTravel_Walk( bot_movestate_t *ms, aas_reachability_t *reach ) {
 	vec3_t hordir;
 	float dist, speed;
-
 	bot_moveresult_t_cleared( result );
+
 	//if not on the ground and changed areas... don't walk back!!
 	//(doesn't seem to help)
 	/*
@@ -1965,7 +1965,7 @@ bot_moveresult_t BotTravel_Ladder( bot_movestate_t *ms, aas_reachability_t *reac
 		viewdir[0] = dir[0];
 		viewdir[1] = dir[1];
 		viewdir[2] = dir[2];
-		if ( dir[2] < 0 ) {   // going down, so face the other way
+		if ( dir[2] < 0 ) {   // going down, so face the other way (towards ladder)
 			VectorInverse( viewdir );
 		} else {
 			viewdir[2] = 0; // straight forward goes up
@@ -2860,7 +2860,7 @@ bot_moveresult_t BotTravel_RocketJump( bot_movestate_t *ms, aas_reachability_t *
 		speed = 400 - (400 - 5 * dist2);
 		EA_Move(ms->client, hordir, speed);
 	} //end else
-  */
+*/
 	//look in the movement direction
 	Vector2Angles( hordir, result.ideal_viewangles );
 	//look straight down
@@ -3081,7 +3081,7 @@ void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, i
 		return;
 	}
 	//reset the grapple before testing if the bot has a valid goal
-	//because the bot could lose all it's goals when stuck to a wall
+	//because the bot could loose all its goals when stuck to a wall
 	BotResetGrapple( ms );
 	//
 	if ( !goal ) {

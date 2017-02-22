@@ -49,7 +49,6 @@ static int getAltWeapon( int weapnum );
 int getEquivWeapon( int weapnum );
 int CG_WeaponIndex( int weapnum, int *bank, int *cycle );
 static qboolean CG_WeaponHasAmmo( int i );
-
 static int maxWeapBanks = MAX_WEAP_BANKS, maxWeapsInBank = MAX_WEAPS_IN_BANK; // JPW NERVE
 
 int weapBanks[MAX_WEAP_BANKS][MAX_WEAPS_IN_BANK] = {
@@ -217,8 +216,6 @@ static void CG_MachineGunEjectBrass( centity_t *cent ) {
 	} else {
 		VectorClear( offset );
 	}
-
-
 
 	xoffset[0] = offset[0] * v[0][0] + offset[1] * v[1][0] + offset[2] * v[2][0];
 	xoffset[1] = offset[0] * v[0][1] + offset[1] * v[1][1] + offset[2] * v[2][1];
@@ -406,7 +403,6 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 
 	if ( grounddir == 99 ) { // pick a wind direction -- cheap trick because it can be different
 		grounddir = crandom(); // on different clients, but it's all smoke and mirrors anyway
-
 	}
 	step = 30;
 	es = &ent->currentState;
@@ -422,8 +418,7 @@ void CG_PyroSmokeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	for ( ; t <= ent->trailTime ; t += step ) {
 
 		BG_EvaluateTrajectory( &es->pos, t, lastPos );
-
-		//VectorCopy (ent->lerpOrigin, lastPos);
+//		VectorCopy ( ent->lerpOrigin, lastPos );
 
 		if ( ent->currentState.density ) { // corkscrew effect
 			vec3_t right;
@@ -614,7 +609,6 @@ void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 // done.
 }
 
-
 // Ridah
 /*
 ==========================
@@ -680,7 +674,6 @@ static void CG_GrenadeTrail( centity_t *ent, const weaponInfo_t *wi ) {
 CG_NailgunEjectBrass
 ==========================
 */
-// TTimo: unused
 /*
 static void CG_NailgunEjectBrass( centity_t *cent ) {
 	localEntity_t	*smoke;
@@ -1034,7 +1027,6 @@ void CG_RegisterWeapon( int weaponNum ) {
 		break;
 	}
 
-
 	if ( weaponInfo->registered ) {
 		return;
 	}
@@ -1051,6 +1043,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 	if ( !item->classname ) {
 		CG_Error( "Couldn't find weapon %i", weaponNum );
 	}
+
 	CG_RegisterItemVisuals( item - bg_itemlist );
 
 	// load cmodel before model so filecache works
@@ -1310,7 +1303,6 @@ void CG_RegisterWeapon( int weaponNum ) {
 		weaponInfo->ejectBrassFunc = CG_MachineGunEjectBrass;
 		break;
 
-
 	case WP_FG42:
 	case WP_FG42SCOPE:
 		MAKERGB( weaponInfo->flashDlightColor, 1.0, 0.6, 0.23 );
@@ -1319,6 +1311,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		weaponInfo->reloadSound = trap_S_RegisterSound( "sound/weapons/fg42/fg42_reload.wav" );
 		weaponInfo->ejectBrassFunc = CG_MachineGunEjectBrass;
 		break;
+//----(SA)	end
 
 
 	case WP_PANZERFAUST:
@@ -1440,12 +1433,6 @@ void CG_RegisterItemVisuals( int itemNum ) {
 
 	memset( itemInfo, 0, sizeof( *itemInfo ) );
 
-//----(SA)	umm, why was this set here?  It sets registered to true,
-//----(SA)		then in the register weapon(below) it returns since
-//----(SA)		the first thing it does is to check if it's registered.
-
-	//	itemInfo->registered = qtrue;
-
 	for ( i = 0; i < MAX_ITEM_MODELS; i++ )
 		itemInfo->models[i] = trap_R_RegisterModel( item->world_model[i] );
 
@@ -1467,9 +1454,7 @@ void CG_RegisterItemVisuals( int itemNum ) {
 	hWeaponSnd = trap_S_RegisterSound( "sound/weapons/mg42/37mm.wav" );
 
 	hflakWeaponSnd = trap_S_RegisterSound( "sound/weapons/flak/flak.wav" );
-
 	notebookModel = trap_R_RegisterModel( "models/mapobjects/book/book.md3" );
-
 	propellerModel = trap_R_RegisterModel( "models/mapobjects/vehicles/m109_prop.md3" );
 
 // JPW NERVE had to put this somewhere, this seems OK
@@ -1494,16 +1479,6 @@ void CG_RegisterItemVisuals( int itemNum ) {
 		item->giAmmoIndex = WP_MP40;
 	}
 // jpw
-
-	//
-	// powerups have an accompanying ring or sphere
-	//
-//	if ( item->giType == IT_POWERUP || item->giType == IT_HEALTH ||
-//		item->giType == IT_ARMOR || item->giType == IT_HOLDABLE ) {
-//		if ( item->world_model[W_FP_MODEL] ) {
-//			itemInfo->models[W_FP_MODEL] = trap_R_RegisterModel( item->world_model[W_FP_MODEL] );
-//		}
-//	}
 }
 
 
@@ -1631,10 +1606,6 @@ static void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t
 			CG_SetWeapLerpFrameAnimation( wi, lf, newAnimation );
 		}
 	}
-	// RF, if the animation number is the same, but we are using a different weapon, we need to reset the lf->animation
-	//else if ( memcmp( &wi->weapAnimations[newAnimation&~ANIM_TOGGLEBIT], lf->animation, sizeof(*lf->animation) ) ) {
-	//	CG_ClearWeapLerpFrame(wi, lf, newAnimation );	// clear when switching to raise (since it should be out of view anyway)
-	//}
 
 	// if we have passed the current frame, move it to
 	// oldFrame and calculate a new frame
@@ -1670,7 +1641,7 @@ static void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t
 		if ( cg.time > lf->frameTime ) {
 			lf->frameTime = cg.time;
 			if ( cg_debugAnim.integer ) {
-//				CG_Printf( "Clamp lf->frameTime\n");
+//				CG_Printf( "Clamp lf->frameTime\n" );
 			}
 		}
 	}
@@ -1851,9 +1822,6 @@ static void CG_FlamethrowerFlame( centity_t *cent, vec3_t origin ) {
 		}
 	}
 
-//	if (cent->currentState.aiChar)
-//		CG_FireFlameChunks( cent, origin, cent->lerpAngles, 650.0 / FLAMETHROWER_RANGE, qtrue, 0 );	// fixed length for AI
-//	else
 	CG_FireFlameChunks( cent, origin, cent->lerpAngles, 1.0, qtrue, 0 );
 
 	return;
@@ -1865,13 +1833,12 @@ static void CG_FlamethrowerFlame( centity_t *cent, vec3_t origin ) {
 CG_MachinegunSpinAngle
 ======================
 */
+/*
 //#define		SPIN_SPEED	0.9
 //#define		COAST_TIME	1000
-#define     SPIN_SPEED  1
-#define     COAST_TIME  2000
+#define		SPIN_SPEED	1
+#define		COAST_TIME	2000
 
-// TTimo: unused
-/*
 static float	CG_MachinegunSpinAngle( centity_t *cent ) {
 	int		delta;
 	float	angle;
@@ -1904,7 +1871,6 @@ static float	CG_MachinegunSpinAngle( centity_t *cent ) {
 CG_TeslaSpinAngle
 ==============
 */
-
 //#define TESLA_SPINSPEED .2
 //#define TESLA_COASTTIME	2000
 #define TESLA_SPINSPEED .05
@@ -1912,9 +1878,9 @@ CG_TeslaSpinAngle
 #define TESLA_COASTTIME 1000
 
 static float CG_TeslaSpinAngle( centity_t *cent ) {
-	int delta;
-	float angle;
-//	float speed;
+	int	delta;
+	float	angle;
+//	float	speed;
 
 	delta = cg.time - cent->pe.barrelTime;
 
@@ -1940,12 +1906,9 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 //		cent->pe.barrelAngle += delta * TESLA_SPINSPEED;
 //	else
 //		cent->pe.barrelAngle += delta * TESLA_IDLESPEED;
+
 #if 0
 	return AngleMod( cent->pe.barrelAngle );
-
-
-
-
 
 	return angle;
 
@@ -1971,7 +1934,6 @@ static float CG_TeslaSpinAngle( centity_t *cent ) {
 #endif
 }
 
-
 //----(SA)	added
 
 /*
@@ -1982,6 +1944,9 @@ CG_VenomSpinAngle
 
 #define     VENOM_LOADTIME 2000
 #define     VENOM_DELTATIME ( VENOM_LOADTIME / 10 )     // as there are 10 shots to be loaded
+
+#define     SPIN_SPEED  1
+#define     COAST_TIME  2000
 
 static float CG_VenomSpinAngle( centity_t *cent ) {
 	int delta;
@@ -2059,7 +2024,6 @@ CG_AddWeaponWithPowerups
 */
 static void CG_AddWeaponWithPowerups( refEntity_t *gun, int powerups, playerState_t *ps, centity_t *cent ) {
 
-
 	// add powerup effects
 	if ( powerups & ( 1 << PW_INVIS ) ) {
 		gun->customShader = cgs.media.invisShader;
@@ -2136,11 +2100,11 @@ CG_PlayerTeslaCoilFire
 */
 void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 
-#define TESLA_LIGHTNING_POINT_TIMEOUT   3000
-#define TESLA_LIGHTNING_MAX_DIST        ( cent->currentState.aiChar == AICHAR_SUPERSOLDIER ? TESLA_SUPERSOLDIER_RANGE : TESLA_RANGE )     // use these to perhaps vary the distance according to aiming
-#define TESLA_LIGHTNING_NORMAL_DIST     ( TESLA_RANGE / 2.0 )
-#define TESLA_MAX_POINT_TESTS           10
-#define TESLA_MAX_POINT_TESTS_PERFRAME  20
+#define	TESLA_LIGHTNING_POINT_TIMEOUT	3000
+#define	TESLA_LIGHTNING_MAX_DIST	( cent->currentState.aiChar == AICHAR_SUPERSOLDIER ? TESLA_SUPERSOLDIER_RANGE : TESLA_RANGE )     // use these to perhaps vary the distance according to aiming
+#define	TESLA_LIGHTNING_NORMAL_DIST	( TESLA_RANGE / 2.0 )
+#define	TESLA_MAX_POINT_TESTS			10
+#define	TESLA_MAX_POINT_TESTS_PERFRAME	20
 
 	int i, j, pointTests = 0;
 	vec3_t testPos, tagPos, vec;
@@ -2151,7 +2115,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 	int visEnemies[16];
 	float visDists[16];
 	int visEnemiesSorted[MAX_TESLA_BOLTS];
-	int numEnemies, numSorted = 0, best; // TTimo: init
+	int numEnemies, numSorted = 0, best;
 	float bestDist;
 	centity_t *ctrav;
 	vec3_t traceOrg;
@@ -2169,7 +2133,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 	//if (cent->currentState.number == cg.snap->ps.clientNum)
 	//	VectorCopy( cg.snap->ps.viewangles, viewAngles );
 	//else
-	VectorCopy( cent->lerpAngles, viewAngles );
+		VectorCopy( cent->lerpAngles, viewAngles );
 
 	AngleVectors( viewAngles, viewDir, NULL, NULL );
 
@@ -2222,7 +2186,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 			// check for AI's getting hurt (TODO: bot support?)
 			for ( ctrav = cg_entities, i = 0; i < cgs.maxclients && numEnemies < 16; ctrav++, i++ ) {
 				// RF, proto and supersoldier are invulnerable to tesla
-/*				switch (ctrav->currentState.aiChar) {
+/*				switch ( ctrav->currentState.aiChar ) {
 				case AICHAR_SUPERSOLDIER:
 				case AICHAR_PROTOSOLDIER:
 					continue;
@@ -2273,7 +2237,7 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 
 		// now fill in the teslaEnemy[]'s
 		for ( i = 0; i < MAX_TESLA_BOLTS; i++ ) {
-			if ( numSorted && i / numSorted < 1 /*(MAX_TESLA_BOLTS/3)*/ ) {  // bolts per enemy
+			if ( numSorted && i / numSorted < 1 /*( MAX_TESLA_BOLTS / 3 )*/ ) {  // bolts per enemy
 				j = i % numSorted;
 				cent->pe.teslaEnemy[i] = visEnemiesSorted[j];
 				// apply damage
@@ -2390,10 +2354,8 @@ void CG_PlayerTeslaCoilFire( centity_t *cent, vec3_t flashorigin ) {
 		trap_R_AddLightToScene( tr.endpos, 256 + 600 * tr.fraction, 0.2, 0.6, 1, 0 );
 	}
 
-
 	// shake the camera a bit
 	CG_StartShakeCamera( 0.05, 200, cent->lerpOrigin, 100 );
-
 }
 
 //----(SA)
@@ -2431,10 +2393,6 @@ CG_MonsterUsingWeapon
 qboolean CG_MonsterUsingWeapon( centity_t *cent, int aiChar, int weaponNum ) {
 	return ( cent->currentState.aiChar == aiChar ) && ( cent->currentState.weapon == weaponNum );
 }
-
-
-
-
 
 /*
 =============
@@ -2579,7 +2537,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		return;
 	}
 
-
 	if ( !ps ) {
 		// add weapon ready sound
 		cent->pe.lightningFiring = qfalse;
@@ -2604,7 +2561,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 									 // this will affect any parts attached to the gun as well (barrel/bolt/flash/brass/etc.)
 			VectorScale( gun.axis[i], 1.0 / ( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[i] ), gun.axis[i] );
 		}
-
 	}
 
 	// characters that draw their own special weapon model will not draw the standard ones
@@ -2669,7 +2625,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 				// (SA) not right now.  at the moment, just spin the belt when firing, no swapout
 				else if ( i == W_PART_3 ) {
 					if ( ( cent->pe.weap.animationNumber & ~ANIM_TOGGLEBIT ) == WEAP_ATTACK1 ) {
-//						barrel.hModel = weapon->wpPartModels[W_FP_MODEL_SWAP][i];
 						barrel.hModel = weapon->wpPartModels[W_FP_MODEL][i];
 						angles[ROLL] = -CG_VenomSpinAngle( cent );
 						angles[ROLL] = -( angles[ROLL] / 8.0f );
@@ -2678,7 +2633,6 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 					}
 					spunpart = qtrue;
 				}
-
 			} else if ( weaponNum == WP_TESLA ) {
 				if ( i == W_PART_1 || i == W_PART_2 ) {
 					angles[ROLL] = CG_TeslaSpinAngle( cent );
@@ -2859,8 +2813,8 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		if ( weaponNum != WP_FLAMETHROWER && weaponNum != WP_TESLA ) {    //Ridah, hide the flash also for now
 			// RF, changed this so the muzzle flash stays onscreen for long enough to be seen
 			if ( cg.time - cent->muzzleFlashTime < MUZZLE_FLASH_TIME ) {
-//			if (firing) {	// Ridah
-				trap_R_AddRefEntityToScene( &flash );
+//				if ( firing )	// Ridah
+					trap_R_AddRefEntityToScene( &flash );
 			}
 		}
 	}
@@ -2953,7 +2907,7 @@ Add the weapon, and flash for the player's view
 */
 void CG_AddViewWeapon( playerState_t *ps ) {
 	refEntity_t hand;
-	vec3_t		fovOffset;
+	vec3_t fovOffset;
 	vec3_t angles;
 	vec3_t gunoff;
 	weaponInfo_t    *weapon;
@@ -2974,7 +2928,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	// allow the gun to be completely removed
 	if ( !cg_drawGun.integer ) {
 /*
-		vec3_t		origin;
+		vec3_t origin;
 
 		if ( cg.predictedPlayerState.eFlags & EF_FIRING ) {
 			// special hack for lightning gun...
@@ -3131,7 +3085,6 @@ void CG_DrawWeaponSelect( void ) {
 	if ( cg_fixedAspect.integer == 2 ) {
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_TOP);
 	}
-
 
 //----(SA)	neither of these overlap the weapon selection area anymore, so let them stay
 	// showing weapon select clears pickup item display, but not the blend blob
@@ -3599,7 +3552,6 @@ static int getPrevBankWeap( int bank, int cycle, qboolean sameBankPosition ) {
 	if ( bank < 0 ) {    // don't go below 0, cycle up to top
 		bank += maxWeapBanks;
 	}
-
 	bank = bank % maxWeapBanks;
 
 	if ( cg_gameType.integer != GT_WOLF ) { // JPW NERVE
@@ -3652,8 +3604,6 @@ static int getAltWeapon( int weapnum ) {
 
 	return weapnum;
 }
-
-
 
 /*
 ==============
@@ -3946,7 +3896,7 @@ void CG_NextWeap( qboolean switchBanks ) {
 	}
 
 
-//	if(cg_cycleAllWeaps.integer || !switchBanks) {
+//	if ( cg_cycleAllWeaps.integer || !switchBanks ) {
 	if ( 1 ) {
 		for ( i = 0; i < maxWeapsInBank; i++ ) {
 			num = getNextWeapInBankBynum( num );
@@ -3975,7 +3925,7 @@ void CG_NextWeap( qboolean switchBanks ) {
 
 	if ( nextbank ) {
 		for ( i = 0; i < maxWeapBanks; i++ ) {
-//			if(cg_cycleAllWeaps.integer)
+//			if ( cg_cycleAllWeaps.integer ) {
 			if ( 1 ) {
 				num = getNextBankWeap( bank + i, cycle, qfalse );   // cycling all weaps always starts the next bank at the bottom
 			} else {
@@ -4044,7 +3994,7 @@ void CG_PrevWeap( qboolean switchBanks ) {
 	}
 
 	// initially, just try to find a lower weapon in the current bank
-//	if(cg_cycleAllWeaps.integer || !switchBanks) {
+//	if ( cg_cycleAllWeaps.integer || !switchBanks ) {
 	if ( 1 ) {
 
 //		if(cycle == 0) {		// already at bottom of list
@@ -4083,7 +4033,7 @@ void CG_PrevWeap( qboolean switchBanks ) {
 
 	if ( prevbank ) {
 		for ( i = 0; i < maxWeapBanks; i++ ) {
-//			if(cg_cycleAllWeaps.integer)
+//			if ( cg_cycleAllWeaps.integer ) {
 			if ( 1 ) {
 				num = getPrevBankWeap( bank - i, cycle, qfalse );   // cycling all weaps always starts the next bank at the bottom
 			} else {
@@ -4262,12 +4212,6 @@ CG_PrevWeapon_f
 ==============
 */
 void CG_PrevWeapon_f( void ) {
-	// TTimo: unused
-	/*
-	  int			bank = 0, cycle = 0, newbank = 0, newcycle = 0;
-	  qboolean	prevbank = qfalse;	// need to switch to the next bank of weapons?
-	*/
-
 	if ( !cg.snap ) {
 		return;
 	}
@@ -5188,7 +5132,6 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, in
 										   0.5,
 										   "dirt_splash" ); // rand scale
 			} else {
-
 				CG_ParticleImpactSmokePuff( cgs.media.smokeParticleShader, o );
 
 				// some debris particles
@@ -5350,7 +5293,7 @@ void CG_Shard(centity_t *cent, vec3_t origin, vec3_t dir)
 		VectorScale( dir, 64, sprVel );
 		// RF, I like this new animation, feel free to revert
 		CG_ParticleExplosion( "expblue", sprOrg, sprVel, 1000, 20, 300 );
-		//CG_ParticleExplosion( "explode1", sprOrg, sprVel, 1200, 9, 300 );
+//		CG_ParticleExplosion( "explode1", sprOrg, sprVel, 1200, 9, 300 );
 		break;
 
 	case WP_DYNAMITE:
@@ -5743,8 +5686,8 @@ VENOM GUN TRACING
 CG_VenomPellet
 ================
 */
-static void CG_VenomPellet( vec3_t start, vec3_t end, int skipNum )
-{}
+static void CG_VenomPellet( vec3_t start, vec3_t end, int skipNum ) {
+}
 
 
 //----(SA)	all changes to venom below should be mine
@@ -5861,7 +5804,6 @@ void CG_SpawnTracer( int sourceEnt, vec3_t pstart, vec3_t pend ) {
 				VectorSubtract( or.origin, start, ofs );
 				if ( VectorLength( ofs ) < 64 ) {
 					VectorAdd( start, ofs, start );
-					//VectorAdd( end, ofs, end );
 				}
 			}
 		}
@@ -5993,7 +5935,6 @@ static qboolean CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle ) {
 	VectorMA( muzzle, 14, forward, muzzle );
 
 	return qtrue;
-
 }
 
 /*
@@ -6124,15 +6065,6 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 			return;
 		}
 
-		// if we didn't hit flesh, spawn a moving tracer
-		// moved this up to (what seems like) the proper area.  trails above.  didn't always have valid start/end positions here.
-//		if (sourceEntityNum >= 0) {
-//			if(otherEntNum2 >=0 && otherEntNum2 != ENTITYNUM_NONE)
-//				CG_SpawnTracer( otherEntNum2, start, end );
-//			else
-//				CG_SpawnTracer( sourceEntityNum, start, end );
-//		}
-
 		if ( CG_CalcMuzzlePoint( sourceEntityNum, start )
 			 || cg.snap->ps.persistant[PERS_HWEAPON_USE] ) {
 			vec3_t start2;
@@ -6176,7 +6108,6 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 			}
 		}
 	}
-
 }
 
 /*
@@ -6202,4 +6133,3 @@ void CG_ClientDamage( int entnum, int enemynum, int id ) {
 		trap_SendClientCommand( va( "cld %i %i %i", entnum, enemynum, id ) );
 	}
 }
-

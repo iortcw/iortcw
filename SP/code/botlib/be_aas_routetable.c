@@ -961,7 +961,7 @@ void AAS_RT_BuildRouteTable( void ) {
 		{
 			// kill the parent links
 			next = area_childlocaldata[i]->parentlink;
-			// TTimo: suggest () around assignment used as truth value
+			// TTimo gcc: suggests () around assignment used as truth value
 			while ( ( trav = next ) )
 			{
 				next = next->next;

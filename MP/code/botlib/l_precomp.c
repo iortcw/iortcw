@@ -466,9 +466,9 @@ int PC_StringizeTokens( token_t *tokens, token_t *token ) {
 	strcat( token->string, "\"" );
 	for ( t = tokens; t; t = t->next )
 	{
-		strncat(token->string, t->string, MAX_TOKEN - strlen(token->string) - 1);
+		strncat( token->string, t->string, MAX_TOKEN - strlen( token->string ) - 1 );
 	} //end for
-	strncat(token->string, "\"", MAX_TOKEN - strlen(token->string) - 1);
+	strncat( token->string, "\"", MAX_TOKEN - strlen( token->string ) - 1 );
 	return qtrue;
 } //end of the function PC_StringizeTokens
 //============================================================================
@@ -667,7 +667,7 @@ void PC_AddBuiltinDefines( source_t *source ) {
 		{ "__FILE__",    BUILTIN_FILE },
 		{ "__DATE__",    BUILTIN_DATE },
 		{ "__TIME__",    BUILTIN_TIME },
-//	{	"__STDC__", BUILTIN_STDC },
+//		{ "__STDC__",    BUILTIN_STDC },
 		{ NULL, 0 }
 	};
 
@@ -1016,7 +1016,7 @@ int PC_Directive_include( source_t *source ) {
 		memset( &file, 0, sizeof( foundfile_t ) );
 		script = LoadScriptFile( path );
 		if ( script ) {
-			strncpy( script->filename, path, _MAX_PATH );
+			Q_strncpyz( script->filename, path, sizeof( script->filename ) );
 		}
 	} //end if
 #endif //QUAKE
@@ -1184,7 +1184,7 @@ int PC_Directive_define( source_t *source ) {
 			return qfalse;
 		}
 	} //end if
-	  //allocate define
+	//allocate define
 	define = (define_t *) GetMemory(sizeof(define_t));
 	memset( define, 0, sizeof( define_t ) );
 	define->name = (char *) GetMemory(strlen(token.string) + 1);
@@ -1641,7 +1641,7 @@ int PC_OperatorPriority( int op ) {
 #define FreeOperator( op )
 
 int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intvalue,
-					   float *floatvalue, int integer ) {
+						float *floatvalue, int integer ) {
 	operator_t *o, *firstoperator, *lastoperator;
 	value_t *v, *firstvalue, *lastvalue, *v1, *v2;
 	token_t *t;
@@ -2041,10 +2041,12 @@ int PC_EvaluateTokens( source_t *source, token_t *tokens, signed long int *intva
 			break;
 		}
 		//if not an operator with arity 1
-		if ( o->operator !=P_LOGIC_NOT
-			 && o->operator !=P_BIN_NOT ) {
+		if ( o->operator != P_LOGIC_NOT
+			 && o->operator != P_BIN_NOT ) {
 			//remove the second value if not question mark operator
-			if ( o->operator != P_QUESTIONMARK ) {v = v->next;}
+			if ( o->operator != P_QUESTIONMARK ) {
+				v = v->next;
+			}
 			//
 			if (v)
 			{
@@ -2543,9 +2545,9 @@ int PC_DollarDirective_evalint( source_t *source ) {
 	token.floatvalue = token.intvalue;
 #endif //NUMBERVALUE
 	PC_UnreadSourceToken( source, &token );
-	if (value < 0)
-		UnreadSignToken(source);
-
+	if ( value < 0 ) {
+		UnreadSignToken( source );
+	}
 	return qtrue;
 } //end of the function PC_DollarDirective_evalint
 //============================================================================
@@ -2573,9 +2575,9 @@ int PC_DollarDirective_evalfloat( source_t *source ) {
 	token.intvalue = (unsigned long) token.floatvalue;
 #endif //NUMBERVALUE
 	PC_UnreadSourceToken( source, &token );
-	if (value < 0)
-		UnreadSignToken(source);
-
+	if ( value < 0 ) {
+		UnreadSignToken( source );
+	}
 	return qtrue;
 } //end of the function PC_DollarDirective_evalfloat
 //============================================================================
@@ -2951,7 +2953,7 @@ void PC_UnreadToken( source_t *source, token_t *token ) {
 void PC_SetIncludePath( source_t *source, char *path ) {
 	size_t len;
 
-	Q_strncpyz(source->includepath, path, _MAX_PATH-1);
+	Q_strncpyz( source->includepath, path, sizeof( source->includepath ) - 1 );
 
 	len = strlen(source->includepath);
 	//add trailing path seperator
@@ -2992,7 +2994,7 @@ source_t *LoadSourceFile( const char *filename ) {
 	source = (source_t *) GetMemory( sizeof( source_t ) );
 	memset( source, 0, sizeof( source_t ) );
 
-	strncpy( source->filename, filename, _MAX_PATH );
+	Q_strncpyz( source->filename, filename, sizeof( source->filename ) );
 	source->scriptstack = script;
 	source->tokens = NULL;
 	source->defines = NULL;
@@ -3026,7 +3028,7 @@ source_t *LoadSourceMemory( char *ptr, int length, char *name ) {
 	source = (source_t *) GetMemory( sizeof( source_t ) );
 	memset( source, 0, sizeof( source_t ) );
 
-	strncpy( source->filename, name, _MAX_PATH );
+	Q_strncpyz( source->filename, name, sizeof( source->filename ) );
 	source->scriptstack = script;
 	source->tokens = NULL;
 	source->defines = NULL;

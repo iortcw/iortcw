@@ -153,14 +153,14 @@ qboolean ReadNumber( source_t *source, fielddef_t *fd, void *p ) {
 			intmax = Minimum( intmax, fd->floatmax );
 		} //end if
 		if ( intval < intmin || intval > intmax ) {
-			SourceError(source, "value %ld out of range [%ld, %ld]", intval, intmin, intmax);
+			SourceError( source, "value %ld out of range [%ld, %ld]", intval, intmin, intmax );
 			return 0;
 		} //end if
 	} //end if
 	else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
 		if ( fd->type & FT_BOUNDED ) {
 			if ( intval < fd->floatmin || intval > fd->floatmax ) {
-				SourceError(source, "value %ld out of range [%f, %f]", intval, fd->floatmin, fd->floatmax);
+				SourceError( source, "value %ld out of range [%f, %f]", intval, fd->floatmin, fd->floatmax );
 				return 0;
 			} //end if
 		} //end if

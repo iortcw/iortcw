@@ -473,13 +473,13 @@ CG_DrawHoldableSelect
 */
 void CG_DrawHoldableSelect( void ) {
 /*
-	int		bits;
-	int		count;
-	int		amount;
-	int		i, x, y, w;
+	int	bits;
+	int	count;
+	int	amount;
+	int	i, x, y, w;
 	float	*color;
 	char	*name;
-	gitem_t		*item;
+	gitem_t	*item;
 
 	// don't display if dead
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
@@ -496,16 +496,20 @@ void CG_DrawHoldableSelect( void ) {
 	cg.itemPickupTime = 0;
 
 	//----(SA)	removed
-
-	// count the number of weapons owned
+	// count the number of holdables owned
 	bits = cg.snap->ps.stats[ STAT_HOLDABLE_ITEM ];
 	count = 0;
 
 	for ( i = 1 ; i <= HI_BOOK3; i++ ) {
 		if ( bits & ( 1 << i ) ) {
-			if(cg.predictedPlayerState.holdable[i])		// don't show ones we're out of
+			if ( cg.predictedPlayerState.holdable[i] ) {	// don't show ones we're out of
 				count++;
+			}
 		}
+	}
+
+	if ( !count ) {
+		return;
 	}
 
 	x = 320 - count * 20;
@@ -519,45 +523,49 @@ void CG_DrawHoldableSelect( void ) {
 
 		amount = cg.predictedPlayerState.holdable[i];
 
-		if(!amount)
+		if ( !amount ) {
 			continue;
+		}
 
-		item = BG_FindItemForHoldable(i);
-		if(!item)
+		item = BG_FindItemForHoldable( i );
+		if ( !item ) {
 			continue;
+		}
 
-		CG_RegisterItemVisuals(item - bg_itemlist);
+		CG_RegisterItemVisuals( item - bg_itemlist );
 
 		// draw icon
-		if(i == HI_WINE) {
+		if ( i == HI_WINE ) {
 			// wine icons have three stages since each bottle has three uses (as opposed to others so far where there's only 1 use)
 			int wine = amount;
-			if(wine > 3) wine = 3;
-			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[ 2 - (wine - 1) ] ) ;
-		}
-		else {
-			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[0]);
+			if ( wine > 3 ) {
+				wine = 3;
+			}
+			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[ 2 - ( wine - 1 ) ] ) ;
+		} else {
+			CG_DrawPic( x, y, 32, 32, cg_items[item - bg_itemlist].icons[0] );
 		}
 
 		// draw remaining uses if there's more than one
-		if(amount > 1)
-			CG_DrawBigStringColor(x, y + 34, va("%d", amount), color);
+		if ( amount > 1 ) {
+			CG_DrawBigStringColor( x, y + 34, va( "%d", amount ), color );
+		}
 
 		// draw selection marker
-		if ( i == cg.holdableSelect) {
-			CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
+		if ( i == cg.holdableSelect ) {
+			CG_DrawPic( x - 4, y - 4, 40, 40, cgs.media.selectShader );
 		}
 
 		x += 40;
 	}
 
 	// draw the selected name
-	if(cg.holdableSelect) {
-		item = BG_FindItemForHoldable(cg.holdableSelect);
-		if(item) {
+	if ( cg.holdableSelect ) {
+		item = BG_FindItemForHoldable( cg.holdableSelect );
+		if ( item ) {
 			name = item->pickup_name;
 			if ( name ) {
-		//----(SA)	trying smaller text
+				//----(SA)	trying smaller text
 //				w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
 				w = CG_DrawStrlen( name ) * 10;
 				x = ( SCREEN_WIDTH - w ) / 2;
@@ -580,8 +588,8 @@ CG_NextItem_f
 
 void CG_NextItem_f( void ) {
 /*
-	int		i;
-	int		original, next;
+	int	i;
+	int	original, next;
 
 	if ( !cg.snap ) {
 		return;
@@ -599,10 +607,11 @@ void CG_NextItem_f( void ) {
 	for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
 		next++;
 
-		if(next == HI_NUM_HOLDABLE)
+		if ( next == HI_NUM_HOLDABLE ) {
 			next = 0;
+		}
 
-		if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
+		if ( cg.predictedPlayerState.holdable[next] ) {	//----(SA)
 			break;
 		}
 	}
@@ -622,8 +631,8 @@ CG_PrevItem_f
 */
 void CG_PrevItem_f( void ) {
 /*
-	int		i;
-	int		original, next;
+	int	i;
+	int	original, next;
 
 	if ( !cg.snap ) {
 		return;
@@ -641,10 +650,11 @@ void CG_PrevItem_f( void ) {
 	for ( i = 0 ; i < HI_NUM_HOLDABLE ; i++ ) {
 		next--;
 
-		if(next == -1)
+		if ( next == -1 ) {
 			next = HI_NUM_HOLDABLE - 1;
+		}
 
-		if(cg.predictedPlayerState.holdable[next]) {	//----(SA)
+		if ( cg.predictedPlayerState.holdable[next] ) {	//----(SA)
 			break;
 		}
 	}
@@ -663,12 +673,12 @@ CG_Item_f
 ==============
 */
 void CG_Item_f( void ) {
-	//int		num;
+	//int	num;
 	//num = atoi( CG_Argv( 1 ) );
 
 	//cg.holdableSelectTime = cg.time;
 
-	//CG_Printf ("Item set to: d\n", num);
+	//CG_Printf( "Item set to: %d\n", num );
 }
 
 
@@ -880,7 +890,7 @@ static void CG_Item( centity_t *cent ) {
 							   // try to load it first, and if it fails, default to the itemlist model
 		ent.hModel = cgs.gameModels[ es->modelindex2 ];
 	} else {
-		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) { // check if there's a specific model for weapon pickup placement
+		if ( item->giType == IT_WEAPON && cg_items[es->modelindex].models[2] ) {	// check if there's a specific model for weapon pickup placement
 			ent.hModel = cg_items[es->modelindex].models[2];
 		} else if ( item->giType == IT_HEALTH || item->giType == IT_AMMO || item->giType == IT_POWERUP ) {
 			if ( es->density < ( 1 << 9 ) ) {  // (10 bits of data transmission for density)
@@ -1115,6 +1125,8 @@ static void CG_Missile( centity_t *cent ) {
 /*
 ===============
 CG_Bat
+
+  RF, a bat now is actually a spirit
 ===============
 */
 static void CG_Bat( centity_t *cent ) {
@@ -1820,7 +1832,6 @@ CG_AdjustPositionForMover
 Also called by client movement prediction code
 =========================
 */
-//void CG_AdjustPositionForMover( const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t outDeltaAngles ) {
 void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out, vec3_t angles_in, vec3_t angles_out) {
 	centity_t   *cent;
 	vec3_t oldOrigin, origin, deltaOrigin;
@@ -1854,13 +1865,11 @@ void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int 
 	VectorSubtract( angles, oldAngles, deltaAngles );
 
 	VectorAdd( in, deltaOrigin, out );
-
-	VectorAdd( angles_in, deltaAngles, angles_out );
-
 //	if ( outDeltaAngles ) {
 //		VectorCopy( deltaAngles, outDeltaAngles );
 //	}
 
+	VectorAdd( angles_in, deltaAngles, angles_out );
 	// FIXME: origin change when on a rotating object
 }
 
@@ -1936,7 +1945,7 @@ static void CG_CalcEntityLerpPositions( centity_t *cent ) {
 	// player state
 	if ( cent != &cg.predictedPlayerEntity ) {
 		CG_AdjustPositionForMover( cent->lerpOrigin, cent->currentState.groundEntityNum,
-		cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles);
+									cg.snap->serverTime, cg.time, cent->lerpOrigin, cent->lerpAngles, cent->lerpAngles);
 	}
 }
 
@@ -2140,10 +2149,10 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 
 	VectorCopy( ent.origin, cent->lerpOrigin );
 	// we need to add the child's angles to the tag angles
-	if ( !cent->currentState.density ) {  // this entity should rotate with it's parent, but can turn around using it's own angles
+	if ( !cent->currentState.density ) {	// this entity should rotate with it's parent, but can turn around using it's own angles
 		AxisToAngles( ent.axis, ang );
 		VectorAdd( cent->lerpAngles, ang, cent->lerpAngles );
-	} else {    // face our angles exactly
+	} else {	// face our angles exactly
 		BG_EvaluateTrajectory( &cent->currentState.apos, cg.time, cent->lerpAngles );
 	}
 
@@ -2164,7 +2173,7 @@ void CG_AddPacketEntities( void ) {
 	int num;
 	centity_t           *cent;
 	playerState_t       *ps;
-	//int					clcount;
+	//int	clcount;
 
 	// set cg.frameInterpolation
 	if ( cg.nextSnap ) {

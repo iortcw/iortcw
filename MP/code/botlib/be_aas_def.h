@@ -148,7 +148,6 @@ typedef struct
 	unsigned short int traveltimes[1];          //travel time for every area (variable sized)
 } aas_routingcache_32_t;
 
-
 //fields for the routing algorithm
 typedef struct aas_routingupdate_s
 {

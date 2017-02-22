@@ -647,7 +647,7 @@ Generated a bunch of gibs launching out from the bodies location
 
 void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 	vec3_t origin, velocity, dir;
-	int i, count = 0, tagIndex, gibIndex;
+	int i, count, tagIndex, gibIndex;
 	trace_t trace;
 	qboolean foundtag;
 
@@ -660,8 +660,7 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 	vec3_t junctionOrigin[MAXJUNCTIONS];
 	int junction;
 	int j;
-	// TTimo: unused
-	//float size;
+	//float size = 0.0;
 	vec3_t axis[3], angles;
 
 	char *JunctiongibTags[] = {
@@ -895,11 +894,11 @@ unsigned int randtable[NUMRANDTABLE] =
 #define LT_RANDMAX  ( (unsigned short)0xffff )
 
 float lt_random( int thisrandseed, int t ) {
-	return (float)randtable[( thisrandseed + t + ( cg.time / LT_MS ) * ( cg.time / LT_MS ) ) % NUMRANDTABLE] / (float)LT_RANDMAX;
+	return (float)randtable[abs( ( thisrandseed + t + ( cg.time / LT_MS ) * ( cg.time / LT_MS ) ) ) % NUMRANDTABLE] / (float)LT_RANDMAX;
 }
 
 float lt_crandom( int thisrandseed, int t ) {
-	return ( ( 2.0 * ( (float)randtable[( thisrandseed + t + ( cg.time / LT_MS ) * ( cg.time / LT_MS ) ) % NUMRANDTABLE] / (float)LT_RANDMAX ) ) - 1.0 );
+	return ( ( 2.0 * ( (float)randtable[abs( ( thisrandseed + t + ( cg.time / LT_MS ) * ( cg.time / LT_MS ) ) ) % NUMRANDTABLE] / (float)LT_RANDMAX ) ) - 1.0 );
 }
 
 /*
@@ -1171,12 +1170,12 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	polyVert_t coreverts[4];
 	trace_t tr;
 	float alpha;
-	float radius = 0.0; // TTimo might be used uninitialized
+	float radius = 0.0f;
 	float coreEndRadius;
 	qboolean capStart = qtrue;
 	float hitDist;          // the actual distance of the trace impact	(0 is no hit)
 	float beamLen;          // actual distance of the drawn beam
-	float endAlpha    = 0.0;
+	float endAlpha = 0.0f;
 	vec4_t colorNorm;       // normalized color vector
 	refEntity_t ent;
 	vec3_t angles;
@@ -1237,7 +1236,6 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		beamLen = range;
 	}
 
-
 	if ( flags & SL_LOCKUV ) {
 		if ( beamLen < range ) {
 			endAlpha = 255.0f * ( color[3] - ( color[3] * beamLen / range ) );
@@ -1262,7 +1260,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		VectorCopy( cent->lerpOrigin, ent.origin );
 		VectorCopy( cent->lerpOrigin, ent.oldorigin );
 		ent.hModel = cgs.gameModels[cent->currentState.modelindex];
-		//	AnglesToAxis( cent->lerpAngles, ent.axis );
+		//AnglesToAxis( cent->lerpAngles, ent.axis );
 		vectoangles( lightDir, angles );
 		AnglesToAxis( angles, ent.axis );
 		trap_R_AddRefEntityToScene( &ent );
@@ -1420,14 +1418,14 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		trap_R_AddLightToScene( dlightLoc, radius * 2, 0.3, 0.3, 0.3, 0 );  // ,REF_JUNIOR_DLIGHT);
 	}
 
-
+#define FLAREANGLE 35
 
 	// draw flare at source
 	if ( !( flags & SL_NOFLARE ) ) {
 		qboolean lightInEyes = qfalse;
 		vec3_t camloc, dirtolight;
 		float dot, deg, dist;
-		float flarescale = 0.0;       // TTimo: might be used uninitialized
+		float flarescale = 0.0f;
 
 		// get camera position and direction to lightsource
 		VectorCopy( cg.snap->ps.origin, camloc );
@@ -1441,9 +1439,9 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		// it's facing the camera, find out how closely and trace to see if the source can be seen
 
 		deg = RAD2DEG( M_PI - acos( dot ) );
-		if ( deg <= 35 ) { // start flare a bit before the camera gets inside the cylinder
+		if ( deg <= FLAREANGLE ) { // start flare a bit before the camera gets inside the cylinder
 			lightInEyes = qtrue;
-			flarescale = 1 - ( deg / 35 );
+			flarescale = 1 - ( deg / FLAREANGLE );
 		}
 
 		if ( lightInEyes ) {   // the dot check succeeded, now do a trace

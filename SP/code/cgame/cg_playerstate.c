@@ -246,6 +246,7 @@ void CG_Respawn( void ) {
 	cg.weaponSelectTime = cg.time;
 
 	cg.holdableSelectTime = 0;  //----(SA) reset holdable timer
+
 	cg.centerPrintTime = 0;     //----(SA)	reset centerprint counter so previous messages don't re-appear
 	cg.cursorHintIcon = 0;
 	cg.cursorHintTime = 0;
@@ -254,7 +255,7 @@ void CG_Respawn( void ) {
 //	cg.cameraMode = 0;	//----(SA)	get out of camera for sure
 
 	// select the weapon the server says we are using
-	//cg.weaponSelect = cg.snap->ps.weapon;
+//	cg.weaponSelect = cg.snap->ps.weapon;
 	// DHM - Nerve :: Clear even more things on respawn
 	cg.zoomedBinoc = qfalse;
 	cg.zoomedBinoc = cg.zoomedScope = qfalse;
@@ -263,15 +264,10 @@ void CG_Respawn( void ) {
 
 	// reset fog to world fog (if present)
 //	trap_R_SetFog(FOG_CMD_SWITCHFOG, FOG_MAP,20,0,0,0,0);
-
 	// dhm - end
 
-	trap_Cvar_Set( "cg_notebookpages", "3" );           // (SA) TEMP: clear notebook pages on spawn (cept for page 1&2)  this is temporary
-	trap_Cvar_Set( "ui_notebookCurrentPage", "0" ); // (SA) TEMP: clear notebook pages on spawn (cept for page 1)  this is temporary
-
-
-//	trap_S_FadeAllSound(1.0f, 1000);	// make sure sound fades up
-
+	trap_Cvar_Set( "cg_notebookpages", "3" );		// (SA) TEMP: clear notebook pages on spawn (except for pages 1 and 2)	this is temporary
+	trap_Cvar_Set( "ui_notebookCurrentPage", "0" );	// (SA) TEMP: clear notebook pages on spawn (except for page 1)  this is temporary
 }
 
 extern char *eventnames[];
@@ -383,8 +379,8 @@ CG_CheckLocalSounds
 ==================
 */
 void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
-	const char  *s;
-	int highScore;
+	const char	*s;
+	int	highScore;
 
 	// hit changes
 	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
@@ -399,7 +395,6 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 			CG_PainEvent( &cg.predictedPlayerEntity, ps->stats[STAT_HEALTH], qfalse );
 		}
 	}
-
 
 	// if we are going into the intermission, don't start any voices
 	if ( cg.intermissionStarted ) {

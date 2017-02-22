@@ -33,6 +33,8 @@ If you have questions concerning this license or the applicable additional terms
  *
 */
 
+static char text[100000];
+
 #include "cg_local.h"
 
 #define SWING_RIGHT 1
@@ -57,6 +59,7 @@ char    *cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*exert2.wav",
 	"*exert3.wav",
 };
+
 
 /*
 ================
@@ -139,7 +142,6 @@ static qboolean CG_ParseGibModels( const char *filename, clientInfo_t *ci ) {
 	int len;
 	int i;
 	char        *token;
-	char text[20000];
 	fileHandle_t f;
 
 	memset( ci->gibModels, 0, sizeof( ci->gibModels ) );
@@ -321,11 +323,8 @@ CG_ParseAnimationFiles
   Read in all the configuration and script files for this model.
 ======================
 */
-
 #if 0   // RF, this entire function not used anymore, since we now grab all this stuff from the server
-
 static qboolean CG_ParseAnimationFiles( const char *modelname, clientInfo_t *ci, int client ) {
-	char text[100000];
 	char filename[MAX_QPATH];
 	fileHandle_t f;
 	int len;
@@ -341,6 +340,7 @@ static qboolean CG_ParseAnimationFiles( const char *modelname, clientInfo_t *ci,
 	}
 	if ( len >= sizeof( text ) - 1 ) {
 		CG_Printf( "File %s too long\n", filename );
+		trap_FS_FCloseFile( f );
 		return qfalse;
 	}
 	trap_FS_Read( text, len, f );
@@ -373,6 +373,7 @@ static qboolean CG_ParseAnimationFiles( const char *modelname, clientInfo_t *ci,
 	}
 	if ( len >= sizeof( text ) - 1 ) {
 		CG_Printf( "File %s too long\n", filename );
+		trap_FS_FCloseFile( f );
 		return qfalse;
 	}
 	trap_FS_Read( text, len, f );
@@ -489,8 +490,6 @@ static qboolean CG_RegisterAcc( clientInfo_t *ci, const char *modelName, const c
 //----(SA)	end
 
 
-static char text[100000];                   // <- was causing callstacks >64k
-
 /*
 =============
 CG_ParseAnimationFiles
@@ -551,6 +550,7 @@ qboolean CG_ParseAnimationFiles( char *modelname, animModelInfo_t *modelInfo, in
 
 	return qtrue;
 }
+
 
 /*
 ==================
@@ -1193,7 +1193,6 @@ nodam_rtshin            attached to tag_calfright
 		ci->partModels[8] = trap_R_RegisterModel( va( "models/players/%s/spinner.md3", modelName ) );
 	}
 
-
 	return qtrue;
 }
 
@@ -1564,8 +1563,7 @@ void CG_NewClientInfo( int clientNum ) {
 	// head
 	v = Info_ValueForKey( configstring, "head" );
 /* RF, disabled this, not needed anymore
-	if ( cg_forceModel.integer )
-	{
+	if ( cg_forceModel.integer ) {
 		char modelStr[MAX_QPATH];
 
 		// forcemodel makes everyone use a single model
@@ -1573,10 +1571,9 @@ void CG_NewClientInfo( int clientNum ) {
 
 		trap_Cvar_VariableStringBuffer( "head", modelStr, sizeof( modelStr ) );
 		Q_strncpyz( newInfo.hSkinName, modelStr, sizeof( newInfo.hSkinName ) );
-	}
-	else {
+	} else {
 */
-	Q_strncpyz( newInfo.hSkinName, v, sizeof( newInfo.hSkinName ) );
+		Q_strncpyz( newInfo.hSkinName, v, sizeof( newInfo.hSkinName ) );
 //	}
 
 //----(SA) modified this for head separation
@@ -1591,7 +1588,7 @@ void CG_NewClientInfo( int clientNum ) {
 		char *skin;
 
 		trap_Cvar_VariableStringBuffer( "model", modelStr, sizeof( modelStr ) );
-		if ( ( skin = strchr( modelStr, '/' ) ) == NULL) {
+		if ( ( skin = strchr( modelStr, '/' ) ) == NULL ) {
 			skin = "default";
 		} else {
 			*skin++ = 0;
@@ -1609,17 +1606,17 @@ void CG_NewClientInfo( int clientNum ) {
 		}
 	} else {
 */
-	Q_strncpyz( newInfo.modelName, v, sizeof( newInfo.modelName ) );
+		Q_strncpyz( newInfo.modelName, v, sizeof( newInfo.modelName ) );
 
-	slash = strchr( newInfo.modelName, '/' );
-	if ( !slash ) {
-		// modelName did not include a skin name
-		Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
-	} else {
-		Q_strncpyz( newInfo.skinName, slash + 1, sizeof( newInfo.skinName ) );
-		// truncate modelName
-		*slash = 0;
-	}
+		slash = strchr( newInfo.modelName, '/' );
+		if ( !slash ) {
+			// modelName did not include a skin name
+			Q_strncpyz( newInfo.skinName, "default", sizeof( newInfo.skinName ) );
+		} else {
+			Q_strncpyz( newInfo.skinName, slash + 1, sizeof( newInfo.skinName ) );
+			// truncate modelName
+			*slash = 0;
+		}
 //	}
 
 	//----(SA) modify \/ to differentiate for head models/skins as well
@@ -1928,7 +1925,7 @@ cg.time should be between oldFrameTime and frameTime after exit
 void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, centity_t *cent, int recursion ) {
 	int f;
 	animation_t *anim, *oldAnim;
-	animation_t *otherAnim = NULL; // TTimo: init
+	animation_t *otherAnim = NULL;
 	qboolean isLadderAnim;
 
 #define ANIM_SCALEMAX_LOW   1.1
@@ -1958,6 +1955,7 @@ void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, c
 		CG_SetLerpFrameAnimationRate( cent, ci, lf, newAnimation );
 	}
 
+	// Ridah, make sure the animation speed is updated when possible
 	anim = lf->animation;
 
 	// check for forcing last frame
@@ -1968,7 +1966,6 @@ void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, c
 		return;
 	}
 
-	// Ridah, make sure the animation speed is updated when possible
 	if ( anim->moveSpeed && lf->oldFrameSnapshotTime ) {
 		float moveSpeed;
 
@@ -1987,12 +1984,10 @@ void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, c
 					lf->oldFramePos[0] = cent->currentState.pos.trBase[0];
 					lf->oldFramePos[1] = cent->currentState.pos.trBase[1];
 				}
-				// TTimo
-				// show_bug.cgi?id=407
+
 				if ( cg.snap != cg.nextSnap ) {
 					moveSpeed = Distance( cent->currentState.pos.trBase, cent->nextState.pos.trBase ) / ( (float)( cg.nextSnap->serverTime - cg.snap->serverTime ) / 1000.0 );
-				} else
-				{
+				} else {
 					moveSpeed = 0;
 				}
 			}
@@ -2137,11 +2132,8 @@ void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, c
 		}
 		lf->frame = anim->firstFrame + f;
 		if ( cg.time > lf->frameTime ) {
-			// NOTE TTimo
-			// show_bug.cgi?id=424
-			// is that a related problem?
+			// disabled, causes bad jolting when oldFrame is updated incorrectly
 #if 0
-// disabled, causes bad jolting when oldFrame is updated incorrectly
 			// Ridah, run the frame again until we move ahead of the current time, fixes walking speeds for zombie
 			if ( recursion > MAX_LERPFRAME_RECURSION ) {
 				lf->frameTime = cg.time;
@@ -2214,7 +2206,7 @@ static void CG_PlayerAnimation( centity_t *cent, int *legsOld, int *legs, float 
 
 	// do the shuffle turn frames locally
 	if ( !( cent->currentState.eFlags & ( EF_DEAD | EF_NO_TURN_ANIM ) ) && cent->pe.legs.yawing ) {
-//CG_Printf("turn: %i\n", cg.time );
+		//CG_Printf("turn: %i\n", cg.time );
 		tempIndex = BG_GetAnimScriptAnimation( clientNum, cent->currentState.aiState, ( cent->pe.legs.yawing == SWING_RIGHT ? ANIM_MT_TURNRIGHT : ANIM_MT_TURNLEFT ) );
 		if ( tempIndex > -1 ) {
 			animIndex = tempIndex;
@@ -2501,7 +2493,7 @@ Handles seperate torso motion
 static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], vec3_t head[3] ) {
 	vec3_t legsAngles, torsoAngles, headAngles;
 	float dest;
-	//static	int	movementOffsets[8] = { 0, 22, 45, -22, 0, 22, -45, -22 }; // TTimo: unused
+//	static	int	movementOffsets[8] = { 0, 22, 45, -22, 0, 22, -45, -22 }; // TTimo: unused
 	vec3_t velocity;
 	float speed;
 	float clampTolerance;
@@ -2896,9 +2888,10 @@ static void CG_PlayerSprites( centity_t *cent ) {
 		return;
 	}
 
+	team = cgs.clientinfo[ cent->currentState.clientNum ].team;
+
 	// DHM - Nerve :: If this client is a medic, draw a 'revive' icon over
 	//					dead players that are not in limbo yet.
-	team = cgs.clientinfo[ cent->currentState.clientNum ].team;
 	if ( cgs.gametype == GT_WOLF && ( cent->currentState.eFlags & EF_DEAD )
 		 && cent->currentState.number == cent->currentState.clientNum
 		 && cg.snap->ps.stats[ STAT_PLAYER_CLASS ] == PC_MEDIC
@@ -2951,6 +2944,10 @@ Returns the Z component of the surface being shadowed
 ===============
 */
 #define SHADOW_DISTANCE     64
+#define ZOFS    6.0
+#define SHADOW_MIN_DIST 250.0
+#define SHADOW_MAX_DIST 512.0
+
 typedef struct {
 	char *tagname;
 	float size;
@@ -2965,9 +2962,6 @@ static qboolean CG_PlayerShadow( centity_t *cent, float *shadowPlane ) {
 	float alpha, dist, distfade, scale, dot;
 	int tagIndex, subIndex;
 	vec3_t origin, angles, axis[3];
-	#define ZOFS    6.0
-	#define SHADOW_MIN_DIST 250.0
-	#define SHADOW_MAX_DIST 512.0
 	shadowPart_t shadowParts[] = {
 		{"tag_footleft", 10, 4,  0.5, 0},
 		{"tag_footright",    10, 4,  0.5, 0},
@@ -2978,6 +2972,7 @@ static qboolean CG_PlayerShadow( centity_t *cent, float *shadowPlane ) {
 	shadowParts[0].shader = cgs.media.shadowFootShader;     //DAJ pulled out of initliization
 	shadowParts[1].shader = cgs.media.shadowFootShader;
 	shadowParts[2].shader = cgs.media.shadowTorsoShader;
+
 	*shadowPlane = 0;
 
 	if ( cg_shadows.integer == 0 ) {
@@ -4264,8 +4259,8 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, int powerups, int team, enti
 	}
 
 //----(SA)	testing
-	// (SA) disabling
-//	if(cent->currentState.eFlags & EF_DEAD) {
+//----(SA)	disabling
+//	if( cent->currentState.eFlags & EF_DEAD ) {
 //		ent->reFlags |= REFLAG_DEAD_LOD;
 //	}
 //----(SA)	end
@@ -4677,7 +4672,7 @@ void CG_Player( centity_t *cent ) {
 
 	int clientNum;
 	int renderfx;
-	qboolean shadow;       //, drawweap = qtrue; // TTimo: unused
+	qboolean shadow;
 	float shadowPlane;
 
 	float gumsflappin = 0;              // talking amplitude
@@ -4768,8 +4763,9 @@ void CG_Player( centity_t *cent ) {
 	}
 
 	// draw the player in cameras
-//	if(cg.cameraMode)
+//	if ( cg.cameraMode ) {
 //		renderfx &= ~RF_THIRD_PERSON;
+//	}
 
 	if ( cg_shadows.integer == 3 && shadow ) {
 		renderfx |= RF_SHADOW_PLANE;
@@ -4779,8 +4775,7 @@ void CG_Player( centity_t *cent ) {
 	// set renderfx for accessories
 	acc.renderfx    = renderfx;
 
-//CG_Printf("%i cl_org: %s\n", clientNum, vtosf(cent->lerpOrigin) );
-
+//	CG_Printf( "%i cl_org: %s\n", clientNum, vtosf( cent->lerpOrigin ) );
 	VectorCopy( cent->lerpOrigin, lightorigin );
 	lightorigin[2] += 31 + (float)cg_drawFPGun.integer;
 
@@ -4851,21 +4846,15 @@ void CG_Player( centity_t *cent ) {
 	//----(SA)	also taking care of the Loper's interesting heirarchy (his upper body is effectively the same as a weapon_hand.md3.  it keeps things connected, but has no geometry)
 
 	if ( !ci->isSkeletal ) {
-
-		if (     ( cgsnap == cent && ( cg.snap->ps.pm_flags & PMF_LADDER ) )
-				 ||  ( cent->currentState.aiChar == AICHAR_LOPER ) ) {
+		if ( ( cgsnap == cent && ( cg.snap->ps.pm_flags & PMF_LADDER ) ) || ( cent->currentState.aiChar == AICHAR_LOPER ) ) {
 			CG_PositionEntityOnTag( &torso, &legs, "tag_torso", 0, NULL );
 		} else {
 			CG_PositionRotatedEntityOnTag( &torso,  &legs, "tag_torso" );
 		}
-
 	} else {    // just clear out the angles
-
-		if (     ( cgsnap == cent && ( cg.snap->ps.pm_flags & PMF_LADDER ) )
-				 ||  ( cent->currentState.aiChar == AICHAR_LOPER ) ) {
+		if ( ( cgsnap == cent && ( cg.snap->ps.pm_flags & PMF_LADDER ) ) || ( cent->currentState.aiChar == AICHAR_LOPER ) ) {
 			memcpy( torso.axis, legs.axis, sizeof( torso.axis ) );
 		}
-
 	}
 
 	torso.shadowPlane   = shadowPlane;
@@ -5322,7 +5311,6 @@ int parts[] = { 34,
 	//
 	// add accessories
 	//
-
 	for ( i = ACC_BELT_LEFT; i < ACC_MAX; i++ ) {
 		if ( !( ci->accModels[i] ) ) {
 			continue;
@@ -5458,17 +5446,12 @@ void CG_GetBleedOrigin( vec3_t head_origin, vec3_t torso_origin, vec3_t legs_ori
 	refEntity_t legs;
 	refEntity_t torso;
 	refEntity_t head;
-	//int				clientNum;
 	centity_t       *cent, backupCent;
 
-	// clientNum = cg.snap->entities[fleshEntityNum].clientNum;
 	ci = &cgs.clientinfo[ fleshEntityNum ];
 
-	// cent = &cg_entities[ cg.snap->entities[fleshEntityNum].number ];
 	cent = &cg_entities [ fleshEntityNum ];
 	backupCent = *cent;
-
-	//	cent = &cg_entities [ cg.snap->entities [ fleshEntityNum - 1].clientNum ];
 
 	if ( !ci->infoValid ) {
 		return;
@@ -5483,7 +5466,6 @@ void CG_GetBleedOrigin( vec3_t head_origin, vec3_t torso_origin, vec3_t legs_ori
 						&torso.oldframe, &torso.frame, &torso.backlerp );
 
 	legs.hModel = ci->legsModel;
-//		VectorCopy( cg.snap->entities[fleshEntityNum - 1].pos.trBase, legs.origin );
 	VectorCopy( cent->lerpOrigin, legs.origin );
 	VectorCopy( legs.origin, legs.oldorigin );
 
@@ -5554,9 +5536,6 @@ qboolean CG_GetTag( int clientNum, char *tagname, orientation_t *or ) {
 
 	VectorCopy( org, or->origin );
 
-	// add the origin of the entity
-	//VectorAdd( refent->origin, or->origin, or->origin );
-
 	// rotate with entity
 	MatrixMultiply( refent->axis, or->axis, tempAxis );
 	memcpy( or->axis, tempAxis, sizeof( vec3_t ) * 3 );
@@ -5609,9 +5588,6 @@ qboolean CG_GetWeaponTag( int clientNum, char *tagname, orientation_t *or ) {
 	}
 
 	VectorCopy( org, or->origin );
-
-	// add the origin of the entity
-	//VectorAdd( refent->origin, or->origin, or->origin );
 
 	// rotate with entity
 	MatrixMultiply( refent->axis, or->axis, tempAxis );

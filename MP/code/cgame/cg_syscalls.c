@@ -510,6 +510,7 @@ void trap_UI_LimboChat( const char *arg0 ) {
 void trap_UI_ClosePopup( const char *arg0 ) {
 	syscall( CG_INGAME_CLOSEPOPUP, arg0 );
 }
+// -NERVE - SMF
 
 void trap_Key_GetBindingBuf( int keynum, char *buf, int buflen ) {
 	syscall( CG_KEY_GETBINDINGBUF, keynum, buf, buflen );

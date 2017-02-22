@@ -188,7 +188,8 @@ CG_CalcVrect
 Sets the coordinates of the rendered window
 =================
 */
-//static float letterbox_frac = 1.0f;	// used for transitioning to letterbox for cutscenes // TODO: add to cg. // TTimo: unused
+// TTimo: unused
+//static float letterbox_frac = 1.0f;	// used for transitioning to letterbox for cutscenes // TODO: add to cg.
 
 static void CG_CalcVrect( void ) {
 	int xsize, ysize;
@@ -1119,10 +1120,6 @@ static int CG_CalcViewValues( void ) {
 
 	memset( &cg.refdef, 0, sizeof( cg.refdef ) );
 
-	// strings for in game rendering
-	// Q_strncpyz( cg.refdef.text[0], "Park Ranger", sizeof(cg.refdef.text[0]) );
-	// Q_strncpyz( cg.refdef.text[1], "19", sizeof(cg.refdef.text[1]) );
-
 	// calculate size of 3D view
 	CG_CalcVrect();
 
@@ -1287,10 +1284,9 @@ CG_PowerupTimerSounds
 =====================
 */
 /*
-// TTimo: unused
 static void CG_PowerupTimerSounds( void ) {
-	int		i;
-	int		t;
+	int	i;
+	int	t;
 
 	// powerup timers going away
 	for ( i = 0 ; i < MAX_POWERUPS ; i++ ) {
@@ -1725,7 +1721,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	DEBUGTIME
 
 	// warning sounds when powerup is wearing off
-	//CG_PowerupTimerSounds();
+//	CG_PowerupTimerSounds();
 
 	// make sure the lagometerSample and frame timing isn't done twice when in stereo
 	if ( stereoView != STEREO_RIGHT ) {

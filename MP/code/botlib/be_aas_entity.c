@@ -52,7 +52,7 @@ If you have questions concerning this license or the applicable additional terms
 #define MASK_SOLID      CONTENTS_PLAYERCLIP
 
 // Ridah, always use the default world for entities
-extern aas_t aasworlds[2];
+extern aas_t aasworlds[MAX_AAS_WORLDS];
 
 aas_t *defaultaasworld = aasworlds;
 
@@ -409,6 +409,9 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum ) {
 	aas_entity_t *ent;
 //	int i;
 
+	// RF, not functional (doesnt work with multiple areas)
+	return qfalse;
+
 	for ( link = ( *aasworld ).arealinkedentities[areanum]; link; link = link->next_ent )
 	{
 		//ignore the pass entity
@@ -463,9 +466,6 @@ void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking )
 	int numareas, i, w;
 	//
 	// check for resetting AAS blocking
-	// TTimo WTF?? qboolean blocking
-	// warning: comparison is always false due to limited range of data type
-	//  if (VectorCompare( absmin, absmax ) && blocking < 0) {
 	if ( VectorCompare( absmin, absmax ) && !blocking ) {
 		for ( w = 0; w < MAX_AAS_WORLDS; w++ ) {
 			AAS_SetCurrentWorld( w );

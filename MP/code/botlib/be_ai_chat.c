@@ -384,7 +384,7 @@ int BotNextConsoleMessage( int chatstate, bot_consolemessage_t *cm ) {
 		return 0;
 	}
 	if ((firstmsg = cs->firstmessage)) {
-	cm->handle = firstmsg->handle;
+		cm->handle = firstmsg->handle;
 		cm->time = firstmsg->time;
 		cm->type = firstmsg->type;
 		Q_strncpyz(cm->message, firstmsg->message,
@@ -1134,8 +1134,7 @@ void BotDumpMatchTemplates( bot_matchtemplate_t *matches ) {
 	}
 	for ( mt = matches; mt; mt = mt->next )
 	{
-		// TTimo ?
-		// fprintf(fp, "%8d { ");
+		//fprintf(fp, "%8d { ");
 		for ( mp = mt->first; mp; mp = mp->next )
 		{
 			if ( mp->type == MT_STRING ) {

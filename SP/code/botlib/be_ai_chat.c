@@ -36,7 +36,6 @@ If you have questions concerning this license or the applicable additional terms
  *****************************************************************************/
 
 #include "../qcommon/q_shared.h"
-//#include "../server/server.h"
 #include "l_memory.h"
 #include "l_libvar.h"
 #include "l_script.h"
@@ -614,7 +613,7 @@ void BotDumpSynonymList( bot_synonymlist_t *synlist ) {
 	}
 	for ( syn = synlist; syn; syn = syn->next )
 	{
-		fprintf( fp, "%d : [", (int)syn->context );
+		fprintf( fp, "%ld : [", syn->context );
 		for ( synonym = syn->firstsynonym; synonym; synonym = synonym->next )
 		{
 			fprintf( fp, "(\"%s\", %1.2f)", synonym->string, synonym->weight );
@@ -935,7 +934,7 @@ int BotLoadChatMessage( source_t *source, char *chatmessagestring ) {
 				SourceError( source, "chat message too long" );
 				return qfalse;
 			} //end if
-			sprintf( &ptr[strlen( ptr )], "%cv%d%c", ESCAPE_CHAR, (int)token.intvalue, ESCAPE_CHAR );
+			sprintf( &ptr[strlen( ptr )], "%cv%ld%c", ESCAPE_CHAR, token.intvalue, ESCAPE_CHAR );
 		} //end if
 		  //random string
 		else if ( token.type == TT_NAME ) {
@@ -1200,15 +1199,13 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 	while ( PC_ReadToken( source, &token ) )
 	{
 		if ( token.type == TT_NUMBER && ( token.subtype & TT_INTEGER ) ) {
-			if (token.intvalue >= MAX_MATCHVARIABLES)
-			{
+			if (token.intvalue >= MAX_MATCHVARIABLES) {
 				SourceError( source, "can't have more than %d match variables", MAX_MATCHVARIABLES );
 				FreeSource( source );
 				BotFreeMatchPieces( firstpiece );
 				return NULL;
 			} //end if
-			if ( lastwasvariable )
-			{
+			if ( lastwasvariable ) {
 				SourceError( source, "not allowed to have adjacent variables" );
 				FreeSource( source );
 				BotFreeMatchPieces( firstpiece );
@@ -1220,14 +1217,9 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->type = MT_VARIABLE;
 			matchpiece->variable = token.intvalue;
 			matchpiece->next = NULL;
-			if ( lastpiece )
-			{
+			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			}
-			else
-			{
-				firstpiece = matchpiece;
-			}
+			} else { firstpiece = matchpiece;}
 			lastpiece = matchpiece;
 		} //end if
 		else if ( token.type == TT_STRING ) {
@@ -1237,14 +1229,9 @@ bot_matchpiece_t *BotLoadMatchPieces( source_t *source, char *endtoken ) {
 			matchpiece->type = MT_STRING;
 			matchpiece->variable = 0;
 			matchpiece->next = NULL;
-			if ( lastpiece )
-			{
+			if ( lastpiece ) {
 				lastpiece->next = matchpiece;
-			}
-			else
-			{
-				firstpiece = matchpiece;
-			}
+			} else { firstpiece = matchpiece;}
 			lastpiece = matchpiece;
 			//
 			lastmatchstring = NULL;

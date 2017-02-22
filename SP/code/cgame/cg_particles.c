@@ -276,9 +276,6 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 				return;
 			}
 		}
-
-
-
 		// done.
 
 		if ( p->type == P_BUBBLE || p->type == P_BUBBLE_TURBULENT ) {
@@ -459,7 +456,6 @@ void CG_AddParticleToScene( cparticle_t *p, vec3_t org, float alpha ) {
 				return;
 			}
 		}
-
 
 		if ( p->color == MUSTARD ) {
 			VectorSet( color, 0.42, 0.33, 0.19 );
@@ -1502,9 +1498,9 @@ void CG_ParticleDirtBulletDebris_Core( vec3_t org, vec3_t vel, int duration,
 
 	p->rotate = 0;
 
-	p->pshader = trap_R_RegisterShader( shadername ); // JPW NERVE was "dirt_splash"
-
 	p->type = P_SMOKE;
+
+	p->pshader = trap_R_RegisterShader( shadername ); // JPW NERVE was "dirt_splash"
 
 	VectorCopy( org, p->org );
 	VectorCopy( vel, p->vel );
@@ -2077,8 +2073,8 @@ qboolean ValidBloodPool( vec3_t start ) {
 	vec3_t angles;
 	vec3_t right, up;
 	vec3_t this_pos, x_pos, center_pos, end_pos;
-	int		x, y;
-	int		fwidth, fheight;
+	int	x, y;
+	int	fwidth, fheight;
 	trace_t trace;
 	vec3_t normal;
 
@@ -2104,11 +2100,13 @@ qboolean ValidBloodPool( vec3_t start ) {
 			CG_Trace( &trace, this_pos, NULL, NULL, end_pos, -1, CONTENTS_SOLID );
 
 
-			if (trace.entityNum < ENTITYNUM_WORLD) // may only land on world
+			if ( trace.entityNum <  ENTITYNUM_WORLD  ) { // may only land on world
 				return qfalse;
+			}
 
-			if ( !( !trace.startsolid && trace.fraction < 1 ) )
+			if ( !( !trace.startsolid && trace.fraction < 1 ) ) {
 				return qfalse;
+			}
 
 		}
 	}

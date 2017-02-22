@@ -43,6 +43,7 @@ int drawTeamOverlayModificationCount = -1;
 //static char teamChat1[256];
 //static char teamChat2[256];
 
+
 void CG_InitTeamChat( void ) {
 #ifdef MISSIONPACK
 	memset( teamChat1, 0, sizeof( teamChat1 ) );
@@ -393,7 +394,6 @@ static void CG_DrawPlayerAmmoIcon( rectDef_t *rect, qboolean draw2D ) {
 
 	cent = &cg_entities[cg.snap->ps.clientNum];
 
-	// TTimo: gcc: suggests () around && within ||
 	if ( draw2D || ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) ) {
 		qhandle_t icon;
 		icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
@@ -462,19 +462,15 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 			icon = cgs.media.hintShaders[HINT_NOACTIVATE];
 		}
 		break;
-
 	case HINT_PLAYER:
 		icon = cgs.media.hintShaders[HINT_NOACTIVATE];
 		break;
-
 	case HINT_PLYR_FRIEND:
 		break;
-
 	case HINT_NOEXIT_FAR:
 		redbar = qtrue;     // draw the status bar in red to show that you can't exit yet
 	case HINT_EXIT_FAR:
 		break;
-
 	case HINT_NOEXIT:
 		redbar = qtrue;     // draw the status bar in red to show that you can't exit yet
 	case HINT_EXIT:
@@ -484,7 +480,6 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 		}
 		CG_DrawExitStats();
 		break;
-
 	default:
 		break;
 	}
@@ -887,10 +882,10 @@ static void CG_DrawPlayerScore( rectDef_t *rect, int font, float scale, vec4_t c
 
 
 static void CG_DrawHoldableItem( rectDef_t *rect, int font, float scale, qboolean draw2D ) {
-	int value;
-	gitem_t *item;
+	int	value;
+	gitem_t	*item;
 
-	item    = BG_FindItemForHoldable( cg.holdableSelect );
+	item = BG_FindItemForHoldable( cg.holdableSelect );
 
 	if ( !item ) {
 		return;
@@ -900,7 +895,7 @@ static void CG_DrawHoldableItem( rectDef_t *rect, int font, float scale, qboolea
 		CG_SetScreenPlacement(PLACE_RIGHT, PLACE_CENTER);
 	}
 
-	value   = cg.predictedPlayerState.holdable[cg.holdableSelect];
+	value = cg.predictedPlayerState.holdable[cg.holdableSelect];
 
 	if ( value ) {
 //		CG_RegisterItemVisuals( value );
@@ -1061,7 +1056,6 @@ static void CG_DrawSelectedPlayerHead( rectDef_t *rect, qboolean draw2D, qboolea
 	}
 }
 
-
 static void CG_DrawPlayerHealth( rectDef_t *rect, int font, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
 	playerState_t   *ps;
 	int value;
@@ -1085,7 +1079,6 @@ static void CG_DrawPlayerHealth( rectDef_t *rect, int font, float scale, vec4_t 
 		CG_Text_Paint( rect->x + ( rect->w - value ) / 2, rect->y + rect->h, font, scale, color, num, 0, 0, textStyle );
 	}
 }
-
 
 static void CG_DrawRedScore( rectDef_t *rect, int font, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
 	int value;
@@ -1818,7 +1811,6 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, int font, float 
 		const char *s = text;
 		float max = *maxX;
 		float useScale;
-
 		fontInfo_t *fnt = &cgDC.Assets.textFont;
 		if ( font == UI_FONT_DEFAULT ) {
 			if ( scale <= cg_smallFont.value ) {
@@ -1833,7 +1825,6 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, int font, float 
 		} else if ( font == UI_FONT_HANDWRITING ) {
 			fnt = &cgDC.Assets.handwritingFont;
 		}
-
 		useScale = scale * fnt->glyphScale;
 		trap_R_SetColor( color );
 		len = strlen( text );
@@ -2191,7 +2182,6 @@ CG_DrawFatigue
 */
 
 static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
-	//	vec4_t	color = {0, 1, 0, 1}, color2 = {1, 0, 0, 1};
 	vec4_t colorBonus = {1, 1, 0, 0.45f};   // yellow (a little more solid for the 'bonus' stamina)
 	float barFrac;  //, omBarFrac;
 	int flags = 0;
@@ -2239,7 +2229,6 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 	}
 // jpw
 }
-
 
 /*
 ==============
@@ -2547,8 +2536,6 @@ void CG_EventHandling( int type ) {
 
 }
 
-
-
 void CG_KeyEvent( int key, qboolean down ) {
 
 	if ( !down ) {
@@ -2566,8 +2553,6 @@ void CG_KeyEvent( int key, qboolean down ) {
 	//  CG_EventHandling(CGAME_EVENT_NONE);
 	//  trap_Key_SetCatcher(0);
 	//}
-
-
 
 	Display_HandleKey( key, down, cgs.cursorX, cgs.cursorY );
 

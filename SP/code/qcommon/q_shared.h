@@ -994,8 +994,7 @@ SAVE
 	15 - (SA) moved time info above the main game reading
 	16 - (SA) added fog
 	17 - (SA) rats, changed fog.
-  18 - TTimo targetdeath fix
-	   show_bug.cgi?id=434
+	18 - TTimo targetdeath fix
 
 ==============================================================
 */

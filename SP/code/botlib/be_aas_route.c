@@ -51,9 +51,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_interface.h"
 #include "be_aas_def.h"
 
-#define ROUTING_DEBUG
-
 #define	LL(x) x=LittleLong(x)
+
+#define ROUTING_DEBUG
 
 //travel time in hundreths of a second = distance * 100 / speed
 #define DISTANCEFACTOR_CROUCH       1.3     //crouch speed = 100

@@ -282,7 +282,6 @@ int BotFuzzyPointReachabilityArea( vec3_t origin ) {
 	} //end for
 	bestdist = 999999;
 	bestareanum = 0;
-	//z = 0;
 	for ( z = 1; z >= -1; z -= 1 )
 	{
 		for ( x = 1; x >= -1; x -= 2 )
@@ -706,8 +705,8 @@ int BotGetReachabilityToGoal( vec3_t origin, int areanum, int entnum,
 		//add the travel time towards the area
 		// Ridah, not sure why this was disabled, but it causes looped links in the route-cache
 		// RF, update.. seems to work better like this....
-		t += reach.traveltime; // + AAS_AreaTravelTime(areanum, origin, reach.start);
-		//t += reach.traveltime + AAS_AreaTravelTime(areanum, origin, reach.start);
+		t += reach.traveltime; // + AAS_AreaTravelTime( areanum, origin, reach.start );
+		//t += reach.traveltime + AAS_AreaTravelTime( areanum, origin, reach.start );
 
 		// Ridah, if there exists other entities in this area, avoid it
 //		if (reach.areanum != goal->areanum && AAS_IsEntityInArea( entnum, goal->entitynum, reach.areanum )) {
@@ -1217,9 +1216,6 @@ void BotCheckBlocked( bot_movestate_t *ms, vec3_t dir, int checkbottom, bot_move
 	vec3_t mins, maxs, end, up = {0, 0, 1};
 	bsp_trace_t trace;
 
-	// RF, not required for Wolf AI
-	return;
-
 	//test for entities obstructing the bot's path
 	AAS_PresenceTypeBoundingBox( ms->presencetype, mins, maxs );
 	//
@@ -1550,7 +1546,6 @@ bot_moveresult_t BotFinishTravel_WaterJump( bot_movestate_t *ms, aas_reachabilit
 	dir[0] += crandom() * 10;
 	dir[1] += crandom() * 10;
 	dir[2] += 70 + crandom() * 10;
-	VectorNormalize( dir );
 	//elemantary actions
 	EA_Move( ms->client, dir, 400 );
 	//set the ideal view angles
@@ -1606,8 +1601,7 @@ bot_moveresult_t BotTravel_WalkOffLedge( bot_movestate_t *ms, aas_reachability_t
 		VectorNormalize( hordir );
 		//
 		if ( reachhordist < 20 ) {
-			//speed = 100;
-			speed = 200;    // RF, increased this to speed up travel speed down steps
+			speed = 200;	// RF, increased this to speed up travel speed down steps
 		} //end if
 		else if ( !AAS_HorizontalVelocityForJump( 0, reach->start, reach->end, &speed ) ) {
 			speed = 400;
@@ -1621,7 +1615,6 @@ bot_moveresult_t BotTravel_WalkOffLedge( bot_movestate_t *ms, aas_reachability_t
 			if ( dist > 64 ) {
 				dist = 64;
 			}
-			//speed = 400 - (256 - 4 * dist);
 			speed = 400 - ( 256 - 4 * dist ) * 0.5;   // RF changed this for steps
 		} //end if
 		else
@@ -1705,7 +1698,6 @@ bot_moveresult_t BotFinishTravel_WalkOffLedge( bot_movestate_t *ms, aas_reachabi
 		VectorCopy( dir, hordir );
 		hordir[2] = 0;
 		//
-		VectorNormalize( hordir );
 		speed = 400;
 	} //end if
 	  //
@@ -1870,7 +1862,9 @@ bot_moveresult_t BotTravel_Jump( bot_movestate_t *ms, aas_reachability_t *reach 
 			break;
 		}
 	} //end for
-	if (gapdist < 80) VectorMA(reach->start, gapdist, hordir, runstart);
+	if ( gapdist < 80 ) {
+		VectorMA( reach->start, gapdist, hordir, runstart );
+	}
 	//
 	VectorSubtract( ms->origin, reach->start, dir1 );
 	dir1[2] = 0;
@@ -1965,6 +1959,7 @@ bot_moveresult_t BotTravel_Ladder( bot_movestate_t *ms, aas_reachability_t *reac
 	float dist, speed;
 
 	// RF, heavily modified, wolf has different ladder movement
+
 	//
 	if ( ( ms->moveflags & MFL_AGAINSTLADDER )
 		 //NOTE: not a good idea for ladders starting in water
@@ -2031,7 +2026,7 @@ bot_moveresult_t BotTravel_Ladder( bot_movestate_t *ms, aas_reachability_t *reac
 		if ( dist < 8 ) { // within range, go for the end
 			//botimport.Print(PRT_MESSAGE, "found base, moving towards ladder top\n");
 			VectorSubtract( reach->end, ms->origin, dir );
-			//make sure the horizontal movement is large anough
+			//make sure the horizontal movement is large enough
 			VectorCopy( dir, hordir );
 			hordir[2] = 0;
 			dist = VectorNormalize( hordir );
@@ -2908,7 +2903,8 @@ bot_moveresult_t BotTravel_RocketJump( bot_movestate_t *ms, aas_reachability_t *
 		if (dist2 > 80) dist2 = 80;
 		speed = 400 - (400 - 5 * dist2);
 		EA_Move(ms->client, hordir, speed);
-	} //end else*/
+	} //end else
+*/
 	//look in the movement direction
 	Vector2Angles( hordir, result.ideal_viewangles );
 	//look straight down
@@ -2936,7 +2932,6 @@ bot_moveresult_t BotTravel_RocketJump( bot_movestate_t *ms, aas_reachability_t *
 bot_moveresult_t BotTravel_BFGJump( bot_movestate_t *ms, aas_reachability_t *reach ) {
 	bot_moveresult_t_cleared( result );
 
-	//
 	return result;
 } //end of the function BotTravel_BFGJump
 //===========================================================================
@@ -2978,11 +2973,10 @@ bot_moveresult_t BotTravel_JumpPad( bot_movestate_t *ms, aas_reachability_t *rea
 	hordir[0] = reach->start[0] - ms->origin[0];
 	hordir[1] = reach->start[1] - ms->origin[1];
 	hordir[2] = 0;
-	VectorNormalize( hordir );
 	//
 	BotCheckBlocked( ms, hordir, qtrue, &result );
 	//elemantary action move in direction
-	EA_Move(ms->client, hordir, 400);
+	EA_Move( ms->client, hordir, 400 );
 	VectorCopy( hordir, result.movedir );
 	//
 	return result;
@@ -3111,7 +3105,8 @@ bot_moveresult_t BotMoveInGoalArea( bot_movestate_t *ms, bot_goal_t *goal ) {
 int AAS_AreaRouteToGoalArea( int areanum, vec3_t origin, int goalareanum, int travelflags, int *traveltime, int *reachnum );
 extern float VectorDistance( vec3_t v1, vec3_t v2 );
 void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, int travelflags ) {
-	int reachnum = 0, lastreachnum, foundjumppad, ent; // TTimo: init
+	int reachnum = 0; // TTimo (might be used uninitialized in this function)
+	int lastreachnum, foundjumppad, ent;
 	aas_reachability_t reach, lastreach;
 	bot_movestate_t *ms;
 	//vec3_t mins, maxs, up = {0, 0, 1};
@@ -3124,7 +3119,6 @@ void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, i
 	result->blockentity = 0;
 	result->traveltype = 0;
 	result->flags = 0;
-
 	//
 	ms = BotMoveStateFromHandle( movestate );
 	if ( !ms ) {
@@ -3434,6 +3428,7 @@ void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, i
 					ms->lastreachnum = lastreachnum;
 					ms->lastareanum = areas[i];
 					//botimport.Print(PRT_MESSAGE, "found jumppad reachability\n");
+					break;
 				} //end if
 				else
 				{
@@ -3602,7 +3597,9 @@ void BotResetLastAvoidReach( int movestate ) {
 	} //end for
 	if ( latesttime ) {
 		ms->avoidreachtimes[latest] = 0;
-		if (ms->avoidreachtries[latest] > 0) ms->avoidreachtries[latest]--;
+		if ( ms->avoidreachtries[latest] > 0 ) {
+			ms->avoidreachtries[latest]--;
+		}
 	} //end if
 } //end of the function BotResetLastAvoidReach
 //===========================================================================

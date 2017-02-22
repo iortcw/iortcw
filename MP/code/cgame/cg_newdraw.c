@@ -45,7 +45,7 @@ int drawTeamOverlayModificationCount = -1;
 
 int CG_DrawField( int x, int y, int width, int value, int charWidth, int charHeight, qboolean dodrawpic, qboolean leftAlign );      // NERVE - SMF
 
-void CG_InitTeamChat(void) {
+void CG_InitTeamChat( void ) {
 #ifdef MISSIONPACK
 	memset( teamChat1, 0, sizeof( teamChat1 ) );
 	memset( teamChat2, 0, sizeof( teamChat2 ) );
@@ -62,7 +62,7 @@ void CG_SetPrintString( int type, const char *p ) {
 	}
 }
 
-void CG_CheckOrderPending(void) {
+void CG_CheckOrderPending( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype < GT_CTF ) {
 		return;
@@ -218,8 +218,8 @@ static void CG_DrawPlayerArmorValue( rectDef_t *rect, float scale, vec4_t color,
 	}
 }
 
-/*
 // TTimo: unused
+/*
 static float healthColors[4][4] = {
 //		{ 0.2, 1.0, 0.2, 1.0 } , { 1.0, 0.2, 0.2, 1.0 }, {0.5, 0.5, 0.5, 1} };
 		{ 1, 0.69f, 0, 1.0f } ,		// normal
@@ -579,7 +579,6 @@ static void CG_DrawCursorhint( rectDef_t *rect ) {
 		break;
 	}
 
-
 	if ( !icon ) {
 		return;
 	}
@@ -676,7 +675,7 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, float scale, vec4_t color, 
 	case WP_MEDIC_SYRINGE:     // JPW NERVE
 	case WP_GRENADE_LAUNCHER:
 	case WP_GRENADE_PINEAPPLE:
-//		case WP_DYNAMITE: // JPW NERVE these recharge
+//	case WP_DYNAMITE:	// JPW NERVE these recharge
 	case WP_DYNAMITE2:
 	case WP_TESLA:
 	case WP_FLAMETHROWER:
@@ -964,24 +963,28 @@ static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhan
 
 static void CG_DrawHoldableItem( rectDef_t *rect, float scale, qboolean draw2D ) {
 /*
-	int		value;
+	int	value;
 	gitem_t	*item;
 
-	item	= BG_FindItemForHoldable(cg.holdableSelect);
+	item = BG_FindItemForHoldable( cg.holdableSelect );
 
-	if(!item)
+	if ( !item ) {
 		return;
+	}
 
-	value	= cg.predictedPlayerState.holdable[cg.holdableSelect];
+	value = cg.predictedPlayerState.holdable[cg.holdableSelect];
 
 	if ( value ) {
 		CG_RegisterItemVisuals( item - bg_itemlist );
 
-		if(cg.holdableSelect == HI_WINE) {
-			if(value > 3)
-				value = 3;	// 3 stages to icon, just draw full if beyond 'full'
-			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2-(value-1)] );
+		if ( cg.holdableSelect == HI_WINE ) {
+			if ( value > 3 ) {
+				value = 3;  // 3 stages to icon, just draw full if beyond 'full'
+			}
+//			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icons[2-(value-1)] );
+			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[2 - ( value - 1 )] );
 		} else {
+//			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icons[0] );
 			CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[item - bg_itemlist].icons[0] );
 		}
 	}
@@ -1548,7 +1551,7 @@ float CG_GetValue( int ownerDraw, int type ) {
 	return -1;
 }
 
-qboolean CG_OtherTeamHasFlag(void) {
+qboolean CG_OtherTeamHasFlag( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF ) {
 		int team = cg.snap->ps.persistant[PERS_TEAM];
@@ -1574,7 +1577,7 @@ qboolean CG_OtherTeamHasFlag(void) {
 	return qfalse;
 }
 
-qboolean CG_YourTeamHasFlag(void) {
+qboolean CG_YourTeamHasFlag( void ) {
 #ifdef MISSIONPACK
 	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF ) {
 		int team = cg.snap->ps.persistant[PERS_TEAM];
@@ -1788,7 +1791,7 @@ static void CG_DrawAreaChat( rectDef_t *rect, float scale, vec4_t color, qhandle
 	CG_Text_Paint( rect->x, rect->y + rect->h, scale, color, teamChat2, 0, 0, 0 );
 }
 
-const char *CG_GetKillerText(void) {
+const char *CG_GetKillerText( void ) {
 	const char *s = "";
 	if ( cg.killerName[0] ) {
 		s = va( "Fragged by %s", cg.killerName );
@@ -1824,7 +1827,7 @@ static void CG_Draw2ndPlace( rectDef_t *rect, float scale, vec4_t color, qhandle
 	}
 }
 
-const char *CG_GetGameStatusText(void) {
+const char *CG_GetGameStatusText( void ) {
 	const char *s = "";
 	if ( cgs.gametype < GT_TEAM ) {
 		if ( cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR ) {
@@ -1846,7 +1849,7 @@ static void CG_DrawGameStatus( rectDef_t *rect, float scale, vec4_t color, qhand
 	CG_Text_Paint( rect->x, rect->y + rect->h, scale, color, CG_GetGameStatusText(), 0, 0, textStyle );
 }
 
-const char *CG_GameTypeString(void) {
+const char *CG_GameTypeString( void ) {
 	if ( cgs.gametype == GT_FFA ) {
 		return "Free For All";
 	} else if ( cgs.gametype == GT_TEAM ) {
@@ -1876,13 +1879,13 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, vec
 		const char *s = text;
 		float max = *maxX;
 		float useScale;
-		fontInfo_t *font = &cgDC.Assets.textFont;
+		fontInfo_t *fnt = &cgDC.Assets.textFont;
 		if ( scale <= cg_smallFont.value ) {
-			font = &cgDC.Assets.smallFont;
+			fnt = &cgDC.Assets.smallFont;
 		} else if ( scale > cg_bigFont.value ) {
-			font = &cgDC.Assets.bigFont;
+			fnt = &cgDC.Assets.bigFont;
 		}
-		useScale = scale * font->glyphScale;
+		useScale = scale * fnt->glyphScale;
 		trap_R_SetColor( color );
 		len = strlen( text );
 		if ( limit > 0 && len > limit ) {
@@ -1890,7 +1893,7 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, vec
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			glyph = &font->glyphs[*s & 255];
+			glyph = &fnt->glyphs[*s & 255];
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( newColor ) );
 				newColor[3] = color[3];
@@ -2254,7 +2257,6 @@ static void CG_DrawFatigue( rectDef_t *rect, vec4_t color, int align ) {
 	CG_FilledBar( rect->x, rect->y + 6, rect->w, rect->h * 0.82f, color, NULL, NULL, (float)cg.snap->ps.sprintTime / SPRINTTIME, flags );
 
 	// fill in the left side of the bar with the counter for the nofatigue powerup
-
 	if ( cg.snap->ps.powerups[PW_NOFATIGUE] ) {
 		CG_FilledBar( rect->x, rect->y, rect->w / 2, rect->h, colorBonus, NULL, NULL, cg.snap->ps.powerups[PW_NOFATIGUE] / BONUSTIME, flags );
 	}
@@ -2680,7 +2682,7 @@ int CG_ClientNumFromName( const char *p ) {
 	return -1;
 }
 
-void CG_ShowResponseHead(void) {
+void CG_ShowResponseHead( void ) {
 	Menus_OpenByName( "voiceMenu" );
 	trap_Cvar_Set( "cl_conXOffset", "72" );
 	cg.voiceTime = cg.time;

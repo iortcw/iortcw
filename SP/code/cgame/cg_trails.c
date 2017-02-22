@@ -325,9 +325,9 @@ int CG_AddSmokeJunc( int headJuncIndex, qhandle_t shader, vec3_t pos, int trailL
 	j->spawnTime = cg.time;
 	j->endTime = cg.time + trailLife;
 
-	// VectorSet(j->colorStart, 0.2, 0.2, 0.2);
+//	VectorSet( j->colorStart, 0.2, 0.2, 0.2 );
 	VectorSet( j->colorStart, 0.0, 0.0, 0.0 );
-	// VectorSet(j->colorEnd, 0.1, 0.1, 0.1);
+//	VectorSet( j->colorEnd, 0.1, 0.1, 0.1 );
 	VectorSet( j->colorEnd, 0.0, 0.0, 0.0 );
 
 	j->alphaStart = alpha;

@@ -115,7 +115,7 @@ sfxHandle_t CG_CustomSound( int clientNum, const char *soundName ) {
 	ci = &cgs.clientinfo[ clientNum ];
 
 	for ( i = 0 ; i < MAX_CUSTOM_SOUNDS && cg_customSoundNames[i] ; i++ ) {
-		if ( !strcmp( soundName, cg_customSoundNames[i] ) ) {
+		if ( !Q_stricmp( soundName, cg_customSoundNames[i] ) ) {
 			return ci->sounds[i];
 		}
 	}
@@ -614,7 +614,6 @@ qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelName, co
 
 	// look for this model in the list of models already opened
 	if ( !CG_CheckForExistingModelInfo( ci, (char *)modelName, &ci->modelInfo ) ) {
-
 		if ( !CG_ParseAnimationFiles( modelName, ci, ci->clientNum ) ) {
 			Com_Printf( "Failed to load animation file %s\n", filename );
 			return qfalse;
@@ -1497,7 +1496,6 @@ void CG_RunLerpFrameRate( clientInfo_t *ci, lerpFrame_t *lf, int newAnimation, c
 		}
 		lf->frame = anim->firstFrame + f;
 		if ( cg.time > lf->frameTime ) {
-
 			// Ridah, run the frame again until we move ahead of the current time, fixes walking speeds for zombie
 			if ( /*!anim->moveSpeed ||*/ recursion > 4 ) {
 				lf->frameTime = cg.time;
@@ -1566,7 +1564,7 @@ static void CG_PlayerAnimation( centity_t *cent, int *legsOld, int *legs, float 
 
 	// do the shuffle turn frames locally
 	if ( !( cent->currentState.eFlags & EF_DEAD ) && cent->pe.legs.yawing ) {
-//CG_Printf("turn: %i\n", cg.time );
+		//CG_Printf("turn: %i\n", cg.time );
 		tempIndex = BG_GetAnimScriptAnimation( clientNum, cent->currentState.aiState & ~( 1 << 2 ), ( cent->pe.legs.yawing == SWING_RIGHT ? ANIM_MT_TURNRIGHT : ANIM_MT_TURNLEFT ) );
 		if ( tempIndex > -1 ) {
 			animIndex = tempIndex;
@@ -2708,7 +2706,7 @@ void CG_Player( centity_t *cent ) {
 	VectorCopy( playerOrigin, legs.origin );
 
 	if ( ci->playermodelScale[0] != 0 ) {  // player scaled, adjust for the (-24) offset of player legs origin to ground
-		legs.origin[2] -= 24 * ( 1.0 - ci->playermodelScale[2] );
+		legs.origin[2] -= 24.0f * ( 1.0f - ci->playermodelScale[2] );
 	}
 
 	VectorCopy( lightorigin, legs.lightingOrigin );

@@ -242,7 +242,7 @@ void AAS_ContinueInit( float time ) {
 		}
 		//save the AAS file
 		if ( AAS_WriteAASFile( ( *aasworld ).filename ) ) {
-			botimport.Print( PRT_MESSAGE, "%s written successfully\n", ( *aasworld ).filename );
+			botimport.Print(PRT_MESSAGE, "%s written successfully\n", ( *aasworld ).filename);
 		} //end if
 		else
 		{
@@ -358,7 +358,7 @@ int AAS_LoadMap( const char *mapname ) {
 	int i;
 	char this_mapname[MAPNAME_LEN], intstr[4];
 	qboolean loaded = qfalse;
-	int missingErrNum = 0;     // TTimo: init
+	int missingErrNum = 0;
 
 	for ( i = 0; i < MAX_AAS_WORLDS; i++ )
 	{
@@ -424,7 +424,7 @@ int AAS_Setup( void ) {
 	AAS_SetCurrentWorld( 0 );
 
 	( *aasworlds ).maxclients = (int) LibVarValue( "maxclients", "128" );
-	( *aasworlds ).maxentities = (int) LibVarValue( "maxentities", "1024" );
+	( *aasworlds ).maxentities = (int) LibVarValue( "maxentities", "2048" );
 	//allocate memory for the entities
 	if ( ( *aasworld ).entities ) {
 		FreeMemory( ( *aasworld ).entities );

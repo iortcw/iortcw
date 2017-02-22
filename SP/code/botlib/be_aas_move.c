@@ -97,9 +97,8 @@ void AAS_InitSettings( void ) {
 	aassettings.sv_maxwaterjump         = 17;
 	// Ridah, calculate maxbarrier according to jumpvel and gravity
 	aassettings.sv_jumpvel              = 270;
-	aassettings.sv_maxbarrier           = 49; //-0.8 + (0.5 * aassettings.sv_gravity * (aassettings.sv_jumpvel / aassettings.sv_gravity) * (aassettings.sv_jumpvel / aassettings.sv_gravity));
+	aassettings.sv_maxbarrier           = 49; // -0.8 + ( 0.5 * aassettings.sv_gravity * ( aassettings.sv_jumpvel / aassettings.sv_gravity ) * ( aassettings.sv_jumpvel / aassettings.sv_gravity ) );
 	// done.
-
 } //end of the function AAS_InitSettings
 //===========================================================================
 // returns qtrue if the bot is against a ladder

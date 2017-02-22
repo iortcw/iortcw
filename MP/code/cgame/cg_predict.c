@@ -406,12 +406,11 @@ Predict push triggers and items
 */
 static void CG_TouchTriggerPrediction( void ) {
 	int i;
-	trace_t trace;
-	entityState_t   *ent;
-	clipHandle_t cmodel;
-	centity_t       *cent;
-	qboolean spectator;
-//	vec3_t			mins, maxs; // TTimo: unused
+	trace_t	trace;
+	entityState_t	*ent;
+	clipHandle_t	cmodel;
+	centity_t	*cent;
+	qboolean	spectator;
 	const char      *cs;
 
 	// dead clients don't activate triggers
@@ -449,35 +448,7 @@ static void CG_TouchTriggerPrediction( void ) {
 		if ( !trace.startsolid ) {
 			continue;
 		}
-/*
-// JPW NERVE
-		if (ent->eType == ET_CONCUSSIVE_TRIGGER) {
-			vec3_t dir,center;
-			dir[0] = 0;
-			dir[1] = 0;
-			dir[2] = -1;
-			CG_Printf("in concussive trigger\n");
-			trap_R_ModelBounds(cmodel,mins,maxs);
-			VectorAdd(mins,maxs,center);
-			VectorScale(center,0.5,center);
-			CG_Printf("cmodel=%d mins=%f,%f,%f maxs=%f,%f,%f\n",cmodel,
-				mins[0],mins[1],mins[2],maxs[0],maxs[1],maxs[2]);
 
-			CG_AddDirtBulletParticles( mins, dir,
-									190,	// speed
-									900,	// duration
-									1,	// count
-									0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-			CG_AddDirtBulletParticles( maxs, dir,
-									190,	// speed
-									900,	// duration
-									1,	// count
-									0.25, 32,32, 0.5, "dirt_splash" );	// rand scale
-		}
-		else
-// jpw
-
-*/
 		if ( ent->eType == ET_OID_TRIGGER ) {
 			cs = CG_ConfigString( CS_OID_TRIGGERS + ent->teamNum );
 
@@ -653,9 +624,9 @@ void CG_PredictPlayerState( void ) {
 
 //----(SA)	added
 	// restore persistant client-side playerstate variables before doing the pmove
-	// this could be done as suggested in q_shared.h ~line 1155, but right now I copy each variable individually
+	// this could be done as suggested in q_shared.h ~line 1404, but right now I copy each variable individually
 	// DHM - Nerve :: weapAnim is transmitted now
-	//cg.predictedPlayerState.weapAnim				= oldPlayerState.weapAnim;
+//	cg.predictedPlayerState.weapAnim				= oldPlayerState.weapAnim;
 	cg.predictedPlayerState.weapAnimTimer           = oldPlayerState.weapAnimTimer;
 	cg.predictedPlayerState.venomTime               = oldPlayerState.venomTime;
 //----(SA)	end

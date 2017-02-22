@@ -226,7 +226,7 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 
 	// if this entity was firing last frame, interpolate the angles as we spawn the chunks that
 	// fired over the last frame
-	if (    ( centInfo->lastClientFrame == cent->currentState.frame ) &&
+	if ( ( centInfo->lastClientFrame == cent->currentState.frame ) &&
 			( centInfo->lastFlameChunk && centInfo->lastFiring == firing ) ) {
 		AngleVectors( centInfo->lastAngles, lastFwd, lastRight, lastUp );
 		VectorCopy( centInfo->lastOrigin, lastOrg );
@@ -249,8 +249,8 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 
 			if ( trace.startsolid ) {
 				return;     // don't spawn inside a wall
-
 			}
+
 			f = CG_SpawnFlameChunk( of );
 
 			if ( !f ) {
@@ -324,6 +324,8 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 	} else {
 		centInfo->lastFiring = firing;
 
+		VectorCopy( thisOrg, org );
+
 		// just fire a single chunk to get us started
 		f = CG_SpawnFlameChunk( NULL );
 
@@ -332,7 +334,6 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 			return;
 		}
 
-		VectorCopy( thisOrg, org );
 		VectorCopy( thisFwd, fwd );
 		VectorCopy( thisUp, up );
 		VectorCopy( thisRight, right );
@@ -372,21 +373,25 @@ void CG_FireFlameChunks( centity_t *cent, vec3_t origin, vec3_t angles, float sp
 
 	// push them along
 	/*
-	f = centInfo->lastFlameChunk;
-	while (f) {
+	{
+		float frametime, dot;
 
-		if (f->lastFriction < cg.time - 50) {
-			frametime = (float)(cg.time - f->lastFriction) / 1000.0;
-			f->lastFriction = cg.time;
-			dot = DotProduct(parentFwd, f->parentFwd);
-			if (dot >= 0.99) {
-				dot -= 0.99;
-				dot *= (1.0/(1.0-0.99));
-				CG_FlameAdjustSpeed( f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow(dot,4) );
+		f = centInfo->lastFlameChunk;
+		while ( f ) {
+
+			if ( f->lastFriction < cg.time - 50 ) {
+				frametime = (float)( cg.time - f->lastFriction ) / 1000.0;
+				f->lastFriction = cg.time;
+				dot = DotProduct( parentFwd, f->parentFwd );
+				if ( dot >= 0.99 ) {
+					dot -= 0.99;
+					dot *= ( 1.0 / ( 1.0 - 0.99 ) );
+					CG_FlameAdjustSpeed( f, 0.5 * frametime * FLAME_FRICTION_PER_SEC * pow( dot, 4 ) );
+				}
 			}
-		}
 
-		f = f->nextFlameChunk;
+			f = f->nextFlameChunk;
+		}
 	}
 	*/
 
@@ -583,7 +588,7 @@ CG_FlameCalcOrg
 */
 void CG_FlameCalcOrg( flameChunk_t *f, int time, vec3_t outOrg ) {
 	VectorMA( f->baseOrg, f->velSpeed * ( (float)( time - f->baseOrgTime ) / 1000 ), f->velDir, outOrg );
-	//outOrg[2] -= f->gravity * ((float)(time - f->timeStart)/1000.0) * ((float)(time - f->timeStart)/1000.0);
+	//outOrg[2] -= f->gravity * ( (float)( time - f->timeStart ) / 1000.0 ) * ( (float)( time - f->timeStart ) / 1000.0 );
 }
 
 /*
@@ -655,8 +660,8 @@ void CG_MoveFlameChunk( flameChunk_t *f ) {
 		VectorNormalize( f->velDir );
 		// subtract some speed
 		f->velSpeed *= 0.5 * ( 0.25 + 0.75 * ( ( dot + 1.0 ) * 0.5 ) );
+		// adjust size
 		VectorCopy( f->velDir, f->parentFwd );
-
 		VectorCopy( f->baseOrg, sOrg );
 	}
 
@@ -748,7 +753,6 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 	if ( sdist < f->size * 0.6 ) {
 		// clip the sprite to the viewport, avoiding rendering off-screen pixels which
 		// is the main cause of slow-downs
-
 		if ( ( sdist < f->size * 0.6 ) && ( numClippedFlames++ > MAX_CLIPPED_FLAMES ) ) {
 			return;
 		}
@@ -897,11 +901,6 @@ void CG_AddFlameSpriteToScene( flameChunk_t *f, float lifeFrac, float alpha ) {
 
 // JPW NERVE alternate FT shaders
 	if ( cg_fxflags & 1 ) {
-/*
-		p->roll = 0;
-		p->pshader = getTestShader();
-		rotate_ang[ROLL]=90;
-*/
 		trap_R_AddPolyToScene( getTestShader(),4,verts );
 	} else {
 		trap_R_AddPolyToScene( flameShaders[frameNum], 4, verts );
@@ -924,10 +923,8 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 	float alpha;
 	float lived;
 	int headTimeStart;
-	// qboolean	firstFuel = qtrue; // TTimo: unused
 	float vdist, bdot;
 #define FLAME_SOUND_RANGE   1024.0
-	//flameChunk_t *lastSoundFlameChunk=NULL; // TTimo: unused
 	flameChunk_t *lastBlowChunk = NULL;
 	qboolean isClientFlame;
 	int shader;
@@ -990,7 +987,7 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 		if ( !f->ignitionOnly && f->velSpeed < 1 ) {
 			CG_AddFlameSpriteToScene( f, f->lifeFrac, 1.0 );
 
-			// is it in the blue ignition section of the flame?
+		// is it in the blue ignition section of the flame?
 		} else if ( isClientFlame && f->blueLife > ( lived / 2.0 ) ) {
 
 			skip = qfalse;
@@ -1017,8 +1014,9 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 			if ( !skip ) {
 
 				// just call this for damage checking
-				//if (!f->ignitionOnly)
-				//CG_AddFlameSpriteToScene( f, f->lifeFrac, -1 );
+				//if ( !f->ignitionOnly ) {
+				//	CG_AddFlameSpriteToScene( f, f->lifeFrac, -1 );
+				//}
 
 				lastBlueChunk = f;
 
@@ -1099,10 +1097,9 @@ void CG_AddFlameToScene( flameChunk_t *fHead ) {
 			// should we merge it with the next sprite?
 			while ( fNext && !droppedTrail ) {
 				if ( ( Distance( f->org, fNext->org ) < ( ( 0.1 + 0.9 * f->lifeFrac ) * f->size * 0.35 ) )
-					 &&  ( fabs( f->size - fNext->size ) < ( 40.0 ) )
-					 &&  ( abs( f->timeStart - fNext->timeStart ) < 100 )
-					 &&  ( DotProduct( f->velDir, fNext->velDir ) > 0.99 )
-					 ) {
+						&&  ( fabs( f->size - fNext->size ) < ( 40.0 ) )
+						&&  ( abs( f->timeStart - fNext->timeStart ) < 100 )
+						&&  ( DotProduct( f->velDir, fNext->velDir ) > 0.99 ) ) {
 					if ( !droppedTrail ) {
 						CG_MergeFlameChunks( f, fNext );
 						fNext = f->nextFlameChunk;      // it may have changed
@@ -1360,7 +1357,7 @@ CG_UpdateFlamethrowerSounds
 ===============
 */
 void CG_UpdateFlamethrowerSounds( void ) {
-	flameChunk_t *f; //, *trav; // , *lastSoundFlameChunk=NULL; // TTimo: unused
+	flameChunk_t *f;
 	#define MIN_BLOW_VOLUME     30
 
 	// draw each of the headFlameChunk's
@@ -1370,45 +1367,24 @@ void CG_UpdateFlamethrowerSounds( void ) {
 		if ( centFlameInfo[f->ownerCent].lastSoundUpdate != cg.time ) {
 			// blow/ignition sound
 			if ( centFlameStatus[f->ownerCent].blowVolume * 255.0 > MIN_BLOW_VOLUME ) {
-				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * centFlameStatus[f->ownerCent].blowVolume ) ); // JPW NERVE
+				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, (int)( 255.0 * centFlameStatus[f->ownerCent].blowVolume ) );
 			} else {
-				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, MIN_BLOW_VOLUME ); // JPW NERVE
+				CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameBlowSound, MIN_BLOW_VOLUME );
 			}
 
 			if ( centFlameStatus[f->ownerCent].streamVolume ) {
 				if ( cg_entities[f->ownerCent].currentState.aiChar != AICHAR_ZOMBIE ) {
-					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameStreamSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
+					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameStreamSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) );
 				} else {
-					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) ); // JPW NERVE
+					CG_S_AddLoopingSound( f->ownerCent, f->org, vec3_origin, cgs.media.flameCrackSound, (int)( 255.0 * centFlameStatus[f->ownerCent].streamVolume ) );
 				}
 			}
 
 			centFlameInfo[f->ownerCent].lastSoundUpdate = cg.time;
 		}
 
-		// traverse the chunks, spawning flame sound sources as we go
-//		for ( trav = f; trav; trav = trav->nextFlameChunk ) {
-			// update the sound volume
-//			if ( trav->blueLife + 100 < ( cg.time - trav->timeStart ) ) {
-//				CG_S_AddLoopingSound( trav->ownerCent, trav->org, vec3_origin, cgs.media.flameSound, (int)( 255.0 * ( 0.2 * ( trav->size / FLAME_MAX_SIZE ) ) ) );
-//			}
-//		}
-
 		f = f->nextHead;
 	}
 
 	// DHM - Nerve :: No more client side damage
-	// send client damage updates if required
-	/*
-	for (cent=cg_entities, i=0; i<cgs.maxclients; cent++, i++) {
-		if (centFlameInfo[i].lastDmgCheck > centFlameInfo[i].lastDmgUpdate &&
-			centFlameInfo[i].lastDmgUpdate < cg.time - 50 ) // JPW NERVE (cgs.gametype == GT_SINGLE_PLAYER ? 50 : 50)) -- sean changed clientdamage so this isn't a saturation issue any longer
-		{
-			if ((cg.snap->ps.pm_flags & PMF_LIMBO) || ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR )) // JPW NERVE
-				return; // JPW NERVE don't do flame damage to guys in limbo or spectator, they drop out of the game
-			CG_ClientDamage( i, centFlameInfo[i].lastDmgEnemy, CLDMG_FLAMETHROWER );
-			centFlameInfo[i].lastDmgUpdate = cg.time;
-		}
-	}
-	*/
 }

@@ -208,9 +208,6 @@ void CG_SpawnEffect( vec3_t org ) {
 #endif
 }
 
-
-
-
 /*
 ====================
 CG_MakeExplosion
@@ -336,7 +333,7 @@ void CG_Bleed( vec3_t origin, int entityNum ) {
 	}
 
 	if ( cg_reloading.integer ) {
-		return;     // to dangerous, since we call playerangles() in here, which calls the animation system, which might not be setup yet
+		return;     // too dangerous, since we call playerangles() in here, which calls the animation system, which might not be setup yet
 	}
 
 	cent = &cg_entities[entityNum];
@@ -346,25 +343,6 @@ void CG_Bleed( vec3_t origin, int entityNum ) {
 		return;
 	}
 
-/*
-	ex = CG_AllocLocalEntity();
-	ex->leType = LE_EXPLOSION;
-
-	ex->startTime = cg.time;
-	ex->endTime = ex->startTime + 500;
-
-	VectorCopy ( origin, ex->refEntity.origin);
-	ex->refEntity.reType = RT_SPRITE;
-	ex->refEntity.rotation = rand() % 360;
-	ex->refEntity.radius = 3;
-
-	ex->refEntity.customShader = cgs.media.bloodExplosionShader;
-
-	// don't show player's own blood in view
-	if ( entityNum == cg.snap->ps.clientNum ) {
-		ex->refEntity.renderfx |= RF_THIRD_PERSON;
-	}
-*/
 	// Ridah, blood spurts
 	if ( entityNum != cg.snap->ps.clientNum ) {
 		vec3_t vhead, vlegs, vtorso, bOrigin, dir, vec, pvec, ndir;
@@ -708,10 +686,6 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 		"tag_torso",
 	};
 
-	// FIXME: let them specify tag & model in the cfg file?
-
-	// (SA) and perhaps which body part that tag is attached to?
-
 	char *gibTags[] = {
 		// tags in the legs
 		"tag_footright",
@@ -727,9 +701,6 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 		"tag_head",
 		NULL
 	};
-
-#define TORSOTAGSSTART 5    // where the 'split' happens in the above table
-
 
 	// Rafael
 	for ( i = 0; i < MAXJUNCTIONS; i++ )
@@ -753,11 +724,7 @@ void CG_GibPlayer( centity_t *cent, vec3_t playerOrigin, vec3_t gdir ) {
 			continue;
 		}
 
-		// (SA) split this into torso and legs, since the tags are only attached to the appropriate part
-//		if(gibIndex >= TORSOTAGSSTART)
 		re = &cent->pe.torsoRefEnt;
-//		else
-//			re = &cent->pe.legsRefEnt;
 
 		for ( tagIndex = 0; ( tagIndex = CG_GetOriginForTag( cent, re, gibTags[gibIndex], tagIndex, origin, axis ) ) >= 0; count++, tagIndex++ ) {
 
@@ -1331,12 +1298,14 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	vec3_t endCenter;
 	polyVert_t coreverts[4];
 	trace_t tr;
-	float /*alpha,*/ radius = 0.0f;       // TTimo: init
+	//float alpha;
+	float radius = 0.0f;
 	float coreEndRadius;
 	qboolean capStart = qtrue;
 	float hitDist;          // the actual distance of the trace impact	(0 is no hit)
 	float beamLen;          // actual distance of the drawn beam
-	float startAlpha, endAlpha;
+	float startAlpha;
+	float endAlpha = 0.0f;
 	vec4_t colorNorm;       // normalized color vector
 	refEntity_t ent;
 	vec3_t angles;
@@ -1367,7 +1336,6 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		capStart = qfalse;
 	}
 
-
 	if ( flags & SL_LOCKTRACETORANGE ) {
 		VectorMA( start, range, lightDir, traceEnd );           // trace out to 'range'
 	} else {
@@ -1382,7 +1350,6 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		if ( flags & SL_TRACEWORLDONLY ) {
 			CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, CONTENTS_SOLID );
 		} else {
-//			CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, MASK_SHOT);
 			CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, MASK_SHOT & ~CONTENTS_BODY );
 		}
 //		CG_Trace( &tr, start, NULL, NULL, traceEnd, -1, MASK_ALL &~(CONTENTS_MONSTERCLIP|CONTENTS_AREAPORTAL|CONTENTS_CLUSTERPORTAL));
@@ -1399,11 +1366,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		beamLen = range;
 	}
 
-
 	startAlpha  = color[3] * 255.0f;
-	endAlpha    = 0.0f;
-
-
 
 	if ( flags & SL_LOCKUV ) {
 		if ( beamLen < range ) {
@@ -1421,40 +1384,37 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 
 
 // model at base
-//	if(cgs.media.spotLightLightModel) {
-	memset( &ent, 0, sizeof( ent ) );
-	ent.frame = 0;
-	ent.oldframe = 0;
-	ent.backlerp = 0;
-	VectorCopy( cent->lerpOrigin, ent.origin );
-	VectorCopy( cent->lerpOrigin, ent.oldorigin );
-//		ent.hModel = cgs.gameModels[cent->currentState.modelindex];
-	if ( cent->currentState.frame == 1 ) {
-		ent.hModel = cgs.media.spotLightLightModelBroke;
-	} else {
-		ent.hModel = cgs.media.spotLightLightModel;
-	}
+	//if(cgs.media.spotLightLightModel) {
+		memset( &ent, 0, sizeof( ent ) );
+		ent.frame = 0;
+		ent.oldframe = 0;
+		ent.backlerp = 0;
+		VectorCopy( cent->lerpOrigin, ent.origin );
+		VectorCopy( cent->lerpOrigin, ent.oldorigin );
+		//ent.hModel = cgs.gameModels[cent->currentState.modelindex];
+		if ( cent->currentState.frame == 1 ) {
+			ent.hModel = cgs.media.spotLightLightModelBroke;
+		} else {
+			ent.hModel = cgs.media.spotLightLightModel;
+		}
 
-	vectoangles( lightDir, angles );
-	angles[ROLL] = 0.0f;        // clear out roll so it doesn't interfere
-	AnglesToAxis( angles, ent.axis );
-	trap_R_AddRefEntityToScene( &ent );
+		vectoangles( lightDir, angles );
+		angles[ROLL] = 0.0f;        // clear out roll so it doesn't interfere
+		AnglesToAxis( angles, ent.axis );
+		trap_R_AddRefEntityToScene( &ent );
 
-	ent.hModel = cgs.media.spotLightBaseModel;
-	angles[PITCH] = 0.0f;       // flatten out pitch so it only yaws
-	AnglesToAxis( angles, ent.axis );
-	trap_R_AddRefEntityToScene( &ent );
+		ent.hModel = cgs.media.spotLightBaseModel;
+		angles[PITCH] = 0.0f;       // flatten out pitch so it only yaws
+		AnglesToAxis( angles, ent.axis );
+		trap_R_AddRefEntityToScene( &ent );
 
-	// push start out a bit so the beam fits to the front of the base model
-	VectorMA( start, 14, lightDir, start );
-//	}
-
-
+		// push start out a bit so the beam fits to the front of the base model
+		VectorMA( start, 14, lightDir, start );
+	//}
 
 	if ( cent->currentState.frame == 1 ) {    // dead
 		return;
 	}
-
 
 //// BEAM
 
@@ -1588,11 +1548,8 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 			radius = 1.5f * coreEndRadius * ( hitDist / beamLen );
 
 			VectorNegate( lightDir, proj );
-
 			VectorMA( tr.endpos, -0.5f * radius, lightDir, impactPos );   // back away a little from the hit
-
 			CG_ImpactMark( cgs.media.spotLightShader, impactPos, proj, 0, colorNorm[0], colorNorm[1], colorNorm[2], 0.3f, qfalse, radius, qtrue, -1 );
-//			CG_ImpactMark( cgs.media.spotLightShader, tr.endpos, proj, 0, colorNorm[0], colorNorm[1], colorNorm[2], 1.0f, qfalse, radius, qtrue, -1 );
 		}
 	}
 
@@ -1602,12 +1559,11 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 	if ( !( flags & SL_NODLIGHT ) ) {
 		vec3_t dlightLoc;
 //		VectorMA(tr.endpos, -60, lightDir, dlightLoc);	// back away from the hit
-		VectorCopy( tr.endpos, dlightLoc );    // back away from the hit
 //		trap_R_AddLightToScene(dlightLoc, 200, colorNorm[0], colorNorm[1], colorNorm[2], 0);	// ,REF_JUNIOR_DLIGHT);
+		VectorCopy( tr.endpos, dlightLoc );    // back away from the hit
 //		trap_R_AddLightToScene(dlightLoc, radius*2, colorNorm[0], colorNorm[1], colorNorm[2], 0);	// ,REF_JUNIOR_DLIGHT);
 		trap_R_AddLightToScene( dlightLoc, radius * 2, 0.3, 0.3, 0.3, 0 );  // ,REF_JUNIOR_DLIGHT);
 	}
-
 
 #define FLAREANGLE 35
 
@@ -1616,7 +1572,7 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		qboolean lightInEyes = qfalse;
 		vec3_t camloc, dirtolight;
 		float dot, deg, dist;
-		float flarescale = 0.0f;       // TTimo: init
+		float flarescale = 0.0f;
 
 		// get camera position and direction to lightsource
 		VectorCopy( cg.snap->ps.origin, camloc );
@@ -1636,7 +1592,6 @@ void CG_Spotlight( centity_t *cent, float *color, vec3_t realstart, vec3_t light
 		}
 
 		if ( lightInEyes ) {   // the dot check succeeded, now do a trace
-//			CG_Trace( &tr, start, NULL, NULL, camloc, -1, MASK_ALL &~(CONTENTS_MONSTERCLIP|CONTENTS_AREAPORTAL|CONTENTS_CLUSTERPORTAL));
 			CG_Trace( &tr, start, NULL, NULL, camloc, -1, MASK_SOLID );
 			if ( tr.fraction != 1 ) {
 				lightInEyes = qfalse;

@@ -166,7 +166,6 @@ static int CG_TeamScoreboard( int x, int y, team_t team, float fade ) {
 	return y + count * lineHeight + 20;
 }
 
-// NERVE - SMF
 /*
 =================
 WM_DrawClientScore
@@ -435,14 +434,10 @@ Draw the normal in-game scoreboard
 =================
 */
 qboolean CG_DrawScoreboard( void ) {
-	int x = 0, y = 0, w;     // TTimo init
+	int x = 0, y = 0, w;
 	float fade;
 	float   *fadeColor;
 	char    *s;
-
-	if ( cg_fixedAspect.integer ) {
-		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
-	}
 
 	// don't draw anything if the menu or console is up
 	if ( cg_paused.integer ) {
@@ -463,6 +458,10 @@ qboolean CG_DrawScoreboard( void ) {
 	// don't draw scoreboard during death while warmup up
 	if ( cg.warmup && !cg.showScores ) {
 		return qfalse;
+	}
+
+	if ( cg_fixedAspect.integer ) {
+		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	}
 
 	if ( cg.showScores || cg.predictedPlayerState.pm_type == PM_DEAD ||
@@ -592,8 +591,8 @@ CG_CenterGiantLine
 ================
 */
 static void CG_CenterGiantLine( float y, const char *string ) {
-	float x;
-	vec4_t color;
+	float	x;
+	vec4_t	color;
 
 	color[0] = 1;
 	color[1] = 1;
@@ -635,7 +634,7 @@ void CG_DrawTourneyScoreboard( void ) {
 		color[0] = color[1] = color[2] = 0;
 	 	color[3] = 1;
 		CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
- 		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, color );
+		CG_FillRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, color );
 		CG_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
 	} else {
 		color[0] = color[1] = color[2] = 0;
@@ -703,7 +702,5 @@ void CG_DrawTourneyScoreboard( void ) {
 			y += 64;
 		}
 	}
-
-
 }
 

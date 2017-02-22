@@ -584,12 +584,12 @@ void NumberValue( char *string, int subtype, unsigned long int *intvalue,
 				string++;
 			} //end if
 			if ( dotfound ) {
-				*floatvalue = *floatvalue + (float) (*string - '0') / (float) dotfound;
+				*floatvalue = *floatvalue + (float)(*string - '0') / (float) dotfound;
 				dotfound *= 10;
 			} //end if
 			else
 			{
-				*floatvalue = *floatvalue * 10.0 + (float) (*string - '0');
+				*floatvalue = *floatvalue * 10.0 + ( float )( *string - '0' );
 			} //end else
 			string++;
 		} //end while
@@ -1165,14 +1165,12 @@ void StripSingleQuotes( char *string ) {
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-float ReadSignedFloat(script_t *script)
-{
+float ReadSignedFloat( script_t *script ) {
 	token_t token;
 	float sign = 1.0;
 
-	PS_ExpectAnyToken(script, &token);
-	if (!strcmp(token.string, "-"))
-	{
+	PS_ExpectAnyToken( script, &token );
+	if ( !strcmp( token.string, "-" ) ) {
 		if(!PS_ExpectAnyToken(script, &token))
 		{
 			ScriptError(script, "Missing float value");
@@ -1196,14 +1194,12 @@ float ReadSignedFloat(script_t *script)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-signed long int ReadSignedInt(script_t *script)
-{
+signed long int ReadSignedInt( script_t *script ) {
 	token_t token;
 	signed long int sign = 1;
 
-	PS_ExpectAnyToken(script, &token);
-	if (!strcmp(token.string, "-"))
-	{
+	PS_ExpectAnyToken( script, &token );
+	if ( !strcmp( token.string, "-" ) ) {
 		if(!PS_ExpectAnyToken(script, &token))
 		{
 			ScriptError(script, "Missing integer value");
@@ -1213,12 +1209,11 @@ signed long int ReadSignedInt(script_t *script)
 		sign = -1;
 	}
 
-	if (token.type != TT_NUMBER || token.subtype == TT_FLOAT)
-	{
+	if ( token.type != TT_NUMBER || token.subtype == TT_FLOAT ) {
 		ScriptError(script, "expected integer value, found %s", token.string);
 		return 0;
 	}
-	
+
 	return sign * token.intvalue;
 } //end of the function ReadSignedInt
 //============================================================================
@@ -1392,7 +1387,6 @@ script_t *LoadScriptFile( const char *filename ) {
 	} //end if
 	fclose( fp );
 #endif
-	//
 
 	return script;
 } //end of the function LoadScriptFile

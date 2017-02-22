@@ -168,10 +168,8 @@ void CG_ParseServerinfo( void ) {
 	trap_Cvar_Set( "g_soldierChargeTime",Info_ValueForKey( info,"g_soldierChargeTime" ) );
 	trap_Cvar_Set( "g_LTChargeTime",Info_ValueForKey( info,"g_LTChargeTime" ) );
 	trap_Cvar_Set( "g_redlimbotime",Info_ValueForKey( info,"g_redlimbotime" ) );
-	// DHM - TEMP FIX
-	cg_redlimbotime.integer = atoi( Info_ValueForKey( info,"g_redlimbotime" ) );
-	//trap_Cvar_Set("g_bluelimbotime",Info_ValueForKey(info,"g_bluelimbotime"));
-	cg_bluelimbotime.integer = atoi( Info_ValueForKey( info,"g_bluelimbotime" ) );
+	cg_redlimbotime.integer = atoi( Info_ValueForKey( info, "g_redlimbotime" ) );
+	cg_bluelimbotime.integer = atoi( Info_ValueForKey( info, "g_bluelimbotime" ) );
 // jpw
 
 	cgs.minclients = atoi( Info_ValueForKey( info, "g_minGameClients" ) );       // NERVE - SMF
@@ -233,10 +231,8 @@ static void CG_ParseScreenFade( void ) {
 	char *token;
 
 	info = CG_ConfigString( CS_SCREENFADE );
-
 	token = COM_Parse( (char **)&info );
 	cgs.fadeAlpha = atof( token );
-
 	token = COM_Parse( (char **)&info );
 	cgs.fadeStartTime = atoi( token );
 	token = COM_Parse( (char **)&info );
@@ -265,7 +261,6 @@ static void CG_ParseFog( void ) {
 	int time;
 
 	info = CG_ConfigString( CS_FOGVARS );
-
 	token = COM_Parse( (char **)&info );    ne = atof( token );
 	token = COM_Parse( (char **)&info );    fa = atof( token );
 	token = COM_Parse( (char **)&info );    density = atof( token );
@@ -438,7 +433,7 @@ static void CG_ConfigStringModified( void ) {
 	}
 //----(SA)	have not reached this code yet so I don't know if I really need this here
 	else if ( num >= CS_DLIGHTS && num < CS_DLIGHTS + MAX_DLIGHTS ) {
-//		CG_Printf(">>>>>>>>>>>got configstring for dlight: %d\ntell Sherman!!!!!!!!!!", num-CS_DLIGHTS);
+//		CG_Printf( ">>>>>>>>>>>got configstring for dlight: %d\ntell Sherman!!!!!!!!!!", num - CS_DLIGHTS );
 //----(SA)
 	} else if ( num == CS_SHADERSTATE )   {
 		CG_ShaderStateChanged();
@@ -652,7 +647,6 @@ void CG_SendMoveSpeeds( void ) {
 		// send this model
 		CG_SendMoveSpeed( modelInfo->animations, modelInfo->numAnimations, modelInfo->modelname );
 	}
-
 }
 
 
@@ -713,7 +707,7 @@ static void CG_MapRestart( void ) {
 
 
 	// Ridah, trails
-//	CG_ClearTrails ();
+//	CG_ClearTrails();
 	// done.
 
 	// Ridah
@@ -752,9 +746,9 @@ static void CG_MapRestart( void ) {
 	cg.v_fireTime = 0;
 
 	// inform LOCAL server of animationSpeeds for AI use (ONLY)
-	//if (cgs.localServer) {
-	//CG_SendMoveSpeeds();
-	//}
+//	if ( cgs.localServer ) {
+//		CG_SendMoveSpeeds();
+//	}
 
 	// play the "fight" sound if this is a restart without warmup
 	if ( cg.warmup == 0 && cgs.gametype == GT_TOURNAMENT ) {
@@ -1421,6 +1415,16 @@ static void CG_ServerCommand( void ) {
 
 	if ( !cmd[0] ) {
 		// server claimed the command
+		return;
+	}
+
+//	if ( !strcmp( cmd, "startCam" ) ) {
+//		CG_StartCamera( CG_Argv( 1 ), atoi( CG_Argv( 2 ) ) );
+//		return;
+//	}
+
+	if ( !strcmp( cmd, "mvspd" ) ) {
+		CG_RequestMoveSpeed( CG_Argv( 1 ) );
 		return;
 	}
 

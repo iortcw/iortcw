@@ -36,11 +36,9 @@ If you have questions concerning this license or the applicable additional terms
 
 static intptr_t (QDECL *syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
-// TTimo: guarding
 Q_EXPORT void dllEntry( intptr_t (QDECL  *syscallptr)( intptr_t arg,... ) ) {
 	syscall = syscallptr;
 }
-
 
 int PASSFLOAT( float x ) {
 	floatint_t fi;
@@ -244,6 +242,7 @@ void    trap_S_StartBackgroundTrack( const char *intro, const char *loop, int fa
 	syscall( CG_S_STARTBACKGROUNDTRACK, intro, loop, fadeupTime );
 }
 
+//----(SA)	added
 void    trap_S_FadeBackgroundTrack( float targetvol, int time, int num ) {   // yes, i know.  fadebackground coming in, fadestreaming going out.  will have to see where functionality leads...
 	syscall( CG_S_FADESTREAMINGSOUND, PASSFLOAT( targetvol ), time, num ); // 'num' is '0' if it's music, '1' if it's "all streaming sounds"
 }
@@ -251,7 +250,6 @@ void    trap_S_FadeBackgroundTrack( float targetvol, int time, int num ) {   // 
 void    trap_S_FadeAllSound( float targetvol, int time ) {
 	syscall( CG_S_FADEALLSOUNDS, PASSFLOAT( targetvol ), time );
 }
-
 //----(SA)	end
 
 void    trap_S_StartStreamingSound( const char *intro, const char *loop, int entnum, int channel, int attenuation ) {
@@ -540,4 +538,3 @@ qboolean trap_GetModelInfo( int clientNum, char *modelName, animModelInfo_t **mo
 void *trap_Alloc( int size ) {
 	return (void*)syscall( CG_ALLOC, size );
 }
-

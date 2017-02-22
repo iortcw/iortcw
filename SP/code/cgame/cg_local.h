@@ -176,7 +176,7 @@ typedef struct {
 	int painAnimLegs;
 	int lightningFiring;
 
-	int				railFireTime;
+	int	railFireTime;
 
 	// machinegun spinning
 	float barrelAngle;
@@ -550,7 +550,6 @@ typedef struct {
 	vec3_t color;
 
 	byte c1RGBA[4];
-//	byte c2RGBA[4];
 
 	int score;                      // updated by score servercmds
 	int location;                   // location index for team mode
@@ -887,7 +886,6 @@ typedef struct {
 	int cursorHintTime;
 	int cursorHintFade;
 	int cursorHintValue;
-
 //----(SA)	end
 
 	// powerup active flashing
@@ -979,17 +977,15 @@ typedef struct {
 	qboolean cameraMode;        // if rendering from a camera
 	// Duffy end
 
-	unsigned int cld;           // NERVE - SMF
-	qboolean limboMenu;         // NERVE - SMF
+	unsigned int cld;
+	qboolean limboMenu;
 
-	// NERVE - SMF - Objective info display
 	int oidTeam;
 	int oidPrintTime;
 	int oidPrintCharWidth;
 	int oidPrintY;
 	char oidPrint[1024];
 	int oidPrintLines;
-	// -NERVE - SMF
 
 	cameraShake_t cameraShake[MAX_CAMERA_SHAKE];
 	float cameraShakePhase;
@@ -1060,7 +1056,7 @@ typedef struct {
 
 	qhandle_t friendShader;
 
-//	qhandle_t	medicReviveShader;	//----(SA)	commented out from MP
+//	qhandle_t medicReviveShader;	//----(SA)	commented out from MP
 	qhandle_t balloonShader;
 	qhandle_t connectionShader;
 
@@ -1076,11 +1072,11 @@ typedef struct {
 	qhandle_t noammoShader;
 
 	qhandle_t reticleShader;
-//	qhandle_t	reticleShaderSimple;
+//	qhandle_t reticleShaderSimple;
 	qhandle_t reticleShaderSimpleQ;
-//	qhandle_t	snooperShader;
+//	qhandle_t snooperShader;
 	qhandle_t snooperShaderSimple;
-//	qhandle_t	binocShaderSimple;
+//	qhandle_t binocShaderSimple;
 	qhandle_t binocShaderSimpleQ;   // same as above, but quartered.  (trying to save texture space)
 
 	qhandle_t smokePuffShader;
@@ -1091,9 +1087,7 @@ typedef struct {
 
 	qhandle_t nailPuffShader;
 
-//----(SA)	modified
-
-	// cursor hints
+	//----(SA)	cursor hints
 	// would be nice to specify these in the menu scripts instead of permanent handles...
 	qhandle_t hintShaders[HINT_NUM_HINTS];
 
@@ -1241,7 +1235,6 @@ typedef struct {
 	qhandle_t viewFadeBlack;
 	qhandle_t sparkFlareShader;
 	qhandle_t funnelFireShader[NUM_FUNNEL_SPRITES];
-
 	qhandle_t spotLightShader;
 	qhandle_t spotLightBeamShader;
 	qhandle_t spotLightBaseModel;       //----(SA)	added
@@ -1567,7 +1560,6 @@ typedef struct {
 	// locally derived information from gamestate
 	//
 	qhandle_t gameModels[MAX_MODELS];
-
 	sfxHandle_t gameSounds[MAX_SOUNDS];
 	int gameSoundTypes[MAX_SOUNDS];             //----(SA)	added
 
@@ -1830,6 +1822,7 @@ void CG_ZoomUp_f( void );
 void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demoPlayback );
 
 void CG_Concussive( centity_t *cent );
+
 //
 // cg_drawtools.c
 //
@@ -2228,10 +2221,10 @@ void CG_LoadClientInfo( int clientNum, clientInfo_t *ci );
 //
 
 // print message on the local console
-void        trap_Print( const char *fmt );
+void	trap_Print( const char *fmt );
 
 // abort the game
-void		trap_Error(const char *fmt) __attribute__((noreturn));
+void	trap_Error(const char *fmt) __attribute__((noreturn));
 
 // exit game to main menu (credits/etc)
 void        trap_Endgame( void );   //----(SA)	added
@@ -2267,9 +2260,8 @@ void        trap_SendConsoleCommand( const char *text );
 
 // register a command name so the console can perform command completion.
 // FIXME: replace this with a normal console command "defineCommand"?
-void		trap_AddCommand( const char *cmdName );
-void		trap_RemoveCommand( const char *cmdName );
-
+void	trap_AddCommand( const char *cmdName );
+void	trap_RemoveCommand( const char *cmdName );
 
 // send a string to the server over the network
 void        trap_SendClientCommand( const char *s );
@@ -2312,7 +2304,6 @@ int         trap_CM_MarkFragments( int numPoints, const vec3_t *points,
 void        trap_S_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx );
 void        trap_S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx, int flags );
 void        trap_S_StopLoopingSound( int entnum );
-
 void        trap_S_StopStreamingSound( int entnum );  // usually AI.  character is talking and needs to be shut up /now/
 
 // a local sound is always played full volume
@@ -2449,7 +2440,7 @@ e_status trap_CIN_RunCinematic( int handle );
 void trap_CIN_DrawCinematic( int handle );
 void trap_CIN_SetExtents( int handle, int x, int y, int w, int h );
 
-int  trap_RealTime(qtime_t *qtime);
+int	trap_RealTime(qtime_t *qtime);
 void trap_SnapVector( float *v );
 
 qboolean    trap_GetEntityToken( char *buffer, int bufferSize );

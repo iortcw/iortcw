@@ -133,19 +133,19 @@ static void CG_Obituary( entityState_t *ent ) {
 
 	switch ( mod ) {
 	case MOD_SUICIDE:
-		message = "suicides";
+		message = "committed suicide";
 		break;
 	case MOD_FALLING:
-		message = "cratered";
+		message = "fell to his death";
 		break;
 	case MOD_CRUSH:
-		message = "was squished";
+		message = "was crushed";
 		break;
 	case MOD_WATER:
-		message = "sank like a rock";
+		message = "drowned";
 		break;
 	case MOD_SLIME:
-		message = "melted";
+		message = "died by toxic materials";
 		break;
 	case MOD_LAVA:
 		message = "does a back flip into the lava";
@@ -154,7 +154,7 @@ static void CG_Obituary( entityState_t *ent ) {
 		message = "saw the light";
 		break;
 	case MOD_TRIGGER_HURT:
-		message = "was in the wrong place";
+		message = "was killed";
 		break;
 	default:
 		message = NULL;
@@ -166,27 +166,33 @@ static void CG_Obituary( entityState_t *ent ) {
 		switch ( mod ) {
 		case MOD_GRENADE_SPLASH:
 			if ( gender == GENDER_FEMALE ) {
-				message = "tripped on her own grenade";
+				message = "dove on her own grenade";
 			} else if ( gender == GENDER_NEUTER ) {
-				message = "tripped on its own grenade";
+				message = "dove on its own grenade";
 			} else {
-				message = "tripped on his own grenade";
+				message = "dove on his own grenade";
 			}
 			break;
 		case MOD_ROCKET_SPLASH:
 			if ( gender == GENDER_FEMALE ) {
-				message = "blew herself up";
+				message = "vaporized herself";
 			} else if ( gender == GENDER_NEUTER ) {
-				message = "blew itself up";
+				message = "vaporized itself";
 			} else {
-				message = "blew himself up";
+				message = "vaporized himself";
 			}
 			break;
 		case MOD_BFG_SPLASH:
 			message = "should have used a smaller gun";
 			break;
 		case MOD_EXPLOSIVE:
-			message = "died in an explosion";
+			if ( gender == GENDER_FEMALE ) {
+				message = "died in her own explosion";
+			} else if ( gender == GENDER_NEUTER ) {
+				message = "died in its own explosion";
+			} else {
+				message = "died in his own explosion";
+			}
 			break;
 		default:
 			if ( gender == GENDER_FEMALE ) {
@@ -210,14 +216,13 @@ static void CG_Obituary( entityState_t *ent ) {
 		char    *s;
 
 		if ( cgs.gametype < GT_TEAM ) {
-			s = va( "You fragged %s\n%s place with %i", targetName,
+			s = va( "You killed %s\n%s place with %i", targetName,
 					CG_PlaceString( cg.snap->ps.persistant[PERS_RANK] + 1 ),
 					cg.snap->ps.persistant[PERS_SCORE] );
 		} else {
-			s = va( "You fragged %s", targetName );
+			s = va( "You killed %s", targetName );
 		}
 		CG_CenterPrint( s, SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-
 		// print the text message as well
 	}
 
@@ -242,72 +247,76 @@ static void CG_Obituary( entityState_t *ent ) {
 		case MOD_KNIFE_STEALTH:
 		case MOD_KNIFE:
 		case MOD_KNIFE2:
-			message = "was knifed by";
+			message = "was stabbed by";
+			message2 = "'s knife";
 			break;
 		case MOD_LUGER:
-			message = "was killed (luger) by";
+			message = "was killed by";
+			message2 = "'s Luger 9mm";
 			break;
 		case MOD_COLT:
-			message = "was killed (colt) by";
+			message = "was killed by";
+			message2 = " 's .45ACP 1911";
 			break;
 		case MOD_MP40:
-			message = "was killed (mp40) by";
+			message = "was killed by";
+			message2 = "'s MP40";
 			break;
 		case MOD_THOMPSON:
-			message = "was killed (thompson) by";
+			message = "was killed by";
+			message2 = "'s Thompson";
 			break;
 		case MOD_STEN:
-			message = "was killed (sten) by";
+			message = "was killed by";
+			message2 = "'s Sten";
 			break;
 		case MOD_MAUSER:
-			message = "was killed (mauser) by";
+			message = "was killed by";
+			message2 = "'s Mauser";
 			break;
 		case MOD_SNIPERRIFLE:
-			message = "was killed (sniper) by";
+			message = "was killed by";
+			message2 = "'s sniper rifle";
 			break;
 		case MOD_GARAND:
-			message = "was killed (garand) by";
-			break;
 		case MOD_SNOOPERSCOPE:
-			message = "was killed (snooper) by";
-			break;
 		case MOD_AKIMBO:
-			message = "was killed (dual colts) by";
+			message = "was killed by";
 			break;
 		case MOD_ROCKET_LAUNCHER:
-			message = "was killed (rl) by";
+		case MOD_ROCKET_SPLASH:
+			message = "was blasted by";
+			message2 = "'s Panzerfaust";
 			break;
 		case MOD_GRENADE_LAUNCHER:
-			message = "was killed (gren - gm) by";
+			message = "was exploded by";
+			message2 = "'s grenade";
 			break;
 		case MOD_VENOM:
-			message = "was killed (venom) by";
+			message = "was ventilated by";
+			message2 = "'s Venom";
 			break;
 		case MOD_VENOM_FULL:
-			message = "was killed (venom shot) by";
 			break;
 		case MOD_FLAMETHROWER:
-			message = "was killed (flamethrower) by";
+			message = "was cooked by";
+			message2 = "'s flamethrower";
 			break;
 		case MOD_TESLA:
-			message = "was killed (tesla) by";
-			break;
 		case MOD_SPEARGUN:
-			message = "was killed (spear) by";
-			break;
 		case MOD_SPEARGUN_CO2:
-			message = "was killed (co2 spear) by";
+			message = "was killed by";
 			break;
 		case MOD_GRENADE_PINEAPPLE:
-			message = "was killed (gren - am) by";
+			message = "was exploded by";
+			message2 = "'s grenade";
 			break;
 		case MOD_CROSS:
-			message = "was killed (cross) by";
 			break;
 // JPW NERVE
 		case MOD_AIRSTRIKE:
-			message = "stood under";
-			message2 = "'s air strike";
+			message = "was blasted by";
+			message2 = "'s support fire"; // JPW NERVE changed since it gets called for both air strikes and artillery
 			break;
 // jpw
 // (SA) leaving a sample of two part obit's
@@ -352,8 +361,8 @@ CG_UseItem
 ===============
 */
 static void CG_UseItem( centity_t *cent ) {
-	int itemNum;
-	gitem_t     *item;
+	int	itemNum;
+	gitem_t	*item;
 	entityState_t *es;
 
 	es = &cent->currentState;
@@ -369,14 +378,14 @@ static void CG_UseItem( centity_t *cent ) {
 	// print a message if the local player
 	if ( es->number == cg.snap->ps.clientNum ) {
 		if ( !itemNum ) {
-			CG_CenterPrint( "noitem", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH ); //----(SA)	modified
+			CG_CenterPrint( "noitem", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );	//----(SA)	modified
 		} else {
 			item = BG_FindItemForHoldable( itemNum );
 
 			if ( item ) {
-				cg.holdableSelectTime = cg.time;    // show remaining items
+				cg.holdableSelectTime = cg.time;	// show remaining items
 
-				switch ( itemNum ) {
+				switch( itemNum ) {
 				case HI_BOOK1:
 				case HI_BOOK2:
 				case HI_BOOK3:
@@ -412,7 +421,6 @@ static void CG_UseItem( centity_t *cent ) {
 		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.staminaSound );
 		break;
 	}
-
 }
 
 // from cg_weapons.c
@@ -528,12 +536,10 @@ static void CG_ItemPickup( int itemNum ) {
 
 	}   // end bg_itemlist[itemNum].giType == IT_WEAPON
 
-
 	if ( bg_itemlist[itemNum].giType == IT_HOLDABLE ) {
 		cg.holdableSelectTime   = cg.time;  // show holdables when a new one is picked up
 		cg.holdableSelect       = itemid;   // and select the new one
 	}
-
 }
 
 /*
@@ -705,7 +711,7 @@ void CG_PainEvent( centity_t *cent, int health, qboolean crouching ) {
 	} else {
 		snd = "*pain100_1.wav";
 	}
-	
+
 	// play a gurp sound instead of a normal pain sound
 	if (CG_WaterLevel(cent) == 3) {
 		if (rand()&1) {
@@ -752,7 +758,6 @@ CG_Explode
 void CG_Explode( centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader ) {
 	vec3_t pos;
 	qhandle_t inheritmodel = 0;
-
 
 //	VectorCopy(origin, pos);
 	VectorCopy( cent->currentState.origin2, pos );
@@ -1044,8 +1049,8 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 			re->radius = 1000;
 
 			switch ( type ) {
-			case 6:     // fabric
-				le->pos.trType = TR_GRAVITY_FLOAT;      // the fabric stuff will change to use something that looks better
+			case 6:	//	fabric
+				le->pos.trType = TR_GRAVITY_FLOAT;	// the fabric stuff will change to use something that looks better
 				le->bounceFactor    = 0.0f;
 				materialmul         = 0.3f;     // rotation speed
 				break;
@@ -1081,7 +1086,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 
 			// (SA) hoping that was just intended to represent randomness
 			//			if (cent->currentState.angles2[0] || cent->currentState.angles2[1] || cent->currentState.angles2[2])
-			if ( ( le->angles.trBase[0] == 1 || le->angles.trBase[1] == 1 || le->angles.trBase[2] == 1 ) && type != 6 ) {    // not for fabric
+			if ( ( le->angles.trBase[0] == 1 || le->angles.trBase[1] == 1 || le->angles.trBase[2] == 1 ) && type != 6 ) {	// not for fabric
 				le->pos.trType = TR_GRAVITY;
 				VectorScale( dir, 10 * 8, le->pos.trDelta );
 				le->pos.trDelta[0] += ( ( random() * 100 ) - 50 );
@@ -1187,6 +1192,8 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		VectorMA( origin, 16, dir, sprOrg );
 		VectorScale( dir, 100, sprVel );
 		CG_ParticleExplosion( "expblue", sprOrg, sprVel, 500, 20, 160 );
+
+		// RF, throw some debris
 		CG_ImpactMark( cgs.media.burnMarkShader, origin, dir, random() * 360, 1,1,1,1, qfalse, 64, qfalse, INT_MAX );
 	}
 
@@ -1227,12 +1234,10 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 
 		VectorCopy( origin, re->origin );
 		AxisCopy( axisDefault, re->axis );
-		//	re->hModel = hModel;
 		re->hModel = cgs.media.gibIntestine;
 		le->pos.trType = TR_GRAVITY;
 		VectorCopy( origin, le->pos.trBase );
 
-		//	VectorCopy( velocity, le->pos.trDelta );
 		VectorNormalize( dir );
 		VectorMA( dir, 200, dir, le->pos.trDelta );
 
@@ -1506,7 +1511,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	const char      *s;
 	int clientNum;
 	clientInfo_t    *ci;
-	//char			tempStr[MAX_QPATH];
+	//char	tempStr[MAX_QPATH];
 
 	static int footstepcnt = 0;
 	static int splashfootstepcnt = 0;
@@ -1537,9 +1542,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		//
 		// movement generated events
 		//
-
-		// TODO: change all this to sound scripts
-
 	case EV_FOOTSTEP:
 		DEBUGNAME( "EV_FOOTSTEP" );
 		if ( cg_footsteps.integer ) {
@@ -1711,7 +1713,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-
 	case EV_FALL_DMG_10:
 		DEBUGNAME( "EV_FALL_DMG_10" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
@@ -1723,7 +1724,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			CG_StartShakeCamera( 0.03, 200, cg.predictedPlayerState.origin, 200 );
 		}
 		break;
-
 	case EV_FALL_DMG_15:
 		DEBUGNAME( "EV_FALL_DMG_15" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
@@ -1735,7 +1735,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			CG_StartShakeCamera( 0.04, 200, cg.predictedPlayerState.origin, 200 );
 		}
 		break;
-
 	case EV_FALL_DMG_25:
 		DEBUGNAME( "EV_FALL_DMG_25" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall2.wav" ) );
@@ -1747,7 +1746,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			CG_StartShakeCamera( 0.05, 200, cg.predictedPlayerState.origin, 200 );
 		}
 		break;
-
 	case EV_FALL_DMG_50:
 		DEBUGNAME( "EV_FALL_DMG_50" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall2.wav" ) );
@@ -1759,7 +1757,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			CG_StartShakeCamera( 0.08, 200, cg.predictedPlayerState.origin, 200 );
 		}
 		break;
-
 	case EV_FALL_NDIE:
 		DEBUGNAME( "EV_FALL_NDIE" );
 		// splat
@@ -1966,7 +1963,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		break;
 // jpw
-
 	case EV_EMPTYCLIP:
 		DEBUGNAME( "EV_EMPTYCLIP" );
 		break;
@@ -1974,11 +1970,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_FILL_CLIP:
 		DEBUGNAME( "EV_FILL_CLIP" );
 		if ( cg_weapons[es->weapon].reloadSound ) {
-
-			// hope this does not cause trouble.  changed it to chan_weapon so i could kill the sound if the guy dies while reloading
-			// can re-work if this causes trouble
-//			trap_S_StartSound (NULL, es->number, CHAN_AUTO, cg_weapons[es->weapon].reloadSound );
-			trap_S_StartSound( NULL, es->number, CHAN_WEAPON, cg_weapons[es->weapon].reloadSound );
+			trap_S_StartSound( NULL, es->number, CHAN_WEAPON, cg_weapons[es->weapon].reloadSound ); // JPW NERVE following sherman's SP fix, should allow killing reload sound when player dies
 		}
 		break;
 
@@ -2015,8 +2007,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			break;
 		}
 
-		// TTimo
-		// show_bug.cgi?id=417
 		if ( ( newweap ) && ( cgs.gametype != GT_WOLF ) ) {
 			CG_FinishWeaponChange( es->weapon, newweap );
 		}
@@ -2166,17 +2156,12 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_GRENADE_BOUNCE:
 		DEBUGNAME( "EV_GRENADE_BOUNCE" );
 
-//		CG_Printf("bounce on: %d\n", es->eventParm);
-
 		// DYNAMITE
 		if ( es->weapon == WP_DYNAMITE ) {
 			trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.dynamitebounce1 );
 		} else {
 			int flags;
 			// GRENADES
-			// es->eventParm - surfaceparms
-//#define	SURF_METAL              0x1000	// clanking footsteps
-
 			flags = es->eventParm;
 			flags = ( flags << 12 );
 			if ( flags & SURF_WOOD ) { // SURF_WOOD
@@ -2309,8 +2294,8 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			}
 			// try with .wav
 			break;  // RF, all sounds should have extension
-			//Q_strncpyz( tempStr, s, sizeof(tempStr) );
-			//Q_strcat( tempStr, sizeof(tempStr), ".wav" );
+			//Q_strncpyz( tempStr, s, sizeof( tempStr ) );
+			//Q_strcat( tempStr, sizeof( tempStr ), ".wav" );
 			//s = tempStr;
 		}
 		// done.
@@ -2332,8 +2317,8 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			}
 			// try with .wav
 			break;  // RF, all sounds should have extension
-			//Q_strncpyz( tempStr, s, sizeof(tempStr) );
-			//Q_strcat( tempStr, sizeof(tempStr), ".wav" );
+			//Q_strncpyz( tempStr, s, sizeof( tempStr ) );
+			//Q_strcat( tempStr, sizeof( tempStr ), ".wav" );
 			//s = tempStr;
 		}
 		// done.
@@ -2380,40 +2365,38 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_ENTDEATH:
 		DEBUGNAME( "EV_ENTDEATH" );
 		switch ( es->eventParm ) {
-//			case ET_SPOTLIGHT:
-//				CG_Explodef(cent->lerpOrigin, normalized_direction, 50, 1, cgs.media.sfx_bullet_glasshit[0], 1, 0, cent->currentState.number, qfalse);
-//				break;
-
+//		case ET_SPOTLIGHT:
+//			CG_Explodef(cent->lerpOrigin, normalized_direction, 50, 1, cgs.media.sfx_bullet_glasshit[0], 1, 0, cent->currentState.number, qfalse);
+//			break;
 		case ET_ALARMBOX:
 			// all this crap shouldn't be in here, but we don't have a generic entry_point into
 			// explosions that's reasonable.  This will be an early thing to get fixed in future work
-		{
-			int i, j;
-			vec3_t sprVel, sprOrg;
+			{
+				int i, j;
+				vec3_t sprVel, sprOrg;
 
-			VectorCopy( cent->lerpAngles, dir );
-			VectorNormalize( dir );
+				VectorCopy( cent->lerpAngles, dir );
+				VectorNormalize( dir );
 
-			// explosion sprite animation
-//					VectorScale( dir, 16, sprVel );
-			VectorScale( dir, 6, sprVel );
+				// explosion sprite animation
+				// VectorScale( dir, 16, sprVel );
+				VectorScale( dir, 6, sprVel );
 
-			for ( i = 0; i < 5; i++ ) {
-				for ( j = 0; j < 3; j++ )
-					sprOrg[j] = cent->lerpOrigin[j] + 2 * dir[j] + 4 * crandom();
-				sprVel[2] += rand() % 10;
-				CG_ParticleExplosion( "blacksmokeanimb", sprOrg, sprVel, 3500 + rand() % 250, 4, 50 + rand() % 20 );
+				for ( i = 0; i < 5; i++ ) {
+					for ( j = 0; j < 3; j++ )
+						sprOrg[j] = cent->lerpOrigin[j] + 2 * dir[j] + 4 * crandom();
+						sprVel[2] += rand() % 10;
+						CG_ParticleExplosion( "blacksmokeanimb", sprOrg, sprVel, 3500 + rand() % 250, 4, 50 + rand() % 20 );
+				}
+
+				CG_AddDebris(   cent->lerpOrigin,
+								dir,
+								80,                 // speed
+								1000,                   // duration
+								3 + rand() % 2 );       // count
 			}
-
-			CG_AddDebris(   cent->lerpOrigin,
-							dir,
-							80,                 // speed
-							1000,                   // duration
-							3 + rand() % 2 );       // count
+			break;
 		}
-		break;
-		}
-
 		break;
 
 	case EV_OBITUARY:
@@ -2505,9 +2488,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// Rafael particles
 	case EV_SMOKE:
 		DEBUGNAME( "EV_SMOKE" );
-		if ( cent->currentState.density == 3 ) {          // cannon
+		if ( cent->currentState.density == 3 ) {		// cannon
 			CG_ParticleSmoke( cgs.media.smokePuffShaderdirty, cent );
-		} else if ( cent->currentState.density == 7 ) {    // steam
+		} else if ( cent->currentState.density == 7 ) {	// steam
 			// steam from panzerfaust casing
 			CG_ParticleImpactSmokePuffExtended( cgs.media.smokeParticleShader, cent->currentState.origin, tv( 0,0,1 ), 8, 1000, 8, 20, 20, 0.25f );
 		} else if ( !( cent->currentState.density ) ) {
@@ -2557,7 +2540,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_Concussive( cent );
 		break;
 
-// generic particle emitter that uses client-side particle scripts
+//----(SA)	added	// generic particle emitter that uses client-side particle scripts
 	case EV_EMITTER:
 	{
 		localEntity_t   *le;
@@ -2573,6 +2556,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		le->headJuncIndex = cent->currentState.teamNum;     // 'type'
 	}
 	break;
+//----(SA)
 
 	case EV_OILPARTICLES:
 		CG_Particle_OilParticle( cgs.media.oilParticle, cent->currentState.origin, cent->currentState.origin2, cent->currentState.time, cent->currentState.density );

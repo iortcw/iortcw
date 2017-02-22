@@ -146,7 +146,6 @@ int AAS_UpdateEntity( int entnum, bot_entitystate_t *state ) {
 			//absolute mins and maxs
 			VectorAdd( ent->i.mins, ent->i.origin, absmins );
 			VectorAdd( ent->i.maxs, ent->i.origin, absmaxs );
-
 			//unlink the entity
 			AAS_UnlinkFromAreas( ent->areas );
 			//relink the entity to the AAS areas (use the larges bbox)

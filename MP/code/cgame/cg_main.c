@@ -93,11 +93,13 @@ Q_EXPORT intptr_t vmMain( intptr_t command, intptr_t arg0, intptr_t arg1, intptr
 	return -1;
 }
 
+
 cg_t cg;
 cgs_t cgs;
 centity_t cg_entities[MAX_GENTITIES];
 weaponInfo_t cg_weapons[MAX_WEAPONS];
 itemInfo_t cg_items[MAX_ITEMS];
+
 
 vmCvar_t cg_railTrailTime;
 vmCvar_t cg_centertime;
@@ -147,7 +149,7 @@ vmCvar_t cg_footsteps;
 vmCvar_t cg_markTime;
 vmCvar_t cg_brassTime;
 vmCvar_t cg_viewsize;
-vmCvar_t cg_letterbox;   //----(SA)	added
+vmCvar_t cg_letterbox;
 vmCvar_t cg_drawGun;
 vmCvar_t cg_drawFPGun;
 vmCvar_t cg_drawGamemodels;
@@ -223,7 +225,7 @@ vmCvar_t cg_medicChargeTime;
 vmCvar_t cg_engineerChargeTime;
 vmCvar_t cg_LTChargeTime;
 vmCvar_t cg_soldierChargeTime;
-vmCvar_t cg_redlimbitime;
+vmCvar_t cg_redlimbotime;
 vmCvar_t cg_bluelimbotime;
 // jpw
 
@@ -520,7 +522,7 @@ CG_ForceModelChange
 ===================
 */
 static void CG_ForceModelChange( void ) {
-	int i;
+	int	i;
 
 	for ( i = 0 ; i < MAX_CLIENTS ; i++ ) {
 		const char      *clientInfo;
@@ -792,18 +794,6 @@ static void CG_RegisterSounds( void ) {
 // JPW NERVE
 	if ( cg_gameType.integer != GT_SINGLE_PLAYER ) {
 		cgs.media.wearOffSound = trap_S_RegisterSound( "sound/multiplayer/respawn.wav" );
-		/*	cgs.media.twoMinuteSound_g = trap_S_RegisterSound("sound/multiplayer/axis/g-twominutes1.wav");
-		   cgs.media.twoMinuteSound_a = trap_S_RegisterSound("sound/multiplayer/allies/a-twominutes1.wav");
-		   cgs.media.thirtySecondSound_g = trap_S_RegisterSound("sound/multiplayer/axis/g-thirtyseconds1.wav");
-		   cgs.media.thirtySecondSound_a = trap_S_RegisterSound("sound/multiplayer/allies/a-thirtyseconds1.wav");*/
-/*		if( cg.twoMinuteSound_g[0] != '0' )
-			cgs.media.twoMinuteSound_g = trap_S_RegisterSound(cg.twoMinuteSound_g);
-		if( cg.twoMinuteSound_a[0] != '0' )
-			cgs.media.twoMinuteSound_a = trap_S_RegisterSound(cg.twoMinuteSound_a);
-		if( cg.thirtySecondSound_g[0] != '0' )
-			cgs.media.thirtySecondSound_g = trap_S_RegisterSound(cg.thirtySecondSound_g);
-		if( cg.thirtySecondSound_a[0] != '0' )
-			cgs.media.thirtySecondSound_a = trap_S_RegisterSound(cg.thirtySecondSound_a);*/
 		trap_S_RegisterSound( "sound/multiplayer/land_hurt.wav" );
 	} else {
 		cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav" );
@@ -939,36 +929,38 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.lightningSounds[2] = trap_S_RegisterSound( "sound/world/electzap3.wav" );
 	cgs.media.lightningZap = trap_S_RegisterSound( "sound/world/electrocute.wav" );
 */
+
 	// precache sound scripts that get called from the cgame
 	cgs.media.bulletHitFleshScript = CG_SoundScriptPrecache( "bulletHitFlesh" );
 
 /* JPW NERVE not in MP
 	cgs.media.teslaZapScript = CG_SoundScriptPrecache( "teslaZap" );
-	cgs.media.teslaLoopSound = trap_S_RegisterSound ( "sound/weapons/tesla/loop.wav" );
+	cgs.media.teslaLoopSound = trap_S_RegisterSound( "sound/weapons/tesla/loop.wav" );
 */
+
 //	cgs.media.batsFlyingLoopSound = trap_S_RegisterSound( "sound/world/bats_flying.wav" );
 
 	// FIXME: only needed with item
 //	cgs.media.flightSound = trap_S_RegisterSound( "sound/items/flight.wav" );
 //	cgs.media.medkitSound = trap_S_RegisterSound ("sound/items/use_medkit.wav");
 /* JPW NERVE -- not in MP
-	cgs.media.elecSound = trap_S_RegisterSound ("sound/items/use_elec.wav");
-	cgs.media.fireSound = trap_S_RegisterSound ("sound/items/use_fire.wav");
-	cgs.media.waterSound = trap_S_RegisterSound ("sound/items/use_water.wav");
-	cgs.media.wineSound = trap_S_RegisterSound ("sound/items/use_wine.wav");
-	cgs.media.quadSound = trap_S_RegisterSound("sound/items/damage3.wav");
+	cgs.media.elecSound = trap_S_RegisterSound( "sound/items/use_elec.wav" );
+	cgs.media.fireSound = trap_S_RegisterSound( "sound/items/use_fire.wav" );
+	cgs.media.waterSound = trap_S_RegisterSound( "sound/items/use_water.wav" );
+	cgs.media.wineSound = trap_S_RegisterSound( "sound/items/use_wine.wav" );
+	cgs.media.quadSound = trap_S_RegisterSound( "sound/items/damage3.wav" );
 */
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );
 	cgs.media.sfx_ric3 = trap_S_RegisterSound( "sound/weapons/machinegun/ric3.wav" );
-//	cgs.media.sfx_railg = trap_S_RegisterSound ("sound/weapons/railgun/railgf1a.wav");
+//	cgs.media.sfx_railg = trap_S_RegisterSound( "sound/weapons/railgun/railgf1a.wav" );
 	cgs.media.sfx_rockexp = trap_S_RegisterSound( "sound/weapons/rocket/rocklx1a.wav" );
 	cgs.media.sfx_rockexpDist = trap_S_RegisterSound( "sound/multiplayer/artillery_exp01.wav" ); // JPW NERVE
 	cgs.media.sfx_dynamiteexp = trap_S_RegisterSound( "sound/weapons/dynamite/dynamite_exp.wav" );
 	cgs.media.sfx_dynamiteexpDist = trap_S_RegisterSound( "sound/weapons/dynamite/dynamite_exp_dist.wav" );   //----(SA)	added
 
 
-//	cgs.media.sfx_spearhit = trap_S_RegisterSound ("sound/weapons/speargun/spearhit.wav"); // pulled JPW NERVE
+//	cgs.media.sfx_spearhit = trap_S_RegisterSound( "sound/weapons/speargun/spearhit.wav" ); // pulled JPW NERVE
 
 	cgs.media.sfx_knifehit[0] = trap_S_RegisterSound( "sound/weapons/knife/knife_hit1.wav" ); // hitting player
 	cgs.media.sfx_knifehit[1] = trap_S_RegisterSound( "sound/weapons/knife/knife_hit2.wav" );
@@ -977,9 +969,7 @@ static void CG_RegisterSounds( void ) {
 
 	cgs.media.sfx_knifehit[4] = trap_S_RegisterSound( "sound/weapons/knife/knife_hitwall1.wav" ); // hitting wall
 
-	cgs.media.sfx_knifehit[4] = trap_S_RegisterSound( "sound/weapons/knife/knife_hitwall1.wav" ); // hitting wall
-
-	cgs.media.sfx_bullet_metalhit[0] = trap_S_RegisterSound( "sound/weapons/bullethit_metal1.wav" );
+		cgs.media.sfx_bullet_metalhit[0] = trap_S_RegisterSound( "sound/weapons/bullethit_metal1.wav" );
 	cgs.media.sfx_bullet_metalhit[1] = trap_S_RegisterSound( "sound/weapons/bullethit_metal2.wav" );
 	cgs.media.sfx_bullet_metalhit[2] = trap_S_RegisterSound( "sound/weapons/bullethit_metal3.wav" );
 
@@ -1084,22 +1074,6 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.numberShaders[i] = trap_R_RegisterShader( sb_nums[i] );
 	}
 
-
-//	cgs.media.botSkillShaders[0] = trap_R_RegisterShader( "menu/art/skill1.tga" );
-//	cgs.media.botSkillShaders[1] = trap_R_RegisterShader( "menu/art/skill2.tga" );
-//	cgs.media.botSkillShaders[2] = trap_R_RegisterShader( "menu/art/skill3.tga" );
-//	cgs.media.botSkillShaders[3] = trap_R_RegisterShader( "menu/art/skill4.tga" );
-//	cgs.media.botSkillShaders[4] = trap_R_RegisterShader( "menu/art/skill5.tga" );
-
-//	cgs.media.viewBloodShader = trap_R_RegisterShader( "viewBloodBlend" );
-
-//	cgs.media.deferShader = trap_R_RegisterShaderNoMip( "gfx/2d/defer.tga" );
-
-//	cgs.media.scoreboardName = trap_R_RegisterShaderNoMip( "menu/tab/name.tga" );
-//	cgs.media.scoreboardPing = trap_R_RegisterShaderNoMip( "menu/tab/ping.tga" );
-//	cgs.media.scoreboardScore = trap_R_RegisterShaderNoMip( "menu/tab/score.tga" );
-//	cgs.media.scoreboardTime = trap_R_RegisterShaderNoMip( "menu/tab/time.tga" );
-
 // JPW NERVE
 	cgs.media.fleshSmokePuffShader = trap_R_RegisterShader( "fleshimpactsmokepuff" ); // JPW NERVE
 	cgs.media.nerveTestShader = trap_R_RegisterShader( "jpwtest1" );
@@ -1138,9 +1112,9 @@ static void CG_RegisterGraphics( void ) {
 	// done
 
 	// Rafael bats
-	//for (i=0; i<10; i++) {
-	//	cgs.media.bats[i] = trap_R_RegisterShader ( va("bats%i",i+1) );
-	//}
+//	for ( i = 0; i < 10; i++ ) {
+//		cgs.media.bats[i] = trap_R_RegisterShader( va( "bats%i",i + 1 ) );
+//	}
 	// done
 
 	cgs.media.smokePuffRageProShader = trap_R_RegisterShader( "smokePuffRagePro" );
@@ -1237,17 +1211,15 @@ static void CG_RegisterGraphics( void ) {
 
 	// DHM - Nerve :: Allow flags again, will change later to more appropriate models
 	if ( cgs.gametype == GT_CTF || cgs.gametype >= GT_WOLF || cg_buildScript.integer ) {
-		//cgs.media.redFlagModel = trap_R_RegisterModel( "models/flags/r_flag.md3" );
 		cgs.media.redFlagModel = trap_R_RegisterModel( "models/multiplayer/treasure/treasure.md3" );
-		//cgs.media.blueFlagModel = trap_R_RegisterModel( "models/flags/b_flag.md3" );
 		cgs.media.blueFlagModel = trap_R_RegisterModel( "models/multiplayer/treasure/treasure.md3" );
 	}
 
 //	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
 //		cgs.media.friendShader = trap_R_RegisterShader( "sprites/foe" );
 //		cgs.media.redQuadShader = trap_R_RegisterShader("powerups/blueflag" );
-	cgs.media.teamStatusBar = trap_R_RegisterShader( "gfx/2d/colorbar.tga" );           // NERVE - SMF
-	//	}
+		cgs.media.teamStatusBar = trap_R_RegisterShader( "gfx/2d/colorbar.tga" );           // NERVE - SMF
+//	}
 
 // JPW NERVE
 	cgs.media.redColorBar = trap_R_RegisterShader( "redcolorbar" );
@@ -1260,30 +1232,9 @@ static void CG_RegisterGraphics( void ) {
 
 	CG_LoadingString( " - models" );
 
-//	cgs.media.armorModel = trap_R_RegisterModel( "models/powerups/armor/armor_yel.md3" );
-
 	cgs.media.machinegunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/m_shell.md3" );
-
 	cgs.media.panzerfaustBrassModel = trap_R_RegisterModel( "models/weapons2/shells/pf_shell.md3" );
-
-	// Rafael
 	cgs.media.smallgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/sm_shell.md3" );
-
-//	cgs.media.shotgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/s_shell.md3" );
-
-// RF: old style gibs not needed anymore (changed over to using gibs.cfg)
-/*
-	cgs.media.gibAbdomen = trap_R_RegisterModel( "models/gibs/abdomen.md3" );
-	cgs.media.gibArm = trap_R_RegisterModel( "models/gibs/arm.md3" );
-	cgs.media.gibChest = trap_R_RegisterModel( "models/gibs/chest.md3" );
-	cgs.media.gibFist = trap_R_RegisterModel( "models/gibs/fist.md3" );
-	cgs.media.gibFoot = trap_R_RegisterModel( "models/gibs/foot.md3" );
-	cgs.media.gibForearm = trap_R_RegisterModel( "models/gibs/forearm.md3" );
-	cgs.media.gibIntestine = trap_R_RegisterModel( "models/gibs/intestine.md3" );
-	cgs.media.gibLeg = trap_R_RegisterModel( "models/gibs/leg.md3" );
-	cgs.media.gibSkull = trap_R_RegisterModel( "models/gibs/skull.md3" );
-	cgs.media.gibBrain = trap_R_RegisterModel( "models/gibs/brain.md3" );
-*/
 
 	//----(SA) wolf debris
 	cgs.media.debBlock[0] = trap_R_RegisterModel( "models/mapobjects/debris/brick1.md3" );
@@ -1334,7 +1285,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.waterSplashShader = trap_R_RegisterShader( "waterSplash" );
 	//----(SA)	end
 
-	cgs.media.spearModel = trap_R_RegisterModel( "models/weaphits/spear.md3" );    //----(SA)
+	cgs.media.spearModel = trap_R_RegisterModel( "models/weaphits/spear.md3" );	//----(SA)
 
 	cgs.media.bulletFlashModel = trap_R_RegisterModel( "models/weaphits/bullet.md3" );
 	cgs.media.ringFlashModel = trap_R_RegisterModel( "models/weaphits/ring02.md3" );
@@ -1427,7 +1378,7 @@ static void CG_RegisterGraphics( void ) {
 	memset( cg_items, 0, sizeof( cg_items ) );
 	memset( cg_weapons, 0, sizeof( cg_weapons ) );
 
-// TODO: FIXME:  REMOVE REGISTRATION OF EACH MODEL FOR EVERY LEVEL LOAD
+	// TODO: FIXME:  REMOVE REGISTRATION OF EACH MODEL FOR EVERY LEVEL LOAD
 
 
 	//----(SA)	okay, new stuff to intialize rather than doing it at level load time (or "give all" time)
@@ -2150,7 +2101,7 @@ static void CG_RunCinematicFrame( int handle ) {
 
 /*
 =================
-CG_LoadHudMenu();
+CG_LoadHudMenu
 
 =================
 */
@@ -2284,6 +2235,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	cgs.serverCommandSequence = serverCommandSequence;
 
 	// load a few needed things before we do any screen updates
+	// (SA) using Nerve's text since they have foreign characters
 	cgs.media.charsetShader     = trap_R_RegisterShader( "gfx/2d/hudchars" ); //trap_R_RegisterShader( "gfx/2d/bigchars" );
 	// JOSEPH 4-17-00
 	cgs.media.menucharsetShader = trap_R_RegisterShader( "gfx/2d/hudchars" );
@@ -2423,13 +2375,13 @@ void CG_Shutdown( void ) {
 }
 
 void CG_S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int volume ) {
-	trap_S_AddLoopingSound( entityNum, origin, velocity, 1250, sfx, volume );     // volume was previously removed from CG_S_ADDLOOPINGSOUND.  I added 'range'
+	trap_S_AddLoopingSound( entityNum, origin, velocity, 1250, sfx, volume );	// volume was previously removed from CG_S_ADDLOOPINGSOUND. I added 'range'
 }
 
 void CG_S_AddRangedLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, int range ) {
-	trap_S_AddLoopingSound( entityNum, origin, velocity, range, sfx, 255 );   // RF, assume full volume, since thats how it worked before
+	trap_S_AddLoopingSound( entityNum, origin, velocity, range, sfx, 255 );		// RF, assume full volume, since thats how it worked before
 }
 
 void CG_S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx ) {
-	trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 );   //----(SA)	modified
+	trap_S_AddRealLoopingSound( entityNum, origin, velocity, 1250, sfx, 255 );	//----(SA) modified
 }

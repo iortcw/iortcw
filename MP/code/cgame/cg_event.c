@@ -220,6 +220,7 @@ static void CG_Obituary( entityState_t *ent ) {
 			break;
 		}
 	}
+
 	if ( message ) {
 		message = CG_TranslateString( message );
 		CG_Printf( "[cgnotify]%s %s.\n", targetName, message );
@@ -266,58 +267,40 @@ static void CG_Obituary( entityState_t *ent ) {
 		case MOD_KNIFE_STEALTH:
 		case MOD_KNIFE:
 		case MOD_KNIFE2:
-			//message = "was stabbed to death by";
 			message = "was stabbed by";
 			message2 = "'s knife";
 			break;
 		case MOD_LUGER:
-			//message = "borrowed some bullets from ";
-			//message2 = "'s Luger Parabellum 9mm";
 			message = "was killed by";
 			message2 = "'s Luger 9mm";
 			break;
 		case MOD_COLT:
-			//message = "'s face was the unwilling recipient of";
-			//message2 = "'s .45ACP 1911 rounds";
 			message = "was killed by";
 			message2 = " 's .45ACP 1911";
 			break;
 		case MOD_MP40:
-			//message = "was force fed a magazine of";
-			//message2 = "'s MP40 slugs";
 			message = "was killed by";
 			message2 = "'s MP40";
 			break;
 		case MOD_THOMPSON:
-			//message = "was hit by a fusillade from";
-			//message2 = "'s Thompson";
 			message = "was killed by";
 			message2 = "'s Thompson";
 			break;
 		case MOD_STEN:
-			//message = "was quietly zapped by";
-			//message2 = "'s Sten";
 			message = "was killed by";
 			message2 = "'s Sten";
 			break;
 		case MOD_MAUSER:
-			//message = "took a rifle gut shot from";
 			message = "was killed by";
 			message2 = "'s Mauser";
 			break;
 		case MOD_SNIPERRIFLE:
-			//message = "caught a sniper round in the teeth from";
 			message = "was killed by";
 			message2 = "'s sniper rifle";
 			break;
 		case MOD_GARAND:
-			//message = "was killed (garand) by";
-			break;
 		case MOD_SNOOPERSCOPE:
-			//message = "was killed (snooper) by";
-			break;
 		case MOD_AKIMBO:
-			//message = "was killed (dual colts) by";
 			break;
 // JPW NERVE - per atvi req
 		case MOD_DYNAMITE:
@@ -328,54 +311,37 @@ static void CG_Obituary( entityState_t *ent ) {
 // jpw
 		case MOD_ROCKET_LAUNCHER:
 		case MOD_ROCKET_SPLASH:
-			//message = "was vaporized by";
-			//message2 = "'s Panzerfaust";
 			message = "was blasted by";
 			message2 = "'s Panzerfaust";
 			break;
 		case MOD_GRENADE_LAUNCHER:
 		case MOD_GRENADE_SPLASH:
 		case MOD_GRENADE_PINEAPPLE:
-			//message = "was blown to bits by";
-			//message2 = "'s potato masher";
 			message = "was exploded by";
 			message2 = "'s grenade";
 			break;
 		case MOD_VENOM:
-			//message = "was ventilated by";
 			message = "was ventilated by";
 			message2 = "'s Venom";
 			break;
 		case MOD_VENOM_FULL:
-			//message = "was killed (venom shot) by";
 			break;
 		case MOD_FLAMETHROWER:
-			//message = "was roasted on the barbie by";
 			message = "was cooked by";
 			message2 = "'s flamethrower";
 			break;
 		case MOD_TESLA:
-			//message = "was killed (tesla) by";
-			break;
 		case MOD_SPEARGUN:
-			//message = "was killed (spear) by";
-			break;
 		case MOD_SPEARGUN_CO2:
-			//message = "was killed (co2 spear) by";
 			break;
 		case MOD_MACHINEGUN:
-			//message = "was perforated by";
-			//message2 = "'s crew-served mg42";
 			message = "was perforated by";
 			message2 = "'s crew-served MG42";
 			break;
 		case MOD_CROSS:
-			//message = "was killed (cross) by";
 			break;
 // JPW NERVE
 		case MOD_AIRSTRIKE:
-			//message = "stood under";
-			//message2 = "'s air strike";
 			message = "was blasted by";
 			message2 = "'s support fire"; // JPW NERVE changed since it gets called for both air strikes and artillery
 			break;
@@ -433,15 +399,15 @@ CG_UseItem
 */
 static void CG_UseItem( centity_t *cent ) {
 /*
-	int			itemNum;
-	gitem_t		*item;
+	int	itemNum;
+	gitem_t	*item;
 	entityState_t *es;
 
 	es = &cent->currentState;
 
 	// itemNum = es->event - EV_USE_ITEM0;
 	// JCash bluesnews reported fix
-	itemNum = (es->event &~EV_EVENT_BITS) - EV_USE_ITEM0;
+	itemNum = ( es->event & ~EV_EVENT_BITS ) - EV_USE_ITEM0;
 
 	if ( itemNum < 0 || itemNum > HI_NUM_HOLDABLE ) {
 		itemNum = 0;
@@ -454,20 +420,20 @@ static void CG_UseItem( centity_t *cent ) {
 		} else {
 			item = BG_FindItemForHoldable( itemNum );
 
-			if(item) {
+			if ( item ) {
 				cg.holdableSelectTime = cg.time;	// show remaining items
 
-				switch(itemNum) {
-					case HI_BOOK1:
-					case HI_BOOK2:
-					case HI_BOOK3:
-						break;
-					case HI_WINE:
-						CG_CenterPrint( "You drank the wine", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-						break;
-					default:
-						CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
-						break;
+				switch( itemNum ) {
+				case HI_BOOK1:
+				case HI_BOOK2:
+				case HI_BOOK3:
+					break;
+				case HI_WINE:
+					CG_CenterPrint( "You drank the wine", SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
+					break;
+				default:
+					CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.25, BIGCHAR_WIDTH );
+					break;
 				}
 			}
 		}
@@ -476,15 +442,15 @@ static void CG_UseItem( centity_t *cent ) {
 	switch ( itemNum ) {
 	default:
 	case HI_NONE:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.useNothingSound );
 		break;
 
 	case HI_MEDKIT:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.medkitSound );
 		break;
 
 	case HI_WINE:
-		trap_S_StartSound (NULL, es->number, CHAN_BODY, cgs.media.wineSound );
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.wineSound );
 		break;
 	}
 */
@@ -570,12 +536,10 @@ static void CG_ItemPickup( int itemNum ) {
 
 	}   // end bg_itemlist[itemNum].giType == IT_WEAPON
 
-
-	//if (bg_itemlist[itemNum].giType == IT_HOLDABLE ) {
-	//cg.holdableSelectTime	= cg.time;	// show holdables when a new one is picked up
-	//cg.holdableSelect		= itemid;	// and select the new one
-	//}
-
+//	if ( bg_itemlist[itemNum].giType == IT_HOLDABLE ) {
+//		cg.holdableSelectTime   = cg.time;  // show holdables when a new one is picked up
+//		cg.holdableSelect       = itemid;   // and select the new one
+//	}
 }
 
 /*
@@ -792,7 +756,6 @@ CG_Explode
 ==============
 */
 void CG_Explode( centity_t *cent, vec3_t origin, vec3_t dir, qhandle_t shader ) {
-
 	qhandle_t inheritmodel = 0;
 
 	// inherit shader
@@ -1033,8 +996,8 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
 			re->radius = 1000;
 
 			// trying to make this a little more interesting
-			if ( type == 6 ) { // "fabric"
-				le->pos.trType = TR_GRAVITY_FLOAT;  // the fabric stuff will change to use something that looks better
+			if ( type == 6 ) {	//	fabric
+				le->pos.trType = TR_GRAVITY_FLOAT;	// the fabric stuff will change to use something that looks better
 			} else {
 				if ( !forceLowGrav && rand() & 1 ) {    // if low gravity is not forced and die roll goes our way use regular grav
 					le->pos.trType = TR_GRAVITY;
@@ -1202,14 +1165,9 @@ void CG_Effect( centity_t *cent, vec3_t origin, vec3_t dir ) {
 		CG_AddDebris( origin, dir,
 					  280,      // speed
 					  1400,     // duration
-					  // 15 + rand()%5 );	// count
 					  7 + rand() % 2 ); // count
 	}
 }
-
-
-
-
 
 
 /*
@@ -1418,7 +1376,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	const char      *s;
 	int clientNum;
 	clientInfo_t    *ci;
-	char tempStr[MAX_QPATH];
+	char	tempStr[MAX_QPATH];
 
 // JPW NERVE copied here for mg42 SFX event
 	vec3_t porg, gorg, norm;    // player/gun origin
@@ -1616,27 +1574,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_MEDIUM:
-		DEBUGNAME("EV_FALL_MEDIUM");
-		// use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -16;
-			cg.landTime = cg.time;
-		}
-		break;
-	case EV_FALL_FAR:
-		DEBUGNAME("EV_FALL_FAR");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
 	case EV_FALL_DMG_10:
 		DEBUGNAME( "EV_FALL_DMG_10" );
 		// use normal pain sound trap_S_StartSound( NULL, es->number, CHAN_VOICE, CG_CustomSound( es->number, "*pain100_1.wav" ) );
@@ -1669,18 +1606,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_DMG_30:
-		DEBUGNAME("EV_FALL_DMG_30");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
 	case EV_FALL_DMG_50:
 		DEBUGNAME( "EV_FALL_DMG_50" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -1691,18 +1616,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			cg.landTime = cg.time;
 		}
 		break;
-/*
-	case EV_FALL_DMG_75:
-		DEBUGNAME("EV_FALL_DMG_75");
-		trap_S_StartSound (NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "*fall1.wav" ) );
-		cent->pe.painTime = cg.time;	// don't play a pain sound right after this
-		if ( clientNum == cg.predictedPlayerState.clientNum ) {
-			// smooth landing z changes
-			cg.landChange = -24;
-			cg.landTime = cg.time;
-		}
-		break;
-*/
 	case EV_FALL_NDIE:
 		DEBUGNAME( "EV_FALL_NDIE" );
 		trap_S_StartSound( NULL, es->number, CHAN_AUTO, CG_CustomSound( es->number, "sound/multiplayer/land_hurt.wav" ) ); // JPW NERVE
@@ -1792,7 +1705,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 
 		// DHM - Nerve :: causes problems in multiplayer...
 		if ( cgs.gametype == GT_SINGLE_PLAYER && clientNum == cg.predictedPlayerState.clientNum ) {
-//			trap_R_SetFog(FOG_WATER, 0, 400, .1, .1, .1, 111);
 			trap_R_SetFog( FOG_CMD_SWITCHFOG, FOG_WATER, 200, 0, 0, 0, 0 );
 		}
 		break;
@@ -2184,7 +2096,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME( "EV_BULLET_HIT_WALL" );
 		ByteToDir( es->eventParm, dir );
 		CG_Bullet( es->pos.trBase, es->otherEntityNum, dir, qfalse, ENTITYNUM_WORLD, qfalse, es->otherEntityNum2, 0 );
-//		CG_MachineGunEjectBrass(cent); // JPW NERVE
 		break;
 
 	case EV_BULLET_HIT_FLESH:
@@ -2400,7 +2311,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// Rafael particles
 	case EV_SMOKE:
 		DEBUGNAME( "EV_SMOKE" );
-		if ( cent->currentState.density == 3 ) { // cannon
+		if ( cent->currentState.density == 3 ) {		// cannon
 			CG_ParticleSmoke( cgs.media.smokePuffShaderdirty, cent );
 		} else if ( !( cent->currentState.density ) ) {
 			CG_ParticleSmoke( cgs.media.smokePuffShader, cent );
@@ -2680,7 +2591,7 @@ void CG_CheckEvents( centity_t *cent ) {
 	if ( cent->currentState.eType > ET_EVENTS ) {
 		if ( cent->previousEvent ) {
 			//goto skipEvent;
-			return; // already fired
+			return;	// already fired
 		}
 		// if this is a player event set the entity number of the client entity number
 //(SA) note: EF_PLAYER_EVENT never set

@@ -871,8 +871,7 @@ void AAS_CreateAllRoutingCache( void ) {
 				continue;
 			}
 			AAS_AreaTravelTimeToGoalArea( j, ( *aasworld ).areawaypoints[j], i, tfl );
-			//if (t) break;
-			//Log_Write("traveltime from %d to %d is %d", i, j, t);
+			//( *aasworld ).frameroutingupdates = 0;
 		} //end for
 	} //end for
 } //end of the function AAS_CreateAllRoutingCache
@@ -2048,26 +2047,16 @@ int AAS_CompressVis( byte *vis, int numareas, byte *dest ) {
 void AAS_DecompressVis( byte *in, int numareas, byte *decompressed ) {
 	byte c;
 	byte    *out;
-	//int		row;
 	byte    *end;
 
 	// initialize the vis data, only set those that are visible
 	memset( decompressed, 0, numareas );
 
-	//row = (numareas+7)>>3;
 	out = decompressed;
 	end = ( byte * )( decompressed + numareas );
 
 	do
 	{
-		/*
-		if (*in)
-		{
-			*out++ = *in++;
-			continue;
-		}
-		*/
-
 		c = in[1];
 		if ( !c ) {
 			AAS_Error( "DecompressVis: 0 repeat" );
@@ -2076,13 +2065,6 @@ void AAS_DecompressVis( byte *in, int numareas, byte *decompressed ) {
 			memset( out, 1, c );
 		}
 		in += 2;
-		/*
-		while (c)
-		{
-			*out++ = 0;
-			c--;
-		}
-		*/
 		out += c;
 	} while ( out < end );
 } //end of the function AAS_DecompressVis
@@ -2205,11 +2187,11 @@ int AAS_NearestHideArea( int srcnum, vec3_t origin, int areanum, int enemynum, v
 	vec3_t enemyVec;
 	qboolean startVisible;
 	vec3_t v1, v2, p;
-	int count = 0;
 	#define MAX_HIDEAREA_LOOPS  4000
+	static float lastTime;
+	int count = 0;
 	//
 	// don't run this more than once per frame
-	static float lastTime;
 	if ( lastTime == AAS_Time() ) {
 		return 0;
 	}
@@ -2415,9 +2397,12 @@ int AAS_FindAttackSpotWithinRange( int srcnum, int rangenum, int enemynum, float
 	unsigned short int srctraveltime;
 	int count = 0;
 	#define MAX_ATTACKAREA_LOOPS    200
+	static float lastTime;
+	//
+	// RF, currently doesn't work with multiple AAS worlds, so only enable for the default world
+	//if (aasworld != aasworlds) return 0;
 	//
 	// don't run this more than once per frame
-	static float lastTime;
 	if ( lastTime == AAS_Time() ) {
 		return 0;
 	}

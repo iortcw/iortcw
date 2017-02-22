@@ -744,7 +744,6 @@ qboolean CG_DrawScoreboard( void ) {
 	}
 
 //----(SA) added
-
 	// Secrets
 	if ( cgs.gametype == GT_SINGLE_PLAYER ) {
 		s = "Secrets: 0/12";
@@ -753,7 +752,6 @@ qboolean CG_DrawScoreboard( void ) {
 		y = 60;
 //		CG_DrawBigStringColor( x, y, s, fadeColor );
 	}
-
 //----(SA) end
 
 	// NERVE - SMF
@@ -827,10 +825,9 @@ CG_CenterGiantLine
 ================
 */
 /*
-// TTimo: unused
 static void CG_CenterGiantLine( float y, const char *string ) {
-	float		x;
-	vec4_t		color;
+	float	x;
+	vec4_t	color;
 
 	color[0] = 1;
 	color[1] = 1;

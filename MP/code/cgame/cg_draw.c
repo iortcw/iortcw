@@ -64,13 +64,15 @@ int CG_Text_Width( const char *text, float scale, int limit ) {
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
-	fontInfo_t *font = &cgDC.Assets.textFont;
+	fontInfo_t *fnt = &cgDC.Assets.textFont;
+
 	if ( scale <= cg_smallFont.value ) {
-		font = &cgDC.Assets.smallFont;
+		fnt = &cgDC.Assets.smallFont;
 	} else if ( scale > cg_bigFont.value ) {
-		font = &cgDC.Assets.bigFont;
+		fnt = &cgDC.Assets.bigFont;
 	}
-	useScale = scale * font->glyphScale;
+
+	useScale = scale * fnt->glyphScale;
 	out = 0;
 	if ( text ) {
 		len = strlen( text );
@@ -83,7 +85,7 @@ int CG_Text_Width( const char *text, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &font->glyphs[*s & 255];
+				glyph = &fnt->glyphs[*s & 255];
 				out += glyph->xSkip;
 				s++;
 				count++;
@@ -99,13 +101,15 @@ int CG_Text_Height( const char *text, float scale, int limit ) {
 	glyphInfo_t *glyph;
 	float useScale;
 	const char *s = text;
-	fontInfo_t *font = &cgDC.Assets.textFont;
+	fontInfo_t *fnt = &cgDC.Assets.textFont;
+
 	if ( scale <= cg_smallFont.value ) {
-		font = &cgDC.Assets.smallFont;
+		fnt = &cgDC.Assets.smallFont;
 	} else if ( scale > cg_bigFont.value ) {
-		font = &cgDC.Assets.bigFont;
+		fnt = &cgDC.Assets.bigFont;
 	}
-	useScale = scale * font->glyphScale;
+
+	useScale = scale * fnt->glyphScale;
 	max = 0;
 	if ( text ) {
 		len = strlen( text );
@@ -118,7 +122,7 @@ int CG_Text_Height( const char *text, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &font->glyphs[*s & 255];
+				glyph = &fnt->glyphs[*s & 255];
 				if ( max < glyph->height ) {
 					max = glyph->height;
 				}
@@ -143,13 +147,15 @@ void CG_Text_Paint( float x, float y, float scale, vec4_t color, const char *tex
 	vec4_t newColor;
 	glyphInfo_t *glyph;
 	float useScale;
-	fontInfo_t *font = &cgDC.Assets.textFont;
+	fontInfo_t *fnt = &cgDC.Assets.textFont;
+
 	if ( scale <= cg_smallFont.value ) {
-		font = &cgDC.Assets.smallFont;
+		fnt = &cgDC.Assets.smallFont;
 	} else if ( scale > cg_bigFont.value ) {
-		font = &cgDC.Assets.bigFont;
+		fnt = &cgDC.Assets.bigFont;
 	}
-	useScale = scale * font->glyphScale;
+
+	useScale = scale * fnt->glyphScale;
 
 	color[3] *= cg_hudAlpha.value;  // (SA) adjust for cg_hudalpha
 
@@ -163,7 +169,7 @@ void CG_Text_Paint( float x, float y, float scale, vec4_t color, const char *tex
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			glyph = &font->glyphs[*s & 255];
+			glyph = &fnt->glyphs[*s & 255];
 			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
@@ -968,7 +974,6 @@ static void CG_DrawTeamInfo( void ) {
 							  cgs.teamChatMsgs[i % chatHeight], hcolor, qfalse, qfalse,
 							  TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
 		}
-// jpw
 	}
 }
 
@@ -1498,6 +1503,7 @@ CROSSHAIRS
 ================================================================================
 */
 
+
 /*
 ==============
 CG_DrawWeapReticle
@@ -1780,11 +1786,12 @@ static void CG_DrawCrosshair( void ) {
 		return;
 	}
 
-	if ( cg_drawCrosshair.integer < 0 ) { //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+	if ( cg_drawCrosshair.integer < 0 ) {	//----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
 		return;
 	}
 
-	if ( cg.snap->ps.leanf ) { // no crosshair while leaning
+	// no crosshair while leaning
+	if ( cg.snap->ps.leanf ) {
 		return;
 	}
 
@@ -1935,11 +1942,12 @@ static void CG_DrawCrosshair3D( void ) {
 		return;
 	}
 
-	if ( cg_drawCrosshair.integer < 0 ) { //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
+	if ( cg_drawCrosshair.integer < 0 ) {	//----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
 		return;
 	}
 
-	if ( cg.snap->ps.leanf ) { // no crosshair while leaning
+	// no crosshair while leaning
+	if ( cg.snap->ps.leanf ) {
 		return;
 	}
 
@@ -2015,7 +2023,7 @@ static void CG_ScanForCrosshairEntity( void ) {
 
 	}
 	VectorCopy( cg.refdef.vieworg, start );
-	VectorMA( start, 8192, cg.refdef.viewaxis[0], end );    //----(SA)	changed from 8192
+	VectorMA( start, 8192, cg.refdef.viewaxis[0], end );
 
 	CG_Trace( &trace, start, vec3_origin, vec3_origin, end,
 			  cg.snap->ps.clientNum, CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM );
@@ -2465,11 +2473,10 @@ static void CG_DrawIntermission( void ) {
 	CG_DrawScoreboard();
 }
 
+// NERVE - SMF
 /*
 =================
 CG_ActivateLimboMenu
-
-NERVE - SMF
 =================
 */
 static void CG_ActivateLimboMenu( void ) {
@@ -2640,7 +2647,7 @@ CG_DrawFollow
 =================
 */
 static qboolean CG_DrawFollow( void ) {
-	//float		x;
+	//float x;
 	vec4_t color;
 	const char  *name;
 	char deploytime[128];        // JPW NERVE
@@ -2680,7 +2687,7 @@ static qboolean CG_DrawFollow( void ) {
 			CG_DrawStringExt( INFOTEXT_STARTX, 86, deploytime, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 80 );
 		}
 	} else {
-		// jpw
+// jpw
 		CG_DrawSmallString( INFOTEXT_STARTX, 68, CG_TranslateString( "following" ), 1.0F );
 
 		name = cgs.clientinfo[ cg.snap->ps.clientNum ].name;
@@ -3066,6 +3073,7 @@ static void CG_DrawFlashLightning( void ) {
 	}
 }
 
+
 /*
 ==============
 CG_DrawFlashBlendBehindHUD
@@ -3195,12 +3203,8 @@ static void CG_DrawObjectiveInfo( void ) {
 			x1 = 320 - w / 2;
 			x2 = 320 + w / 2;
 		}
-
-/*
-		if ( x1 + w > x2 )
-			x2 = x1 + w;
-*/
 // jpw
+
 		y += cg.oidPrintCharWidth * 1.5;
 
 		while ( *start && ( *start != '\n' ) ) {
@@ -3727,15 +3731,15 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 		return;
 	}
 
+	if ( cg.cameraMode ) { //----(SA)	no 2d when in camera view
+		return;
+	}
+
 	if ( cg_draw2D.integer == 0 ) {
 		return;
 	}
 
 	CG_ScreenFade();
-
-	if ( cg.cameraMode ) { //----(SA)	no 2d when in camera view
-		return;
-	}
 
 	if ( cg.snap->ps.pm_type == PM_INTERMISSION ) {
 		CG_DrawIntermission();

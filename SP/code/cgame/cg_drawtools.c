@@ -62,6 +62,7 @@ void CG_AdjustFrom640( float *x, float *y, float *w, float *h ) {
 		*x += 0.5 * ( cgs.glconfig.vidWidth - ( cgs.glconfig.vidHeight * 640 / 480 ) );
 	}
 #endif
+
 	if ( cg_fixedAspect.integer ) {
 		if (cg_horizontalPlacement == PLACE_STRETCH) {
 			// scale for screen sizes (not aspect correct in wide screen)
