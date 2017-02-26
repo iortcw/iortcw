@@ -729,7 +729,7 @@ void S_PaintChannels( int endtime ) {
 				count = sc->soundLength - sampleOffset;
 			}
 
-			if ( count > 0 ) {	
+			if ( count > 0 ) {
 				if( sc->soundCompressionMethod == 1) {
 					S_PaintChannelFromADPCM		(ch, sc, count, sampleOffset, ltime - s_paintedtime);
 				} else if( sc->soundCompressionMethod == 2) {
@@ -766,7 +766,7 @@ void S_PaintChannels( int endtime ) {
 					count = sc->soundLength - sampleOffset;
 				}
 
-				if ( count > 0 ) {	
+				if ( count > 0 ) {
 					if( sc->soundCompressionMethod == 1) {
 						S_PaintChannelFromADPCM		(ch, sc, count, sampleOffset, ltime - s_paintedtime);
 					} else if( sc->soundCompressionMethod == 2) {

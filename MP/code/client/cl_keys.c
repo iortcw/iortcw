@@ -50,7 +50,7 @@ int chat_playerNum;
 
 qboolean key_overstrikeMode;
 
-int anykeydown;
+int	anykeydown;
 qkey_t keys[MAX_KEYS];
 
 
@@ -342,7 +342,7 @@ keyname_t keynames_d[] =    //deutsch
 
 	{"ALT", K_ALT},
 	{"STRG", K_CTRL},
-	{"UMSCHALLT", K_SHIFT},
+	{"UMSCHALT", K_SHIFT},
 
 	{"FESTSTELLT", K_CAPSLOCK},
 
@@ -1370,16 +1370,13 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 	}
 }
 
-void Field_Draw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape )
-{
+void Field_Draw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape ) {
 	Field_VariableSizeDraw( edit, x, y, width, SMALLCHAR_WIDTH, showCursor, noColorEscape );
 }
 
-void Field_BigDraw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape )
-{
+void Field_BigDraw( field_t *edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape ) {
 	Field_VariableSizeDraw( edit, x, y, width, BIGCHAR_WIDTH, showCursor, noColorEscape );
 }
-
 
 /*
 ================
@@ -1737,8 +1734,6 @@ void Message_Key( int key ) {
 			else {
 				Com_sprintf( buffer, sizeof( buffer ), "say \"%s\"\n", chatField.buffer );
 			}
-
-
 
 			CL_AddReliableCommand(buffer, qfalse);
 		}
@@ -2458,8 +2453,8 @@ void Key_ClearStates( void ) {
 	for ( i = 0 ; i < MAX_KEYS ; i++ ) {
 		if ( keys[i].down ) {
 			CL_KeyEvent( i, qfalse, 0 );
-
 		}
+
 		keys[i].down = 0;
 		keys[i].repeats = 0;
 	}

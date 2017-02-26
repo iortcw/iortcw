@@ -58,27 +58,30 @@ LAN_LoadCachedServers
 ====================
 */
 void LAN_LoadCachedServers( void ) {
-	// TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
-	// show_bug.cgi?id=445
-	/*
-	  int size;
-	  fileHandle_t fileIn;
-	  cls.numglobalservers = cls.numfavoriteservers = 0;
-	  cls.numGlobalServerAddresses = 0;
-	  if (FS_SV_FOpenFileRead("servercache.dat", &fileIn)) {
-		  FS_Read(&cls.numglobalservers, sizeof(int), fileIn);
-		  FS_Read(&cls.numfavoriteservers, sizeof(int), fileIn);
-		  FS_Read(&size, sizeof(int), fileIn);
-		  if (size == sizeof(cls.globalServers) + sizeof(cls.favoriteServers)) {
-			  FS_Read(&cls.globalServers, sizeof(cls.globalServers), fileIn);
-			  FS_Read(&cls.favoriteServers, sizeof(cls.favoriteServers), fileIn);
-		  } else {
-			  cls.numglobalservers = cls.numfavoriteservers = 0;
-			  cls.numGlobalServerAddresses = 0;
-		  }
-		  FS_FCloseFile(fileIn);
-	  }
-	*/
+// TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
+// show_bug.cgi?id=445
+/*
+	int size;
+	fileHandle_t fileIn;
+
+	cls.numglobalservers = cls.numfavoriteservers = 0;
+	cls.numGlobalServerAddresses = 0;
+
+	if ( FS_SV_FOpenFileRead( "servercache.dat", &fileIn ) ) {
+		FS_Read( &cls.numglobalservers, sizeof( int ), fileIn );
+		FS_Read( &cls.numfavoriteservers, sizeof( int ), fileIn );
+		FS_Read( &size, sizeof( int ), fileIn );
+		if ( size == sizeof( cls.globalServers ) + sizeof( cls.favoriteServers ) ) {
+			FS_Read( &cls.globalServers, sizeof( cls.globalServers ), fileIn );
+			FS_Read( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileIn );
+		} else {
+			cls.numglobalservers = cls.numfavoriteservers = 0;
+			cls.numGlobalServerAddresses = 0;
+		}
+
+		FS_FCloseFile( fileIn );
+	}
+*/
 }
 
 /*
@@ -87,20 +90,20 @@ LAN_SaveServersToCache
 ====================
 */
 void LAN_SaveServersToCache( void ) {
-	// TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
-	// show_bug.cgi?id=445
-	/*
-	  int size;
-	  fileHandle_t fileOut;
-	  fileOut = FS_SV_FOpenFileWrite("servercache.dat");
-	  FS_Write(&cls.numglobalservers, sizeof(int), fileOut);
-	  FS_Write(&cls.numfavoriteservers, sizeof(int), fileOut);
-	  size = sizeof(cls.globalServers) + sizeof(cls.favoriteServers);
-	  FS_Write(&size, sizeof(int), fileOut);
-	  FS_Write(&cls.globalServers, sizeof(cls.globalServers), fileOut);
-	  FS_Write(&cls.favoriteServers, sizeof(cls.favoriteServers), fileOut);
-	  FS_FCloseFile(fileOut);
-	*/
+// TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
+// show_bug.cgi?id=445
+/*
+	int size;
+	fileHandle_t fileOut;
+	fileOut = FS_SV_FOpenFileWrite( "servercache.dat" );
+	FS_Write( &cls.numglobalservers, sizeof( int ), fileOut );
+	FS_Write( &cls.numfavoriteservers, sizeof( int ), fileOut );
+	size = sizeof(cls.globalServers) + sizeof(cls.favoriteServers);
+	FS_Write( &size, sizeof( int ), fileOut );
+	FS_Write( &cls.globalServers, sizeof( cls.globalServers ), fileOut );
+	FS_Write( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileOut );
+	FS_FCloseFile( fileOut );
+*/
 }
 
 
@@ -670,16 +673,15 @@ static void CLUI_SetCDKey( char *buf ) {
 	if ( UI_usesUniqueCDKey() && fs && fs->string[0] != 0 ) {
 		memcpy( &cl_cdkey[16], buf, 16 );
 		cl_cdkey[32] = 0;
-		// set the flag so the fle will be written at the next opportunity
+		// set the flag so the file will be written at the next opportunity
 		cvar_modifiedFlags |= CVAR_ARCHIVE;
 	} else {
 		memcpy( cl_cdkey, buf, 16 );
-		// set the flag so the fle will be written at the next opportunity
+		// set the flag so the file will be written at the next opportunity
 		cvar_modifiedFlags |= CVAR_ARCHIVE;
 	}
 }
 #endif
-
 
 /*
 ====================
@@ -1032,7 +1034,7 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		return args[1];
 
 	case UI_MEMCPY:
-		Com_Memset( VMA(1), args[2], args[3] );
+		Com_Memcpy( VMA(1), VMA(2), args[3] );
 		return args[1];
 
 	case UI_STRNCPY:
@@ -1072,7 +1074,6 @@ intptr_t CL_UISystemCalls( intptr_t *args ) {
 		S_StopBackgroundTrack();
 		return 0;
 	case UI_S_STARTBACKGROUNDTRACK:
-//		S_StartBackgroundTrack( VMA( 1 ), VMA( 2 ), args[3] );   //----(SA)	added fadeup time
 		S_StartBackgroundTrack( VMA( 1 ), VMA( 2 ) );
 		return 0;
 
@@ -1145,25 +1146,9 @@ CL_InitUI
 
 void CL_InitUI( void ) {
 	int v;
-	vmInterpret_t interpret;
 
 	// load the dll or bytecode
-	interpret = Cvar_VariableValue("vm_ui");
-	if(cl_connectedToPureServer)
-	{
-		// if sv_pure is set we only allow qvms to be loaded
-		if(interpret != VMI_COMPILED && interpret != VMI_BYTECODE)
-			interpret = VMI_COMPILED;
-	}
-
-//----(SA)	always dll
-
-#ifdef WOLF_SP_DEMO
-	uivm = VM_Create( "ui", CL_UISystemCalls, VMI_NATIVE );
-#else
-	uivm = VM_Create( "ui", CL_UISystemCalls, interpret );
-#endif
-
+	uivm = VM_Create( "ui", CL_UISystemCalls, Cvar_VariableValue("vm_ui") );
 	if ( !uivm ) {
 		Com_Error( ERR_FATAL, "VM_Create on UI failed" );
 	}
@@ -1176,7 +1161,6 @@ void CL_InitUI( void ) {
 	}
 
 	// init for this gamestate
-//	VM_Call( uivm, UI_INIT );
 	VM_Call( uivm, UI_INIT, ( clc.state >= CA_AUTHORIZING && clc.state < CA_ACTIVE ) );
 }
 

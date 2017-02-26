@@ -55,7 +55,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #define LETTERBOX_OFFSET 105
 
-
 #define ROQ_QUAD            0x1000
 #define ROQ_QUAD_INFO       0x1001
 #define ROQ_CODEBOOK        0x1002
@@ -71,6 +70,7 @@ If you have questions concerning this license or the applicable additional terms
 extern int s_soundtime;
 
 #define CIN_STREAM 0    //DAJ const for the sound stream used for cinematics
+
 static void RoQ_init( void );
 
 /******************************************************************************
@@ -97,7 +97,7 @@ typedef struct {
 	byte file[65536];
 	short sqrTable[256];
 
-	int mcomp[256];
+	int	mcomp[256];
 	byte                *qStatus[2][32768];
 
 	long oldXOff, oldYOff, oldysize, oldxsize;
@@ -1143,7 +1143,7 @@ static void RoQInterrupt( void ) {
 	if ( currentHandle < 0 ) {
 		return;
 	}
-//resound:
+
 	FS_Read( cin.file, cinTable[currentHandle].RoQFrameSize+8, cinTable[currentHandle].iFile );
 	if ( cinTable[currentHandle].RoQPlayed >= cinTable[currentHandle].ROQSize ) {
 		if ( cinTable[currentHandle].holdAtEnd == qfalse ) {
@@ -1157,6 +1157,7 @@ static void RoQInterrupt( void ) {
 		}
 		return;
 	}
+
 	framedata = cin.file;
 //
 // new frame is ready
@@ -1200,7 +1201,6 @@ redump:
 				s_rawend[CIN_STREAM] = s_soundtime;         //DAJ added [CIN_STREAM]
 			}
 			ssize = RllDecodeStereoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, (unsigned short)cinTable[currentHandle].roq_flags );
-//			Com_Printf("%i\n", ssize+s_rawend[CIN_STREAM]- s_soundtime );
 			S_RawSamples(0, ssize, 22050, 2, 2, (byte *)sbuf, 1.0f, -1);
 			cinTable[currentHandle].sound = 1;
 		}
@@ -1262,12 +1262,6 @@ redump:
 	if ( cinTable[currentHandle].inMemory && ( cinTable[currentHandle].status != FMV_EOF ) ) {
 		cinTable[currentHandle].inMemory--; framedata += 8; goto redump;
 	}
-
-//	if (cinTable[currentHandle].roq_id == ZA_SOUND_STEREO) {
-//  /		cinTable[currentHandle].RoQPlayed	+= cinTable[currentHandle].RoQFrameSize+8;
-//		goto resound;
-//	}
-
 //
 // one more frame hits the dust
 //
@@ -1425,14 +1419,11 @@ e_status CIN_RunCinematic( int handle ) {
 	if ( cinTable[currentHandle].shader && ( thisTime - cinTable[currentHandle].lastTime ) > 100 ) {
 		cinTable[currentHandle].startTime += thisTime - cinTable[currentHandle].lastTime;
 	}
-
 //----(SA)	modified to use specified fps for roq's
-
 	cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime ) * cinTable[currentHandle].roqFPS ) / 1000 );
 
 	start = cinTable[currentHandle].startTime;
-	while ( ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads )
-			&& cinTable[currentHandle].status == FMV_PLAY )
+	while ( ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads ) && ( cinTable[currentHandle].status == FMV_PLAY ) )
 	{
 		RoQInterrupt();
 		if ( start != cinTable[currentHandle].startTime ) {
@@ -1483,10 +1474,6 @@ int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBi
 	unsigned short RoQID;
 	char name[MAX_OSPATH];
 	int i;
-
-
-	// TODO: Laird says don't play cine's in widescreen mode
-
 
 	if ( strstr( arg, "/" ) == NULL && strstr( arg, "\\" ) == NULL ) {
 		Com_sprintf( name, sizeof( name ), "video/%s", arg );
@@ -1658,8 +1645,8 @@ CIN_DrawCinematic
 ==================
 */
 void CIN_DrawCinematic( int handle ) {
-	float x, y, w, h;  //, barheight;
-	byte    *buf; \
+	float x, y, w, h;
+	byte    *buf;
 
 	if ( handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF ) {
 		return;
@@ -1737,8 +1724,6 @@ void CL_PlayCinematic_f( void ) {
 	}
 
 	S_StopAllSounds();
-	// make sure volume is up for cine
-//	S_FadeAllSounds( 1, 0 );
 
 	if ( bits & CIN_letterBox ) {
 		CL_handle = CIN_PlayCinematic( arg, 0, LETTERBOX_OFFSET, SCREEN_WIDTH, SCREEN_HEIGHT - ( LETTERBOX_OFFSET * 2 ), bits );
@@ -1817,4 +1802,3 @@ void CIN_UploadCinematic( int handle ) {
 		}
 	}
 }
-

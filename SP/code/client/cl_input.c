@@ -445,7 +445,7 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 	float pitch   = j_pitch->value   * cl.joystickAxis[j_pitch_axis->integer];
 	float up      = j_up->value      * cl.joystickAxis[j_up_axis->integer];
 
-	if ( !(kb[KB_SPEED].active ^ cl_run->integer )) {
+	if ( !( kb[KB_SPEED].active ^ cl_run->integer ) ) {
 		cmd->buttons |= BUTTON_WALKING;
 	}
 
@@ -482,13 +482,10 @@ void CL_MouseMove(usercmd_t *cmd) {
 	float mx, my;
 
 	// allow mouse smoothing
-	if (m_filter->integer)
-	{
-		mx = (cl.mouseDx[0] + cl.mouseDx[1]) * 0.5f;
-		my = (cl.mouseDy[0] + cl.mouseDy[1]) * 0.5f;
-	}
-	else
-	{
+	if ( m_filter->integer ) {
+		mx = ( cl.mouseDx[0] + cl.mouseDx[1] ) * 0.5f;
+		my = ( cl.mouseDy[0] + cl.mouseDy[1] ) * 0.5f;
+	} else {
 		mx = cl.mouseDx[cl.mouseIndex];
 		my = cl.mouseDy[cl.mouseIndex];
 	}
@@ -1083,11 +1080,11 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "-mlook", IN_MLookUp );
 
 #ifdef USE_VOIP
-	Cmd_AddCommand ("+voiprecord", IN_VoipRecordDown);
-	Cmd_AddCommand ("-voiprecord", IN_VoipRecordUp);
+	Cmd_AddCommand( "+voiprecord", IN_VoipRecordDown );
+	Cmd_AddCommand( "-voiprecord", IN_VoipRecordUp );
 #endif
 
-	Cmd_AddCommand( "notebook",IN_Notebook );
+	Cmd_AddCommand( "notebook", IN_Notebook );
 
 	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );
 	cl_debugMove = Cvar_Get( "cl_debugMove", "0", 0 );
@@ -1155,18 +1152,18 @@ void CL_ShutdownInput(void)
 	Cmd_RemoveCommand("-attack2");
 	Cmd_RemoveCommand("+zoom");
 	Cmd_RemoveCommand("-zoom");
-	Cmd_RemoveCommand( "+quickgren" );
-	Cmd_RemoveCommand( "-quickgren" );
-	Cmd_RemoveCommand( "+reload" );
-	Cmd_RemoveCommand( "-reload" );
-	Cmd_RemoveCommand( "+leanleft" );
-	Cmd_RemoveCommand( "-leanleft" );
-	Cmd_RemoveCommand( "+leanright" );
-	Cmd_RemoveCommand( "-leanright" );
-	Cmd_RemoveCommand( "+wbutton6" );
-	Cmd_RemoveCommand( "-wbutton6" );
-	Cmd_RemoveCommand( "+wbutton7" );
-	Cmd_RemoveCommand( "-wbutton7" );
+	Cmd_RemoveCommand("+quickgren");
+	Cmd_RemoveCommand("-quickgren");
+	Cmd_RemoveCommand("+reload");
+	Cmd_RemoveCommand("-reload");
+	Cmd_RemoveCommand("+leanleft");
+	Cmd_RemoveCommand("-leanleft");
+	Cmd_RemoveCommand("+leanright");
+	Cmd_RemoveCommand("-leanright");
+	Cmd_RemoveCommand("+wbutton6");
+	Cmd_RemoveCommand("-wbutton6");
+	Cmd_RemoveCommand("+wbutton7");
+	Cmd_RemoveCommand("-wbutton7");
 
 	Cmd_RemoveCommand("+mlook");
 	Cmd_RemoveCommand("-mlook");

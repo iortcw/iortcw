@@ -3125,7 +3125,7 @@ void BotMoveToGoal( bot_moveresult_t *result, int movestate, bot_goal_t *goal, i
 		return;
 	}
 	//reset the grapple before testing if the bot has a valid goal
-	//because the bot could loose all its goals when stuck to a wall
+	//because the bot could lose all its goals when stuck to a wall
 	BotResetGrapple( ms );
 	//
 	if ( !goal ) {

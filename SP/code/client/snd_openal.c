@@ -2241,7 +2241,7 @@ void S_AL_StartBackgroundTrack( const char *intro, const char *loop )
 	// Generate the musicBuffers
 	if (!S_AL_GenBuffers(NUM_MUSIC_BUFFERS, musicBuffers, "music"))
 		return;
-	
+
 	// Queue the musicBuffers up
 	for(i = 0; i < NUM_MUSIC_BUFFERS; i++)
 	{
@@ -2322,8 +2322,7 @@ void S_AL_FadeAllSounds( float targetvol, int time ) {
 S_StartStreamingSound
 ======================
 */
-static
-void S_AL_StartStreamingSound( const char *intro, const char *loop, int entnum, int channel, int attenuation ) {
+static void S_AL_StartStreamingSound( const char *intro, const char *loop, int entnum, int channel, int attenuation ) {
 	// FIXME: Stub
 }
 
@@ -2332,8 +2331,7 @@ void S_AL_StartStreamingSound( const char *intro, const char *loop, int entnum, 
 S_StopEntStreamingSound
 ======================
 */
-static
-void S_AL_StopEntStreamingSound( int entnum ) {
+static void S_AL_StopEntStreamingSound( int entnum ) {
 	// FIXME: Stub
 }
 

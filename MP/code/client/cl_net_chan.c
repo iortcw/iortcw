@@ -158,6 +158,7 @@ CL_Netchan_Transmit
 */
 void CL_Netchan_Transmit( netchan_t *chan, msg_t* msg ) {
 	MSG_WriteByte( msg, clc_EOF );
+
 #ifdef LEGACY_PROTOCOL
 	if(chan->compat)
 		CL_Netchan_Encode(msg);

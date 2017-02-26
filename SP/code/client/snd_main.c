@@ -202,7 +202,6 @@ int S_GetVoiceAmplitude( int entityNum )
 	return 0;
 }
 
-
 /*
 =================
 S_RawSamples

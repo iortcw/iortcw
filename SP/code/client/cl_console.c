@@ -33,7 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 
 int g_console_field_width = 78;
 
-
 #define COLNSOLE_COLOR  COLOR_WHITE //COLOR_BLACK
 
 #define NUM_CON_TIMES 4
@@ -109,7 +108,6 @@ Con_MessageMode_f
 void Con_MessageMode_f( void ) {
 	chat_playerNum = -1;
 	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 
@@ -124,7 +122,6 @@ Con_MessageMode2_f
 void Con_MessageMode2_f( void ) {
 	chat_playerNum = -1;
 	chat_team = qtrue;
-//	chat_limbo = qfalse;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 25;
 	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
@@ -142,7 +139,6 @@ void Con_MessageMode3_f( void ) {
 		return;
 	}
 	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
@@ -160,7 +156,6 @@ void Con_MessageMode4_f( void ) {
 		return;
 	}
 	chat_team = qfalse;
-//	chat_limbo = qfalse;		// NERVE - SMF
 	Field_Clear( &chatField );
 	chatField.widthInChars = 30;
 	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_MESSAGE );
@@ -173,13 +168,7 @@ Con_StartLimboMode_f
 ================
 */
 void Con_StartLimboMode_f( void ) {
-//	chat_playerNum = -1;
-//	chat_team = qfalse;
-	chat_limbo = qtrue;     // NERVE - SMF
-//	Field_Clear( &chatField );
-//	chatField.widthInChars = 30;
-
-//	cls.keyCatchers ^= KEYCATCH_MESSAGE;
+	chat_limbo = qtrue;
 }
 
 /*
@@ -188,13 +177,7 @@ Con_StopLimboMode_f
 ================
 */
 void Con_StopLimboMode_f( void ) {
-//	chat_playerNum = -1;
-//	chat_team = qfalse;
-	chat_limbo = qfalse;        // NERVE - SMF
-//	Field_Clear( &chatField );
-//	chatField.widthInChars = 30;
-
-//	cls.keyCatchers &= ~KEYCATCH_MESSAGE;
+	chat_limbo = qfalse;
 }
 // -NERVE - SMF
 
@@ -212,7 +195,6 @@ void Con_Clear_f( void ) {
 
 	Con_Bottom();       // go to end
 }
-
 
 /*
 ================
@@ -318,7 +300,7 @@ If the line width has changed, reformat the buffer.
 */
 void Con_CheckResize( void ) {
 	int i, j, width, oldwidth, oldtotallines, numlines, numchars;
-	short tbuf[CON_TEXTSIZE];
+	short	tbuf[CON_TEXTSIZE];
 
 	width = ( SCREEN_WIDTH / SMALLCHAR_WIDTH ) - 2;
 
@@ -469,7 +451,7 @@ If no console is visible, the text will appear at the top of the game window
 ================
 */
 void CL_ConsolePrint( char *txt ) {
-	int		y, l;
+	int	y, l;
 	unsigned char	c;
 	unsigned short	color;
 
@@ -531,14 +513,11 @@ void CL_ConsolePrint( char *txt ) {
 		}
 	}
 
-
 	// mark time for transparent overlay
-
 	if ( con.current >= 0 ) {
 		con.times[con.current % NUM_CON_TIMES] = cls.realtime;
 	}
 }
-
 
 /*
 ==============================================================================
@@ -643,8 +622,7 @@ void Con_DrawNotify( void ) {
 			skip = 5;
 		}
 
-		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-			SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
+		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v, SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
 
 	}
 
@@ -664,7 +642,6 @@ void Con_DrawSolidConsole( float frac ) {
 	short           *text;
 	int row;
 	int lines;
-//	qhandle_t		conShader;
 	int currentColor;
 	vec4_t color;
 
@@ -688,7 +665,7 @@ void Con_DrawSolidConsole( float frac ) {
 	} else {
 		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
 
-		if ( frac >= 0.5f ) {  // only draw when the console is down all the way (for now)
+		if ( frac >= 0.5f ) {
 			color[0] = color[1] = color[2] = frac * 2.0f;
 			color[3] = 1.0f;
 			re.SetColor( color );
@@ -712,10 +689,7 @@ void Con_DrawSolidConsole( float frac ) {
 	i = strlen( Q3_VERSION );
 
 	for ( x = 0 ; x < i ; x++ ) {
-
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH,
-			lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
-
+		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH, lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
 	}
 
 

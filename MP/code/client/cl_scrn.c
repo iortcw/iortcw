@@ -216,7 +216,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 	s = string;
 	xx = x;
 	while ( *s ) {
-		if ( Q_IsColorString( s ) && !noColorEscape ) {
+		if ( !noColorEscape && Q_IsColorString( s ) ) {
 			s += 2;
 			continue;
 		}
@@ -237,8 +237,6 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 				color[3] = setColor[3];
 				re.SetColor( color );
 			}
-			s += 2;
-			continue;
 			if ( !noColorEscape ) {
 				s += 2;
 				continue;
@@ -435,7 +433,7 @@ static float values[1024];
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph (float value) {
+void SCR_DebugGraph( float value ) {
 	values[current] = value;
 	current = (current + 1) % ARRAY_LEN(values);
 }

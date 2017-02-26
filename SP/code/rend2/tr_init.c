@@ -1821,10 +1821,6 @@ refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp ) {
 	re.GetEntityToken   = R_GetEntityToken;
 	re.TakeVideoFrame = RE_TakeVideoFrame;
 
-#ifdef BLAH // MrE __USEA3D
-	re.A3D_RenderGeometry = RE_A3D_RenderGeometry;
-#endif
-
 	// RF
 	re.ZombieFXAddNewHit = RB_ZombieFXAddNewHit;
 

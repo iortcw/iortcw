@@ -104,11 +104,11 @@ cvar_t      *s_mute;        // (SA) for DM so he can 'toggle' sound on/off witho
 cvar_t      *s_wavonly;
 
 static loopSound_t		loopSounds[MAX_GENTITIES];
-
 static	channel_t		*freelist = NULL;
 
-int						s_rawend[MAX_RAW_STREAMS];
-portable_samplepair_t s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
+int	s_rawend[MAX_RAW_STREAMS];
+int	s_rawpainted[MAX_RAW_STREAMS];
+portable_samplepair_t	s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
 
 
 // ====================================================================
@@ -1556,8 +1556,6 @@ void S_Update_(void) {
 	samps = dma.samples >> (dma.channels-1);
 	if (endtime - s_soundtime > samps)
 		endtime = s_soundtime + samps;
-
-
 
 	SNDDMA_BeginPainting ();
 

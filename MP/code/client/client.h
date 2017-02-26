@@ -57,8 +57,8 @@ If you have questions concerning this license or the applicable additional terms
  
 #define	RETRANSMIT_TIMEOUT	3000	// time between connection packet retransmits
 
-#define LIMBOCHAT_WIDTH     140     // NERVE - SMF - NOTE TTimo buffer size indicator, not related to screen bbox
-#define LIMBOCHAT_HEIGHT    7       // NERVE - SMF
+#define LIMBOCHAT_WIDTH		140     // NERVE - SMF
+#define LIMBOCHAT_HEIGHT	7       // NERVE - SMF
 
 // snapshots are a view of the server at a given time
 typedef struct {
@@ -163,8 +163,6 @@ typedef struct {
 	entityState_t parseEntities[MAX_PARSE_ENTITIES];
 
 	// NERVE - SMF
-	// NOTE TTimo - UI uses LIMBOCHAT_WIDTH strings (140),
-	// but for the processing in CL_AddToLimboChat we need some safe room
 	char limboChatMsgs[LIMBOCHAT_HEIGHT][LIMBOCHAT_WIDTH * 3 + 1];
 	int limboChatPos;
 
@@ -211,7 +209,6 @@ typedef struct {
 	// these are our reliable messages that go to the server
 	int reliableSequence;
 	int reliableAcknowledge;                // the last one the server has executed
-	// TTimo - NOTE: incidentally, reliableCommands[0] is never used (always start at reliableAcknowledge+1)
 	char reliableCommands[MAX_RELIABLE_COMMANDS][MAX_TOKEN_CHARS];
 
 	// server message (unreliable) and command (reliable) sequence
@@ -396,7 +393,7 @@ typedef struct {
 	qhandle_t charSetShader;
 	qhandle_t whiteShader;
 	qhandle_t consoleShader;
-	qhandle_t consoleShader2;       // NERVE - SMF - merged from WolfSP
+	qhandle_t consoleShader2;   //----(SA)	added
 } clientStatic_t;
 
 extern clientStatic_t cls;
@@ -616,7 +613,7 @@ typedef enum {
 void CL_ClearKeys( void );
 
 void CL_InitInput( void );
-void CL_ShutdownInput(void);
+void CL_ShutdownInput( void );
 void CL_SendCmd( void );
 void CL_ClearState( void );
 void CL_ReadPackets( void );
@@ -668,7 +665,7 @@ void Con_DrawCharacter( int cx, int line, int num );
 
 void Con_CheckResize( void );
 void Con_Init( void );
-void Con_Shutdown(void);
+void Con_Shutdown( void );
 void Con_Clear_f( void );
 void Con_ToggleConsole_f( void );
 void Con_DrawNotify( void );

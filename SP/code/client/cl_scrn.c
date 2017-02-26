@@ -405,8 +405,7 @@ static float values[1024];
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph (float value)
-{
+void SCR_DebugGraph( float value ) {
 	values[current] = value;
 	current = (current + 1) % ARRAY_LEN(values);
 }

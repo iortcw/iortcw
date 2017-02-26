@@ -662,8 +662,7 @@ void Con_DrawNotify( void ) {
 			skip = strlen( buf ) + 1;
 		}
 
-		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-					SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
+		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v, SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue, qtrue );
 
 	}
 
@@ -706,7 +705,6 @@ void Con_DrawSolidConsole( float frac ) {
 	} else {
 		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
 
-		// NERVE - SMF - merged from WolfSP
 		if ( frac >= 0.5f ) {
 			color[0] = color[1] = color[2] = frac * 2.0f;
 			color[3] = 1.0f;
@@ -716,16 +714,13 @@ void Con_DrawSolidConsole( float frac ) {
 			SCR_DrawPic( 192, 70, 256, 128, cls.consoleShader2 );
 			re.SetColor( NULL );
 		}
-		// -NERVE - SMF
 	}
 
 	color[0] = 0;
 	color[1] = 0;
 	color[2] = 0;
-//	color[3] = 1;
 	color[3] = 0.6f;
 	SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
-
 
 	// draw the version number
 
@@ -734,9 +729,7 @@ void Con_DrawSolidConsole( float frac ) {
 	i = strlen( Q3_VERSION );
 
 	for ( x = 0 ; x < i ; x++ ) {
-
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH,
-			lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
+		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x + 1 ) * SMALLCHAR_WIDTH, lines - SMALLCHAR_HEIGHT, Q3_VERSION[x] );
 	}
 
 

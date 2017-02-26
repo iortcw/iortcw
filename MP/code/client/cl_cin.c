@@ -46,6 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "client.h"
 #include "snd_local.h"
+
 #define MAXSIZE             8
 #define MINSIZE             4
 
@@ -64,7 +65,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_VIDEO_HANDLES   16
 
-
+extern int s_soundtime;
 
 static void RoQ_init( void );
 
@@ -92,7 +93,7 @@ typedef struct {
 	byte file[65536];
 	short sqrTable[256];
 
-	int		mcomp[256];
+	int	mcomp[256];
 	byte                *qStatus[2][32768];
 
 	long oldXOff, oldYOff, oldysize, oldxsize;
@@ -144,8 +145,6 @@ static cinematics_t cin;
 static cin_cache cinTable[MAX_VIDEO_HANDLES];
 static int currentHandle = -1;
 static int CL_handle = -1;
-
-extern int				s_soundtime;		// sample PAIRS
 
 void CIN_CloseAllVideos( void ) {
 	int i;
@@ -364,7 +363,6 @@ static void move4_32( byte *src, byte *dst, int spl  ) {
 		dst += spl;
 	}
 }
-
 
 /******************************************************************************
 *
@@ -1192,12 +1190,13 @@ redump:
 		break;
 	case    ZA_SOUND_STEREO:
 		if ( !cinTable[currentHandle].silent ) {
-			if (cinTable[currentHandle].numQuads == -1) {
- 					S_Update();
-					s_rawend[0] = s_soundtime;
- 				}
-				ssize = RllDecodeStereoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, (unsigned short)cinTable[currentHandle].roq_flags );
-				S_RawSamples(0, ssize, 22050, 2, 2, (byte *)sbuf, 1.0f, -1);
+			if ( cinTable[currentHandle].numQuads == -1 ) {
+				S_Update();
+				Com_DPrintf( "S_Update: Setting rawend to %i\n", s_soundtime );
+				s_rawend[0] = s_soundtime;
+			}
+			ssize = RllDecodeStereoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, (unsigned short)cinTable[currentHandle].roq_flags );
+			S_RawSamples(0, ssize, 22050, 2, 2, (byte *)sbuf, 1.0f, -1);
 		}
 		break;
 	case    ROQ_QUAD_INFO:
@@ -1416,12 +1415,11 @@ e_status CIN_RunCinematic( int handle ) {
 	cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime ) * 3 ) / 100 );
 
 	start = cinTable[currentHandle].startTime;
-	while (  ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads )
-			 && ( cinTable[currentHandle].status == FMV_PLAY ) )
+	while ( ( cinTable[currentHandle].tfps != cinTable[currentHandle].numQuads ) && ( cinTable[currentHandle].status == FMV_PLAY ) )
 	{
 		RoQInterrupt();
 		if ( start != cinTable[currentHandle].startTime ) {
-			cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime) * 3 ) / 100 );
+			cinTable[currentHandle].tfps = ( ( ( CL_ScaledMilliseconds() - cinTable[currentHandle].startTime ) * 3 ) / 100 );
 			start = cinTable[currentHandle].startTime;
 		}
 	}
@@ -1447,7 +1445,6 @@ e_status CIN_RunCinematic( int handle ) {
 /*
 ==================
 CIN_PlayCinematic
-
 ==================
 */
 int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBits ) {
@@ -1463,7 +1460,7 @@ int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBi
 
 	if ( !( systemBits & CIN_system ) ) {
 		for ( i = 0 ; i < MAX_VIDEO_HANDLES ; i++ ) {
-			if ( !strcmp( cinTable[i].fileName, name ) ) {
+			if ( !Q_stricmp( cinTable[i].fileName, name ) ) {
 				return i;
 			}
 		}
@@ -1524,6 +1521,8 @@ int CIN_PlayCinematic( const char *arg, int x, int y, int w, int h, int systemBi
 		}
 
 		Con_Close();
+
+		Com_DPrintf( "Setting rawend to %i\n", s_soundtime );
 
 		if (!cinTable[currentHandle].silent) {
 			s_rawend[0] = s_soundtime;
@@ -1656,6 +1655,11 @@ void CIN_DrawCinematic( int handle ) {
 	cinTable[handle].dirty = qfalse;
 }
 
+/*
+==============
+CL_PlayCinematic_f
+==============
+*/
 void CL_PlayCinematic_f( void ) {
 	char    *arg, *s;
 	int bits = CIN_system;

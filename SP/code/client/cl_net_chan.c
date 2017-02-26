@@ -31,7 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../qcommon/qcommon.h"
 #include "client.h"
 
-
 #ifdef LEGACY_PROTOCOL
 /*
 ==============
@@ -152,10 +151,8 @@ qboolean CL_Netchan_TransmitNextFragment(netchan_t *chan)
 	return qfalse;
 }
 
-//byte chksum[65536];
-
 /*
-===============
+================
 CL_Netchan_Transmit
 ================
 */
@@ -183,8 +180,6 @@ CL_Netchan_Process
 */
 qboolean CL_Netchan_Process( netchan_t *chan, msg_t *msg ) {
 	int ret;
-//	int i;
-//	static		int newsize = 0;
 
 	ret = Netchan_Process( chan, msg );
 	if ( !ret ) {

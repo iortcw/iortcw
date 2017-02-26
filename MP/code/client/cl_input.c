@@ -424,7 +424,6 @@ CL_MouseEvent
 */
 void CL_MouseEvent( int dx, int dy, int time ) {
 	if ( Key_GetCatcher( ) & KEYCATCH_UI ) {
-
 		// NERVE - SMF - if we just want to pass it along to game
 		if ( cl_bypassMouseInput->integer == 1 ) {
 			cl.mouseDx[cl.mouseIndex] += dx;
@@ -502,8 +501,7 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 CL_MouseMove
 =================
 */
-void CL_MouseMove(usercmd_t *cmd)
-{
+void CL_MouseMove(usercmd_t *cmd) {
 	float mx, my;
 
 	// allow mouse smoothing
@@ -561,8 +559,6 @@ void CL_MouseMove(usercmd_t *cmd)
 	}
 	else
 	{
-		// Ridah, experimenting with a slow tracking gun
-
 		// Rafael - mg42
 		if ( cl.snap.ps.persistant[PERS_HWEAPON_USE] ) {
 			mx *= 2.5; //(accelSensitivity * 0.1);
@@ -572,7 +568,6 @@ void CL_MouseMove(usercmd_t *cmd)
 			mx *= cl_sensitivity->value;
 			my *= cl_sensitivity->value;
 		}
-
 	}
 
 	// ingame FOV
@@ -872,8 +867,6 @@ void CL_WritePacket( void ) {
 	MSG_WriteLong( &buf, clc.serverCommandSequence );
 
 	// write any unacknowledged clientCommands
-	// NOTE TTimo: if you verbose this, you will see that there are quite a few duplicates
-	// typically several unacknowledged cp or userinfo commands stacked up
 	for ( i = clc.reliableAcknowledge + 1 ; i <= clc.reliableSequence ; i++ ) {
 		MSG_WriteByte( &buf, clc_clientCommand );
 		MSG_WriteLong( &buf, i );
@@ -1109,16 +1102,15 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand( "-wbutton7", IN_Wbutton7Up );
 //----(SA) end
 
-
 	Cmd_AddCommand( "+mlook", IN_MLookDown );
 	Cmd_AddCommand( "-mlook", IN_MLookUp );
 
 #ifdef USE_VOIP
-	Cmd_AddCommand ("+voiprecord", IN_VoipRecordDown);
-	Cmd_AddCommand ("-voiprecord", IN_VoipRecordUp);
+	Cmd_AddCommand( "+voiprecord", IN_VoipRecordDown );
+	Cmd_AddCommand( "-voiprecord", IN_VoipRecordUp );
 #endif
 
-	//Cmd_AddCommand ("notebook",IN_Notebook);
+//	Cmd_AddCommand( "notebook", IN_Notebook );
 	Cmd_AddCommand( "help",IN_Help );
 
 	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );

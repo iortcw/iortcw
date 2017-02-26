@@ -154,6 +154,7 @@ static int ResampleSfx( sfx_t *sfx, int channels, int inrate, int inwidth, int s
 				}
 				chunk = newchunk;
 			}
+
 			chunk->sndChunk[part] = sample;
 		}
 	}

@@ -57,19 +57,22 @@ LAN_LoadCachedServers
 void LAN_LoadCachedServers( void ) {
 	int size;
 	fileHandle_t fileIn;
+
 	cls.numglobalservers = cls.numfavoriteservers = 0;
 	cls.numGlobalServerAddresses = 0;
+
 	if ( FS_SV_FOpenFileRead( "servercache.dat", &fileIn ) ) {
 		FS_Read( &cls.numglobalservers, sizeof( int ), fileIn );
 		FS_Read( &cls.numfavoriteservers, sizeof( int ), fileIn );
 		FS_Read( &size, sizeof( int ), fileIn );
-		if (size == sizeof(cls.globalServers) + sizeof(cls.favoriteServers)) {
+		if ( size == sizeof( cls.globalServers ) + sizeof( cls.favoriteServers ) ) {
 			FS_Read( &cls.globalServers, sizeof( cls.globalServers ), fileIn );
 			FS_Read( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileIn );
 		} else {
 			cls.numglobalservers = cls.numfavoriteservers = 0;
 			cls.numGlobalServerAddresses = 0;
 		}
+
 		FS_FCloseFile( fileIn );
 	}
 }
@@ -1157,10 +1160,6 @@ void CL_InitUI( void ) {
 	// sanity check
 	v = VM_Call( uivm, UI_GETAPIVERSION );
 	if ( v != UI_API_VERSION ) {
-		// Free uivm now, so UI_SHUTDOWN doesn't get called later.
-//		VM_Free( uivm );
-//		uivm = NULL;
-
 		Com_Error( ERR_FATAL, "User Interface is version %d, expected %d", v, UI_API_VERSION );
 		cls.uiStarted = qfalse;
 	}

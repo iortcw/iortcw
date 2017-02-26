@@ -50,7 +50,7 @@ int chat_playerNum;
 
 qboolean key_overstrikeMode;
 
-int				anykeydown;
+int	anykeydown;
 qkey_t keys[MAX_KEYS];
 
 
@@ -342,7 +342,7 @@ keyname_t keynames_d[] =    //deutsch
 
 	{"ALT", K_ALT},
 	{"STRG", K_CTRL},
-	{"UMSCHALT", K_SHIFT},   // (SA) removed one 'L' for laird 11/15/01
+	{"UMSCHALT", K_SHIFT},
 
 	{"FESTSTELLT", K_CAPSLOCK},
 
@@ -451,7 +451,7 @@ keyname_t keynames_d[] =    //deutsch
 
 	{"COMMAND", K_COMMAND},  //mac
 
-	{"SEMICOLON", ';'},	// because a raw semicolon seperates commands
+	{"SEMIKOLON", ';'},	// because a raw semicolon seperates commands
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -689,7 +689,7 @@ keyname_t keynames_f[] =    //french
 
 	{"COMMAND", K_COMMAND},  //mac
 
-	{"SEMICOLON", ';'},	// because a raw semicolon seperates commands
+	{"PN_VIRGULE", ';'},	// because a raw semicolon seperates commands
 
 	{"WORLD_0", K_WORLD_0},
 	{"WORLD_1", K_WORLD_1},
@@ -804,7 +804,7 @@ keyname_t keynames_f[] =    //french
 	{NULL,0}
 };  //end french
 
-keyname_t keynames_s[] =  //Spanish - Updated 11/5
+keyname_t keynames_s[] =  //Spanish
 {
 	{"TABULADOR", K_TAB},
 	{"INTRO", K_ENTER},
@@ -1041,7 +1041,6 @@ keyname_t keynames_s[] =  //Spanish - Updated 11/5
 
 	{NULL,0}
 };
-
 
 keyname_t keynames_i[] =  //Italian
 {
@@ -1368,7 +1367,6 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 			SCR_DrawBigString( x + ( edit->cursor - prestep - i ) * size, y, str, 1.0, qfalse );
  
 		}
-
 	}
 }
 
@@ -2001,7 +1999,7 @@ void Key_Bind_f( void ) {
 		if ( keys[b].binding && keys[b].binding[0] ) {
 			Com_Printf( "\"%s\" = \"%s\"\n", Key_KeynumToString(b, qfalse), keys[b].binding );
 		} else {
-			Com_Printf( "\"%s\" is not bound\n", Key_KeynumToString(b, qfalse));
+			Com_Printf( "\"%s\" is not bound\n", Key_KeynumToString(b, qfalse) );
 		}
 		return;
 	}

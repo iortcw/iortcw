@@ -301,7 +301,7 @@ rescan:
 	cmd = Cmd_Argv( 0 );
 
 	if ( !strcmp( cmd, "disconnect" ) ) {
-		Com_Error( ERR_SERVERDISCONNECT,"Server disconnected\n" );
+		Com_Error( ERR_SERVERDISCONNECT,"Server disconnected" );
 	}
 
 	if ( !strcmp( cmd, "bcs0" ) ) {
@@ -527,12 +527,6 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return 0;
 	case CG_S_CLEARLOOPINGSOUNDS:
 		S_ClearLoopingSounds( args[1] ); // (SA) modified so no_pvs sounds can function
-		// RF, if killall, then stop all sounds
-//		if ( args[1] == 1 ) {
-//			S_ClearSounds( qtrue, qfalse );
-//		} else if ( args[1] == 2 ) {
-//			S_ClearSounds( qtrue, qtrue );
-//		}
 		return 0;
 	case CG_S_ADDLOOPINGSOUND:
 		// FIXME MrE: handling of looping sounds changed
@@ -767,6 +761,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 
 	case CG_LOADCAMERA:
 		return loadCamera( args[1], VMA( 2 ) );
+
 	case CG_STARTCAMERA:
 		if ( args[1] == 0 ) {  // CAM_PRIMARY
 			cl.cameraMode = qtrue;  //----(SA)	added
@@ -785,6 +780,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 
 	case CG_GETCAMERAINFO:
 		return getCameraInfo( args[1], args[2], VMA( 3 ), VMA( 4 ), VMA( 5 ) );
+
 	case CG_GET_ENTITY_TOKEN:
 		return re.GetEntityToken( VMA( 1 ), args[2] );
 
@@ -1137,6 +1133,7 @@ void CL_FirstSnapshot( void ) {
 		Cbuf_AddText( cl_activeAction->string );
 		Cvar_Set( "activeAction", "" );
 	}
+
 #ifdef USE_MUMBLE
 	if ((cl_useMumble->integer) && !mumble_islinked()) {
 		int ret = mumble_link(CLIENT_WINDOW_TITLE);

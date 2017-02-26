@@ -1389,7 +1389,7 @@ static void S_AL_SrcLoop( alSrcPriority_t priority, sfxHandle_t sfx,
 	src_t		*curSource;
 	vec3_t		sorigin, svelocity;
 
-	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
+	if( entityNum < 0 || entityNum >= MAX_GENTITIES )
 		return;
 
 	if(S_AL_CheckInput(entityNum, sfx))
@@ -2627,11 +2627,11 @@ qboolean S_AL_Init( soundInterface_t *si )
 	if( !QAL_Init( s_alDriver->string ) )
  	{
 #if defined( _WIN32 )
-                if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "OpenAL64.dll" ) ) {
 #elif defined ( __APPLE__ )
-                if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "/System/Library/Frameworks/OpenAL.framework/OpenAL" ) ) {
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) && !QAL_Init( "/System/Library/Frameworks/OpenAL.framework/OpenAL" ) ) {
 #else
-                if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
+		if( !Q_stricmp( s_alDriver->string, ALDRIVER_DEFAULT ) || !QAL_Init( ALDRIVER_DEFAULT ) ) {
 #endif
 			return qfalse;
 		}

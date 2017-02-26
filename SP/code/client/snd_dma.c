@@ -93,11 +93,9 @@ cvar_t      *s_wavonly;
 static loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
 
-int s_rawend[MAX_RAW_STREAMS];
-int s_rawpainted[MAX_RAW_STREAMS];
-portable_samplepair_t s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
-// RF, store the volumes, since now they get adjusted at time of painting, so we can extract talking data first
-portable_samplepair_t s_rawVolume[MAX_RAW_STREAMS];
+int	s_rawend[MAX_RAW_STREAMS];
+int	s_rawpainted[MAX_RAW_STREAMS];
+portable_samplepair_t	s_rawsamples[MAX_RAW_STREAMS][MAX_RAW_SAMPLES];
 
 
 // ====================================================================
@@ -965,7 +963,7 @@ void S_Base_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t ve
 		return;
 	}
 
-	if( entityNum < 0 || entityNum >= MAX_GENTITIES )
+	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
 		return;
 
 	sfx = &s_knownSfx[ sfxHandle ];
@@ -1583,7 +1581,6 @@ void S_Update_(void) {
 	samps = dma.samples >> (dma.channels-1);
 	if (endtime - s_soundtime > samps)
 		endtime = s_soundtime + samps;
-
 
 	SNDDMA_BeginPainting ();
 

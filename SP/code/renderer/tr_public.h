@@ -106,12 +106,9 @@ typedef struct {
 	int ( *LerpTag )( orientation_t *tag,  const refEntity_t *refent, const char *tagName, int startIndex );
 	void ( *ModelBounds )( qhandle_t model, vec3_t mins, vec3_t maxs );
 
-#ifdef __USEA3D
-	void ( *A3D_RenderGeometry )( void *pVoidA3D, void *pVoidGeom, void *pVoidMat, void *pVoidGeomStatus );
-#endif
-
 	void ( *RegisterFont )( const char *fontName, int pointSize, fontInfo_t *font );
 	void ( *RemapShader )( const char *oldShader, const char *newShader, const char *offsetTime );
+
 	// RF
 	void ( *ZombieFXAddNewHit )( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
 

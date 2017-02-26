@@ -473,17 +473,13 @@ gamestate, and possibly during gameplay.
 ==================
 */
 void CL_SystemInfoChanged( void ) {
-	char            *systemInfo;
-	const char      *s, *t;
-	char key[BIG_INFO_KEY];
-	char value[BIG_INFO_VALUE];
-	qboolean gameSet;
+	char	*systemInfo;
+	const char	*s, *t;
+	char	key[BIG_INFO_KEY];
+	char	value[BIG_INFO_VALUE];
+	qboolean	gameSet;
 
 	systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SYSTEMINFO ];
-	// NOTE TTimo:
-	// when the serverId changes, any further messages we send to the server will use this new serverId
-	// show_bug.cgi?id=475
-	// in some cases, outdated cp commands might get sent with this news serverId
 	cl.serverId = atoi( Info_ValueForKey( systemInfo, "sv_serverid" ) );
 
 	memset( &entLastVisible, 0, sizeof( entLastVisible ) );
@@ -540,9 +536,9 @@ void CL_SystemInfoChanged( void ) {
 				continue;
 			}
 				
- 			gameSet = qtrue;
- 		}
- 
+			gameSet = qtrue;
+		}
+
 		if((cvar_flags = Cvar_Flags(key)) == CVAR_NONEXISTENT)
 			Cvar_Get(key, value, CVAR_SERVER_CREATED | CVAR_ROM);
 		else
@@ -678,10 +674,6 @@ void CL_ParseGamestate( msg_t *msg ) {
 	}
 
 	FS_ConditionalRestart(clc.checksumFeed, qfalse);
-		// don't set to true because we yet have to start downloading
-		// enabling this can cause double loading of a map when connecting to
-		// a server which has a different game directory set
-		//clc.downloadRestart = qtrue;
 
 	// This used to call CL_StartHunkUsers, but now we enter the download state before loading the
 	// cgame
@@ -715,7 +707,7 @@ void CL_ParseDownload( msg_t *msg ) {
 	// read the data
 	block = MSG_ReadShort( msg );
 
-	if(!block && !clc.downloadBlock) {
+	if( !block && !clc.downloadBlock ) {
 		// block zero is special, contains file size
 		clc.downloadSize = MSG_ReadLong( msg );
 
@@ -729,13 +721,13 @@ void CL_ParseDownload( msg_t *msg ) {
 
 	size = MSG_ReadShort( msg );
 	if ( size < 0 || size > sizeof( data ) ) {
-		Com_Error( ERR_DROP, "CL_ParseDownload: Invalid size %d for download chunk.", size );
+		Com_Error( ERR_DROP, "CL_ParseDownload: Invalid size %d for download chunk", size );
 		return;
 	}
 
 	MSG_ReadData( msg, data, size );
 
-	if((clc.downloadBlock & 0xFFFF) != block) {
+	if( ( clc.downloadBlock & 0xFFFF ) != block ) {
 		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", (clc.downloadBlock & 0xFFFF), block);
 		return;
 	}

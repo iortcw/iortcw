@@ -259,9 +259,9 @@ void CL_ParseSnapshot( msg_t *msg ) {
 		} else if ( old->messageNum != newSnap.deltaNum ) {
 			// The frame that the server did the delta from
 			// is too old, so we can't reconstruct it properly.
-			Com_Printf( "Delta frame too old.\n" );
+			Com_DPrintf( "Delta frame too old.\n" );
 		} else if ( cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES - MAX_SNAPSHOT_ENTITIES ) {
-			Com_Printf( "Delta parseEntitiesNum too old.\n" );
+			Com_DPrintf( "Delta parseEntitiesNum too old.\n" );
 		} else {
 			newSnap.valid = qtrue;  // valid delta parse
 		}
@@ -270,9 +270,8 @@ void CL_ParseSnapshot( msg_t *msg ) {
 	// read areamask
 	len = MSG_ReadByte( msg );
 
-	if(len > sizeof(newSnap.areamask))
-	{
-		Com_Error (ERR_DROP,"CL_ParseSnapshot: Invalid size %d for areamask", len);
+	if ( len > sizeof( newSnap.areamask ) ) {
+		Com_Error( ERR_DROP,"CL_ParseSnapshot: Invalid size %d for areamask.", len );
 		return;
 	}
 
@@ -347,11 +346,11 @@ gamestate, and possibly during gameplay.
 ==================
 */
 void CL_SystemInfoChanged( void ) {
-	char            *systemInfo;
-	const char      *s, *t;
-	char key[BIG_INFO_KEY];
-	char value[BIG_INFO_VALUE];
-	qboolean		gameSet;
+	char	*systemInfo;
+	const char	*s, *t;
+	char	key[BIG_INFO_KEY];
+	char	value[BIG_INFO_VALUE];
+	qboolean	gameSet;
 
 	systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SYSTEMINFO ];
 	cl.serverId = atoi( Info_ValueForKey( systemInfo, "sv_serverid" ) );
@@ -393,12 +392,12 @@ void CL_SystemInfoChanged( void ) {
 	s = systemInfo;
 	while ( s ) {
 		int cvar_flags;
-		
+
 		Info_NextPair( &s, key, value );
 		if ( !key[0] ) {
 			break;
 		}
-		
+
 		// ehw!
 		if (!Q_stricmp(key, "fs_game"))
 		{
@@ -579,8 +578,7 @@ void CL_ParseDownload( msg_t *msg ) {
 	// read the data
 	block = MSG_ReadShort( msg );
 
-	if(!block && !clc.downloadBlock)
- 	{
+	if( !block && !clc.downloadBlock ) {
 		// block zero is special, contains file size
 		clc.downloadSize = MSG_ReadLong( msg );
 
@@ -593,16 +591,14 @@ void CL_ParseDownload( msg_t *msg ) {
 	}
 
 	size = MSG_ReadShort( msg );
-	if (size < 0 || size > sizeof(data))
-	{
-		Com_Error(ERR_DROP, "CL_ParseDownload: Invalid size %d for download chunk", size);
+	if ( size < 0 || size > sizeof( data ) ) {
+		Com_Error( ERR_DROP, "CL_ParseDownload: Invalid size %d for download chunk", size );
 		return;
 	}
-	
-	MSG_ReadData(msg, data, size);
 
-	if((clc.downloadBlock & 0xFFFF) != block)
-	{
+	MSG_ReadData( msg, data, size );
+
+	if( ( clc.downloadBlock & 0xFFFF ) != block ) {
 		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", (clc.downloadBlock & 0xFFFF), block);
 		return;
 	}
