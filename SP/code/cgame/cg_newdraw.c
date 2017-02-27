@@ -653,7 +653,7 @@ static void CG_DrawPlayerAmmoValue( rectDef_t *rect, int font, float scale, vec4
 			if ( value2 || ( special && type == 1 ) ) {
 				Com_sprintf( num, sizeof( num ), "%i /", value2 );
 				value = CG_Text_Width( num, font, scale, 0 );
-				CG_Text_Paint( -30 + rect->x + ( rect->w - value ) / 2, rect->y + rect->h, font, scale, color, num, 0, 0, textStyle );
+				CG_Text_Paint( -42 + rect->x + ( rect->w - value ) / 2, rect->y + rect->h, font, scale, color, num, 0, 0, textStyle );
 			}
 		}
 	}
