@@ -747,11 +747,15 @@ static float CG_DrawTeamOverlay( float y ) {
 		w = ( pwidth + lwidth + 8 ) * TINYCHAR_WIDTH; // JPW NERVE was +4+7
 
 	}
-	x = 640 - w - 4; // JPW was -32
+	x = 640 - w - 1; // JPW was -32
 	h = plyrs * TINYCHAR_HEIGHT;
 
 	// DHM - Nerve :: Set the max characters that can be printed before the left edge
-	maxCharsBeforeOverlay = ( x / TINYCHAR_WIDTH ) - 1;
+	if ( cg_fixedAspect.integer == 2 && ( cgs.glconfig.vidWidth * 480.0 > cgs.glconfig.vidHeight * 640.0 ) ) {
+		maxCharsBeforeOverlay = ( ( ( cgs.glconfig.vidWidth / cgs.screenXScale ) - w - 1 ) / TINYCHAR_WIDTH ) - 1;
+	} else {
+		maxCharsBeforeOverlay = ( x / TINYCHAR_WIDTH ) - 1;
+	}
 
 	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED ) {
 		hcolor[0] = 0.5f; // was 0.38 instead of 0.5 JPW NERVE
