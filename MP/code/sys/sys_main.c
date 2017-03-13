@@ -499,6 +499,13 @@ from executable path, then fs_basepath.
 void *Sys_LoadDll(const char *name, qboolean useSystemLib)
 {
 	void *dllhandle;
+
+	// Don't load any DLLs that end with the pk3 extension
+	if (COM_CompareExtension(name, ".pk3"))
+	{
+		Com_Printf("Rejecting DLL named \"%s\"", name);
+		return NULL;
+	}
 	
 	if(useSystemLib)
 		Com_Printf("Trying to load \"%s\"...\n", name);
