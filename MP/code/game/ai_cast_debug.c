@@ -114,7 +114,6 @@ AICast_DBG_RouteTable_f
 */
 void AICast_DBG_RouteTable_f( vec3_t org, char *param ) {
 	static int srcarea = 0, dstarea = 0;
-	// TTimo unused
 //	extern botlib_export_t botlib;
 
 	if ( !param || strlen( param ) < 1 ) {
@@ -150,7 +149,7 @@ AICast_DBG_Spawn_f
 ===============
 */
 void AICast_DBG_Spawn_f( gclient_t *client, char *cmd ) {
-	extern qboolean G_CallSpawn( gentity_t * ent );
+	extern qboolean G_CallSpawn( gentity_t *ent );
 	gentity_t   *ent;
 	vec3_t dir;
 

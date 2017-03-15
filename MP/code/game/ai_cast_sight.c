@@ -229,13 +229,12 @@ qboolean AICast_CheckVisibility( gentity_t *srcent, gentity_t *destent ) {
 	if ( destent->flags & FL_NOTARGET ) {
 		return qfalse;
 	}
-
+	//
 	viewer = srcent->s.number;
 	ent = destent->s.number;
 	//
 	cs = AICast_GetCastState( viewer );
 	AICast_GetCastState( ent );
-
 	// set the FOV
 	fov = cs->attributes[FOV] * aiStateFovScales[cs->aiState];
 	if ( !fov ) { // assume it's a player, give them a generic fov
@@ -552,8 +551,6 @@ void AICast_SightUpdate( int numchecks ) {
 	int src = 0, dest = 0;
 	gentity_t       *srcent, *destent;
 	cast_state_t    *cs;
-	// TTimo unused
-//	static int	lastNumUpdated;
 	cast_visibility_t *vis;
 
 	if ( numchecks < 5 ) {
@@ -704,14 +701,16 @@ void AICast_SightUpdate( int numchecks ) {
 					continue;
 				}
 			}
+
 			if ( vis->lastcheck_timestamp == level.time ) {
 				continue;   // already checked this frame
-
 			}
+
 			if ( vis->lastcheck_timestamp > level.time ) {
 				continue;   // let the loadgame settle down
 
 			}
+
 			// if they are friends, only check very infrequently
 			if ( AICast_SameTeam( cs, destent->s.number ) && ( vis->lastcheck_timestamp == vis->visible_timestamp )
 				 && ( destent->health == vis->lastcheck_health ) ) {

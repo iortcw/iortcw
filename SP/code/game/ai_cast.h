@@ -209,11 +209,11 @@ extern AICharacterDefaults_t aiDefaults[NUM_CHARACTERS];
 //
 // structure defines
 //
-#define AIVIS_ENEMY                 1
-#define AIVIS_INSPECTED             2       // we have inspected them once already
-#define AIVIS_INSPECT               4       // we should inspect them when we get a chance
-#define AIVIS_PROCESS_SIGHTING      8       // so we know if we have or haven't processed the sighting since they were last seen
-#define AIVIS_SIGHT_SCRIPT_CALLED   0x10    // set once sight script has been called.. only call once
+#define AIVIS_ENEMY					1
+#define AIVIS_INSPECTED				2		// we have inspected them once already
+#define AIVIS_INSPECT				4		// we should inspect them when we get a chance
+#define AIVIS_PROCESS_SIGHTING		8		// so we know if we have or haven't processed the sighting since they were last seen
+#define AIVIS_SIGHT_SCRIPT_CALLED	0x10	// set once sight script has been called.. only call once
 //
 // share range
 #define AIVIS_SHARE_RANGE       384     // if we are within this range of a friendly, share their vis info

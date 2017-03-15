@@ -59,7 +59,7 @@ qboolean AICast_ScriptAction_GotoCast( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_WalkToCast( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_CrouchToCast( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Wait( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_AbortIfLoadgame( cast_state_t *cs, char *params ); //----(SA)	added
+qboolean AICast_ScriptAction_AbortIfLoadgame( cast_state_t *cs, char *params );	//----(SA)	added
 qboolean AICast_ScriptAction_Trigger( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_FollowCast( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_PlaySound( cast_state_t *cs, char *params );
@@ -68,11 +68,11 @@ qboolean AICast_ScriptAction_Attack( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_ClearAnim( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_SetAmmo( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params );         //----(SA)	added
+qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params );			//----(SA)	added
 qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params );       //----(SA)	added
-qboolean AICast_ScriptAction_SetArmor( cast_state_t *cs, char *params );        //----(SA)	added
-qboolean AICast_ScriptAction_SuggestWeapon( cast_state_t *cs, char *params );   //----(SA)	added
+qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params );		//----(SA)	added
+qboolean AICast_ScriptAction_SetArmor( cast_state_t *cs, char *params );		//----(SA)	added
+qboolean AICast_ScriptAction_SuggestWeapon( cast_state_t *cs, char *params );	//----(SA)	added
 qboolean AICast_ScriptAction_GiveWeapon( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_GiveInventory( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_TakeWeapon( cast_state_t *cs, char *params );
@@ -94,8 +94,8 @@ qboolean AICast_ScriptAction_Mount( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Unmount( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_SavePersistant( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_EndGame( cast_state_t *cs, char *params ); //----(SA)	added
-qboolean AICast_ScriptAction_Teleport( cast_state_t *cs, char *params );    //----(SA)	added
+qboolean AICast_ScriptAction_EndGame( cast_state_t *cs, char *params );			//----(SA)	added
+qboolean AICast_ScriptAction_Teleport( cast_state_t *cs, char *params );		//----(SA)	added
 qboolean AICast_ScriptAction_FoundSecret( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_NoSight( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Sight( cast_state_t *cs, char *params );
@@ -111,9 +111,9 @@ qboolean AICast_ScriptAction_StateType( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_KnockBack( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Zoom( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Parachute( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_Cigarette( cast_state_t *cs, char *params );    //----(SA)	added
+qboolean AICast_ScriptAction_Cigarette( cast_state_t *cs, char *params );		//----(SA)	added
 qboolean AICast_ScriptAction_StartCam( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_StopCam( cast_state_t *cs, char *params );  //----(SA)	added
+qboolean AICast_ScriptAction_StopCam( cast_state_t *cs, char *params );			//----(SA)	added
 qboolean AICast_ScriptAction_StartCamBlack( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_EntityScriptName( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_AIScriptName( cast_state_t *cs, char *params );
@@ -121,11 +121,11 @@ qboolean AICast_ScriptAction_SetHealth( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_NoTarget( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Cvar( cast_state_t *cs, char *params );
 
-qboolean AICast_ScriptAction_MusicStart( cast_state_t *cs, char *params );   //----(SA)
-qboolean AICast_ScriptAction_MusicPlay( cast_state_t *cs, char *params );    //----(SA)
-qboolean AICast_ScriptAction_MusicStop( cast_state_t *cs, char *params );    //----(SA)
-qboolean AICast_ScriptAction_MusicFade( cast_state_t *cs, char *params );    //----(SA)
-qboolean AICast_ScriptAction_MusicQueue( cast_state_t *cs, char *params );   //----(SA)
+qboolean AICast_ScriptAction_MusicStart( cast_state_t *cs, char *params );		//----(SA)
+qboolean AICast_ScriptAction_MusicPlay( cast_state_t *cs, char *params );		//----(SA)
+qboolean AICast_ScriptAction_MusicStop( cast_state_t *cs, char *params );		//----(SA)
+qboolean AICast_ScriptAction_MusicFade( cast_state_t *cs, char *params );		//----(SA)
+qboolean AICast_ScriptAction_MusicQueue( cast_state_t *cs, char *params );		//----(SA)
 
 qboolean AICast_ScriptAction_ExplicitRouting( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_LockPlayer( cast_state_t *cs, char *params );
@@ -149,16 +149,16 @@ cast_script_stack_action_t scriptActions[] =
 	{"playanim",     AICast_ScriptAction_PlayAnim},
 	{"clearanim",        AICast_ScriptAction_ClearAnim},
 	{"wait",         AICast_ScriptAction_Wait},
-	{"abort_if_loadgame",AICast_ScriptAction_AbortIfLoadgame},   //----(SA)	added
+	{"abort_if_loadgame",AICast_ScriptAction_AbortIfLoadgame},		//----(SA)	added
 	{"trigger",          AICast_ScriptAction_Trigger},
 	{"setammo",          AICast_ScriptAction_SetAmmo},
-	{"setclip",          AICast_ScriptAction_SetClip},           //----(SA)	added
+	{"setclip",          AICast_ScriptAction_SetClip},				//----(SA)	added
 	{"selectweapon", AICast_ScriptAction_SelectWeapon},
 	{"noattack",     AICast_ScriptAction_NoAttack},
-	{"suggestweapon",    AICast_ScriptAction_SuggestWeapon},     //----(SA)	added
+	{"suggestweapon",    AICast_ScriptAction_SuggestWeapon},		//----(SA)	added
 	{"attack",           AICast_ScriptAction_Attack},
-	{"givearmor",        AICast_ScriptAction_GiveArmor},         //----(SA)	added
-	{"setarmor",     AICast_ScriptAction_SetArmor},          //----(SA)	added
+	{"givearmor",        AICast_ScriptAction_GiveArmor},			//----(SA)	added
+	{"setarmor",     AICast_ScriptAction_SetArmor},					//----(SA)	added
 	{"giveinventory",    AICast_ScriptAction_GiveInventory},
 	{"giveweapon",       AICast_ScriptAction_GiveWeapon},
 	{"takeweapon",       AICast_ScriptAction_TakeWeapon},
@@ -171,7 +171,7 @@ cast_script_stack_action_t scriptActions[] =
 	{"spawncast",        AICast_ScriptAction_SpawnCast},
 	{"missionfailed",    AICast_ScriptAction_MissionFailed},
 	{"missionsuccess",   AICast_ScriptAction_ObjectiveMet},
-	{"objectivemet", AICast_ScriptAction_ObjectiveMet},  // dupe of missionsuccess so scripts can changeover to a more logical name
+	{"objectivemet", AICast_ScriptAction_ObjectiveMet},				// dupe of missionsuccess so scripts can changeover to a more logical name
 	{"objectivesneeded",AICast_ScriptAction_ObjectivesNeeded},
 	{"noaidamage",       AICast_ScriptAction_NoAIDamage},
 	{"print",            AICast_ScriptAction_Print},
@@ -181,8 +181,8 @@ cast_script_stack_action_t scriptActions[] =
 	{"unmount",          AICast_ScriptAction_Unmount},
 	{"savepersistant",   AICast_ScriptAction_SavePersistant},
 	{"changelevel",      AICast_ScriptAction_ChangeLevel},
-	{"endgame",          AICast_ScriptAction_EndGame},   //----(SA)	added
-	{"teleport",     AICast_ScriptAction_Teleport},  //----(SA)	added
+	{"endgame",          AICast_ScriptAction_EndGame},				//----(SA)	added
+	{"teleport",     AICast_ScriptAction_Teleport},					//----(SA)	added
 	{"foundsecret",      AICast_ScriptAction_FoundSecret},
 	{"nosight",          AICast_ScriptAction_NoSight},
 	{"sight",            AICast_ScriptAction_Sight},
@@ -199,10 +199,10 @@ cast_script_stack_action_t scriptActions[] =
 	{"knockback",        AICast_ScriptAction_KnockBack},
 	{"zoom",         AICast_ScriptAction_Zoom},
 	{"parachute",        AICast_ScriptAction_Parachute},
-	{"cigarette",        AICast_ScriptAction_Cigarette}, //----(SA)	added
+	{"cigarette",        AICast_ScriptAction_Cigarette},			//----(SA)	added
 	{"startcam",     AICast_ScriptAction_StartCam},
 	{"startcamblack",    AICast_ScriptAction_StartCamBlack},
-	{"stopcam",          AICast_ScriptAction_StopCam},   //----(SA)	added
+	{"stopcam",          AICast_ScriptAction_StopCam},				//----(SA)	added
 	{"entityscriptname",AICast_ScriptAction_EntityScriptName},
 	{"aiscriptname", AICast_ScriptAction_AIScriptName},
 	{"sethealth",        AICast_ScriptAction_SetHealth},
@@ -210,11 +210,11 @@ cast_script_stack_action_t scriptActions[] =
 	{"cvar",         AICast_ScriptAction_Cvar},
 
 //----(SA)	added some music interface
-	{"mu_start",     AICast_ScriptAction_MusicStart},    // (char *new_music, int time)	// time to fade in
-	{"mu_play",          AICast_ScriptAction_MusicPlay},     // (char *new_music)
-	{"mu_stop",          AICast_ScriptAction_MusicStop},     // (int time)	// time to fadeout
-	{"mu_fade",          AICast_ScriptAction_MusicFade},     // (float target_volume, int time)	// time to fade to target
-	{"mu_queue",     AICast_ScriptAction_MusicQueue},    // (char *new_music)	// music that will start when previous fades to 0
+	{"mu_start",     AICast_ScriptAction_MusicStart},			// (char *new_music, int time)	// time to fade in
+	{"mu_play",          AICast_ScriptAction_MusicPlay},		// (char *new_music)
+	{"mu_stop",          AICast_ScriptAction_MusicStop},		// (int time)	// time to fadeout
+	{"mu_fade",          AICast_ScriptAction_MusicFade},		// (float target_volume, int time)	// time to fade to target
+	{"mu_queue",     AICast_ScriptAction_MusicQueue},			// (char *new_music)	// music that will start when previous fades to 0
 //----(SA)	end
 
 	{"explicit_routing", AICast_ScriptAction_ExplicitRouting},
@@ -240,7 +240,7 @@ cast_script_event_define_t scriptEvents[] =
 	{"enemydead",        AICast_EventMatch_StringEqual}, // our enemy is now dead
 	{"trigger",          AICast_EventMatch_StringEqual}, // something has triggered us (always followed by an identifier)
 	{"pain",         AICast_EventMatch_IntInRange},  // we've been hurt
-	{"death",            AICast_EventMatch_StringEqual}, // RIP
+	{"death",            AICast_EventMatch_StringEqual},	// RIP
 	{"activate",     AICast_EventMatch_StringEqual}, // "param" has just activated us
 	{"enemysightcorpse",AICast_EventMatch_StringEqual},  // sighted the given enemy as a corpse, for the first time
 	{"friendlysightcorpse", 0},                       // sighted a friendly as a corpse for the first time
@@ -318,8 +318,6 @@ int AICast_EventForString( char *string ) {
 
 	return -1;
 }
-
-//----(SA)	added
 
 /*
 ===============
@@ -585,7 +583,7 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 			numEventItems++;
 		} else    // skip this character completely
 		{
-			// TTimo: gcc: suggest () around assignment used as truth value
+
 			while ( ( token = COM_Parse( &pScript ) ) )
 			{
 				if ( !token[0] ) {

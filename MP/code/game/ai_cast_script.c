@@ -67,9 +67,9 @@ qboolean AICast_ScriptAction_Attack( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_ClearAnim( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_SetAmmo( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params ); //----(SA)	added
+qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params );			//----(SA)	added
 qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params );   //----(SA)	added
+qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params );		//----(SA)	added
 qboolean AICast_ScriptAction_GiveWeapon( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_GiveInventory( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_TakeWeapon( cast_state_t *cs, char *params );
@@ -105,8 +105,8 @@ qboolean AICast_ScriptAction_StateType( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_KnockBack( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Zoom( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_Parachute( cast_state_t *cs, char *params );
-qboolean AICast_ScriptAction_StartCam( cast_state_t *cs, char *params ); //----(SA)	added
-qboolean AICast_ScriptAction_StartCamBlack( cast_state_t *cs, char *params );    //----(SA)	added
+qboolean AICast_ScriptAction_StartCam( cast_state_t *cs, char *params );		//----(SA)	added
+qboolean AICast_ScriptAction_StartCamBlack( cast_state_t *cs, char *params );	//----(SA)	added
 qboolean AICast_ScriptAction_EntityScriptName( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_AIScriptName( cast_state_t *cs, char *params );
 qboolean AICast_ScriptAction_SetHealth( cast_state_t *cs, char *params );
@@ -131,11 +131,11 @@ cast_script_stack_action_t scriptActions[] =
 	{"wait",         AICast_ScriptAction_Wait},
 	{"trigger",          AICast_ScriptAction_Trigger},
 	{"setammo",          AICast_ScriptAction_SetAmmo},
-	{"setclip",          AICast_ScriptAction_SetClip},   //----(SA)	added
+	{"setclip",          AICast_ScriptAction_SetClip},				//----(SA)	added
 	{"selectweapon", AICast_ScriptAction_SelectWeapon},
 	{"noattack",     AICast_ScriptAction_NoAttack},
 	{"attack",           AICast_ScriptAction_Attack},
-	{"givearmor",        AICast_ScriptAction_GiveArmor}, //----(SA)	added
+	{"givearmor",        AICast_ScriptAction_GiveArmor},			//----(SA)	added
 	{"giveinventory",    AICast_ScriptAction_GiveInventory},
 	{"giveweapon",       AICast_ScriptAction_GiveWeapon},
 	{"takeweapon",       AICast_ScriptAction_TakeWeapon},
@@ -172,8 +172,8 @@ cast_script_stack_action_t scriptActions[] =
 	{"knockback",        AICast_ScriptAction_KnockBack},
 	{"zoom",         AICast_ScriptAction_Zoom},
 	{"parachute",        AICast_ScriptAction_Parachute},
-	{"startcam",     AICast_ScriptAction_StartCam},  //----(SA)	added
-	{"startcamblack",    AICast_ScriptAction_StartCamBlack}, //----(SA)	added
+	{"startcam",     AICast_ScriptAction_StartCam},				//----(SA)	added
+	{"startcamblack",    AICast_ScriptAction_StartCamBlack},	//----(SA)	added
 	{"entityscriptname",AICast_ScriptAction_EntityScriptName},
 	{"aiscriptname", AICast_ScriptAction_AIScriptName},
 	{"sethealth",        AICast_ScriptAction_SetHealth},
@@ -196,7 +196,7 @@ cast_script_event_define_t scriptEvents[] =
 	{"enemydead",        AICast_EventMatch_StringEqual}, // our enemy is now dead
 	{"trigger",          AICast_EventMatch_StringEqual}, // something has triggered us (always followed by an identifier)
 	{"pain",         AICast_EventMatch_IntInRange},  // we've been hurt
-	{"death",            0},          // RIP
+	{"death",            0},	// RIP
 	{"activate",     AICast_EventMatch_StringEqual}, // "param" has just activated us
 	{"enemysightcorpse",AICast_EventMatch_StringEqual},  // sighted the given enemy as a corpse, for the first time
 	{"friendlysightcorpse", 0},                       // sighted a friendly as a corpse for the first time
@@ -512,7 +512,7 @@ void AICast_ScriptParse( cast_state_t *cs ) {
 			numEventItems++;
 		} else    // skip this character completely
 		{
-			// TTimo gcc: suggest parentheses around assignment used as truth value
+
 			while ( ( token = COM_Parse( &pScript ) ) )
 			{
 				if ( !token[0] ) {

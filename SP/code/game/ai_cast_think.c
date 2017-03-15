@@ -948,7 +948,7 @@ void AICast_StartServerFrame( int time ) {
 	gentity_t *ent;
 	cast_state_t *pcs;
 	qboolean highPriority;
-	int oldLegsTimer;
+	int	oldLegsTimer;
 
 	if ( trap_Cvar_VariableIntegerValue( "savegame_loading" ) ) {
 		return;
@@ -995,23 +995,23 @@ void AICast_StartServerFrame( int time ) {
 
 	pcs = AICast_GetCastState( 0 );
 
-//G_Printf( "AI startserverframe: %i\n", time );
+//	G_Printf( "AI startserverframe: %i\n", time );
 
 	AICast_AgePlayTime( 0 );
 
 	if ( elapsed < 0 ) {
-	//	elapsed = 0;
+//		elapsed = 0;
 		lasttime = time;
 	}
 	// don't let the framerate drop below 10
-	//if ( elapsed > 100 ) {
-	//	elapsed = 100;
-	//}
+//	if ( elapsed > 100 ) {
+//		elapsed = 100;
+//	}
 	//
 	// process player's current script if it exists
 	AICast_ScriptRun( AICast_GetCastState( 0 ), qfalse );
 	//
-	//AICast_SightUpdate( (int)((float)SIGHT_PER_SEC * ((float)elapsed / 1000)) );
+//	AICast_SightUpdate( (int)((float)SIGHT_PER_SEC * ((float)elapsed / 1000)) );
 	//
 	castcount = 0;
 	activeCount = 0;
@@ -1019,8 +1019,9 @@ void AICast_StartServerFrame( int time ) {
 	//update the AI characters
 	for ( i = 0, ent = g_entities; i < level.maxclients /*&& clCount < level.numPlayingClients*/; i++, ent++ )
 	{
-		//if (ent->inuse && ent->client)
-		//	clCount++;
+//		if ( ent->inuse && ent->client ) {
+//			clCount++;
+//		}
 		//
 		cs = AICast_GetCastState( i );
 		// is this a cast AI?
@@ -1103,8 +1104,8 @@ void AICast_PredictMovement( cast_state_t *cs, int numframes, float frametime, a
 	gentity_t   *ent = &g_entities[cs->entityNum];
 	bot_input_t bi;
 
-//int pretime = Sys_MilliSeconds();
-//G_Printf("PredictMovement: %f duration, %i frames\n", frametime, numframes );
+//	int pretime = Sys_MilliSeconds();
+//	G_Printf("PredictMovement: %f duration, %i frames\n", frametime, numframes );
 
 	if ( cs->bs ) {
 		ps = cs->bs->cur_ps;
@@ -1239,7 +1240,7 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	usercmd_t ucmd;
 	qboolean enemyVisible;
 	float angleDiff;
-	int starttraveltime = 0, traveltime;         // TTimo: init
+	int starttraveltime = 0, traveltime;
 	int invert;
 	float inc;
 	qboolean averting = qfalse;

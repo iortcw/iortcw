@@ -1265,7 +1265,7 @@ AICast_CombatMove
 bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 	bot_state_t *bs;
 	float dist;
-	vec3_t forward; //, up = {0, 0, 1};
+	vec3_t forward;
 	bot_moveresult_t moveresult;
 	bot_goal_t goal;
 
@@ -1273,7 +1273,6 @@ bot_moveresult_t AICast_CombatMove( cast_state_t *cs, int tfl ) {
 
 	//get the enemy entity info
 	memset( &moveresult, 0, sizeof( bot_moveresult_t ) );
-
 	//initialize the movement state
 	BotSetupForMovement( bs );
 	//direction towards the enemy
@@ -1468,30 +1467,6 @@ qboolean AICast_AimAtEnemy( cast_state_t *cs ) {
 			bestorigin[2] += 16;
 		}
 	}
-	//
-	// adjust accuracy with distance if upclose, so we don't start firing the wrong direction
-/*
-	scale = 1;
-	switch (cs->bs->weaponnum) {
-	// these weapons don't do random offsetting
-	case WP_FLAMETHROWER:
-		break;
-	default:
-		{
-			float scale;
-
-			if (dist < 256)
-				scale *= (dist / 256);
-			else
-				scale *= 1.0;
-
-			bestorigin[0] += scale * 96 * sin((float)level.time/(200.0 + (40.0*((cs->entityNum+3)%4)))) * (1 - aim_accuracy);
-			bestorigin[1] += scale * 96 * cos((float)level.time/(220.0 + (36.0*((cs->entityNum+1)%5)))) * (1 - aim_accuracy);
-			bestorigin[2] += scale * 48 * sin((float)level.time/(210.0 + (32.0*((cs->entityNum+2)%6)))) * (1 - aim_accuracy);
-		}
-		break;
-	}
-*/
 	// if the enemy is moving, they are harder to hit
 	if ( dist > 256 ) {
 		VectorMA( bestorigin, ( 0.3 + 0.7 * ( 1 - aim_accuracy ) ) * 0.4 * sin( (float)level.time / ( 500.0 + ( 100.0 * ( ( cs->entityNum + 3 ) % 4 ) ) ) ), g_entities[bs->enemy].client->ps.velocity, bestorigin );
@@ -1515,7 +1490,7 @@ qboolean AICast_CanMoveWhileFiringWeapon( int weaponnum ) {
 	case WP_GARAND:
 	case WP_SNIPERRIFLE:    //----(SA)	added
 	case WP_SNOOPERSCOPE:   //----(SA)	added
-	case WP_FG42SCOPE:      //----(SA)	added
+	case WP_FG42SCOPE:		//----(SA)	added
 	case WP_PANZERFAUST:
 	case WP_ROCKET_LAUNCHER:
 		return qfalse;
@@ -1732,13 +1707,6 @@ void AICast_RecordWeaponFire( gentity_t *ent ) {
 	range = AICast_GetWeaponSoundRange( cs->lastWeaponFiredWeaponNum );
 
 	AICast_AudibleEvent( cs->entityNum, cs->lastWeaponFiredPos, range );
-	//AICast_SightSoundEvent( cs, range );
-	/*
-	if (!cs->sightSoundTime || cs->sightSoundRange < range) {
-		cs->sightSoundRange = range;
-		cs->sightSoundTime = level.time;
-	}
-	*/
 
 	if ( cs->bs ) {   // real player's don't need to play AI sounds
 		AIChar_AttackSound( cs );
@@ -1926,9 +1894,9 @@ int AICast_SafeMissileFire( gentity_t *ent, int duration, int enemyNum, vec3_t e
 	rval = ( Distance( org, enemyPos ) < ent->splashRadius ) && AICast_VisibleFromPos( org, ent->s.number, enemyPos, enemyNum, qfalse );
 	if ( rval ) {
 		// don't hurt ourselves
-		// disabled, don't worry about us, we can get out the way in time (we hope!)
-		//if (Distance( org, g_entities[selfNum].r.currentOrigin ) < ent->splashRadius*1.5)
-		//	return -1;
+//		if ( Distance( org, g_entities[selfNum].r.currentOrigin ) < ent->splashRadius * 1.5 ) {
+//			return -1;
+//		}
 		// make sure we don't injure a friendly
 		for ( trav = g_entities; trav < g_entities + g_maxclients.integer; trav++ ) {
 			if ( !trav->inuse ) {
@@ -2181,8 +2149,6 @@ void AICast_AudibleEvent( int srcnum, vec3_t pos, float range ) {
 		if ( !cs->bs ) {
 			continue;
 		}
-		//if (cs->aiState >= AISTATE_COMBAT)
-		//	continue;
 		if ( ent == sent ) {
 			continue;
 		}

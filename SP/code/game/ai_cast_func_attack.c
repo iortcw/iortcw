@@ -122,7 +122,7 @@ char *AIFunc_ZombieFlameAttackStart( cast_state_t *cs ) {
 	//
 	// dont turn
 	cs->ideal_viewangles[YAW] = cs->viewangles[YAW];
-	//cs->ideal_viewangles[PITCH] = -45;	// look upwards
+//	cs->ideal_viewangles[PITCH] = -45;	// look upwards
 	// start the flame
 	ent->s.onFireStart = level.time;
 	ent->s.onFireEnd = level.time + ZOMBIE_FLAME_DURATION;
@@ -167,8 +167,9 @@ int lastZombieSpiritAttack;
 
 char *AIFunc_ZombieAttack2( cast_state_t *cs ) {
 	gentity_t *ent;
+	//
 	ent = &g_entities[cs->entityNum];
-
+	//
 	if ( cs->enemyNum < 0 ) {
 		return AIFunc_DefaultStart( cs );
 	}
@@ -383,7 +384,6 @@ char *AIFunc_LoperAttack1( cast_state_t *cs ) {
 	anim = ( ent->client->ps.legsAnim & ~ANIM_TOGGLEBIT ) - BG_AnimationIndexForString( "legs_extra", cs->entityNum );
 	if ( cs->thinkFuncChangeTime < level.time - loperHitTimes[anim] ) {
 		// check for damage
-		// TTimo: gcc: suggests () around assignment used as truth value
 		if ( ( tr = CheckMeleeAttack( &g_entities[cs->entityNum], LOPER_MELEE_RANGE, qfalse ) ) ) {
 			G_Damage( &g_entities[tr->entityNum], ent, ent, vec3_origin, tr->endpos,
 					  LOPER_MELEE_DAMAGE, 0, MOD_LOPER_HIT );

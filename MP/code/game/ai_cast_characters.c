@@ -48,8 +48,10 @@ If you have questions concerning this license or the applicable additional terms
 //---------------------------------------------------------------------------
 // Character specific attributes (defaults, these can be altered in the editor (TODO!))
 AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
+
 	//AICHAR_NONE
 	{0},
+
 	//AICHAR_SOLDIER
 	{
 		"Soldier",
@@ -71,28 +73,29 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"infantrySightPlayer",
 		"infantryAttackPlayer",
 		"infantryOrders",
 		"infantryDeath",
-		"infantrySilentDeath",   //----(SA)	added
+		"infantrySilentDeath",					//----(SA)	added
 		"infantryPain",
-		"infantryStay",          // stay - you're told to stay put
-		"infantryFollow",        // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"infantryOrdersDeny",    // deny - refuse orders (doing something else)
-		AITEAM_NAZI,                        // team
-		"infantryss/default",                    // default model/skin
-		{WP_MP40,WP_GRENADE_LAUNCHER},      // starting weapons
-		BBOX_SMALL, {32,48},                // bbox, crouch/stand height
-		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2, // flags
-		0, 0, 0,                   // special attack routine
-		NULL,                               // looping sound
+		"infantryStay",							// stay - you're told to stay put
+		"infantryFollow",						// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"infantryOrdersDeny",					// deny - refuse orders (doing something else)
+		AITEAM_NAZI,							// team
+		"infantryss/default",					// default model/skin
+		{WP_MP40,WP_GRENADE_LAUNCHER},			// starting weapons
+		BBOX_SMALL, {32,48},					// bbox, crouch/stand height
+		AIFL_CATCH_GRENADE | AIFL_STAND_IDLE2,	// flags
+		0, 0, 0,								// special attack routine
+		NULL,									// looping sound
 		AISTATE_RELAXED
 	},
+
 	//AICHAR_AMERICAN
 	{
 		"American",
@@ -114,19 +117,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"americanSightPlayer",
 		"americanAttackPlayer",
 		"americanOrders",
 		"americanDeath",
-		"americanDeath",     //----(SA)	added
+		"americanDeath",		//----(SA)	added
 		"americanPain",
-		"americanStay",          // stay - you're told to stay put
-		"americanFollow",        // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"americanOrdersDeny",    // deny - refuse orders (doing something else)
+		"americanStay",			// stay - you're told to stay put
+		"americanFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"americanOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_ALLIES,
 		"american/default",
 		{WP_THOMPSON,WP_GRENADE_PINEAPPLE},
@@ -136,6 +139,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_RELAXED
 	},
+
 	//AICHAR_ZOMBIE
 	{
 		"Zombie",
@@ -157,19 +161,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			180,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"zombieSightPlayer",
 		"zombieAttackPlayer",
 		"zombieOrders",
 		"zombieDeath",
-		"zombieDeath",       //----(SA)	added
+		"zombieDeath",			//----(SA)	added
 		"zombiePain",
-		"zombieStay",        // stay - you're told to stay put
-		"zombieFollow",      // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"zombieOrdersDeny",  // deny - refuse orders (doing something else)
+		"zombieStay",			// stay - you're told to stay put
+		"zombieFollow",			// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"zombieOrdersDeny",		// deny - refuse orders (doing something else)
 		AITEAM_MONSTER,
 		"zombie/default",
 		{WP_GAUNTLET,WP_MONSTER_ATTACK2},
@@ -202,23 +206,23 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			180,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"warzombieSightPlayer",
 		"warzombieAttackPlayer",
 		"warzombieOrders",
 		"warzombieDeath",
-		"warzombieDeath",        //----(SA)	added
+		"warzombieDeath",					//----(SA)	added
 		"warzombiePain",
-		"sound/weapons/melee/fstatck.wav",       // stay - you're told to stay put
-		"warzombieFollow",       // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"warzombieOrdersDeny",   // deny - refuse orders (doing something else)
+		"sound/weapons/melee/fstatck.wav",	// stay - you're told to stay put
+		"warzombieFollow",					// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"warzombieOrdersDeny",				// deny - refuse orders (doing something else)
 		AITEAM_MONSTER,
 		"warrior/default",
 		{WP_MONSTER_ATTACK1,WP_MONSTER_ATTACK2,WP_MONSTER_ATTACK3},
-		BBOX_SMALL, {10,48},    // very low defense position
+		BBOX_SMALL, {10,48},				// very low defense position
 		AIFL_NO_RELOAD,
 		AIFunc_WarriorZombieMeleeStart, /*AIFunc_WarriorZombieSightStart*/ 0, AIFunc_WarriorZombieDefenseStart,
 		NULL,
@@ -247,8 +251,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			180,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"zombieFemSightPlayer",
@@ -294,8 +298,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"undeadSightPlayer",
@@ -337,19 +341,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			240,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"venomSightPlayer",
 		"venomAttackPlayer",
 		"venomOrders",
 		"venomDeath",
-		"venomDeath",        //----(SA)	added
+		"venomDeath",		//----(SA)	added
 		"venomPain",
-		"venomStay",     // stay - you're told to stay put
-		"venomFollow",       // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"venomOrdersDeny",   // deny - refuse orders (doing something else)
+		"venomStay",		// stay - you're told to stay put
+		"venomFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"venomOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"venom/default",
 		{WP_VENOM,WP_VENOM_FULL,WP_FLAMETHROWER},
@@ -359,6 +363,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_LOPER
 	{
 		"Loper",
@@ -380,23 +385,23 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			500,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"loperSightPlayer",
 		"loperAttackPlayer",
 		"loperOrders",
 		"loperDeath",
-		"loperDeath",        //----(SA)	added
+		"loperDeath",				//----(SA)	added
 		"loperPain",
-		"loperStay",     // stay - you're told to stay put
-		"loperFollow",       // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"loperOrdersDeny",   // deny - refuse orders (doing something else)
+		"loperStay",				// stay - you're told to stay put
+		"loperFollow",				// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"loperOrdersDeny",			// deny - refuse orders (doing something else)
 		AITEAM_MONSTER,
 		"loper/default",
 		{WP_MONSTER_ATTACK1,WP_MONSTER_ATTACK2,WP_MONSTER_ATTACK3},
-		BBOX_LARGE, {48,48},        // large is for wide characters
+		BBOX_LARGE, {48,48},		// large is for wide characters
 		AIFL_NO_RELOAD,
 		AIFunc_LoperAttack1Start, AIFunc_LoperAttack2Start, AIFunc_LoperAttack3Start,
 		"sound/world/electloop.wav",
@@ -425,8 +430,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			500,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"sealoperSightPlayer",
@@ -447,7 +452,6 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		AIFunc_LoperAttack1Start, AIFunc_LoperAttack2Start, AIFunc_LoperAttack3Start,
 		"sound/world/electloop.wav",
 		AISTATE_ALERT
-
 	},
 
 	//AICHAR_ELITEGUARD
@@ -471,19 +475,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			120,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"eliteGuardSightPlayer",
 		"eliteGuardAttackPlayer",
 		"eliteGuardOrders",
 		"eliteGuardDeath",
-		"eliteGuardDeath",       //----(SA)	added
+		"eliteGuardDeath",			//----(SA)	added
 		"eliteGuardPain",
-		"eliteGuardStay",        // stay - you're told to stay put
-		"eliteGuardFollow",      // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"eliteGuardOrdersDeny",  // deny - refuse orders (doing something else)
+		"eliteGuardStay",			// stay - you're told to stay put
+		"eliteGuardFollow",			// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"eliteGuardOrdersDeny",		// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"eliteguard/default",
 		{WP_SILENCER},      //----(SA)	TODO: replace w/ "silenced luger"
@@ -515,28 +519,29 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"stimSoldierSightPlayer",
 		"stimSoldierAttackPlayer",
 		"stimSoldierOrders",
 		"stimSoldierDeath",
-		"stimSoldierDeath",      //----(SA)	added
+		"stimSoldierDeath",			//----(SA)	added
 		"stimSoldierPain",
-		"stimSoldierStay",           // stay - you're told to stay put
-		"stimSoldierFollow",     // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"stimSoldierOrdersDeny", // deny - refuse orders (doing something else)
+		"stimSoldierStay",			// stay - you're told to stay put
+		"stimSoldierFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"stimSoldierOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"stim/default",
-		{WP_MONSTER_ATTACK2},   // TODO: dual machinegun attack
+		{WP_MONSTER_ATTACK2},		// TODO: dual machinegun attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
 		0, AIFunc_StimSoldierAttack2Start, 0,
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_STIMSOLDIER2
 	{
 		"Stim Soldier",
@@ -558,28 +563,29 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"stimSoldierSightPlayer",
 		"stimSoldierAttackPlayer",
 		"stimSoldierOrders",
 		"stimSoldierDeath",
-		"stimSoldierDeath",      //----(SA)	added
+		"stimSoldierDeath",			//----(SA)	added
 		"stimSoldierPain",
-		"stimSoldierStay",           // stay - you're told to stay put
-		"stimSoldierFollow",     // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"stimSoldierOrdersDeny", // deny - refuse orders (doing something else)
+		"stimSoldierStay",			// stay - you're told to stay put
+		"stimSoldierFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"stimSoldierOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"stim/default",
-		{WP_MP40, WP_ROCKET_LAUNCHER, WP_MONSTER_ATTACK1},  // attack1 is leaping rocket attack
+		{WP_MP40, WP_ROCKET_LAUNCHER, WP_MONSTER_ATTACK1},	// attack1 is leaping rocket attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
 		AIFunc_StimSoldierAttack1Start, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_STIMSOLDIER3
 	{
 		"Stim Soldier",
@@ -601,28 +607,29 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"stimSoldierSightPlayer",
 		"stimSoldierAttackPlayer",
 		"stimSoldierOrders",
 		"stimSoldierDeath",
-		"stimSoldierDeath",      //----(SA)	added
+		"stimSoldierDeath",			//----(SA)	added
 		"stimSoldierPain",
-		"stimSoldierStay",           // stay - you're told to stay put
-		"stimSoldierFollow",     // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"stimSoldierOrdersDeny", // deny - refuse orders (doing something else)
+		"stimSoldierStay",			// stay - you're told to stay put
+		"stimSoldierFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"stimSoldierOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"stim/default",
-		{WP_MP40, WP_TESLA},    // no monster_attack1, since that's only used for the jumping rocket attack
+		{WP_MP40, WP_TESLA},		// no monster_attack1, since that's only used for the jumping rocket attack
 		BBOX_LARGE, {48,64},
 		AIFL_NO_RELOAD,
 		AIFunc_StimSoldierAttack1Start, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_SUPERSOLDIER
 	{
 		"Super Soldier",
@@ -644,19 +651,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			2.0,        // pain threshold multiplier
 		},
 		"superSoldierSightPlayer",
 		"superSoldierAttackPlayer",
 		"superSoldierOrders",
 		"superSoldierDeath",
-		"superSoldierDeath",     //----(SA)	added
+		"superSoldierDeath",		//----(SA)	added
 		"superSoldierPain",
-		"superSoldierStay",          // stay - you're told to stay put
-		"superSoldierFollow",        // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"superSoldierOrdersDeny",    // deny - refuse orders (doing something else)
+		"superSoldierStay",			// stay - you're told to stay put
+		"superSoldierFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"superSoldierOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"supersoldier/default",
 		{WP_VENOM},
@@ -666,6 +673,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_BLACKGUARD
 	{
 		"Black Guard",
@@ -687,29 +695,30 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			120,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"blackGuardSightPlayer",
 		"blackGuardAttackPlayer",
 		"blackGuardOrders",
 		"blackGuardDeath",
-		"blackGuardDeath",       //----(SA)	added
+		"blackGuardDeath",			//----(SA)	added
 		"blackGuardPain",
-		"blackGuardStay",        // stay - you're told to stay put
-		"blackGuardFollow",      // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"blackGuardOrdersDeny",  // deny - refuse orders (doing something else)
+		"blackGuardStay",			// stay - you're told to stay put
+		"blackGuardFollow",			// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"blackGuardOrdersDeny",		// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"blackguard/default",
-//		{WP_MP40, WP_GRENADE_LAUNCHER, WP_MONSTER_ATTACK1},	// attack1 is melee kick
-		{WP_FG42, WP_FG42SCOPE, WP_GRENADE_LAUNCHER, WP_MONSTER_ATTACK1},   // attack1 is melee kick
+//		{WP_MP40, WP_GRENADE_LAUNCHER, WP_MONSTER_ATTACK1},					// attack1 is melee kick
+		{WP_FG42, WP_FG42SCOPE, WP_GRENADE_LAUNCHER, WP_MONSTER_ATTACK1},	// attack1 is melee kick
 		BBOX_SMALL, {32,48},
 		AIFL_CATCH_GRENADE | AIFL_FLIP_ANIM | AIFL_STAND_IDLE2,
 		AIFunc_BlackGuardAttack1Start, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_PROTOSOLDIER
 	{
 		"Protosoldier",
@@ -731,19 +740,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			2.0,        // pain threshold multiplier
 		},
 		"protoSoldierSightPlayer",
 		"protoSoldierAttackPlayer",
 		"protoSoldierOrders",
 		"protoSoldierDeath",
-		"protoSoldierDeath",     //----(SA)	added
+		"protoSoldierDeath",		//----(SA)	added
 		"protoSoldierPain",
-		"protoSoldierStay",          // stay - you're told to stay put
-		"protoSoldierFollow",        // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"protoSoldierOrdersDeny",    // deny - refuse orders (doing something else)
+		"protoSoldierStay",			// stay - you're told to stay put
+		"protoSoldierFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"protoSoldierOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"protosoldier/default",
 //		{WP_TESLA},
@@ -754,6 +763,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_REJECTX
 	{
 		"Reject X Creature",
@@ -776,8 +786,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			500,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"rejectXSightPlayer",
@@ -798,7 +808,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_ALERT
 	},
-// AICHAR_FROGMAN
+
+	// AICHAR_FROGMAN
 	{
 		"Frogman",
 		{
@@ -819,19 +830,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			200,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"frogmanSightPlayer",
 		"frogmanAttackPlayer",
 		"frogmanOrders",
 		"frogmanDeath",
-		"frogmanDeath",      //----(SA)	added
+		"frogmanDeath",			//----(SA)	added
 		"frogmanPain",
-		"frogmanStay",           // stay - you're told to stay put
-		"frogmanFollow",     // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"frogmanOrdersDeny", // deny - refuse orders (doing something else)
+		"frogmanStay",			// stay - you're told to stay put
+		"frogmanFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"frogmanOrdersDeny",	// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"frogman/default",
 		{WP_SPEARGUN},
@@ -841,6 +852,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_RELAXED
 	},
+
 	//AICHAR_HELGA
 	{
 		"Helga",
@@ -862,29 +874,30 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"helgaSightPlayer",
 		"helgaAttackPlayer",
 		"helgaOrders",
 		"helgaDeath",
-		"helgaDeath",        //----(SA)	added
+		"helgaDeath",			//----(SA)	added
 		"helgaPain",
-		"helgaStay",     // stay - you're told to stay put
-		"helgaFollow",       // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"helgaOrdersDeny",   // deny - refuse orders (doing something else)
-		AITEAM_MONSTER,                     // team
-		"helga/default",                 // default model/skin
-		{WP_LUGER},                         // starting weapons
-		BBOX_SMALL, {32,48},                // bbox, crouch/stand height
+		"helgaStay",			// stay - you're told to stay put
+		"helgaFollow",			// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"helgaOrdersDeny",		// deny - refuse orders (doing something else)
+		AITEAM_MONSTER,						// team
+		"helga/default",					// default model/skin
+		{WP_LUGER},							// starting weapons
+		BBOX_SMALL, {32,48},				// bbox, crouch/stand height
 //		AIFL_STAND_IDLE2,					// flags
 		0,
-		0, 0, 0,                   // special attack routine
+		0, 0, 0,							// special attack routine
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_HEINRICH
 	{
 		"Heinrich",
@@ -906,8 +919,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			300,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"heinrichSightPlayer",
@@ -916,18 +929,19 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		"heinrichDeath",
 		"heinrichDeath",
 		"heinrichPain",
-		"heinrichStay",          // stay - you're told to stay put
-		"heinrichFollow",        // follow - go with ordering player ("i'm with you" rather than "yes sir!")
-		"heinrichOrdersDeny",    // deny - refuse orders (doing something else)
+		"heinrichStay",				// stay - you're told to stay put
+		"heinrichFollow",			// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+		"heinrichOrdersDeny",		// deny - refuse orders (doing something else)
 		AITEAM_NAZI,
 		"heinrich/default",
 		{WP_VENOM_FULL},
-		BBOX_LARGE, {110,140},  // (SA) height is not exact.  just eyeballed.
+		BBOX_LARGE, {110,140},		// (SA) height is not exact.  just eyeballed.
 		AIFL_WALKFORWARD | AIFL_NO_RELOAD,
 		0, 0, 0,
 		NULL,
 		AISTATE_ALERT
 	},
+
 	//AICHAR_PARTISAN
 	{
 		"Partisan",
@@ -949,15 +963,15 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"partisanSightPlayer",
 		"partisanAttackPlayer",
 		"partisanOrders",
 		"partisanDeath",
-		"partisanDeath",     //----(SA)	added
+		"partisanDeath",	//----(SA)	added
 		"partisanPain",
 		"partisanStay",
 		"partisanFollow",
@@ -971,6 +985,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_RELAXED
 	},
+
 	//AICHAR_CIVILIAN
 	{
 		"Civilian",
@@ -992,20 +1007,20 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"civilianSightPlayer",
 		"civilianAttackPlayer",
 		"civilianOrders",
 		"civilianDeath",
-		"civilianDeath",     //----(SA)	added
+		"civilianDeath",		//----(SA)	added
 		"civilianPain",
 		"civilianStay",
 		"civilianFollow",
 		"civilianOrdersDeny",
-		AITEAM_NEUTRAL, //----(SA)	changed affiliation for DK
+		AITEAM_NEUTRAL,			//----(SA)	changed affiliation for DK
 		"civilian/default",
 		{0},
 		BBOX_SMALL, {32,48},
@@ -1014,6 +1029,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		NULL,
 		AISTATE_RELAXED
 	},
+
 	//AICHAR_CHIMP
 	{
 		"Chimp",
@@ -1035,8 +1051,8 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			0.0,        // camper
 			16000,      // alertness
 			100,        // starting health
-			1.0,        // hearing range
-			512,        // relaxec detection radius
+			1.0,        // hearing scale
+			512,        // relaxed detection radius
 			1.0,        // pain threshold multiplier
 		},
 		"chimpSightPlayer",
@@ -1064,7 +1080,6 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 // Bounding boxes
 static vec3_t bbmins[2] = {{-18, -18, -24},{-32,-32,-24}};
 static vec3_t bbmaxs[2] = {{ 18,  18,  48},{ 32, 32, 68}};
-// TTimo unused
 //static float crouchMaxZ[2] = {32,48};	// same as player, will head be ok?
 //---------------------------------------------------------------------------
 
@@ -1139,8 +1154,6 @@ int AIChar_GetPainLocation( gentity_t *ent, vec3_t point ) {
 	orientation_t or;
 
 	// first make sure the client is able to retrieve tag information
-	// TTimo gcc: warning: comparison is always false due to limited range of data type
-	// initial line: if (trap_GetTag( ent->s.number, painTagNames[0], &or ) < 0)
 	if ( !trap_GetTag( ent->s.number, painTagNames[0], &or ) ) {
 		return 0;
 	}
@@ -1148,8 +1161,6 @@ int AIChar_GetPainLocation( gentity_t *ent, vec3_t point ) {
 	// find a correct animation to play, based on the body orientation at previous frame
 	for ( tagIndex = 0, bestDist = 0, bestTag = -1; painTagNames[tagIndex]; tagIndex++ ) {
 		// grab the tag with this name
-		// TTimo gcc: warning: comparison is always true due to limited range of data type
-		// initial line: if (trap_GetTag( ent->s.number, painTagNames[tagIndex], &or ) >= 0)
 		if ( trap_GetTag( ent->s.number, painTagNames[tagIndex], &or ) ) {
 			dist = VectorDistance( or.origin, point );
 			if ( !bestDist || dist < bestDist ) {
@@ -1439,6 +1450,7 @@ void AIChar_spawn( gentity_t *ent ) {
 	for ( i = 0; aiCharDefaults->weapons[i]; i++ ) {
 		//weaponInfo.startingWeapons[(aiCharDefaults->weapons[i] / 32)] |= ( 1 << aiCharDefaults->weapons[i] );
 		//weaponInfo.startingWeapons[0] |= ( 1 << aiCharDefaults->weapons[i] );
+
 		COM_BitSet( weaponInfo.startingWeapons, aiCharDefaults->weapons[i] );
 		if ( aiCharDefaults->weapons[i] == WP_GRENADE_LAUNCHER ) { // give them a bunch of grenades, but not an unlimited supply
 			weaponInfo.startingAmmo[BG_FindAmmoForWeapon( aiCharDefaults->weapons[i] )] = 6;
@@ -1639,17 +1651,13 @@ warrior zombie entity
 
 /*
 ============
-SP_ai_zombie
+SP_ai_warzombie
 ============
 */
 void SP_ai_warzombie( gentity_t *ent ) {
 	AICast_DelayedSpawnCast( ent, AICHAR_WARZOMBIE );
 }
-
-
 //----(SA)	end
-
-
 
 //----------------------------------------------------------------------------------------------------------------------------
 /*QUAKED ai_femzombie (1 0.25 0) (-16 -16 -24) (16 16 64) TriggerSpawn NoRevive
@@ -1668,9 +1676,6 @@ void SP_ai_femzombie( gentity_t *ent ) {
 	ent->r.svFlags |= SVF_NOFOOTSTEPS;
 	AICast_DelayedSpawnCast( ent, AICHAR_FEMZOMBIE );
 }
-
-
-
 
 //----------------------------------------------------------------------------------------------------------------------------
 /*QUAKED ai_undead (1 0.25 0) (-16 -16 -24) (16 16 64) TriggerSpawn NoRevive
@@ -1956,7 +1961,6 @@ SP_ai_protosoldier
 void SP_ai_protosoldier( gentity_t *ent ) {
 	AICast_DelayedSpawnCast( ent, AICHAR_PROTOSOLDIER );
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------------
 /*QUAKED ai_rejectxcreature (1 0.25 0) (-16 -16 -24) (16 16 64) TriggerSpawn NoRevive

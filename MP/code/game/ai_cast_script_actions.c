@@ -179,7 +179,7 @@ qboolean AICast_ScriptAction_GotoMarker( cast_state_t *cs, char *params ) {
 	}
 
 	// find the ai_marker with the given "targetname"
-	// TTimo gcc: suggest parentheses around assignment used as truth value
+
 	while ( ( ent = G_Find( ent, FOFS( classname ), "ai_marker" ) ) )
 	{
 		if ( ent->targetname && !Q_strcasecmp( ent->targetname, token ) ) {
@@ -489,7 +489,7 @@ qboolean AICast_ScriptAction_Wait( cast_state_t *cs, char *params ) {
 					&&  ( cs->bs->enemy >= 0 ) ) {
 
 				// if we can attack them, or they can't attack us, stay here
-				// TTimo gcc: suggest parentheses around && within ||
+
 				if (    AICast_CheckAttack( cs, cs->bs->enemy, qfalse )
 						||  (   !AICast_EntityVisible( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse )
 								&&  !AICast_CheckAttack( AICast_GetCastState( cs->bs->enemy ), cs->entityNum, qfalse ) ) ) {
@@ -887,11 +887,8 @@ qboolean AICast_ScriptAction_SetAmmo( cast_state_t *cs, char *params ) {
 //----(SA)	end
 
 	} else {
-
 //		G_Printf( "--SCRIPTER WARNING-- AI Scripting: setammo: unknown ammo \"%s\"", params );
 		return qfalse;  // (SA) temp as scripts transition to new names
-//		G_Error( "AI Scripting: setammo: unknown ammo \"%s\"", params );
-
 	}
 
 	return qtrue;
@@ -954,7 +951,6 @@ qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params ) {
 	} else {
 //		G_Printf( "--SCRIPTER WARNING-- AI Scripting: setclip: unknown weapon \"%s\"", params );
 		return qfalse;  // (SA) temp as scripts transition to new names
-//		G_Error( "AI Scripting: setclip: unknown weapon \"%s\"", params );
 	}
 
 	return qtrue;
@@ -998,11 +994,10 @@ qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params ) {
 
 		if ( !cs->aiCharacter ) {  // only do this for player
 			g_entities[cs->entityNum].client->ps.weaponTime = 500;  // (SA) HACK: FIXME: TODO: delay to catch initial weapon reload
-
 		}
 	} else {
 //		G_Printf( "--SCRIPTER WARNING-- AI Scripting: selectweapon: unknown weapon \"%s\"", params );
-		return qfalse;  // (SA) temp as scripts transition to new names
+		return qfalse;	// (SA) temp as scripts transition to new names
 //		G_Error( "AI Scripting: selectweapon: unknown weapon \"%s\"", params );
 	}
 
@@ -1024,8 +1019,6 @@ AICast_ScriptAction_GiveArmor
 */
 qboolean AICast_ScriptAction_GiveArmor( cast_state_t *cs, char *params ) {
 	int i;
-	// TTimo unused
-//	gentity_t	*ent=&g_entities[cs->entityNum];
 	gitem_t     *item = 0;
 
 	for ( i = 1; bg_itemlist[i].classname; i++ ) {
@@ -1203,8 +1196,6 @@ AICast_ScriptAction_GiveInventory
 */
 qboolean AICast_ScriptAction_GiveInventory( cast_state_t *cs, char *params ) {
 	int i;
-	// TTimo unused
-//	gentity_t	*ent=&g_entities[cs->entityNum];
 	gitem_t     *item = 0;
 
 	for ( i = 1; bg_itemlist[i].classname; i++ ) {
@@ -1269,6 +1260,8 @@ qboolean AICast_ScriptAction_Movetype( cast_state_t *cs, char *params ) {
 
 	return qtrue;
 }
+
+
 /*
 =================
 AICast_ScriptAction_AlertEntity
@@ -1321,7 +1314,7 @@ AICast_ScriptAction_SaveGame
 =================
 */
 qboolean AICast_ScriptAction_SaveGame( cast_state_t *cs, char *params ) {
-	char *pString;
+	char *pString; //, *saveName;
 	pString = params;
 
 	if ( cs->bs ) {
@@ -1330,10 +1323,11 @@ qboolean AICast_ScriptAction_SaveGame( cast_state_t *cs, char *params ) {
 
 //----(SA)	check for parameter
 	COM_ParseExt( &pString, qfalse );
-//	if (!saveName[0])
+//	if ( !saveName[0] ) {
 //		G_SaveGame( NULL );	// save the default "current" savegame
-//	else
+//	} else {
 //		G_SaveGame( saveName );
+//	}
 //----(SA)	end
 
 	return qtrue;
@@ -1960,9 +1954,9 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params ) {
 		trap_Cvar_Set( "g_missionStats", cmd );
 	}
 
-	// save persistant data if required
+	// save persistent data if required
 	newstr = va( "%s", params );
-	pch = strstr( newstr, " persistant" );
+	pch = strstr( newstr, " persistent" );
 	if ( pch ) {
 		pch = strstr( newstr, " " );
 		*pch = '\0';
@@ -2290,8 +2284,6 @@ qboolean AICast_ScriptAction_StartCam( cast_state_t *cs, char *params ) {
 qboolean AICast_ScriptAction_StartCamBlack( cast_state_t *cs, char *params ) {
 	return ScriptStartCam( cs, params, qtrue );
 }
-
-
 //----(SA)	end
 
 /*

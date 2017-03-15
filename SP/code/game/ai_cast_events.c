@@ -222,19 +222,6 @@ void AICast_Die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				// RF, changed this so Zombies always gib now
 				GibEntity( self, killer );
 				nogib = qfalse;
-/*
-				// Zombie has special exploding cloud effect
-				if (attacker != inflictor || attacker->s.weapon == WP_VENOM)
-				{
-					GibEntity( self, killer );
-					nogib = qfalse;
-				} else {
-					// Zombie will decompose upon dying
-					self->client->ps.eFlags |= EF_MONSTER_EFFECT2;
-					self->s.effect2Time = level.time+200;
-					self->health = -1;
-				}
-*/
 				self->takedamage = qfalse;
 				self->r.contents = 0;
 				cs->secondDeadTime = 2;
@@ -452,7 +439,6 @@ void AICast_AIDoor_Touch( gentity_t *ent, gentity_t *aidoor_trigger, gentity_t *
 		}
 	}
 
-	// TTimo: gcc: suggest () around assignment used as truth value
 	for ( trav = NULL; ( trav = G_Find( trav, FOFS( target ), aidoor_trigger->targetname ) ); ) {
 		// make sure the marker is vacant
 		trap_Trace( &tr, trav->r.currentOrigin, ent->r.mins, ent->r.maxs, trav->r.currentOrigin, ent->s.number, ent->clipmask );

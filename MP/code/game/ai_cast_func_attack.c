@@ -82,7 +82,6 @@ char *AIFunc_ZombieFlameAttack( cast_state_t *cs ) {
 		ent->client->ps.legsTimer = 0;
 		return AIFunc_DefaultStart( cs );
 	}
-
 	// if outside range, move closer
 	if ( VectorDistance( cs->bs->origin, cs->vislist[cs->bs->enemy].visible_pos ) > ZOMBIE_FLAME_RADIUS ) {
 		ent->s.onFireEnd = level.time + 1500;
@@ -101,9 +100,7 @@ char *AIFunc_ZombieFlameAttack( cast_state_t *cs ) {
 		return AIFunc_DefaultStart( cs );
 
 	} else {
-
 		ent->client->ps.torsoTimer = 400;
-		//ent->client->ps.legsTimer = 400;
 
 		// draw the client-side effect
 		ent->client->ps.eFlags |= EF_MONSTER_EFFECT3;
@@ -114,8 +111,7 @@ char *AIFunc_ZombieFlameAttack( cast_state_t *cs ) {
 		// look slightly downwards since animation is facing upwards slightly
 		cs->bs->ideal_viewangles[PITCH] += 10;
 	}
-	//
-	//
+
 	return NULL;
 }
 
@@ -128,7 +124,7 @@ char *AIFunc_ZombieFlameAttackStart( cast_state_t *cs ) {
 	//
 	// dont turn
 	cs->bs->ideal_viewangles[YAW] = cs->bs->viewangles[YAW];
-	cs->bs->ideal_viewangles[PITCH] = -45;  // look upwards
+	cs->bs->ideal_viewangles[PITCH] = -45;	// look upwards
 	// start the flame
 	ent->s.onFireStart = level.time;
 	ent->s.onFireEnd = level.time + ZOMBIE_FLAME_DURATION;
@@ -174,16 +170,15 @@ char *AIFunc_ZombieAttack2( cast_state_t *cs ) {
 	//
 	ent = &g_entities[cs->entityNum];
 	//
-	lastZombieSpiritAttack = level.time;
-	//
 	if ( cs->bs->enemy < 0 ) {
 		return AIFunc_DefaultStart( cs );
 	}
-	//
 	// if we can't see them anymore, abort immediately
 	if ( cs->vislist[cs->bs->enemy].real_visible_timestamp != cs->vislist[cs->bs->enemy].real_update_timestamp ) {
 		return AIFunc_DefaultStart( cs );
 	}
+	//
+	lastZombieSpiritAttack = level.time;
 	// we are firing this weapon, so record it
 	cs->weaponFireTimes[WP_MONSTER_ATTACK2] = level.time;
 	// once an attack has started, only abort once the player leaves our view, or time runs out
@@ -193,11 +188,6 @@ char *AIFunc_ZombieAttack2( cast_state_t *cs ) {
 			return AIFunc_DefaultStart( cs );
 		}
 	} else {
-
-		// set torso to the correct animation
-		// TODO
-		//ent->client->ps.torsoTimer = 300;	// leave enough time to cancel if we stop coming in here, but stay in the anim if we come back next thing
-
 		// draw the client-side effect
 		ent->client->ps.eFlags |= EF_MONSTER_EFFECT;
 
@@ -205,8 +195,7 @@ char *AIFunc_ZombieAttack2( cast_state_t *cs ) {
 		VectorCopy( g_entities[cs->bs->enemy].client->ps.origin, ent->s.origin2 );
 		ent->s.origin2[2] += g_entities[cs->bs->enemy].client->ps.viewheight;
 	}
-	//
-	//
+
 	return NULL;
 }
 
@@ -281,7 +270,6 @@ char *AIFunc_LoperAttack1( cast_state_t *cs ) {
 	// ready to inflict damage?
 	if ( cs->thinkFuncChangeTime < level.time - LOPER_MELEE_DAMAGE_DELAY ) {
 		// check for damage
-		// TTimo: assignment used as truth value
 		if ( ( tr = CheckMeleeAttack( &g_entities[cs->entityNum], LOPER_MELEE_RANGE, qfalse ) ) ) {
 			G_Damage( &g_entities[tr->entityNum], ent, ent, vec3_origin, tr->endpos,
 					  LOPER_MELEE_DAMAGE, 0, MOD_LOPER_HIT );
@@ -373,8 +361,6 @@ char *AIFunc_LoperAttack2( cast_state_t *cs ) {
 				//	LOPER_LEAP_DAMAGE, 0, MOD_LOPER_LEAP );
 				G_Sound( &g_entities[cs->entityNum], level.loperZapSound );
 				//cs->weaponFireTimes[WP_MONSTER_ATTACK2] = level.time;
-				// TODO: client-side visual effect
-				// TODO: throw them backwards (away from us)
 			}
 		}
 	}
@@ -701,7 +687,6 @@ char *AIFunc_StimSoldierAttack2( cast_state_t *cs ) {
 }
 
 char *AIFunc_StimSoldierAttack2Start( cast_state_t *cs ) {
-	//
 	cs->weaponFireTimes[cs->bs->weaponnum] = level.time;
 	//
 	// face them
@@ -724,9 +709,8 @@ char *AIFunc_BlackGuardAttack1( cast_state_t *cs ) {
 }
 
 char *AIFunc_BlackGuardAttack1Start( cast_state_t *cs ) {
-
+	//
 	cs->weaponFireTimes[cs->bs->weaponnum] = level.time;
-
 #if 1
 	// TODO!
 	G_Printf( "TODO: black guard kick attack\n" );

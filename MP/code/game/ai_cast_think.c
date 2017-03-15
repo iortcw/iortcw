@@ -102,7 +102,7 @@ void AICast_ChangeViewAngles( cast_state_t *cs, float thinktime ) {
 
 	bs = cs->bs;
 	//
-	// restoire locked viewangles if required
+	// restore locked viewangles if required
 	if ( cs->aiFlags & AIFL_VIEWLOCKED ) {
 		VectorCopy( cs->viewlock_viewangles, bs->ideal_viewangles );
 	}
@@ -701,7 +701,7 @@ void AICast_Think( int client, float thinktime ) {
 			trap_EA_Crouch( cs->entityNum );
 			break;
 		default:
-			break; // TTimo gcc: MS_DEFAULT MS_RUN not handled in switch
+			break;
 		}
 	}
 	//
@@ -772,14 +772,14 @@ void AICast_StartFrame( int time ) {
 //G_Printf( "AI startframe: %i\n", time );
 
 	if ( elapsed < 0 ) {
-	//	elapsed = 0;
+//		elapsed = 0;
 		lasttime = time;
 	}
 	// don't let the framerate drop below 10
-	//if ( elapsed > 100 ) {
-	//	elapsed = 100;
-	//}
-	//AICast_SightUpdate( (int)((float)SIGHT_PER_SEC * ((float)elapsed / 1000)) );
+//	if ( elapsed > 100 ) {
+//		elapsed = 100;
+//	}
+//	AICast_SightUpdate( (int)((float)SIGHT_PER_SEC * ((float)elapsed / 1000)) );
 	//
 	count = 0;
 	castcount = 0;
@@ -787,8 +787,6 @@ void AICast_StartFrame( int time ) {
 	ent = g_entities;
 	//
 	//update the AI characters
-	// TTimo gcc: left-hand operand of comma expression has no effect
-	// initial line was: for (i = 0; i < aicast_maxclients, clCount < level.numPlayingClients; i++, ent++)
 	for ( i = 0; ( i < aicast_maxclients ) && ( clCount < level.numPlayingClients ) ; i++, ent++ )
 	{
 		if ( ent->client ) {
@@ -851,7 +849,7 @@ void AICast_StartServerFrame( int time ) {
 	static vmCvar_t aicast_disable;
 	gentity_t *ent;
 	cast_state_t *pcs;
-//	int		oldLegsTimer;
+//	int	oldLegsTimer;
 
 	if ( trap_Cvar_VariableIntegerValue( "savegame_loading" ) ) {
 		return;
@@ -898,7 +896,7 @@ void AICast_StartServerFrame( int time ) {
 
 	pcs = AICast_GetCastState( 0 );
 
-//G_Printf( "AI startserverframe: %i\n", time );
+//	G_Printf( "AI startserverframe: %i\n", time );
 
 	if ( elapsed < 0 ) {
 		elapsed = 0;
@@ -919,8 +917,6 @@ void AICast_StartServerFrame( int time ) {
 	ent = g_entities;
 	//
 	//update the AI characters
-	// TTimo gcc: left-hand operand of comma expression has no effect
-	// initial line: for (i = 0; i < aicast_maxclients, clCount < level.numPlayingClients; i++, ent++)
 	for ( i = 0; ( i < aicast_maxclients ) && ( clCount < level.numPlayingClients ) ; i++, ent++ )
 	{
 		if ( ent->client ) {
@@ -989,8 +985,8 @@ void AICast_PredictMovement( cast_state_t *cs, int numframes, float frametime, a
 	vec3_t end, startHitVec, thisHitVec, lastOrg, projPoint;
 	qboolean checkReachMarker;
 
-//int pretime = Sys_MilliSeconds();
-//G_Printf("PredictMovement: %f duration, %i frames\n", frametime, numframes );
+//	int pretime = Sys_MilliSeconds();
+//	G_Printf("PredictMovement: %f duration, %i frames\n", frametime, numframes );
 	VectorCopy( vec3_origin, startHitVec );
 
 	if ( cs->bs ) {
@@ -1113,9 +1109,7 @@ qboolean AICast_GetAvoid( cast_state_t *cs, bot_goal_t *goal, vec3_t outpos, qbo
 	usercmd_t ucmd;
 	qboolean enemyVisible;
 	float angleDiff;
-	// TTimo might be used uninitialized
-	int starttraveltime = 0;
-	int traveltime;
+	int starttraveltime = 0, traveltime;
 	int invert;
 	float inc;
 	qboolean averting = qfalse;

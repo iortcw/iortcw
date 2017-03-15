@@ -252,10 +252,10 @@ bot_moveresult_t *AICast_MoveToPos( cast_state_t *cs, vec3_t pos, int entnum ) {
 	// this must go last so we face the direction we avoid move
 	AICast_Blocked( cs, &lmoveresult, qfalse, &goal );
 
-//G_Printf("MoveToPos: %i ms\n", -pretime + Sys_MilliSeconds() );
+//	G_Printf("MoveToPos: %i ms\n", -pretime + Sys_MilliSeconds() );
 
-// debug, print movement info
-	if ( 0 ) { // (SA) added to hide the print
+	// debug, print movement info
+	if ( 0 ) {	// (SA) added to hide the print
 		bot_input_t bi;
 
 		trap_EA_GetInput( cs->bs->client, (float) level.time / 1000, &bi );
@@ -349,7 +349,7 @@ char *AIFunc_Idle( cast_state_t *cs ) {
 		return NULL;
 	} else if ( numEnemies == -2 )     { // inspection may be required
 		char *retval;
-		// TTimo gcc: suggest parentheses around assignment used as truth value
+
 		if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 			return retval;
 		}
@@ -1300,7 +1300,7 @@ char *AIFunc_ChaseGoalIdle( cast_state_t *cs ) {
 		return NULL;
 	} else if ( numEnemies == -2 )     { // inspection may be required
 		char *retval;
-		// TTimo gcc: suggest parentheses around assignment used as truth value
+
 		if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 			return retval;
 		}
@@ -1489,7 +1489,6 @@ char *AIFunc_ChaseGoal( cast_state_t *cs ) {
 		if ( simTest ) {
 			// try walking straight to them
 			VectorSubtract( followent->r.currentOrigin, cs->bs->origin, dir );
-			VectorNormalize( dir );
 			if ( !ent->waterlevel ) {
 				dir[2] = 0;
 			}
@@ -1540,7 +1539,7 @@ char *AIFunc_ChaseGoal( cast_state_t *cs ) {
 			return NULL;
 		} else if ( numEnemies == -2 )     { // inspection may be required
 			char *retval;
-			// TTimo gcc: suggest parentheses around assignment used as truth value
+
 			if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 				return retval;
 			}
@@ -1654,6 +1653,7 @@ char *AIFunc_DoorMarker( cast_state_t *cs ) {
 	}
 
 	// go to it
+	//
 	moveresult = AICast_MoveToPos( cs, followent->r.currentOrigin, followent->s.number );
 	// if we cant get there, forget it
 	if ( moveresult && moveresult->failure ) {
@@ -1743,8 +1743,7 @@ AIFunc_BattleRollStart()
 */
 char *AIFunc_BattleRollStart( cast_state_t *cs, vec3_t vec ) {
 	int duration;
-	// TTimo unused
-	//gclient_t *client = &level.clients[cs->entityNum];
+//	gclient_t *client = &level.clients[cs->entityNum];
 	//
 	// backup the current thinkfunc, so we can return to it when done
 	cs->oldAifunc = cs->aifunc;
@@ -1784,8 +1783,7 @@ AIFunc_BattleDiveStart()
 */
 char *AIFunc_BattleDiveStart( cast_state_t *cs, vec3_t vec ) {
 	int duration;
-	// TTimo unused
-	//gclient_t *client = &level.clients[cs->entityNum];
+//	gclient_t *client = &level.clients[cs->entityNum];
 	//
 	// backup the current thinkfunc, so we can return to it when done
 	cs->oldAifunc = cs->aifunc;
@@ -1849,8 +1847,7 @@ AIFunc_FlipMoveStart()
 */
 char *AIFunc_FlipMoveStart( cast_state_t *cs, vec3_t vec ) {
 	int duration;
-	// TTimo unused
-	//gclient_t *client = &level.clients[cs->entityNum];
+//	gclient_t *client = &level.clients[cs->entityNum];
 	//
 	// backup the current thinkfunc, so we can return to it when done
 	cs->oldAifunc = cs->aifunc;
@@ -1887,12 +1884,9 @@ char *AIFunc_BattleHunt( cast_state_t *cs ) {
 	bot_state_t *bs;
 	vec3_t destorg;
 	qboolean moved = qfalse;
-	// TTimo unused
-	//gclient_t *client = &level.clients[cs->entityNum];
 	char *rval;
-	// TTimo might be used uninitialized
 	float dist = 0;
-	int     i;
+	int i;
 
 	//
 	// do we need to avoid a danger?
@@ -1939,11 +1933,11 @@ char *AIFunc_BattleHunt( cast_state_t *cs ) {
 	//
 	// if we can see them, go back to an attack state
 	AICast_ChooseWeapon( cs, qtrue );   // enable special weapons, if we cant get them, change back
-	if (    AICast_EntityVisible( cs, bs->enemy, qtrue )    // take into account reaction time
+	if (    AICast_EntityVisible( cs, bs->enemy, qtrue )	// take into account reaction time
 			&&  AICast_CheckAttack( cs, bs->enemy, qfalse )
 			&&  cs->obstructingTime < level.time ) {
 		if ( AICast_StopAndAttack( cs ) ) {
-			// TTimo gcc: suggest parentheses around assignment used as truth value
+
 			if ( ( rval = AIFunc_BattleStart( cs ) ) ) {
 				return rval;
 			}
@@ -1963,7 +1957,7 @@ char *AIFunc_BattleHunt( cast_state_t *cs ) {
 		} else if ( numEnemies == -2 )     { // inspection may be required
 			char *retval;
 			if ( cs->aiState < AISTATE_COMBAT ) {
-				// TTimo gcc: suggest parentheses around assignment used as truth value
+
 				if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 					return retval;
 				}
@@ -2098,8 +2092,7 @@ char *AIFunc_BattleAmbush( cast_state_t *cs ) {
 	qboolean shouldAttack, idleYaw;
 	aicast_predictmove_t move;
 	vec3_t dir;
-	// TTimo unused
-	//gclient_t	*client = &level.clients[cs->entityNum];
+//	gclient_t	*client = &level.clients[cs->entityNum];
 	//
 	// do we need to avoid a danger?
 	if ( cs->dangerEntityValidTime >= level.time ) {
@@ -2150,6 +2143,8 @@ char *AIFunc_BattleAmbush( cast_state_t *cs ) {
 	// if we are out of ammo, we shouldn't bother trying to attack (and we should keep hiding)
 	shouldAttack = qfalse;
 	numEnemies = AICast_ScanForEnemies( cs, enemies );
+
+	// we shouldnt be interrupted from BattleAmbush mode, so try to handle these without interference
 	if ( numEnemies == -1 ) { // query mode
 		return NULL;
 	} else if ( numEnemies == -2 )     { // inspection may be required
@@ -3457,7 +3452,7 @@ char *AIFunc_GrenadeFlush( cast_state_t *cs ) {
 	if (    AICast_CheckAttack( cs, bs->enemy, qfalse )
 			&&  cs->obstructingTime < level.time ) { // give us some time to throw the grenade, otherwise go back to attack state
 		if ( ( cs->grenadeFlushEndTime > 0 && cs->grenadeFlushEndTime < level.time ) ) {
-			//G_Printf("aborting, enemy is attackable\n");
+//			G_Printf( "aborting, enemy is attackable\n" );
 			return AIFunc_BattleStart( cs );
 		} else if ( cs->grenadeFlushEndTime < 0 ) {
 			cs->grenadeFlushEndTime = level.time + 1500;
@@ -3485,7 +3480,7 @@ char *AIFunc_GrenadeFlush( cast_state_t *cs ) {
 		return NULL;
 	} else if ( numEnemies == -2 )     { // inspection may be required
 		char *retval;
-		// TTimo gcc: suggest parentheses around assignment used as truth value
+
 		if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 			return retval;
 		}
@@ -3711,7 +3706,7 @@ char *AIFunc_BattleMG42( cast_state_t *cs ) {
 		}
 		if ( numEnemies == -2 ) { // inspection may be required
 			char *retval;
-			// TTimo gcc: suggest parentheses around assignment used as truth value
+
 			if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 				return retval;
 			}
@@ -3841,7 +3836,7 @@ char *AIFunc_InspectBody( cast_state_t *cs ) {
 		return NULL;
 	} else if ( numEnemies == -2 )     { // inspection may be required
 		char *retval;
-		// TTimo gcc: suggest parentheses around assignment used as truth value
+
 		if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 			return retval;
 		}
@@ -3968,7 +3963,6 @@ char *AIFunc_GrenadeKick( cast_state_t *cs ) {
 	int weapon;
 
 	// !!! NOTE: the only way control should pass out of here, is by calling AIFunc_DefaultStart()
-
 	ent = &g_entities[cs->entityNum];
 	danger = &g_entities[cs->dangerEntity];
 
@@ -4177,7 +4171,7 @@ char *AIFunc_GrenadeKick( cast_state_t *cs ) {
 		}
 		if ( numEnemies == -2 ) { // inspection may be required
 			char *retval;
-			// TTimo gcc: suggest parentheses around assignment used as truth value
+
 			if ( ( retval = AIFunc_InspectFriendlyStart( cs, enemies[0] ) ) ) {
 				return retval;
 			}
@@ -4265,41 +4259,8 @@ AIFunc_GrenadeKickStart()
 */
 char *AIFunc_GrenadeKickStart( cast_state_t *cs ) {
 	gentity_t *danger;
-	//gentity_t *trav;
-	//int numFriends, i;
-
-	//G_Printf( "Excuse me, you dropped something\n" );
 
 	danger = &g_entities[cs->dangerEntity];
-	// should we dive onto the grenade?
-	/*
-	if (danger->s.pos.trDelta[2] < 30) {
-		// count the number of friends near us
-		numFriends = 0;
-		for (i=0, trav=g_entities; i<aicast_maxclients; i++, trav++) {
-			if (!trav->inuse)
-				continue;
-			if (trav->aiInactive)
-				continue;
-			if (trav->health <= 0)
-				continue;
-			if (!AICast_SameTeam( cs, i ))
-				continue;
-			if (VectorDistance( cs->takeCoverPos, trav->r.currentOrigin ) > 200)
-				continue;
-			numFriends++;
-		}
-		// if there are enough friends around, and we have a clear path to the position, sacrifice ourself!
-		if (numFriends > 2) {
-			trace_t tr;
-			trap_Trace( &tr, cs->bs->origin, ent->r.mins, ent->r.maxs, cs->takeCoverPos, cs->entityNum, MASK_SOLID );
-			if (tr.fraction == 1.0 && !tr.startsolid) {
-				return AIFunc_GrenadeDiveStart( cs );
-			}
-		}
-	}
-	*/
-	//
 	// we have decided to kick or throw the grenade away
 	cs->grenadeKickWeapon = danger->s.weapon;
 	cs->grenadeFlushFiring = qfalse;

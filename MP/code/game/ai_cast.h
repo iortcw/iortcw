@@ -194,10 +194,10 @@ extern AICharacterDefaults_t aiDefaults[NUM_CHARACTERS];
 //
 // structure defines
 //
-#define AIVIS_ENEMY         1
-#define AIVIS_INSPECTED     2       // we have inspected them once already
-#define AIVIS_INSPECT       4       // we should inspect them when we get a chance
-#define AIVIS_PROCESS_SIGHTING  8   // so we know if we have or haven't processed the sighting since they were last seen
+#define AIVIS_ENEMY					1
+#define AIVIS_INSPECTED				2		// we have inspected them once already
+#define AIVIS_INSPECT				4		// we should inspect them when we get a chance
+#define AIVIS_PROCESS_SIGHTING		8		// so we know if we have or haven't processed the sighting since they were last seen
 //
 // share range
 #define AIVIS_SHARE_RANGE   170     // if we are within this range of a friendly, share their vis info
@@ -532,7 +532,7 @@ typedef struct cast_state_s
 
 } cast_state_t;
 //
-#define CSFOFS( x ) ( (int)&( ( (cast_state_t *)0 )->x ) )
+#define CSFOFS( x ) ( (size_t)&( ( (cast_state_t *)0 )->x ) )
 //
 typedef struct aicast_predictmove_s
 {

@@ -373,6 +373,7 @@ gentity_t *AICast_CreateCharacter( gentity_t *ent, float *attributes, cast_weapo
 	//
 	cs = AICast_GetCastState( newent->s.number );
 	//
+	cs->aiCharacter = ent->aiCharacter;
 	// setup the attributes
 	memcpy( cs->attributes, attributes, sizeof( cs->attributes ) );
 	ppStr = &ent->aiAttributes;
@@ -392,7 +393,6 @@ gentity_t *AICast_CreateCharacter( gentity_t *ent, float *attributes, cast_weapo
 	cs->bs->enemy = -1;
 	cs->leaderNum = -1;
 	cs->castScriptStatus.scriptGotoEnt = -1;
-	cs->aiCharacter = ent->aiCharacter;
 	//
 	newent->aiName = ent->aiName;
 	newent->aiTeam = ent->aiTeam;
@@ -730,12 +730,12 @@ void AICast_CheckLoadGame( void ) {
 
 		if ( ready ) {
 			trap_Cvar_Set( "savegame_loading", "0" ); // in-case it aborts
+			saveGamePending = qfalse;
 //			G_LoadGame( NULL );		// always load the "current" savegame
 			trap_Cvar_Set( "cg_norender", "0" );
-			saveGamePending = qfalse;
 
 			// wait for the clients to return from faded screen
-			// trap_SetConfigstring( CS_SCREENFADE, va("0 %i 1500", level.time + 500) );
+//			trap_SetConfigstring( CS_SCREENFADE, va("0 %i 1500", level.time + 500) );
 			trap_SetConfigstring( CS_SCREENFADE, va( "0 %i 750", level.time + 500 ) );
 			level.reloadPauseTime = level.time + 1100;
 
@@ -755,12 +755,12 @@ void AICast_CheckLoadGame( void ) {
 		// not loading a game, we must be in a new level, so look for some persistant data to read in, then save the game
 		if ( ready ) {
 //			G_LoadPersistant();		// make sure we save the game after we have brought across the items
-//			G_SaveGame( NULL );
+
 			trap_Cvar_Set( "cg_norender", "0" );
 			saveGamePending = qfalse;
 
 			// wait for the clients to return from faded screen
-			// trap_SetConfigstring( CS_SCREENFADE, va("0 %i 1500", level.time + 500) );
+//			trap_SetConfigstring( CS_SCREENFADE, va( "0 %i 1500", level.time + 500 ) );
 			trap_SetConfigstring( CS_SCREENFADE, va( "0 %i 750", level.time + 500 ) );
 			level.reloadPauseTime = level.time + 1100;
 

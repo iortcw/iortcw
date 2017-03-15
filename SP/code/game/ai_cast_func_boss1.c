@@ -46,9 +46,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ai_cast.h"
 
-// TTimo: unused
-//static vec3_t forward, right, up;
-
 //=================================================================================
 //
 // Helga, the first boss
