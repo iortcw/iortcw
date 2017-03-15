@@ -170,6 +170,7 @@ struct vm_s {
 
 	byte		*dataBase;
 	int			dataMask;
+	int			dataAlloc;			// actually allocated
 
 	int			heapLength;			// length of QVMs data
 	int			heapAlloc;			// QVM's current allocate point
