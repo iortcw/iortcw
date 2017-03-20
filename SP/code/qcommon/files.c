@@ -311,7 +311,6 @@ typedef struct {
 	int zipFilePos;
 	int zipFileLen;
 	qboolean zipFile;
-	qboolean streamed;
 	char name[MAX_ZPATH];
 } fileHandleData_t;
 
@@ -1766,30 +1765,11 @@ int FS_Delete( char *filename ) {
 
 /*
 =================
-FS_Read2
+FS_Read
 
 Properly handles partial reads
 =================
 */
-int FS_Read2( void *buffer, int len, fileHandle_t f ) {
-	if ( !fs_searchpaths ) {
-		Com_Error( ERR_FATAL, "Filesystem call made without initialization" );
-	}
-
-	if ( !f ) {
-		return 0;
-	}
-	if ( fsh[f].streamed ) {
-		int r;
-		fsh[f].streamed = qfalse;
-		r = FS_Read( buffer, len, f );
-		fsh[f].streamed = qtrue;
-		return r;
-	} else {
-		return FS_Read( buffer, len, f );
-	}
-}
-
 int FS_Read( void *buffer, int len, fileHandle_t f ) {
 	int block, remaining;
 	int read;
@@ -1915,14 +1895,6 @@ int FS_Seek( fileHandle_t f, long offset, int origin ) {
 	if ( !fs_searchpaths ) {
 		Com_Error( ERR_FATAL, "Filesystem call made without initialization" );
 		return -1;
-	}
-
-	if ( fsh[f].streamed ) {
-		int r;
-		fsh[f].streamed = qfalse;
-		r = FS_Seek( f, offset, origin );
-		fsh[f].streamed = qtrue;
-		return r;
 	}
 
 	if ( fsh[f].zipFile == qtrue ) {
@@ -4400,11 +4372,6 @@ int     FS_FOpenFileByMode( const char *qpath, fileHandle_t *f, fsMode_t mode ) 
 
 	if ( *f ) {
 		fsh[*f].fileSize = r;
-		fsh[*f].streamed = qfalse;
-
-		if (mode == FS_READ) {
-			fsh[*f].streamed = qtrue;
-		}
 	}
 	fsh[*f].handleSync = sync;
 
