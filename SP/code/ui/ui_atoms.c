@@ -38,7 +38,27 @@ If you have questions concerning this license or the applicable additional terms
 uiStatic_t uis;
 qboolean m_entersound;              // after a frame, so caching won't disrupt the sound
 
-void	QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ((format (printf, 1, 2)));
+void QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ( ( format ( printf, 1, 2 ) ) );
+
+// JPW NERVE added Com_DPrintf
+#define MAXPRINTMSG 4096
+void QDECL Com_DPrintf( const char *fmt, ... ) {
+	va_list argptr;
+	char msg[MAXPRINTMSG];
+	int developer;
+
+	developer = trap_Cvar_VariableValue( "developer" );
+	if ( !developer ) {
+		return;
+	}
+
+	va_start( argptr,fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+
+	Com_Printf( "%s", msg );
+}
+// jpw
 
 void QDECL Com_Error( int level, const char *error, ... ) {
 	va_list argptr;

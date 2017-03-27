@@ -5872,7 +5872,7 @@ static void Item_ApplyHacks( itemDef_t *item ) {
 		int i;
 		multiDef_t *multiPtr = (multiDef_t*)item->typeData;;
 
-		Com_Printf( "Found modelist with %d modes, extending list to %d modes\n", multiPtr->count, s_numVidModes );
+		DC->DPrint( "Found modelist with %d modes, extending list to %d modes\n", multiPtr->count, s_numVidModes );
 
 		multiPtr->count = 0;
 		for ( i = 0; i < s_numVidModes; i++ ) {

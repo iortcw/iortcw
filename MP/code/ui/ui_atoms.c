@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 uiStatic_t uis;
 qboolean m_entersound;              // after a frame, so caching won't disrupt the sound
 
-void	QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ((format (printf, 1, 2)));
+void QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ( ( format ( printf, 1, 2 ) ) );
 
 
 // JPW NERVE added Com_DPrintf

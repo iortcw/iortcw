@@ -941,11 +941,12 @@ void UI_Report( void ) {
 
 }
 
+void QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ( ( format ( printf, 1, 2 ) ) );
 void UI_ParseMenu( const char *menuFile ) {
 	int handle;
 	pc_token_t token;
 
-	Com_Printf( "Parsing menu file: %s\n", menuFile );
+	Com_DPrintf( "Parsing menu file: %s\n", menuFile );
 
 	handle = trap_PC_LoadSource( menuFile );
 	if ( !handle ) {
@@ -1064,7 +1065,7 @@ void UI_LoadMenus( const char *menuFile, qboolean reset ) {
 		}
 	}
 
-	Com_Printf( "UI menu load time = %d milli seconds\n", trap_Milliseconds() - start );
+	Com_DPrintf( "UI menu load time = %d milli seconds\n", trap_Milliseconds() - start );
 
 	trap_PC_FreeSource( handle );
 }
@@ -6784,6 +6785,7 @@ void _UI_Init( qboolean inGameLoad ) {
 	uiInfo.uiDC.executeText = &trap_Cmd_ExecuteText;
 	uiInfo.uiDC.Error = &Com_Error;
 	uiInfo.uiDC.Print = &Com_Printf;
+	uiInfo.uiDC.DPrint = &Com_DPrintf;
 	uiInfo.uiDC.Pause = &UI_Pause;
 	uiInfo.uiDC.ownerDrawWidth = &UI_OwnerDrawWidth;
 	uiInfo.uiDC.registerSound = &trap_S_RegisterSound;

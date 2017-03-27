@@ -5948,7 +5948,7 @@ static void Item_ApplyHacks( itemDef_t *item ) {
 
 		// enough to hold an IPv6 address plus null
 		if ( editField->maxChars < 48 ) {
-			Com_Printf( "Extended create favorite address edit field length to hold an IPv6 address\n" );
+			DC->DPrint( "Extended create favorite address edit field length to hold an IPv6 address\n" );
 			editField->maxChars = 48;
 		}
 	}
@@ -5958,7 +5958,7 @@ static void Item_ApplyHacks( itemDef_t *item ) {
 		int i;
 		multiDef_t *multiPtr = (multiDef_t*)item->typeData;;
 
-		Com_Printf( "Found modelist with %d modes, extending list to %d modes\n", multiPtr->count, s_numVidModes );
+		DC->DPrint( "Found modelist with %d modes, extending list to %d modes\n", multiPtr->count, s_numVidModes );
 
 		multiPtr->count = 0;
 		for ( i = 0; i < s_numVidModes; i++ ) {

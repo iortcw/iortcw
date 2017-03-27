@@ -1282,7 +1282,7 @@ void UI_Report( void ) {
 
 }
 
-void QDECL Com_DPrintf( const char *fmt, ... );
+void QDECL Com_DPrintf( const char *fmt, ... ) __attribute__ ( ( format ( printf, 1, 2 ) ) );
 qboolean UI_ParseMenu( const char *menuFile ) {
 	int handle;
 	pc_token_t token;
@@ -6984,6 +6984,7 @@ void _UI_Init( qboolean inGameLoad ) {
 	uiInfo.uiDC.executeText = &trap_Cmd_ExecuteText;
 	uiInfo.uiDC.Error = &Com_Error;
 	uiInfo.uiDC.Print = &Com_Printf;
+	uiInfo.uiDC.DPrint = &Com_DPrintf;
 	uiInfo.uiDC.Pause = &UI_Pause;
 	uiInfo.uiDC.ownerDrawWidth = &UI_OwnerDrawWidth;
 	uiInfo.uiDC.registerSound = &trap_S_RegisterSound;
