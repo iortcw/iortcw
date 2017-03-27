@@ -1344,8 +1344,7 @@ qboolean AICast_ScriptAction_FireAtTarget( cast_state_t *cs, char *params ) {
 	gentity_t   *ent;
 	vec3_t vec, org, src;
 	char *pString, *token;
-	float diff;
-	int i;
+	int i, diff;
 
 	pString = params;
 
