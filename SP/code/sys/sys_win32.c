@@ -152,6 +152,8 @@ char *Sys_SteamPath( void )
 		pathLen = MAX_OSPATH;
 		if (RegQueryValueEx(steamRegKey, "InstallLocation", NULL, NULL, (LPBYTE)steamPath, &pathLen))
 			steamPath[0] = '\0';
+
+		RegCloseKey(steamRegKey);
 	}
 #endif
 
@@ -165,6 +167,8 @@ char *Sys_SteamPath( void )
 
 		if (steamPath[0])
 			finishPath = qtrue;
+
+		RegCloseKey(steamRegKey);
 	}
 #endif
 
