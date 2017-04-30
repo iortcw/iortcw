@@ -1047,8 +1047,6 @@ typedef struct srfBspSurface_s
 	// BSP VBO offsets
 	int             firstVert;
 	int             firstIndex;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
 
 	// static render data
 	vao_t          *vao;
@@ -1123,8 +1121,6 @@ typedef struct srfVaoMdvMesh_s
 	// backEnd stats
 	int             numIndexes;
 	int             numVerts;
-	glIndex_t       minIndex;
-	glIndex_t       maxIndex;
 
 	// static render data
 	vao_t          *vao;
@@ -1253,15 +1249,8 @@ typedef struct {
 	int         *surfacesDlightBits;
 	int			*surfacesPshadowBits;
 
-	int			numMergedSurfaces;
-	msurface_t	*mergedSurfaces;
-	int         *mergedSurfacesViewCount;
-	int         *mergedSurfacesDlightBits;
-	int			*mergedSurfacesPshadowBits;
-
 	int nummarksurfaces;
 	int         *marksurfaces;
-	int         *viewSurfaces;
 
 	int numfogs;
 	fog_t       *fogs;
@@ -1519,8 +1508,6 @@ typedef struct {
 
 	qboolean    intelGraphics;
 
-	qboolean    drawRangeElements;
-	qboolean    multiDrawArrays;
 	qboolean	occlusionQuery;
 
 	int glslMajorVersion;
@@ -1557,9 +1544,6 @@ typedef struct {
 
 	int     c_staticVaoDraws;
 	int     c_dynamicVaoDraws;
-
-	int     c_multidraws;
-	int     c_multidrawsMerged;
 
 	int c_dlightVertexes;
 	int c_dlightIndexes;
@@ -1893,8 +1877,6 @@ extern cvar_t   *r_ext_NV_fog_dist;
 extern cvar_t   *r_nv_fogdist_mode;
 //----(SA)	end
 
-extern  cvar_t  *r_ext_draw_range_elements;
-extern  cvar_t  *r_ext_multi_draw_arrays;
 extern  cvar_t  *r_ext_framebuffer_object;
 extern  cvar_t  *r_ext_texture_float;
 extern  cvar_t  *r_ext_framebuffer_multisample;
@@ -2242,8 +2224,6 @@ typedef struct stageVars
 	vec2_t texcoords[NUM_TEXTURE_BUNDLES][SHADER_MAX_VERTEXES];
 } stageVars_t;
 
-#define MAX_MULTIDRAW_PRIMITIVES	256
-
 typedef struct shaderCommands_s
 {
 	glIndex_t	indexes[SHADER_MAX_INDEXES] QALIGN(16);
@@ -2259,6 +2239,7 @@ typedef struct shaderCommands_s
 	void *attribPointers[ATTR_INDEX_COUNT];
 	vao_t       *vao;
 	qboolean    useInternalVao;
+	qboolean    useCacheVao;
 
 	stageVars_t	svars QALIGN(16);
 
@@ -2276,14 +2257,6 @@ typedef struct shaderCommands_s
 
 	int numIndexes;
 	int numVertexes;
-	glIndex_t   minIndex;
-	glIndex_t   maxIndex;
-
-	int         multiDrawPrimitives;
-	GLsizei     multiDrawNumIndexes[MAX_MULTIDRAW_PRIMITIVES];
-	glIndex_t  *multiDrawFirstIndex[MAX_MULTIDRAW_PRIMITIVES];
-	glIndex_t   multiDrawMinIndex[MAX_MULTIDRAW_PRIMITIVES];
-	glIndex_t   multiDrawMaxIndex[MAX_MULTIDRAW_PRIMITIVES];
 
 	qboolean ATI_tess;
 
@@ -2300,7 +2273,7 @@ void RB_EndSurface( void );
 void RB_CheckOverflow( int verts, int indexes );
 #define RB_CHECKOVERFLOW( v,i ) if ( tess.numVertexes + ( v ) >= SHADER_MAX_VERTEXES || tess.numIndexes + ( i ) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow( v,i );}
 
-void R_DrawElementsVao( int numIndexes, glIndex_t firstIndex, glIndex_t minIndex, glIndex_t maxIndex );
+void R_DrawElements( int numIndexes, glIndex_t firstIndex );
 void RB_StageIteratorGeneric( void );
 void RB_StageIteratorSky( void );
 void RB_StageIteratorVertexLitTexture( void );
@@ -2437,6 +2410,14 @@ void            R_VaoList_f(void);
 
 void            RB_UpdateTessVao(unsigned int attribBits);
 
+void VaoCache_Commit(void);
+void VaoCache_Init(void);
+void VaoCache_BindVao(void);
+void VaoCache_CheckAdd(qboolean *endSurface, qboolean *recycleVertexBuffer, qboolean *recycleIndexBuffer, int numVerts, int numIndexes);
+void VaoCache_RecycleVertexBuffer(void);
+void VaoCache_RecycleIndexBuffer(void);
+void VaoCache_InitQueue(void);
+void VaoCache_AddSurface(srfVert_t *verts, int numVerts, glIndex_t *indexes, int numIndexes);
 
 /*
 ============================================================
