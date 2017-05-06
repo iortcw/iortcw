@@ -411,7 +411,7 @@ void CG_DrawInformation( void ) {
 				UI_CENTER | UI_EXSMALLFONT | UI_DROPSHADOW, color );
 		}
 
-		trap_UpdateScreen();
+		//trap_UpdateScreen();
 		callCount--;
 		return;
 	}
@@ -436,7 +436,7 @@ void CG_DrawInformation( void ) {
 
 		trap_UI_Popup( "briefing" );
 
-		trap_UpdateScreen();
+		//trap_UpdateScreen();
 		callCount--;
 		return;
 	}

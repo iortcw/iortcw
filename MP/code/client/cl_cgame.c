@@ -560,20 +560,11 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return 0;
 	case CG_UPDATESCREEN:
 		// this is used during lengthy level loading, so pump message loop
-		//Com_EventLoop();	// FIXME: if a server restarts here, BAD THINGS HAPPEN!
+		// Com_EventLoop();	// FIXME: if a server restarts here, BAD THINGS HAPPEN!
 		// We can't call Com_EventLoop here, a restart will crash and this _does_ happen
-		// if there is a map change while we are downloading at pk3.
+		// if there is a map change while we are downloading a pk3.
 		// ZOID
-		// Don't spam screen updates if we're vsynced
-		if ( Cvar_VariableIntegerValue( "r_swapInterval" ) )
-		{
-			static int lastUpdate = 0;
-
-			if ( lastUpdate == 0 || Sys_Milliseconds() - lastUpdate > 16 )
-				SCR_UpdateScreen();
-
-			lastUpdate = Sys_Milliseconds();
-		}
+		SCR_UpdateScreen();
 		return 0;
 	case CG_CM_LOADMAP:
 		CL_CM_LoadMap( VMA( 1 ) );
