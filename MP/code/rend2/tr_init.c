@@ -1085,9 +1085,11 @@ void GL_SetDefaultState( void ) {
 	// ATI pn_triangles
 	if ( qglPNTrianglesiATI ) {
 		int maxtess;
+
 		// get max supported tesselation
 		qglGetIntegerv( GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI, (GLint*)&maxtess );
 		glConfig.ATIMaxTruformTess = maxtess;
+
 		// cap if necessary
 		if ( r_ati_truform_tess->value > maxtess ) {
 			ri.Cvar_Set( "r_ati_truform_tess", va( "%d", maxtess ) );
@@ -1097,6 +1099,7 @@ void GL_SetDefaultState( void ) {
 		qglPNTrianglesiATI( GL_PN_TRIANGLES_TESSELATION_LEVEL_ATI, r_ati_truform_tess->value );
 	}
 
+#if 0
 	if ( glConfig.anisotropicAvailable ) {
 		float maxAnisotropy;
 
@@ -1104,9 +1107,9 @@ void GL_SetDefaultState( void ) {
 		glConfig.maxAnisotropy = maxAnisotropy;
 
 		// set when rendering
-//	   qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, glConfig.maxAnisotropy);
+		//qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, glConfig.maxAnisotropy);
 	}
-
+#endif
 //----(SA)	end
 }
 
