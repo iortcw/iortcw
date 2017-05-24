@@ -310,8 +310,8 @@ UIDIR=$(MOUNT_DIR)/ui
 JPDIR=$(MOUNT_DIR)/jpeg-8c
 OGGDIR=$(MOUNT_DIR)/libogg-1.3.2
 VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.5
-OPUSDIR=$(MOUNT_DIR)/opus-1.1.2
-OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.7
+OPUSDIR=$(MOUNT_DIR)/opus-1.1.4
+OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.8
 ZDIR=$(MOUNT_DIR)/zlib-1.2.8
 FTDIR=$(MOUNT_DIR)/freetype-2.6.4
 SPLDIR=$(MOUNT_DIR)/splines
@@ -2078,11 +2078,11 @@ Q3OBJ += \
   $(B)/client/opus/schur_FLP.o \
   $(B)/client/opus/sort_FLP.o \
   \
-  $(B)/client/http.o \
   $(B)/client/info.o \
   $(B)/client/internal.o \
   $(B)/client/opusfile.o \
-  $(B)/client/stream.o
+  $(B)/client/stream.o \
+  $(B)/client/http.o
 ifdef MINGW
 Q3OBJ += \
   $(B)/client/wincerts.o
