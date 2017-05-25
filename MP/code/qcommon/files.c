@@ -188,6 +188,7 @@ or configs will never get loaded from disk!
 // the easiest way to get it is to just run the game and see what it spits out
 //DHM - Nerve :: Wolf Multiplayer demo checksum
 // NOTE TTimo: always needs the 'u' for unsigned int (gcc)
+#ifndef STANDALONE
 #define DEMO_PAK0_CHECKSUM   2031778175u
 
 static const unsigned int pak_checksums[] = {
@@ -202,6 +203,7 @@ static const unsigned int mppak_checksums[] = {
 	-137448799u,
 	2149774797u
 };
+#endif
 
 #define MAX_ZPATH           256
 #define MAX_SEARCH_PATHS    4096
