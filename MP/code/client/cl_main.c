@@ -1097,8 +1097,9 @@ demo <demoname>
 */
 void CL_PlayDemo_f( void ) {
 	char		name[MAX_OSPATH];
-	char		*arg, *ext_test;
-	int			protocol, i;
+	char		arg[MAX_OSPATH];
+	char		*ext_test;
+	int		protocol, i;
 	char		retry[MAX_OSPATH];
 
 	if (Cmd_Argc() != 2) {
@@ -1111,8 +1112,8 @@ void CL_PlayDemo_f( void ) {
 	Cvar_Set( "sv_killserver", "2" );
 
 	// open the demo file
-	arg = Cmd_Argv(1);
-	
+	Q_strncpyz( arg, Cmd_Argv(1), sizeof( arg ) );
+
 	CL_Disconnect( qtrue );
 
 	// check for an extension .DEMOEXT_?? (?? is protocol)
@@ -1787,7 +1788,7 @@ CL_Connect_f
 ================
 */
 void CL_Connect_f( void ) {
-	char    *server;
+	char	server[MAX_OSPATH];
 	const char	*serverString;
 	int argc = Cmd_Argc();
 	netadrtype_t family = NA_UNSPEC;
@@ -1798,7 +1799,7 @@ void CL_Connect_f( void ) {
 	}
 
 	if(argc == 2)
-		server = Cmd_Argv(1);
+		Q_strncpyz( server, Cmd_Argv(1), sizeof( server ) );
 	else
 	{
 		if(!strcmp(Cmd_Argv(1), "-4"))
@@ -1808,7 +1809,7 @@ void CL_Connect_f( void ) {
 		else
 			Com_Printf( "warning: only -4 or -6 as address type understood.\n");
 		
-		server = Cmd_Argv(2);
+		Q_strncpyz( server, Cmd_Argv(2), sizeof( server ) );
 	}
 
 	// save arguments for reconnect
