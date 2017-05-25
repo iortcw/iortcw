@@ -992,6 +992,15 @@ qboolean Sys_DllExtension( const char *name ) {
 
 /*
 ==============
+Sys_GetDLLName
+==============
+*/
+char* Sys_GetDLLName( const char *name ) {
+	return va("%s.sp." ARCH_STRING DLL_EXT, name);
+}
+
+/*
+==============
 Sys_GetHighQualityCPU
 ==============
 */
@@ -1122,6 +1131,3 @@ void Sys_OpenURL( char *url, qboolean doexit ) {
 
 }
 
-char* Sys_GetDLLName( const char *name ) {
-	return va("%s.sp." ARCH_STRING DLL_EXT, name);
-}

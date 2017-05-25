@@ -991,6 +991,24 @@ qboolean Sys_DllExtension( const char *name ) {
 }
 
 /*
+==============
+Sys_GetDLLName
+==============
+*/
+char* Sys_GetDLLName( const char *name ) {
+	return va("%s.mp." ARCH_STRING DLL_EXT, name);
+}
+
+/*
+==============
+Sys_GetHighQualityCPU
+==============
+*/
+int Sys_GetHighQualityCPU() {
+	return 1;
+}
+
+/*
 ==================
 chmod OR on a file
 ==================
@@ -1132,12 +1150,3 @@ void Sys_OpenURL( const char *url, qboolean doexit ) {
 
 }
 
-// TTimo - Wolf MP specific, adding .mp. to shared objects
-char* Sys_GetDLLName( const char *name ) {
-	return va("%s.mp." ARCH_STRING DLL_EXT, name);
-}
-
-int Sys_GetHighQualityCPU() {
-	// TODO TTimo see win_shared.c IsP3 || IsAthlon
-	return 1;
-}
