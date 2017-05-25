@@ -907,10 +907,31 @@ qboolean Sys_PIDIsRunning( int pid )
 	return qfalse;
 }
 
+/*
+=================
+Sys_DllExtension
+
+Check if filename should be allowed to be loaded as a DLL.
+=================
+*/
+qboolean Sys_DllExtension( const char *name ) {
+	return COM_CompareExtension( name, DLL_EXT );
+}
+
+/*
+==============
+Sys_GetDLLName
+==============
+*/
 char* Sys_GetDLLName( const char *name ) {
 	return va("%s_mp_" ARCH_STRING DLL_EXT, name);
 }
 
+/*
+==============
+Sys_GetHighQualityCPU
+==============
+*/
 int Sys_GetHighQualityCPU() {
 	return 1;
 }
