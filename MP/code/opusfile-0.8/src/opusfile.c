@@ -928,7 +928,7 @@ static int op_find_initial_pcm_offset(OggOpusFile *_of,
   prev_packet_gp=pcm_start;
   for(pi=0;pi<op_count;pi++){
     if(cur_page_eos){
-      ogg_int64_t diff;
+      ogg_int64_t diff=0;
       OP_ALWAYS_TRUE(!op_granpos_diff(&diff,cur_page_gp,prev_packet_gp));
       diff=durations[pi]-diff;
       /*If we have samples to trim...*/
@@ -1725,7 +1725,7 @@ opus_int64 op_raw_total(const OggOpusFile *_of,int _li){
 
 ogg_int64_t op_pcm_total(const OggOpusFile *_of,int _li){
   OggOpusLink *links;
-  ogg_int64_t  diff;
+  ogg_int64_t  diff=0;
   int          nlinks;
   nlinks=_of->nlinks;
   if(OP_UNLIKELY(_of->ready_state<OP_OPENED)
@@ -2116,7 +2116,7 @@ int op_raw_seek(OggOpusFile *_of,opus_int64 _pos){
 static ogg_int64_t op_get_granulepos(const OggOpusFile *_of,
  ogg_int64_t _pcm_offset,int *_li){
   const OggOpusLink *links;
-  ogg_int64_t        duration;
+  ogg_int64_t        duration=0;
   int                nlinks;
   int                li;
   OP_ASSERT(_pcm_offset>=0);
@@ -2189,7 +2189,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
  ogg_int64_t _target_gp,int _li){
   const OggOpusLink *link;
   ogg_page           og;
-  ogg_int64_t        pcm_pre_skip;
+  ogg_int64_t        pcm_pre_skip=0;
   ogg_int64_t        pcm_start;
   ogg_int64_t        pcm_end;
   ogg_int64_t        best_gp;
@@ -2277,7 +2277,7 @@ static int op_pcm_seek_page(OggOpusFile *_of,
             }
           }
           else{
-            ogg_int64_t prev_page_gp;
+            ogg_int64_t prev_page_gp=0;
             /*We might get lucky and already have the packet with the target
                buffered.
               Worth checking.
@@ -2606,7 +2606,7 @@ static ogg_int64_t op_get_pcm_offset(const OggOpusFile *_of,
  ogg_int64_t _gp,int _li){
   const OggOpusLink *links;
   ogg_int64_t        pcm_offset;
-  ogg_int64_t        delta;
+  ogg_int64_t        delta=0;
   int                li;
   links=_of->links;
   pcm_offset=0;

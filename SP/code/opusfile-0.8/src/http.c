@@ -3385,7 +3385,7 @@ void *op_url_stream_vcreate_impl(OpusFileCallbacks *_cb,
 void *op_url_stream_vcreate(OpusFileCallbacks *_cb,
  const char *_url,va_list _ap){
   OpusServerInfo   info;
-  OpusServerInfo *pinfo;
+  OpusServerInfo *pinfo=NULL;
   void *ret;
   ret=op_url_stream_vcreate_impl(_cb,_url,&info,&pinfo,_ap);
   if(pinfo!=NULL)*pinfo=*&info;
