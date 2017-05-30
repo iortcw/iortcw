@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "q_shared.h"
 #include "qcommon.h"
-#include "../zlib-1.2.8/unzip.h"
+#include "../zlib-1.2.11/unzip.h"
 
 /*
 =============================================================================
