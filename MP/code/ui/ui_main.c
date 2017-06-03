@@ -5412,6 +5412,12 @@ static void UI_BuildServerDisplayList( int force ) {
 		// get the ping for this server
 		ping = trap_LAN_GetServerPing(lanSource, i);
 		if (ping > 0 || ui_netSource.integer == UIAS_FAVORITES) {
+			// Remove favorite servers so they do not appear multiple times
+			// or appear when the cached server info was not filtered out
+			// but the new server info is filtered out.
+			if (ui_netSource.integer == UIAS_FAVORITES) {
+				UI_RemoveServerFromDisplayList(i);
+			}
 
 			trap_LAN_GetServerInfo(lanSource, i, info, MAX_STRING_CHARS);
 
@@ -5420,7 +5426,9 @@ static void UI_BuildServerDisplayList( int force ) {
 
 			if ( ui_browserShowEmpty.integer == 0 ) {
 				if ( clients == 0 ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5428,7 +5436,9 @@ static void UI_BuildServerDisplayList( int force ) {
 			if ( ui_browserShowFull.integer == 0 ) {
 				maxClients = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
 				if ( clients == maxClients ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5438,10 +5448,14 @@ static void UI_BuildServerDisplayList( int force ) {
 				friendlyFire = atoi( Info_ValueForKey( info, "friendlyFire" ) );
 
 				if ( friendlyFire && ui_browserShowFriendlyFire.integer == 2 ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
-				} else if ( !friendlyFire && ui_browserShowFriendlyFire.integer == 1 )   {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+				} else if ( !friendlyFire && ui_browserShowFriendlyFire.integer == 1 ) {
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5450,7 +5464,9 @@ static void UI_BuildServerDisplayList( int force ) {
 			if ( ui_browserShowMaxlives.integer == 0 ) {
 				maxlives = atoi( Info_ValueForKey( info, "maxlives" ) );
 				if ( maxlives ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5459,7 +5475,9 @@ static void UI_BuildServerDisplayList( int force ) {
 			if ( ui_browserShowTourney.integer == 0 ) {
 				tourney = atoi( Info_ValueForKey( info, "tourney" ) );
 				if ( tourney ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5469,10 +5487,14 @@ static void UI_BuildServerDisplayList( int force ) {
 				punkbuster = atoi( Info_ValueForKey( info, "punkbuster" ) );
 
 				if ( punkbuster && ui_browserShowPunkBuster.integer == 2 ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
-				} else if ( !punkbuster && ui_browserShowPunkBuster.integer == 1 )   {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+				} else if ( !punkbuster && ui_browserShowPunkBuster.integer == 1 ) {
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5481,10 +5503,14 @@ static void UI_BuildServerDisplayList( int force ) {
 				antilag = atoi( Info_ValueForKey( info, "g_antilag" ) );
 
 				if ( antilag && ui_browserShowAntilag.integer == 2 ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
-				} else if ( !antilag && ui_browserShowAntilag.integer == 1 )   {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+				} else if ( !antilag && ui_browserShowAntilag.integer == 1 ) {
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
@@ -5492,20 +5518,20 @@ static void UI_BuildServerDisplayList( int force ) {
 			if ( uiInfo.joinGameTypes[ui_joinGameType.integer].gtEnum != -1 ) {
 				game = atoi( Info_ValueForKey( info, "gametype" ) );
 				if ( game != uiInfo.joinGameTypes[ui_joinGameType.integer].gtEnum ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
 			}
 
 			if ( ui_serverFilterType.integer > 0 ) {
 				if ( Q_stricmp( Info_ValueForKey( info, "game" ), serverFilters[ui_serverFilterType.integer].basedir ) != 0 ) {
-					trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					if (ping > 0) {
+						trap_LAN_MarkServerVisible(lanSource, i, qfalse);
+					}
 					continue;
 				}
-			}
-			// make sure we never add a favorite server twice
-			if ( ui_netSource.integer == UIAS_FAVORITES ) {
-				UI_RemoveServerFromDisplayList( i );
 			}
 			// insert the server into the list
 			UI_BinaryServerInsertion( i );
