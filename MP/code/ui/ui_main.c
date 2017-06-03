@@ -126,7 +126,7 @@ static int uitogamecode[] = {4,6,2,3,1,5,7};
 
 
 // NERVE - SMF - enabled for multiplayer
-static void UI_StartServerRefresh( qboolean full );
+static void UI_StartServerRefresh( qboolean full, qboolean force );
 static void UI_StopServerRefresh( void );
 static void UI_DoServerRefresh( void );
 static void UI_FeederSelection( float feederID, int index );
@@ -3186,9 +3186,7 @@ static qboolean UI_NetSource_HandleKey(int flags, float *special, int key) {
 		}
 
 		UI_BuildServerDisplayList(qtrue);
-		if (!(ui_netSource.integer >= UIAS_GLOBAL1 && ui_netSource.integer <= UIAS_GLOBAL5)) {
-			UI_StartServerRefresh(qtrue);
-		}
+		UI_StartServerRefresh(qtrue, qfalse);
 		trap_Cvar_SetValue( "ui_netSource", ui_netSource.integer);
 		return qtrue;
 	}
@@ -4689,10 +4687,10 @@ static void UI_RunMenuScript( char **args ) {
 		} else if ( Q_stricmp( name, "resetScores" ) == 0 ) {
 			UI_ClearScores();
 		} else if ( Q_stricmp( name, "RefreshServers" ) == 0 ) {
-			UI_StartServerRefresh( qtrue );
+			UI_StartServerRefresh( qtrue, qtrue );
 			UI_BuildServerDisplayList( qtrue );
 		} else if ( Q_stricmp( name, "RefreshFilter" ) == 0 ) {
-			UI_StartServerRefresh( qfalse );
+			UI_StartServerRefresh( qfalse, qtrue );
 			UI_BuildServerDisplayList( qtrue );
 		} else if ( Q_stricmp( name, "RunSPDemo" ) == 0 ) {
 			if ( uiInfo.demoAvailable ) {
@@ -4746,9 +4744,8 @@ static void UI_RunMenuScript( char **args ) {
 			uiInfo.nextServerStatusRefresh = 0;
 			uiInfo.nextFindPlayerRefresh = 0;
 		} else if ( Q_stricmp( name, "UpdateFilter" ) == 0 ) {
-			if ( ui_netSource.integer == UIAS_LOCAL ) {
-				UI_StartServerRefresh( qtrue );
-			}
+			// UpdateFilter is called when server broser menu is opened and when a favorite server is deleted.
+			UI_StartServerRefresh(qtrue, qfalse);
 			UI_BuildServerDisplayList( qtrue );
 			UI_FeederSelection( FEEDER_SERVERS, 0 );
 		} else if ( Q_stricmp( name, "check_ServerStatus" ) == 0 ) {
@@ -7871,11 +7868,21 @@ static void UI_DoServerRefresh( void ) {
 UI_StartServerRefresh
 =================
 */
-static void UI_StartServerRefresh( qboolean full ) {
+static void UI_StartServerRefresh( qboolean full, qboolean force ) {
 	char    *ptr;
 	int		lanSource;
-
 	qtime_t q;
+
+	// This function is called with force=qfalse when server browser menu opens or net source changes.
+	// Automatically update local and favorite servers.
+	// Only update master server list the first time because the server info cache will be available after that.
+	if ( !force && ( ui_netSource.integer >= UIAS_GLOBAL1 && ui_netSource.integer <= UIAS_GLOBAL5 ) ) {
+		char *value = UI_Cvar_VariableString( va( "ui_lastServerRefresh_%i", ui_netSource.integer ) );
+		if ( value[0] != 0 ) {
+			return; // should have cached list
+		}
+	}
+
 	trap_RealTime( &q );
 	trap_Cvar_Set( va( "ui_lastServerRefresh_%i", ui_netSource.integer ), va( "%s-%i, %i at %02i:%02i", MonthAbbrev[q.tm_mon],q.tm_mday, 1900 + q.tm_year,q.tm_hour,q.tm_min ) );
 
