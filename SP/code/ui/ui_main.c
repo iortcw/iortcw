@@ -7715,9 +7715,9 @@ static void UI_StartServerRefresh( qboolean full, qboolean force ) {
 	if( ui_netSource.integer >= UIAS_GLOBAL1 && ui_netSource.integer <= UIAS_GLOBAL5 ) {
 		ptr = UI_Cvar_VariableString( "debug_protocol" );
 		if ( strlen( ptr ) ) {
-			trap_Cmd_ExecuteText( EXEC_NOW, va( "globalservers %d %s full empty\n", ui_netSource.integer-1, ptr));
+			trap_Cmd_ExecuteText( EXEC_NOW, va( "globalservers %d %s full empty\n", ui_netSource.integer - UIAS_GLOBAL1, ptr ) );
 		} else {
-			trap_Cmd_ExecuteText( EXEC_NOW, va( "globalservers %d %d full empty\n", ui_netSource.integer-1, (int)trap_Cvar_VariableValue( "protocol" ) ) );
+			trap_Cmd_ExecuteText( EXEC_NOW, va( "globalservers %d %d full empty\n", ui_netSource.integer - UIAS_GLOBAL1, (int)trap_Cvar_VariableValue( "protocol" ) ) );
 		}
 	}
 }
