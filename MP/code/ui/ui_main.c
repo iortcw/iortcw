@@ -5624,11 +5624,21 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 	menuDef_t *menu, *menu2; // we use the URL buttons in several menus
 	int i, len;
 
+	if (info) {
+		memset(info, 0, sizeof(*info));
+	}
+
+	// ignore initial unset addresses
+	if (serverAddress && *serverAddress == '\0') {
+		return qfalse;
+	}
+
+	// reset server status request for this address
 	if ( !info ) {
 		trap_LAN_ServerStatus( serverAddress, NULL, 0 );
 		return qfalse;
 	}
-	memset( info, 0, sizeof( *info ) );
+
 	if ( trap_LAN_ServerStatus( serverAddress, info->text, sizeof( info->text ) ) ) {
 
 		menu = Menus_FindByName( "serverinfo_popmenu" );
