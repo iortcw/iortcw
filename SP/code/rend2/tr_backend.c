@@ -851,9 +851,8 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	FBO_t*			fbo = NULL;
 	qboolean		inQuery = qfalse;
 
-	float			depth[2];
 	int oldNumVerts, oldNumIndex;
-//GR - tessellation flag
+	//GR - tessellation flag
 	int atiTess = 0, oldAtiTess;
 
 	// save original time for entity shader offsets
@@ -872,11 +871,8 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	oldPshadowed = qfalse;
 	oldCubemapIndex = -1;
 	oldSort = -1;
-// GR - tessellation also forces to draw everything
+	// GR - tessellation also forces to draw everything
 	oldAtiTess = -1;
-
-	depth[0] = 0.f;
-	depth[1] = 1.f;
 
 	backEnd.pc.c_surfaces += numDrawSurfs;
 
@@ -902,7 +898,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 			continue;
 		}
 		oldSort = drawSurf->sort;
-// GR - also extract tesselation flag
+		// GR - also extract tesselation flag
 		R_DecomposeSort( drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted, &pshadowed, &atiTess );
 		cubemapIndex = drawSurf->cubemapIndex;
 
@@ -911,12 +907,12 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// a "entityMergable" shader is a shader that can have surfaces from seperate
 		// entities merged into a single batch, like smoke and blood puff sprites
 		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted || pshadowed != oldPshadowed || cubemapIndex != oldCubemapIndex
-// GR - force draw on tessellation flag change
+			// GR - force draw on tessellation flag change
 			 || ( atiTess != oldAtiTess )
 			 || ( entityNum != oldEntityNum && !shader->entityMergable ) ) ){
 			if ( oldShader != NULL ) {
-// GR - pass tessellation flag to the shader command
-//		make sure to use oldAtiTess!!!
+				// GR - pass tessellation flag to the shader command
+				// make sure to use oldAtiTess!!!
 				tess.ATI_tess = ( oldAtiTess == ATI_TESS_TRUFORM );
 
 				RB_EndSurface();
@@ -928,7 +924,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 			oldDlighted = dlighted;
 			oldPshadowed = pshadowed;
 			oldCubemapIndex = cubemapIndex;
-// GR - update old tessellation flag
+			// GR - update old tessellation flag
 			oldAtiTess = atiTess;
 		}
 
@@ -939,7 +935,6 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// change the modelview matrix if needed
 		//
 		if ( entityNum != oldEntityNum ) {
-			qboolean sunflare = qfalse;
 			depthRange = isCrosshair = qfalse;
 
 			if ( entityNum != REFENTITYNUM_WORLD ) {
@@ -948,7 +943,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 				// we have to reset the shaderTime as well otherwise image animations start
 				// from the wrong frame
-//				tess.shaderTime = backEnd.refdef.floatTime - tess.shader->timeOffset;
+				// tess.shaderTime = backEnd.refdef.floatTime - tess.shader->timeOffset;
 
 				// set up the transformation matrix
 				R_RotateForEntity( backEnd.currentEntity, &backEnd.viewParms, &backEnd.or );
@@ -972,7 +967,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 				// we have to reset the shaderTime as well otherwise image animations on
 				// the world (like water) continue with the wrong frame
-//				tess.shaderTime = backEnd.refdef.floatTime - tess.shader->timeOffset;
+				// tess.shaderTime = backEnd.refdef.floatTime - tess.shader->timeOffset;
 
 				R_TransformDlights( backEnd.refdef.num_dlights, backEnd.refdef.dlights, &backEnd.or );
 			}
@@ -1008,11 +1003,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					}
 
 					if(!oldDepthRange)
-					{
-						depth[0] = 0;
-						depth[1] = 0.3f;
-						qglDepthRange (depth[0], depth[1]);
-	 				}
+						qglDepthRange (0, 0.3);
 				}
 				else
 				{
@@ -1021,11 +1012,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 						GL_SetProjectionMatrix( backEnd.viewParms.projectionMatrix );
 					}
 
-					if (!sunflare)
-						qglDepthRange (0, 1);
-
-					depth[0] = 0;
-					depth[1] = 1;
+					qglDepthRange (0, 1);
 				}
 
 				oldDepthRange = depthRange;
@@ -1053,8 +1040,8 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 	// draw the contents of the last shader batch
 	if ( oldShader != NULL ) {
-// GR - pass tessellation flag to the shader command
-//		make sure to use oldAtiTess!!!
+		// GR - pass tessellation flag to the shader command
+		// make sure to use oldAtiTess!!!
 		tess.ATI_tess = ( oldAtiTess == ATI_TESS_TRUFORM );
 
 		RB_EndSurface();

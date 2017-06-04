@@ -544,8 +544,6 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	FBO_t*			fbo = NULL;
 	qboolean		inQuery = qfalse;
 
-	float			depth[2];
-
 	// save original time for entity shader offsets
 	originalTime = backEnd.refdef.floatTime;
 
@@ -562,9 +560,6 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	oldPshadowed = qfalse;
 	oldCubemapIndex = -1;
 	oldSort = -1;
-
-	depth[0] = 0.f;
-	depth[1] = 1.f;
 
 	backEnd.pc.c_surfaces += numDrawSurfs;
 
@@ -606,7 +601,6 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 		// change the modelview matrix if needed
 		//
 		if ( entityNum != oldEntityNum ) {
-			qboolean sunflare = qfalse;
 			depthRange = isCrosshair = qfalse;
 
 			if ( entityNum != REFENTITYNUM_WORLD ) {
@@ -675,11 +669,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 					}
 
 					if(!oldDepthRange)
-					{
-						depth[0] = 0;
-						depth[1] = 0.3f;
- 						qglDepthRange (depth[0], depth[1]);
-	 				}
+						qglDepthRange (0, 0.3);
 				}
 				else
 				{
@@ -688,11 +678,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 						GL_SetProjectionMatrix( backEnd.viewParms.projectionMatrix );
 					}
 
-					if (!sunflare)
-						qglDepthRange (0, 1);
-
-					depth[0] = 0;
-					depth[1] = 1;
+					qglDepthRange (0, 1);
 				}
 
 				oldDepthRange = depthRange;
