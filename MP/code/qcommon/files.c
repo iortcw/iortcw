@@ -203,6 +203,18 @@ static const unsigned int mppak_checksums[] = {
 	-137448799u,
 	2149774797u
 };
+
+static const unsigned int binpak_checksums[] = {
+	4022537001u,	// mp_bin.pk3 (1.4/1.41)
+	1215509415u,	// mp_bin0.pk3 (1.5a)
+	3375536862u,	// Degeneration (1.11)
+	2977960779u,	// Omni-Bot (0.81/0.82)
+	618492725u,	// Omnit-Bot (0.85)
+	2205235539u,	// OSP (0.83)
+	718455065u,	// OSP (0.9)
+	220076119u,	// Wild West (1.613)
+	2849242342u	// Wolftactics (1.0/1.01)
+};
 #endif
 
 #define MAX_ZPATH           256
@@ -1583,10 +1595,22 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 			// that they can be referenced
 			if (Q_stricmp(name, "qagame"))
 			{
+				int index;
+				qboolean whitelisted = qfalse;
+
 				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
+			
+				// Check whether this pak's checksum is on the whitelist
+				for(index = 0; index < ARRAY_LEN(binpak_checksums); index++)
+				{
+					if(pack->checksum == binpak_checksums[index])
+					{
+						whitelisted = FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL);
+					}
+				}
 
 				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, unpure) > 0
-						&& FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL))
+						&& whitelisted)
 				{
 					Com_Printf( "Loading %s dll from %s\n", name, pack->pakFilename );
 					Q_strncpyz(found, netpath, foundlen);
