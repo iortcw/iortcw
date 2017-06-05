@@ -1595,10 +1595,10 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 			// that they can be referenced
 			if (Q_stricmp(name, "qagame"))
 			{
+				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
+#ifndef STANDALONE
 				int index;
 				qboolean whitelisted = qfalse;
-
-				netpath = FS_BuildOSPath(fs_homepath->string, pack->pakGamename, dllName);
 			
 				// Check whether this pak's checksum is on the whitelist
 				for(index = 0; index < ARRAY_LEN(binpak_checksums); index++)
@@ -1611,6 +1611,10 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, q
 
 				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, unpure) > 0
 						&& whitelisted)
+#else
+				if (FS_FOpenFileReadDir(dllName, search, NULL, qfalse, unpure) > 0
+						&& FS_CL_ExtractFromPakFile(search, netpath, dllName, NULL))
+#endif
 				{
 					Com_Printf( "Loading %s dll from %s\n", name, pack->pakFilename );
 					Q_strncpyz(found, netpath, foundlen);
