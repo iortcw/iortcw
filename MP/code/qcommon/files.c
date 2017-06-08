@@ -206,7 +206,7 @@ static const unsigned int mppak_checksums[] = {
 
 static const unsigned int binpak_checksums[] = {
 	4022537001u,	// mp_bin.pk3 (1.4/1.41)
-	1215509415u,	// mp_bin0.pk3 (1.5a)
+	686580754u,	// mp_bin0.pk3 (1.51)
 	3375536862u,	// Degeneration (1.11)
 	2977960779u,	// Omni-Bot (0.81/0.82)
 	618492725u,	// Omnit-Bot (0.85)
