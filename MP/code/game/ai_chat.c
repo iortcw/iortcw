@@ -107,8 +107,7 @@ int BotIsFirstInRankings( bot_state_t *bs ) {
 			continue;
 		}
 		//
-		BotAI_GetClientState( i, &ps );
-		if ( score < ps.persistant[PERS_SCORE] ) {
+		if ( BotAI_GetClientState( i, &ps ) && score < ps.persistant[PERS_SCORE] ) {
 			return qfalse;
 		}
 	}
@@ -137,8 +136,7 @@ int BotIsLastInRankings( bot_state_t *bs ) {
 			continue;
 		}
 		//
-		BotAI_GetClientState( i, &ps );
-		if ( score > ps.persistant[PERS_SCORE] ) {
+		if ( BotAI_GetClientState( i, &ps ) && score > ps.persistant[PERS_SCORE] ) {
 			return qfalse;
 		}
 	}
@@ -169,8 +167,7 @@ char *BotFirstClientInRankings( void ) {
 			continue;
 		}
 		//
-		BotAI_GetClientState( i, &ps );
-		if ( ps.persistant[PERS_SCORE] > bestscore ) {
+		if ( BotAI_GetClientState( i, &ps ) && ps.persistant[PERS_SCORE] > bestscore ) {
 			bestscore = ps.persistant[PERS_SCORE];
 			bestclient = i;
 		}
@@ -203,8 +200,7 @@ char *BotLastClientInRankings( void ) {
 			continue;
 		}
 		//
-		BotAI_GetClientState( i, &ps );
-		if ( ps.persistant[PERS_SCORE] < worstscore ) {
+		if ( BotAI_GetClientState( i, &ps ) && ps.persistant[PERS_SCORE] < worstscore ) {
 			worstscore = ps.persistant[PERS_SCORE];
 			bestclient = i;
 		}
