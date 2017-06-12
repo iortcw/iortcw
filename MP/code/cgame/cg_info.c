@@ -186,7 +186,7 @@ void CG_DrawStats( char *stats ) {
 			varIndex = v;
 			for ( j = 0; j < statsItems[i].numVars; j++ ) {
 				token = COM_Parse( &str );
-				if ( !token || !token[0] ) {
+				if ( !token[0] ) {
 					CG_Error( "error parsing mission stats\n" );
 					return;
 				}

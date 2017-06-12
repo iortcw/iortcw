@@ -772,7 +772,7 @@ qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params ) {
 
 		// read the name
 		token = COM_ParseExt( &pString, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			G_Error( "AI Scripting: syntax error\n\nplayanim <animation> <legs/torso/both>\n" );
 		}
 		Q_strncpyz( tokens[0], token, sizeof( tokens[0] ) );
@@ -780,7 +780,7 @@ qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params ) {
 
 		// read the body part
 		token = COM_ParseExt( &pString, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			G_Error( "AI Scripting: syntax error\n\nplayanim <animation> <legs/torso/both>\n" );
 		}
 		Q_strncpyz( tokens[1], token, sizeof( tokens[1] ) );
@@ -912,7 +912,7 @@ qboolean AICast_ScriptAction_PlayAnim( cast_state_t *cs, char *params ) {
 
 		for ( i = 0; i < 3; i++ ) {
 			token = COM_ParseExt( &pString, qfalse );
-			if ( !token || !token[0] ) {
+			if ( !token[0] ) {
 				//G_Error("AI Scripting: syntax error\n\nplayanim <animation> <pausetime> [legs/torso/both]\n");
 				G_Printf( "AI Scripting: syntax error\n\nplayanim <animation> <pausetime> <legs/torso/both>\n" );
 				return qtrue;

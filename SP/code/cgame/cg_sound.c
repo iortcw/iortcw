@@ -337,7 +337,7 @@ static void CG_SoundParseSounds( char *filename, char *buffer ) {
 			token = COM_ParseExt( text, qfalse );
 			sound.shakeRadius = atof( token );
 			token = COM_ParseExt( text, qfalse );
-			if ( !token || !token[0] ) {
+			if ( !token[0] ) {
 				sound.shakeDuration = 350 + 900 * ( sound.shakeScale * sound.shakeScale );
 			} else {
 				sound.shakeDuration = atoi( token );

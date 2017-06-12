@@ -1240,31 +1240,31 @@ void CG_DrawSkyBoxPortal( void ) {
 
 	if ( cg_skybox.integer ) {
 		token = COM_ParseExt( &cstr, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[0] = atof( token );
 
 		token = COM_ParseExt( &cstr, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[1] = atof( token );
 
 		token = COM_ParseExt( &cstr, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 		cg.refdef.vieworg[2] = atof( token );
 
 		token = COM_ParseExt( &cstr, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring\n" );
 		}
 
 		// setup fog the first time, ignore this part of the configstring after that
 		token = COM_ParseExt( &cstr, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog state\n" );
 		} else {
 			vec4_t fogColor;
@@ -1273,32 +1273,32 @@ void CG_DrawSkyBoxPortal( void ) {
 			if ( atoi( token ) ) {   // this camera has fog
 				if ( 1 ) {
 					token = COM_ParseExt( &cstr, qfalse );
-					if ( !token || !token[0] ) {
+					if ( !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[0]\n" );
 					}
 					fogColor[0] = atof( token );
 
 					token = COM_ParseExt( &cstr, qfalse );
-					if ( !token || !token[0] ) {
+					if ( !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[1]\n" );
 					}
 					fogColor[1] = atof( token );
 
 					token = COM_ParseExt( &cstr, qfalse );
-					if ( !token || !token[0] ) {
+					if ( !token[0] ) {
 						CG_Error( "CG_DrawSkyBoxPortal: error parsing skybox configstring.  No fog[2]\n" );
 					}
 					fogColor[2] = atof( token );
 
 					token = COM_ParseExt( &cstr, qfalse );
-					if ( !token || !token[0] ) {
+					if ( !token[0] ) {
 						fogStart = 0;
 					} else {
 						fogStart = atoi( token );
 					}
 
 					token = COM_ParseExt( &cstr, qfalse );
-					if ( !token || !token[0] ) {
+					if ( !token[0] ) {
 						fogEnd = 0;
 					} else {
 						fogEnd = atoi( token );

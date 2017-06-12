@@ -497,7 +497,7 @@ qboolean G_ScriptAction_PlayAnim( gentity_t *ent, char *params ) {
 
 	for ( i = 0; i < 2; i++ ) {
 		token = COM_ParseExt( &pString, qfalse );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			G_Printf( "G_Scripting: syntax error\n\nplayanim <startframe> <endframe> [LOOPING <duration>]\n" );
 			return qtrue;
 		} else {
@@ -515,7 +515,7 @@ qboolean G_ScriptAction_PlayAnim( gentity_t *ent, char *params ) {
 			looping = qtrue;
 
 			token = COM_ParseExt( &pString, qfalse );
-			if ( !token || !token[0] ) {
+			if ( !token[0] ) {
 				G_Printf( "G_Scripting: syntax error\n\nplayanim <startframe> <endframe> [LOOPING <duration>]\n" );
 				return qtrue;
 			}
@@ -879,14 +879,14 @@ qboolean G_ScriptAction_FaceAngles( gentity_t *ent, char *params ) {
 		pString = params;
 		for ( i = 0; i < 3; i++ ) {
 			token = COM_Parse( &pString );
-			if ( !token || !token[0] ) {
+			if ( !token[0] ) {
 				G_Error( "G_Scripting: syntax: faceangles <pitch> <yaw> <roll> <duration/GOTOTIME>\n" );
 			}
 			angles[i] = atoi( token );
 		}
 
 		token = COM_Parse( &pString );
-		if ( !token || !token[0] ) {
+		if ( !token[0] ) {
 			G_Error( "G_Scripting: faceangles requires a <pitch> <yaw> <roll> <duration/GOTOTIME>\n" );
 		}
 		if ( !Q_strcasecmp( token, "gototime" ) ) {
