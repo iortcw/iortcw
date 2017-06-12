@@ -304,12 +304,8 @@ ClientFromName
 int ClientFromName( char *name ) {
 	int i;
 	char buf[MAX_INFO_STRING];
-	static int maxclients;
 
-	if ( !maxclients ) {
-		maxclients = trap_Cvar_VariableIntegerValue( "sv_maxclients" );
-	}
-	for ( i = 0; i < maxclients && i < MAX_CLIENTS; i++ ) {
+	for ( i = 0; i < level.maxclients; i++ ) {
 		trap_GetConfigstring( CS_PLAYERS + i, buf, sizeof( buf ) );
 		Q_CleanStr( buf );
 		if ( !Q_stricmp( Info_ValueForKey( buf, "n" ), name ) ) {
@@ -1443,7 +1439,7 @@ int BotFindEnemy( bot_state_t *bs, int curenemy ) {
 		curdist = 0;
 	}
 	//
-	for ( i = 0; i < MAX_CLIENTS; i++ ) {
+	for ( i = 0; i < level.maxclients; i++ ) {
 
 		if ( i == bs->client ) {
 			continue;
@@ -1955,7 +1951,7 @@ void BotMapScripts( bot_state_t *bs ) {
 		}
 		shootbutton = qfalse;
 		//if an enemy is below this bounding box then shoot the button
-		for ( i = 0; i < MAX_CLIENTS; i++ ) {
+		for ( i = 0; i < level.maxclients; i++ ) {
 
 			if ( i == bs->client ) {
 				continue;
