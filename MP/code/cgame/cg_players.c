@@ -169,7 +169,7 @@ static qboolean CG_ParseGibModels( const char *filename, clientInfo_t *ci ) {
 
 	for ( i = 0; i < MAX_GIB_MODELS; i++ ) {
 		token = COM_Parse( &text_p );
-		if ( !token ) {
+		if ( !token[0] ) {
 			break;
 		}
 		// cache this model

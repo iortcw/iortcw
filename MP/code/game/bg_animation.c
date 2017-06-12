@@ -531,12 +531,12 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 	// read optional parameters
 	while ( 1 ) {
 		token = COM_Parse( &text_p );
-		if ( !token ) {
+		if ( !token[0] ) {
 			break;
 		}
 		if ( !Q_stricmp( token, "footsteps" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token ) {
+			if ( !token[0] ) {
 				break;
 			}
 			if ( !Q_stricmp( token, "default" ) || !Q_stricmp( token, "normal" ) ) {
@@ -556,7 +556,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 		} else if ( !Q_stricmp( token, "headoffset" ) ) {
 			for ( i = 0 ; i < 3 ; i++ ) {
 				token = COM_Parse( &text_p );
-				if ( !token ) {
+				if ( !token[0] ) {
 					break;
 				}
 				animModelInfo->headOffset[i] = atof( token );
@@ -564,7 +564,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			continue;
 		} else if ( !Q_stricmp( token, "sex" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token ) {
+			if ( !token[0] ) {
 				break;
 			}
 			if ( token[0] == 'f' || token[0] == 'F' ) {
@@ -577,7 +577,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			continue;
 		} else if ( !Q_stricmp( token, "version" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token ) {
+			if ( !token[0] ) {
 				break;
 			}
 			animModelInfo->version = atoi( token );
@@ -606,7 +606,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 	for ( i = 0 ; ( animModelInfo->version > 1 ) || ( i < MAX_ANIMATIONS ) ; i++ ) {
 
 		token = COM_Parse( &text_p );
-		if ( !token ) {
+		if ( !token[0] ) {
 			break;
 		}
 
@@ -682,7 +682,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 
 		// animation blending
 		token = COM_ParseExt( &text_p, qfalse );    // must be on same line
-		if ( !token ) {
+		if ( !token[0] ) {
 			animations[i].animBlend = 0;
 		} else {
 			animations[i].animBlend = atoi( token );
@@ -1167,7 +1167,7 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 				defineStr[defineType][numDefines[defineType]].hash = BG_StringHashValue( defineStr[defineType][numDefines[defineType]].string );
 				// expecting an =
 				token = COM_ParseExt( &text_p, qfalse );
-				if ( !token ) {
+				if ( !token[0] ) {
 					BG_AnimParseError( "BG_AnimParseAnimScript: expected '=', found end of line" );  // RF mod
 				}
 				if ( Q_stricmp( token, "=" ) ) {
@@ -1223,7 +1223,7 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 
 				// read in the state type
 				token = COM_ParseExt( &text_p, qfalse );
-				if ( !token ) {
+				if ( !token[0] ) {
 					BG_AnimParseError( "BG_AnimParseAnimScript: expected state type" );  // RF mod
 				}
 				indexes[indentLevel] = BG_IndexForString( token, animStateStr, qfalse );
@@ -1336,14 +1336,14 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 
 					// read in the old state type
 					token = COM_ParseExt( &text_p, qfalse );
-					if ( !token ) {
+					if ( !token[0] ) {
 						BG_AnimParseError( "BG_AnimParseAnimScript: expected <state type>" );    // RF mod
 					}
 					oldState = BG_IndexForString( token, animStateStr, qfalse );
 
 					// read in the new state type
 					token = COM_ParseExt( &text_p, qfalse );
-					if ( !token ) {
+					if ( !token[0] ) {
 						BG_AnimParseError( "BG_AnimParseAnimScript: expected <state type>" );    // RF mod
 					}
 					indexes[indentLevel] = BG_IndexForString( token, animStateStr, qfalse );
