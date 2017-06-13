@@ -1565,8 +1565,12 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		}
 
 		// found a client number to kick, so override votestring with better one
-		Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick \"%d\"", i );
-		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", level.clients[i].pers.netname );
+		if ( i != MAX_CLIENTS ) {
+			Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick \"%d\"", i );
+			Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", level.clients[i].pers.netname );
+		} else {
+			return;
+		}
 #if 0
 // JPW NERVE
 	} else if ( !Q_stricmp( arg1,"kick" ) ) {
@@ -1577,14 +1581,17 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 			if ( level.clients[i].pers.connected != CON_CONNECTED ) {
 				continue;
 			}
-// strip the color crap out
+
+			// strip the color crap out
 			Q_strncpyz( cleanName, level.clients[i].pers.netname, sizeof( cleanName ) );
 			Q_CleanStr( cleanName );
 			if ( !Q_stricmp( cleanName, arg2 ) ) {
 				kicknum = i;
 			}
 		}
+
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", level.clients[kicknum].pers.netname );
+
 		if ( kicknum != MAX_CLIENTS ) { // found a client # to kick, so override votestring with better one
 			Com_sprintf( level.voteString, sizeof( level.voteString ),"clientkick \"%d\"",kicknum );
 		} else { // if it can't do a name match, don't allow kick (to prevent votekick text spam wars)
