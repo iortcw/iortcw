@@ -181,32 +181,35 @@ Returns a player number for either a number or name string
 Returns -1 if invalid
 ==================
 */
-int ClientNumberFromString( gentity_t *to, char *s ) {
+int ClientNumberFromString( gentity_t *to, char *s, qboolean checkNums, qboolean checkNames ) {
 	gclient_t   *cl;
 	int idnum;
 	char		cleanName[MAX_STRING_CHARS];
 
-	// numeric values could be slot numbers
-	if ( StringIsInteger( s ) ) {
-		idnum = atoi( s );
-
-		if ( idnum >= 0 && idnum < level.maxclients ) {
-			cl = &level.clients[idnum];
-			if ( cl->pers.connected == CON_CONNECTED ) {
-				return idnum;
+	if ( checkNums ) {
+		// numeric values could be slot numbers
+		if ( StringIsInteger( s ) ) {
+			idnum = atoi( s );
+			if ( idnum >= 0 && idnum < level.maxclients ) {
+				cl = &level.clients[idnum];
+				if ( cl->pers.connected == CON_CONNECTED ) {
+					return idnum;
+				}
 			}
 		}
 	}
 
-	// check for a name match
-	for ( idnum = 0,cl = level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
-		if ( cl->pers.connected != CON_CONNECTED ) {
-			continue;
-		}
-		Q_strncpyz(cleanName, cl->pers.netname, sizeof(cleanName));
-		Q_CleanStr(cleanName);
-		if ( !Q_stricmp( cleanName, s ) ) {
-			return idnum;
+	if ( checkNames ) {
+		// check for a name match
+		for ( idnum = 0, cl = level.clients; idnum < level.maxclients; idnum++, cl++ ) {
+			if ( cl->pers.connected != CON_CONNECTED ) {
+				continue;
+			}
+			Q_strncpyz( cleanName, cl->pers.netname, sizeof( cleanName ) );
+			Q_CleanStr( cleanName );
+			if ( !Q_stricmp( cleanName, s ) ) {
+				return idnum;
+			}
 		}
 	}
 
@@ -769,7 +772,7 @@ void Cmd_Follow_f( gentity_t *ent ) {
 	}
 
 	trap_Argv( 1, arg, sizeof( arg ) );
-	i = ClientNumberFromString( ent, arg );
+	i = ClientNumberFromString( ent, arg, qtrue, qtrue );
 	if ( i == -1 ) {
 		return;
 	}
@@ -1032,7 +1035,7 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	}
 
 	trap_Argv( 1, arg, sizeof( arg ) );
-	targetNum = ClientNumberFromString( ent, arg );
+	targetNum = ClientNumberFromString( ent, arg, qtrue, qtrue );
 	if ( targetNum == -1 ) {
 		return;
 	}
@@ -1082,7 +1085,7 @@ void Cmd_GameCommand_f( gentity_t *ent ) {
 	}
 
 	trap_Argv( 1, arg, sizeof( arg ) );
-	targetNum = ClientNumberFromString( ent, arg );
+	targetNum = ClientNumberFromString( ent, arg, qtrue, qtrue );
 	if ( targetNum == -1 ) {
 		return;
 	}
@@ -1156,10 +1159,12 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	} else if ( !Q_stricmp( arg1, "map" ) ) {
 	} else if ( !Q_stricmp( arg1, "g_gametype" ) ) {
 	} else if ( !Q_stricmp( arg1, "kick" ) ) {
+	} else if ( !Q_stricmp( arg1, "clientkick" ) ) {
 	} else {
 		trap_SendServerCommand( ent - g_entities, "print \"Invalid vote string.\n\"" );
 		return;
 	}
+	
 	Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %s", arg1, arg2 );
 
 	trap_SendServerCommand( -1, va( "print \"%s called a vote.\n\"", ent->client->pers.netname ) );

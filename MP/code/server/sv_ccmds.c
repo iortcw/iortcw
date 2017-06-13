@@ -729,7 +729,7 @@ static void SV_Ban_f( void ) {
 	}
 
 	if ( cl->netchan.remoteAddress.type == NA_LOOPBACK ) {
-		Com_Printf("Cannot kick host player\n");
+		Com_Printf("Cannot ban host player\n");
 		return;
 	}
 
