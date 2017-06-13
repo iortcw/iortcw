@@ -45,7 +45,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_ea.h"
 
 #define MAX_USERMOVE                400
-#define MAX_COMMANDARGUMENTS        10
 #define ACTION_JUMPEDLASTFRAME		128
 
 bot_input_t *botinputs;
