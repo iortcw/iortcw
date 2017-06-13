@@ -1425,7 +1425,6 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	int i;
 	char arg1[MAX_STRING_TOKENS];
 	char arg2[MAX_STRING_TOKENS];
-	char cleanName[64];    // JPW NERVE
 	int mask = 0;
 
 	if ( !g_voteFlags.integer ) {
@@ -1571,7 +1570,9 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 #if 0
 // JPW NERVE
 	} else if ( !Q_stricmp( arg1,"kick" ) ) {
-		int i,kicknum = MAX_CLIENTS;
+		int i, kicknum = MAX_CLIENTS;
+		char cleanName[64];    // JPW NERVE
+		
 		for ( i = 0; i < MAX_CLIENTS; i++ ) {
 			if ( level.clients[i].pers.connected != CON_CONNECTED ) {
 				continue;
