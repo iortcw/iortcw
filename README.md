@@ -115,6 +115,9 @@ The defaults for these variables differ depending on the target platform.
 * cl_mouseAccelStyle ( 0 )- Set to 1 for QuakeLive mouse acceleration behaviour, 0 for standard
 * cl_mouseAccelOffset ( 5 ) - Tuning the acceleration curve, see below
 
+* con_autochat ( 1 ) - Set to 0 to disable sending console input text as chat when there is not a slash at the beginning
+* con_autoclear ( 1 ) - Set to 0 to disable clearing console input text when console is closed
+
 * in_availableJoysticks - list of available Joysticks
 * in_keyboardDebug - print keyboard debug info
  
