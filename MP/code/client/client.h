@@ -384,6 +384,8 @@ typedef struct {
 
 	netadr_t authorizeServer;
 
+	netadr_t rconAddress;
+
 	// DHM - Nerve :: Auto-update Info
 	char autoupdateServerNames[MAX_AUTOUPDATE_SERVERS][MAX_QPATH];
 	netadr_t autoupdateServer;
