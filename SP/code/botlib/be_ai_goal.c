@@ -278,7 +278,7 @@ itemconfig_t *LoadItemConfig( char *filename ) {
 		LibVarSet( "max_iteminfo", "128" );
 	}
 
-	strncpy( path, filename, MAX_PATH );
+	Q_strncpyz( path, filename, sizeof( path ) );
 	source = LoadSourceFile( path );
 	if ( !source ) {
 		botimport.Print( PRT_ERROR, "counldn't load %s\n", path );
@@ -307,7 +307,7 @@ itemconfig_t *LoadItemConfig( char *filename ) {
 				return NULL;
 			} //end if
 			StripDoubleQuotes( token.string );
-			strncpy( ii->classname, token.string, sizeof( ii->classname ) - 1 );
+			Q_strncpyz( ii->classname, token.string, sizeof( ii->classname ) );
 			if ( !ReadStructure( source, &iteminfo_struct, (char *) ii ) ) {
 				FreeMemory( ic );
 				FreeSource( source );
