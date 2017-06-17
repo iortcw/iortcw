@@ -479,35 +479,6 @@ static qboolean RB_SurfaceVaoCached(int numVerts, srfVert_t *verts, int numIndex
 }
 
 
-static qboolean RB_SurfaceVao(vao_t *vao, int numVerts, int numIndexes, int firstIndex, int dlightBits, int pshadowBits, qboolean shaderCheck)
-{
-	if (!vao)
-	{
-		return qfalse;
-	}
-
-	if (shaderCheck && !(!ShaderRequiresCPUDeforms(tess.shader) && !tess.shader->isSky && !tess.shader->isPortal))
-	{
-		return qfalse;
-	}
-
-	RB_CheckVao(vao);
-
-	tess.dlightBits |= dlightBits;
-	tess.pshadowBits |= pshadowBits;
-
-	RB_EndSurface();
-	RB_BeginSurface(tess.shader, tess.fogNum, tess.cubemapIndex);
-
-	backEnd.pc.c_staticVaoDraws++;
-
-	tess.numIndexes = numIndexes;
-	tess.numVertexes = numVerts;
-
-	return qtrue;
-}
-
-
 /*
 =============
 RB_SurfaceTriangles
@@ -1268,12 +1239,6 @@ static void RB_SurfaceFlare( srfFlare_t *surf ) {
 		RB_AddFlare(surf, tess.fogNum, surf->origin, surf->color, 1.0f, surf->normal, 0, qtrue);
 }
 
-static void RB_SurfaceVaoMesh(srfBspSurface_t * srf)
-{
-	RB_SurfaceVao (srf->vao, srf->numVerts, srf->numIndexes, srf->firstIndex,
-			srf->dlightBits, srf->pshadowBits, qfalse );
-}
-
 void RB_SurfaceVaoMdvMesh(srfVaoMdvMesh_t * surface)
 {
 	//mdvModel_t     *mdvModel;
@@ -1381,6 +1346,5 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] ) ( void * ) = {
 	( void( * ) ( void* ) )RB_IQMSurfaceAnim,	// SF_IQM,
 	( void( * ) ( void* ) )RB_SurfaceFlare,		// SF_FLARE,
 	( void( * ) ( void* ) )RB_SurfaceEntity,	// SF_ENTITY
-	( void( * ) ( void* ) )RB_SurfaceVaoMesh,	// SF_VAO_MESH,
 	( void( * ) ( void* ) )RB_SurfaceVaoMdvMesh,	// SF_VAO_MDVMESH
 };

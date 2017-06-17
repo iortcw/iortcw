@@ -219,7 +219,6 @@ static int R_DlightSurface( msurface_t *surf, int dlightBits ) {
 		case SF_FACE:
 		case SF_GRID:
 		case SF_TRIANGLES:
-		case SF_VAO_MESH:
 			((srfBspSurface_t *)surf->data)->dlightBits = dlightBits;
 			break;
 
@@ -305,7 +304,6 @@ static int R_PshadowSurface( msurface_t *surf, int pshadowBits ) {
 		case SF_FACE:
 		case SF_GRID:
 		case SF_TRIANGLES:
-		case SF_VAO_MESH:
 			((srfBspSurface_t *)surf->data)->pshadowBits = pshadowBits;
 			break;
 
