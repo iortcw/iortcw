@@ -916,7 +916,7 @@ CG_ParseWeaponConfig
 	read information for weapon animations (first/length/fps)
 ======================
 */
-static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi ) {
+static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi, int weaponNum ) {
 	char        *text_p, *prev;
 	int len;
 	int i;
@@ -977,6 +977,12 @@ static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi ) {
 
 		token = COM_Parse( &text_p );   // first frame
 		if ( !token[0] ) {
+			// don't show warning for weapon cfg without altswitch that does not require it.
+			if ( i == WEAP_ALTSWITCHFROM && weapAlts[weaponNum] == WP_NONE ) {
+				for ( ; i < MAX_WP_ANIMATIONS  ; i++ ) {
+					Com_Memcpy( &wi->weapAnimations[i], &wi->weapAnimations[WEAP_IDLE1], sizeof( wi->weapAnimations[0] ) );
+				}
+			}
 			break;
 		}
 		wi->weapAnimations[i].firstFrame = atoi( token );
@@ -1122,7 +1128,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 //----(SA)	modified.  use first person model for finding weapon config name, not third
 	if ( item->world_model[W_FP_MODEL] ) {
 		COM_StripFilename( item->world_model[W_FP_MODEL], path );
-		if ( !CG_ParseWeaponConfig( va( "%sweapon.cfg", path ), weaponInfo ) ) {
+		if ( !CG_ParseWeaponConfig( va( "%sweapon.cfg", path ), weaponInfo, weaponNum ) ) {
 //			CG_Error( "Couldn't register weapon %i (%s) (failed to parse weapon.cfg)", weaponNum, path );
 		}
 	}
