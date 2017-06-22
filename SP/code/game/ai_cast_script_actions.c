@@ -1065,7 +1065,7 @@ qboolean AICast_ScriptAction_SetAmmo( cast_state_t *cs, char *params ) {
 
 	} else {
 		if ( g_cheats.integer ) {
-			G_Printf( "--SCRIPTER WARNING-- AI Scripting: setammo: unknown ammo \"%s\"", params );
+			G_Printf( "--SCRIPTER WARNING-- AI Scripting: setammo: unknown ammo \"%s\"\n", params );
 		}
 		return qfalse;  // (SA) temp as scripts transition to new names
 	}
@@ -1128,7 +1128,7 @@ qboolean AICast_ScriptAction_SetClip( cast_state_t *cs, char *params ) {
 		}
 
 	} else {
-//		G_Printf( "--SCRIPTER WARNING-- AI Scripting: setclip: unknown weapon \"%s\"", params );
+//		G_Printf( "--SCRIPTER WARNING-- AI Scripting: setclip: unknown weapon \"%s\"\n", params );
 		return qfalse;  // (SA) temp as scripts transition to new names
 	}
 
@@ -1214,7 +1214,7 @@ qboolean AICast_ScriptAction_SelectWeapon( cast_state_t *cs, char *params ) {
 			g_entities[cs->entityNum].client->ps.weaponTime = 750;  // (SA) HACK: FIXME: TODO: delay to catch initial weapon reload
 		}
 	} else {
-//		G_Printf( "--SCRIPTER WARNING-- AI Scripting: selectweapon: unknown weapon \"%s\"", params );
+//		G_Printf( "--SCRIPTER WARNING-- AI Scripting: selectweapon: unknown weapon \"%s\"\n", params );
 //		return qfalse;	// (SA) temp as scripts transition to new names
 		G_Error( "AI Scripting: selectweapon: unknown weapon \"%s\"", params );
 	}

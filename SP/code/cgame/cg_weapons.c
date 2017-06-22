@@ -983,7 +983,7 @@ static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi ) {
 	}
 
 	if ( i != MAX_WP_ANIMATIONS ) {
-		CG_Printf( "Error parsing weapon animation file: %s", filename );
+		CG_Printf( "Error parsing weapon animation file: %s\n", filename );
 		return qfalse;
 	}
 
@@ -1062,7 +1062,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		//	ie. every weapon and it's associated effects/parts/sounds etc. are loaded for every level.
 		// This was turned off when we started (the "only load what the level calls for" thing) because when
 		// DM does a "give all" and fires, he doesn't want to wait for everything to load.  So perhaps a "cacheallweaps" or something.
-//		CG_Printf( "Couldn't register weapon model %i (unable to load view model)", weaponNum );
+//		CG_Printf( "Couldn't register weapon model %i (unable to load view model)\n", weaponNum );
 // RF, I need to be able to run the game, I dont have the silencer weapon (19)
 #ifndef _DEBUG
 //		CG_Error( "Couldn't register weapon model %i (unable to load view model)", weaponNum );
