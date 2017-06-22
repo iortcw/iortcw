@@ -171,9 +171,9 @@ struct vm_s {
 	byte		*dataBase;
 	int			dataMask;
 
-	int			dataLength;			// length of QVMs data
-	int			dataAlloc;			// QVM's current allocate point
-	int			dataAllocTop;		// QVM's current temporary memory allocate point
+	int			heapLength;			// length of QVMs data
+	int			heapAlloc;			// QVM's current allocate point
+	int			heapAllocTop;		// QVM's current temporary memory allocate point
 
 	int			stackBottom;		// if programStack < stackBottom, error
 

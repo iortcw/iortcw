@@ -446,7 +446,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
 	dataLength = header.h->dataLength + header.h->litLength +
 		header.h->bssLength;
 
-	vm->dataAlloc = vm->dataLength = dataLength - PROGRAM_STACK_SIZE;
+	vm->heapAlloc = vm->heapLength = dataLength - PROGRAM_STACK_SIZE;
 
 	dataLength += vm_minQvmHunkMegs->integer * 1024 * 1024;
 
@@ -706,7 +706,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 	vm->stackBottom = vm->programStack - PROGRAM_STACK_SIZE;
 
 	// allocate temporary memory down from the bottom of the stack
-	vm->dataAllocTop = vm->stackBottom;
+	vm->heapAllocTop = vm->stackBottom;
 
 	Com_Printf("%s loaded in %d bytes on the hunk\n", module, remaining - Hunk_MemoryRemaining());
 
@@ -1002,10 +1002,10 @@ void VM_VmInfo_f( void ) {
 		Com_Printf( "    code length : %7i\n", vm->codeLength );
 		Com_Printf( "    table length: %7i\n", vm->instructionCount*4 );
 		Com_Printf( "    data length : %7i\n", vm->dataMask + 1 );
-		Com_Printf( "    total memory: %7i\n", vm->stackBottom - vm->dataLength );
-		Com_Printf( "    free memory : %7i\n", vm->dataAllocTop - vm->dataAlloc );
-		Com_Printf( "    used permanent memory: %7i\n", vm->dataAlloc - vm->dataLength );
-		Com_Printf( "    used temporary memory: %7i\n", vm->stackBottom - vm->dataAllocTop );
+		Com_Printf( "    total memory: %7i\n", vm->stackBottom - vm->heapLength );
+		Com_Printf( "    free memory : %7i\n", vm->heapAllocTop - vm->heapAlloc );
+		Com_Printf( "    used permanent memory: %7i\n", vm->heapAlloc - vm->heapLength );
+		Com_Printf( "    used temporary memory: %7i\n", vm->stackBottom - vm->heapAllocTop );
 	}
 }
 
@@ -1068,19 +1068,19 @@ unsigned VM_GetTempMemory( vm_t *vm, int size, const void *initData ) {
 	// align addresses
 	allocSize = ( size + 31 ) & ~31;
 
-	if ( vm->dataAllocTop - allocSize <= vm->dataAlloc ) {
+	if ( vm->heapAllocTop - allocSize <= vm->heapAlloc ) {
 		return 0;
 	}
 
-	vm->dataAllocTop -= allocSize;
+	vm->heapAllocTop -= allocSize;
 
 	if ( initData ) {
-		Com_Memcpy( vm->dataBase + vm->dataAllocTop, initData, size );
+		Com_Memcpy( vm->dataBase + vm->heapAllocTop, initData, size );
 	} else {
-		Com_Memset( vm->dataBase + vm->dataAllocTop, 0, size );
+		Com_Memset( vm->dataBase + vm->heapAllocTop, 0, size );
 	}
 
-	return vm->dataAllocTop;
+	return vm->heapAllocTop;
 }
 
 /*
@@ -1100,17 +1100,17 @@ void VM_FreeTempMemory( vm_t *vm, unsigned qvmPointer, int size, void *outData )
 	// align addresses
 	allocSize = ( size + 31 ) & ~31;
 
-	if ( vm->dataAllocTop + allocSize > vm->stackBottom ) {
+	if ( vm->heapAllocTop + allocSize > vm->stackBottom ) {
 		Com_Error( ERR_DROP, "Tried to free too much QVM temporary memory!");
 	}
 
 	if ( outData ) {
-		Com_Memcpy( outData, vm->dataBase + vm->dataAllocTop, size );
+		Com_Memcpy( outData, vm->dataBase + vm->heapAllocTop, size );
 	}
 
-	Com_Memset( vm->dataBase + vm->dataAllocTop, 0, size );
+	Com_Memset( vm->dataBase + vm->heapAllocTop, 0, size );
 
-	vm->dataAllocTop += allocSize;
+	vm->heapAllocTop += allocSize;
 }
 
 #if 0 // ZTM: new unused code for allocating unfreeable memory in dlls and qvms.
@@ -1126,13 +1126,13 @@ unsigned int QVM_Alloc( vm_t *vm, int size ) {
 	// align addresses
 	allocSize = ( size + 31 ) & ~31;
 
-	if ( vm->dataAlloc + allocSize > vm->dataAllocTop ) {
+	if ( vm->heapAlloc + allocSize > vm->heapAllocTop ) {
 		Com_Error( ERR_DROP, "QVM_Alloc: %s failed on allocation of %i bytes", vm->name, size );
 		return 0;
 	}
 
-	pointer = vm->dataAlloc;
-	vm->dataAlloc += allocSize;
+	pointer = vm->heapAlloc;
+	vm->heapAlloc += allocSize;
 
 	Com_Memset( vm->dataBase + pointer, 0, size );
 
