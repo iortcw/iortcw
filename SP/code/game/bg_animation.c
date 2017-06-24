@@ -1282,7 +1282,7 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 //----(SA) // RF mod
 				// check for the open bracket
 				token = COM_ParseExt( &text_p, qtrue );
-				if ( !token || Q_stricmp( token, "{" ) ) {
+				if ( !token[0] || Q_stricmp( token, "{" ) ) {
 					BG_AnimParseError( "BG_AnimParseAnimScript: expected '{'" );
 				}
 				indentLevel++;
@@ -1404,7 +1404,7 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 //----(SA)		// RF mod
 					// check for the open bracket
 					token = COM_ParseExt( &text_p, qtrue );
-					if ( !token || Q_stricmp( token, "{" ) ) {
+					if ( !token[0] || Q_stricmp( token, "{" ) ) {
 						BG_AnimParseError( "BG_AnimParseAnimScript: expected '{'" );
 					}
 					indentLevel++;
