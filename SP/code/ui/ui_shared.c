@@ -846,8 +846,20 @@ void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle
 		if ( w->background ) {
 			Fade( &w->flags, &w->backColor[3], fadeClamp, &w->nextTime, fadeCycle, qtrue, fadeAmount );
 			DC->setColor( w->backColor );
-			DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
-			DC->setColor( NULL );
+			if ( ui_fixedAspect.integer == 2 ) {
+				if ( DC->glconfig.vidWidth * 480 > DC->glconfig.vidHeight * 640 ) {
+					// HACK ... stretch fadebox when using widescreen
+					if ( !Q_stricmpn( w->name, "fadebox", 7 ) ) {
+						UI_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
+						DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+						DC->setColor( NULL );
+					}
+				}
+				UI_SetScreenPlacement(PLACE_CENTER, PLACE_CENTER);
+			} else {
+				DC->drawHandlePic( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->background );
+				DC->setColor( NULL );
+			}
 		} else {
 			DC->fillRect( fillRect.x, fillRect.y, fillRect.w, fillRect.h, w->backColor );
 		}
