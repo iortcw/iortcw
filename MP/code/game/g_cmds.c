@@ -541,7 +541,7 @@ void Cmd_Kill_f( gentity_t *ent ) {
 SetTeam
 =================
 */
-void SetTeam( gentity_t *ent, char *s ) {
+void SetTeam( gentity_t *ent, const char *s ) {
 	int team, oldTeam;
 	gclient_t           *client;
 	int clientNum;
@@ -590,7 +590,7 @@ void SetTeam( gentity_t *ent, char *s ) {
 		}
 
 		// NERVE - SMF - merge from team arena
-		if ( g_teamForceBalance.integer  ) {
+		if ( g_teamForceBalance.integer && !client->pers.localClient && !( ent->r.svFlags & SVF_BOT ) ) {
 			int counts[TEAM_NUM_TEAMS];
 
 			counts[TEAM_BLUE] = TeamCount( clientNum, TEAM_BLUE );

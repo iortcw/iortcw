@@ -3751,7 +3751,11 @@ static void UI_StartSkirmish( qboolean next ) {
 		}
 	}
 	if ( g >= GT_TEAM ) {
+		// send team command for vanilla q3 game qvm
 		trap_Cmd_ExecuteText( EXEC_APPEND, "wait 5; team Red\n" );
+
+		// set g_localTeamPref for ioq3 game qvm
+		trap_Cvar_Set( "g_localTeamPref", "Red" );
 	}
 #endif  // #ifdef MISSIONPACK
 }
@@ -7805,7 +7809,9 @@ cvarTable_t cvarTable[] = {
 	{ &ui_isSpectator, "ui_isSpectator", "1", 0 },
 	// -NERVE - SMF
 
-	{ &ui_hudAlpha, "cg_hudAlpha", "1.0", CVAR_ARCHIVE }
+	{ &ui_hudAlpha, "cg_hudAlpha", "1.0", CVAR_ARCHIVE },
+
+	{ NULL, "g_localTeamPref", "", 0 },
 };
 
 static int		cvarTableSize = ARRAY_LEN( cvarTable );
@@ -7835,6 +7841,10 @@ void UI_UpdateCvars( void ) {
 	cvarTable_t *cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
+		if ( !cv->vmCvar ) {
+			continue;
+		}
+
 		trap_Cvar_Update( cv->vmCvar );
 	}
 }

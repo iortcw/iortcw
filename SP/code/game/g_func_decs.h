@@ -1065,7 +1065,7 @@ extern void Cmd_Follow_f ( gentity_t * ent ) ;
 extern void Cmd_Team_f ( gentity_t * ent ) ;
 extern void StopFollowing ( gentity_t * ent ) ;
 extern void SetWolfData ( gentity_t * ent , char * ptype , char * weap , char * pistol , char * grenade , char * skinnum ) ;
-extern void SetTeam ( gentity_t * ent , char * s ) ;
+extern void SetTeam ( gentity_t * ent , const char * s ) ;
 extern void Cmd_Kill_f ( gentity_t * ent ) ;
 extern void Cmd_LevelShot_f ( gentity_t * ent ) ;
 extern void Cmd_Noclip_f ( gentity_t * ent ) ;

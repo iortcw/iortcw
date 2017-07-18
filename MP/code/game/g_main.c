@@ -162,6 +162,8 @@ vmCvar_t url;
 
 vmCvar_t g_dbgRevive;
 
+vmCvar_t g_localTeamPref;
+
 cvarTable_t gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, qfalse },
@@ -293,7 +295,9 @@ cvarTable_t gameCvarTable[] = {
 
 	{&g_antilag, "g_antilag", "0", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qfalse},
 
-	{&g_dbgRevive, "g_dbgRevive", "0", 0, 0, qfalse}
+	{&g_dbgRevive, "g_dbgRevive", "0", 0, 0, qfalse},
+
+	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 };
 
 static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );

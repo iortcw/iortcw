@@ -781,7 +781,7 @@ qboolean G_CallSpawn( gentity_t *ent );
 void Cmd_Score_f( gentity_t *ent );
 void StopFollowing( gentity_t *ent );
 //void BroadcastTeamChange( gclient_t *client, int oldTeam );
-void SetTeam( gentity_t *ent, char *s );
+void SetTeam( gentity_t *ent, const char *s );
 void SetWolfData( gentity_t *ent, char *ptype, char *weap, char *grenade, char *skinnum );  // DHM - Nerve
 void Cmd_FollowCycle_f( gentity_t *ent, int dir );
 
@@ -1054,7 +1054,6 @@ typedef struct bot_settings_s
 {
 	char characterfile[MAX_FILEPATH];
 	float skill;
-	char team[MAX_FILEPATH];
 } bot_settings_t;
 
 int BotAISetup( int restart );
@@ -1203,6 +1202,8 @@ extern vmCvar_t g_swapteams;
 extern vmCvar_t g_antilag;
 
 extern vmCvar_t g_dbgRevive;
+
+extern vmCvar_t g_localTeamPref;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));
