@@ -1245,6 +1245,10 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 	}
 */
 
+	if ( mode == SAY_ALL && cgs.gametype >= GT_TEAM && cg_teamChatsOnly.integer ) {
+		return;
+	}
+
 	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
 		clientNum = 0;
 	}
@@ -1255,34 +1259,31 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 	voiceChatList = CG_VoiceChatListForClient( clientNum );
 
 	if ( CG_GetVoiceChat( voiceChatList, cmd, &snd, &sprite, &chat ) ) {
-		//
-		if ( mode == SAY_TEAM || !cg_teamChatsOnly.integer ) {
-			vchat.clientNum = clientNum;
-			vchat.snd = snd;
-			vchat.sprite = sprite;
-			vchat.voiceOnly = voiceOnly;
-			VectorCopy( origin, vchat.origin );     // NERVE - SMF
-			Q_strncpyz( vchat.cmd, cmd, sizeof( vchat.cmd ) );
+		vchat.clientNum = clientNum;
+		vchat.snd = snd;
+		vchat.sprite = sprite;
+		vchat.voiceOnly = voiceOnly;
+		VectorCopy( origin, vchat.origin );     // NERVE - SMF
+		Q_strncpyz( vchat.cmd, cmd, sizeof( vchat.cmd ) );
 
-			// NERVE - SMF - get location
-			loc = CG_ConfigString( CS_LOCATIONS + ci->location );
-			if ( !loc || !*loc ) {
-				loc = " ";
-			}
-			// -NERVE - SMF
-
-			if ( mode == SAY_TELL ) {
-				Com_sprintf( vchat.message, sizeof( vchat.message ), "[%s]%c%c[%s]: %c%c%s",
-							 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
-			} else if ( mode == SAY_TEAM )   {
-				Com_sprintf( vchat.message, sizeof( vchat.message ), "(%s)%c%c(%s): %c%c%s",
-							 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
-			} else {
-				Com_sprintf( vchat.message, sizeof( vchat.message ), "%s %c%c(%s): %c%c%s",
-							 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
-			}
-			CG_AddBufferedVoiceChat( &vchat );
+		// NERVE - SMF - get location
+		loc = CG_ConfigString( CS_LOCATIONS + ci->location );
+		if ( !loc || !*loc ) {
+			loc = " ";
 		}
+		// -NERVE - SMF
+
+		if ( mode == SAY_TELL ) {
+			Com_sprintf( vchat.message, sizeof( vchat.message ), "[%s]%c%c[%s]: %c%c%s",
+						 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
+		} else if ( mode == SAY_TEAM )   {
+			Com_sprintf( vchat.message, sizeof( vchat.message ), "(%s)%c%c(%s): %c%c%s",
+						 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
+		} else {
+			Com_sprintf( vchat.message, sizeof( vchat.message ), "%s %c%c(%s): %c%c%s",
+						 ci->name, Q_COLOR_ESCAPE, COLOR_YELLOW, CG_TranslateString( loc ), Q_COLOR_ESCAPE, color, CG_TranslateString( chat ) );
+		}
+		CG_AddBufferedVoiceChat( &vchat );
 	}
 }
 
@@ -1486,9 +1487,9 @@ static void CG_ServerCommand( void ) {
 	if ( !strcmp( cmd, "chat" ) ) {
 		const char *s;
 
-		if ( cg_teamChatsOnly.integer ) {
+		if ( cgs.gametype >= GT_TEAM && cg_teamChatsOnly.integer ) {
 			return;
-		}
+ 		}
 
 		if ( atoi( CG_Argv( 2 ) ) ) {
 			s = CG_LocalizeServerCommand( CG_Argv( 1 ) );
