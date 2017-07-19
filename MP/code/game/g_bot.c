@@ -184,22 +184,31 @@ int G_CountBotPlayersByName( const char *name, int team ) {
 ===============
 G_SelectRandomBotInfo
 
-Get random unused bot info on team or whole server if team is -1.
+Get random least used bot info on team or whole server if team is -1.
 ===============
 */
 int G_SelectRandomBotInfo( int team ) {
 	int		selection[MAX_BOTS];
 	int		n, num;
+	int		count, bestCount;
 	char	*value;
 
 	num = 0;
+	bestCount = MAX_CLIENTS;
 	for ( n = 0; n < g_numBots ; n++ ) {
 		value = Info_ValueForKey( g_botInfos[n], "funname" );
 		if ( !value[0] ) {
 			value = Info_ValueForKey( g_botInfos[n], "name" );
 		}
 		//
-		if ( G_CountBotPlayersByName( value, team ) == 0 ) {
+		count = G_CountBotPlayersByName( value, team );
+
+		if ( count < bestCount ) {
+			bestCount = count;
+			num = 0;
+		}
+
+		if ( count == bestCount ) {
 			selection[num++] = n;
 
 			if ( num == MAX_BOTS ) {
@@ -228,7 +237,7 @@ void G_AddRandomBot( int team ) {
 	n = G_SelectRandomBotInfo( team );
 
 	if ( n < 0 ) {
-		// all bot types are in use on team
+		// no bot info available
 		return;
 	}
 
@@ -555,7 +564,7 @@ static void G_AddBot( const char *name, int skill, const char *team, int delay )
 		botinfoNum = G_SelectRandomBotInfo( teamNum );
 
 		if ( botinfoNum < 0 ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: Cannot add random bot: all bot types in use on team '%s'.\n", team );
+			G_Printf( S_COLOR_RED "Error: Cannot add random bot, no bot info available.\n" );
 			trap_BotFreeClient( clientNum );
 			return;
 		}
