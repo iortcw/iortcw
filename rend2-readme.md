@@ -38,7 +38,7 @@ For Win32:
 
 2. Copy the following files into RTCW's install directory: 
      
-     ioWolfSP.x86.exe
+     ioWolfMP.x86.exe
      renderer_opengl1_x86.dll
      renderer_rend2_x86.dll
      
@@ -50,7 +50,7 @@ For Win32:
   RUNNING
 -------------------------------------------------------------------------------
 
-1. Start iowolfsp. (ioWolfSP.x86.exe on Win32)
+1. Start iowolfmp. (ioWolfMP.x86.exe on Win32)
  
 2. Open the console (the default key is tilde ~) and type 
 `/cl_renderer rend2` and press enter
@@ -136,7 +136,7 @@ Cvars for HDR and tonemapping:
                                    r_hdr, r_postprocess, and r_toneMap.
                                      0 - No.
                                      1 - Yes. (default)
-                                     
+
 *  `r_forceAutoExposure`            - Cheat.  Override built-in and map auto
                                    exposure settings and use cvars
                                    r_forceAutoExposureMin and 
@@ -252,14 +252,14 @@ Cvars for image interpolation and generation:
                                          FCBI without second derivatives)
                                      2 - Okay but slow (normal FCBI)
 
-*  `r_genNormalMaps*                - Naively generate normal maps for all
+*  `r_genNormalMaps`                - Naively generate normal maps for all
                                    textures.
                                      0 - Don't. (default)
                                      1 - Do.
 
 Cvars for the sunlight and cascaded shadow maps:
 
-*  `r_forceSun`                     - Force sunlight and shadows, using sun position from sky material.
+*  `r_forceSun`                     - Cheat. Force sunlight and shadows, using sun position from sky material.
                                      0 - Don't. (default)
                                      1 - Do.
                                      2 - Sunrise, sunset.
@@ -302,23 +302,6 @@ Cvars for the sunlight and cascaded shadow maps:
 
 Cvars that you probably don't care about or shouldn't mess with:
 
-*  `r_mergeMultidraws`              - Optimize number of calls to 
-                                   glMultiDrawElements().
-                                     0 - Don't.
-                                     1 - Do some. (default)
-                                     2 - Do more than necessary (eats CPU).
-
-*  `r_mergeLeafSurfaces`            - Merge surfaces that share common materials
-                                   and a common leaf.  Speeds up rendering.
-                                     0 - Don't.
-                                     1 - Do. (default)
-
-*  `r_recalcMD3Normals`             - Recalculate the normals when loading an MD3.
-                                   Fixes normal maps in some cases but looks
-                                   ugly in others.
-                                     0 - Don't. (default)
-                                     1 - Do.
-
 *  `r_depthPrepass`                 - Do a depth-only pass before rendering.
                                    Speeds up rendering in cases where advanced
                                    features are used.  Required for
@@ -344,7 +327,7 @@ Cvars that you probably don't care about or shouldn't mess with:
 Cvars that have broken bits:
 
 *  `r_dlightMode`                   - Change how dynamic lights look.
-                                     0 - RTCW style dlights, fake
+                                     0 - Quake 3 style dlights, fake
                                          brightening. (default)
                                      1 - Actual lighting, no shadows.
                                      2 - Light and shadows. (broken)
@@ -358,7 +341,7 @@ Cvars that have broken bits:
   MATERIALS
 -------------------------------------------------------------------------------
 
-Rend2 supports .mtr files, which are basically the same as .shader files, and
+OpenGL2 supports .mtr files, which are basically the same as .shader files, and
 are located in the same place, but override existing .shader files if they 
 exist.  This is to allow maps and mods to use the new material features without
 breaking the map when using the old renderer.
@@ -390,12 +373,12 @@ Here's an example of a material stored in one, showing off some new features:
         }
     }
 
-The first thing to notice is that this is basically the same as old RTCW 
+The first thing to notice is that this is basically the same as old Quake 3 
 shader files.  The next thing to notice are the new keywords.  Here is what 
 they mean:
 
   `stage <type>`
-    - State how this imagemap will be used by Rend2:
+    - State how this imagemap will be used by OpenGL2:
         diffuseMap        - Standard, same as no stage entry
         normalMap         - Image will be used as a normal map
         normalParallaxMap - Image will be used as a normal map with 
@@ -579,7 +562,7 @@ adjust the effect before settling on fixed settings.
 I'd like to take this part of the readme to thank the numerous people who
 contributed thoughts, ideas, and whole swaths of code to this project.
 
-  - Id Software, for creating RTCW and releasing its source code under a
+  - Id Software, for creating Quake 3 and releasing its source code under a
     GPL license, without which this project would not be possible.
 
   - Zachary 'Zakk' Slater, Thilo Schulz, Tim Angus, and the rest of the

@@ -1905,9 +1905,6 @@ extern cvar_t  *r_skipBackEnd;
 extern	cvar_t	*r_stereoEnabled;
 extern	cvar_t	*r_anaglyphMode;
 
-extern  cvar_t  *r_mergeMultidraws;
-extern  cvar_t  *r_mergeLeafSurfaces;
-
 extern  cvar_t  *r_externalGLSL;
 
 extern  cvar_t  *r_hdr;
