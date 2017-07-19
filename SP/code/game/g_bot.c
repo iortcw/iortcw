@@ -236,12 +236,12 @@ void G_AddRandomBot( int team ) {
 	value = Info_ValueForKey( g_botInfos[n], "name" );
 
 	skill = trap_Cvar_VariableIntegerValue( "g_spSkill" );
-	if (team == TEAM_RED) {
+	if ( team == TEAM_RED ) {
 		teamstr = "red";
-	} else if (team == TEAM_BLUE) {
+	} else if ( team == TEAM_BLUE ) {
 		teamstr = "blue";
 	} else {
-		teamstr = "";
+		teamstr = "free";
 	}
 	Q_strncpyz( netname, value, sizeof( netname ) );
 	Q_CleanStr( netname );
