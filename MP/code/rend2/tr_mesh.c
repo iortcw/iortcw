@@ -415,23 +415,36 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 			shader = tr.shaders[ surface->shaderIndexes[ ent->e.skinNum % surface->numShaderIndexes ] ];
 		}
 
+		// we will add shadows even if the main object isn't visible in the view
+
+		// stencil shadows can't do personal models unless I polyhedron clip
+		if ( !personalModel
+			&& r_shadows->integer == 2 
+			&& fogNum == 0
+			&& !(ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) ) 
+			&& shader->sort == SS_OPAQUE ) {
+			R_AddDrawSurf( (void *)&model->vaoSurfaces[i], tr.shadowShader, 0, qfalse, qfalse, 0 );
+		}
+
+		// projection shadows work fine with personal models
+		if ( r_shadows->integer == 3
+			&& fogNum == 0
+			&& (ent->e.renderfx & RF_SHADOW_PLANE )
+			&& shader->sort == SS_OPAQUE ) {
+			R_AddDrawSurf( (void *)&model->vaoSurfaces[i], tr.projectionShadowShader, 0, qfalse, qfalse, 0 );
+		}
 
 		// for testing polygon shadows (on /all/ models)
 		if ( r_shadows->integer == 4 ) {
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse, 0 );
+			R_AddDrawSurf( (void *)&model->vaoSurfaces[i], tr.projectionShadowShader, 0, qfalse, qfalse, 0 );
 		}
 
-
 		// don't add third_person objects if not viewing through a portal
-		if(!personalModel)
-		{
-			srfVaoMdvMesh_t *vaoSurface = &model->vaoSurfaces[i];
-
-			R_AddDrawSurf((void *)vaoSurface, shader, fogNum, qfalse, qfalse, cubemapIndex );
+		if ( !personalModel ) {
+			R_AddDrawSurf( (void *)&model->vaoSurfaces[i], shader, fogNum, qfalse, qfalse, cubemapIndex );
 		}
 
 		surface++;
 	}
-
 }
 
