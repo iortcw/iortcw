@@ -194,7 +194,10 @@ int G_SelectRandomBotInfo( int team ) {
 
 	num = 0;
 	for ( n = 0; n < g_numBots ; n++ ) {
-		value = Info_ValueForKey( g_botInfos[n], "name" );
+		value = Info_ValueForKey( g_botInfos[n], "funname" );
+		if ( !value[0] ) {
+			value = Info_ValueForKey( g_botInfos[n], "name" );
+		}
 		//
 		if ( G_CountBotPlayersByName( value, team ) == 0 ) {
 			selection[num++] = n;
@@ -579,7 +582,7 @@ static void G_AddBot( const char *name, int skill, const char *team, int delay )
 	Info_SetValueForKey( userinfo, "name", botname );
 	Info_SetValueForKey( userinfo, "rate", "25000" );
 	Info_SetValueForKey( userinfo, "snaps", "20" );
-	Info_SetValueForKey( userinfo, "skill", va("%i", skill) );
+	Info_SetValueForKey( userinfo, "skill", va( "%i", skill ) );
 	Info_SetValueForKey( userinfo, "teampref", team );
 
 	if ( skill == 1 ) {
