@@ -154,6 +154,8 @@ static void PlayerIntroSound( const char *modelAndSkin ) {
 ===============
 G_CountBotPlayersByName
 
+Check connected and connecting (delay join) bots.
+
 Returns number of bots with name on specified team or whole server if team is -1.
 ===============
 */
@@ -164,7 +166,7 @@ int G_CountBotPlayersByName( const char *name, int team ) {
 	num = 0;
 	for ( i=0 ; i< g_maxclients.integer ; i++ ) {
 		cl = level.clients + i;
-		if ( cl->pers.connected != CON_CONNECTED ) {
+		if ( cl->pers.connected == CON_DISCONNECTED ) {
 			continue;
 		}
 		if ( !(g_entities[i].r.svFlags & SVF_BOT) ) {
