@@ -238,7 +238,8 @@ The defaults for these variables differ depending on the target platform.
 * kickall - kick all clients, similar to "kick all" ( but kicks everyone even if someone is named "all" )
 * kickbots - kick all bots, similar to "kick allbots" (but kicks all bots even if someone is named "allbots")
 * tell ( client num ) msg - send message to a single client (new to server)
-
+* cvar_modified [filter] - list modified cvars, can filter results (such as "r*" for renderer cvars) like cvarlist which lists all cvars
+* addbot random - the bot name "random" now selects a random bot
 
 #### README for Users
 
