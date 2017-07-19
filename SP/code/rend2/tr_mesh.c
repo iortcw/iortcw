@@ -458,7 +458,7 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 		// don't add third_person objects if not viewing through a portal
 		if ( !personalModel ) {
 // GR - tessellate according to model capabilities
-			R_AddDrawSurf((void *)&model->vaoSurfaces[i], shader, fogNum, qfalse, qfalse, cubemapIndex, tr.currentModel->ATI_tess );
+			R_AddDrawSurf( (void *)&model->vaoSurfaces[i], shader, fogNum, qfalse, qfalse, cubemapIndex, tr.currentModel->ATI_tess );
 		}
 
 		surface++;
