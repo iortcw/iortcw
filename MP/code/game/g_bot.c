@@ -190,10 +190,15 @@ Get random least used bot info on team or whole server if team is -1.
 ===============
 */
 int G_SelectRandomBotInfo( int team ) {
-	int		selection[MAX_BOTS];
-	int		n, num;
-	int		count, bestCount;
+	int	selection[MAX_BOTS];
+	int	n, num;
+	int	count, bestCount;
 	char	*value;
+
+	// don't add duplicate bots to the server if there are less bots than bot types
+	if ( team != -1 && G_CountBotPlayersByName( NULL, -1 ) < g_numBots ) {
+		team = -1;
+	}
 
 	num = 0;
 	bestCount = MAX_CLIENTS;
@@ -233,17 +238,8 @@ G_AddRandomBot
 ===============
 */
 void G_AddRandomBot( int team ) {
-	int		n, skill;
-	char	*value, netname[36], *teamstr;
-
-	n = G_SelectRandomBotInfo( team );
-
-	if ( n < 0 ) {
-		// no bot info available
-		return;
-	}
-
-	value = Info_ValueForKey( g_botInfos[n], "name" );
+	char	*teamstr;
+	int	skill;
 
 	skill = trap_Cvar_VariableIntegerValue( "g_spSkill" );
 	if ( team == TEAM_RED ) {
@@ -253,9 +249,7 @@ void G_AddRandomBot( int team ) {
 	} else {
 		teamstr = "free";
 	}
-	Q_strncpyz( netname, value, sizeof( netname ) );
-	Q_CleanStr( netname );
-	trap_SendConsoleCommand( EXEC_INSERT, va( "addbot %s %i %s %i\n", netname, skill, teamstr, 0 ) );
+	trap_SendConsoleCommand( EXEC_INSERT, va( "addbot random %i %s %i\n", skill, teamstr, 0 ) );
 }
 
 /*
