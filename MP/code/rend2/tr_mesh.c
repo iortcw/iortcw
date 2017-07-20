@@ -382,8 +382,8 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 			if ( ent->e.renderfx & RF_BLINK ) {
 				const char *s = va( "%s_b", surface->name );   // append '_b' for 'blink'
 				for ( j = 0 ; j < skin->numSurfaces ; j++ ) {
-					if ( !strcmp( skin->surfaces[j]->name, s ) ) {
-						shader = skin->surfaces[j]->shader;
+					if ( !strcmp( skin->surfaces[j].name, s ) ) {
+						shader = skin->surfaces[j].shader;
 						break;
 					}
 				}
@@ -392,9 +392,8 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 			if ( shader == tr.defaultShader ) {    // blink reference in skin was not found
 				for ( j = 0 ; j < skin->numSurfaces ; j++ ) {
 					// the names have both been lowercased
-
-					if ( !strcmp( skin->surfaces[j]->name, surface->name ) ) {
-						shader = skin->surfaces[j]->shader;
+					if ( !strcmp( skin->surfaces[j].name, surface->name ) ) {
+						shader = skin->surfaces[j].shader;
 						break;
 					}
 				}

@@ -864,6 +864,12 @@ typedef struct {
 
 //=================================================================================
 
+// max surfaces per-skin
+// This is an arbitry limit. Vanilla Q3 only supported 32 surfaces in skins but failed to
+// enforce the maximum limit when reading skin files. It was possile to use more than 32
+// surfaces which accessed out of bounds memory past end of skin->surfaces hunk block.
+#define MAX_SKIN_SURFACES	256
+
 // skins allow models to be retextured without modifying the model file
 typedef struct {
 	char name[MAX_QPATH];
@@ -874,17 +880,17 @@ typedef struct {
 #define MAX_PART_MODELS 5
 
 typedef struct {
-	char type[MAX_QPATH];           // md3_lower, md3_lbelt, md3_rbelt, etc.
-	char model[MAX_QPATH];          // lower.md3, belt1.md3, etc.
+	char type[MAX_QPATH];		// md3_lower, md3_lbelt, md3_rbelt, etc.
+	char model[MAX_QPATH];		// lower.md3, belt1.md3, etc.
 } skinModel_t;
 
 typedef struct skin_s {
-	char name[MAX_QPATH];               // game path, including extension
+	char name[MAX_QPATH];		// game path, including extension
 	int numSurfaces;
 	int numModels;
-	skinSurface_t   *surfaces[MD3_MAX_SURFACES];
+	skinSurface_t	*surfaces;	// dynamically allocated array of surfaces
 	skinModel_t     *models[MAX_PART_MODELS];
-	vec3_t scale;       //----(SA)	added
+	vec3_t scale;			//----(SA)	added
 } skin_t;
 //----(SA) end
 

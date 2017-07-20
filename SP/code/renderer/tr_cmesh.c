@@ -407,8 +407,8 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 			shader = tr.defaultShader;
 			for ( j = 0 ; j < skin->numSurfaces ; j++ ) {
 				// the names have both been lowercased
-				if ( !strcmp( skin->surfaces[j]->name, surface->name ) ) {
-					shader = skin->surfaces[j]->shader;
+				if ( !strcmp( skin->surfaces[j].name, surface->name ) ) {
+					shader = skin->surfaces[j].shader;
 					break;
 				}
 			}
@@ -433,20 +433,18 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 			R_AddDrawSurf( (void *)surface, tr.shadowShader, 0, qfalse, tr.currentModel->ATI_tess );
 		}
 
-//----(SA)
-
 		// projection shadows work fine with personal models
-//		if ( r_shadows->integer == 3
-//			&& fogNum == 0
-//			&& (ent->e.renderfx & RF_SHADOW_PLANE )
-//			&& shader->sort == SS_OPAQUE ) {
-//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
-//		}
+		if ( r_shadows->integer == 3
+			&& fogNum == 0
+			&& (ent->e.renderfx & RF_SHADOW_PLANE )
+			&& shader->sort == SS_OPAQUE ) {
+			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, tr.currentModel->ATI_tess );
+		}
 
 //----(SA)	for testing polygon shadows (on /all/ models)
-//		if ( r_shadows->integer == 4)
-//			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
-
+		if ( r_shadows->integer == 4 ) {
+			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, tr.currentModel->ATI_tess );
+		}
 //----(SA)	done testing
 
 		// don't add third_person objects if not viewing through a portal
@@ -457,6 +455,5 @@ void R_AddMDCSurfaces( trRefEntity_t *ent ) {
 
 		surface = ( mdcSurface_t * )( (byte *)surface + surface->ofsEnd );
 	}
-
 }
 
