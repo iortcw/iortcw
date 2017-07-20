@@ -785,6 +785,8 @@ typedef enum
 
 	UNIFORM_CUBEMAPINFO,
 
+	UNIFORM_ALPHATEST,
+
 	UNIFORM_FIRERISEDIR,
 	UNIFORM_ZFADELOWEST,
 	UNIFORM_ZFADEHIGHEST,
@@ -2192,7 +2194,7 @@ IMPLEMENTATION SPECIFIC FUNCTIONS
 ====================================================================
 */
 
-void	GLimp_Init( void );
+void	GLimp_Init( qboolean );
 void	GLimp_Shutdown( void );
 void	GLimp_EndFrame( void );
 

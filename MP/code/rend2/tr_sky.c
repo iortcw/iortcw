@@ -471,7 +471,11 @@ static void DrawSkySide( struct image_s *image, const int mins[2], const int max
 
 		VectorSet4(vector, 0.0, 0.0, 0.0, 0.0);
 		GLSL_SetUniformVec4(sp, UNIFORM_DIFFUSETEXOFFTURB, vector);
+
+		GLSL_SetUniformInt(sp, UNIFORM_ALPHATEST, 0);
 	}
+
+	R_DrawElements(tess.numIndexes - tess.firstIndex, tess.firstIndex);
 
 	//qglDrawElements(GL_TRIANGLES, tess.numIndexes - tess.firstIndex, GL_INDEX_TYPE, BUFFER_OFFSET(tess.firstIndex * sizeof(glIndex_t)));
 	
@@ -579,6 +583,8 @@ static void DrawSkySideInner( struct image_s *image, const int mins[2], const in
 
 		VectorSet4(vector, 0.0, 0.0, 0.0, 0.0);
 		GLSL_SetUniformVec4(sp, UNIFORM_DIFFUSETEXOFFTURB, vector);
+
+		GLSL_SetUniformInt(sp, UNIFORM_ALPHATEST, 0);
 	}
 
 	R_DrawElements(tess.numIndexes - tess.firstIndex, tess.firstIndex);
