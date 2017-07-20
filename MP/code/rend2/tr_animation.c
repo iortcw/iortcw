@@ -365,7 +365,6 @@ void R_AddAnimSurfaces( trRefEntity_t *ent ) {
 			if ( shader == tr.defaultShader ) {    // blink reference in skin was not found
 				for ( j = 0 ; j < skin->numSurfaces ; j++ ) {
 					// the names have both been lowercased
-
 					if ( !strcmp( skin->surfaces[j].name, surface->name ) ) {
 						shader = skin->surfaces[j].shader;
 						break;
