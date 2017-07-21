@@ -429,11 +429,6 @@ void R_AddMD3Surfaces( trRefEntity_t *ent ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
 		}
 
-		// for testing polygon shadows (on /all/ models)
-		if ( r_shadows->integer == 4 ) {
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
-		}
-
 		// don't add third_person objects if not viewing through a portal
 		if ( !personalModel ) {
 			R_AddDrawSurf( (void *)surface, shader, fogNum, qfalse );

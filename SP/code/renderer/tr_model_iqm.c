@@ -932,11 +932,6 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, 0, ATI_TESS_TRUFORM );
 		}
 
-		// for testing polygon shadows (on /all/ models)
-		if ( r_shadows->integer == 4 ) {
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, ATI_TESS_TRUFORM );
-		}
-
 		if( !personalModel ) {
 			R_AddDrawSurf( (void *)surface, shader, fogNum, 0, ATI_TESS_TRUFORM );
 		}

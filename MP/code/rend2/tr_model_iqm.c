@@ -936,11 +936,6 @@ void R_AddIQMSurfaces( trRefEntity_t *ent ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, 0, 0, 0 );
 		}
 
-		// for testing polygon shadows (on /all/ models)
-		if ( r_shadows->integer == 4 ) {
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse, 0 );
-		}
-
 		if( !personalModel ) {
 			R_AddDrawSurf( (void *)surface, shader, fogNum, 0, 0, cubemapIndex );
 		}

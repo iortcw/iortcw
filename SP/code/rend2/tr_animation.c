@@ -1631,10 +1631,6 @@ void R_MDRAddAnimSurfaces( trRefEntity_t *ent ) {
 			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse, 0, ATI_TESS_TRUFORM );
 		}
 
-		// for testing polygon shadows (on /all/ models)
-		if ( r_shadows->integer == 4 )
-			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse, qfalse, 0, ATI_TESS_TRUFORM );
-
 		if ( !personalModel )
 			R_AddDrawSurf( (void *)surface, shader, fogNum, qfalse, qfalse, cubemapIndex, ATI_TESS_TRUFORM );
 
