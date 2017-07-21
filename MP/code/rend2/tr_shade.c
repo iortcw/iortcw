@@ -1293,7 +1293,6 @@ static void RB_IterateStagesGeneric( shaderCommands_t *input )
 			GLSL_SetUniformFloat(sp, UNIFORM_FOGEYET, eyeT);
 		}
 
-		GL_State( pStage->stateBits );
 		if ((pStage->stateBits & GLS_ATEST_BITS) == GLS_ATEST_GT_0)
 		{
 			GLSL_SetUniformInt(sp, UNIFORM_ALPHATEST, 1);
