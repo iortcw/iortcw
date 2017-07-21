@@ -2089,7 +2089,7 @@ void R_RenderPshadowMaps(const refdef_t *fd)
 				break;
 				case MOD_MDS:
 				{
-					mdsHeader_t *header = model->modelData;
+					mdsHeader_t *header = model->mds;
 					int frameSize = (size_t)( &((mdsFrame_t *)0)->bones[ header->numBones ] );
 					mdsFrame_t *frame = ( mdsFrame_t * ) ( ( byte * ) header + header->ofsFrames + frameSize * ent->e.frame);
 
