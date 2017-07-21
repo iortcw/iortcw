@@ -1656,7 +1656,7 @@ const void	*RB_DrawSurfs( const void *data ) {
 
 		if (r_drawSun->integer)
 		{
-			RB_DrawSun(0.1, tr.sunShader);
+			RB_DrawSun(0.2, tr.sunShader);
 		}
 
 		if (glRefConfig.framebufferObject && r_drawSunRays->integer)
