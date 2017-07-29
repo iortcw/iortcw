@@ -603,6 +603,29 @@ void SetTeam( gentity_t *ent, const char *s ) {
 			// pick the team with the least number of players
 			team = PickTeam( clientNum );
 		}
+
+		// NERVE - SMF - merge from team arena
+		if ( g_teamForceBalance.integer && !client->pers.localClient && !( ent->r.svFlags & SVF_BOT ) ) {
+			int counts[TEAM_NUM_TEAMS];
+
+			counts[TEAM_BLUE] = TeamCount( clientNum, TEAM_BLUE );
+			counts[TEAM_RED] = TeamCount( clientNum, TEAM_RED );
+
+			// We allow a spread of one
+			if ( team == TEAM_RED && counts[TEAM_RED] - counts[TEAM_BLUE] >= 1 ) {
+				trap_SendServerCommand( clientNum,
+										"cp \"The Axis has too many players.\n\"" );
+				return; // ignore the request
+			}
+			if ( team == TEAM_BLUE && counts[TEAM_BLUE] - counts[TEAM_RED] >= 1 ) {
+				trap_SendServerCommand( clientNum,
+										"cp \"The Allies have too many players.\n\"" );
+				return; // ignore the request
+			}
+
+			// It's ok, the team we are switching to has less or same number of players
+		}
+		// -NERVE - SMF
 	} else {
 		// force them to spectators if there aren't any spots free
 		team = TEAM_FREE;
@@ -662,6 +685,11 @@ void SetTeam( gentity_t *ent, const char *s ) {
 
 	// get and distribute relevent paramters
 	ClientUserinfoChanged( clientNum );
+
+	// client hasn't spawned yet, they sent an early team command, teampref userinfo, or g_teamAutoJoin is enabled
+	if ( client->pers.connected != CON_CONNECTED ) {
+		return;
+	}
 
 	ClientBegin( clientNum );
 }

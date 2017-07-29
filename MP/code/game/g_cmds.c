@@ -694,6 +694,11 @@ void SetTeam( gentity_t *ent, const char *s ) {
 	// get and distribute relevent paramters
 	ClientUserinfoChanged( clientNum );
 
+	// client hasn't spawned yet, they sent an early team command, teampref userinfo, or g_teamAutoJoin is enabled
+	if ( client->pers.connected != CON_CONNECTED ) {
+		return;
+	}
+
 	ClientBegin( clientNum );
 }
 

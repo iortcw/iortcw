@@ -116,7 +116,7 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 	value = Info_ValueForKey( userinfo, "teampref" );
 
 	// check for human's team preference set by start server menu
-	if ( !value[0] && g_localTeamPref.string[0] && client->pers.localClient ) {
+	if ( !value[0] && g_localTeamPref.string[0] /*&& client->pers.localClient*/ ) {
 		value = g_localTeamPref.string;
 
 		// clear team so it's only used once

@@ -684,6 +684,33 @@ void ClientRespawn( gentity_t *ent ) {
 	ClientSpawn( ent );
 }
 
+// NERVE - SMF - merge from team arena
+/*
+================
+TeamCount
+
+Returns number of players on a team
+================
+*/
+int TeamCount( int ignoreClientNum, team_t team ) {
+	int i;
+	int count = 0;
+
+	for ( i = 0 ; i < level.maxclients ; i++ ) {
+		if ( i == ignoreClientNum ) {
+			continue;
+		}
+		if ( level.clients[i].pers.connected == CON_DISCONNECTED ) {
+			continue;
+		}
+		if ( level.clients[i].sess.sessionTeam == team ) {
+			count++;
+		}
+	}
+
+	return count;
+}
+// -NERVE - SMF
 
 /*
 ================
