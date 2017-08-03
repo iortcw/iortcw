@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 static int bloc = 0;
 
-void    Huff_putBit( int bit, byte *fout, int *offset ) {
+void Huff_putBit( int bit, byte *fout, int *offset ) {
 	bloc = *offset;
 	if ( ( bloc & 7 ) == 0 ) {
 		fout[( bloc >> 3 )] = 0;
@@ -46,17 +46,15 @@ void    Huff_putBit( int bit, byte *fout, int *offset ) {
 	*offset = bloc;
 }
 
-int		Huff_getBloc(void)
-{
+int Huff_getBloc( void ) {
 	return bloc;
 }
 
-void	Huff_setBloc(int _bloc)
-{
+void Huff_setBloc( int _bloc ) {
 	bloc = _bloc;
 }
 
-int     Huff_getBit( byte *fin, int *offset ) {
+int Huff_getBit( byte *fin, int *offset ) {
 	int t;
 	bloc = *offset;
 	t = ( fin[( bloc >> 3 )] >> ( bloc & 7 ) ) & 0x1;
@@ -286,9 +284,14 @@ int Huff_Receive( node_t *node, int *ch, byte *fin ) {
 }
 
 /* Get a symbol */
-void Huff_offsetReceive( node_t *node, int *ch, byte *fin, int *offset ) {
+void Huff_offsetReceive( node_t *node, int *ch, byte *fin, int *offset, int maxoffset ) {
 	bloc = *offset;
 	while ( node && node->symbol == INTERNAL_NODE ) {
+		if ( bloc >= maxoffset ) {
+			*ch = 0;
+			*offset = maxoffset + 1;
+			return;
+		}
 		if ( get_bit( fin ) ) {
 			node = node->right;
 		} else {
@@ -305,11 +308,15 @@ void Huff_offsetReceive( node_t *node, int *ch, byte *fin, int *offset ) {
 }
 
 /* Send the prefix code for this node */
-static void send( node_t *node, node_t *child, byte *fout ) {
+static void send( node_t *node, node_t *child, byte *fout, int maxoffset ) {
 	if ( node->parent ) {
-		send( node->parent, node, fout );
+		send( node->parent, node, fout, maxoffset );
 	}
 	if ( child ) {
+		if ( bloc >= maxoffset ) {
+			bloc = maxoffset + 1;
+			return;
+		}
 		if ( node->right == child ) {
 			add_bit( 1, fout );
 		} else {
@@ -319,22 +326,22 @@ static void send( node_t *node, node_t *child, byte *fout ) {
 }
 
 /* Send a symbol */
-void Huff_transmit( huff_t *huff, int ch, byte *fout ) {
+void Huff_transmit( huff_t *huff, int ch, byte *fout, int maxoffset ) {
 	int i;
 	if ( huff->loc[ch] == NULL ) {
 		/* node_t hasn't been transmitted, send a NYT, then the symbol */
-		Huff_transmit( huff, NYT, fout );
+		Huff_transmit( huff, NYT, fout, maxoffset );
 		for ( i = 7; i >= 0; i-- ) {
 			add_bit( (char)( ( ch >> i ) & 0x1 ), fout );
 		}
 	} else {
-		send( huff->loc[ch], NULL, fout );
+		send( huff->loc[ch], NULL, fout, maxoffset );
 	}
 }
 
-void Huff_offsetTransmit( huff_t *huff, int ch, byte *fout, int *offset ) {
+void Huff_offsetTransmit( huff_t *huff, int ch, byte *fout, int *offset, int maxoffset ) {
 	bloc = *offset;
-	send( huff->loc[ch], NULL, fout );
+	send( huff->loc[ch], NULL, fout, maxoffset );
 	*offset = bloc;
 }
 
@@ -374,17 +381,17 @@ void Huff_Decompress( msg_t *mbuf, int offset ) {
 			seq[j] = 0;
 			break;
 		}
-		Huff_Receive( huff.tree, &ch, buffer );               /* Get a character */
-		if ( ch == NYT ) {                              /* We got a NYT, get the symbol associated with it */
+		Huff_Receive( huff.tree, &ch, buffer );				/* Get a character */
+		if ( ch == NYT ) {						/* We got a NYT, get the symbol associated with it */
 			ch = 0;
 			for ( i = 0; i < 8; i++ ) {
 				ch = ( ch << 1 ) + get_bit( buffer );
 			}
 		}
 
-		seq[j] = ch;                                    /* Write symbol */
+		seq[j] = ch;							/* Write symbol */
 
-		Huff_addRef( &huff, (byte)ch );                               /* Increment node */
+		Huff_addRef( &huff, (byte)ch );					/* Increment node */
 	}
 	mbuf->cursize = cch + offset;
 	Com_Memcpy( mbuf->data + offset, seq, cch );
@@ -420,11 +427,11 @@ void Huff_Compress( msg_t *mbuf, int offset ) {
 
 	for ( i = 0; i < size; i++ ) {
 		ch = buffer[i];
-		Huff_transmit( &huff, ch, seq );                      /* Transmit symbol */
-		Huff_addRef( &huff, (byte)ch );                               /* Do update */
+		Huff_transmit( &huff, ch, seq, size << 3 );			/* Transmit symbol */
+		Huff_addRef( &huff, (byte)ch );					/* Do update */
 	}
 
-	bloc += 8;                                              // next byte
+	bloc += 8;								// next byte
 
 	mbuf->cursize = ( bloc >> 3 ) + offset;
 	Com_Memcpy( mbuf->data + offset, seq, ( bloc >> 3 ) );
