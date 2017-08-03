@@ -2581,9 +2581,6 @@ void G_RunFrame( int levelTime ) {
 		}
 	}
 
-	// see if it is time to do a tournement restart
-//	CheckTournament();
-
 	// see if it is time to end the level
 	CheckExitRules();
 
