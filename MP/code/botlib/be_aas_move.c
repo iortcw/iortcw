@@ -480,7 +480,7 @@ int AAS_PredictClientMovement( struct aas_clientmove_s *move,
 		frame_test_vel[2] = frame_test_vel[2] - ( gravity * 0.1 * frametime );
 		//if on the ground or swimming
 		if ( onground || swimming ) {
-			friction = swimming ? sv_friction : sv_waterfriction;
+			friction = swimming ? sv_waterfriction : sv_friction;
 			//apply friction
 			VectorScale( frame_test_vel, 1 / frametime, frame_test_vel );
 			AAS_ApplyFriction( frame_test_vel, friction, sv_stopspeed, frametime );
