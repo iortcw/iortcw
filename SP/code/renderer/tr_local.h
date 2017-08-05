@@ -428,8 +428,8 @@ typedef struct shader_s {
 
 	void ( *optimalStageIteratorFunc )( void );
 
-	float clampTime;                                    // time this shader is clamped to
-	float timeOffset;                                   // current time offset for this shader
+	double clampTime;                                    // time this shader is clamped to
+	double timeOffset;                                   // current time offset for this shader
 
 	struct shader_s *remappedShader;                    // current shader this one is remapped too
 
@@ -481,7 +481,7 @@ typedef struct {
 	byte areamask[MAX_MAP_AREA_BYTES];
 	qboolean areamaskModified;      // qtrue if areamask changed since last scene
 
-	float floatTime;                // tr.refdef.time / 1000.0
+	double floatTime;                // tr.refdef.time / 1000.0
 
 	// text messages for deform text shaders
 	char text[MAX_RENDER_STRINGS][MAX_RENDER_STRING_LENGTH];
@@ -1289,7 +1289,7 @@ extern cvar_t   *r_wolffog;
 extern cvar_t  *r_highQualityVideo;
 //====================================================================
 
-float R_NoiseGet4f( float x, float y, float z, float t );
+float R_NoiseGet4f( float x, float y, float z, double t );
 void  R_NoiseInit( void );
 
 void R_SwapBuffers( int );
@@ -1489,7 +1489,7 @@ typedef struct shaderCommands_s
 	color4ub_t	constantColor255[SHADER_MAX_VERTEXES] QALIGN(16);
 
 	shader_t    *shader;
-	float shaderTime;
+	double shaderTime;
 	int fogNum;
 
 	int dlightBits;         // or together of all vertexDlightBits

@@ -870,7 +870,7 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	int i;
 	drawSurf_t      *drawSurf;
 	int oldSort;
-	float originalTime;
+	double originalTime;
 	int oldNumVerts, oldNumIndex;
 //GR - tessellation flag
 	int atiTess = 0, oldAtiTess;
@@ -948,7 +948,9 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 			if ( entityNum != REFENTITYNUM_WORLD ) {
 				backEnd.currentEntity = &backEnd.refdef.entities[entityNum];
-				backEnd.refdef.floatTime = originalTime - backEnd.currentEntity->e.shaderTime;
+
+				// FIXME: e.shaderTime must be passed as int to avoid fp-precision loss issues
+				backEnd.refdef.floatTime = originalTime - (double)backEnd.currentEntity->e.shaderTime;
 
 				// we have to reset the shaderTime as well otherwise image animations start
 				// from the wrong frame
@@ -1121,7 +1123,7 @@ void    RB_SetGL2D( void ) {
 
 	// set time for 2D shaders
 	backEnd.refdef.time = ri.Milliseconds();
-	backEnd.refdef.floatTime = backEnd.refdef.time * 0.001f;
+	backEnd.refdef.floatTime = backEnd.refdef.time * 0.001;
 }
 
 
