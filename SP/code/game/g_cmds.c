@@ -1318,9 +1318,6 @@ void Cmd_StartCamera_f( gentity_t *ent ) {
 	ent->client->ps.eFlags |= EF_VIEWING_CAMERA;
 	ent->s.eFlags |= EF_VIEWING_CAMERA;
 
-	if ( g_skipcutscenes.integer )
-		AICast_ScriptEvent( AICast_GetCastState( ent->s.number ), "trigger", "cameraInterrupt" );
-
 // (SA) trying this in client to avoid 1 frame of player drawing
 //	ent->client->ps.eFlags |= EF_NODRAW;
 //	ent->s.eFlags |= EF_NODRAW;
