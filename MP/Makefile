@@ -964,7 +964,11 @@ endif
 TARGETS =
 
 ifndef FULLBINEXT
-  FULLBINEXT=.$(ARCH)$(BINEXT)
+  ifndef MINGW
+    FULLBINEXT=.$(ARCH)$(BINEXT)
+  else
+    FULLBINEXT=.$(FILE_ARCH)$(BINEXT)
+  endif
 endif
 
 ifndef SHLIBNAME
