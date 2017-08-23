@@ -1175,6 +1175,14 @@ int SV_SendQueuedPackets(void);
 qboolean UI_GameCommand( void );
 qboolean UI_usesUniqueCDKey( void );
 
+//
+// input interface
+//
+void IN_Init( void *windowData );
+void IN_Frame( void );
+void IN_Shutdown( void );
+void IN_Restart( void );
+
 /*
 ==============================================================
 

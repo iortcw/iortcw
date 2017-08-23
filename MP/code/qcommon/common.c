@@ -3248,6 +3248,8 @@ void Com_Frame( void ) {
 		else
 			NET_Sleep(timeVal - 1);
 	} while(Com_TimeVal(minMsec));
+
+	IN_Frame();
 	
 	lastTime = com_frameTime;
 	com_frameTime = Com_EventLoop();
