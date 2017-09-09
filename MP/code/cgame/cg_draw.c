@@ -947,11 +947,11 @@ static void CG_DrawTeamInfo( void ) {
 				alphapercent = 0.f;
 			}
 
-			if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED ) {
+			if ( cgs.clientinfo[cg.clientNum].team == TEAM_RED ) {
 				hcolor[0] = 1;
 				hcolor[1] = 0;
 				hcolor[2] = 0;
-			} else if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
+			} else if ( cgs.clientinfo[cg.clientNum].team == TEAM_BLUE ) {
 				hcolor[0] = 0;
 				hcolor[1] = 0;
 				hcolor[2] = 1;
@@ -3767,11 +3767,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			CG_DrawCrosshair();
 
 		CG_DrawCrosshairNames();
-
-		// NERVE - SMF - we need to do this for spectators as well
-		if ( cgs.gametype >= GT_TEAM ) {
-			CG_DrawTeamInfo();
-		}
 	} else {
 		// don't draw any status if dead
 		if ( cg.snap->ps.stats[STAT_HEALTH] > 0 || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) ) {
@@ -3787,9 +3782,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 
 			CG_DrawPickupItem();
 		}
-		if ( cgs.gametype >= GT_TEAM ) {
-			CG_DrawTeamInfo();
-		}
+
 		if ( cg_drawStatus.integer ) {
 			if ( cg_fixedAspect.integer == 2 && cg.limboMenu ) {
 				CG_SetScreenPlacement(PLACE_STRETCH, PLACE_STRETCH);
@@ -3800,6 +3793,10 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			Menu_PaintAll();
 			CG_DrawTimedMenus();
 		}
+	}
+
+	if ( cgs.gametype >= GT_TEAM ) {
+		CG_DrawTeamInfo();
 	}
 
 	CG_DrawVote();
