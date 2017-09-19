@@ -4680,7 +4680,6 @@ static void UI_RunMenuScript( char **args ) {
 				trap_Cvar_Set( "ui_cdkeyvalid", UI_TranslateString( "CD key does not appear to be valid." ) );
 			}
 		} else if ( Q_stricmp( name, "loadArenas" ) == 0 ) {
-			UI_LoadArenas();
 			UI_MapCountByGameType( qfalse );
 			Menu_SetFeederSelection( NULL, FEEDER_ALLMAPS, 0, NULL );
 		} else if ( Q_stricmp( name, "saveControls" ) == 0 ) {
@@ -7059,6 +7058,7 @@ void _UI_Init( qboolean inGameLoad ) {
 	uiInfo.aliasCount = 0;
 
 	UI_ParseGameInfo( "gameinfo.txt" );
+	UI_LoadArenas();
 
 	UI_LoadMenus( "ui_mp/ingame.txt", qfalse );
 
