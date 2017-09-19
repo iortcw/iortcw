@@ -2379,14 +2379,15 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				VectorNormalize( dir );
 
 				// explosion sprite animation
-				// VectorScale( dir, 16, sprVel );
+//				VectorScale( dir, 16, sprVel );
 				VectorScale( dir, 6, sprVel );
 
 				for ( i = 0; i < 5; i++ ) {
-					for ( j = 0; j < 3; j++ )
+					for ( j = 0; j < 3; j++ ) {
 						sprOrg[j] = cent->lerpOrigin[j] + 2 * dir[j] + 4 * crandom();
-						sprVel[2] += rand() % 10;
-						CG_ParticleExplosion( "blacksmokeanimb", sprOrg, sprVel, 3500 + rand() % 250, 4, 50 + rand() % 20 );
+					}
+					sprVel[2] += rand() % 10;
+					CG_ParticleExplosion( "blacksmokeanimb", sprOrg, sprVel, 3500 + rand() % 250, 4, 50 + rand() % 20 );
 				}
 
 				CG_AddDebris(   cent->lerpOrigin,

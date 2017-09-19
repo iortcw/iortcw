@@ -204,6 +204,7 @@ static const unsigned int mppak_checksums[] = {
 	2149774797u
 };
 
+#ifndef DEDICATED
 static const unsigned int binpak_checksums[] = {
 	4022537001u,	// mp_bin.pk3 (1.4/1.41)
 	1484914046u,	// mp_bin0.pk3 (1.51b)
@@ -215,6 +216,8 @@ static const unsigned int binpak_checksums[] = {
 	220076119u,	// Wild West (1.613)
 	2849242342u	// Wolftactics (1.0/1.01)
 };
+#endif
+
 #endif
 
 #define MAX_ZPATH           256
