@@ -57,11 +57,6 @@ If you have questions concerning this license or the applicable additional terms
 
 //maximum token length
 #define MAX_TOKEN                   1024
-//maximum path length
-#ifndef _MAX_PATH
-	#define _MAX_PATH               MAX_QPATH
-#endif
-
 
 //script flags
 #define SCFL_NOERRORS               0x0001
@@ -192,8 +187,8 @@ typedef struct token_s
 //script file
 typedef struct script_s
 {
-	char filename[_MAX_PATH];       //file name of the script
-	char *buffer;                       //buffer containing the script
+	char filename[MAX_QPATH];       //file name of the script
+	char *buffer;                   //buffer containing the script
 	char *script_p;                 //current pointer in the script
 	char *end_p;                    //pointer to the end of the script
 	char *lastscript_p;             //script pointer before reading token

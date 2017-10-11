@@ -884,14 +884,14 @@ Sys_StartProcess
 ==================
 */
 void Sys_StartProcess( char *exeName, qboolean doexit ) {           // NERVE - SMF
-	TCHAR szPathOrig[_MAX_PATH];
+	TCHAR szPathOrig[MAX_PATH];
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
 	ZeroMemory( &si, sizeof( si ) );
 	si.cb = sizeof( si );
 
-	GetCurrentDirectory( _MAX_PATH, szPathOrig );
+	GetCurrentDirectory( MAX_PATH, szPathOrig );
 	Cbuf_ExecuteText( EXEC_NOW, "net_stop" );
 	if ( !CreateProcess( NULL, va( "%s\\%s", szPathOrig, exeName ), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) )
 	{

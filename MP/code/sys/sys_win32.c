@@ -313,14 +313,14 @@ NERVE - SMF
 ==================
 */
 void Sys_StartProcess( char *exeName, qboolean doexit ) {
-	TCHAR szPathOrig[_MAX_PATH];
+	TCHAR szPathOrig[MAX_PATH];
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
 	ZeroMemory( &si, sizeof( si ) );
 	si.cb = sizeof( si );
 
-	GetCurrentDirectory( _MAX_PATH, szPathOrig );
+	GetCurrentDirectory( MAX_PATH, szPathOrig );
 
 	// JPW NERVE swiped from Sherman's SP code
 	Cbuf_ExecuteText( EXEC_NOW, "net_stop" );

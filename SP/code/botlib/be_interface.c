@@ -82,10 +82,7 @@ int botlibsetup = qfalse;
 //===========================================================================
 // Ridah, faster Win32 code
 #ifdef _WIN32
-#undef MAX_PATH     // this is an ugly hack, to temporarily ignore the current definition, since it's also defined in windows.h
 #include <windows.h>
-#undef MAX_PATH
-#define MAX_PATH    MAX_QPATH
 #endif
 
 int Sys_MilliSeconds( void ) {

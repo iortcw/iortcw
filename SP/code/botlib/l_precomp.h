@@ -35,10 +35,6 @@ If you have questions concerning this license or the applicable additional terms
  *
  *****************************************************************************/
 
-#ifndef _MAX_PATH
-	#define MAX_PATH            MAX_QPATH
-#endif
-
 #ifndef PATH_SEPERATORSTR
 	#if defined( WIN32 ) | defined( _WIN32 ) | defined( __NT__ ) | defined( __WINDOWS__ ) | defined( __WINDOWS_386__ )
 		#define PATHSEPERATOR_STR       "\\"
@@ -96,8 +92,8 @@ typedef struct indent_s
 //source file
 typedef struct source_s
 {
-	char filename[_MAX_PATH];               //file name of the script
-	char includepath[_MAX_PATH];            //path to include files
+	char filename[MAX_QPATH];              //file name of the script
+	char includepath[MAX_QPATH];           //path to include files
 	punctuation_t *punctuations;            //punctuations to use
 	script_t *scriptstack;                  //stack with scripts of the source
 	token_t *tokens;                        //tokens to read first

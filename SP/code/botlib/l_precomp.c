@@ -956,7 +956,7 @@ void PC_ConvertPath( char *path ) {
 int PC_Directive_include( source_t *source ) {
 	script_t *script;
 	token_t token;
-	char path[_MAX_PATH];
+	char path[MAX_QPATH];
 #ifdef QUAKE
 	foundfile_t file;
 #endif //QUAKE
