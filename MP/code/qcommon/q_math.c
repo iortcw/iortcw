@@ -149,8 +149,8 @@ vec3_t	bytedirs[NUMVERTEXNORMALS] =
 
 //==============================================================
 
-int		Q_rand( int *seed ) {
-	*seed = (69069 * *seed + 1);
+int	Q_rand( int *seed ) {
+	*seed = ( 69069U * *seed + 1U );
 	return *seed;
 }
 

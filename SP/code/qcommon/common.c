@@ -1007,7 +1007,7 @@ Touch all known used data to make sure it is paged in
 void Com_TouchMemory( void ) {
 	int start, end;
 	int i, j;
-	int sum;
+	unsigned sum;
 
 	start = Sys_Milliseconds();
 
