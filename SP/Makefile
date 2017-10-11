@@ -443,7 +443,7 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   else
     CLIENT_CFLAGS += $(SDL_CFLAGS)
     CLIENT_LIBS += $(SDL_LIBS)
-    RENDERER_LIBS += $(SDL_LIBS) -lGL
+    RENDERER_LIBS += $(SDL_LIBS)
     SERVER_LIBS =
   endif
 
@@ -678,7 +678,7 @@ ifdef MINGW
     CLIENT_LDFLAGS += -mwindows -static -static-libgcc -static-libstdc++
   endif
   CLIENT_LIBS = -lgdi32 -lole32
-  RENDERER_LIBS = -lgdi32 -lole32 -lopengl32
+  RENDERER_LIBS = -lgdi32 -lole32
 
   ifeq ($(USE_FREETYPE),1)
     ifneq ($(USE_INTERNAL_FREETYPE),1)
@@ -793,7 +793,7 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
   CLIENT_LIBS =
 
   CLIENT_LIBS += $(SDL_LIBS)
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
+  RENDERER_LIBS = $(SDL_LIBS)
 
   ifeq ($(USE_OPENAL),1)
     ifneq ($(USE_OPENAL_DLOPEN),1)
@@ -833,7 +833,7 @@ ifeq ($(PLATFORM),irix64)
   # FIXME: The X libraries probably aren't necessary?
   CLIENT_LIBS=-L/usr/X11/$(LIB) $(SDL_LIBS) \
     -lX11 -lXext -lm
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
+  RENDERER_LIBS = $(SDL_LIBS)
 
 else # ifeq IRIX
 
@@ -881,7 +881,7 @@ ifeq ($(PLATFORM),sunos)
   BOTCFLAGS=-O0
 
   CLIENT_LIBS +=$(SDL_LIBS) -lX11 -lXext -liconv -lm
-  RENDERER_LIBS = $(SDL_LIBS) -lGL
+  RENDERER_LIBS = $(SDL_LIBS)
 
 else # ifeq sunos
 
