@@ -147,6 +147,7 @@ translateString_t translateStrings[] = {
 };
 
 vmCvar_t ui_fixedAspect;
+vmCvar_t ui_fixedAspectFOV;
 
 static screenPlacement_e ui_horizontalPlacement = PLACE_CENTER;
 static screenPlacement_e ui_verticalPlacement = PLACE_CENTER;

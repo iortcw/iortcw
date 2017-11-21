@@ -76,6 +76,7 @@ extern vmCvar_t ui_emptyswitch;
 // END JOSEPH
 
 extern vmCvar_t ui_fixedAspect;
+extern vmCvar_t ui_fixedAspectFOV;
 
 extern vmCvar_t ui_server1;
 extern vmCvar_t ui_server2;
