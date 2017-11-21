@@ -104,7 +104,8 @@ The defaults for these variables differ depending on the target platform.
 ### Console
 
 #### New cvars
-* cg_fixedAspect ( 0 ) - Use aspect corrected FOV/HUD/UI ( 0 = Off, 1 = 4:3 style, 2 = Widescreen style )
+* cg_fixedAspect ( 0 ) - Use aspect corrected HUD/UI ( 0 = Off, 1 = 4:3 style, 2 = Widescreen style )
+* cg_fixedAspectFOV ( 1 ) - Use aspect correct FOV when using cg_fixedAspect cvar ( 0 = Off - Use cg_fov, 1 = Automatic FOV based on resolution )
 
 * cl_autoRecordDemo ( 0 ) - record a new demo on each map change
 * cl_aviFrameRate ( 25 )- the framerate to use when capturing video

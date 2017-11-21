@@ -1,4 +1,5 @@
 cg_fixedAspect ""0"""
+cg_fixedAspectFOV ""1""
 
 cl_autoRecordDemo ""0"""
 cl_aviFrameRate ""25"""
