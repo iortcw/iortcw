@@ -474,14 +474,13 @@ ifeq ($(PLATFORM),darwin)
   LIBS = -framework Cocoa
   CLIENT_LIBS=
   RENDERER_LIBS=
-  OPTIMIZEVM=
+  OPTIMIZEVM= -O3
 
   BASE_CFLAGS = -Wall -mmacosx-version-min=10.5 \
     -DMAC_OS_X_VERSION_MIN_REQUIRED=1050
 
   ifeq ($(ARCH),ppc)
     BASE_CFLAGS += -arch ppc -faltivec
-    OPTIMIZEVM += -O3
   endif
   ifeq ($(ARCH),ppc64)
     BASE_CFLAGS += -arch ppc64 -faltivec

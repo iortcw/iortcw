@@ -54,7 +54,7 @@ unset X86_64_SDK
 unset X86_64_CFLAGS
 unset X86_SDK
 unset X86_CFLAGS
-unset PPC_64_SDK
+unset PPC_SDK
 unset PPC_CFLAGS
 
 if [ -d /Developer/SDKs/MacOSX10.5.sdk ]; then
