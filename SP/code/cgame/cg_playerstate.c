@@ -62,6 +62,9 @@ void CG_CheckAmmo( void ) {
 		if ( !( weapons[0] & ( 1 << i ) ) ) {
 			continue;
 		}
+		if ( cg.snap->ps.ammo[BG_FindAmmoForWeapon( i )] < 0 ) {
+			continue;
+		}
 		switch ( i )
 		{
 		case WP_PANZERFAUST:
