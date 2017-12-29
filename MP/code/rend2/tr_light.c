@@ -385,7 +385,7 @@ void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
 		ent->ambientLight[0] += tr.identityLight * 128 * ent->e.hilightIntensity;
 		ent->ambientLight[1] += tr.identityLight * 128 * ent->e.hilightIntensity;
 		ent->ambientLight[2] += tr.identityLight * 128 * ent->e.hilightIntensity;
-	} else if ( !r_hdr->integer /* ent->e.renderfx & RF_MINLIGHT */ ) {
+	} else if ( ent->e.renderfx & RF_MINLIGHT ) {
 		// give everything a minimum light add
 		ent->ambientLight[0] += tr.identityLight * 32;
 		ent->ambientLight[1] += tr.identityLight * 32;
