@@ -238,8 +238,8 @@ changes from empty to non-empty, and full to non-full,
 but not on every player enter or exit.
 ================
 */
-#define HEARTBEAT_MSEC  300 * 1000
-#define	MASTERDNS_MSEC	24 * 60 * 60 * 1000
+#define HEARTBEAT_MSEC	300 * 1000
+#define MASTERDNS_MSEC	24 * 60 * 60 * 1000
 void SV_MasterHeartbeat(const char *message)
 {
 	static netadr_t	adr[MAX_MASTER_SERVERS][2]; // [2] for v4 and v6 address for the same address string.
