@@ -281,14 +281,18 @@ void SV_MasterHeartbeat(const char *message)
 		if(!sv_master[i]->string[0])
 			continue;
 
-		// see if we haven't already resolved the name or if it's been over 24 hours
-		// if server did not resolve on first attempt, do not attempt another dns lookup
-		// if server did resolve on first attempt, attempt resolution on subsequent heartbeats
-		if(sv_master[i]->modified || (adr[i][0].type == NA_BAD && adr[i][1].type == NA_BAD) || svs.time > svs.masterResolveTime[i])
+		// if server resolves on first attempt, attempt resolution on subsequent heartbeats
+		// if server does not resolve on first attempt, do not attempt another dns lookup for 24 hours
+		if(sv_master[i]->modified || svs.time > svs.masterResolveTime[i])
 		{
 			sv_master[i]->modified = qfalse;
-			svs.masterResolveTime[i] = svs.time + MASTERDNS_MSEC;
 			
+			if(svs.time > svs.masterResolveTime[i])
+			{
+				svs.masterResolveTime[i] = svs.time + MASTERDNS_MSEC;
+				firstRes = qtrue;
+			}
+
 			if(netenabled & NET_ENABLEV4)
 			{
 				if(firstRes || adr[i][0].type != NA_BAD) {
