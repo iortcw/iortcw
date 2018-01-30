@@ -183,17 +183,16 @@ void SV_GetChallenge( netadr_t from )
 		else
 		{
 			// otherwise send their ip to the authorize server
-			cvar_t	*fs;
-			char	game[1024];
+			cvar_t *fs;
+			const char *game;
 
 			Com_DPrintf( "sending getIpAuthorize for %s\n", NET_AdrToString( from ));
 
-			game[0] = 0;
-			strcpy(game, BASEGAME);
-			fs = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
-			if ( fs && fs->string[0] != 0 ) {
-				strcpy( game, fs->string );
+			game = Cvar_VariableString( "fs_game" );
+			if (game[0] == 0) {
+				game = BASEGAME;
 			}
+
 			fs = Cvar_Get( "sv_allowAnonymous", "0", CVAR_SERVERINFO );
 
 			// NERVE - SMF - fixed parsing on sv_allowAnonymous
