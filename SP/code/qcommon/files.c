@@ -3327,6 +3327,7 @@ qboolean FS_CheckDirTraversal(const char *checkdir)
 FS_InvalidGameDir
 
 return true if path is a reference to current directory or directory traversal
+or a sub-directory
 ================
 */
 qboolean FS_InvalidGameDir( const char *gamedir ) {
