@@ -814,26 +814,26 @@ typedef struct {
 } memzone_t;
 
 // main zone for all "dynamic" memory allocation
-memzone_t   *mainzone;
+static memzone_t   *mainzone;
 // we also have a small zone for small allocations that would only
 // fragment the main zone (think of cvar and cmd strings)
-memzone_t   *smallzone;
+static memzone_t   *smallzone;
 
 
-void Z_CheckHeap( void );
+static void Z_CheckHeap( void );
 
 /*
 ========================
 Z_ClearZone
 ========================
 */
-void Z_ClearZone( memzone_t *zone, int size ) {
+static void Z_ClearZone( memzone_t *zone, int size ) {
 	memblock_t  *block;
 
 	// set the entire zone to one free block
 
 	zone->blocklist.next = zone->blocklist.prev = block =
-													  ( memblock_t * )( (byte *)zone + sizeof( memzone_t ) );
+		( memblock_t * )( (byte *)zone + sizeof( memzone_t ) );
 	zone->blocklist.tag = 1;    // in use block
 	zone->blocklist.id = 0;
 	zone->blocklist.size = 0;
@@ -1078,7 +1078,7 @@ void *S_Malloc( int size ) {
 Z_CheckHeap
 ========================
 */
-void Z_CheckHeap( void ) {
+static void Z_CheckHeap( void ) {
 	memblock_t  *block;
 
 	for ( block = mainzone->blocklist.next ; ; block = block->next ) {
