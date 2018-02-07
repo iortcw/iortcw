@@ -3331,9 +3331,7 @@ return true if path is a reference to current directory or directory traversal
 */
 qboolean FS_InvalidGameDir( const char *gamedir ) {
 	if ( !strcmp( gamedir, "." ) || !strcmp( gamedir, ".." )
-		|| !strcmp( gamedir, "/" ) || !strcmp( gamedir, "\\" )
-		|| strstr( gamedir, "/.." ) || strstr( gamedir, "\\.." )
-		|| FS_CheckDirTraversal( gamedir ) ) {
+		|| strchr( gamedir, '/' ) || strchr( gamedir, '\\' ) ) {
 		return qtrue;
 	}
 
