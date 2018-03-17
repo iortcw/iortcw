@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <errno.h>
 #define OV_EXCLUDE_STATIC_CALLBACKS
 #ifdef USE_LOCAL_HEADERS
-  #include "../libvorbis-1.3.5/include/vorbis/vorbisfile.h"
+  #include "../libvorbis-1.3.6/include/vorbis/vorbisfile.h"
 #else
   #include <vorbis/vorbisfile.h>
 #endif

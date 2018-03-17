@@ -308,8 +308,8 @@ BLIBDIR=$(MOUNT_DIR)/botlib
 NDIR=$(MOUNT_DIR)/null
 UIDIR=$(MOUNT_DIR)/ui
 JPDIR=$(MOUNT_DIR)/jpeg-8c
-OGGDIR=$(MOUNT_DIR)/libogg-1.3.2
-VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.5
+OGGDIR=$(MOUNT_DIR)/libogg-1.3.3
+VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.6
 OPUSDIR=$(MOUNT_DIR)/opus-1.1.4
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.8
 ZDIR=$(MOUNT_DIR)/zlib-1.2.11
@@ -2114,9 +2114,10 @@ Q3OBJ += \
   $(B)/client/vorbis/psy.o \
   $(B)/client/vorbis/registry.o \
   $(B)/client/vorbis/res0.o \
-  $(B)/client/vorbis/smallft.o \
   $(B)/client/vorbis/sharedbook.o \
+  $(B)/client/vorbis/smallft.o \
   $(B)/client/vorbis/synthesis.o \
+  $(B)/client/vorbis/vorbisenc.o \
   $(B)/client/vorbis/vorbisfile.o \
   $(B)/client/vorbis/window.o
 endif
