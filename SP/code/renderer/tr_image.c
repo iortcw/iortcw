@@ -1196,7 +1196,7 @@ image_t *R_CreateImageExt( const char *name, byte *pic, int width, int height, i
 
 	// Ridah
 	image = tr.images[tr.numImages] = ri.Hunk_Alloc( sizeof( image_t ), h_low );
-	image->texnum = 1024 + tr.numImages;
+	qglGenTextures( 1, &image->texnum );
 	tr.numImages++;
 
 	image->type = type;
