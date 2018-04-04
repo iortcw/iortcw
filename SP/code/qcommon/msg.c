@@ -464,12 +464,14 @@ char *MSG_ReadString( msg_t *msg ) {
 		if ( c > 127 ) {
 			c = '.';
 		}
+		// break only after reading all expected data from bitstream
+		if ( l >= sizeof( string ) - 1 ) {
+			break;
+		}
+		string[l++] = c;
+	} while (1);
 
-		string[l] = c;
-		l++;
-	} while ( l < sizeof( string ) - 1 );
-
-	string[l] = 0;
+	string[l] = '\0';
 
 	return string;
 }
@@ -492,12 +494,14 @@ char *MSG_ReadBigString( msg_t *msg ) {
 		if ( c > 127 ) {
 			c = '.';
 		}
+		// break only after reading all expected data from bitstream
+		if ( l >= sizeof( string ) - 1 ) {
+			break;
+		}
+		string[l++] = c;
+	} while (1);
 
-		string[l] = c;
-		l++;
-	} while ( l < sizeof( string ) - 1 );
-
-	string[l] = 0;
+	string[l] = '\0';
 
 	return string;
 }
@@ -520,12 +524,14 @@ char *MSG_ReadStringLine( msg_t *msg ) {
 		if ( c > 127 ) {
 			c = '.';
 		}
+		// break only after reading all expected data from bitstream
+		if ( l >= sizeof( string ) - 1 ) {
+			break;
+		}
+		string[l++] = c;
+	} while (1);
 
-		string[l] = c;
-		l++;
-	} while ( l < sizeof( string ) - 1 );
-
-	string[l] = 0;
+	string[l] = '\0';
 
 	return string;
 }
