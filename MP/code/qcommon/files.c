@@ -3720,16 +3720,16 @@ static void FS_CheckMPPaks( void )
 {
 	searchpath_t	*path;
 	pack_t		*curpack;
+	const char	*pakBasename;
 	unsigned int foundPak = 0;
 
 	for( path = fs_searchpaths; path; path = path->next )
 	{
-		const char* pakBasename = path->pack->pakBasename;
-
 		if(!path->pack)
 			continue;
 		
 		curpack = path->pack;
+		pakBasename = curpack->pakBasename;
 
 		if(!Q_stricmpn( curpack->pakGamename, BASEGAME, MAX_OSPATH )
 			&& strlen(pakBasename) == 7 && !Q_stricmpn( pakBasename, "mp_pak", 6 )
@@ -3835,17 +3835,17 @@ static void FS_CheckPak0( void )
 {
 	searchpath_t	*path;
 	pack_t		*curpack;
+	const char	*pakBasename;
 	qboolean founddemo = qfalse;
 	unsigned int foundPak = 0;
 
 	for( path = fs_searchpaths; path; path = path->next )
 	{
-		const char* pakBasename = path->pack->pakBasename;
-
 		if(!path->pack)
 			continue;
 		
 		curpack = path->pack;
+		pakBasename = curpack->pakBasename;
 
 		if(!Q_stricmpn( curpack->pakGamename, "demomain", MAX_OSPATH )
 			&& !Q_stricmpn( pakBasename, "pak0", MAX_OSPATH ))
