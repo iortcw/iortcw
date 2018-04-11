@@ -636,7 +636,7 @@ static unsigned int yuv_to_rgb24( long y, long u, long v ) {
 		b = 255;
 	}
 
-	return LittleLong( ( r ) | ( g << 8 ) | ( b << 16 ) | ( 255 << 24 ) );
+	return LittleLong( ( unsigned long )( ( r ) | ( g << 8 ) | ( b << 16 ) ) | ( 255UL << 24 ) );
 }
 
 /******************************************************************************
