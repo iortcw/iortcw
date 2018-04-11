@@ -440,7 +440,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t *points, const vec3_t projec
 			indexes = ( int * )( (byte *)surf + surf->ofsIndices );
 			for ( k = 0 ; k < surf->numIndices ; k += 3 ) {
 				for ( j = 0 ; j < 3 ; j++ ) {
-					v = surf->points[0] + VERTEXSIZE * indexes[k + j];;
+					v = &surf->points[0][0] + VERTEXSIZE * indexes[k + j];
 					VectorMA( v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j] );
 				}
 				// add the fragments of this face
@@ -735,7 +735,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 				indexes = ( int * )( (byte *)surf + surf->ofsIndices );
 				for ( k = 0 ; k < surf->numIndices ; k += 3 ) {
 					for ( j = 0 ; j < 3 ; j++ ) {
-						v = surf->points[0] + VERTEXSIZE * indexes[k + j];
+						v = &surf->points[0][0] + VERTEXSIZE * indexes[k + j];
 						VectorMA( v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j] );
 					}
 
@@ -775,7 +775,7 @@ int R_MarkFragments( int orientation, const vec3_t *points, const vec3_t project
 				indexes = ( int * )( (byte *)surf + surf->ofsIndices );
 				for ( k = 0 ; k < surf->numIndices ; k += 3 ) {
 					for ( j = 0 ; j < 3 ; j++ ) {
-						v = surf->points[0] + VERTEXSIZE * indexes[k + j];;
+						v = &surf->points[0][0] + VERTEXSIZE * indexes[k + j];
 						VectorMA( v, MARKER_OFFSET, surf->plane.normal, clipPoints[0][j] );
 					}
 					// add the fragments of this face
