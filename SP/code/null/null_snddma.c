@@ -50,6 +50,24 @@ void SNDDMA_BeginPainting( void ) {
 void SNDDMA_Submit( void ) {
 }
 
+#ifdef USE_VOIP
+void SNDDMA_StartCapture( void ) {
+}
+
+int SNDDMA_AvailableCaptureSamples( void ) {
+	return 0;
+}
+
+void SNDDMA_Capture( int samples, byte *data ) {
+}
+
+void SNDDMA_StopCapture( void ) {
+}
+
+void SNDDMA_MasterGain( float val ) {
+}
+#endif
+
 sfxHandle_t S_RegisterSound( const char *name, qboolean compressed ) {
 	return 0;
 }
