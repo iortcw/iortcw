@@ -792,6 +792,7 @@ int BotGetLevelItemGoal( int index, char *name, bot_goal_t *goal ) {
 			VectorCopy( itemconfig->iteminfo[li->iteminfo].mins, goal->mins );
 			VectorCopy( itemconfig->iteminfo[li->iteminfo].maxs, goal->maxs );
 			goal->number = li->number;
+			goal->iteminfo = li->iteminfo;
 			//botimport.Print(PRT_MESSAGE, "found li %s\n", itemconfig->iteminfo[li->iteminfo].name);
 			return li->number;
 		} //end if
@@ -816,6 +817,9 @@ int BotGetMapLocationGoal( char *name, bot_goal_t *goal ) {
 			goal->entitynum = 0;
 			VectorCopy( mins, goal->mins );
 			VectorCopy( maxs, goal->maxs );
+			goal->number = 0;
+			goal->flags = 0;
+			goal->iteminfo = 0;
 			return qtrue;
 		} //end if
 	} //end for
@@ -844,6 +848,9 @@ int BotGetNextCampSpotGoal( int num, bot_goal_t *goal ) {
 			goal->entitynum = 0;
 			VectorCopy( mins, goal->mins );
 			VectorCopy( maxs, goal->maxs );
+			goal->number = 0;
+			goal->flags = 0;
+			goal->iteminfo = 0;
 			return num + 1;
 		} //end if
 	} //end for
