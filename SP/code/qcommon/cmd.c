@@ -685,9 +685,7 @@ void    Cmd_RemoveCommand( const char *cmd_name ) {
 		}
 		if ( !strcmp( cmd_name, cmd->name ) ) {
 			*back = cmd->next;
-			if ( cmd->name ) {
-				Z_Free( cmd->name );
-			}
+			Z_Free( cmd->name );
 			Z_Free( cmd );
 			return;
 		}
