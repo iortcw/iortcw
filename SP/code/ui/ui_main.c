@@ -2360,16 +2360,10 @@ static void UI_DrawBotName( rectDef_t *rect, int font, float scale, vec4_t color
 #ifdef MISSIONPACK
 	int value = uiInfo.botIndex;
 	int game = trap_Cvar_VariableValue( "g_gametype" );
-	const char *text = "";
+	const char *text;
 	if ( game >= GT_TEAM ) {
-		if ( value >= uiInfo.characterCount ) {
-			value = 0;
-		}
 		text = uiInfo.characterList[value].name;
 	} else {
-		if ( value >= UI_GetNumBots() ) {
-			value = 0;
-		}
 		text = UI_GetBotNameByNumber( value );
 	}
 	Text_Paint( rect->x, rect->y, font, scale, color, text, 0, 0, textStyle );
@@ -3276,16 +3270,16 @@ static qboolean UI_BotName_HandleKey(int flags, float *special, int key) {
 		value += select;
 
 		if (game >= GT_TEAM) {
-			if (value >= uiInfo.characterCount + 2) {
+			if (value >= uiInfo.characterCount) {
 				value = 0;
 			} else if (value < 0) {
-				value = uiInfo.characterCount + 2 - 1;
+				value = uiInfo.characterCount - 1;
 			}
 		} else {
-			if (value >= UI_GetNumBots() + 2) {
+			if (value >= UI_GetNumBots()) {
 				value = 0;
 			} else if (value < 0) {
-				value = UI_GetNumBots() + 2 - 1;
+				value = UI_GetNumBots() - 1;
 			}
 		}
 		uiInfo.botIndex = value;
