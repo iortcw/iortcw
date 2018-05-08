@@ -543,7 +543,7 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    ifeq ($(ARCH),ppc)
+    ifeq ($(ARCH),$(filter $(ARCH),ppc ppc64))
       CLIENT_CFLAGS += -I$(SDLHDIR)/include-2.0.1
     else
       CLIENT_CFLAGS += -I$(SDLHDIR)/include
