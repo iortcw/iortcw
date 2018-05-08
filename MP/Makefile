@@ -487,23 +487,27 @@ ifeq ($(PLATFORM),darwin)
   RENDERER_LIBS=
   OPTIMIZEVM= -O3
 
-  BASE_CFLAGS = -Wall -mmacosx-version-min=10.5 \
-    -DMAC_OS_X_VERSION_MIN_REQUIRED=1050
+  BASE_CFLAGS = -Wall
 
   ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -arch ppc -faltivec
+    BASE_CFLAGS += -arch ppc -faltivec -mmacosx-version-min=10.5 \
+      -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
   endif
   ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -arch ppc64 -faltivec
+    BASE_CFLAGS += -arch ppc64 -faltivec -mmacosx-version-min=10.5 \
+      -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=prescott -mfpmath=sse
     # x86 vm will crash without -mstackrealign since MMX instructions will be
     # used no matter what and they corrupt the frame pointer in VM calls
-    BASE_CFLAGS += -arch i386 -mstackrealign
+    BASE_CFLAGS += -arch i386 -mstackrealign -mmacosx-version-min=10.6 \
+      -DMAC_OS_X_VERSION_MIN_REQUIRED=1060
   endif
   ifeq ($(ARCH),x86_64)
-    OPTIMIZEVM += -arch x86_64 -mfpmath=sse
+    OPTIMIZEVM += -mfpmath=sse
+    BASE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.6 \
+      -DMAC_OS_X_VERSION_MIN_REQUIRED=1060
   endif
 
   # When compiling on OSX for OSX, we're not cross compiling as far as the
@@ -550,7 +554,11 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    CLIENT_CFLAGS += -I$(SDLHDIR)/include
+    ifeq ($(ARCH),$(filter $(ARCH),ppc ppc64))
+      CLIENT_CFLAGS += -I$(SDLHDIR)/include-2.0.1
+    else
+      CLIENT_CFLAGS += -I$(SDLHDIR)/include
+    endif
   else
     CLIENT_CFLAGS += $(SDL_CFLAGS)
   endif
