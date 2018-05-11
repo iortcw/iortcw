@@ -323,7 +323,7 @@ static void SV_MapRestart_f( void ) {
 	client_t    *client;
 	char        *denied;
 	qboolean isBot;
-	int delay;
+	int delay = 0;
 
 	// make sure we aren't restarting twice in the same frame
 	if ( com_frameTime == sv.serverId ) {
@@ -340,11 +340,11 @@ static void SV_MapRestart_f( void ) {
 		return;
 	}
 
-	if ( Cmd_Argc() > 1 ) {
-		delay = atoi( Cmd_Argv( 1 ) );
+	if ( sv_gametype->integer == GT_SINGLE_PLAYER ) { // (SA) no pause by default in sp
+		delay = 0;
 	} else {
-		if ( sv_gametype->integer == GT_SINGLE_PLAYER ) { // (SA) no pause by default in sp
-			delay = 0;
+		if ( Cmd_Argc() > 1 ) {
+			delay = atoi( Cmd_Argv( 1 ) );
 		} else {
 			delay = 5;
 		}
