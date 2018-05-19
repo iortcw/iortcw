@@ -382,10 +382,10 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -maltivec
+    ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -maltivec
+    ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),sparc)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
@@ -479,12 +479,14 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS = -Wall
 
   ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -arch ppc -faltivec -mmacosx-version-min=10.5 \
+    BASE_CFLAGS += -arch ppc -mmacosx-version-min=10.5 \
       -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
+    ALTIVEC_CFLAGS = -faltivec
   endif
   ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -arch ppc64 -faltivec -mmacosx-version-min=10.5 \
+    BASE_CFLAGS += -arch ppc64 -mmacosx-version-min=10.5 \
       -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
+    ALTIVEC_CFLAGS = -faltivec
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=prescott -mfpmath=sse
@@ -543,7 +545,7 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    ifeq ($(ARCH),$(filter $(ARCH),ppc ppc64))
+    ifneq ($(findstring $(ARCH),ppc ppc64),)
       CLIENT_CFLAGS += -I$(SDLHDIR)/include-2.0.1
     else
       CLIENT_CFLAGS += -I$(SDLHDIR)/include
@@ -766,10 +768,10 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -maltivec
+    ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -maltivec
+    ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),sparc)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
@@ -1184,9 +1186,19 @@ $(echo_cmd) "CC $<"
 $(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
 endef
 
+define DO_CC_ALTIVEC
+$(echo_cmd) "CC $<"
+$(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) $(ALTIVEC_CFLAGS) -o $@ -c $<
+endef
+
 define DO_REF_CC
 $(echo_cmd) "REF_CC $<"
 $(Q)$(CC) $(SHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+endef
+
+define DO_REF_CC_ALTIVEC
+$(echo_cmd) "REF_CC $<"
+$(Q)$(CC) $(SHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) $(ALTIVEC_CFLAGS) -o $@ -c $<
 endef
 
 define DO_REF_STR
@@ -1593,6 +1605,7 @@ Q3OBJ = \
   $(B)/client/net_ip.o \
   $(B)/client/huffman.o \
   \
+  $(B)/client/snd_altivec.o \
   $(B)/client/snd_adpcm.o \
   $(B)/client/snd_dma.o \
   $(B)/client/snd_mem.o \
@@ -1754,6 +1767,7 @@ Q3R2STRINGOBJ = \
   $(B)/rend2/glsl/tonemap_vp.o
 
 Q3ROBJ = \
+  $(B)/renderer/tr_altivec.o \
   $(B)/renderer/tr_animation.o \
   $(B)/renderer/tr_backend.o \
   $(B)/renderer/tr_bsp.o \
@@ -2498,6 +2512,9 @@ $(B)/client/%.o: $(ASMDIR)/%.s
 $(B)/client/%.o: $(ASMDIR)/%.c
 	$(DO_CC) -march=k8
 
+$(B)/client/snd_altivec.o: $(CDIR)/snd_altivec.c
+	$(DO_CC_ALTIVEC)
+
 $(B)/client/%.o: $(CDIR)/%.c
 	$(DO_CC)
 
@@ -2560,6 +2577,9 @@ $(B)/renderer/%.o: $(JPDIR)/%.c
 
 $(B)/renderer/%.o: $(RDIR)/%.c
 	$(DO_REF_CC)
+
+$(B)/renderer/tr_altivec.o: $(RDIR)/tr_altivec.c
+	$(DO_REF_CC_ALTIVEC)
 
 $(B)/rend2/glsl/%.c: $(R2DIR)/glsl/%.glsl
 	$(DO_REF_STR)
