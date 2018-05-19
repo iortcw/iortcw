@@ -313,7 +313,7 @@ VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.6
 OPUSDIR=$(MOUNT_DIR)/opus-1.2.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.9
 ZDIR=$(MOUNT_DIR)/zlib-1.2.11
-FTDIR=$(MOUNT_DIR)/freetype-2.6.4
+FTDIR=$(MOUNT_DIR)/freetype-2.9.1
 SPLDIR=$(MOUNT_DIR)/splines
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
@@ -1905,12 +1905,10 @@ ifneq ($(USE_INTERNAL_FREETYPE),0)
     $(B)/renderer/ftbdf.o \
     $(B)/renderer/ftbitmap.o \
     $(B)/renderer/ftcid.o \
-    $(B)/renderer/ftfntfmt.o \
     $(B)/renderer/ftfstype.o \
     $(B)/renderer/ftgasp.o \
     $(B)/renderer/ftglyph.o \
     $(B)/renderer/ftgxval.o \
-    $(B)/renderer/ftlcdfil.o \
     $(B)/renderer/ftmm.o \
     $(B)/renderer/ftotval.o \
     $(B)/renderer/ftpatent.o \
