@@ -191,6 +191,7 @@ void main()
 	vec3 L = attr_LightDirection;
   #if defined(USE_MODELMATRIX)
 	L = (u_ModelMatrix * vec4(L, 0.0)).xyz;
+	L += normal * 0.00001;
   #endif
 #endif
 
