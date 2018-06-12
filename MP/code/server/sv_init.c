@@ -455,29 +455,25 @@ static void SV_ClearServer(void) {
 
 /*
 ================
-SV_TouchCGame
-
-  touch the cgame.vm so that a pure client can load it if it's in a seperate pk3
+SV_TouchFile
 ================
-
-static void SV_TouchCGame( void ) {
+*/
+static void SV_TouchFile( const char *filename ) { 
 	fileHandle_t f;
-	char filename[MAX_QPATH];
 
-	Com_sprintf( filename, sizeof( filename ), "vm/%s.mp.qvm", "cgame" );
-	FS_FOpenFileRead( filename, &f, qfalse );
+	FS_FOpenFileRead_Filtered( filename, &f, qfalse, FS_EXCLUDE_DIR );
 	if ( f ) {
 		FS_FCloseFile( f );
 	}
 }
-*/
+
 
 /*
 ================
 SV_TouchCGameDLL
   touch the cgame DLL so that a pure client (with DLL sv_pure support) can load do the correct checks
 ================
-*/
+
 void SV_TouchCGameDLL( void ) {
 	fileHandle_t f;
 	char *filename;
@@ -489,6 +485,7 @@ void SV_TouchCGameDLL( void ) {
 		FS_FCloseFile( f );
 	}
 }
+*/
 
 /*
 ================
@@ -694,11 +691,13 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 		Cvar_Set( "sv_pakNames", p );
 
 		// we want the server to reference the mp_bin pk3 that the client is expected to load from
-		// if a dedicated pure server we need to touch the cgame because it could be in a
-		// seperate pk3 file and the client will need to load the latest cgame
-		if ( com_dedicated->integer ) {
-			SV_TouchCGameDLL();
-		}
+		// we need to touch the cgame and ui because they could be in
+		// seperate pk3 files and the client will need to download the pk3
+		// files with the latest cgame and ui to pass the pure check
+
+		// Only touch the legacy dlls since we have qvm support
+		SV_TouchFile( "cgame_mp_x86.dll" );
+		SV_TouchFile( "ui_mp_x86.dll" );
 	} else {
 		Cvar_Set( "sv_paks", "" );
 		Cvar_Set( "sv_pakNames", "" );
