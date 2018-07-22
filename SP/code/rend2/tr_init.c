@@ -340,7 +340,7 @@ static void InitOpenGL( void ) {
 	if ( glConfig.vidWidth == 0 ) {
 		GLint temp;
 
-		GLimp_Init( qtrue );
+		GLimp_Init( qfalse );
 		GLimp_InitExtraExtensions();
 
 		// OpenGL driver constants
