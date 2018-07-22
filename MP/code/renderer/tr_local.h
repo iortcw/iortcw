@@ -37,6 +37,14 @@ If you have questions concerning this license or the applicable additional terms
 #include "qgl.h"
 #include "iqm.h"
 
+#define GLE(ret, name, ...) extern name##proc * qgl##name;
+QGL_1_1_PROCS;
+QGL_1_1_FIXED_FUNCTION_PROCS;
+QGL_DESKTOP_1_1_PROCS;
+QGL_DESKTOP_1_1_FIXED_FUNCTION_PROCS;
+QGL_3_0_PROCS;
+#undef GLE
+
 #ifdef USE_OPENGLES
 #ifdef USE_LOCAL_HEADERS
 #	include "GLES/glext.h"
