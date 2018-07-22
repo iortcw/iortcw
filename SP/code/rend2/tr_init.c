@@ -343,6 +343,8 @@ static void InitOpenGL( void ) {
 		GLimp_Init( qfalse );
 		GLimp_InitExtraExtensions();
 
+		glConfig.textureEnvAddAvailable = qtrue;
+
 		// OpenGL driver constants
 		qglGetIntegerv( GL_MAX_TEXTURE_SIZE, &temp );
 		glConfig.maxTextureSize = temp;
@@ -351,6 +353,9 @@ static void InitOpenGL( void ) {
 		if ( glConfig.maxTextureSize <= 0 ) {
 			glConfig.maxTextureSize = 0;
 		}
+
+		qglGetIntegerv( GL_MAX_TEXTURE_IMAGE_UNITS, &temp );
+		glConfig.numTextureUnits = temp;
 	}
 
 	// set default state
@@ -1182,7 +1187,7 @@ void GfxInfo_f( void ) {
 	}
 	ri.Printf( PRINT_ALL, "\n" );
 	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
-	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_UNITS_ARB: %d\n", glConfig.numTextureUnits );
+	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_IMAGE_UNITS: %d\n", glConfig.numTextureUnits );
 	ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
 	ri.Printf( PRINT_ALL, "MODE: %d, %d x %d %s hz:", r_mode->integer, glConfig.vidWidth, glConfig.vidHeight, fsstrings[r_fullscreen->integer == 1] );
 	if ( glConfig.displayFrequency ) {
