@@ -25,7 +25,7 @@ sudo make install
 
 
 At this point you can go into the iortcw source tree and type:
-./make-raspberry-pi.sh
+./make-raspberrypi.sh
 
 Output binaries will be located in the 'build' directory, which you can copy
 into your RTCW install directory.
