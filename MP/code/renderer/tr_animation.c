@@ -51,9 +51,6 @@ static float frontlerp, backlerp;
 static float torsoFrontlerp, torsoBacklerp;
 static int *triangles; 
 static glIndex_t *pIndexes;
-#ifndef USE_OPENGLES
-static int *boneRefs;
-#endif
 static int indexes;
 static int baseIndex, baseVertex, oldIndexes;
 static int numVerts;
@@ -1037,9 +1034,6 @@ RB_SurfaceAnim
 ==============
 */
 void RB_SurfaceAnim( mdsSurface_t *surface ) {
-#ifndef USE_OPENGLES
-	int i;
-#endif
 	int j, k;
 	refEntity_t *refent;
 	int             *boneList;
@@ -1192,7 +1186,7 @@ void RB_SurfaceAnim( mdsSurface_t *surface ) {
 	if ( r_bonesDebug->integer ) {
 		if ( r_bonesDebug->integer < 3 ) {
 			// DEBUG: show the bones as a stick figure with axis at each bone
-			boneRefs = ( int * )( (byte *)surface + surface->ofsBoneReferences );
+			int i, *boneRefs = ( int * )( (byte *)surface + surface->ofsBoneReferences );
 			for ( i = 0; i < surface->numBoneReferences; i++, boneRefs++ ) {
 				bonePtr = &bones[*boneRefs];
 

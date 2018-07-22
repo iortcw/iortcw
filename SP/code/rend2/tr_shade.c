@@ -1744,7 +1744,7 @@ void RB_StageIteratorGeneric( void )
 
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		// RF< so we can send the normals as an array
-		qglEnableClientState( GL_NORMAL_ARRAY );
+		//qglEnableClientState( GL_NORMAL_ARRAY );
 		qglEnable( GL_PN_TRIANGLES_ATI ); // ATI PN-Triangles extension
 	}
 
@@ -1900,7 +1900,7 @@ void RB_StageIteratorGeneric( void )
 	// turn truform back off
 	if ( qglPNTrianglesiATI && tess.ATI_tess ) {
 		qglDisable( GL_PN_TRIANGLES_ATI );    // ATI PN-Triangles extension
-		qglDisableClientState( GL_NORMAL_ARRAY );
+		//qglDisableClientState( GL_NORMAL_ARRAY );
 	}
 
 }
