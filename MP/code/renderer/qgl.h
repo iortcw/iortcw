@@ -378,6 +378,7 @@ extern void (APIENTRYP qglPNTrianglesfATI)(GLenum pname, GLfloat param);
 	GLE(void, FramebufferTexture2D, GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) \
 	GLE(void, FramebufferRenderbuffer, GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) \
 	GLE(void, GenerateMipmap, GLenum target) \
+	GLE(void, BlitFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) \
 	GLE(void, RenderbufferStorageMultisample, GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) \
 
 // GL_ARB_vertex_array_object, built-in to OpenGL 3.0
