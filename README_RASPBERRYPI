@@ -30,4 +30,6 @@ At this point you can go into the iortcw source tree and type:
 Output binaries will be located in the 'build' directory, which you can copy
 into your RTCW install directory.
 
-You should exit from the X11 desktop to the terminal before launching iortcw.
+You must exit from the desktop (X11) to the command line before launching
+iortcw to use hardware OpenGL ES acceleration. You can return to the desktop
+using the startx command.
