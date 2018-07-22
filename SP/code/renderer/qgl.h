@@ -60,7 +60,8 @@ extern void (APIENTRYP qglLockArraysEXT) (GLint first, GLsizei count);
 extern void (APIENTRYP qglUnlockArraysEXT) (void);
 
 #ifdef USE_OPENGLES
-#define GLdouble	GLfloat
+#define GLdouble	double
+#define GLclampd	double
 extern void myglMultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t );
 #define GL_CLAMP     GL_CLAMP_TO_EDGE
 #define GL_TEXTURE0_ARB	GL_TEXTURE0
@@ -194,6 +195,8 @@ extern void (APIENTRYP qglPNTrianglesfATI)(GLenum pname, GLfloat param);
 	GLE(void, Viewport, GLint x, GLint y, GLsizei width, GLsizei height) \
 	\
 	GLE(void, Hint, GLenum target, GLenum mode) /*Added*/ \
+	GLE(GLboolean, IsEnabled, GLenum cap) /*Added*/ \
+	GLE(void, PixelStorei, GLenum pname, GLint param) /*Added*/ \
 
 // OpenGL 1.0/1.1 and OpenGL ES 1.x but not OpenGL 3.2 core profile
 #define QGL_1_1_FIXED_FUNCTION_PROCS \
@@ -212,8 +215,10 @@ extern void (APIENTRYP qglPNTrianglesfATI)(GLenum pname, GLfloat param);
 	GLE(void, TexEnvf, GLenum target, GLenum pname, GLfloat param) \
 	GLE(void, VertexPointer, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr) \
 	\
+	GLE(void, Color4ub, GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha) /*Added*/ \
 	GLE(void, Fogf, GLenum pname, GLfloat param) /*Added*/ \
 	GLE(void, Fogfv, GLenum pname, const GLfloat *params) /*Added*/ \
+	GLE(void, MultiTexCoord4f, GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q) /*Added*/ \
 	GLE(void, NormalPointer, GLenum type, GLsizei stride, const GLvoid *ptr) /*Added*/ \
 
 // OpenGL 1.0/1.1 and 3.2 core profile but not OpenGL ES 1.x

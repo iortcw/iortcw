@@ -2,28 +2,20 @@ To run iortcw on the Raspberry Pi requires SDL2 and at least 128M for GPU memory
 
 (Under Raspbian, you can set the GPU memory using the raspi-config tool under Advanced Options->Memory Split)
 
-SDL2 will need to be built in a particular way to have hardware accelerated
-graphics.
+SDL 2.0.8 is required for compatibility with Raspbian stretch.
 
-Download the SDL2 source code (2.0.3 at the time of this writing) from:
+Download the SDL2 source code (2.0.8 at the time of this writing) from:
 
-http://libsdl.org/release/SDL2-2.0.3.tar.gz
+http://libsdl.org/release/SDL2-2.0.8.tar.gz
 
 You will need to install the libudev development files for mouse support.
 On the Raspbian distro, this is done by running the command:
 
 sudo apt-get install libudev-dev
 
-You will also need to disable x11 (software rendering) and opengl (not supported
-on the Raspberry Pi.)
-
 Unpack the SDL source and go into the source tree and issue the command:
 
-./configure --disable-video-x11 --disable-video-opengl
-
-Note: On the newer Raspberry Pi 2 (due to a change in the toolchain naming) use:
-
-./configure --host=armv7l-raspberry-linux-gnueabihf --disable-video-x11 --disable-video-opengl
+./configure
 
 After that has completed, type:
 make
@@ -37,3 +29,5 @@ At this point you can go into the iortcw source tree and type:
 
 Output binaries will be located in the 'build' directory, which you can copy
 into your RTCW install directory.
+
+You should exit from the X11 desktop to the terminal before launching iortcw.

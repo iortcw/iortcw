@@ -187,6 +187,7 @@ extern void (APIENTRYP qglPNTrianglesfATI)(GLenum pname, GLfloat param);
 	\
 	GLE(void, Fogf, GLenum pname, GLfloat param) /*Added*/ \
 	GLE(void, Fogfv, GLenum pname, const GLfloat *params) /*Added*/ \
+	GLE(void, MultiTexCoord4f, GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q) /*Added*/ \
 	GLE(void, NormalPointer, GLenum type, GLsizei stride, const GLvoid *ptr) /*Added*/ \
 
 // OpenGL 1.0/1.1 and 3.2 core profile but not OpenGL ES 1.x

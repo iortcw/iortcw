@@ -270,10 +270,6 @@ ifndef USE_OPENGLES
 USE_OPENGLES=0
 endif
 
-ifndef RASPBERRY_PI
-RASPBERRY_PI=0
-endif
-
 ifndef USE_AUTHORIZE_SERVER
 USE_AUTHORIZE_SERVER=0
 endif
@@ -429,20 +425,11 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   endif
 
   ifeq ($(USE_OPENGLES),1)
-    ifeq ($(RASPBERRY_PI),1)
-      BUILD_RENDERER_REND2 = 0
-      BASE_CFLAGS += -DUSE_OPENGLES
-      LDFLAGS += -L/opt/vc/lib
-      CLIENT_LIBS = $(SDL_LIBS) -lbcm_host
-      RENDERER_LIBS = $(SDL_LIBS) -lEGL -lGLESv1_CM -lbcm_host
-      SERVER_LIBS = -lbcm_host
-    else
-      BUILD_RENDERER_REND2 = 0
-      BASE_CFLAGS += -DUSE_OPENGLES
-      CLIENT_LIBS = $(SDL_LIBS)
-      RENDERER_LIBS = $(SDL_LIBS) -lEGL -lGLESv1_CM
-      SERVER_LIBS =
-    endif
+    BUILD_RENDERER_REND2 = 0
+    BASE_CFLAGS += -DUSE_OPENGLES
+    CLIENT_LIBS = $(SDL_LIBS)
+    RENDERER_LIBS = $(SDL_LIBS)
+    SERVER_LIBS =
   else
     CLIENT_CFLAGS += $(SDL_CFLAGS)
     CLIENT_LIBS += $(SDL_LIBS)

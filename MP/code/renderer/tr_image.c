@@ -969,7 +969,7 @@ static void Upload32(   unsigned *data,
 		}
 		R_LightScaleTexture (scaledBuffer, scaled_width, scaled_height, !mipmap );
 
-		glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, (mipmap)?GL_TRUE:GL_FALSE );
+		qglTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, (mipmap)?GL_TRUE:GL_FALSE );
 
 		// and now, convert if needed and upload
 		// GLES doesn't do convertion itself, so we have to handle that

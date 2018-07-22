@@ -976,8 +976,8 @@ void GL_SetDefaultState( void ) {
 	glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 
 #ifdef USE_OPENGLES
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	qglPixelStorei(GL_PACK_ALIGNMENT, 1);
+	qglPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 #else
 	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 #endif
@@ -1079,6 +1079,7 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
 	ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
 	ri.Printf( PRINT_ALL, "GL_EXTENSIONS: " );
+#ifndef USE_OPENGLES
 	if ( qglGetStringi )
 	{
 		GLint numExtensions;
@@ -1091,6 +1092,7 @@ void GfxInfo_f( void ) {
 		}
 	}
 	else
+#endif
 	{
 		R_PrintLongString( glConfig.extensions_string );
 	}

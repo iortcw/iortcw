@@ -342,7 +342,9 @@ RB_TestFlare
 ==================
 */
 void RB_TestFlare( flare_t *f ) {
+#ifndef USE_OPENGLES
 	float			depth;
+#endif
 	qboolean		visible;
 	float			fade;
 	float			screenZ;

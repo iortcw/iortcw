@@ -43,7 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 void myglMultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
 {
-	glMultiTexCoord4f(texture, s, t, 0, 1);
+	qglMultiTexCoord4f(texture, s, t, 0, 1);
 }
 #endif
 
@@ -257,6 +257,59 @@ static void GLimp_DetectAvailableModes(void)
 	SDL_free( modes );
 }
 
+#ifdef USE_OPENGLES
+/*
+===============
+OpenGL ES compatibility
+===============
+*/
+static void APIENTRY GLimp_GLES_ClearDepth( GLclampd depth ) {
+	qglClearDepthf( depth );
+}
+
+static void APIENTRY GLimp_GLES_ClipPlane( GLenum plane, const GLdouble *equation ) {
+	GLfloat values[4];
+	values[0] = equation[0];
+	values[1] = equation[1];
+	values[2] = equation[2];
+	values[3] = equation[3];
+	qglClipPlanef( plane, values );
+}
+
+static void APIENTRY GLimp_GLES_Color3f( GLfloat red, GLfloat green, GLfloat blue ) {
+	qglColor4f( red, green, blue, 1.0f );
+}
+
+static void APIENTRY GLimp_GLES_Color4ubv( const GLubyte *v ) {
+	qglColor4ub( v[0], v[1], v[2], v[3] );
+}
+
+static void APIENTRY GLimp_GLES_DepthRange( GLclampd near_val, GLclampd far_val ) {
+	qglDepthRangef( near_val, far_val );
+}
+
+static void APIENTRY GLimp_GLES_DrawBuffer( GLenum mode ) {
+	// unsupported
+}
+
+static void APIENTRY GLimp_GLES_Frustum( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val ) {
+	qglFrustumf( left, right, bottom, top, near_val, far_val );
+}
+
+static void APIENTRY GLimp_GLES_Ortho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val ) {
+	qglOrthof( left, right, bottom, top, near_val, far_val );
+}
+
+static void APIENTRY GLimp_GLES_PolygonMode( GLenum face, GLenum mode ) {
+	// unsupported
+}
+
+/*Added*/
+static void APIENTRY GLimp_GLES_Fogi( GLenum pname, GLint param ) {
+	qglFogf( pname, param );
+}
+#endif
+
 /*
 ===============
 GLimp_GetProcAddresses
@@ -315,8 +368,22 @@ static qboolean GLimp_GetProcAddresses( qboolean fixedFunction ) {
 			QGL_1_1_FIXED_FUNCTION_PROCS;
 			QGL_ES_1_1_PROCS;
 			QGL_ES_1_1_FIXED_FUNCTION_PROCS;
+
+#ifdef USE_OPENGLES
+			qglClearDepth = GLimp_GLES_ClearDepth;
+			qglClipPlane = GLimp_GLES_ClipPlane;
+			qglColor3f = GLimp_GLES_Color3f;
+			qglColor4ubv = GLimp_GLES_Color4ubv;
+			qglDepthRange = GLimp_GLES_DepthRange;
+			qglDrawBuffer = GLimp_GLES_DrawBuffer;
+			qglFrustum = GLimp_GLES_Frustum;
+			qglOrtho = GLimp_GLES_Ortho;
+			qglPolygonMode = GLimp_GLES_PolygonMode;
+			qglFogi = GLimp_GLES_Fogi; /*Added*/
+#else
 			// error so this doesn't segfault due to NULL desktop GL functions being used
 			Com_Error( ERR_FATAL, "Unsupported OpenGL Version: %s\n", version );
+#endif
 		} else {
 			Com_Error( ERR_FATAL, "Unsupported OpenGL Version (%s), OpenGL 1.2 is required\n", version );
 		}
@@ -682,6 +749,12 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 
 		SDL_SetWindowIcon( SDL_window, icon );
 
+#ifdef USE_OPENGLES
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
+
 		if (!fixedFunction)
 		{
 			int profileMask, majorVersion, minorVersion;
@@ -943,8 +1016,8 @@ static void GLimp_InitExtensions( qboolean fixedFunction )
 		//ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, %i texture units\n", glConfig.maxActiveTextures );
 		//glConfig.maxActiveTextures=4;
 		qglMultiTexCoord2fARB = myglMultiTexCoord2f;
-		qglActiveTextureARB = glActiveTexture;
-		qglClientActiveTextureARB = glClientActiveTexture;
+		qglActiveTextureARB = SDL_GL_GetProcAddress( "glActiveTexture" );
+		qglClientActiveTextureARB = SDL_GL_GetProcAddress( "glClientActiveTexture" );
 		if ( glConfig.numTextureUnits > 1 )
 		{
 			ri.Printf( PRINT_ALL, "...using GL_ARB_multitexture (%i texture units)\n", glConfig.numTextureUnits );
@@ -1114,6 +1187,7 @@ success:
 		glConfig.renderer_string[strlen(glConfig.renderer_string) - 1] = 0;
 	Q_strncpyz( glConfig.version_string, (char *) qglGetString (GL_VERSION), sizeof( glConfig.version_string ) );
 
+#ifndef USE_OPENGLES
 	// manually create extension list if using OpenGL 3
 	if ( qglGetStringi )
 	{
@@ -1141,6 +1215,7 @@ success:
 		}
 	}
 	else
+#endif
 	{
 		Q_strncpyz( glConfig.extensions_string, (char *) qglGetString (GL_EXTENSIONS), sizeof( glConfig.extensions_string ) );
 	}
