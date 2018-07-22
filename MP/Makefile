@@ -277,10 +277,6 @@ ifndef USE_OPENGLES
 USE_OPENGLES=0
 endif
 
-ifndef RASPBERRY_PI
-RASPBERRY_PI=0
-endif
-
 ifndef USE_PBMD5
 USE_PBMD5=1
 endif
