@@ -229,7 +229,6 @@ void R_ImageList_f( void ) {
 				break;
 #ifndef USE_OPENGLES
 			case GL_LUMINANCE8:
-			case GL_LUMINANCE16:
 #endif
 			case GL_LUMINANCE:
 				format = "L    ";
@@ -246,7 +245,6 @@ void R_ImageList_f( void ) {
 				break;
 #ifndef USE_OPENGLES
 			case GL_LUMINANCE8_ALPHA8:
-			case GL_LUMINANCE16_ALPHA16:
 #endif
 			case GL_LUMINANCE_ALPHA:
 				format = "LA   ";
@@ -917,10 +915,8 @@ static void Upload32(   unsigned *data,
 			if(r_greyscale->integer)
 			{
 #ifndef USE_OPENGLES
-				if(r_texturebits->integer == 16)
+				if(r_texturebits->integer == 16 || r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE8;
-				else if(r_texturebits->integer == 32)
-					internalFormat = GL_LUMINANCE16;
 				else
 #endif
 					internalFormat = GL_LUMINANCE;
@@ -961,10 +957,8 @@ static void Upload32(   unsigned *data,
 			if(r_greyscale->integer)
 			{
 #ifndef USE_OPENGLES
-				if(r_texturebits->integer == 16)
+				if(r_texturebits->integer == 16 || r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE8_ALPHA8;
-				else if(r_texturebits->integer == 32)
-					internalFormat = GL_LUMINANCE16_ALPHA16;
 				else
 #endif
 					internalFormat = GL_LUMINANCE_ALPHA;
