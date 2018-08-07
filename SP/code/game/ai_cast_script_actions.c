@@ -2342,17 +2342,24 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params ) {
 	}
 
 
+	// AR: if end game, normally fade, but if in cutscene, etc. just change level with def. delay
 	if ( !silent && !endgame ) {
+		trap_SendServerCommand( -1, va( "mu_fade 0 %d", 1000 + exitTime ) );
 		trap_SendServerCommand( -1, "mu_play sound/music/l_complete_1.wav 0\n" );   // play mission success music
+		//trap_SetConfigstring( CS_MUSIC_QUEUE, "" );  // don't try to start anything.  no level load music
 	}
-	trap_SetConfigstring( CS_MUSIC_QUEUE, "" );  // don't try to start anything.  no level load music
-
+	else {
+		trap_SendServerCommand( -1, va( "mu_fade 0 %d", 500 ) );
+		exitTime = -500;
+		//trap_SetConfigstring( CS_MUSIC_QUEUE, "" );  // don't try to start anything.  no level load music
+	}
+	
 	trap_SetConfigstring( CS_SCREENFADE, va( "1 %i %i", level.time + 250, 750 + exitTime ) ); // fade out screen
 
 	trap_SendServerCommand( -1, va( "snd_fade 0 %d", 1000 + exitTime ) ); //----(SA)	added
-
+	
 	// load the next map, after a delay
-	level.reloadDelayTime = level.time + 4000 + exitTime;
+	level.reloadDelayTime = level.time + 1000 + exitTime;
 	trap_Cvar_Set( "g_reloading", va( "%d", RELOAD_NEXTMAP_WAITING ) );
 
 	if ( endgame ) {
