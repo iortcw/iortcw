@@ -400,15 +400,8 @@ qboolean UI_ConsoleCommand( int realTime ) {
 	}
 
 	if ( Q_stricmp( cmd, "remapShader" ) == 0 ) {
-		if ( trap_Argc() == 4 ) {
-			char shader1[MAX_QPATH];
-			char shader2[MAX_QPATH];
-			char shader3[MAX_QPATH];
-			Q_strncpyz( shader1, UI_Argv( 1 ), sizeof( shader1 ) );
-			Q_strncpyz( shader2, UI_Argv( 2 ), sizeof( shader2 ) );
-			Q_strncpyz(shader3, UI_Argv(3), sizeof(shader3));
-			
-			trap_R_RemapShader(shader1, shader2, shader3);
+		if ( trap_Argc() == 4 ) {			
+			trap_R_RemapShader( UI_Argv( 1 ), UI_Argv( 2 ), UI_Argv( 3 ) );
 			return qtrue;
 		}
 	}

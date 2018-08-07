@@ -879,14 +879,14 @@ qboolean G_ScriptAction_FaceAngles( gentity_t *ent, char *params ) {
 		pString = params;
 		for ( i = 0; i < 3; i++ ) {
 			token = COM_Parse( &pString );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				G_Error( "G_Scripting: syntax: faceangles <pitch> <yaw> <roll> <duration/GOTOTIME>\n" );
 			}
 			angles[i] = atoi( token );
 		}
 
 		token = COM_Parse( &pString );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			G_Error( "G_Scripting: faceangles requires a <pitch> <yaw> <roll> <duration/GOTOTIME>\n" );
 		}
 		if ( !Q_strcasecmp( token, "gototime" ) ) {
@@ -982,7 +982,7 @@ qboolean G_ScriptAction_TagConnect( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_TagConnect: syntax: attachtotag <targetname> <tagname>\n" );
 	}
 
@@ -995,7 +995,7 @@ qboolean G_ScriptAction_TagConnect( gentity_t *ent, char *params ) {
 	}
 
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_TagConnect: syntax: attachtotag <targetname> <tagname>\n" );
 	}
 
@@ -1074,7 +1074,7 @@ qboolean G_ScriptStartCam( gentity_t *ent, char *params, qboolean black ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_Cam: filename parameter required\n" );
 	}
 
@@ -1152,7 +1152,7 @@ qboolean G_ScriptAction_AxisRespawntime( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_AxisRespawntime: time parameter required\n" );
 	}
 
@@ -1173,7 +1173,7 @@ qboolean G_ScriptAction_AlliedRespawntime( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_AlliedRespawntime: time parameter required\n" );
 	}
 
@@ -1197,7 +1197,7 @@ qboolean G_ScriptAction_NumberofObjectives( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_NumberofObjectives: number parameter required\n" );
 	}
 
@@ -1230,7 +1230,7 @@ qboolean G_ScriptAction_ObjectiveAxisDesc( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_ObjectiveAxisDesc: number parameter required\n" );
 	}
 
@@ -1240,7 +1240,7 @@ qboolean G_ScriptAction_ObjectiveAxisDesc( gentity_t *ent, char *params ) {
 	}
 
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_ObjectiveAxisDesc: description parameter required\n" );
 	}
 
@@ -1271,7 +1271,7 @@ qboolean G_ScriptAction_ObjectiveAlliedDesc( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_ObjectiveAlliedDesc: number parameter required\n" );
 	}
 
@@ -1281,7 +1281,7 @@ qboolean G_ScriptAction_ObjectiveAlliedDesc( gentity_t *ent, char *params ) {
 	}
 
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_ObjectiveAlliedDesc: description parameter required\n" );
 	}
 
@@ -1314,7 +1314,7 @@ qboolean G_ScriptAction_SetWinner( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_SetWinner: number parameter required\n" );
 	}
 
@@ -1349,7 +1349,7 @@ qboolean G_ScriptAction_SetObjectiveStatus( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_SetObjectiveStatus: number parameter required\n" );
 	}
 
@@ -1359,7 +1359,7 @@ qboolean G_ScriptAction_SetObjectiveStatus( gentity_t *ent, char *params ) {
 	}
 
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_SetObjectiveStatus: status parameter required\n" );
 	}
 
@@ -1392,7 +1392,7 @@ qboolean G_ScriptAction_Announce( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_Announce: statement parameter required\n" );
 	}
 
@@ -1429,7 +1429,7 @@ qboolean G_ScriptAction_SetRoundTimelimit( gentity_t *ent, char *params ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_SetRoundTimelimit: number parameter required\n" );
 	}
 
