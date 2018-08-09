@@ -407,6 +407,11 @@ CL_MouseEvent
 =================
 */
 void CL_MouseEvent( int dx, int dy, int time ) {
+	// AR: don't catch mouse input if console is active
+	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) {
+		return;
+	}
+	
 	if ( Key_GetCatcher( ) & KEYCATCH_UI ) {
 		VM_Call( uivm, UI_MOUSE_EVENT, dx, dy );
 	} else if (Key_GetCatcher( ) & KEYCATCH_CGAME) {

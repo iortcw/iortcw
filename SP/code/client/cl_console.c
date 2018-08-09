@@ -80,7 +80,7 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f( void ) {
 	// Can't toggle the console when it's the only thing available
-	if ( clc.state == CA_DISCONNECTED && Key_GetCatcher( ) == KEYCATCH_CONSOLE ) {
+	if ( clc.state == CA_DISCONNECTED && Key_GetCatcher() == KEYCATCH_CONSOLE ) {
 		return;
 	}
 
@@ -89,8 +89,12 @@ void Con_ToggleConsole_f( void ) {
 	}
 	g_consoleField.widthInChars = g_console_field_width;
 
+	// AR: pause the game in SP if ingame
+	Cvar_Set( "cl_paused", va("%d", (!(Cvar_Get( "cl_paused", "0", CVAR_ROM )->integer) || (Key_GetCatcher() > KEYCATCH_CONSOLE))));
+	
+
 	Con_ClearNotify();
-	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_CONSOLE );
+	Key_SetCatcher( Key_GetCatcher() ^ KEYCATCH_CONSOLE );
 }
 
 /*

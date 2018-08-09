@@ -675,7 +675,7 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		return Key_GetCatcher();
 	case CG_KEY_SETCATCHER:
 		// Don't allow the cgame module to close the console
-		Key_SetCatcher( args[1] | ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) );
+		Key_SetCatcher( args[1] | KEYCATCH_CONSOLE );
 		return 0;
 	case CG_KEY_GETKEY:
 		return Key_GetKey( VMA( 1 ) );

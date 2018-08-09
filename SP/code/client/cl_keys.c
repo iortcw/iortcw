@@ -1570,8 +1570,11 @@ void Console_Key( int key ) {
 
 	// enter finishes the line
 	if ( key == K_ENTER || key == K_KP_ENTER ) {
-		// if not in the game explicitly prepend a slash if needed
-		if ( clc.state != CA_ACTIVE && con_autochat->integer &&
+		// AR: changed this a little, as we are in SP, 
+		// 		no need to check if in game or not - execute commands directly
+		//// if not in the game explicitly prepend a slash if needed
+		//if ( clc.state != CA_ACTIVE && con_autochat->integer &&
+		if ( con_autochat->integer &&
 				g_consoleField.buffer[0] &&
 				g_consoleField.buffer[0] != '\\' &&
 				g_consoleField.buffer[0] != '/' ) {
@@ -1581,6 +1584,7 @@ void Console_Key( int key ) {
 			Com_sprintf( g_consoleField.buffer, sizeof( g_consoleField.buffer ), "\\%s", temp );
 			g_consoleField.cursor++;
 		}
+		// AR end
 
 		Com_Printf( "]%s\n", g_consoleField.buffer );
 
@@ -2232,15 +2236,7 @@ void CL_KeyDownEvent( int key, unsigned time )
 		return;
 	}
 
-	// console key is hardcoded, so the user can never unbind it
-	if( key == K_CONSOLE || ( keys[K_SHIFT].down && key == K_ESCAPE ) )
-	{
-		Con_ToggleConsole_f ();
-		Key_ClearStates ();
-		return;
-	}
-
-//----(SA)	added
+	//----(SA)	added
 	if ( cl.cameraMode ) {
 		if ( !( Key_GetCatcher( ) & ( KEYCATCH_UI | KEYCATCH_CONSOLE ) ) ) {    // let menu/console handle keys if necessary
 
@@ -2255,9 +2251,9 @@ void CL_KeyDownEvent( int key, unsigned time )
 			}
 
 			// eat all keys
-			if ( qtrue ) {
+			//if ( qtrue ) {
 				return;
-			}
+			//}
 		}
 
 		if ( ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) && key == K_ESCAPE ) {
@@ -2265,7 +2261,18 @@ void CL_KeyDownEvent( int key, unsigned time )
 			return;
 		}
 	}
-//----(SA)	end
+	//----(SA)	end
+
+	// AR: move this after cameraMode check so we don't open console when we have cinematic playing
+	// 		also, check if not cinematic playing!
+	//
+	// console key is hardcoded, so the user can never unbind it
+	if( ( key == K_CONSOLE || ( keys[K_SHIFT].down && key == K_ESCAPE ) ) && !( /*clc.demoplaying || */clc.state == CA_CINEMATIC ))
+	{
+		Con_ToggleConsole_f ();
+		Key_ClearStates ();
+		return;
+	}
 
 
 	// most keys during demo playback will bring up the menu, but non-ascii
@@ -2301,10 +2308,12 @@ void CL_KeyDownEvent( int key, unsigned time )
 		}
 
 		if ( !( Key_GetCatcher( ) & KEYCATCH_UI ) ) {
-			if ( clc.state == CA_ACTIVE && !clc.demoplaying ) {
+			// AR: don't open when console active
+			if ( clc.state == CA_ACTIVE && !clc.demoplaying && !(Key_GetCatcher() & KEYCATCH_CONSOLE)) {
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
 			}
-			else if ( clc.state != CA_DISCONNECTED ) {
+			// AR: disconnect only if quickDisconnect is set or in cinematic
+			else if ( ( clc.state != CA_DISCONNECTED ) && ( ( Cvar_Get( "com_quickDisconnect", "0", CVAR_ROM )->integer ) || ( clc.demoplaying || clc.state == CA_CINEMATIC ) ) ) {
 				CL_Disconnect_f();
 				S_StopAllSounds();
 				VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
@@ -2312,7 +2321,9 @@ void CL_KeyDownEvent( int key, unsigned time )
 			return;
 		}
 
-		VM_Call( uivm, UI_KEY_EVENT, key, qtrue );
+		// AR: if not console open, pass ESC to UI
+		if (!(Key_GetCatcher() & KEYCATCH_CONSOLE))
+			VM_Call( uivm, UI_KEY_EVENT, key, qtrue );
 		return;
 	}
 
