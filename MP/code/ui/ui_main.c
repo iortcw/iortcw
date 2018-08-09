@@ -7250,6 +7250,11 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			return;
 
 		case UIMENU_INGAME:
+      		// AR: don't allow openning menu during loading 
+      		if ( trap_Cvar_VariableValue( "savegame_loading" ) || trap_Cvar_VariableValue( "g_reloading" ) ) { 
+				return;
+			}
+			// AR end
 			trap_Key_SetCatcher( KEYCATCH_UI );
 			UI_BuildPlayerList();
 			Menus_CloseAll();
