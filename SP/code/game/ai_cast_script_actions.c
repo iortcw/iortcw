@@ -1669,7 +1669,7 @@ qboolean AICast_ScriptAction_FireAtTarget( cast_state_t *cs, char *params ) {
 	//
 	// do we need to stay and fire for a duration?
 	token = COM_ParseExt( &pString, qfalse );
-	if ( !token[0] ) {
+	if (  !token[0] ) {
 		return qtrue;   // no need to wait around
 	}
 	// only return true if we've been firing for long enough
@@ -1813,7 +1813,7 @@ qboolean AICast_ScriptAction_Accum( cast_state_t *cs, char *params ) {
 		}
 		cs->scriptAccumBuffer[bufferIndex] = atoi( token );
 	} else if ( !Q_stricmp( lastToken, "random" ) ) {
-		if ( !token[0] ) {
+		if (  !token[0] ) {
 			G_Error( "AI Scripting: accum %s requires a parameter\n", lastToken );
 		}
 		cs->scriptAccumBuffer[bufferIndex] = rand() % atoi( token );
@@ -2656,7 +2656,7 @@ qboolean ScriptStartCam( cast_state_t *cs, char *params, qboolean black ) {
 
 	pString = params;
 	token = COM_Parse( &pString );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_ScriptAction_Cam: filename parameter required\n" );
 	}
 

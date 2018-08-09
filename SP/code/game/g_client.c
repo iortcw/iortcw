@@ -2025,7 +2025,7 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
 
 	// get the model name
 	token = COM_Parse( &text_p );
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		G_Error( "G_RetrieveMoveSpeedsFromClient: internal error" );
 	}
 
@@ -2038,7 +2038,7 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
 
 	while ( 1 ) {
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			break;
 		}
 
@@ -2050,14 +2050,14 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char *text ) {
 
 		// get the movespeed
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			G_Error( "G_RetrieveMoveSpeedsFromClient: missing movespeed" );
 		}
 		anim->moveSpeed = atoi( token );
 
 		// get the stepgap
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			G_Error( "G_RetrieveMoveSpeedsFromClient: missing stepGap" );
 		}
 		anim->stepGap = atoi( token );
