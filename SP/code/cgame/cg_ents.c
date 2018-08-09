@@ -2406,12 +2406,12 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 	for ( i = CS_TAGCONNECTS + 1; i < CS_TAGCONNECTS + MAX_TAGCONNECTS; i++ ) {   // NOTE: +1 since G_FindConfigStringIndex() starts at index 1 rather than 0 (not sure why)
 		cs = (char *)CG_ConfigString( i );
 		token = COM_Parse( &cs );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			break;
 		}
 		if ( atoi( token ) == s1->number ) {
 			token = COM_Parse( &cs );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				CG_Error( "CG_EntityTagConnected: missing parameter in configstring" );
 			}
 			pi = atoi( token );
@@ -2421,7 +2421,7 @@ static void CG_AddEntityToTag( centity_t *cent ) {
 			centParent = &cg_entities[pi];
 			sParent = &( cg_entities[pi].currentState );
 			token = COM_Parse( &cs );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				CG_Error( "CG_EntityTagConnected: missing parameter in configstring" );
 			}
 

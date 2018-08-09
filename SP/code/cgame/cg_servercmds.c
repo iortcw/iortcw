@@ -285,7 +285,7 @@ static void CG_ParseFog( void ) {
 	token = COM_Parse( (char **)&info );    ne = atof( token );
 	token = COM_Parse( (char **)&info );
 
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		// set to  'no fog'
 		// 'FOG_MAP' is not registered, so it will always make fog go away
 		trap_R_SetFog( FOG_CMD_SWITCHFOG, FOG_MAP, (int)ne, 0, 0, 0, 0 );

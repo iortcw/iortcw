@@ -531,12 +531,12 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 	// read optional parameters
 	while ( 1 ) {
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			break;
 		}
 		if ( !Q_stricmp( token, "footsteps" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				break;
 			}
 			if ( !Q_stricmp( token, "default" ) || !Q_stricmp( token, "normal" ) ) {
@@ -556,7 +556,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 		} else if ( !Q_stricmp( token, "headoffset" ) ) {
 			for ( i = 0 ; i < 3 ; i++ ) {
 				token = COM_Parse( &text_p );
-				if ( !token[0] ) {
+				if ( !token || !token[0] ) {
 					break;
 				}
 				animModelInfo->headOffset[i] = atof( token );
@@ -564,7 +564,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			continue;
 		} else if ( !Q_stricmp( token, "sex" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				break;
 			}
 			if ( token[0] == 'f' || token[0] == 'F' ) {
@@ -577,7 +577,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			continue;
 		} else if ( !Q_stricmp( token, "version" ) ) {
 			token = COM_Parse( &text_p );
-			if ( !token[0] ) {
+			if ( !token || !token[0] ) {
 				break;
 			}
 			animModelInfo->version = atoi( token );
@@ -606,7 +606,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 	for ( i = 0 ; ( animModelInfo->version > 1 ) || ( i < MAX_ANIMATIONS ) ; i++ ) {
 
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			break;
 		}
 
@@ -722,7 +722,7 @@ qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *fil
 			for ( i = 0 ; i < MAX_HEAD_ANIMS ; i++ ) {
 
 				token = COM_Parse( &text_p );
-				if ( !token[0] ) {
+				if ( !token || !token[0] ) {
 					break;
 				}
 
@@ -1123,7 +1123,7 @@ void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scrip
 	while ( 1 ) {
 
 		token = COM_Parse( &text_p );
-		if ( !token[0] ) {
+		if ( !token || !token[0] ) {
 			if ( indentLevel ) {
 				BG_AnimParseError( "BG_AnimParseAnimScript: unexpected end of file: %s", token );
 			}
