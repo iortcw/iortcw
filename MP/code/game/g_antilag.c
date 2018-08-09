@@ -86,7 +86,7 @@ static void G_AdjustSingleClientPosition( gentity_t* ent, int time ) {
 		}
 
 		j = i;
-		i = ( i > 0 ) ? i - 1 : MAX_CLIENT_MARKERS;
+		i = ( ( i > 0 ) ? ( i ) : ( MAX_CLIENT_MARKERS ) ) - 1;
 	} while ( i != ent->client->topMarker );
 
 	if ( i == j ) { // oops, no valid stored markers
