@@ -285,7 +285,7 @@ static void CG_ParseFog( void ) {
 	token = COM_Parse( (char **)&info );    ne = atof( token );
 	token = COM_Parse( (char **)&info );
 
-	if ( !token[0] ) {
+	if ( !token || !token[0] ) {
 		// set to  'no fog'
 		// 'FOG_MAP' is not registered, so it will always make fog go away
 		trap_R_SetFog( FOG_CMD_SWITCHFOG, FOG_MAP, (int)ne, 0, 0, 0, 0 );
@@ -912,15 +912,7 @@ static void CG_ServerCommand( void ) {
 	{
 		if (trap_Argc() == 4)
 		{
-			char shader1[MAX_QPATH];
-			char shader2[MAX_QPATH];
-			char shader3[MAX_QPATH];
-
-			Q_strncpyz(shader1, CG_Argv(1), sizeof(shader1));
-			Q_strncpyz(shader2, CG_Argv(2), sizeof(shader2));
-			Q_strncpyz(shader3, CG_Argv(3), sizeof(shader3));
-
-			trap_R_RemapShader(shader1, shader2, shader3);
+			trap_R_RemapShader( CG_Argv( 1 ), CG_Argv( 2 ), CG_Argv( 3 ) );
 		}
 
 		return;
@@ -941,9 +933,7 @@ static void CG_ServerCommand( void ) {
 
 	// NERVE - SMF
 	if ( !Q_stricmp( cmd, "oid" ) ) {
-		int team = atoi( CG_Argv( 1 ) );
-
-		CG_ObjectivePrint( CG_Argv( 2 ), SMALLCHAR_WIDTH, team );
+		CG_ObjectivePrint( CG_Argv( 2 ), SMALLCHAR_WIDTH, atoi( CG_Argv( 1 ) ) );
 		return;
 	}
 	// -NERVE - SMF

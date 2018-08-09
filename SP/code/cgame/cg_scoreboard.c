@@ -38,9 +38,9 @@ CG_DrawScoreboard
 =================
 */
 static void CG_DrawClientScore( int x, int y, score_t *score, float *color, float fade ) {
-	char string[1024];
-	vec3_t headAngles;
-	clientInfo_t    *ci;
+	char			string[1024];
+	vec3_t			headAngles;
+	clientInfo_t	*ci;
 
 	if ( score->client < 0 || score->client >= cgs.maxclients ) {
 		Com_Printf( "Bad score->client: %i\n", score->client );
@@ -138,12 +138,12 @@ CG_TeamScoreboard
 =================
 */
 static int CG_TeamScoreboard( int x, int y, team_t team, float fade ) {
-	int i;
-	score_t *score;
-	float color[4];
-	int count;
-	int lineHeight;
-	clientInfo_t    *ci;
+	int				i;
+	score_t			*score;
+	float			color[4];
+	int				count;
+	int				lineHeight;
+	clientInfo_t	*ci;
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = fade;
@@ -219,9 +219,9 @@ WM_TeamScoreboard
 =================
 */
 static int WM_TeamScoreboard( int x, int y, team_t team, float fade ) {
-	vec4_t hcolor;
-	float tempx;
-	int i;
+	vec4_t	hcolor;
+	float	tempx;
+	int		i;
 
 	hcolor[3] = fade;
 	if ( team == TEAM_RED ) {
@@ -434,8 +434,8 @@ Draw the normal in-game scoreboard
 =================
 */
 qboolean CG_DrawScoreboard( void ) {
-	int x = 0, y = 0, w;
-	float fade;
+	int		x = 0, y = 0, w;     // TTimo init
+	float	fade;
 	float   *fadeColor;
 	char    *s;
 

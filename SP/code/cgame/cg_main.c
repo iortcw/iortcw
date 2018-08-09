@@ -1844,12 +1844,12 @@ qboolean CG_Load_Menu( char **p ) {
 
 		token = COM_ParseExt( p, qtrue );
 
-		if ( Q_stricmp( token, "}" ) == 0 ) {
-			return qtrue;
-		}
-
 		if ( !token[0] ) {
 			return qfalse;
+		}
+
+		if ( Q_stricmp( token, "}" ) == 0 ) {
+			return qtrue;
 		}
 
 		CG_ParseMenu( token );
