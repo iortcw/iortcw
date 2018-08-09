@@ -708,12 +708,12 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 		if ( !bot_enable ) {
 			bot_enable = Cvar_Get( "bot_enable", "1", CVAR_LATCH );
 		}
-		if ( g_gametype->integer == 2 ) {
+		if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
 			if ( sv_maxclients->latchedString ) {
 				// it's been modified, so grab the new value
 				Cvar_Get( "sv_maxclients", "8", 0 );
 			}
-			if ( sv_maxclients->integer < MAX_CLIENTS ) {
+			if ( sv_maxclients->integer < MAX_SP_CLIENTS ) {
 				Cvar_SetValue( "sv_maxclients", MAX_SP_CLIENTS );
 			}
 			if ( !bot_enable->integer ) {
