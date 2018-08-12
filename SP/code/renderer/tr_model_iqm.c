@@ -1245,7 +1245,7 @@ void RB_IQMSurfaceAnim( surfaceType_t *surface ) {
 			float *vtxMat = &influenceVtxMat[12*i];
 			float *nrmMat = &influenceNrmMat[9*i];
 			int	j;
-			float	blendWeights[4];
+			float	blendWeights[4] = {0};
 			int		numWeights;
 
 			for ( numWeights = 0; numWeights < 4; numWeights++ ) {
