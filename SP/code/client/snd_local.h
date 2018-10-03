@@ -52,7 +52,7 @@ typedef	struct sndBuffer_s {
 typedef struct sfx_s {
 	sndBuffer		*soundData;
 	qboolean		defaultSound;			// couldn't be loaded, so use buzz
-	qboolean		inMemory;				// not in Memory
+	qboolean		inMemory;			// not in Memory
 	qboolean		soundCompressed;		// not in Memory
 	int				soundCompressionMethod;	
 	int 			soundLength;
@@ -64,7 +64,8 @@ typedef struct sfx_s {
 
 typedef struct {
 	int			channels;
-	int			samples;				// mono samples in buffer
+	int			samples;			// mono samples in buffer
+	int			fullsamples;			// samples with all channels in buffer (samples divided by channels)
 	int			submission_chunk;		// don't mix less than this #
 	int			samplebits;
 	int			isfloat;

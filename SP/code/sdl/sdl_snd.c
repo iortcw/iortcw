@@ -188,9 +188,6 @@ qboolean SNDDMA_Init(void)
 	SDL_AudioSpec desired;
 	SDL_AudioSpec obtained;
 	int tmp;
-#ifdef USE_SDL_AUDIO_CAPTURE
-	SDL_version sdlVersion;
-#endif
 
 	if (snd_inited)
 		return qtrue;
@@ -267,20 +264,15 @@ qboolean SNDDMA_Init(void)
 	if (!tmp)
 		tmp = (obtained.samples * obtained.channels) * 10;
 
-	if (tmp & (tmp - 1))  // not a power of two? Seems to confuse something.
-	{
-		int val = 1;
-		while (val < tmp)
-			val <<= 1;
-
-		tmp = val;
-	}
+	// samples must be divisible by number of channels
+	tmp -= tmp % obtained.channels;
 
 	dmapos = 0;
 	dma.samplebits = SDL_AUDIO_BITSIZE(obtained.format);
 	dma.isfloat = SDL_AUDIO_ISFLOAT(obtained.format);
 	dma.channels = obtained.channels;
 	dma.samples = tmp;
+	dma.fullsamples = dma.samples / dma.channels;
 	dma.submission_chunk = 1;
 	dma.speed = obtained.freq;
 	dmasize = (dma.samples * (dma.samplebits/8));
@@ -289,11 +281,10 @@ qboolean SNDDMA_Init(void)
 #ifdef USE_SDL_AUDIO_CAPTURE
 	// !!! FIXME: some of these SDL_OpenAudioDevice() values should be cvars.
 	s_sdlCapture = Cvar_Get( "s_sdlCapture", "1", CVAR_ARCHIVE | CVAR_LATCH );
-	// !!! FIXME: hopefully pulseaudio capture will be fixed in SDL 2.0.9... https://bugzilla.libsdl.org/show_bug.cgi?id=4087
-	SDL_GetVersion(&sdlVersion);
-	if (sdlVersion.major == 2 && sdlVersion.minor == 0 && sdlVersion.patch < 9 && Q_stricmp(SDL_GetCurrentAudioDriver(), "pulseaudio") == 0)
+	// !!! FIXME: pulseaudio capture records audio the entire time the program is running. https://bugzilla.libsdl.org/show_bug.cgi?id=4087
+	if (Q_stricmp(SDL_GetCurrentAudioDriver(), "pulseaudio") == 0)
 	{
-		Com_Printf("SDL audio capture support disabled (pulseaudio capture does not work correctly with SDL %d.%d.%d)\n", sdlVersion.major, sdlVersion.minor, sdlVersion.patch);
+		Com_Printf("SDL audio capture support disabled for pulseaudio (https://bugzilla.libsdl.org/show_bug.cgi?id=4087)\n");
 	}
 	else if (!s_sdlCapture->integer)
 	{

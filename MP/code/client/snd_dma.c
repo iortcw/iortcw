@@ -1445,9 +1445,6 @@ void S_GetSoundtime(void)
 	int		samplepos;
 	static	int		buffers;
 	static	int		oldsamplepos;
-	int		fullsamples;
-	
-	fullsamples = dma.samples / dma.channels;
 
 	if( CL_VideoRecording( ) )
 	{
@@ -1471,13 +1468,13 @@ void S_GetSoundtime(void)
 		if (s_paintedtime > 0x40000000)
 		{	// time to chop things off to avoid 32 bit limits
 			buffers = 0;
-			s_paintedtime = fullsamples;
+			s_paintedtime = dma.fullsamples;
 			S_Base_StopAllSounds ();
 		}
 	}
 	oldsamplepos = samplepos;
 
-	s_soundtime = buffers*fullsamples + samplepos/dma.channels;
+	s_soundtime = buffers*dma.fullsamples + samplepos/dma.channels;
 
 #if 0
 // check to make sure that we haven't overshot
@@ -1498,7 +1495,7 @@ void S_GetSoundtime(void)
 
 void S_Update_(void) {
 	unsigned        endtime;
-	int				samps, i;
+	int				i;
 	static			float	lastTime = 0.0f;
 	float			ma, op;
 	float			thisTime, sane;
@@ -1552,9 +1549,8 @@ void S_Update_(void) {
 		& ~(dma.submission_chunk-1);
 
 	// never mix more than the complete buffer
-	samps = dma.samples >> (dma.channels-1);
-	if (endtime - s_soundtime > samps)
-		endtime = s_soundtime + samps;
+	if (endtime - s_soundtime > dma.fullsamples)
+		endtime = s_soundtime + dma.fullsamples;
 
 	SNDDMA_BeginPainting ();
 
