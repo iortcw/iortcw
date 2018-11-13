@@ -829,7 +829,18 @@ intptr_t CL_CgameSystemCalls( intptr_t *args ) {
 		// - NERVE - SMF
 
 	case CG_GETMODELINFO:
-		return SV_GetModelInfo( args[1], VMA( 2 ), VMA( 3 ) );
+		if ( VM_IsNative( cgvm ) ) {
+			return SV_GetModelInfo( args[1], VMA( 2 ), VMA( 3 ) );
+		} else {
+			// The intention of the syscall is to set a CGame pointer to Game VM memory
+			// to reduce memory usage and load time. This is not possible for CGame QVM
+			// due to QVM pointers being an offset in QVM's memory and each QVM using a
+			// separate memory block. There is additional issues if Game VM is a DLL,
+			// see SV_GetModelInfo().
+			// It seems like the best solution is to just make CGame QVM load the animation
+			// file for itself. --zturtleman
+			return qfalse;
+		}
 
 	// New in IORTCW
 	case CG_ALLOC:

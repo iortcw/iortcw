@@ -551,7 +551,23 @@ BotImport_AICast_VisibleFromPos
 */
 qboolean BotImport_AICast_VisibleFromPos(   vec3_t srcpos, int srcnum,
 											vec3_t destpos, int destnum, qboolean updateVisPos ) {
-	return VM_Call( gvm, AICAST_VISIBLEFROMPOS, srcpos, srcnum, destpos, destnum, updateVisPos );
+	if ( VM_IsNative( gvm ) ) {
+		return VM_Call( gvm, AICAST_VISIBLEFROMPOS, srcpos, srcnum, destpos, destnum, updateVisPos );
+	} else {
+		qboolean ret;
+		unsigned gSrcPos;
+		unsigned gDestPos;
+
+		gSrcPos = VM_GetTempMemory( gvm, sizeof(vec3_t), srcpos );
+		gDestPos = VM_GetTempMemory( gvm, sizeof(vec3_t), destpos );
+
+		ret = VM_Call( gvm, AICAST_VISIBLEFROMPOS, gSrcPos, srcnum, gDestPos, destnum, updateVisPos );
+
+		VM_FreeTempMemory( gvm, gDestPos, sizeof(vec3_t), destpos );
+		VM_FreeTempMemory( gvm, gSrcPos, sizeof(vec3_t), srcpos );
+
+		return ret;
+	}
 }
 
 /*
@@ -560,7 +576,20 @@ BotImport_AICast_CheckAttackAtPos
 ===============
 */
 qboolean BotImport_AICast_CheckAttackAtPos( int entnum, int enemy, vec3_t pos, qboolean ducking, qboolean allowHitWorld ) {
-	return VM_Call( gvm, AICAST_CHECKATTACKATPOS, entnum, enemy, pos, ducking, allowHitWorld );
+	if ( VM_IsNative( gvm ) ) {
+		return VM_Call( gvm, AICAST_CHECKATTACKATPOS, entnum, enemy, pos, ducking, allowHitWorld );
+	} else {
+		qboolean ret;
+		unsigned gPos;
+
+		gPos = VM_GetTempMemory( gvm, sizeof(vec3_t), pos );
+
+		ret = VM_Call( gvm, AICAST_CHECKATTACKATPOS, entnum, enemy, gPos, ducking, allowHitWorld );
+
+		VM_FreeTempMemory( gvm, gPos, sizeof(vec3_t), pos );
+
+		return ret;
+	}
 }
 // done.
 
