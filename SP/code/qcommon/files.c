@@ -3199,10 +3199,13 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	int i;
 	searchpath_t    *search;
 	pack_t          *pak;
-	char            *pakfile;
+	char			curpath[MAX_OSPATH + 1], *pakfile;
 	int numfiles;
 	char            **pakfiles;
 	char            *sorted[MAX_PAKFILES];
+
+	Q_strncpyz(curpath, FS_BuildOSPath(path, dir, ""), sizeof(curpath));
+	curpath[strlen(curpath) - 1] = '\0';	// strip the trailing slash
 
 	// this fixes the case where fs_basepath is the same as fs_cdpath
 	// which happens on full installs
@@ -3221,6 +3224,7 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	search->dir = Z_Malloc( sizeof( *search->dir ) );
 
 	Q_strncpyz( search->dir->path, path, sizeof( search->dir->path ) );
+	Q_strncpyz( search->dir->fullpath, curpath, sizeof( search->dir->fullpath ) );
 	Q_strncpyz( search->dir->gamedir, dir, sizeof( search->dir->gamedir ) );
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
