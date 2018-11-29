@@ -2444,6 +2444,18 @@ void Com_Init( char *commandLine ) {
 	// add + commands from command line
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
+		if ( !com_dedicated->integer ) {
+#ifdef CINEMATICS_LOGO
+			//Cbuf_AddText ("cinematic " CINEMATICS_LOGO "\n");
+#endif
+#ifdef CINEMATICS_INTRO
+			if ( !com_introPlayed->integer ) {
+				//Cvar_Set( com_introPlayed->name, "1" );		//----(SA)	force this to get played every time (but leave cvar for override)
+				Cbuf_AddText( "cinematic " CINEMATICS_INTRO " 3\n" );
+				//Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
+			}
+#endif
+		}
 	}
 
 	// start in full screen ui mode
@@ -2454,19 +2466,6 @@ void Com_Init( char *commandLine ) {
 	if ( !com_recommendedSet->integer ) {
 		Com_SetRecommended( qtrue );
 		Cvar_Set( "com_recommendedSet", "1" );
-	}
-
-	if ( !com_dedicated->integer ) {
-#ifdef CINEMATICS_LOGO
-		//Cbuf_AddText ("cinematic " CINEMATICS_LOGO "\n");
-#endif
-#ifdef CINEMATICS_INTRO
-		if ( !com_introPlayed->integer ) {
-			//Cvar_Set( com_introPlayed->name, "1" );		//----(SA)	force this to get played every time (but leave cvar for override)
-			Cbuf_AddText( "cinematic " CINEMATICS_INTRO " 3\n" );
-			//Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
-		}
-#endif
 	}
 
 	com_fullyInitialized = qtrue;

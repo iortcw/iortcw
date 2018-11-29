@@ -2896,6 +2896,17 @@ void Com_Init( char *commandLine ) {
 	// add + commands from command line
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
+		if ( !com_dedicated->integer ) {
+#ifdef CINEMATICS_LOGO
+			Cbuf_AddText( "cinematic " CINEMATICS_LOGO "\n" );
+#endif
+#ifdef CINEMATICS_INTRO
+			if ( !com_introPlayed->integer ) {
+				Cvar_Set( com_introPlayed->name, "1" );
+				Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
+			}
+#endif
+		}
 	}
 
 	// start in full screen ui mode
@@ -2909,18 +2920,6 @@ void Com_Init( char *commandLine ) {
 		Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 	}
 	Cvar_Set( "com_recommendedSet", "1" );
-
-	if ( !com_dedicated->integer ) {
-#ifdef CINEMATICS_LOGO
-		Cbuf_AddText( "cinematic " CINEMATICS_LOGO "\n" );
-#endif
-#ifdef CINEMATICS_INTRO
-		if ( !com_introPlayed->integer ) {
-			Cvar_Set( com_introPlayed->name, "1" );
-			Cvar_Set( "nextmap", "cinematic " CINEMATICS_INTRO );
-		}
-#endif
-	}
 
 	com_fullyInitialized = qtrue;
 
