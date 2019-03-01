@@ -1888,6 +1888,7 @@ void RE_TakeVideoFrame( int width, int height,
 
 void R_DrawElements( int numIndexes, const glIndex_t *indexes );
 void VectorArrayNormalize( vec4_t *normals, unsigned int count );
+void R_BindAnimatedImage( textureBundle_t *bundle );
 
 #ifdef idppc_altivec
 void LerpMeshVertexes_altivec( md3Surface_t *surf, float backlerp );

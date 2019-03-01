@@ -239,7 +239,7 @@ R_BindAnimatedImage
 
 =================
 */
-static void R_BindAnimatedImage( textureBundle_t *bundle ) {
+void R_BindAnimatedImage( textureBundle_t *bundle ) {
 	int64_t index;
 
 	if ( bundle->isVideoMap ) {
