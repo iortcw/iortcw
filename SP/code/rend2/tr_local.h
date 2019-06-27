@@ -1825,6 +1825,7 @@ extern qboolean  textureFilterAnisotropic;
 extern int       maxAnisotropy;
 extern glRefConfig_t glRefConfig;
 extern float     displayAspect;
+extern qboolean  haveClampToEdge;
 
 //
 // cvars

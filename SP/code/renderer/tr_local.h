@@ -1142,6 +1142,7 @@ extern glstate_t glState;           // outside of TR since it shouldn't be clear
 extern qboolean  textureFilterAnisotropic;
 extern int       maxAnisotropy;
 extern float     displayAspect;
+extern qboolean  haveClampToEdge;
 
 //
 // cvars
