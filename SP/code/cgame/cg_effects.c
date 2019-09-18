@@ -519,6 +519,8 @@ void CG_LoseHat( centity_t *cent, vec3_t dir ) {
 		return;
 	}
 
+	CG_GetOriginForTag( cent, &cent->pe.headRefEnt, "tag_mouth", 0, origin, NULL );
+
 	velocity[0] = dir[0] * ( 0.75 + random() ) * GIB_VELOCITY;
 	velocity[1] = dir[1] * ( 0.75 + random() ) * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP - 50 + dir[2] * ( 0.5 + random() ) * GIB_VELOCITY;
