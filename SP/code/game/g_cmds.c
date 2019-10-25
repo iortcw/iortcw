@@ -1494,6 +1494,22 @@ void Cmd_Activate_f( gentity_t *ent ) {
 
 	traceEnt = &g_entities[ tr.entityNum ];
 
+	if ( traceEnt->classname && Q_stricmp( traceEnt->classname, "trigger_hurt" ) == 0 ) {
+		// ignore trigger_hurt so it's possible to pickup chalice (-1472 -3472 284) at the end of map crypt2
+		trap_Trace( &tr, tr.endpos, NULL, NULL, end, tr.entityNum, ( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE | CONTENTS_TRIGGER ) );
+
+		// muzzle and trigger_hurt are in player bbox?
+		if ( tr.entityNum == ent->s.number ) {
+			return;
+		}
+	}
+
+	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
+		return;
+	}
+
+	traceEnt = &g_entities[ tr.entityNum ];
+
 	// G_Printf( "%s activate %s\n", ent->classname, traceEnt->classname);
 
 	// Ridah, check for using a friendly AI
