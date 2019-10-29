@@ -493,6 +493,19 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 	trap_Trace( tr, offset, NULL, NULL, end, ps->clientNum, trace_contents );
 	// dhm - end
 
+	traceEnt = &g_entities[tr->entityNum];
+
+	if ( traceEnt->classname && Q_stricmp( traceEnt->classname, "trigger_hurt" ) == 0 ) {
+		// ignore trigger_hurt so it's possible to pickup chalice (-1472 -3472 284) at the end of map crypt2
+		trap_Trace( tr, tr->endpos, NULL, NULL, end, tr->entityNum, trace_contents );
+
+		// muzzle and trigger_hurt are in player bbox?
+		if ( tr->entityNum == ps->clientNum ) {
+			tr->entityNum = ENTITYNUM_NONE;
+			tr->fraction = 1;
+		}
+	}
+
 	// reset all
 	hintType    = ps->serverCursorHint      = HINT_NONE;
 	hintVal     = ps->serverCursorHintVal   = 0;
