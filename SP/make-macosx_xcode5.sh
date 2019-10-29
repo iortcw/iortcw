@@ -118,6 +118,8 @@ echo "
 		<dict/>
 		<key>NSPrincipalClass</key>
 		<string>NSApplication</string>
+		<key>NSHighResolutionCapable</key>
+		<false/>
 	</dict>
 	</plist>
 	" > $DESTDIR/$APPBUNDLE/Contents/Info.plist
