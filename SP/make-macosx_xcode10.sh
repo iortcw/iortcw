@@ -131,7 +131,6 @@ if [ "$TIGERHOST" == "1" ]; then
 		<dict/>
 		<key>NSPrincipalClass</key>
 		<string>NSApplication</string>
-		<false/>
 	</dict>
 	</plist>
 	" > $DESTDIR/$APPBUNDLE/Contents/Info.plist
