@@ -262,7 +262,7 @@ USE_YACC=0
 endif
 
 ifndef DEBUG_CFLAGS
-DEBUG_CFLAGS=-g -O0
+DEBUG_CFLAGS=-g -ggdb -O0
 endif
 
 ifndef USE_ANTIWALLHACK
@@ -391,15 +391,15 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
   OPTIMIZEVM = -O3
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  OPTIMIZE = $(OPTIMIZEVM)
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
   endif
   ifeq ($(ARCH),ppc)
     ALTIVEC_CFLAGS = -maltivec
@@ -416,8 +416,6 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
   endif
   ifeq ($(ARCH),alpha)
-    # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
-    # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
 
@@ -581,7 +579,7 @@ ifeq ($(PLATFORM),darwin)
     CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib $(LIBSDIR)/macosx/libopenal.dylib
   endif
 
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  OPTIMIZE = $(OPTIMIZEVM)
 
   SHLIBEXT=dylib
   SHLIBCFLAGS=-fPIC -fno-common
@@ -669,12 +667,12 @@ ifdef MINGW
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
     FILE_ARCH=x64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
   endif
 
   SHLIBEXT=dll
@@ -767,16 +765,16 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
   OPTIMIZEVM = -O3
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  OPTIMIZE = $(OPTIMIZEVM)
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
     FILE_ARCH = amd64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+    OPTIMIZE = $(OPTIMIZEVM)
   endif
   ifeq ($(ARCH),ppc)
     ALTIVEC_CFLAGS = -maltivec
@@ -793,8 +791,6 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
     OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
   endif
   ifeq ($(ARCH),alpha)
-    # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
-    # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
 
@@ -888,7 +884,7 @@ ifeq ($(PLATFORM),sunos)
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
   endif
 
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  OPTIMIZE = $(OPTIMIZEVM)
 
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
@@ -1014,9 +1010,9 @@ ifneq ($(BUILD_GAME_SO),0)
 	$(B)/$(BASEGAME)/ui_mp_$(SHLIBNAME)
    else
    TARGETS += \
-        $(B)/$(BASEGAME)/cgame.mp.$(SHLIBNAME) \
-        $(B)/$(BASEGAME)/qagame.mp.$(SHLIBNAME) \
-        $(B)/$(BASEGAME)/ui.mp.$(SHLIBNAME)
+    $(B)/$(BASEGAME)/cgame.mp.$(SHLIBNAME) \
+    $(B)/$(BASEGAME)/qagame.mp.$(SHLIBNAME) \
+    $(B)/$(BASEGAME)/ui.mp.$(SHLIBNAME)
    endif
   endif
 endif
@@ -1344,6 +1340,16 @@ else
   print_wrapped=$(print_list)
 endif
 
+# AR: define strip targets
+TARGETS_DONTSTRIP= \
+	$(B)/$(BASEGAME)/vm/cgame.mp.qvm \
+	$(B)/$(BASEGAME)/vm/qagame.mp.qvm \
+	$(B)/$(BASEGAME)/vm/ui.mp.qvm
+
+TARGETS_STRIP=$(filter-out $(TARGETS_DONTSTRIP),$(TARGETS))
+# AR end
+
+
 # Create the build directories, check libraries and print out
 # an informational message, then start building
 targets: makedirs
@@ -1399,6 +1405,16 @@ else
     endif
   endif
 endif
+# AR: add this to shrink release size
+ifeq ($(B),$(BR)) 
+	@echo ""
+	@echo "Stripping output files..."
+	$(call print_list, $(TARGETS_STRIP))
+	@strip $(TARGETS_STRIP)
+	@echo "Stripping done!"
+	@echo ""
+endif
+# AR end
 
 $(B).zip: $(TARGETS)
 	@rm -f $@
