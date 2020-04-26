@@ -3,10 +3,8 @@
 #
 # GNU Make required
 #
-
 COMPILE_PLATFORM=$(shell uname | sed -e 's/_.*//' | tr '[:upper:]' '[:lower:]' | sed -e 's/\//_/g')
 COMPILE_ARCH=$(shell uname -m | sed -e 's/i.86/x86/' | sed -e 's/^arm.*/arm/')
-ARM_VER_CHECK=$(shell uname -m)
 
 ifeq ($(COMPILE_PLATFORM),sunos)
   # Solaris uname and GNU uname differ
@@ -262,7 +260,7 @@ USE_YACC=0
 endif
 
 ifndef DEBUG_CFLAGS
-DEBUG_CFLAGS=-g -O0
+DEBUG_CFLAGS=-ggdb -O0
 endif
 
 ifndef USE_ANTIWALLHACK
@@ -374,7 +372,6 @@ endif
 # SETUP AND BUILD -- LINUX
 #############################################################################
 
-## Defaults
 INSTALL=install
 MKDIR=mkdir -p
 EXTRA_FILES=
@@ -385,7 +382,6 @@ ifneq (,$(findstring "$(COMPILE_PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu
 endif
 
 ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu"))
-
   BASE_CFLAGS = -Wall -fno-strict-aliasing \
     -pipe -DUSE_ICON -DARCH_STRING=\\\"$(FILE_ARCH)\\\"
   CLIENT_CFLAGS += $(SDL_CFLAGS)
@@ -396,11 +392,11 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-  endif
+  else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-  endif
+  else
   ifeq ($(ARCH),ppc)
     ALTIVEC_CFLAGS = -maltivec
   endif
@@ -419,6 +415,8 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
     # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
+  endif
+  endif
   endif
 
   SHLIBEXT=so
@@ -485,31 +483,44 @@ ifeq ($(PLATFORM),darwin)
   LIBS = -framework Cocoa
   CLIENT_LIBS=
   RENDERER_LIBS=
-  OPTIMIZEVM= -O3
+  OPTIMIZEVM = -O3
 
-  BASE_CFLAGS = -Wall
+  # Default minimum Mac OS X version
+  ifeq ($(MACOSX_VERSION_MIN),)
+    MACOSX_VERSION_MIN=10.7
+  endif
+
+  MACOSX_MAJOR=$(shell echo $(MACOSX_VERSION_MIN) | cut -d. -f1)
+  MACOSX_MINOR=$(shell echo $(MACOSX_VERSION_MIN) | cut -d. -f2)
+  ifeq ($(shell test $(MACOSX_MINOR) -gt 9; echo $$?),0)
+    # Multiply and then remove decimal. 10.10 -> 101000.0 -> 101000
+    MAC_OS_X_VERSION_MIN_REQUIRED=$(shell echo "$(MACOSX_MAJOR) * 10000 + $(MACOSX_MINOR) * 100" | bc | cut -d. -f1)
+  else
+    # Multiply by 100 and then remove decimal. 10.7 -> 1070.0 -> 1070
+    MAC_OS_X_VERSION_MIN_REQUIRED=$(shell echo "$(MACOSX_VERSION_MIN) * 100" | bc | cut -d. -f1)
+  endif
+
+  LDFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+  BASE_CFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN) \
+                 -DMAC_OS_X_VERSION_MIN_REQUIRED=$(MAC_OS_X_VERSION_MIN_REQUIRED)
 
   ifeq ($(ARCH),ppc)
-    BASE_CFLAGS += -arch ppc -mmacosx-version-min=10.5 \
-      -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
+    BASE_CFLAGS += -arch ppc
     ALTIVEC_CFLAGS = -faltivec
   endif
   ifeq ($(ARCH),ppc64)
-    BASE_CFLAGS += -arch ppc64 -mmacosx-version-min=10.5 \
-      -DMAC_OS_X_VERSION_MIN_REQUIRED=1050 -DMAC_OS_X_VERSION_MAX_ALLOWED=1060
+    BASE_CFLAGS += -arch ppc64
     ALTIVEC_CFLAGS = -faltivec
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=prescott -mfpmath=sse
     # x86 vm will crash without -mstackrealign since MMX instructions will be
     # used no matter what and they corrupt the frame pointer in VM calls
-    BASE_CFLAGS += -arch i386 -mstackrealign -mmacosx-version-min=10.6 \
-      -DMAC_OS_X_VERSION_MIN_REQUIRED=1060
+    BASE_CFLAGS += -arch i386 -m32 -mstackrealign
   endif
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM += -mfpmath=sse
-    BASE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.6 \
-      -DMAC_OS_X_VERSION_MIN_REQUIRED=1060
+    BASE_CFLAGS += -arch x86_64
   endif
 
   # When compiling on OSX for OSX, we're not cross compiling as far as the
@@ -520,13 +531,13 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifeq ($(CROSS_COMPILING),1)
-    ifeq ($(ARCH),ppc)
-      CC=powerpc-apple-darwin10-gcc
-      RANLIB=powerpc-apple-darwin10-ranlib
+    ifeq ($(ARCH),x86_64)
+      CC=x86_64-apple-darwin13-cc
+      RANLIB=x86_64-apple-darwin13-ranlib
     else
       ifeq ($(ARCH),x86)
-        CC=i686-apple-darwin10-gcc
-        RANLIB=i686-apple-darwin10-ranlib
+        CC=i386-apple-darwin13-cc
+        RANLIB=i386-apple-darwin13-ranlib
       else
         $(error Architecture $(ARCH) is not supported when cross compiling)
       endif
@@ -536,10 +547,14 @@ ifeq ($(PLATFORM),darwin)
   BASE_CFLAGS += -fno-strict-aliasing -fno-common -pipe
 
   ifeq ($(USE_OPENAL),1)
+    ifneq ($(USE_LOCAL_HEADERS),1)
+      CLIENT_CFLAGS += -I/System/Library/Frameworks/OpenAL.framework/Headers
+    endif
     ifneq ($(USE_OPENAL_DLOPEN),1)
       ifneq ($(USE_INTERNAL_LIBS),1)
         CLIENT_CFLAGS += $(OPENAL_CFLAGS)
         CLIENT_LIBS += $(THREAD_LIBS) $(OPENAL_LIBS)
+        CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libopenal.dylib
       else
         CLIENT_LIBS += -framework OpenAL
       endif
@@ -555,30 +570,28 @@ ifeq ($(PLATFORM),darwin)
 
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
-  ifeq ($(USE_LOCAL_HEADERS),1)
-    ifneq ($(findstring $(ARCH),ppc ppc64),)
-      CLIENT_CFLAGS += -I$(SDLHDIR)/include-2.0.1
-    else
-      CLIENT_CFLAGS += -I$(SDLHDIR)/include
-    endif
-  else
-    CLIENT_CFLAGS += $(SDL_CFLAGS)
-  endif
+  CLIENT_LIBS += -framework IOKit
+  RENDERER_LIBS += -framework OpenGL
 
-  # We copy sdlmain before ranlib'ing it so that subversion doesn't think
-  #  the file has been modified by each build.
-  ifeq ($(USE_INTERNAL_LIBS),1)
+  ifeq ($(USE_LOCAL_HEADERS),1)
+    # libSDL2-2.0.0.dylib for PPC is SDL 2.0.1 + changes to compile
+    ifneq ($(findstring $(ARCH),ppc ppc64),)
+      BASE_CFLAGS += -I$(SDLHDIR)/include-2.0.1
+    else
+      BASE_CFLAGS += -I$(SDLHDIR)/include
+    endif
+
+    # We copy sdlmain before ranlib'ing it so that subversion doesn't think
+    #  the file has been modified by each build.
     LIBSDLMAIN=$(B)/libSDL2main.a
     LIBSDLMAINSRC=$(LIBSDIR)/macosx/libSDL2main.a
-    CLIENT_LIBS += -framework IOKit $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
-    RENDERER_LIBS += -framework OpenGL $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
+    CLIENT_LIBS += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
+    RENDERER_LIBS += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
+    CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib
   else
-    CLIENT_LIBS += -framework IOKit $(SDL_LIBS)
-    RENDERER_LIBS += -framework OpenGL $(SDL_LIBS)
-  endif
-
-  ifeq ($(USE_INTERNAL_LIBS),1)
-    CLIENT_EXTRA_FILES += $(LIBSDIR)/macosx/libSDL2-2.0.0.dylib $(LIBSDIR)/macosx/libopenal.dylib
+    BASE_CFLAGS += -I/Library/Frameworks/SDL2.framework/Headers
+    CLIENT_LIBS += -framework SDL2
+    RENDERER_LIBS += -framework SDL2
   endif
 
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -646,7 +659,7 @@ ifdef MINGW
   # using generic windres if specific one is not present
   ifndef WINDRES
     WINDRES=windres
-   endif
+  endif
 
   ifeq ($(CC),)
     $(error Cannot find a suitable cross compiler for $(PLATFORM))
@@ -722,28 +735,25 @@ ifdef MINGW
     endif
   endif
 
+
   # libmingw32 must be linked before libSDLmain
   CLIENT_LIBS += -lmingw32
   RENDERER_LIBS += -lmingw32
 
   ifeq ($(USE_LOCAL_HEADERS),1)
     CLIENT_CFLAGS += -I$(SDLHDIR)/include
-  endif
-
-  ifeq ($(USE_INTERNAL_LIBS),1)
     ifeq ($(ARCH),x86)
     CLIENT_LIBS += $(LIBSDIR)/win32/libSDL2main.a \
-                   $(LIBSDIR)/win32/libSDL2.dll.a
+                      $(LIBSDIR)/win32/libSDL2.dll.a
     RENDERER_LIBS += $(LIBSDIR)/win32/libSDL2main.a \
-                     $(LIBSDIR)/win32/libSDL2.dll.a
+                      $(LIBSDIR)/win32/libSDL2.dll.a
     SDLDLL=SDL2.dll
     CLIENT_EXTRA_FILES += $(LIBSDIR)/win32/SDL2.dll $(LIBSDIR)/win32/OpenAL32.dll
-    endif
-    ifeq ($(ARCH),x86_64)
+    else
     CLIENT_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
-                   $(LIBSDIR)/win64/libSDL264.dll.a
+                      $(LIBSDIR)/win64/libSDL264.dll.a
     RENDERER_LIBS += $(LIBSDIR)/win64/libSDL264main.a \
-                     $(LIBSDIR)/win64/libSDL264.dll.a
+                      $(LIBSDIR)/win64/libSDL264.dll.a
     SDLDLL=SDL264.dll
     CLIENT_EXTRA_FILES += $(LIBSDIR)/win64/SDL264.dll $(LIBSDIR)/win64/OpenAL64.dll
     endif
@@ -757,12 +767,67 @@ ifdef MINGW
 else # ifdef MINGW
 
 #############################################################################
-# SETUP AND BUILD -- *BSD (is dying)
+# SETUP AND BUILD -- FREEBSD
 #############################################################################
 
-ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
+ifeq ($(PLATFORM),freebsd)
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing \
+  # flags
+  BASE_CFLAGS = \
+    -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
+    -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
+  CLIENT_CFLAGS += $(SDL_CFLAGS)
+
+  OPTIMIZEVM =
+  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+
+  SHLIBEXT=so
+  SHLIBCFLAGS=-fPIC
+  SHLIBLDFLAGS=-shared $(LDFLAGS)
+
+  THREAD_LIBS=-lpthread
+  # don't need -ldl (FreeBSD)
+  LIBS=-lm
+
+  CLIENT_LIBS =
+
+  CLIENT_LIBS += $(SDL_LIBS)
+  RENDERER_LIBS = $(SDL_LIBS)
+
+  # optional features/libraries
+  ifeq ($(USE_OPENAL),1)
+    ifeq ($(USE_OPENAL_DLOPEN),1)
+      CLIENT_LIBS += $(THREAD_LIBS) $(OPENAL_LIBS)
+    endif
+  endif
+
+  ifeq ($(USE_CURL),1)
+    CLIENT_CFLAGS += $(CURL_CFLAGS)
+    ifeq ($(USE_CURL_DLOPEN),1)
+      CLIENT_LIBS += $(CURL_LIBS)
+    endif
+  endif
+
+  # cross-compiling tweaks
+  ifeq ($(ARCH),x86)
+    ifeq ($(CROSS_COMPILING),1)
+      BASE_CFLAGS += -m32
+    endif
+  endif
+  ifeq ($(ARCH),x86_64)
+    ifeq ($(CROSS_COMPILING),1)
+      BASE_CFLAGS += -m64
+    endif
+  endif
+else # ifeq freebsd
+
+#############################################################################
+# SETUP AND BUILD -- OPENBSD
+#############################################################################
+
+ifeq ($(PLATFORM),openbsd)
+
+  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
     -pipe -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
@@ -772,21 +837,16 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-    FILE_ARCH = amd64
-  endif
+  else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-  endif
+  else
   ifeq ($(ARCH),ppc)
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
     ALTIVEC_CFLAGS = -maltivec
-  endif
-  ifeq ($(ARCH),sparc)
-    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
-    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
   endif
   ifeq ($(ARCH),sparc64)
     OPTIMIZE += -mtune=ultrasparc3 -mv8plus
@@ -797,11 +857,16 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
     # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
+  endif
+  endif
 
   ifeq ($(USE_CURL),1)
     CLIENT_CFLAGS += $(CURL_CFLAGS)
     USE_CURL_DLOPEN=0
   endif
+
+  # no shm_open on OpenBSD
+  USE_MUMBLE=0
 
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
@@ -826,7 +891,28 @@ ifneq (,$(findstring "$(PLATFORM)", "freebsd" "openbsd" "netbsd"))
       CLIENT_LIBS += $(CURL_LIBS)
     endif
   endif
-else # ifeq *BSD
+else # ifeq openbsd
+
+#############################################################################
+# SETUP AND BUILD -- NETBSD
+#############################################################################
+
+ifeq ($(PLATFORM),netbsd)
+
+  LIBS=-lm
+  SHLIBEXT=so
+  SHLIBCFLAGS=-fPIC
+  SHLIBLDFLAGS=-shared $(LDFLAGS)
+  THREAD_LIBS=-lpthread
+
+  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
+
+  ifeq ($(ARCH),x86)
+    HAVE_VM_COMPILED=true
+  endif
+
+  BUILD_CLIENT = 0
+else # ifeq netbsd
 
 #############################################################################
 # SETUP AND BUILD -- IRIX
@@ -877,15 +963,20 @@ ifeq ($(PLATFORM),sunos)
     -pipe -DUSE_ICON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
-  OPTIMIZEVM = -O3
+  OPTIMIZEVM = -O3 -funroll-loops
 
   ifeq ($(ARCH),sparc)
-    OPTIMIZEVM += -O3 -mtune=ultrasparc3 -mv8plus -mno-faster-structs
-  endif
+    OPTIMIZEVM += -O3 \
+      -fstrength-reduce -falign-functions=2 \
+      -mtune=ultrasparc3 -mv8plus -mno-faster-structs
+  else
   ifeq ($(ARCH),x86)
-    OPTIMIZEVM += -march=i586
+    OPTIMIZEVM += -march=i586 -fomit-frame-pointer \
+      -falign-functions=2 -fstrength-reduce
+    BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
+  endif
   endif
 
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -907,7 +998,7 @@ else # ifeq sunos
 #############################################################################
 # SETUP AND BUILD -- GENERIC
 #############################################################################
-  BASE_CFLAGS =
+  BASE_CFLAGS=
   OPTIMIZE = -O3
 
   SHLIBEXT=so
@@ -917,7 +1008,9 @@ else # ifeq sunos
 endif #Linux
 endif #darwin
 endif #MINGW
-endif #*BSD
+endif #FreeBSD
+endif #OpenBSD
+endif #NetBSD
 endif #IRIX
 endif #SunOS
 
@@ -956,11 +1049,7 @@ ifndef HAVE_VM_COMPILED
   HAVE_VM_COMPILED=false
 endif
 
-ifneq ($(findstring $(ARCH),x86 x86_64 ppc ppc64 sparc sparc64),)
-  HAVE_VM_COMPILED=true
-endif
-
-ifeq ($(ARM_VER_CHECK),armv7l)
+ifneq ($(findstring $(ARCH),armv7l x86 x86_64 ppc ppc64 sparc sparc64),)
   HAVE_VM_COMPILED=true
 endif
 
@@ -1057,7 +1146,7 @@ endif
 
 ifeq ($(NEED_OPUS),1)
   ifeq ($(USE_INTERNAL_OPUS),1)
-      OPUS_CFLAGS = -DOPUS_BUILD -DHAVE_LRINTF -DFLOAT_APPROX -DUSE_ALLOCA \
+    OPUS_CFLAGS = -DOPUS_BUILD -DHAVE_LRINTF -DFLOATING_POINT -DFLOAT_APPROX -DUSE_ALLOCA \
       -I$(OPUSDIR)/include -I$(OPUSDIR)/celt -I$(OPUSDIR)/silk \
       -I$(OPUSDIR)/silk/float -I$(OPUSFILEDIR)/include
   else
@@ -1119,7 +1208,7 @@ ifeq ($(USE_INTERNAL_JPEG),1)
   BASE_CFLAGS += -DUSE_INTERNAL_JPEG
   BASE_CFLAGS += -I$(JPDIR)
 else
-  # IJG libjpeg doesn't have $(PKG_CONFIG), but libjpeg-turbo uses libjpeg.pc;
+  # IJG libjpeg doesn't have pkg-config, but libjpeg-turbo uses libjpeg.pc;
   # we fall back to hard-coded answers if libjpeg.pc is unavailable
   JPEG_CFLAGS ?= $(shell $(PKG_CONFIG) --silence-errors --cflags libjpeg || true)
   JPEG_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs libjpeg || echo -ljpeg)
@@ -1359,7 +1448,7 @@ targets: makedirs
 	@echo "  PKG_CONFIG: $(PKG_CONFIG)"
 	@echo "  CC: $(CC)"
 	@echo "  CXX: $(CXX)"
-ifdef MINGW
+ifeq ($(PLATFORM),mingw32)
 	@echo "  WINDRES: $(WINDRES)"
 endif
 	@echo ""
@@ -1373,9 +1462,7 @@ endif
 	$(call print_wrapped, $(SERVER_CFLAGS))
 	@echo ""
 	@echo "  LDFLAGS:"
-ifneq ($(LDFLAGS),)
 	$(call print_wrapped, $(LDFLAGS))
-endif
 	@echo ""
 	@echo "  LIBS:"
 	$(call print_wrapped, $(LIBS))
@@ -1401,8 +1488,17 @@ else
 endif
 
 $(B).zip: $(TARGETS)
+ifeq ($(PLATFORM),darwin)
+  ifdef ARCHIVE
+	@("./make-macosx-app.sh" release $(ARCH); if [ "$$?" -eq 0 ] && [ -d "$(B)/iowolfmp.app" ]; then rm -f $@; cd $(B) && zip --symlinks -r9 ../../$@ `find "iowolfmp.app" -print | sed -e "s!$(B)/!!g"`; else rm -f $@; cd $(B) && zip -r9 ../../$@ $(NAKED_TARGETS); fi)
+  endif
+endif
+ifneq ($(PLATFORM),darwin)
+  ifdef ARCHIVE
 	@rm -f $@
 	@(cd $(B) && zip -r9 ../../$@ $(NAKED_TARGETS))
+  endif
+endif
 
 makedirs:
 	@$(MKDIR) $(B)/splines
@@ -2161,7 +2257,8 @@ endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),x86 x86_64),)
-    Q3OBJ += $(B)/client/vm_x86.o
+    Q3OBJ += \
+      $(B)/client/vm_x86.o
   endif
   ifneq ($(findstring $(ARCH),ppc ppc64),)
     Q3OBJ += $(B)/client/vm_powerpc.o $(B)/client/vm_powerpc_asm.o
@@ -2169,7 +2266,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),sparc sparc64),)
     Q3OBJ += $(B)/client/vm_sparc.o
   endif
-  ifeq ($(ARM_VER_CHECK),armv7l)
+  ifeq ($(ARCH),armv7l)
     Q3OBJ += $(B)/client/vm_armv7l.o
   endif
 endif
@@ -2336,7 +2433,8 @@ endif
 
 ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),x86 x86_64),)
-    Q3DOBJ += $(B)/ded/vm_x86.o
+    Q3DOBJ += \
+      $(B)/ded/vm_x86.o
   endif
   ifneq ($(findstring $(ARCH),ppc ppc64),)
     Q3DOBJ += $(B)/ded/vm_powerpc.o $(B)/ded/vm_powerpc_asm.o
@@ -2344,7 +2442,7 @@ ifeq ($(HAVE_VM_COMPILED),true)
   ifneq ($(findstring $(ARCH),sparc sparc64),)
     Q3DOBJ += $(B)/ded/vm_sparc.o
   endif
-  ifeq ($(ARM_VER_CHECK),armv7l)
+  ifeq ($(ARCH),armv7l)
     Q3DOBJ += $(B)/ded/vm_armv7l.o
   endif
 endif
@@ -2786,6 +2884,7 @@ OBJ = $(Q3OBJ) $(Q3ROBJ) $(Q3R2OBJ) $(Q3DOBJ) $(JPGOBJ) $(FTOBJ) \
   $(Q3GVMOBJ) $(Q3CGVMOBJ) $(Q3UIVMOBJ) 
 TOOLSOBJ = $(LBURGOBJ) $(Q3CPPOBJ) $(Q3RCCOBJ) $(Q3LCCOBJ) $(Q3ASMOBJ)
 STRINGOBJ = $(Q3R2STRINGOBJ)
+
 
 copyfiles: release
 	@if [ ! -d $(COPYDIR)/$(BASEGAME) ]; then echo "You need to set COPYDIR to where your RTCW data is!"; fi

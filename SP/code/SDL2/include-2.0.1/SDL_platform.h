@@ -86,9 +86,15 @@
 #if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 # error SDL for Mac OS X only supports deploying on 10.5 and above.
 #endif /* MAC_OS_X_VERSION_MIN_REQUIRED < 1050 */
-#if MAC_OS_X_VERSION_MAX_ALLOWED < 1060
-# error SDL for Mac OS X must be built with a 10.6 SDK or above.
-#endif /* MAC_OS_X_VERSION_MAX_ALLOWED < 1060 */
+#ifdef __ppc__ // Allow building PPC with 10.5 SDK
+  #if MAC_OS_X_VERSION_MAX_ALLOWED != 1050
+  # error SDL for Mac OS X PPC must be built with the 10.5 SDK.
+  #endif /* MAC_OS_X_VERSION_MAX_ALLOWED != 1050 */
+#else
+  #if MAC_OS_X_VERSION_MAX_ALLOWED < 1060
+  # error SDL for Mac OS X must be built with a 10.6 SDK or above.
+  #endif /* MAC_OS_X_VERSION_MAX_ALLOWED < 1060 */
+#endif /* __ppc__ */
 #endif /* TARGET_OS_IPHONE */
 #endif /* defined(__APPLE__) */
 
