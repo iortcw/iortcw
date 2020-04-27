@@ -80,11 +80,11 @@ function symlinkArch()
     ISPPC=`file "${SRCFILE}.${EXT}" | grep "ppc"`
 
     if [ "${IS32}" != "" ]; then
-        if [ ! -L "${DSTFILE}x86.${EXT}" ]; then
-            ln -s "${SRCFILE}.${EXT}" "${DSTFILE}x86.${EXT}"
+        if [ ! -L "${DSTFILE}i386.${EXT}" ]; then
+            ln -s "${SRCFILE}.${EXT}" "${DSTFILE}i386.${EXT}"
         fi
-    elif [ -L "${DSTFILE}x86.${EXT}" ]; then
-        rm "${DSTFILE}x86.${EXT}"
+    elif [ -L "${DSTFILE}i386.${EXT}" ]; then
+        rm "${DSTFILE}i386.${EXT}"
     fi
 
     if [ "${IS64}" != "" ]; then
@@ -170,13 +170,18 @@ EXECUTABLE_NAME="${PRODUCT_NAME}"
 # loop through the architectures to build string lists for each universal binary
 for ARCH in $SEARCH_ARCHS; do
 	CURRENT_ARCH=${ARCH}
+
+	if [ ${CURRENT_ARCH} == "x86" ]; then FILE_ARCH="i386"; fi
+        if [ ${CURRENT_ARCH} == "x86_64" ]; then FILE_ARCH="x86_64"; fi
+        if [ ${CURRENT_ARCH} == "ppc" ]; then FILE_ARCH="ppc"; fi
+
 	BUILT_PRODUCTS_DIR="${OBJROOT}/${TARGET_NAME}-darwin-${CURRENT_ARCH}"
 	IORTCW_CLIENT="${EXECUTABLE_NAME}.${CURRENT_ARCH}"
-	IORTCW_RENDERER_GL1="${RENDERER_OPENGL}_${CURRENT_ARCH}.dylib"
-	IORTCW_RENDERER_GL2="${RENDERER_OPENGL2}_${CURRENT_ARCH}.dylib"
-	IORTCW_CGAME="${CGAME}.${CURRENT_ARCH}.dylib"
-	IORTCW_GAME="${GAME}.${CURRENT_ARCH}.dylib"
-	IORTCW_UI="${UI}.${CURRENT_ARCH}.dylib"
+	IORTCW_RENDERER_GL1="${RENDERER_OPENGL}_${FILE_ARCH}.dylib"
+	IORTCW_RENDERER_GL2="${RENDERER_OPENGL2}_${FILE_ARCH}.dylib"
+	IORTCW_CGAME="${CGAME}.${FILE_ARCH}.dylib"
+	IORTCW_GAME="${GAME}.${FILE_ARCH}.dylib"
+	IORTCW_UI="${UI}.${FILE_ARCH}.dylib"
 
 	if [ ! -d ${BUILT_PRODUCTS_DIR} ]; then
 		CURRENT_ARCH=""
