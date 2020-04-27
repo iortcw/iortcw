@@ -106,10 +106,10 @@ function symlinkArch()
     popd > /dev/null
 }
 
-SEARCH_ARCHS="																	\
-	x86																			\
-	x86_64																		\
-	ppc																			\
+SEARCH_ARCHS="	\
+	x86	\
+	x86_64	\
+	ppc	\
 "
 
 HAS_LIPO=`command -v lipo`
@@ -172,8 +172,8 @@ for ARCH in $SEARCH_ARCHS; do
 	CURRENT_ARCH=${ARCH}
 
 	if [ ${CURRENT_ARCH} == "x86" ]; then FILE_ARCH="i386"; fi
-        if [ ${CURRENT_ARCH} == "x86_64" ]; then FILE_ARCH="x86_64"; fi
-        if [ ${CURRENT_ARCH} == "ppc" ]; then FILE_ARCH="ppc"; fi
+	if [ ${CURRENT_ARCH} == "x86_64" ]; then FILE_ARCH="x86_64"; fi
+	if [ ${CURRENT_ARCH} == "ppc" ]; then FILE_ARCH="ppc"; fi
 
 	BUILT_PRODUCTS_DIR="${OBJROOT}/${TARGET_NAME}-darwin-${CURRENT_ARCH}"
 	IORTCW_CLIENT="${EXECUTABLE_NAME}.${CURRENT_ARCH}"
