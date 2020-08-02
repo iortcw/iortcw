@@ -31,6 +31,16 @@ The map editor and associated compiling tools are not included. We suggest you u
 
 The original id software readme that accompanied the RTCW source release is named README.txt and is contained within the source tree of both MP and SP games.
 
+### Quick Start Guide
+
+  1. If you have not already done so, install Return to Castle Wolfenstein and remember the target installation directory.
+  2. Browse to the iortcw project release folder: https://github.com/iortcw/iortcw/releases. 
+  3. Download the latest release file for your operating system, as well as patch-data-141.zip.  As of this writing, the latest version of the iortcw release file is v1.51c.
+  4. Extract the latest release zip into a location where you would like to have your installation going forward (For example: c:\Games\iortcw\ in Windows or /home/joe/Games/iortcw/ in Linux).
+  5. Go to the location of your original existing installation, open the “Main” folder, and copy the following files over to your iortcw's  “Main” folder: 
+  **pak0.pk3, sp_pak1.pk3, sp_pak2.pk3, and sp_pak3.pk3.** This is the game data for Return to Castle Wolfenstein's **single player campaign**.
+  6. Extract the contents of patch-data-141.zip (or a newer version in the meantime) into your iortcw folder and merge patch-data-141's content into your iortcw folder.
+  7. Go to your iortcw installation folder and start either the “iowolfsp*” file for single player or “iowolfmp*” for multiplayer.  If your system uses a 64-bit processor, run the single player or multiplayer file that ends with **x64**. 
 
 ### Compilation and installation
 
