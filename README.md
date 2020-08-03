@@ -37,9 +37,8 @@ The original id software readme that accompanied the RTCW source release is name
   2. Browse to the iortcw project release folder: https://github.com/iortcw/iortcw/releases. 
   3. Download the latest release file for your operating system, as well as patch-data-141.zip.  As of this writing, the latest version of the iortcw release file is v1.51c.
   4. Extract the latest release zip into a location where you would like to have your installation going forward (For example: c:\Games\iortcw\ in Windows or /home/joe/Games/iortcw/ in Linux).
-  5. Go to the location of your original existing installation, open the “Main” folder, and copy the following files over to your iortcw's  “Main” folder: 
-  **pak0.pk3, sp_pak1.pk3, sp_pak2.pk3, and sp_pak3.pk3.** This is the game data for Return to Castle Wolfenstein's **single player campaign**.
-  6. Extract the contents of patch-data-141.zip (or a newer version in the meantime) into your iortcw folder and merge patch-data-141's content into your iortcw folder.
+  5. Go to the location of your original existing installation, open the “Main” folder, and copy the following files over to your iortcw's  “Main” folder for the single player campaign: **pak0.pk3, sp_pak1.pk3, sp_pak2.pk3, and sp_pak3.pk3**. For multiplayer, copy the following files to your iortcw's “Main” folder: **mp_bin.pk3, mp_pak0.pk3, mp_pak1.pk3, mp_pak2.pk3, mp_pak3.pk3, mp_pak4.pk3, mp_pak5.pk3, mp_pakmaps0.pk3, mp_pakmaps1.pk3, mp_pakmaps2.pk3, mp_pakmaps3.pk3, mp_pakmaps4.pk3, mp_pakmaps5.pk3, and mp_pakmaps6.pk3**.  
+  6. Extract the contents of patch-data-141.zip (or a newer version in the meantime) into your iortcw folder and merge patch-data-141's content into your iortcw folder.  For German, Spanish, French or Italian language support in-game, also extract the contents of one of the respective "patch-data-SP-language" zip files into your iortcw's "Main" folder.
   7. Go to your iortcw installation folder and start either the “iowolfsp*” file for single player or “iowolfmp*” for multiplayer.  If your system uses a 64-bit processor, run the single player or multiplayer file that ends with **x64**. 
 
 ### Compilation and installation
