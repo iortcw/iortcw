@@ -4112,7 +4112,7 @@ char *AIFunc_BattleMG42( cast_state_t *cs ) {
 	//
 	// TODO: play a special "holding mg42" torso animation
 	//
-	//VectorCopy( angles, cs->ideal_viewangles );
+	VectorCopy( angles, cs->ideal_viewangles );
 	if ( cs->triggerReleaseTime < level.time ) {
 		trap_EA_Attack( bs->client );
 		cs->bFlags |= BFL_ATTACKED;
