@@ -197,6 +197,7 @@ void S_TransferPaintBuffer(int endtime)
 				else if (val < -32767)  /* clamp to one less than max to make division max out at -1.0f. */
 					val = -32767;
 				out[out_idx] = ((float) val) / 32767.0f;
+				out_idx = (out_idx + 1) % dma.samples;
 			}
 		}
 		else if (dma.samplebits == 16)
@@ -550,7 +551,7 @@ void S_PaintChannels( int endtime ) {
 		// paint in the channels.
 		ch = s_channels;
 		for ( i = 0; i < MAX_CHANNELS ; i++, ch++ ) {		
-			if ( !ch->thesfx || (ch->leftvol<0.25 && ch->rightvol<0.25 )) {
+			if ( ch->startSample == START_SAMPLE_IMMEDIATE || !ch->thesfx || (ch->leftvol<0.25 && ch->rightvol<0.25 )) {
 				continue;
 			}
 
