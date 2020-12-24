@@ -140,9 +140,14 @@ void COM_StripExtension2( const char *in, char *out, int destsize ) {
 	*out = 0;
 }
 
+/*
+============
+COM_StripFilename
+============
+*/
 void COM_StripFilename( char *in, char *out ) {
 	char *end;
-	Q_strncpyz( out, in, strlen( in ) );
+	Q_strncpyz( out, in, sizeof( in ) );
 	end = COM_SkipPath( out );
 	*end = 0;
 }

@@ -3569,7 +3569,7 @@ void Item_TextField_Paint( itemDef_t *item ) {
 	do
 	{
 		field_offset++;
-		if ( buff + editPtr->paintOffset + field_offset == '\0' ) {
+		if ( buff + editPtr->paintOffset + field_offset == NULL ) {
 			break;                                                   // keep it safe
 		}
 		text_len = DC->textWidth( buff + editPtr->paintOffset + field_offset, item->textscale, 0 );

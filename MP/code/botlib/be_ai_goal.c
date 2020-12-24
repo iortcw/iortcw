@@ -641,8 +641,7 @@ void BotGoalName( int number, char *name, int size ) {
 	for ( li = levelitems; li; li = li->next )
 	{
 		if ( li->number == number ) {
-			strncpy( name, itemconfig->iteminfo[li->iteminfo].name, size - 1 );
-			name[size - 1] = '\0';
+			Q_strncpyz( name, itemconfig->iteminfo[li->iteminfo].name, size );
 			return;
 		} //end for
 	} //end for
