@@ -783,7 +783,7 @@ void Text_AutoWrap_Paint( float x, float y, int width, int height, float scale, 
 	char text[1024];
 	char *ret, *end, *next;
 	char s;
-	vec4_t aux_color, next_color;
+	vec4_t aux_color, next_color = { 0 };
 
 	Q_strncpyz( text, l_text, sizeof( text ) - 1 );
 	ret = text;
