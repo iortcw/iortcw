@@ -693,7 +693,7 @@ ifdef MINGW
   ifeq ($(COMPILE_PLATFORM),cygwin)
     TOOLS_BINEXT=.exe
     
-	# Under cygwin the default of using gcc for TOOLS_CC won't work, so
+    # Under cygwin the default of using gcc for TOOLS_CC won't work, so
     # we need to figure out the appropriate compiler to use, based on the
     # host architecture that we're running under (as tools run on the host)
     ifeq ($(COMPILE_ARCH),x86_64)
