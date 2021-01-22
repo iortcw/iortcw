@@ -34,7 +34,7 @@ if [ ! -f Makefile ]; then
 fi
 
 # we want to use the oldest available SDK for max compatibility. However 10.4 and older
-# can not build 64bit binaries, making 10.5 the minimum version.   This has been tested 
+# can not build 64bit binaries, making 10.5 the minimum version.   This has been tested
 # with xcode 3.1 (xcode31_2199_developerdvd.dmg).  It contains the 10.5 SDK and a decent
 # enough gcc to actually compile iortcw
 # For PPC macs, G4's or better are required to run iortcw.
@@ -42,6 +42,10 @@ fi
 unset ARCH_SDK
 unset ARCH_CFLAGS
 unset ARCH_MACOSX_VERSION_MIN
+
+MACOS_VERSION=$(sw_vers -productVersion)
+MACOS_MAJOR_VER=$(echo $MACOS_VERSION | awk -F. '{print $1}')
+MACOS_MINOR_VER=$(echo $MACOS_VERSION | awk -F. '{print $2}')
 
 # SDL 2.0.1 (ppc) supports MacOSX 10.5
 # SDL 2.0.5+ (x86, x86_64) supports MacOSX 10.6 and later
@@ -55,6 +59,8 @@ elif [ -d /Developer/SDKs/MacOSX10.6.sdk ]; then
 	ARCH_SDK=/Developer/SDKs/MacOSX10.6.sdk
 	ARCH_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.6.sdk"
 	ARCH_MACOSX_VERSION_MIN="10.6"
+elif [ $MACOS_MAJOR_VER == 10 ] && [ $MACOS_MINOR_VER >= 9 ] || [ $MACOS_MAJOR_VER > 10 ]; then
+	ARCH_MACOSX_VERSION_MIN="10.9"
 else
 	ARCH_MACOSX_VERSION_MIN="10.7"
 fi
