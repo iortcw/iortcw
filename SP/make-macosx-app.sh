@@ -14,6 +14,7 @@ if [ $# == 0 ] || [ $# -gt 2 ]; then
 	echo " x86"
 	echo " x86_64"
 	echo " ppc"
+	echo " arm64"
 	echo
 	exit 1
 fi
@@ -41,12 +42,15 @@ if [ "$2" != "" ]; then
 		CURRENT_ARCH="x86_64"
 	elif [ "$2" == "ppc" ]; then
 		CURRENT_ARCH="ppc"
+	elif [ "$2" == "arm64" ]; then
+		CURRENT_ARCH="arm64"
 	else
 		echo "Invalid architecture: $2"
 		echo "Valid architectures are:"
 		echo " x86"
 		echo " x86_64"
 		echo " ppc"
+		echo " arm64"
 		echo
 		exit 1
 	fi
@@ -110,6 +114,7 @@ SEARCH_ARCHS="	\
 	x86	\
 	x86_64	\
 	ppc	\
+	arm64 \
 "
 
 HAS_LIPO=`command -v lipo`
@@ -174,6 +179,7 @@ for ARCH in $SEARCH_ARCHS; do
 	if [ ${CURRENT_ARCH} == "x86" ]; then FILE_ARCH="i386"; fi
 	if [ ${CURRENT_ARCH} == "x86_64" ]; then FILE_ARCH="x86_64"; fi
 	if [ ${CURRENT_ARCH} == "ppc" ]; then FILE_ARCH="ppc"; fi
+	if [ ${CURRENT_ARCH} == "arm64" ]; then FILE_ARCH="arm64"; fi
 
 	BUILT_PRODUCTS_DIR="${OBJROOT}/${TARGET_NAME}-darwin-${CURRENT_ARCH}"
 	IORTCW_CLIENT="${EXECUTABLE_NAME}.${CURRENT_ARCH}"
@@ -296,7 +302,7 @@ PLIST="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     <key>LSMinimumSystemVersion</key>
     <string>${MACOSX_DEPLOYMENT_TARGET}</string>"
 
-if [ -n "${MACOSX_DEPLOYMENT_TARGET_PPC}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_X86}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_X86_64}" ]; then
+if [ -n "${MACOSX_DEPLOYMENT_TARGET_PPC}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_X86}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_X86_64}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_ARM64}" ]; then
 	PLIST="${PLIST}
     <key>LSMinimumSystemVersionByArchitecture</key>
     <dict>"
@@ -317,6 +323,12 @@ if [ -n "${MACOSX_DEPLOYMENT_TARGET_PPC}" ] || [ -n "${MACOSX_DEPLOYMENT_TARGET_
 	PLIST="${PLIST}
         <key>x86_64</key>
         <string>${MACOSX_DEPLOYMENT_TARGET_X86_64}</string>"
+	fi
+
+	if [ -n "${MACOSX_DEPLOYMENT_TARGET_ARM64}" ]; then
+	PLIST="${PLIST}
+        <key>arm64</key>
+        <string>${MACOSX_DEPLOYMENT_TARGET_ARM64}</string>"
 	fi
 
 	PLIST="${PLIST}
