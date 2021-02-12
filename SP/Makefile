@@ -517,6 +517,9 @@ ifeq ($(PLATFORM),darwin)
     OPTIMIZEVM += -mfpmath=sse
     BASE_CFLAGS += -arch x86_64
   endif
+  ifeq ($(ARCH),arm64)
+    BASE_CFLAGS += -arch arm64
+  endif
 
   # When compiling on OSX for OSX, we're not cross compiling as far as the
   # Makefile is concerned, as target architecture is specified as a compiler
