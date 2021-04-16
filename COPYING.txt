@@ -622,9 +622,9 @@ copy of the Program in return for a fee.
 
 
 
-ADDITIONAL TERMS APPLICABLE TO THE RETURN TO CASTLE WOLFENSTEIN SINGLE PLAYER GPL SOURCE CODE.  
+ADDITIONAL TERMS APPLICABLE TO THE RETURN TO CASTLE WOLFENSTEIN MULTIPLAYER GPL SOURCE CODE.
 
-	The following additional terms (“Additional Terms”) supplement and modify the GNU General Public License, Version 3 (“GPL”) applicable to the Return to Castle Wolfenstein single player GPL Source Code (“RTCW SP Source Code”).  In addition to the terms and conditions of the GPL, the RTCW SP Source Code is subject to the further restrictions below.
+	The following additional terms (“Additional Terms”) supplement and modify the GNU General Public License, Version 3 (“GPL”) applicable to the Return to Castle Wolfenstein singleplayer and multiplayer GPL Source Code (“RTCW SP & MP Source Code”).  In addition to the terms and conditions of the GPL, the RTCW SP & MP Source Code is subject to the further restrictions below.
 
 1. Replacement of Section 15.  Section 15 of the GPL shall be deleted in its entirety and replaced with the following:
 
