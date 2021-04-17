@@ -379,12 +379,13 @@ If you wish to compile external mods as shared libraries on a 64bit platform, an
 
 Add the following code snippet to q_shared.h:
 
-    #ifdef Q3_VM
-    typedef int intptr_t;
-    #else
-    #include <stdint.h>
-    #endif
-
+```c
+#ifdef Q3_VM
+typedef int intptr_t;
+#else
+#include <stdint.h>
+#endif
+```
 
 * Creating standalone games
 
