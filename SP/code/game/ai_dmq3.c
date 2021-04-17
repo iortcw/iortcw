@@ -1983,7 +1983,7 @@ void BotMapScripts( bot_state_t *bs ) {
 						if ( BotSameTeam( bs, i ) ) {
 							shootbutton = qfalse;
 							break;
-						} else if (bs->enemy == i) {
+						} else if (gametype < GT_CTF || bs->enemy == i) {
 							shootbutton = qtrue;
 						}
 					}
