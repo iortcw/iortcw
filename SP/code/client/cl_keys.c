@@ -2243,19 +2243,16 @@ void CL_KeyDownEvent( int key, unsigned time )
 		if ( !( Key_GetCatcher( ) & ( KEYCATCH_UI | KEYCATCH_CONSOLE ) ) ) {    // let menu/console handle keys if necessary
 
 			// in cutscenes we need to handle keys specially (pausing not allowed in camera mode)
-			if ( (  key == K_ESCAPE ||
-					key == K_SPACE ||
-					key == K_ENTER ) && qtrue ) {
-				if ( qtrue ) {
-					CL_AddReliableCommand( "cameraInterrupt", qfalse );
-				}
+			if (  key == K_ESCAPE ||
+				  key == K_SPACE ||
+				  key == K_ENTER  ) {
+				// AR: uncomment this line to enable cutscene skipping (buggy)
+				//CL_AddReliableCommand( "cameraInterrupt", qfalse );
 				return;
 			}
 
 			// eat all keys
-			if ( qtrue ) {
-				return;
-			}
+			return;
 		}
 
 		if ( ( Key_GetCatcher( ) & KEYCATCH_CONSOLE ) && key == K_ESCAPE ) {

@@ -2352,7 +2352,7 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params ) {
 	trap_SendServerCommand( -1, va( "snd_fade 0 %d", 1000 + exitTime ) ); //----(SA)	added
 
 	// load the next map, after a delay
-	level.reloadDelayTime = level.time + 4000 + exitTime;
+	level.reloadDelayTime = level.time + 1000 + exitTime;
 	trap_Cvar_Set( "g_reloading", va( "%d", RELOAD_NEXTMAP_WAITING ) );
 
 	if ( endgame ) {
