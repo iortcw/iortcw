@@ -115,25 +115,84 @@ CG_LoseArmor
 ==============
 */
 void CG_LoseArmor( centity_t *cent, int index ) {
+	char *protoTags[] = {   "tag_chest",
+							"tag_calfleft",
+							"tag_armleft",
+							"tag_back",
+							"tag_legleft",
+							"tag_calfright",
+							"tag_armright",
+							"tag_back",
+							"tag_legright"};
+
+	char *ssTags[] = {      "tag_chest",
+							"tag_calfleft",
+							"tag_armleft",
+							"tag_back",
+							"tag_legleft",
+							"tag_calfright",
+							"tag_armright",
+							"tag_back",
+							"tag_legright",
+
+							"tag_footleft",
+							"tag_footright",
+							"tag_sholeft",
+							"tag_shoright",
+							"tag_torso",
+							"tag_calfleft",
+							"tag_calfright"};
+
+	char *heinrichTags[] = {"tag_chest",
+							"tag_calfleft",
+							"tag_armleft",
+							"tag_back",
+							"tag_legleft",
+							"tag_calfright",
+							"tag_armright",
+							"tag_back",
+							"tag_legright",
+
+							"tag_footleft",
+							"tag_footright",
+							"tag_sholeft",
+							"tag_shoright",
+							"tag_torso",
+							"tag_legleft",
+							"tag_legright",
+
+							"tag_sholeft",
+							"tag_shoright",
+							"tag_legleft",
+							"tag_legright",
+							"tag_calfleft",
+							"tag_calfright"};
+
+	//clientInfo_t *ci;
 	// TTimo: bunch of inits
 	int totalparts = 0, dynamicparts = 0, protoParts = 9, superParts = 16, heinrichParts = 22;
+	char        **tags = NULL;
 	qhandle_t   *models = NULL;
 	qhandle_t sound = 0;    //----(SA)	added
 	int dmgbits = 16;         // 32/2;
 	int clientNum;
-	vec3_t origin = { 0 }, velocity, dir;
+	//int tagIndex;
+	vec3_t origin, velocity, dir;
 
 
 	if ( cent->currentState.aiChar == AICHAR_PROTOSOLDIER ) {
+		tags = &protoTags[0];
 		models = &cgs.media.protoArmor[0];
 		dynamicparts = totalparts = protoParts;
 		sound = cgs.media.protoArmorBreak;
 	} else if ( cent->currentState.aiChar == AICHAR_SUPERSOLDIER ) {
+		tags = &ssTags[0];
 		models = &cgs.media.superArmor[0];
 		dynamicparts = 14;  // the other two stay permanent
 		totalparts = superParts;
 		sound = cgs.media.superArmorBreak;
 	} else if ( cent->currentState.aiChar == AICHAR_HEINRICH ) {
+		tags = &heinrichTags[0];
 		models = &cgs.media.heinrichArmor[0];
 		dynamicparts = 20;  // will get kicked down to 16
 		totalparts = heinrichParts;
@@ -154,6 +213,7 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
 		CG_Error( "Bad clientNum on player entity" );
 	}
+	//ci = &cgs.clientinfo[ clientNum ];
 
 	// check if the model for the damaged part to fling is there
 	if ( cent->currentState.dmgFlags & ( 1 << ( index + dynamicparts ) ) ) {
@@ -163,6 +223,8 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 	} else if ( !models[index + totalparts] )        {
 		return;
 	}
+
+	CG_GetOriginForTag( cent, &cent->pe.torsoRefEnt, tags[index], 0, origin, NULL );
 
 	// calculate direction vector based on player center->tag position
 	VectorSubtract( origin, cent->currentState.origin, dir );
@@ -174,9 +236,13 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 	}
 //----(SA)	end
 
+//#define FLY_VELOCITY 75
+//#define FLY_JUMP 200
 #define FLY_VELOCITY 200
 #define FLY_JUMP 300
 
+//	velocity[0] = dir[0]*(0.75+random())*FLY_VELOCITY;
+//	velocity[1] = dir[1]*(0.75+random())*FLY_VELOCITY;
 	velocity[0] = dir[0] * FLY_VELOCITY;
 	velocity[1] = dir[1] * FLY_VELOCITY;
 	velocity[2] = FLY_JUMP - 50 + dir[2] * ( 0.5 + random() ) * FLY_VELOCITY;
@@ -200,6 +266,7 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 		} else {
 			re->hModel = models[index + dynamicparts];
 		}
+
 
 		re->fadeStartTime       = le->endTime - 1000;
 		re->fadeEndTime         = le->endTime;
@@ -249,6 +316,7 @@ void CG_LoseArmor( centity_t *cent, int index ) {
 		}
 	}
 }
+
 
 /*
 ==============
