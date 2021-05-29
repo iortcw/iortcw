@@ -62,8 +62,6 @@ static SDL_GLContext SDL_glContext = NULL;
 
 cvar_t *r_allowSoftwareGL; // Don't abort out if a hardware visual can't be obtained
 cvar_t *r_allowResize; // make window resizable
-cvar_t *r_windowPosx;
-cvar_t *r_windowPosy;
 cvar_t *r_centerWindow;
 cvar_t *r_sdlDriver;
 
@@ -101,19 +99,6 @@ GLimp_Shutdown
 */
 void GLimp_Shutdown( void )
 {
-	int x, y;
-	const char *posx;
-	const char *posy;
-
-	SDL_GetWindowPosition( SDL_window, &x, &y );
-	ri.Printf( PRINT_DEVELOPER, "Saving window position at %d,%d before closing.\n", x, y );
-
-	posx = va( "%d", x );
-	posy = va( "%d", y );
-
-	ri.Cvar_Set( "r_windowPosx", posx );
-	ri.Cvar_Set( "r_windowPosy", posy );
-
 	ri.IN_Shutdown();
 
 	SDL_QuitSubSystem( SDL_INIT_VIDEO );
@@ -545,6 +530,13 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 	}
 	ri.Printf( PRINT_ALL, " %d %d\n", glConfig.vidWidth, glConfig.vidHeight);
 
+	// Center window
+	if( r_centerWindow->integer && !fullscreen )
+	{
+		x = ( desktopMode.w / 2 ) - ( glConfig.vidWidth / 2 );
+		y = ( desktopMode.h / 2 ) - ( glConfig.vidHeight / 2 );
+	}
+
 	// Destroy existing state if it exists
 	if( SDL_glContext != NULL )
 	{
@@ -655,7 +647,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 			perChannelColorBits = 0; /* Use minimum size for 16-bit color */
 
 		/* Need alpha or else SGIs choose 36+ bit RGB mode */
-		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 1 );
+		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 1);
 #endif
 
 #ifdef USE_OPENGLES
@@ -674,54 +666,27 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 		if(r_stereoEnabled->integer)
 		{
 			glConfig.stereoEnabled = qtrue;
-			SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
+			SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
 		}
 		else
 		{
 			glConfig.stereoEnabled = qfalse;
-			SDL_GL_SetAttribute( SDL_GL_STEREO, 0 );
+			SDL_GL_SetAttribute(SDL_GL_STEREO, 0);
 		}
 		
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
+#if 0 // if multisampling is enabled on X11, this causes create window to fail.
 		// If not allowing software GL, demand accelerated
 		if( !r_allowSoftwareGL->integer )
-		{
-			int value;
-
 			SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+#endif
 
-			//Fall back to allow either if setting attribute failed
-			if( SDL_GL_GetAttribute( SDL_GL_ACCELERATED_VISUAL, &value ) != 1 )
-				SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, -1 );
-		}
-
-		if( r_centerWindow->integer && !fullscreen )
- 		{
-			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
-			{
-				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-				continue;
-			}
-		}
-		else if ( ( r_windowPosx->integer || r_windowPosy->integer ) && !fullscreen )
+		if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
+				glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
 		{
-			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, r_windowPosx->integer, r_windowPosy->integer,
-					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
-			{
-				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-				continue;
-			}
- 		}
-		else
-		{
-			if( ( SDL_window = SDL_CreateWindow( CLIENT_WINDOW_TITLE, x, y,
-					glConfig.vidWidth, glConfig.vidHeight, flags ) ) == NULL )
-			{
-				ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
-				continue;
-			}
+			ri.Printf( PRINT_DEVELOPER, "SDL_CreateWindow failed: %s\n", SDL_GetError( ) );
+			continue;
 		}
 
 		if( fullscreen )
@@ -790,7 +755,7 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder, qbool
 					ri.Printf( PRINT_ALL, "GLimp_GetProcAddresses() failed for OpenGL 3.2 core context\n" );
 					renderer = NULL;
 				}
- 
+
 				if (!renderer || (strstr(renderer, "Software Renderer") || strstr(renderer, "Software Rasterizer")))
 				{
 					if ( renderer )
@@ -978,7 +943,6 @@ static void GLimp_InitExtensions( qboolean fixedFunction )
 		}
 	}
 
-
 	// OpenGL 1 fixed function pipeline
 	if ( fixedFunction )
 	{
@@ -1145,8 +1109,6 @@ void GLimp_Init( qboolean fixedFunction )
 	r_allowSoftwareGL = ri.Cvar_Get( "r_allowSoftwareGL", "0", CVAR_LATCH );
 	r_sdlDriver = ri.Cvar_Get( "r_sdlDriver", "", CVAR_ROM );
 	r_allowResize = ri.Cvar_Get( "r_allowResize", "0", CVAR_ARCHIVE | CVAR_LATCH );
-	r_windowPosx = ri.Cvar_Get( "r_windowPosx", "0", CVAR_ARCHIVE );
-	r_windowPosy = ri.Cvar_Get( "r_windowPosy", "0", CVAR_ARCHIVE );
 	r_centerWindow = ri.Cvar_Get( "r_centerWindow", "0", CVAR_ARCHIVE | CVAR_LATCH );
 
 	if( ri.Cvar_VariableIntegerValue( "com_abnormalExit" ) )
@@ -1258,8 +1220,8 @@ void GLimp_EndFrame( void )
 
 	if( r_fullscreen->modified )
 	{
-		qboolean	fullscreen;
-		qboolean	needToToggle;
+		int         fullscreen;
+		qboolean    needToToggle;
 
 		// Find out the current state
 		fullscreen = !!( SDL_GetWindowFlags( SDL_window ) & SDL_WINDOW_FULLSCREEN );
@@ -1277,10 +1239,13 @@ void GLimp_EndFrame( void )
 		if( needToToggle )
 		{
 			// Need the vid_restart here since r_fullscreen is only latched
-			if( fullscreen ) {
+			if( fullscreen )
+			{
 				Com_Printf( "Switching to windowed rendering\n" );
 				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
-			} else {
+			}
+			else
+			{
 				Com_Printf( "Switching to fullscreen rendering\n" );
 				ri.Cmd_ExecuteText(EXEC_APPEND, "vid_restart\n");
 			}

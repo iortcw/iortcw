@@ -1123,9 +1123,7 @@ static void IN_ProcessEvents( void )
 							width = e.window.data1;
 							height = e.window.data2;
 
-							// check for fullscreen
-							// SDL_WINDOWEVENT_RESIZED occurs when requested resolution != given resolution
-							// This prevents an infinite vid_restart loop 
+							// ignore this event on fullscreen
 							if( cls.glconfig.isFullscreen )
 							{
 								break;
