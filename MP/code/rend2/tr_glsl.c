@@ -1143,6 +1143,8 @@ void GLSL_InitGPUShaders(void)
 
 					if (r_parallaxMapShadows->integer)
 						Q_strcat(extradefines, 1024, "#define USE_PARALLAXMAP_SHADOWS\n");
+
+					Q_strcat(extradefines, 1024, va("#define r_parallaxMapOffset %f\n", r_parallaxMapOffset->value));
 				}
 			}
 
