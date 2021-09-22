@@ -374,6 +374,20 @@ static void CG_LimboMessage_f( void ) {
 }
 // -NERVE - SMF
 
+void CG_vstrDown_f(void) {
+	if (trap_Argc() == 5) {
+		trap_SendConsoleCommand(va("vstr %s;", CG_Argv(1)));
+	}
+	else { CG_Printf("Usage: +vstr [down_vstr] [up_vstr]\n"); }
+}
+
+void CG_vstrUp_f(void) {
+	if (trap_Argc() == 5) {
+		trap_SendConsoleCommand(va("vstr %s;", CG_Argv(2)));
+	}
+	else { CG_Printf("Usage: +vstr [down_vstr] [up_vstr]\n"); }
+}
+
 typedef struct {
 	char    *cmd;
 	void ( *function )( void );
@@ -420,8 +434,11 @@ static consoleCommand_t commands[] = {
 	{ "mp_QuickMessage", CG_QuickMessage_f },
 	{ "OpenLimboMenu", CG_OpenLimbo_f },
 	{ "CloseLimboMenu", CG_CloseLimbo_f },
-	{ "LimboMessage", CG_LimboMessage_f }
+	{ "LimboMessage", CG_LimboMessage_f },
 	// -NERVE - SMF
+
+	{ "+vstr", CG_vstrDown_f },
+	{ "-vstr", CG_vstrUp_f }
 };
 
 
