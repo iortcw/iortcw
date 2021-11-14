@@ -3199,11 +3199,12 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 	int i;
 	searchpath_t    *search;
 	pack_t          *pak;
-	char			curpath[MAX_OSPATH + 1], *pakfile;
+	char		curpath[MAX_OSPATH + 1], *pakfile;
 	int numfiles;
 	char            **pakfiles;
 	char            *sorted[MAX_PAKFILES];
 
+	// find all pak files in this directory
 	Q_strncpyz(curpath, FS_BuildOSPath(path, dir, ""), sizeof(curpath));
 	curpath[strlen(curpath) - 1] = '\0';	// strip the trailing slash
 
@@ -3241,31 +3242,28 @@ void FS_AddGameDirectory( const char *path, const char *dir ) {
 		numfiles = MAX_PAKFILES;
 	}
 	for ( i = 0 ; i < numfiles ; i++ ) {
-		sorted[i] = pakfiles[i];
+		if ( pakfiles ) {
+			sorted[i] = pakfiles[i];
 
-// JPW NERVE sp_* to _p_* so "sp_pak*" gets alphabetically sorted before "pak*"
-//----(SA)	SP mod
-
-		// (SA) sort order to be further clarified later (10/8/01)
-		if ( !Q_strncmp( sorted[i],"sp_",3 ) ) { //	sort sp first
-			memcpy( sorted[i],"zz",2 );
+			// JPW NERVE sp_* to _p_* so "sp_pak*" gets alphabetically sorted before "pak*"
+			//----(SA)	SP mod
+			// (SA) sort order to be further clarified later (10/8/01)
+			if ( !Q_strncmp( sorted[i],"sp_",3 ) ) { //	sort sp first
+				memcpy( sorted[i],"zz",2 );
+			}
 		}
-
 	}
 
 	qsort( sorted, numfiles, sizeof(char *), paksort );
 
 	for ( i = 0 ; i < numfiles ; i++ ) {
-
 		if ( Q_strncmp( sorted[i],"mp_",3 ) ) { // (SA) SP mod -- exclude mp_*
-
-// JPW NERVE KLUDGE: fix filenames broken in mp/sp/pak sort above
-//----(SA)	mod for SP
+			// JPW NERVE KLUDGE: fix filenames broken in mp/sp/pak sort above
+			//----(SA)	mod for SP
 			if ( !Q_strncmp( sorted[i],"zz_",3 ) ) {
 				memcpy( sorted[i],"sp",2 );
 			}
-
-// jpw
+			// jpw
 			pakfile = FS_BuildOSPath( path, dir, sorted[i] );
 			if ( ( pak = FS_LoadZipFile( pakfile, sorted[i] ) ) == 0 ) {
 				continue;

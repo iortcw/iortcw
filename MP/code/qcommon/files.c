@@ -3229,27 +3229,26 @@ void FS_AddGameDirectory( const char *path, const char *dir, qboolean allowUnzip
 		numfiles = MAX_PAKFILES;
 	}
 	for ( i = 0 ; i < numfiles ; i++ ) {
-		sorted[i] = pakfiles[i];
-// JPW NERVE KLUDGE: sorry, temp mod mp_* to _p_* so "mp_pak*" gets alphabetically sorted before "pak*"
+		if ( pakfiles ) {
+			sorted[i] = pakfiles[i];
 
-		if ( !Q_strncmp( sorted[i],"mp_",3 ) ) {
-			memcpy( sorted[i],"zz",2 );
+			// JPW NERVE KLUDGE: sorry, temp mod mp_* to _p_* so "mp_pak*" gets alphabetically sorted before "pak*"
+			if ( !Q_strncmp( sorted[i],"mp_",3 ) ) {
+				memcpy( sorted[i],"zz",2 );
+			}
+			// jpw
 		}
-
-// jpw
 	}
 
 	qsort( sorted, numfiles, sizeof(char*), paksort );
 
 	for ( i = 0 ; i < numfiles ; i++ ) {
 		if ( Q_strncmp( sorted[i],"sp_",3 ) ) { // JPW NERVE -- exclude sp_*
-// JPW NERVE KLUDGE: fix filenames broken in mp/sp/pak sort above
-
+			// JPW NERVE KLUDGE: fix filenames broken in mp/sp/pak sort above
 			if ( !Q_strncmp( sorted[i],"zz_",3 ) ) {
 				memcpy( sorted[i],"mp",2 );
 			}
-
-// jpw
+			// jpw
 			pakfile = FS_BuildOSPath( path, dir, sorted[i] );
 			if ( ( pak = FS_LoadZipFile( pakfile, sorted[i] ) ) == 0 ) {
 				continue;
