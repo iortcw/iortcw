@@ -1781,7 +1781,9 @@ static GLenum RawImage_GetFormat(const byte *data, int numPixels, GLenum picForm
 	}
 	else if(lightMap)
 	{
-		if(r_greyscale->integer)
+		// GL_LUMINANCE is not valid for OpenGL 3.2 Core context and
+		// everything becomes solid black
+		if(0 && r_greyscale->integer)
 			internalFormat = GL_LUMINANCE;
 		else
 			internalFormat = GL_RGBA;
@@ -1796,7 +1798,7 @@ static GLenum RawImage_GetFormat(const byte *data, int numPixels, GLenum picForm
 		// select proper internal format
 		if ( samples == 3 )
 		{
-			if(r_greyscale->integer)
+			if(0 && r_greyscale->integer)
 			{
 				if(r_texturebits->integer == 16 || r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE8;
@@ -1833,7 +1835,7 @@ static GLenum RawImage_GetFormat(const byte *data, int numPixels, GLenum picForm
 		}
 		else if ( samples == 4 )
 		{
-			if(r_greyscale->integer)
+			if(0 && r_greyscale->integer)
 			{
 				if(r_texturebits->integer == 16 || r_texturebits->integer == 32)
 					internalFormat = GL_LUMINANCE8_ALPHA8;
