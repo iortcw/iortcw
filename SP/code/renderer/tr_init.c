@@ -1034,31 +1034,16 @@ Workaround for ri.Printf's 1024 characters buffer limit.
 */
 void R_PrintLongString(const char *string) {
 	char buffer[1024];
-	const char *p = string;
-	int remainingLength = strlen(string);
+	const char *p;
+	int size = strlen(string);
 
-	while (remainingLength > 0)
+	p = string;
+	while(size > 0)
 	{
-		// Take as much characters as possible from the string without splitting words between buffers
-		// This avoids the client console splitting a word up when one half fits on the current line,
-		// but the second half would have to be written on a new line
-		int charsToTake = sizeof(buffer) - 1;
-		if (remainingLength > charsToTake) {
-			while (p[charsToTake - 1] > ' ' && p[charsToTake] > ' ') {
-				charsToTake--;
-				if (charsToTake == 0) {
-					charsToTake = sizeof(buffer) - 1;
-					break;
-				}
-			}
-		} else if (remainingLength < charsToTake) {
-			charsToTake = remainingLength;
-		}
-
-		Q_strncpyz( buffer, p, charsToTake + 1 );
+		Q_strncpyz(buffer, p, sizeof (buffer) );
 		ri.Printf( PRINT_ALL, "%s", buffer );
-		remainingLength -= charsToTake;
-		p += charsToTake;
+		p += 1023;
+		size -= 1023;
 	}
 }
 
@@ -1083,6 +1068,7 @@ void GfxInfo_f( void ) {
 	ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
 	ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
 	ri.Printf( PRINT_ALL, "GL_EXTENSIONS: " );
+	// glConfig.extensions_string is a limited length so get the full list directly
 #ifndef USE_OPENGLES
 	if ( qglGetStringi )
 	{
@@ -1098,7 +1084,7 @@ void GfxInfo_f( void ) {
 	else
 #endif
 	{
-		R_PrintLongString( glConfig.extensions_string );
+		R_PrintLongString( (char *) qglGetString( GL_EXTENSIONS ) );
 	}
 	ri.Printf( PRINT_ALL, "\n" );
 	ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
@@ -1508,6 +1494,8 @@ void R_Init( void ) {
 		ri.Printf( PRINT_ALL, "glGetError() = 0x%x\n", err );
 	}
 
+	// print info
+	GfxInfo_f();
 	ri.Printf( PRINT_ALL, "----- finished R_Init -----\n" );
 }
 
