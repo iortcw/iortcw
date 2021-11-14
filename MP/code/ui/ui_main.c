@@ -4653,8 +4653,7 @@ static void UI_RunMenuScript( char **args ) {
 			trap_Cvar_Set( "cdkey2", "" );
 			trap_Cvar_Set( "cdkey3", "" );
 			trap_Cvar_Set( "cdkey4", "" );
-			trap_Cvar_Set( "cdkeychecksum", "" );
-			if ( buff[0] != 32 && strlen( buff ) == CDKEY_LEN ) {
+			if ( strlen( buff ) == CDKEY_LEN ) {
 				Q_strncpyz( out, buff, 5 );
 				trap_Cvar_Set( "cdkey1", out );
 				Q_strncpyz( out, buff + 4, 5 );
