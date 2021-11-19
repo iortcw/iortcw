@@ -413,6 +413,8 @@ typedef enum {
 	TRAP_TESTPRINTFLOAT
 } sharedTraps_t;
 
+typedef intptr_t (QDECL *vmMainProc)(intptr_t callNum, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11);
+
 void    VM_Init( void );
 vm_t	*VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
 					vmInterpret_t interpret );
@@ -1202,7 +1204,7 @@ void Sys_LeaveCriticalSection( void *ptr );
 
 // FIXME: wants win32 implementation
 char* Sys_GetDLLName( const char *name );
-void	* QDECL Sys_LoadGameDll( const char *name, intptr_t (QDECL **entryPoint)(intptr_t, ...),
+void	* QDECL Sys_LoadGameDll( const char *name, vmMainProc *entryPoint,
 				  intptr_t (QDECL *systemcalls)(intptr_t, ...) );
 void    Sys_UnloadDll( void *dllHandle );
 
