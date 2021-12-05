@@ -90,10 +90,6 @@ ifeq ($(COMPILE_ARCH),axp)
   COMPILE_ARCH=alpha
 endif
 
-ifeq ($(COMPILE_ARCH),sparc64)
-  COMPILE_ARCH=sparc
-endif
-
 ifndef ARCH
 ARCH=$(COMPILE_ARCH)
 endif
@@ -387,9 +383,6 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     -pipe -DUSE_ICON -DARCH_STRING=\\\"$(FILE_ARCH)\\\"
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
-  OPTIMIZEVM = -O3
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -399,18 +392,22 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),ppc)
+    OPTIMIZEVM = -O3
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
+    OPTIMIZEVM = -O3
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),sparc)
-    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
-    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),sparc64)
-    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
-    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),alpha)
     # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
@@ -488,7 +485,10 @@ ifeq ($(PLATFORM),darwin)
 
   # Default minimum Mac OS X version
   ifeq ($(MACOSX_VERSION_MIN),)
-    MACOSX_VERSION_MIN=10.7
+    MACOSX_VERSION_MIN=10.5
+    ifeq ($(ARCH),arm64)
+      MACOSX_VERSION_MIN=11.0
+    endif
   endif
 
   MACOSX_MAJOR=$(shell echo $(MACOSX_VERSION_MIN) | cut -d. -f1)
@@ -504,6 +504,11 @@ ifeq ($(PLATFORM),darwin)
   LDFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN)
   BASE_CFLAGS += -mmacosx-version-min=$(MACOSX_VERSION_MIN) \
                  -DMAC_OS_X_VERSION_MIN_REQUIRED=$(MAC_OS_X_VERSION_MIN_REQUIRED)
+
+  MACOSX_ARCH=$(ARCH)
+  ifeq ($(ARCH),x86)
+    MACOSX_ARCH=i386
+  endif
 
   ifeq ($(ARCH),ppc)
     BASE_CFLAGS += -arch ppc
@@ -532,17 +537,34 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifeq ($(CROSS_COMPILING),1)
-    ifeq ($(ARCH),x86_64)
-      CC=x86_64-apple-darwin13-cc
-      RANLIB=x86_64-apple-darwin13-ranlib
-    else
-      ifeq ($(ARCH),x86)
-        CC=i386-apple-darwin13-cc
-        RANLIB=i386-apple-darwin13-ranlib
-      else
-        $(error Architecture $(ARCH) is not supported when cross compiling)
+    # If CC is already set to something generic, we probably want to use
+    # something more specific
+    ifneq ($(findstring $(strip $(CC)),cc gcc),)
+      CC=
+    endif
+
+    ifndef CC
+      ifndef DARWIN
+        # macOS 10.5 SDK
+          DARWIN=9
+        ifeq ($(ARCH),arm64)
+          # macOS 11.0 SDK
+          DARWIN=20.1
+        endif
+      endif
+
+      CC=$(MACOSX_ARCH)-apple-darwin$(DARWIN)-cc
+      RANLIB=$(MACOSX_ARCH)-apple-darwin$(DARWIN)-ranlib
+      LIPO=$(MACOSX_ARCH)-apple-darwin$(DARWIN)-lipo
+
+      ifeq ($(call bin_path, $(CC)),)
+        $(error Unable to find osxcross $(CC))
       endif
     endif
+  endif
+
+  ifndef LIPO
+    LIPO=lipo
   endif
 
   BASE_CFLAGS += -fno-strict-aliasing -fno-common -pipe
@@ -844,9 +866,6 @@ ifeq ($(PLATFORM),openbsd)
     -pipe -DUSE_ICON -DMAP_ANONYMOUS=MAP_ANON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
-  OPTIMIZEVM = -O3
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
-
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -856,14 +875,22 @@ ifeq ($(PLATFORM),openbsd)
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),ppc)
+    OPTIMIZEVM = -O3
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
+    OPTIMIZEVM = -O3
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
+  ifeq ($(ARCH),sparc)
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  endif
   ifeq ($(ARCH),sparc64)
-    OPTIMIZE += -mtune=ultrasparc3 -mv8plus
-    OPTIMIZEVM += -mtune=ultrasparc3 -mv8plus
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),alpha)
     # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
@@ -968,7 +995,9 @@ ifeq ($(PLATFORM),sunos)
 
   ifneq ($(ARCH),x86)
     ifneq ($(ARCH),sparc)
-      $(error arch $(ARCH) is currently not supported)
+      ifneq ($(ARCH),sparc64)
+        $(error arch $(ARCH) is currently not supported)
+      endif
     endif
   endif
 
@@ -976,23 +1005,22 @@ ifeq ($(PLATFORM),sunos)
     -pipe -DUSE_ICON
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
-  OPTIMIZEVM = -O3 -funroll-loops
-
   ifeq ($(ARCH),sparc)
-    OPTIMIZEVM += -O3 \
-      -fstrength-reduce -falign-functions=2 \
-      -mtune=ultrasparc3 -mv8plus -mno-faster-structs
-  else
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  endif
+  ifeq ($(ARCH),sparc64)
+    OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
+  endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=i586 -fomit-frame-pointer \
       -falign-functions=2 -fstrength-reduce
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
   endif
-  endif
-
-  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
@@ -1062,7 +1090,7 @@ ifndef HAVE_VM_COMPILED
   HAVE_VM_COMPILED=false
 endif
 
-ifneq ($(findstring $(ARCH),armv7l x86 x86_64 ppc ppc64 sparc sparc64),)
+ifneq ($(filter $(ARCH),armv7l x86 x86_64 ppc sparc),)
   HAVE_VM_COMPILED=true
 endif
 
@@ -2279,10 +2307,10 @@ ifeq ($(HAVE_VM_COMPILED),true)
     Q3OBJ += \
       $(B)/client/vm_x86.o
   endif
-  ifneq ($(findstring $(ARCH),ppc ppc64),)
+  ifneq ($(findstring $(ARCH),ppc),)
     Q3OBJ += $(B)/client/vm_powerpc.o $(B)/client/vm_powerpc_asm.o
   endif
-  ifneq ($(findstring $(ARCH),sparc sparc64),)
+  ifneq ($(findstring $(ARCH),sparc),)
     Q3OBJ += $(B)/client/vm_sparc.o
   endif
   ifeq ($(ARCH),armv7l)
@@ -2342,7 +2370,11 @@ endif
 ifneq ($(strip $(LIBSDLMAIN)),)
 ifneq ($(strip $(LIBSDLMAINSRC)),)
 $(LIBSDLMAIN) : $(LIBSDLMAINSRC)
+ifeq ($(PLATFORM),darwin)
+	$(LIPO) -extract $(MACOSX_ARCH) $< -o $@
+else
 	cp $< $@
+endif
 	$(RANLIB) $@
 endif
 endif
@@ -2455,10 +2487,10 @@ ifeq ($(HAVE_VM_COMPILED),true)
     Q3DOBJ += \
       $(B)/ded/vm_x86.o
   endif
-  ifneq ($(findstring $(ARCH),ppc ppc64),)
+  ifneq ($(findstring $(ARCH),ppc),)
     Q3DOBJ += $(B)/ded/vm_powerpc.o $(B)/ded/vm_powerpc_asm.o
   endif
-  ifneq ($(findstring $(ARCH),sparc sparc64),)
+  ifneq ($(findstring $(ARCH),sparc),)
     Q3DOBJ += $(B)/ded/vm_sparc.o
   endif
   ifeq ($(ARCH),armv7l)
