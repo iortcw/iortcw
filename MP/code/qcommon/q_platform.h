@@ -236,6 +236,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ARCH_STRING "powerpc64"
 #elif defined __powerpc__
 #define ARCH_STRING "powerpc"
+#elif defined __riscv
+#define ARCH_STRING "riscv64"
 #endif
 
 #if BYTE_ORDER == BIG_ENDIAN
