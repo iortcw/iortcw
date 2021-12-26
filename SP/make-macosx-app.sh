@@ -82,6 +82,7 @@ function symlinkArch()
     IS32=`file "${SRCFILE}.${EXT}" | grep "i386"`
     IS64=`file "${SRCFILE}.${EXT}" | grep "x86_64"`
     ISPPC=`file "${SRCFILE}.${EXT}" | grep "ppc"`
+    ISARM=`file "${SRCFILE}.${EXT}" | grep "arm64"`
 
     if [ "${IS32}" != "" ]; then
         if [ ! -L "${DSTFILE}i386.${EXT}" ]; then
@@ -105,6 +106,14 @@ function symlinkArch()
         fi
     elif [ -L "${DSTFILE}ppc.${EXT}" ]; then
         rm "${DSTFILE}ppc.${EXT}"
+    fi
+
+    if [ "${ISARM}" != "" ]; then
+        if [ ! -L "${DSTFILE}arm64.${EXT}" ]; then
+            ln -s "${SRCFILE}.${EXT}" "${DSTFILE}arm64.${EXT}"
+        fi
+    elif [ -L "${DSTFILE}arm64.${EXT}" ]; then
+        rm "${DSTFILE}arm64.${EXT}"
     fi
 
     popd > /dev/null

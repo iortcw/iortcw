@@ -187,7 +187,7 @@ EXECUTABLE_NAME="${PRODUCT_NAME}"
 # loop through the architectures to build string lists for each universal binary
 for ARCH in $SEARCH_ARCHS; do
 	CURRENT_ARCH=${ARCH}
-	
+
 	if [ ${CURRENT_ARCH} == "x86" ]; then FILE_ARCH="i386"; fi
 	if [ ${CURRENT_ARCH} == "x86_64" ]; then FILE_ARCH="x86_64"; fi
 	if [ ${CURRENT_ARCH} == "ppc" ]; then FILE_ARCH="ppc"; fi
