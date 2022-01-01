@@ -720,6 +720,11 @@ ifdef MINGW
   SHLIBCFLAGS=
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
+  # clang 3.5 doesn't support this
+  ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
+    LDFLAGS += -mwindows -static -static-libgcc -static-libstdc++
+  endif
+
   BINEXT=.exe
 
   ifeq ($(CROSS_COMPILING),0)
@@ -744,10 +749,6 @@ ifdef MINGW
   endif
 
   LIBS= -lws2_32 -lwinmm -lpsapi
-  # clang 3.5 doesn't support this
-  ifneq ("$(CC)", $(findstring "$(CC)", "clang" "clang++"))
-    CLIENT_LDFLAGS += -mwindows -static -static-libgcc -static-libstdc++
-  endif
   CLIENT_LIBS = -lgdi32 -lole32
   RENDERER_LIBS = -lgdi32 -lole32
 
