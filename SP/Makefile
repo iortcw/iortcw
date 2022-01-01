@@ -1486,11 +1486,29 @@ endif
 	@echo "  LDFLAGS:"
 	$(call print_wrapped, $(LDFLAGS))
 	@echo ""
+	@echo "  CLIENT_LDFLAGS:"
+	$(call print_wrapped, $(CLIENT_LDFLAGS))
+	@echo ""
+	@echo "  SERVER_LDFLAGS:"
+	$(call print_wrapped, $(SERVER_LDFLAGS))
+	@echo ""
+	@echo "  TOOLS_LDFLAGS:"
+	$(call print_wrapped, $(TOOLS_LDFLAGS))
+	@echo ""
 	@echo "  LIBS:"
 	$(call print_wrapped, $(LIBS))
 	@echo ""
 	@echo "  CLIENT_LIBS:"
 	$(call print_wrapped, $(CLIENT_LIBS))
+	@echo ""
+	@echo "  RENDERER_LIBS:"
+	$(call print_wrapped, $(RENDERER_LIBS))
+	@echo ""
+	@echo "  TOOLS_LIBS:"
+	$(call print_wrapped, $(TOOLS_LIBS))
+	@echo ""
+	@echo "  SERVER_LIBS:"
+	$(call print_wrapped, $(SERVER_LIBS))
 	@echo ""
 	@echo "  Output:"
 	$(call print_list, $(NAKED_TARGETS))
