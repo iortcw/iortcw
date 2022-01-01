@@ -494,7 +494,8 @@ static void IN_InitJoystick( void )
 	}
 
 	total = SDL_NumJoysticks();
-	Com_DPrintf("%d possible joysticks\n", total);
+	if ( total )
+		Com_Printf("%d possible joysticks\n", total);
 
 	// Print list and build cvar to allow ui to select joystick.
 	for (i = 0; i < total; i++)

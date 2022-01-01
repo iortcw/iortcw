@@ -187,6 +187,7 @@ qboolean SNDDMA_Init(void)
 {
 	SDL_AudioSpec desired;
 	SDL_AudioSpec obtained;
+	SDL_version linked;
 	int tmp;
 
 	if (snd_inited)
@@ -200,16 +201,17 @@ qboolean SNDDMA_Init(void)
 		s_sdlMixSamps = Cvar_Get("s_sdlMixSamps", "0", CVAR_ARCHIVE);
 	}
 
-	Com_Printf( "SDL_Init( SDL_INIT_AUDIO )... " );
+	Com_DPrintf( "SDL_Init( SDL_INIT_AUDIO )... " );
 
 	if (SDL_Init(SDL_INIT_AUDIO) != 0)
 	{
-		Com_Printf( "FAILED (%s)\n", SDL_GetError( ) );
+		Com_Printf( "SDL_Init( SDL_INIT_AUDIO ) FAILED (%s)\n", SDL_GetError( ) );
 		return qfalse;
 	}
 
-	Com_Printf( "OK\n" );
-
+	Com_DPrintf( "OK\n" );
+	SDL_GetVersion(&linked);
+	Com_Printf( "SDL version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 	Com_Printf( "SDL audio driver is \"%s\".\n", SDL_GetCurrentAudioDriver( ) );
 
 	memset(&desired, '\0', sizeof (desired));
