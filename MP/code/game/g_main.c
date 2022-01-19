@@ -726,6 +726,7 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 			} else if ( checkEnt->s.eType == ET_ALARMBOX )      {
 				if ( checkEnt->health > 0 ) {
 //					hintDist	= CH_BREAKABLE_DIST;
+					hintDist	= CH_ACTIVATE_DIST;
 					hintType    = HINT_ACTIVATE;
 				}
 			} else if ( checkEnt->s.eType == ET_ITEM )      {

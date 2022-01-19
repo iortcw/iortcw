@@ -2559,6 +2559,26 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	// Ridah
 	firing = ( ( cent->currentState.eFlags & EF_FIRING ) != 0 );
 
+	// Prevent firing flamethrower and tesla in noclip or when leaning or when underwater
+	if ( ps && firing && (weaponNum == WP_TESLA || weaponNum == WP_FLAMETHROWER) )
+	{
+		vec3_t point;
+		int cont = 0;
+		VectorCopy (ps->origin, point);	// crashes here
+		point[2] += ps->viewheight;
+		cont = trap_CM_PointContents( point, 0 );
+	
+		// player is in noclip mode - no fire
+		if ( ps->pm_type == PM_NOCLIP )
+			firing = qfalse;
+		// player is leaning - no fire
+		if ( ps->leanf != 0 )
+			firing = qfalse;
+		// player is underwater - no fire
+		if ( cont & CONTENTS_WATER )
+			firing = qfalse;
+	}
+
 	CG_PositionEntityOnTag( &gun, parent, "tag_weapon", 0, NULL );
 
 	playerScaled = (qboolean)( cgs.clientinfo[ cent->currentState.clientNum ].playermodelScale[0] != 0 );
