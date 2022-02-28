@@ -526,10 +526,6 @@ qboolean CG_DrawScoreboard( void ) {
 		CG_DrawBigStringColor( x, y, "SCORE PING TIME NAME", fadeColor );
 		CG_DrawBigStringColor( x, y + 12, "----- ---- ---- ---------------", fadeColor );
 	#endif
-		CG_DrawPic( x + 1 * 16, y, 64, 32, cgs.media.scoreboardScore );
-		CG_DrawPic( x + 6 * 16 + 8, y, 64, 32, cgs.media.scoreboardPing );
-		CG_DrawPic( x + 11 * 16 + 8, y, 64, 32, cgs.media.scoreboardTime );
-		CG_DrawPic( x + 16 * 16, y, 64, 32, cgs.media.scoreboardName );
 
 		y += 32;
 	}
