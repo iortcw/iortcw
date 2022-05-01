@@ -7075,7 +7075,8 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			return;
 
 		case UIMENU_INGAME:
-			if ( trap_Cvar_VariableValue( "savegame_loading" ) ) {
+			// AR: don't allow openning menu during loading
+			if ( trap_Cvar_VariableValue( "savegame_loading" ) || trap_Cvar_VariableValue( "g_reloading" ) ) {
 				return;
 			}
 			trap_Cvar_Set( "cl_paused", "1" );
