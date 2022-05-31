@@ -1884,13 +1884,13 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, vec
 		const char *s = text;
 		float max = *maxX;
 		float useScale;
-		fontInfo_t *fnt = &cgDC.Assets.textFont;
+		fontInfo_t *font = &cgDC.Assets.textFont;
 		if ( scale <= cg_smallFont.value ) {
-			fnt = &cgDC.Assets.smallFont;
+			font = &cgDC.Assets.smallFont;
 		} else if ( scale > cg_bigFont.value ) {
-			fnt = &cgDC.Assets.bigFont;
+			font = &cgDC.Assets.bigFont;
 		}
-		useScale = scale * fnt->glyphScale;
+		useScale = scale * font->glyphScale;
 		trap_R_SetColor( color );
 		len = strlen( text );
 		if ( limit > 0 && len > limit ) {
@@ -1898,7 +1898,7 @@ static void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, vec
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			glyph = &fnt->glyphs[*s & 255];
+			glyph = &font->glyphs[(unsigned char)*s & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( newColor ) );
 				newColor[3] = color[3];

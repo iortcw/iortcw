@@ -484,7 +484,7 @@ int Text_Width( const char *text, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &font->glyphs[*s & 255];
+				glyph = &font->glyphs[(unsigned char)*s & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 				out += glyph->xSkip;
 				s++;
 				count++;
@@ -519,7 +519,7 @@ int Text_Height( const char *text, float scale, int limit ) {
 				s += 2;
 				continue;
 			} else {
-				glyph = &font->glyphs[*s & 255];
+				glyph = &font->glyphs[(unsigned char)*s & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 				if ( max < glyph->height ) {
 					max = glyph->height;
 				}
@@ -582,7 +582,7 @@ void Text_Paint( float x, float y, float scale, vec4_t color, const char *text, 
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			index = *s;
+			index = (unsigned char)*s;
 
 			// NERVE - SMF - don't draw tabs and newlines
 			if ( index < 20 ) {
@@ -591,7 +591,7 @@ void Text_Paint( float x, float y, float scale, vec4_t color, const char *text, 
 				continue;
 			}
 
-			glyph = &font->glyphs[index & 255];
+			glyph = &font->glyphs[index & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( newColor ) );
 				newColor[3] = color[3];
@@ -687,7 +687,7 @@ char* Text_AutoWrap_Paint_Chunk( float x, float y, int width, float scale, vec4_
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			index = *s;
+			index = (unsigned char)*s;
 			if ( *s == ' ' || *s == '\t' || *s == '\n' ) {
 				wrap_point = s;
 			}
@@ -699,7 +699,7 @@ char* Text_AutoWrap_Paint_Chunk( float x, float y, int width, float scale, vec4_
 				continue;
 			}
 
-			glyph = &font->glyphs[index & 255];
+			glyph = &font->glyphs[index & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( newColor ) );
 				newColor[3] = color[3];
@@ -846,9 +846,9 @@ void Text_PaintWithCursor( float x, float y, float scale, vec4_t color, const ch
 			len = limit;
 		}
 		count = 0;
-		glyph2 = &font->glyphs[cursor & 255];
+		glyph2 = &font->glyphs[(unsigned char)cursor & 255];
 		while ( s && *s && count < len ) {
-			glyph = &font->glyphs[*s & 255];
+			glyph = &font->glyphs[(unsigned char)*s & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 			//int yadj = Assets.textFont.glyphs[text[i]].bottom + Assets.textFont.glyphs[text[i]].top;
 			//float yadj = scale * (Assets.textFont.glyphs[text[i]].imageHeight - Assets.textFont.glyphs[text[i]].height);
 			if ( Q_IsColorString( s ) ) {
@@ -967,7 +967,7 @@ static void Text_Paint_Limit( float *maxX, float x, float y, float scale, vec4_t
 		}
 		count = 0;
 		while ( s && *s && count < len ) {
-			glyph = &font->glyphs[*s & 255];
+			glyph = &font->glyphs[(unsigned char)*s & 255];           // NERVE - SMF - this needs to be an unsigned cast for localization
 			if ( Q_IsColorString( s ) ) {
 				memcpy( newColor, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( newColor ) );
 				newColor[3] = color[3];
