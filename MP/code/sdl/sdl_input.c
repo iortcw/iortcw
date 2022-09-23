@@ -504,7 +504,10 @@ static void IN_InitJoystick( void )
 		Q_strcat(buf, sizeof(buf), "\n");
 	}
 
-	Cvar_Get( "in_availableJoysticks", buf, CVAR_ROM );
+	Cvar_Get( "in_availableJoysticks", "", CVAR_ROM );
+
+	// Update cvar on in_restart or controller add/remove.
+	Cvar_Set( "in_availableJoysticks", buf );
 
 	if( !in_joystick->integer ) {
 		Com_DPrintf( "Joystick is not active.\n" );
