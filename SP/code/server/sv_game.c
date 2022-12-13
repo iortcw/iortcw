@@ -955,6 +955,13 @@ void SV_RestartGameProgs( void ) {
 	if ( !gvm ) {
 		Com_Error( ERR_FATAL, "VM_Restart on game failed" );
 	}
+	
+	// clear out old genitiy pointers so they are not accessed again
+	client_t  *cl;
+	int       i;
+	for ( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ ) {
+		cl->gentity = NULL;
+	}
 
 	SV_InitGameVM( qtrue );
 }
