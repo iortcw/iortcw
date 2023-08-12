@@ -375,8 +375,7 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 			if ( cg.snap && ( dest->snapFlags ^ cg.snap->snapFlags ) & SNAPFLAG_SERVERCOUNT ) {
 				int i;
 				centity_t backupCent;
-				CG_SetInitialSnapshot( dest );
-				cg.nextFrameTeleport = qtrue;
+
 				cg.damageTime = 0;
 				cg.duckTime = -1;
 				cg.landTime = -1;
@@ -401,6 +400,10 @@ static snapshot_t *CG_ReadNextSnapshot( void ) {
 				cg.predictedPlayerEntity.nextState = backupCent.nextState;
 				cg.predictedPlayerEntity.currentValid = backupCent.currentValid;
 				cg.predictedPlayerEntity.interpolate = backupCent.interpolate;
+
+				CG_SetInitialSnapshot( dest );
+				cg.nextFrameTeleport = qtrue;
+
 				return NULL;
 			}
 
