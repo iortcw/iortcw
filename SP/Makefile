@@ -189,7 +189,7 @@ ifndef USE_CURL_DLOPEN
 endif
 
 ifndef USE_CODEC_VORBIS
-USE_CODEC_VORBIS=1
+USE_CODEC_VORBIS=0
 endif
 
 ifndef USE_CODEC_OPUS
@@ -374,31 +374,33 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu" "gnu")
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),ppc)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),sparc)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),sparc64)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),alpha)
+    # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
+    # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
   endif
@@ -607,7 +609,7 @@ ifeq ($(PLATFORM),darwin)
     RENDERER_LIBS += -framework SDL2
   endif
 
-  OPTIMIZE = $(OPTIMIZEVM)
+  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   SHLIBEXT=dylib
   SHLIBCFLAGS=-fPIC -fno-common
@@ -695,12 +697,12 @@ ifdef MINGW
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     FILE_ARCH=x64
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
 
   SHLIBEXT=dll
@@ -805,7 +807,7 @@ ifeq ($(PLATFORM),freebsd)
   CLIENT_CFLAGS += $(SDL_CFLAGS)
 
   OPTIMIZEVM =
-  OPTIMIZE = $(OPTIMIZEVM)
+  OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   SHLIBEXT=so
   SHLIBCFLAGS=-fPIC
@@ -859,31 +861,33 @@ ifeq ($(PLATFORM),openbsd)
 
   ifeq ($(ARCH),x86_64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),x86)
     OPTIMIZEVM = -O3 -march=i586
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),ppc)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),ppc64)
     OPTIMIZEVM = -O3
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     ALTIVEC_CFLAGS = -maltivec
   endif
   ifeq ($(ARCH),sparc)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),sparc64)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),alpha)
+    # According to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410555
+    # -ffast-math will cause the client to die with SIGFPE on Alpha
     OPTIMIZE = $(OPTIMIZEVM)
   endif
   endif
@@ -996,16 +1000,16 @@ ifeq ($(PLATFORM),sunos)
 
   ifeq ($(ARCH),sparc)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),sparc64)
     OPTIMIZEVM += -mcpu=v9 -mtune=v9 -mv8plus
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   endif
   ifeq ($(ARCH),x86)
     OPTIMIZEVM += -march=i586 -fomit-frame-pointer \
       -falign-functions=2 -fstrength-reduce
-    OPTIMIZE = $(OPTIMIZEVM)
+    OPTIMIZE = $(OPTIMIZEVM) -ffast-math
     BASE_CFLAGS += -m32
     CLIENT_CFLAGS += -I/usr/X11/include/NVIDIA
     CLIENT_LDFLAGS += -L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA
