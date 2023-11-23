@@ -77,6 +77,27 @@ If you have questions concerning this license or the applicable additional terms
 #define RDF_DRAWINGSKY      ( 1 << 5 )
 #define RDF_SNOOPERVIEW     ( 1 << 6 )  //----(SA)	added
 
+// Patch screen item alignment types
+typedef enum
+{
+	ALIGN_UNSET = 0,
+	ALIGN_STRETCH,
+	ALIGN_STRETCH_LEFT_CENTER,
+	ALIGN_STRETCH_RIGHT_CENTER,
+	ALIGN_STRETCH_ALL,
+	ALIGN_CENTER,
+	ALIGN_LETTERBOX,
+	ALIGN_TOP,
+	ALIGN_BOTTOM,
+	ALIGN_RIGHT,
+	ALIGN_LEFT,
+	ALIGN_TOPRIGHT,
+	ALIGN_TOPLEFT,
+	ALIGN_BOTTOMRIGHT,
+	ALIGN_BOTTOMLEFT,
+	ALIGN_TOP_STRETCH,
+	ALIGN_BOTTOM_STRETCH,
+} scralign_t;
 
 typedef struct {
 	vec3_t xyz;
