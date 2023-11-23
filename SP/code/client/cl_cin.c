@@ -1646,6 +1646,7 @@ CIN_DrawCinematic
 */
 void CIN_DrawCinematic( int handle ) {
 	float x, y, w, h;
+	float	barheight, barwidth, vw, vh;
 	byte    *buf;
 
 	if ( handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF ) {
@@ -1661,23 +1662,35 @@ void CIN_DrawCinematic( int handle ) {
 	w = cinTable[handle].width;
 	h = cinTable[handle].height;
 	buf = cinTable[handle].buf;
-	SCR_AdjustFrom640( &x, &y, &w, &h );
 
+	// Patch use letterbox scaling if specified
+	if ( cinTable[handle].letterBox )
+		SCR_AdjustFrom640( &x, &y, &w, &h, ALIGN_LETTERBOX );
+	else
+		SCR_AdjustFrom640( &x, &y, &w, &h, ALIGN_CENTER );
 
+	vw = (float)cls.glconfig.vidWidth;
+	vh = (float)cls.glconfig.vidHeight;
 	if ( cinTable[handle].letterBox ) {
-		float barheight;
-		float vh;
-		vh = (float)cls.glconfig.vidHeight;
-
-		barheight = ( (float)LETTERBOX_OFFSET / 480.0f ) * vh;  //----(SA)	added
-
-		re.SetColor( &colorBlack[0] );
-//		re.DrawStretchPic( 0, 0, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
-//		re.DrawStretchPic( 0, SCREEN_HEIGHT-LETTERBOX_OFFSET, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
-		//----(SA)	adjust for 640x480
-		re.DrawStretchPic( 0, 0, w, barheight, 0, 0, 0, 0, cls.whiteShader );
-		re.DrawStretchPic( 0, vh - barheight - 1, w, barheight + 1, 0, 0, 0, 0, cls.whiteShader );
+		barwidth = vw;	// Patch added
+	//	barheight = ( (float)LETTERBOX_OFFSET / 480.0f ) * vh;  //----(SA)	added
+		barheight = 0.5 * (vh - h);			// Patch changed
+		if (barheight > 0) {	// Patch use full screen width
+			re.SetColor( &colorBlack[0] );
+			re.DrawStretchPic( 0, 0, barwidth, barheight, 0, 0, 0, 0, cls.whiteShader );
+			re.DrawStretchPic( 0, vh - barheight - 1, barwidth, barheight + 1, 0, 0, 0, 0, cls.whiteShader );
+		}
 	}
+
+	// Patch add pillarbox bars when needed
+	barwidth = 0.5 * (vw - w);
+	barheight = vh;
+	if (barwidth > 0) {
+		re.SetColor( &colorBlack[0] );
+		re.DrawStretchPic( 0, 0, barwidth, barheight, 0, 0, 0, 0, cls.whiteShader );
+		re.DrawStretchPic( vw - barwidth - 1, 0, barwidth + 1, barheight, 0, 0, 0, 0, cls.whiteShader );
+	}
+	// end Patch
 
 	if ( cinTable[handle].dirty && ( cinTable[handle].CIN_WIDTH != cinTable[handle].drawX || cinTable[handle].CIN_HEIGHT != cinTable[handle].drawY ) ) {
 		int *buf2;
