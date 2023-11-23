@@ -654,6 +654,7 @@ void Con_DrawSolidConsole( float frac ) {
 	int lines;
 	int currentColor;
 	vec4_t color;
+	float	conLeft, conWidth;	// Patch added
 
 	lines = cls.glconfig.vidHeight * frac;
 	if ( lines <= 0 ) {
@@ -664,9 +665,14 @@ void Con_DrawSolidConsole( float frac ) {
 		lines = cls.glconfig.vidHeight;
 	}
 
+	// Patch added
+	conLeft = 0;
+	conWidth = SCREEN_WIDTH;
+	SCR_AdjustFrom640 (&conLeft, NULL, &conWidth, NULL, ALIGN_STRETCH);
+	// end Patch
 	// on wide screens, we will center the text
 	con.xadjust = 0;
-	SCR_AdjustFrom640( &con.xadjust, NULL, NULL, NULL );
+	SCR_AdjustFrom640 (&con.xadjust, NULL, NULL, NULL, ALIGN_STRETCH);
 
 	// draw the background
 	y = frac * SCREEN_HEIGHT;
