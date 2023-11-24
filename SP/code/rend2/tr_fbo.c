@@ -37,7 +37,7 @@ qboolean R_CheckFBO(const FBO_t * fbo)
 	if(code == GL_FRAMEBUFFER_COMPLETE)
 		return qtrue;
 
-	// an error occured
+	// an error occurred
 	switch (code)
 	{
 		case GL_FRAMEBUFFER_UNSUPPORTED:
@@ -170,8 +170,12 @@ void FBO_CreateBuffer(FBO_t *fbo, int format, int index, int multisample)
 	}
 
 	absent = *pRenderBuffer == 0;
-	if (absent)
+	if (absent) {
 		qglGenRenderbuffers(1, pRenderBuffer);
+
+		// workaround AMD Windows driver requiring bind to create renderbuffer
+		GL_BindRenderbuffer(*pRenderBuffer);
+	}
 
 	if (multisample && glRefConfig.framebufferMultisample)
 		qglNamedRenderbufferStorageMultisampleEXT(*pRenderBuffer, multisample, format, fbo->width, fbo->height);
