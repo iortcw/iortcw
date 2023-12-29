@@ -501,6 +501,7 @@ static	void R_LoadLightmaps( lump_t *l, lump_t *surfs ) {
 	ri.Free(image);
 }
 
+// If FatPackU() or FatPackV() changes, update FixFatLightmapTexCoords()
 static float FatPackU(float input, int lightmapnum)
 {
 	if (lightmapnum < 0)
