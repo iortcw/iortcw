@@ -5628,6 +5628,7 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 	char *p, *score, *ping, *name, *p_val = NULL, *p_name = NULL;
 	menuDef_t *menu, *menu2; // we use the URL buttons in several menus
 	int i, len;
+	char buff[1024];
 
 	if (info) {
 		memset(info, 0, sizeof(*info));
@@ -5644,12 +5645,16 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 		return qfalse;
 	}
 
-	if ( trap_LAN_ServerStatus( serverAddress, info->text, sizeof( info->text ) ) ) {
+	if ( uiInfo.serverStatus.currentServer >= 0 && uiInfo.serverStatus.currentServer < uiInfo.serverStatus.numDisplayServers ) {
+		trap_LAN_GetServerAddressString(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, 1024);
+	}
+
+	if ( trap_LAN_ServerStatus( buff, info->text, sizeof( info->text ) ) ) {
 
 		menu = Menus_FindByName( "serverinfo_popmenu" );
 		menu2 = Menus_FindByName( "error_popmenu_diagnose" );
 
-		Q_strncpyz( info->address, serverAddress, sizeof( info->address ) );
+		Q_strncpyz( info->address, buff, sizeof( info->address ) );
 		p = info->text;
 		info->numLines = 0;
 		info->lines[info->numLines][0] = "Address";

@@ -5464,9 +5464,10 @@ UI_GetServerStatusInfo
 ==================
 */
 static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t *info ) {
-//#ifdef MISSIONPACK			// NERVE - SMF - enabled for multiplayer
-	char *p, *score, *ping, *name;
+	char *p, *score, *ping, *name, *p_val = NULL, *p_name = NULL;
+	menuDef_t *menu, *menu2; // we use the URL buttons in several menus
 	int i, len;
+	char buff[1024];
 
 	if (info) {
 		memset(info, 0, sizeof(*info));
@@ -5483,8 +5484,16 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 		return qfalse;
 	}
 
-	if ( trap_LAN_ServerStatus( serverAddress, info->text, sizeof( info->text ) ) ) {
-		Q_strncpyz( info->address, serverAddress, sizeof( info->address ) );
+	if ( uiInfo.serverStatus.currentServer >= 0 && uiInfo.serverStatus.currentServer < uiInfo.serverStatus.numDisplayServers ) {
+		trap_LAN_GetServerAddressString(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, 1024);
+	}
+
+	if ( trap_LAN_ServerStatus( buff, info->text, sizeof( info->text ) ) ) {
+
+		menu = Menus_FindByName( "serverinfo_popmenu" );
+		menu2 = Menus_FindByName( "error_popmenu_diagnose" );
+
+		Q_strncpyz( info->address, buff, sizeof( info->address ) );
 		p = info->text;
 		info->numLines = 0;
 		info->lines[info->numLines][0] = "Address";
@@ -5492,6 +5501,9 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 		info->lines[info->numLines][2] = "";
 		info->lines[info->numLines][3] = info->address;
 		info->numLines++;
+		// cleanup of the URL cvars
+		trap_Cvar_Set( "ui_URL", "" );
+		trap_Cvar_Set( "ui_modURL", "" );
 		// get the cvars
 		while ( p && *p ) {
 			p = strchr( p, '\\' );
@@ -5499,9 +5511,29 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 				break;
 			}
 			*p++ = '\0';
+			if ( p_name ) {
+				if ( !strcmp( p_name, "URL" ) ) {
+					trap_Cvar_Set( "ui_URL", p_val );
+					if ( menu ) {
+						Menu_ShowItemByName( menu, "serverURL", qtrue );
+					}
+					if ( menu2 ) {
+						Menu_ShowItemByName( menu2, "serverURL", qtrue );
+					}
+				} else if ( !strcmp( p_name, "mod_url" ) )        {
+					trap_Cvar_Set( "ui_modURL", p_val );
+					if ( menu ) {
+						Menu_ShowItemByName( menu, "modURL", qtrue );
+					}
+					if ( menu2 ) {
+						Menu_ShowItemByName( menu2, "modURL", qtrue );
+					}
+				}
+			}
 			if ( *p == '\\' ) {
 				break;
 			}
+			p_name = p;
 			info->lines[info->numLines][0] = p;
 			info->lines[info->numLines][1] = "";
 			info->lines[info->numLines][2] = "";
@@ -5510,6 +5542,7 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 				break;
 			}
 			*p++ = '\0';
+			p_val = p;
 			info->lines[info->numLines][3] = p;
 
 			info->numLines++;
@@ -5573,7 +5606,6 @@ static int UI_GetServerStatusInfo( const char *serverAddress, serverStatusInfo_t
 		UI_SortServerStatusInfo( info );
 		return qtrue;
 	}
-	//#endif	// #ifdef MISSIONPACK
 	return qfalse;
 }
 
