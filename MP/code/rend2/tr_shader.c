@@ -38,8 +38,8 @@ static	shader_t		shader;
 static	texModInfo_t	texMods[MAX_SHADER_STAGES][TR_MAX_TEXMODS];
 static	int				shader_realLightmapIndex;
 
-#define FILE_HASH_SIZE      4096
-static shader_t*       hashTable[FILE_HASH_SIZE];
+#define FILE_HASH_SIZE		4096
+static shader_t*		hashTable[FILE_HASH_SIZE];
 
 /*
 ================
@@ -64,7 +64,7 @@ static long generateHashValue( const char *fname ) {
 		hash+=(long)(letter)*(i+119);
 		i++;
 	}
-	hash &= ( FILE_HASH_SIZE - 1 );
+	hash &= (FILE_HASH_SIZE-1);
 	return hash;
 }
 
@@ -631,46 +631,75 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 		}
 		//
 		// check special case for map16/map32/mapcomp/mapnocomp (compression enabled)
-		if ( !Q_stricmp( token, "map16" ) ) {    // only use this texture if 16 bit color depth
-			if ( glConfig.colorBits <= 16 ) {
+		if ( !Q_stricmp( token, "map16" ) )
+		{	// only use this texture if 16 bit color depth
+			if ( glConfig.colorBits <= 16 )
+			{
 				token = "map";   // use this map
-			} else {
+			}
+			else
+			{
 				COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
 			}
-		} else if ( !Q_stricmp( token, "map32" ) )    { // only use this texture if 16 bit color depth
-			if ( glConfig.colorBits > 16 ) {
+		}
+		else if ( !Q_stricmp( token, "map32" ) )
+		{	// only use this texture if 16 bit color depth
+			if ( glConfig.colorBits > 16 )
+			{
 				token = "map";   // use this map
-			} else {
+			}
+			else
+			{
 				COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
 			}
-		} else if ( !Q_stricmp( token, "mapcomp" ) )    { // only use this texture if compression is enabled
-			if ( glConfig.textureCompression && r_ext_compressed_textures->integer ) {
+		}
+		else if ( !Q_stricmp( token, "mapcomp" ) )
+		{	// only use this texture if compression is enabled
+			if ( glConfig.textureCompression && r_ext_compressed_textures->integer )
+			{
 				token = "map";   // use this map
-			} else {
+			}
+			else
+			{
 				COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
 			}
-		} else if ( !Q_stricmp( token, "mapnocomp" ) )    { // only use this texture if compression is not available or disabled
-			if ( !glConfig.textureCompression ) {
+		}
+		else if ( !Q_stricmp( token, "mapnocomp" ) )
+		{	// only use this texture if compression is not available or disabled
+			if ( !glConfig.textureCompression )
+			{
 				token = "map";   // use this map
-			} else {
+			}
+			else
+			{
 				COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
 			}
-		} else if ( !Q_stricmp( token, "animmapcomp" ) )    { // only use this texture if compression is enabled
-			if ( glConfig.textureCompression && r_ext_compressed_textures->integer ) {
+		}
+		else if ( !Q_stricmp( token, "animmapcomp" ) )
+		{	// only use this texture if compression is enabled
+			if ( glConfig.textureCompression && r_ext_compressed_textures->integer )
+			{
 				token = "animmap";   // use this map
-			} else {
+			}
+			else
+			{
 				while ( token[0] )
 					COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
 			}
-		} else if ( !Q_stricmp( token, "animmapnocomp" ) )    { // only use this texture if compression is not available or disabled
-			if ( !glConfig.textureCompression ) {
+		}
+		else if ( !Q_stricmp( token, "animmapnocomp" ) )
+		{	// only use this texture if compression is not available or disabled
+			if ( !glConfig.textureCompression )
+			{
 				token = "animmap";   // use this map
-			} else {
+			}
+			else
+			{
 				while ( token[0] )
 					COM_ParseExt( text, qfalse );   // ignore the map
 				continue;
@@ -689,18 +718,21 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 			}
 
 //----(SA)	fixes startup error and allows polygon shadows to work again
-			if ( !Q_stricmp( token, "$whiteimage" ) || !Q_stricmp( token, "*white" ) ) {
+			if ( !Q_stricmp( token, "$whiteimage" ) || !Q_stricmp( token, "*white" ) )
+			{
 //----(SA)	end
 				stage->bundle[0].image[0] = tr.whiteImage;
 				continue;
 			}
 //----(SA) added
-			else if ( !Q_stricmp( token, "$dlight" ) ) {
+			else if ( !Q_stricmp( token, "$dlight" ) )
+			{
 				stage->bundle[0].image[0] = tr.dlightImage;
 				continue;
 			}
 //----(SA) end
-			else if ( !Q_stricmp( token, "$lightmap" ) ) {
+			else if ( !Q_stricmp( token, "$lightmap" ) )
+			{
 				stage->bundle[0].isLightmap = qtrue;
 				if ( shader.lightmapIndex < 0 || !tr.lightmaps ) {
 					stage->bundle[0].image[0] = tr.whiteImage;
@@ -918,15 +950,20 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 		//
 		// fog
 		//
-		else if ( !Q_stricmp( token, "fog" ) ) {
+		else if ( !Q_stricmp( token, "fog" ) )
+		{
 			token = COM_ParseExt( text, qfalse );
-			if ( token[0] == 0 ) {
+			if ( token[0] == 0 )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing parm for fog in shader '%s'\n", shader.name );
 				continue;
 			}
-			if ( !Q_stricmp( token, "on" ) ) {
+			if ( !Q_stricmp( token, "on" ) )
+			{
 				stage->isFogged = qtrue;
-			} else {
+			}
+			else
+			{
 				stage->isFogged = qfalse;
 			}
 		}
@@ -1340,7 +1377,8 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 				if ( token[0] )
 				{
 					stage->constantColor[3] = 255 * atof( token );
-				} else
+				}
+				else
 				{
 					stage->constantColor[3] = 255;
 				}
@@ -1351,7 +1389,8 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 					stage->zFadeBounds[0] = atof( token );    // lower range
 					token = COM_ParseExt( text, qfalse );
 					stage->zFadeBounds[1] = atof( token );    // upper range
-				} else
+				}
+				else
 				{
 					stage->zFadeBounds[0] = -1.0;   // lower range
 					stage->zFadeBounds[1] =  1.0;   // upper range
@@ -1482,8 +1521,10 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 	}
 
 	// allow crosshairs to be colorized for cg_crosshairHealth
-	if ( strstr( shader.name, "crosshair" ) && shader.lightmapIndex == LIGHTMAP_2D ) {
-		if ( stage->rgbGen == CGEN_IDENTITY || stage->rgbGen == CGEN_IDENTITY_LIGHTING ) {
+	if ( strstr( shader.name, "crosshair" ) && shader.lightmapIndex == LIGHTMAP_2D )
+	{
+		if ( stage->rgbGen == CGEN_IDENTITY || stage->rgbGen == CGEN_IDENTITY_LIGHTING )
+		{
 			stage->rgbGen = CGEN_VERTEX;
 		}
 	}
@@ -2042,7 +2083,7 @@ static qboolean ParseShader( char **text )
 			continue;
 		}
 		// no mip maps
-		else if ( !Q_stricmp( token, "nomipmaps" ) )
+		else if ( !Q_stricmp( token, "nomipmap" ) || !Q_stricmp( token, "nomipmaps" ) )
 		{
 			shader.noMipMaps = qtrue;
 			shader.noPicMip = qtrue;
@@ -2122,29 +2163,36 @@ static qboolean ParseShader( char **text )
 		// it will not change in a level and will not be necessary
 		// to force clients to use a sky fog the server says to.
 		// skyfogvars <(r,g,b)> <dist>
-		else if ( !Q_stricmp( token, "skyfogvars" ) ) {
+		else if ( !Q_stricmp( token, "skyfogvars" ) )
+		{
 			vec3_t fogColor;
 
-			if ( !ParseVector( text, 3, fogColor ) ) {
+			if ( !ParseVector( text, 3, fogColor ) )
+			{
 				return qfalse;
 			}
 			token = COM_ParseExt( text, qfalse );
 
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing density value for sky fog\n" );
 				continue;
 			}
 
-			if ( atof( token ) > 1 ) {
+			if ( atof( token ) > 1 )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: last value for skyfogvars is 'density' which needs to be 0.0-1.0\n" );
 				continue;
 			}
 
 			R_SetFog( FOG_SKY, 0, 5, fogColor[0], fogColor[1], fogColor[2], atof( token ) );
 			continue;
-		} else if ( !Q_stricmp( token, "sunshader" ) )        {
+		}
+		else if ( !Q_stricmp( token, "sunshader" ) )
+		{
 			token = COM_ParseExt( text, qfalse );
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing shader name for 'sunshader'\n" );
 				continue;
 			}
@@ -2152,36 +2200,46 @@ static qboolean ParseShader( char **text )
 			tr.sunShaderName = "sun";
 		}
 //----(SA)	added
-		else if ( !Q_stricmp( token, "lightgridmulamb" ) ) { // ambient multiplier for lightgrid
+		else if ( !Q_stricmp( token, "lightgridmulamb" ) )
+		{	// ambient multiplier for lightgrid
 			token = COM_ParseExt( text, qfalse );
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing value for 'lightgrid ambient multiplier'\n" );
 				continue;
 			}
-			if ( atof( token ) > 0 ) {
+			if ( atof( token ) > 0 )
+			{
 				tr.lightGridMulAmbient = atof( token );
 			}
-		} else if ( !Q_stricmp( token, "lightgridmuldir" ) )        { // directional multiplier for lightgrid
+		}
+		else if ( !Q_stricmp( token, "lightgridmuldir" ) )
+		{	// directional multiplier for lightgrid
 			token = COM_ParseExt( text, qfalse );
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing value for 'lightgrid directional multiplier'\n" );
 				continue;
 			}
-			if ( atof( token ) > 0 ) {
+			if ( atof( token ) > 0 )
+			{
 				tr.lightGridMulDirected = atof( token );
 			}
 		}
 //----(SA)	end
-		else if ( !Q_stricmp( token, "waterfogvars" ) ) {
+		else if ( !Q_stricmp( token, "waterfogvars" ) ) 
+		{
 			vec3_t watercolor;
 			float fogvar;
 
-			if ( !ParseVector( text, 3, watercolor ) ) {
+			if ( !ParseVector( text, 3, watercolor ) )
+			{
 				return qfalse;
 			}
 			token = COM_ParseExt( text, qfalse );
 
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing density/distance value for water fog\n" );
 				continue;
 			}
@@ -2192,28 +2250,36 @@ static qboolean ParseShader( char **text )
 			//			to change at some point, but I'm not sure how to track fog parameters
 			//			on a "per-water volume" basis yet.
 
-			if ( fogvar == 0 ) {       // '0' specifies "use the map values for everything except the fog color
+			if ( fogvar == 0 )
+			{       // '0' specifies "use the map values for everything except the fog color
 				// TODO
-			} else if ( fogvar > 1 )      { // distance "linear" fog
+			}
+			else if ( fogvar > 1 )
+			{	// distance "linear" fog
 				R_SetFog( FOG_WATER, 0, fogvar, watercolor[0], watercolor[1], watercolor[2], 1.1 );
-			} else {                      // density "exp" fog
+			}
+			else
+			{	// density "exp" fog
 				R_SetFog( FOG_WATER, 0, 5, watercolor[0], watercolor[1], watercolor[2], fogvar );
 			}
 
 			continue;
 		}
 		// fogvars
-		else if ( !Q_stricmp( token, "fogvars" ) ) {
+		else if ( !Q_stricmp( token, "fogvars" ) )
+		{
 			vec3_t fogColor;
 			float fogDensity;
 			int fogFar;
 
-			if ( !ParseVector( text, 3, fogColor ) ) {
+			if ( !ParseVector( text, 3, fogColor ) )
+			{
 				return qfalse;
 			}
 
 			token = COM_ParseExt( text, qfalse );
-			if ( !token[0] ) {
+			if ( !token[0] )
+			{
 				ri.Printf( PRINT_WARNING, "WARNING: missing density value for the fog\n" );
 				continue;
 			}
@@ -2223,9 +2289,12 @@ static qboolean ParseShader( char **text )
 			//					density (so old maps or maps that just need softening fog don't have to care about farclip)
 
 			fogDensity = atof( token );
-			if ( fogDensity > 1 ) {  // linear
+			if ( fogDensity > 1 )
+			{	// linear
 				fogFar      = fogDensity;
-			} else {
+			}
+			else
+			{
 				fogFar      = 5;
 			}
 
@@ -2236,16 +2305,20 @@ static qboolean ParseShader( char **text )
 		}
 		// done.
 		// Ridah, allow disable fog for some shaders
-		else if ( !Q_stricmp( token, "nofog" ) ) {
+		else if ( !Q_stricmp( token, "nofog" ) )
+		{
 			shader.noFog = qtrue;
 			continue;
 		}
 		// done.
 		// RF, allow each shader to permit compression if available
-		else if ( !Q_stricmp( token, "allowcompress" ) ) {
+		else if ( !Q_stricmp( token, "allowcompress" ) )
+		{
 			tr.allowCompress = qtrue;
 			continue;
-		} else if ( !Q_stricmp( token, "nocompress" ) )   {
+		}
+		else if ( !Q_stricmp( token, "nocompress" ) )
+		{
 			tr.allowCompress = -1;
 			continue;
 		}
@@ -3085,7 +3158,8 @@ static shader_t *GeneratePermanentShader( void ) {
 		*newShader->stages[i] = stages[i];
 
 		for ( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ ) {
-			if ( !newShader->stages[i]->bundle[b].numTexMods ) {
+			if ( !newShader->stages[i]->bundle[b].numTexMods )
+			{
 				// make sure unalloc'd texMods aren't pointing to some random point in memory
 				newShader->stages[i]->bundle[b].texMods = NULL;
 				continue;
@@ -3563,12 +3637,17 @@ static char *FindShaderInShaderText( const char *shadername ) {
 			break;
 		}
 
-		if ( token[0] == '{' ) {
+		if ( token[0] == '{' )
+		{
 			// skip the definition
 			SkipBracedSection( &p, 0 );
-		} else if ( !Q_stricmp( token, shadername ) ) {
+		}
+		else if ( !Q_stricmp( token, shadername ) )
+		{
 			return p;
-		} else {
+		}
+		else
+		{
 			// skip to end of line
 			SkipRestOfLine( &p );
 		}
@@ -4128,7 +4207,8 @@ static void ScanAndLoadShaderFiles( void )
 			shaderLine = COM_GetCurrentParseLine();
 
 			token = COM_ParseExt(&p, qtrue);
-			if( !Q_stricmp( shaderName, token ) ) {
+			if( !Q_stricmp( shaderName, token ) )
+			{
 				ri.Printf(PRINT_WARNING, "WARNING: In shader file %s...Invalid shader name \"%s\" on line %d.\n",
 							filename, shaderName, shaderLine);
 				break;
@@ -4152,12 +4232,15 @@ static void ScanAndLoadShaderFiles( void )
 			{
 				ri.Printf(PRINT_WARNING, "WARNING: In shader file %s...Shader \"%s\" on line %d is missing closing brace",
 							filename, shaderName, shaderLine);
-				if( !Q_stricmp( filename, "common.shader" ) ) { // HACK...Broken shader in pak0.pk3
+				if( !Q_stricmp( filename, "common.shader" ) )
+				{	// HACK...Broken shader in pak0.pk3
 					ri.Printf(PRINT_WARNING, "...Ignored\n");
 					ri.FS_FreeFile(buffers[i]);
 					buffers[i] = NULL;
 					break;
-				} else {
+				}
+				else
+				{
 					ri.Printf(PRINT_WARNING, ".\n");
 				}
 			}
