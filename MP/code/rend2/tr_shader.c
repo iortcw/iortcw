@@ -708,7 +708,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 		//
 		// map <name>
 		//
-		else if ( !Q_stricmp( token, "map" ) )
+		if ( !Q_stricmp( token, "map" ) )
 		{
 			token = COM_ParseExt( text, qfalse );
 			if ( !token[0] )
