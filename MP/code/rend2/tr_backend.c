@@ -1009,7 +1009,7 @@ const void *RB_RotatedPic( const void *data ) {
 
 	if (glRefConfig.framebufferObject)
 	{
-		FBO_Bind(tr.renderFbo);
+		FBO_Bind(r_postProcess->integer ? NULL : tr.renderFbo);
 	}
 
 	RB_SetGL2D();
@@ -1098,7 +1098,7 @@ const void *RB_StretchPicGradient( const void *data ) {
 
 	if (glRefConfig.framebufferObject)
 	{
-		FBO_Bind(tr.renderFbo);
+		FBO_Bind(r_postProcess->integer ? NULL : tr.renderFbo);
 	}
 
 	RB_SetGL2D();
