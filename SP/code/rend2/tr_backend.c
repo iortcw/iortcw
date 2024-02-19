@@ -314,16 +314,11 @@ static void SetViewportAndScissor( void ) {
 	GL_SetProjectionMatrix( backEnd.viewParms.projectionMatrix );
 
 	// set the window clipping
-	qglViewport(    backEnd.viewParms.viewportX,
-					backEnd.viewParms.viewportY,
-					backEnd.viewParms.viewportWidth,
-					backEnd.viewParms.viewportHeight );
-
+	qglViewport( backEnd.viewParms.viewportX, backEnd.viewParms.viewportY, 
+		backEnd.viewParms.viewportWidth, backEnd.viewParms.viewportHeight );
 // TODO: insert handling for widescreen?  (when looking through camera)
-	qglScissor(     backEnd.viewParms.viewportX,
-					backEnd.viewParms.viewportY,
-					backEnd.viewParms.viewportWidth,
-					backEnd.viewParms.viewportHeight );
+	qglScissor( backEnd.viewParms.viewportX, backEnd.viewParms.viewportY, 
+		backEnd.viewParms.viewportWidth, backEnd.viewParms.viewportHeight );
 }
 
 /*
@@ -385,76 +380,117 @@ void RB_BeginDrawingView (void) {
 		clearBits |= GL_STENCIL_BUFFER_BIT;
 	}
 
-	if ( r_uiFullScreen->integer ) {
-		clearBits = GL_DEPTH_BUFFER_BIT;    // (SA) always just clear depth for menus
+	if ( r_uiFullScreen->integer )
+	{
+		clearBits = GL_DEPTH_BUFFER_BIT;	// (SA) always just clear depth for menus
 
-	} else if ( skyboxportal ) {
-		if ( backEnd.refdef.rdflags & RDF_SKYBOXPORTAL ) {   // portal scene, clear whatever is necessary
+	}
+	else if ( skyboxportal )
+	{
+		if ( backEnd.refdef.rdflags & RDF_SKYBOXPORTAL )
+		{
+			// portal scene, clear whatever is necessary
 			clearBits |= GL_DEPTH_BUFFER_BIT;
 
-			if ( r_fastsky->integer || backEnd.refdef.rdflags & RDF_NOWORLDMODEL ) {  // fastsky: clear color
-
+			if ( r_fastsky->integer || backEnd.refdef.rdflags & RDF_NOWORLDMODEL )
+			{
+				// fastsky: clear color
 				// try clearing first with the portal sky fog color, then the world fog color, then finally a default
 				clearBits |= GL_COLOR_BUFFER_BIT;
-				if ( glfogsettings[FOG_PORTALVIEW].registered ) {
+
+				if ( glfogsettings[FOG_PORTALVIEW].registered )
+				{
 					qglClearColor( glfogsettings[FOG_PORTALVIEW].color[0], glfogsettings[FOG_PORTALVIEW].color[1], glfogsettings[FOG_PORTALVIEW].color[2], glfogsettings[FOG_PORTALVIEW].color[3] );
-				} else if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered )      {
+				}
+				else if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered )
+				{
 					qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
-				} else {
+				}
+				else
+				{
 //					qglClearColor ( 1.0, 0.0, 0.0, 1.0 );	// red clear for testing portal sky clear
 //					qglClearColor( 0.5, 0.5, 0.5, 1.0 );
 				}
-			} else {                                                    // rendered sky (either clear color or draw quake sky)
-				if ( glfogsettings[FOG_PORTALVIEW].registered ) {
+			}
+			else
+			{
+				// rendered sky (either clear color or draw quake sky)
+				if ( glfogsettings[FOG_PORTALVIEW].registered )
+				{
 					qglClearColor( glfogsettings[FOG_PORTALVIEW].color[0], glfogsettings[FOG_PORTALVIEW].color[1], glfogsettings[FOG_PORTALVIEW].color[2], glfogsettings[FOG_PORTALVIEW].color[3] );
 
-					if ( glfogsettings[FOG_PORTALVIEW].clearscreen ) {    // portal fog requests a screen clear (distance fog rather than quake sky)
+					if ( glfogsettings[FOG_PORTALVIEW].clearscreen )
+					{
+						// portal fog requests a screen clear (distance fog rather than quake sky)
 						clearBits |= GL_COLOR_BUFFER_BIT;
 					}
 				}
 
 			}
-		} else {                                        // world scene with portal sky, don't clear any buffers, just set the fog color if there is one
+		}
+		else
+		{
+			// world scene with portal sky, don't clear any buffers, just set the fog color if there is one
+			clearBits |= GL_DEPTH_BUFFER_BIT;	// this will go when I get the portal sky rendering way out in the zbuffer (or not writing to zbuffer at all)
 
-			clearBits |= GL_DEPTH_BUFFER_BIT;   // this will go when I get the portal sky rendering way out in the zbuffer (or not writing to zbuffer at all)
-
-			if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered ) {
-				if ( backEnd.refdef.rdflags & RDF_UNDERWATER ) {
-					if ( glfogsettings[FOG_CURRENT].mode == GL_LINEAR ) {
+			if ( glfogNum > FOG_NONE && glfogsettings[FOG_CURRENT].registered )
+			{
+				if ( backEnd.refdef.rdflags & RDF_UNDERWATER )
+				{
+					if ( glfogsettings[FOG_CURRENT].mode == GL_LINEAR )
+					{
 						clearBits |= GL_COLOR_BUFFER_BIT;
 					}
 
-				} else if ( !( r_portalsky->integer ) ) {    // portal skies have been manually turned off, clear bg color
+				}
+				else if ( !( r_portalsky->integer ) )
+				{
+					// portal skies have been manually turned off, clear bg color
 					clearBits |= GL_COLOR_BUFFER_BIT;
 				}
 
 				qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
 			}
 		}
-	} else {                                              // world scene with no portal sky
+	}
+	else
+	{
+		// world scene with no portal sky
 		clearBits |= GL_DEPTH_BUFFER_BIT;
 
 		// NERVE - SMF - we don't want to clear the buffer when no world model is specified
-		if ( backEnd.refdef.rdflags & RDF_NOWORLDMODEL ) {
+		if ( backEnd.refdef.rdflags & RDF_NOWORLDMODEL )
+		{
 			clearBits &= ~GL_COLOR_BUFFER_BIT;
 		}
 		// -NERVE - SMF
 		// (SA) well, this is silly then
-		else if ( r_fastsky->integer ) {   //  || backEnd.refdef.rdflags & RDF_NOWORLDMODEL
-
+		else if ( r_fastsky->integer ) // || backEnd.refdef.rdflags & RDF_NOWORLDMODEL )
+		{
 			clearBits |= GL_COLOR_BUFFER_BIT;
 
-			if ( glfogsettings[FOG_CURRENT].registered ) { // try to clear fastsky with current fog color
+			if ( glfogsettings[FOG_CURRENT].registered )
+			{
+				// try to clear fastsky with current fog color
 				qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
-			} else {
+			}
+			else
+			{
 //				qglClearColor ( 0.0, 0.0, 1.0, 1.0 );	// blue clear for testing world sky clear
 //				qglClearColor( 0.5, 0.5, 0.5, 1.0 );
 			}
-		} else {        // world scene, no portal sky, not fastsky, clear color if fog says to, otherwise, just set the clearcolor
-			if ( glfogsettings[FOG_CURRENT].registered ) { // try to clear fastsky with current fog color
+		}
+		else
+		{
+			// world scene, no portal sky, not fastsky, clear color if fog says to, otherwise, just set the clearcolor
+			if ( glfogsettings[FOG_CURRENT].registered )
+			{
+				// try to clear fastsky with current fog color
 				qglClearColor( glfogsettings[FOG_CURRENT].color[0], glfogsettings[FOG_CURRENT].color[1], glfogsettings[FOG_CURRENT].color[2], glfogsettings[FOG_CURRENT].color[3] );
 
-				if ( glfogsettings[FOG_CURRENT].clearscreen ) {   // world fog requests a screen clear (distance fog rather than quake sky)
+				if ( glfogsettings[FOG_CURRENT].clearscreen )
+				{
+					// world fog requests a screen clear (distance fog rather than quake sky)
 					clearBits |= GL_COLOR_BUFFER_BIT;
 				}
 			}
@@ -882,13 +918,13 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 
 		//
 		// change the tess parameters if needed
-		// a "entityMergable" shader is a shader that can have surfaces from seperate
+		// a "entityMergable" shader is a shader that can have surfaces from separate
 		// entities merged into a single batch, like smoke and blood puff sprites
 		if ( shader != NULL && ( shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted || pshadowed != oldPshadowed || cubemapIndex != oldCubemapIndex
 			// GR - force draw on tessellation flag change
-			 || ( atiTess != oldAtiTess )
-			 || ( entityNum != oldEntityNum && !shader->entityMergable ) ) ){
-			if ( oldShader != NULL ) {
+			|| (atiTess != oldAtiTess)
+			|| ( entityNum != oldEntityNum && !shader->entityMergable ) ) ) {
+			if (oldShader != NULL) {
 				// GR - pass tessellation flag to the shader command
 				// make sure to use oldAtiTess!!!
 				tess.ATI_tess = ( oldAtiTess == ATI_TESS_TRUFORM );
@@ -948,7 +984,6 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 				// we have to reset the shaderTime as well otherwise image animations on
 				// the world (like water) continue with the wrong frame
 //				tess.shaderTime = backEnd.refdef.floatTime - tess.shader->timeOffset;
-
 				R_TransformDlights( backEnd.refdef.num_dlights, backEnd.refdef.dlights, &backEnd.or );
 			}
 
