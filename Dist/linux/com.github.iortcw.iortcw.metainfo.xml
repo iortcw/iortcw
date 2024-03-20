@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Kevin Degeling. Creative Commons CC0 -->
+
+<component type="desktop">
+  <id>com.github.iortcw.iortcw</id>
+  <name>IO Return to Castle Wolfenstein</name>
+  <summary>Game engine for Return to Castle Wolfenstein</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+
+  <developer_name>iortcw team</developer_name>
+  <update_contact>eonfge@kevindegeling.nl</update_contact>
+
+  <url type="homepage">https://github.com/iortcw/iortcw</url>
+
+  <launchable type="desktop-id">com.github.iortcw.iortcw.desktop</launchable>
+
+  <description>
+    <p>World War II rages and nations fall. SS head Himmler has Hitler's full backing to twist science and the occult into an army capable of annihilating the Allies once and for all. Battling alone, you're on an intense mission to pierce the black heart of the Third Reich and stop Himmler -- or die trying.
+    </p>
+    <p>The intent of this project is to provide a baseline RTCW which may be used for further development and fun. The map editor and associated compiling tools are not included. We suggest you use a modern copy of GtkRadiant. Some of the major features currently implemented are:
+    </p>
+    <ul>
+      <li>SDL backend</li>
+      <li>OpenAL sound API support (multiple speaker support and better sound quality)</li>
+      <li>Full x86_64 support</li>
+      <li>AVI video capture of demos</li>
+      <li>Much improved console autocompletion &amp; Persistent console history</li>
+      <li>Colorized terminal output</li>
+      <li>Much improved QVM tools</li>
+      <li>Many, many bug fixes</li>
+    </ul>
+    <p>
+     Commercial data files are required to run the supported games. These can be aquired though a multitude of sources. See the manual for more info on this.
+    </p>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/image_01.png</image>
+      <caption>Entering the chateau</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/image_02.png</image>
+      <caption>Attack on the crypt</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/image_03.png</image>
+      <caption>Sniping at the airfield</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/image_04.png</image>
+      <caption>Infiltrating the Xlabs</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/image_05.png</image>
+      <caption>Fighting paratroopers</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/comparison_01.png</image>
+      <caption>Optional alternative renderer</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/comparison_02.png</image>
+      <caption>Optional alternative renderer</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/iortcw/iortcw/master/Dist/images/comparison_03.png</image>
+      <caption>Optional alternative renderer</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.51c" date="2019-03-16"/>
+  </releases>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-realistic">intense</content_attribute>
+    <content_attribute id="violence-bloodshed">intense</content_attribute>
+    <content_attribute id="violence-desecration">mild</content_attribute>
+    <content_attribute id="drugs-alcohol">mild</content_attribute>
+    <content_attribute id="sex-themes">mild</content_attribute>
+    <content_attribute id="sex-appearance">moderate</content_attribute>
+    <content_attribute id="social-chat">intense</content_attribute>
+  </content_rating>
+</component>
+

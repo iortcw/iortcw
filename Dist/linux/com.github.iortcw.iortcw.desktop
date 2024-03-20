@@ -1,0 +1,9 @@
+[Desktop Entry]
+Comment=A baseline for RTCW and future projects
+Categories=Game;Shooter;
+Exec=iowolfsp.x86_64
+Icon=com.github.iortcw.iortcw
+Name=Return to Castle Wolfenstein (Singleplayer)
+Terminal=false
+Type=Application
+Keywords=single-player;fps;first person shooter;id;gray matter;
