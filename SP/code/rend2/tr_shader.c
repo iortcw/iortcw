@@ -2775,6 +2775,26 @@ static int CollapseStagesToGLSL(void)
 					skip = qtrue;
 					break;
 				}
+
+				// Vertex lightdir is only set on BSP surfaces and it's used for the lightall GLSL
+				// LIGHTDEF_USE_LIGHTMAP variant.
+				// A white lightmap with blendfunc filter can be ignored on models to not use the
+				// BSP specific code path for lightmaps. Though this breaks r_forceSun 1 on models
+				// with a lightmap.
+				//
+				// Models typically would have vertex lightdir as 0,0,0 which seems to basically just
+				// disable the light effects but still support sun shadows. So using the BSP specific
+				// code path for lightmaps maybe isn't a problem, however:
+				// - CPU animated BSP surfaces and CPU animated models may cause the BSP vertex lightdir
+				//   to be present on models causing it to incorrectly apply light effects.
+				// - iortcw offsets the vertex lightdir in the GLSL so it's never 0,0,0 and so models
+				//   with a lightmap incorrectly apply light effects.
+				//
+				if ((shader.lightmapIndex == LIGHTMAP_NONE || shader.lightmapIndex == LIGHTMAP_2D)
+					&& pStage->bundle[0].image[0] != tr.whiteImage)
+				{
+					skip = qtrue;
+				}
 			}
 
 			switch(pStage->bundle[0].tcGen)
@@ -2862,7 +2882,8 @@ static int CollapseStagesToGLSL(void)
 						break;
 
 					case ST_COLORMAP:
-						if (pStage2->bundle[0].tcGen == TCGEN_LIGHTMAP)
+						if (pStage2->bundle[0].tcGen == TCGEN_LIGHTMAP
+							&& shader.lightmapIndex != LIGHTMAP_NONE && shader.lightmapIndex != LIGHTMAP_2D)
 						{
 							int blendBits = pStage->stateBits & ( GLS_DSTBLEND_BITS | GLS_SRCBLEND_BITS );
 
@@ -2965,7 +2986,8 @@ static int CollapseStagesToGLSL(void)
 	// convert any remaining lightmap stages with no blending or blendfunc filter
 	// to a lighting pass with a white texture
 	// only do this with r_sunlightMode non-zero, as it's only for correct shadows.
-	if (r_sunlightMode->integer && shader.numDeforms == 0)
+	if (r_sunlightMode->integer && shader.numDeforms == 0
+		&& shader.lightmapIndex != LIGHTMAP_NONE && shader.lightmapIndex != LIGHTMAP_2D)
 	{
 		for (i = 0; i < MAX_SHADER_STAGES; i++)
 		{
