@@ -474,7 +474,7 @@ void TestStringClass
 	idStr b;                                // b.len == 0, b.data == "\0"
 	idStr c( "test" );              // c.len == 4, c.data == "test\0"
 	idStr d( c );                       // d.len == 4, d.data == "test\0"
-	idStr e( reinterpret_cast<const char *>( NULL ) );
+	idStr e( (const char *)NULL );
 
 	t = new idStr();                        // t->len == 0, t->data == "\0"
 	delete t;                           // t == ?
@@ -488,14 +488,14 @@ void TestStringClass
 	a = NULL;                           // a.len == 0, a.data == "\0"					ASSERT!
 	a = c + d;                          // a.len == 8, a.data == "testtest\0"
 	a = c + "wow";                       // a.len == 7, a.data == "testwow\0"
-	a = c + reinterpret_cast<const char *>( NULL );
+	a = c + (const char *)NULL;
 	// a.len == 4, a.data == "test\0"			ASSERT!
 	a = "this" + d;                  // a.len == 8, a.data == "thistest\0"
-	a = reinterpret_cast<const char *>( NULL ) + d;
+	a = (const char *)NULL + d;
 	// a.len == 4, a.data == "test\0"			ASSERT!
 	a += c;                             // a.len == 8, a.data == "testtest\0"
 	a += "wow";                          // a.len == 11, a.data == "testtestwow\0"
-	a += reinterpret_cast<const char *>( NULL );
+	a += (const char *)NULL;
 	// a.len == 11, a.data == "testtestwow\0"	ASSERT!
 
 	a = "test";                          // a.len == 4, a.data == "test\0"
