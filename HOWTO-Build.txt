@@ -1,6 +1,6 @@
 
 
-***Compiling under Linux (and other *NIX)***: Requires SDL2 development packages...Check with your disto
+***Compiling under Linux (and other *NIX)***: Requires SDL2 development packages...Check with your distro
 
 Type:
 make
@@ -89,18 +89,23 @@ Output files will be in the 'build' folder.
 (So for a default Cygwin install the path would be: C:\Cygwin\home\Your_Username\iortcw\<game>\build\release-mingw32-<arch>)
 
 
-***Compiling under Mac***: (Universal binary)...Requires XCode3 to build PPC support, ideally under OSX 10.6.
-Use the provided script:
-./make-macosx-ub.sh
+***Compiling for Mac***: 
 
+First make sure you've got all regular development tools installed (Xcode and the standard terminal fare like homebrew).
 
-**Compiling under Mac***: (Terminal based apps)
-Use the appropriate build script based on the XCode version installed.
+Necessary dependencies (information taken from https://github.com/iortcw/iortcw/pull/116):
+- Have SDL2.framework installed in /Library/Framework, and via homebrew please install:
+  + openal-soft
+  + opus
+  + opusfile
 
-./make-macosx_xcode3.sh <arch> (x86, x86_64, ppc)
-./make-macosx_xcode4.sh <arch> (x86, x86_64)
-./make-macosx_xcode5.sh <arch> (x86, x86_64)
+For PPC XCode 3 & OSX 10.6 (ideally) is required.
 
+To build, go to the respective iortcw/SP or iortcw/MP folder.
 
-In all cases, output binaries will be located in the 'build' folder.
+- To build universal binary: ./make-macosx-ub.sh 
+- To build for specific/local architecture: ./make-macosx.sh (x86, x86_64, ppc, arm64)
 
+Output files will be in the 'build' folder.
+
+*If* you run into any trouble with .dylibs, make sure the ones you use are for the appropriate architecture.
